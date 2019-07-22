@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-uploads-sourcecode-for-job]]
+A user wants to upload source code for source scanning.
+
+NOTE: Before this a <<sechub-doclink-uc-user-creates-job, job must be created>>. 
+
+After this the user is able to 
+
+-  <<sechub-doclink-uc-user-approves-job, Approve the job>>
+
+

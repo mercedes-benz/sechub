@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+**About documentation**
+
+include::../gen/server-version.adoc[]
+
+[options="header",cols="1,1,1"]
+|===
+|Key   |Value   |Information
+//----------------------
+|LICENSE   |MIT   | Please look at https://github.com/daimler/sechub/LICENSE
+|===
+
+

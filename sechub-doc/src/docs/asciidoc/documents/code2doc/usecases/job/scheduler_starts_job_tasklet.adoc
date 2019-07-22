@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+Here the batch operation is done by sending an synchronous SCAN event to event bus.
+When domain SCAN has done the operation {sechub} job will be updated.
+Also an event about `JOB DONE` will be sent.

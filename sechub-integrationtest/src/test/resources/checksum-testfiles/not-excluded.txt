@@ -1,0 +1,5 @@
+# This is a not excluded file
+# Windows and Linux zip creation seems to always have problems with CR/LF vs. LF
+# But this is not only inside zipped files, but also on content
+# To prevent checksum problems on exclusion testing, we use one checksum for windows and one for linux
+# So CR/CL does not matter in remaining files

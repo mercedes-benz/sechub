@@ -1,0 +1,10 @@
+{
+    "apiVersion" : "1.0" ,
+    
+     "codeScan": {
+        "fileSystem": {
+            "folders": ["src/main/java","src/main/resources"]     
+        }
+     }
+    
+}

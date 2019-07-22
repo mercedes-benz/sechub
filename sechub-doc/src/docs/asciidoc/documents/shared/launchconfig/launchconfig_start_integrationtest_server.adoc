@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+include::launchconfig_common_server_header.adoc[]
+[source]
+----
+-Dspring.profiles.active=integrationtest,mocked_products,h2 <1>
+-Dsechub.server.debug=true <2>
+-Dsechub.storage.sharedvolume.upload.dir=temp <3>
+----
+<1> Starts server with
+    - localhost certificate
+    - uses *mocked products*
+    - uses h2 database
+    - always mocked notification
+    - debug logging activated
+    - provides special behaviour for integration tests (e.g. get mails,
+      easy to generate test data etc.)
+<2> When debug flag is set, rest call response error messages do also contains
+    stacktraces.
+<3> We use `temp` which is a marker to create a temp folder for shared volume
+    (_necessary for source upload)_

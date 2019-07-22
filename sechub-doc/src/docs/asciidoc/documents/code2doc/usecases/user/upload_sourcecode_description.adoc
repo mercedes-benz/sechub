@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-uploads-sourcecode-for-job]]
+A user wants to upload sourcecode for a former <<sechub-doclink-uc-user-creates-job, created sechub job>>.
+
+The source code must be a valid zipfile.

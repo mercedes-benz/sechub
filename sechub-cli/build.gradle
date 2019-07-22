@@ -1,0 +1,99 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+
+task buildGo(type: Exec) {
+    group 'sechub'
+    description 'Builds sechub GO client for linux and windows platforms. Does not build anything else.'
+    // https://golang.org/cmd/go/
+    //environment GOPATH: "${projectDir}"
+
+    workingDir "${projectDir}/src/daimler.com/sechub/"
+
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/build_go.sh","${projectDir}", new MinGWConverter().convert("${projectDir}"),'daimler.com/sechub'
+    }else{
+        commandLine "${projectDir}/build_go.sh","${projectDir}", "${projectDir}",'daimler.com/sechub'
+    }
+
+}
+
+task testGo(type:Exec) {
+  group 'sechub'
+  description 'Executes all sechub client GO tests'
+  // https://golang.org/cmd/go/
+  // http://www.binpress.com/tutorial/getting-started-with-go-and-test-driven-development/160
+  // https://github.com/jstemmer/go-junit-report'
+  //  https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04#step-4-%E2%80%94-building-executables-for-different-architectures
+  environment GOPATH: "${projectDir}"
+  //https://stackoverflow.com/questions/48882691/force-retesting-or-disable-test-caching
+  // but normally not necessary:  environment GOCACHE: "off"
+
+  workingDir "${projectDir}/src/daimler.com/sechub/cli"
+
+  //on windows:
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+    }else{
+        commandLine 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+    }
+
+}
+
+task assembleArtifact(type: Zip, group: 'client') {
+    archiveName "sechub-client-${project.version}.zip"
+    destinationDir file("$buildDir/zip/")
+    from "${projectDir}/build/go/"
+    from "${rootProject.projectDir}/sechub-doc/build/asciidoc/sechub-client.pdf" // we add the documentation into zip
+    description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
+}
+
+/**
+ * We currently  publish only client binaries in a zipped file, containing all build platforms - documentation can be found inside sechub-doc
+ */
+apply plugin: 'maven-publish'
+
+version =   VersionData.getClientVersion()
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            artifact source: assembleArtifact, extension: 'zip'
+
+            pom {
+                name = 'SecHub Clients'
+                description = 'SecHub Clients for all supported plattforms as one single zip file'
+
+                scm {
+                    url = 'https://github.com/daimler/sechub'
+                }
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            // either use defined one or use local maven repo...
+            url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
+
+            if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
+                credentials(PasswordCredentials) {
+                    username project.properties['mavenRepoUserName']
+                    password project.properties['mavenRepoPassword']
+                }
+            }
+        }
+    }
+}

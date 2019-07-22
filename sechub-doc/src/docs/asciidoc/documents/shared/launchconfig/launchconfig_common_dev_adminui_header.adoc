@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+To start simple swing application `{launchDevAdminUIClasName}` create a new launch configuration with
+following arguments:
+
+class: `{launchDevAdminUIPackageName}.{launchDevAdminUIClasName}`

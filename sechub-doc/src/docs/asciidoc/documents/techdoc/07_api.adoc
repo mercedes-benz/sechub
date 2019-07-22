@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+== API
+
+include::./../gen/gen_uc_restdoc.adoc[]

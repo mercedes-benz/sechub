@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: MIT
+== Build
+
+=== About build technology
+
+Leading entry point/technology is always `gradle`. So if you want to build something, please look at the
+corresponding gradle tasks.
+
+We will use `travis` for a simple continous integration and quick response at
+`github.com` but for automated deployment etc. Jenkins is in use with a ready
+to use pipeline script (and two custom jobs).
+
+include::./../buildserver/jenkins-pipeline.adoc[]
+
+=== Gradle build commands overview
+
+=== Build Server
+Just call
+----
+./gradlew build
+----
+
+=== Build Client
+Just call
+----
+./gradlew buildGo
+----
+
+=== Execute integration tests
+Just call
+----
+./gradlew integrationtest
+----
+This will start also an integration test server
+
+=== Build Documentation
+Just call
+----
+./gradlew documentation
+----
+
+=== Publish artefacts
+Just call
+----
+./gradlew publish
+----
+_(if not already builds done this will be triggered automatically)_

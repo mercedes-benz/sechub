@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-starts-scan-by-client]]
+Sechub has got it's own client, written in go. The client is available for Linux and
+Windows and can be downloaded at {websiteURL} .
+
+The client encapsulated and simplifies the necessary steps to do a scan to one single step only
+
+It does automate following usecases:
+
+.  <<sechub-doclink-uc-user-creates-job, Create a job>>
+.  <<sechub-doclink-uc-user-uploads-sourcecode-for-job, Upload sources if necessary>>
+.  <<sechub-doclink-uc-user-approves-job, Approve the job>>
+.  <<sechub-doclink-uc-user-checks-job-state, Check job has finished>> periodically
+.  <<sechub-doclink-uc-user-downloads-job-report, Download scan report>>
+
+If the scan report traffic light is RED the build client will return an System exit code greater than zero so
+build will break.
+
+More information about the client can be found inside the user documentation.
+

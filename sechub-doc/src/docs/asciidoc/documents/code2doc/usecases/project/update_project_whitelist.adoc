@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+Update project whitelist
+
+A user in given role is able to update the <<section-shared-concepts-projectwhitelist,Project white list>>.
+

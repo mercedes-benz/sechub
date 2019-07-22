@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<netsparker-cloud generated="26/01/2018 10:13">
+    <target>
+        <scan-id>77093cedf46442f90df2a7d802161177</scan-id>
+        <url>http://testsparker.com/</url>
+        <initiated>23/08/2017 09:43</initiated>
+        <duration>00:37:27.5225347</duration>
+    </target>
+    <vulnerabilities>
+    </vulnerabilities>
+</netsparker-cloud>

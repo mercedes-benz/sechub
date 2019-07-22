@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+// asciidoc settings for EN (English)
+// ==================================
+:toc:
+:toc-title: Table of contents
+:toclevels: 5
+
+// where are images located?
+:imagesdir: ./images
+:mailToAdmin: sechub@example.org
+:websiteURL: https://github.com/daimler/sechub
+:sechub: SecHub
+
+
+:launchServerPackageName: com.daimler.sechub
+:launchServerClassName: SecHubServerApplication
+
+:launchDevAdminUIPackageName: com.daimler.sechub.developertools.admin.ui
+:launchDevAdminUIClasName: DeveloperAdministrationUI

@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+[[section-infrastructure-setup-localdevelopment]]
+=== Local development
+
+This section describes the start on local machine _(development/presentation)_.
+
+Only SecHub itself is described. The products must be either running and well
+configured, or profile `mocked_products` must be active.
+
+See product infrastructure sections for details.
+
+==== Java launch configuration setup
+Because it takes too much time - even when security products are configured with
+test profiles (for testing persistence, transaction rollback etc.) a
+`mocked_products` profile was  introduced which can be used, see
+<<section-sechub-spring-profiles,Spring Profiles>>.
+
+It does use normal product executors but injects mocked adapters
+(e.g. `MockedNessusAdapter`, `MockedNetsparkerAdapter`, ..)
+which do not really communicate with the real security products but return
+instead preconfigured values (which where recorded from real communications).
+
+Startup is done by using active spring profile `mocked_products`.
+Some mocks have special options to change their behaviour at runtime.
+Please refer to <<sechub-mock-options,Mock options>> for details.
+
+But you have either to define additional profiles for other stuff or to use
+ `demomode` where database and environment entries are defined and inherits
+ automatically `mocked_products`, see
+ <<section-sechub-spring-profiles,Spring Profiles>> for details.
+
+===== Launch in demo mode
+Here an example for calling in demomode:
+
+include::./../../shared/launchconfig/launchconfig_start_demomode.adoc[]
+
+===== Launch in DEV mode
+include::./../../shared/launchconfig/launchconfig_start_dev_server.adoc[]
+
+===== Launch in INTEGRATION TEST mode
+include::./../../shared/launchconfig/launchconfig_start_integrationtest_server.adoc[]
+
+===== Launch in PROD mode
+include::./../../shared/launchconfig/launchconfig_start_prod_server.adoc[]

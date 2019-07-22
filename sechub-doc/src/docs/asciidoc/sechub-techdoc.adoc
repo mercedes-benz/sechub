@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub technical Documentation
+// ====================================
+// enable techdoc content
+:techdoc:
+= image:sechub-logo.png[sechub] SecHub TechDoc
+include::documents/config.adoc[]
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+Target audience for this document are *SecHub Developers* only!
+
+
+// horizontal line
+***
+
+:showhintaboutgenerated: true
+
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. Development setup
+include::documents/techdoc/01_development_setup.adoc[]
+
+<<<<
+// 2. Security in developmewnt
+include::documents/techdoc/02_security_in_development.adoc[]
+
+<<<<
+// 3. Coding conventions
+include::documents/techdoc/03_coding_conventions.adoc[]
+
+<<<<
+// 4. Documentation
+include::documents/techdoc/04_documentation.adoc[]
+
+<<<<
+// 5. Build
+include::documents/techdoc/05_build.adoc[]
+
+<<<<
+// 6. Concepts
+include::documents/techdoc/06_concepts.adoc[]
+
+<<<<
+// 7. API
+include::documents/techdoc/07_api.adoc[]
+
+<<<<
+// 8. technical debt
+include::documents/techdoc/08_technical_debt.adoc[]
+
+<<<<
+// 9. Howtos
+include::documents/techdoc/09_howtos.adoc[]
+
+

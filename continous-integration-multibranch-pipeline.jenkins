@@ -1,0 +1,259 @@
+// SPDX-License-Identifier: MIT
+
+// Continous integration build pipeline script for jenkins
+// -------------------------------------------------------
+// Please define a new "multibranch pipeline" job and use this jenkinsfile there
+// Master branch is never build by this script - this branch is build by "release-pipeline.jenkins"
+// But all other branches use this as CI build pipeline
+// For details please refer /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
+
+def sechubGitBranch ="unknown"
+
+pipeline {
+    agent any
+
+    environment {
+        SECHUB_TRUSTALL= "true" // necessary for integration tests
+    }
+
+    stages {
+
+         stage('Initialize') {
+             steps {
+               script{
+                    sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
+                    echo "Branch is $sechubGitBranch"
+
+                    if( sechubGitBranch == "master" ) {
+                       echo "Cancel build , because master is build on by release-pipeline.jenkins!"
+                       currentBuild.result = 'SUCCESS'
+                       return
+                    }
+
+                }
+
+
+            }
+        }
+
+        stage('Build Server') {
+          environment {
+             /* against build race conditions - See TestPortProvider.java */
+             SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
+             SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
+          }
+          steps {
+              script{
+                  echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
+                  echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
+
+                  /*
+                   * we do NOT build sechub-integrationtest
+                   * Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
+                   * on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
+                   */
+                  callGradleWrapper("clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}")
+
+               }
+            }
+        }
+        stage('Build CLI') {
+            steps {
+              script{failed
+                  callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
+               }
+            }
+        }
+        stage('Integration tests') {
+            environment {
+               /* against build race conditions - See TestPortProvider.java */
+               SERVER_PORT= getJenkinsExecutorPort(8243)
+            }
+
+            steps {
+              script{
+                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
+               }
+            }
+        }
+
+        stage('Build Documentation') {
+            steps {
+              script{
+                  callGradleWrapper('documentation')
+               }
+            }
+        }
+
+    }
+
+    post {
+        failure {
+            emailext (
+                subject:"[ BUILD FAILED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                body:"CI build for branch '$sechubGitBranch' failed.\n"+
+                     "${env.BUILD_URL}",
+                to: '$DEFAULT_RECIPIENTS'
+            )
+        }
+        fixed {
+             emailext (
+               subject:"[ BUILD FIXED ] Build:${env.BUILD_NUMBER}, branch: $sechubGitBranch",
+                body:"CI build for branch '$sechubGitBranch' has been fixed.\n"+
+                     "${env.BUILD_URL}",
+                to: '$DEFAULT_RECIPIENTS'
+            )
+        }
+        always {
+            archive '**/integrationtest-server.log'
+
+            junit '**/build/test-results/*/TEST-*.xml'
+
+        }
+    }
+}
+
+// --------------------------------------------------------------------------
+// - Script helper methods
+// --------------------------------------------------------------------------
+
+/* Gives back port number increased by executor number, so different between
+   jenkins executors (at least on same node) */
+int getJenkinsExecutorPort(int originPort){
+    int executorNr = "${env.EXECUTOR_NUMBER}"
+    return originPort+executorNr
+}
+
+void callGradleWrapper(String gradleCommand) {
+     jdk = tool name: 'JDK_8'
+     env.JAVA_HOME = "${jdk}"
+
+     if (isUnix()) {
+           sh "./gradlew ${gradleCommand}"
+     } else {
+           bat "gradlew.bat ${gradleCommand}"
+     }
+}
+
+/**
+ * This class is necessary because jenkins - at least in version 2.150.2 - does not correct handle
+ * GIT tags and branches. Multi pipeline builds do not even checkout the tags. Normal pipeline builds do checkout the tags,
+ * but "when {tag pattern:'myPattern', comparator:'REGEXP' } does not work at all - no comment...
+ *
+ * To get the possibility to use tags for versioning this helper class was created
+ * At the begining of the pipeline there is a global variable defined which is also available inside build stages
+ * So we do init with git tags on head as array and use getter methods (not groovy but normal java getter, otherwise sandbox problems OMG!)
+ */
+class SecHubBuildContext{
+
+    boolean clientVersion
+    boolean serverVersion
+
+    boolean clientBuildDone
+    boolean serverBuildDone
+
+    String releaseInfoString
+
+    public SecHubBuildContext(){
+    }
+
+    public boolean isStartEmailNeeded(){
+        return isAnyRelease()
+    }
+
+    public boolean isFailEmailNeeded(){
+        return true;// always
+    }
+
+    public boolean isSuccesssEmailNeeded(){
+        return isAnyRelease()
+    }
+
+    public void setClientBuildDone(boolean done){
+        this.clientBuildDone=done
+    }
+
+    public void setServerBuildDone(boolean done){
+        this.serverBuildDone=done
+    }
+
+    public void setWebsiteBuildDone(boolean done){
+        this.websiteBuildDone=done
+    }
+
+
+    /**
+     * Returns true when client or sever deployment.
+     * Interesting for interdepent deployment tests.
+     * E.g.
+     *  - a server deployment should have integration test + client build before.
+     *  - a client deployment should have also integration test - means server build before
+     *    to have a working local integration test server
+     */
+    public boolean isClientOrServerRelease(){
+        return isClientRelease() || isServerRelease();
+    }
+
+    public boolean isAnyRelease(){
+        return isClientRelease() || isServerRelease();
+    }
+
+    public boolean isSuccessFul(){
+        if (! isAnyRelease()){
+            return false
+        }
+
+        if (isClientRelease()) {
+           if (! this.clientBuildDone){
+               return false
+           }
+        }
+
+        if (isServerRelease()) {
+           if (! this.serverBuildDone){
+               return false
+           }
+        }
+
+        return true
+    }
+
+    public boolean isClientRelease(){
+        return clientVersion
+    }
+
+    public boolean isServerRelease(){
+        return serverVersion
+    }
+
+    public void init(String[ ] commitTags){
+        def versionCommitTags = commitTags.findAll {it.startsWith("v")}
+
+        // we got vX.Y.Z-server and vX.Y.Z-client tags
+        def clientVersionCommitTag = versionCommitTags.find{ it.contains("-client") }
+        def serverVersionCommitTag = versionCommitTags.find{ it.contains("-server") }
+
+        releaseInfoString = "Release(s):"
+        if (clientVersionCommitTag == null || clientVersionCommitTag.empty){
+            clientVersion=false;
+        }else{
+            clientVersion=true;
+            releaseInfoString=releaseInfoString+" " + clientVersionCommitTag
+        }
+
+        if (serverVersionCommitTag == null || serverVersionCommitTag.empty){
+            serverVersion=false;
+        }else{
+            serverVersion=true;
+            releaseInfoString=releaseInfoString+" " + serverVersionCommitTag
+        }
+
+    }
+
+    public String getReleaseInfo(){
+        return releaseInfoString
+    }
+
+
+}
+

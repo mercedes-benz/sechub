@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: MIT
+[[section-sechub-spring-profiles]]
+==== SecHub Spring Profiles
+`{sechub}` provides multiple `Spring` profiles
+
+===== Server
+
+====== Overview
+plantuml::diagrams/gen/gen_springprofiles.puml[format=svg, title="Spring profiles and their explicit/implicit included parts"]
+
+====== PROD
+As name offers, this profile is designed for production.
+
+plantuml::diagrams/gen/gen_springprofiles-prod.puml[format=svg, title="Spring profile prod and its explicit/implicit included parts"]
+
+====== DEV
+plantuml::diagrams/gen/gen_springprofiles-dev.puml[format=svg, title="Spring profile dev and its explicit/implicit included parts"]
+
+For development this profile must be combinated with others to get server
+starting - but its extreme flexible and has only a dependency to localserver
+
+
+
+====== Integration-Test
+plantuml::diagrams/gen/gen_springprofiles-integrationtest.puml[format=svg, title="Spring profile integrationtest and its explicit/implicit included parts"]
+*SecHub itself*
+
+We use `integrationtest` profile for server integration tests. You must add some
+additional profiles. We use `h2` and `mocked_products` for unit testing
+of sechub server itself.
+
+*Test your security tool suite installation*
+
+You can use this profile also for testing your security product suite in
+combination with sechub server - e.g. when you have done an update at your
+product suite and you are not sure if its compatible or the products have bugs.
+
+But _(at least currently)_ you have to write your own tests then.
+Following could be done:
+
+* Write some simple bash scripts which are using sechub client
+* Use `sechub-integrationtest` project as dependency and
+   write some junit tests using TestAPI.
+
+if you want to test your installed environment is working you can also use
+`real_products`.
+
+
+[NOTE]
+====
+We got dedicated profile constants.
+
+For adapters the constants can be found at `AdapterProfiles`, for all other in `Profiles` (shared kernel).
+====
+

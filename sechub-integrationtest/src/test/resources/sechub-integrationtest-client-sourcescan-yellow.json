@@ -1,0 +1,10 @@
+{
+    "apiVersion" : "1.0" ,
+    
+     "codeScan": {
+        "fileSystem": {
+            "folders": ["../sechub-doc/src/main/java"]     
+        }
+     }
+    
+}

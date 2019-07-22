@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+For some security products it's necessary to differ between INTRANET scans and
+INTERNET scans. This is called `Target`.
+
+Maybe the next UML looks a little bit `overwhelming` but it has a reason:
+Some products are not able to handle different targets when not being installed
+twice,  some can do this by some settings etc. {sechub} must be able to automatically call the correct product installation
+in such cases. To handle this always the same
+way some framework mechanism was introduced, see next chapter:
+
+[[sechub-concept-installsetup]]
+==== Automatic Target resolving and calling of adapters
+// see http://plantuml.com/class-diagram for information about PLANT UML syntax
+// see https://asciidoctor.org/news/2014/02/18/plain-text-diagrams-in-asciidoctor/ for link syntax
+// TODO ATR, 2018-05-09: think about generating some parts here, directly from code instead of typing manually (in future)
+plantuml::diagrams/diagram_target_architecture.plantuml[format=svg, alt="Class diagram of target and install setup architecture"]
+
+The `AbstractInstallSetupProductExecutor` simplifies implementations of upcoming product implementations very much.
+
+It's able to automatically decide
+which target types are wanted to be scanned and automatically trigger calls to implementation for each target type but also with filter uris and ips,
+and environment specific parts available by `Install Setup`. It also handles missing setup / unability to scan a target. Currently it will do a simple error logging
+when a wanted target cannot be handled by the installation setup.
+
+NOTE: For an example:
+      A `Nessus` installation is currently done twice: One for *internet* and one for *intranet*.
+      The implementation of NessusProductExecutor does not need to check which of the installation must be used,
+      which password etc. This all done by this abstract implementation. The same for `NetsparkerProductExecutor`, but there
+      we got only ONE installation - separation is done by agentgroups, but this is also handled automatically.

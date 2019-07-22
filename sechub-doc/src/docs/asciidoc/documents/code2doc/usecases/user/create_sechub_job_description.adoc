@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-creates-job]]
+A user wants to create a new sechub job.
+
+WARNING: This will *not* directly start the job. Please refer to <<sechub-doclink-uc-user-approves-job, User approves job>>.
+
+As a result the user will have created a new `{sechub}` job and have a job UUID as result.
+After this the user is able to
+
+-  <<sechub-doclink-uc-user-approves-job, approve the job>>
+-  <<sechub-doclink-uc-user-uploads-sourcecode-for-job, upload source code for code scanning>>
+

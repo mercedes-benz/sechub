@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+[[section-gen-mockproperties]]
+TIP: The system properties described here are *automatically*
+     <<section-documentation-in-code,generated into this document>> by build server when
+     developers are using spring annotation `@Value` inside instances implementing MockedAdapter.
+     If you want details about the mock behavior you have to read the comments inside the java 
+     class being named in description column.
+     

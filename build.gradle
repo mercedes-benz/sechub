@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: MIT
+buildscript{
+
+	apply from: "${rootProject.projectDir}/libraries.gradle"
+	apply from: "${rootProject.projectDir}/projects.gradle"
+
+    def customMavenRepoURL4plugins = System.getenv('CUST_MVN_URL_PLUGINS')
+    if (customMavenRepoURL4plugins!=null){
+        repositories {
+            maven { url "${customMavenRepoURL4plugins}" } // e.g. a corporate nexus or artifactory...
+        }
+    }else{
+    	repositories {
+    	     mavenCentral()
+    		 jcenter()
+    	}
+    }
+
+	dependencies{
+		classpath gradleApi()
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${libraryVersion.springBoot}"
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
+		classpath "org.asciidoctor:asciidoctorj-diagram:1.5.4.1"
+		classpath "org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16"
+		classpath "org.ajoberstar:grgit:2.1.0" // necessary for version calculation
+	}
+
+}
+
+ext {
+    git = org.ajoberstar.grgit.Grgit.open() // necessary for version calculation
+}
+
+allprojects {
+
+    def customMavenRepoURL = System.getenv('CUST_MVN_URL')
+    if (customMavenRepoURL!=null){
+        repositories {
+            maven { url "${customMavenRepoURL}" } // e.g. a corporate nexus or artifactory...
+        }
+    }else{
+        repositories {
+             mavenCentral()
+             jcenter()
+        }
+    }
+
+
+}
+apply from: "${rootProject.projectDir}/build-versioning.gradle"
+apply from: "${rootProject.projectDir}/build-java.gradle"
+apply from: "${rootProject.projectDir}/build-spring.gradle"
+apply from: "${rootProject.projectDir}/build-maven.gradle"
+apply from: "${rootProject.projectDir}/build-eclipse.gradle"
+

@@ -1,0 +1,173 @@
+// SPDX-License-Identifier: MIT
+== Development Setup
+
+=== Preparation
+==== Tool installation
+You need
+
+- JAVA 8 JDK
+- Go Lang (min 1.10)
+- GIT
+
+NOTE: Go installation is only necessary for client development. All Tools must be accessible from PATH variable
+
+==== GIT setup
+
+===== Clone
+----
+git clone https://github.com/Daimler/sechub.git
+----
+
+[[sechub-git-configuration]]
+===== GIT Configuration
+After clone is done, please go into repository root folder and define
+
+====== User name and email
+Only necessary when not like your global configuration:
+----
+git config user.email $yourEmailAddress
+git config user.name "$firstName $lastName"
+----
+
+====== SecHub wanted setup
+[source,bash]
+----
+git config branch.autosetuprebase always
+git config branch.master.rebase true
+git config push.default matching
+git config core.autocrlf input
+git config color.ui auto
+git config --add remote.origin.fetch +refs/tags/*:refs/tags/*
+----
+
+==== IDE setup
+
+===== Eclipse
+
+====== Import projects
+Open a console in sechub repository root folder and type:
+
+----
+./gradlew cleanEclipse eclipse assemble
+----
+
+This will setup all your eclipse settings and you are able to import the now existing projects into a workspace
+of your choice.
+
+====== Create localhost server certificate
+This is automatically done by former gradle call, so not necessary here.
+
+===== Others
+====== Import projects
+Import as you would normally do in your IDE.
+
+====== Create localhost server certificate
+To get the localhost server certificate created, open a console
+just call  `./gradlew ensureLocalhostCertificate`
+
+This will generate a randomized server certificate for localhost, necessary for
+development
+
+
+=== First steps
+Here some first steps to get {sechub} running and being able to develop parts.
+
+==== Integration test scenario
+
+With this setup we will start sechub server ready for executing integration tests.
+It does use only security product mocks, so we got no long running sessions. We need
+no running security suite... but of course we have no real products and can not make real scans.
+
+===== Start integration test server
+====== IDE
+include::../shared/launchconfig/launchconfig_start_integrationtest_server.adoc[]
+
+====== Console
+----
+./gradlew gradlew startIntegrationServer
+----
+
+===== Start integration tests
+
+Integration tests do completely execute commands like done on real system - except there is no real communication with
+security products but only with mocked variants.
+
+NOTE: Integration tests do need always a running integration test server instance.
+
+====== IDE
+When you have running integration test server instance, just execute JUnit at complete project `sechub-integrationtest`
+with
+----
+-Dsechub.integrationtest.running=true
+----
+
+Some integration tests are long running. These tests are only run when you set
+----
+-Dsechub.integrationtest.longrunning=true
+----
+
+So you can easily switch or enable all by enabling dedicated system property.
+
+====== Console
+Next line starts integration test server, execute tests and automatically stops
+server after done or failed.
+
+----
+./gradlew integrationtest
+----
+
+[CAUTION]
+====
+The gradle task `integrationtest` does not depend on `build`. This was
+explicit not done, because build server can create server, then client and
+then start integration tests (different stages ...) without building again.
+
+*But be aware:*
+
+If you have executed a `clean` task before, you are forced to call
+`gradlew build buildGo integrationtest` to get all things working again.
+
+====
+===== Stop integration test server
+====== IDE
+Just stop your running server...
+
+====== Console
+----
+./gradlew gradlew stopIntegrationServer
+----
+=== Developer administration UI
+
+There exists a very simple user interface for developers, to test out behaviour of sechub server. There will be
+all functions of server available, but in a very reduced way.
+
+WARNING: The developer administration UI is only a tool for developers and should be handled with care. +
+         It's an extreme simple client for administrative parts. For real administration a frontend for admins
+         will be developed in future! It's not purposed to be in a deployment, but only for development.
+
+=== Integration test variant
+include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui.adoc[]
+
+
+[[section-infrastructure-setup]]
+== SecHub infrastructure setup
+include::../shared/infrastructure/infra_springboot.adoc[]
+
+include::../shared/infrastructure/infra_localdevelopment.adoc[]
+
+include::../shared/infrastructure/infra_security_products.adoc[]
+
+include::../shared/infrastructure/infra_docker.adoc[]
+
+include::../shared/infrastructure/infra_kubernetes.adoc[]
+
+== Test/Use real products
+
+=== Start server in DEV mode
+include::./../shared/launchconfig/launchconfig_start_dev_server.adoc[]
+
+TIP: Please refer also
+     <<section-howto-integrate-a-new-product,Howto integrate new products>>
+
+=== Start server in PROD mode
+include::./../shared/launchconfig/launchconfig_start_prod_server.adoc[]

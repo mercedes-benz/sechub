@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+[[section-solution-strategy]]
+== Solution Strategy
+=== About
+// see for details: https://docs.arc42.org/section-4/
+
+==== Contents
+A short summary and explanation of the fundamental decisions and solution strategies, that shape the system’s architecture. These include
+
+    - technology decisions
+    - decisions about the top-level decomposition of the system, e.g. usage of an architectural pattern or design pattern
+    - decisions on how to achieve key quality goals
+    - relevant organizational decisions, e.g. selecting a development process or delegating certain tasks to third parties.
+
+==== Motivation
+These decisions form the cornerstones for your architecture. They are the basis for many other detailed decisions or implementation rules.
+
+==== Form
+
+Keep the explanation of these key decisions *short*.
+
+Motivate what you have decided and why you decided that way,
+based upon your problem statement, the quality goals and key constraints.
+
+==== Solutions
+[options="header",cols="2,2,2,2"]
+|===
+|Quality Goal							|Scenario			                          |Solution approach         | Link to details
+//-------------------------------------------------------------------------------------------------------------------------------------------
+| Server development shall be easy to maintain and developers shall have experience with the language and frameworks
+                                        | All       	                              | Spring Boot, Java        |
+| Users shall have a convenient and simple way to start scans
+                                        | All                	                      | We provide not only a REST API but provide a convenient CLI client which just needs a JSON config file |
+| Client shall be small, fast and usable on many platforms without much effort to install
+                                        | All                	                      | Go client                |
+| Developers shall be able to test and develop server parts without an existing infrastructure (means no security products installed etc)
+                                    	| Development                                 | Mock profile and also Mocked Adapters for every supported product
+                                    	                                                                	     |
+| Developers shall be able to write adapters without starting server
+                                        | Development                                 | Adapters are "dumb" and can be started as simple java application.
+                                                                                                                 |
+| For corporate continous-integration scans we need a scalable solution which can be clustered
+                                        | Cluster installation                        | With SpringBoot and DDD we ensure we can run server components inside Kubernetes
+                                                                                                                 |
+| People or smaller companies shall be able to install {sechub} without Kubernetes
+                                        | Single installation                         | Server software will be always startable as a simple jar as well (done by Spring Boot Jar)
+                                                                                                                 |
+| Developers shall be able to start {sechub} without Kubernetes
+                                        | Development                                 | Server software will be always startable as a simple jar as well (done by Spring Boot Jar)
+                                                                                                                 |
+| {sechub} sserver integration tests shall be possible without available products, PostgreSQL or Kubernetes
+                                        | Development                                 | Server software will be always startable as a simple jar as well (done by Spring Boot Jar), we provide
+                                                                                        also different profiles for normal database and in memory db (h2,postgres), we provide a profile for mocked products
+                                                                                                                 |
+| We need a reliable database which is mature, stable and good documented
+                                        | Cluster installation, Single installation, Development
+                                                                                      | We will provide postgres
+                                                                                                                |
+| We must avoid "big ball of mud" in development and also be able to separate server parts to smaller deployments easily in future (when needed)
+                                        | Development
+                                                                                      | Domain driven design is choosen to support this. On the other side we do not want to have
+                                                                                        a large event bus system (e.g. `KAFKA`), because not really necessary at the beginning (and maybe never). +
+                                                                                        +
+                                                                                        So as a `KISS` approach we provide a self contained system but in conjunction with a very simple
+                                                                                        DDD implementation: +
+                                                                                        We create and use a wrapper API for events, start with implementation by simple Observer pattern inside
+                                                                                        same JVM, so can be replaced later by something else (e.g. a KAFKA implementation). Direct communication
+                                                                                        between different domains is forbidden, only events are allowed. This is tested by automated tests.
+                                                                                                                | see `DomainMessageService.java`
+| We want to have many integration tests which are easy to read, maintain, make fun to write,
+  have reduced test code and using server nearly as done in production. +
+  +
+  It shall be possible to execute the integration tests to
+  mocked or even to real products. Changes in server structure or even in code, shall does not enforce changes to tests, but only to test framework implementation.
+                                       |Development                                 | We implement a specialized integration-test framework which provides
+                                                                                      a DSL like, fluent API which is able to test again a running test server instance. We implement
+                                                                                      spring profiles for `real-products` and `mocked-products` and a `integration-test` profile as well on server side.
+                                                                                                                |
+| We want to have an agile, living  documentation, which is matching to source code and a diff can be easily done by GIT
+                                      | Development                                 | We use AsciiDoc and checkin documenteation together inside one GIT repository
+                                                                                                                | see https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+
+|===

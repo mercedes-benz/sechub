@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+spring.profiles.include:
+- localserver
+- mocked_notifications
+sechub:
+  initialadmin:
+    userid: int-test_superadmin
+    email: int-test_superadmin@$sechub.example.org
+    apitoken: int-test_superadmin-pwd
+  adapter:
+    mock:
+      sanitycheck:
+        enabled: true
+        
+  notification.email.mock.cache:
+    enabled: true
+    
+logging:
+ level:
+   com.daimler.sechub: DEBUG
+   org.apache.http: WARN
+   org.apache.http.headers: WARN
+   org.apache.http.wire: WARN

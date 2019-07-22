@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject 
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+
+    compile project(':sechub-scan')
+    compile project(':sechub-sereco')
+    
+    testCompile project(':sechub-testframework')
+    testCompile project(':sechub-scan-testframework')
+
+}
+

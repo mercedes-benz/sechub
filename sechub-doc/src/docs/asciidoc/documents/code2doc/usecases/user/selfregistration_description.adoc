@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+The self registration can be done by `anonymous` users.
+
+If a user is not already inside the system and there exists not already a self registration the signup
+is persisted.

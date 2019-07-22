@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${project.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+
+    compile project(':sechub-testframework')
+    compile project(':sechub-adapter') // we reuse trustall approach from adapters
+    testCompile project(':sechub-shared-kernel')
+    compile library.springboot_starter_mail // to have easier access to email parts
+
+}
+
+def integrationTestServerPortValue = 8443;
+
+task configureIntegrationTestServer{
+    def integrationTestServerPortProperty="sechub.integrationtest.serverport";
+    if ( project.hasProperty(integrationTestServerPortProperty)){
+        integrationTestServerPortValue = project.getProperty(integrationTestServerPortProperty)
+    }
+}
+
+task waitForStop(dependsOn: configureIntegrationTestServer){
+    doLast{
+        new IntegrationTestServerScriptAccess().waitForStop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+    }
+
+}
+
+
+task stopOldIntegrationTestServer(dependsOn: configureIntegrationTestServer){
+    doLast{
+        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+    }
+
+}
+
+/** Starts integraitontestserver
+ *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
+ */
+task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
+    group 'sechub'
+
+    description 'Starts an integration test server - if already a server is running we will wait until timout (10 minutes). ' +
+                'When timeout build fails but "zombie server" will be stopped too!'
+    doLast{
+        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), project.version.toString(),"$integrationTestServerPortValue")
+    }
+
+}
+
+task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
+    doLast{
+        new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+    }
+
+}
+
+
+/**
+ * Own task for integration tests.
+ */
+task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
+   group 'sechub'
+   description 'Starts integration test server, execute tests and automatically stops server after done or failed'
+   // integration tests seems to be very often  "up-to-date"
+   // but we want them always to be executed, so next line...
+   outputs.upToDateWhen { false }
+   /*
+    *  We must set the system property here - gradle does fork
+    * the jvm on testing and does not add system properties of calling automatically so we set
+    * integration test properties here
+    */
+   systemProperty "sechub.integrationtest.running", "true"
+   systemProperty "sechub.integrationtest.longrunning", "true"
+
+   finalizedBy "stopIntegrationTestServer"
+
+}
+
+/**
+ * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.
+ * Unfortunately this has blocked always when using exec in combination (server runs) - even when using "&" option.
+ * So this class was created to use just the java process builder.
+ */
+class IntegrationTestServerScriptAccess extends CmdExecutor{
+       public void waitForStop(File workingDir, String port) throws Exception{
+            executeScript("waitForStop",workingDir,null,-1,port)
+       }
+
+       public void stop(File workingDir,String port) throws Exception{
+            executeScript("stop",workingDir,null,60,port)
+       }
+
+       public void start(File workingDir, String useVersion,String port) throws Exception{
+            executeScript("start",workingDir,useVersion,300,port); /* max 5 minutes */
+       }
+
+       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port) throws Exception{
+          CmdExecutor exec = new CmdExecutor();
+          exec.setTimeOutInSeconds(timeOutInSeconds);
+          if (OSUtil.isWindows()){
+             exec.getCommand().add("cmd");
+             exec.getCommand().add("/c");
+             exec.getCommand().add("integrationtest-server.bat");
+          }else{
+             exec.getCommand().add("./integrationtest-server.sh");
+          }
+          exec.getCommand().add(command);
+          if (command.equals("start")){
+             exec.getCommand().add("$useVersion");
+          }
+          exec.getCommand().add("$port");
+
+          exec.execute(workingDir)
+        }
+
+
+}
+

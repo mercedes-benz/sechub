@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+include::launchconfig_common_server_header.adoc[]
+[source]
+----
+-Dspring.profiles.active=dev,h2,real_products <1>
+-Dsechub.server.debug=true <2>
+...
+-Dsechub.adapter.name.something.specific=${necessaryData} <3>
+...
+-Dsechub.storage.sharedvolume.upload.dir=temp <4>
+-Dsechub.initialadmin.userid=sechubadm <5>
+-Dsechub.initialadmin.email=sechubadm@example.org<5>
+-Dsechub.initialadmin.apitoken=pseudo-token-development-only<5>
+----
+<1> Enables debug logging, localserver certificates, uses *real products*
+    and starts server with h2 database. +
+    - Instead of `h2` profile you could also use profile `postgres` when you
+    have a running postgres instance available+
+    - Also you could use `mocked_products` profile instead of `real_products`
+    and you will not have to define the adapter specifications.
+<2> When debug flag is set, rest call reponse error messages do also contains stacktraces.
+<3> This is just an example for a adapter specific setting. Please look into
+    <<link-gen-systemproperties,system property definitions>> and look for adapter parts.
+<4> We use `temp` which is a marker to create a temp folder for shared volume
+    (_necessary for source upload)_
+<5> _(Optional)_ If nothing is defined per default user with id: `sechubadm`, mail
+    address `sechubadm@example.org` and API token
+    `pseudo-token-development-only` will be created (see
+    `InitialAdminInitializer.java`). +
+     +
+    This is for developer convenience to reuse existing launch configurations and have not
+    always generated new initial apitokens, like done for profile `prod`. +
+     +
+    Developers are able to define their own to fix security token for started
+    develop servers. If so done, the started developer admin UI must use this
+    inside its launch configuration...
+
+
+WARNING: Your server will not start if you forget any adapter key!
+TIP: (see `InitialAdminInitializer.java`).
+

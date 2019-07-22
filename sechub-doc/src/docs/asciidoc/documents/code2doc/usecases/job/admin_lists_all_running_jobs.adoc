@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+Administrator lists all running jobs inside `{sechub}`.
+The list entries do contain
+
+- jobUUID
+- project id
+- owner of job (id of user who executed job)
+- status
+- since time stamp
+- configuration
+
+These entries are only available at running jobs
+
+This is an important action to get info about current treshold in sechub.

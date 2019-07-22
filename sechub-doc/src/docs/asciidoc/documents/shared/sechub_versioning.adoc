@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: MIT
+==== Versioning
+[[sechub-versioning-in-code]]
+===== Versions are defined in GIT
+Version numbering is done by Developers while adding Tags on GIT system to
+commit which is used for build.
+
+`vX.Y.Z-server` tags are used to define a new server version and
+`vX.Y.Z-client` will define a new client version.
+
+To have GIT tags always uploaded, developers must be aware of the correct
+<<sechub-git-configuration,git configuration>> at their local development machine.
+
+TIP: GitHub releases (versions) should be ideal to work with!
+
+===== Versions used/created at build time
+
+General used version at build time looks always like: `$versionId-$buildId`
+For example `1.2.3-b123`
+
+NOTE: Every gradle build will regenerate the versioning. Why? Because gradle configuration
+      phase is always done for ALL gradle stuff! This includes version setup for build.
+      Means for example: Setting version for server into file only when server build task
+      will be run does not work, because version setting would be configured before. +
+       +
+      We want to ensure that EVERY change to git will have influence to created version,
+      so its absolutely necessary to ensure version represents always the commit state! +
+       +
+      So *DO NOT change* creating version on every build call! +
+      Having a build problem because something has changed (e.g. generated parts) ensure
+      `.gitignore` is correctly defined!
+
+
+
+====== Version Id
+* *Dedicated version* +
+  Commits having a dedicated version tag will lead to a reduced version info
+  containing only tag data E.g. a tag with `v1.2.3` will lead to version starting
+  with `1.2.3`
+
+* *Commmit ID version* +
+  When no tag defined the version looks like
+  `0.0.0-$abreviatedCommitId`. So its still clear which commit this version is. +
+  For example `0.0.0-cfe34f5`
+
+* *Dirty version* +
+  When file system has changed to origin commit the version will be look like
+  `0.0.0-$abreviatedCommitId-dirty`  additionally  with `"-dirty"`. +
+  For example `0.0.0-cfe34f5-dirty`
+
+====== Build Id
+[[section-versioning-local-builds]]
+* *Local builds* +
+  do normally contain a timestamp  -e.g . `20190213105029`. +
+   +
+  *Using 'latest' instead timestamp* +
+  If you set gradle property
+  `sechub.build.timestamp` to `false` instead of the time stamp you will get always
+  `latest` as build id! So for example: `0.0.0-cfe34f5-dirty-latest`. +
+   You can do this with calling `./gradlew build -Psechub.build.timestamp=false` or
+   if you want this behaviour always, just define it inside `~/.gradle/gradle.properties`
+
+[[section-versioning-server-builds]]
+* *Server builds* +
+  will starts with a `b` and real build number. The build number must be set as environment +
+  variable `BUILD_NUMBER`.
+  For example:
+
+
+
+For more technical details look into `build-versioning.gradle`.
+

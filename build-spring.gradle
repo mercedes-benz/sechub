@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: MIT
+
+subprojects {
+
+    if (! projectType.springBootProjects.contains(project)){
+		return;
+    }
+
+
+    logger.info("found spring boot relevant project:$project")
+	apply plugin: "org.springframework.boot"
+	// see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.0-Migration-Guide
+	apply plugin: 'io.spring.dependency-management'
+
+	dependencies {
+
+        testCompile(library.springboot_starter_test)
+        compile(library.springboot_starter_json)
+
+// only when using JDK >=10:
+//        compile(library.jdk_missing_jaxb_api)
+//        compile(library.jdk_missing_activation)
+
+	    if (projectType.springBootAdapterProjects.contains(project)){
+            // next line: compile only, because spring boot does add android-json on test compile as lightweight imp
+            //compile(library.openjson)
+
+            /* REST */
+            compile(library.jackson_JDK8)
+            compile(library.springboot_starter_web)
+
+
+            if (! project.name.equals('sechub-adapter')){
+                compile project(':sechub-adapter')
+            }
+
+            testCompile library.wiremock
+            testCompile project(':sechub-testframework')
+
+        }
+
+        if (projectType.springBootSecHubServerProjects.contains(project)){
+            compile(library.springboot_starter_web)
+            testCompile project(':sechub-testframework')
+
+            /* when not the kernel project we add kernel testframework as test dependency */
+            if (! project.name.equals('sechub-shared-kernel')){
+                testCompile project(':sechub-shared-kernel-testframework')
+            }
+
+            /* REST */
+            compile(library.jackson_JDK8)
+
+            /* database */
+            compile(library.database_postgres)
+            compile(library.database_h2)
+            compile(library.springboot_starter_data_jpa)
+            //compile(library.springboot_starter_actuator)
+
+            /* security */
+            compile(library.springboot_starter_security)
+            testCompile(library.springframework_security_test)
+
+            /* develop */
+           // currently deactivated: compile(library.springboot_devtoolssf)
+        }
+       if (projectType.springDocProjects.contains(project)){
+            compile(library.springboot_starter_web)
+       }
+       if (project.name.equals('sechub-server')){
+            bootJar.enabled = true
+            bootRun.enabled = true
+            springBoot.buildInfo() // create build.properties in META-INF
+           // println ("boot jar enabled for $project")
+       }else{
+            bootJar.enabled = false // https://spring.io/blog/2017/04/05/spring-boot-s-new-gradle-plugin
+            bootRun.enabled = false
+            //println ("boot jar NOT enabled for $project.name")
+            jar.enabled = true
+       }
+	}
+}

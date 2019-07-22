@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: MIT
+// header file for arc42-template,
+// including all help texts
+//
+// ====================================
+= image:sechub-logo.png[sechub] SecHub Architecture
+
+// configure EN settings for asciidoc
+include::documents/config.adoc[]
+
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+This architecture documentation is based on arc42 template.
+
+//additional style for arc42 help callouts
+ifdef::basebackend-html[]
+++++
+<style>
+.arc42help {font-size:small; width: 14px; height: 16px; overflow: hidden; position: absolute; right: 0px; padding: 2px 0px 3px 2px;}
+.arc42help::before {content: "?";}
+.arc42help:hover {width:auto; height: auto; z-index: 100; padding: 10px;}
+.arc42help:hover::before {content: "";}
+@media print {
+	.arc42help {display:hidden;}
+}
+</style>
+++++
+endif::basebackend-html[]
+
+
+include::documents/architecture/about-arc42.adoc[]
+
+// horizontal line
+***
+
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. Introduction and Goals
+include::documents/architecture/01_introduction_and_goals.adoc[]
+
+<<<<
+// 2. Architecture Constraints
+include::documents/architecture/02_architecture_constraints.adoc[]
+
+<<<<
+// 3. System Scope and Context
+include::documents/architecture/03_system_scope_and_context.adoc[]
+
+<<<<
+// 4. Solution Strategy
+include::documents/architecture/04_solution_strategy.adoc[]
+
+<<<<
+// 5. Building Block View
+include::documents/architecture/05_building_block_view.adoc[]
+
+<<<<
+// 6. Runtime View
+include::documents/architecture/06_runtime_view.adoc[]
+
+<<<<
+// 7. Deployment View
+include::documents/architecture/07_deployment_view.adoc[]
+
+<<<<
+// 8. Concepts
+include::documents/architecture/08_concepts.adoc[]
+
+<<<<
+// 9. Design Decisions
+include::documents/architecture/09_design_decisions.adoc[]
+
+<<<<
+// 10. Quality Scenarios
+include::documents/architecture/10_quality_scenarios.adoc[]
+
+<<<<
+// 11. Technical Risks
+include::documents/architecture/11_technical_risks.adoc[]
+
+<<<<
+// 12. Glossary
+include::documents/architecture/12_glossary.adoc[]
+
+

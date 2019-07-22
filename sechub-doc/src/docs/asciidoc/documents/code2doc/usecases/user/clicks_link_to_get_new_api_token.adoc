@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-clicks-link-to-get-new-apitoken]]
+The user has to open the received email and click there on the contained link with a onetimetoken api which is another usecase.
+
+This use case is either triggered by
+<<sechub-doclink-uc-user-clicks-link-to-get-new-apitoken, when a new user was initial registered>> or
+<<sechub-doclink-uc-user-clicks-link-to-get-new-apitoken, a new API token was requested by user>>.

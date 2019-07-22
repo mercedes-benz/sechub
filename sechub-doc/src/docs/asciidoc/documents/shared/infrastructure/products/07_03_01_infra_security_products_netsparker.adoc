@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: MIT
+[[section-infrastructure-setup-security-products-netsparker]]
+
+==== Netsparker
+Netsparker is a web scanner.
+
+see https://www.netsparker.com

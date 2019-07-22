@@ -1,0 +1,4 @@
+# Ignore all generated parts, except README.md (AND .gitignore itself!)
+*
+!README.md
+!.gitignore

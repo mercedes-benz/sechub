@@ -1,0 +1,77 @@
+// SPDX-License-Identifier: MIT
+[[section-introduction-and-goals]]
+== Introduction and Goals
+=== About
+Describes the relevant requirements and the driving forces that software architects and development team must consider. These include
+
+    - underlying business goals, essential features and functional requirements for the system,
+    - quality goals for the architecture,
+    - relevant stakeholders and their expectations
+
+
+=== What is SecHub?
+SecHub is an easy to use security scan integration for developers to provide security tooling
+as a *SecDevOps* service. It can be used by build servers and other tools.
+
+[TIP]
+====
+Independent from security products:
+
+The `user` - for example a developer who uses SecHub for build integration - has no
+intention which security product is being used to determine security leaks.
+
+So security products used by {sechub} server instance(s) can change on time but usage and configuration
+of {sechub} will not change at all!
+
+====
+
+=== Requirements Overview
+
+==== Non functional requirements
+===== Scalable
+SecHub server must be able to scale vertically and horizontally.
+
+TIP: SecHub itself is build to be ready for usage inside `Kubernetes` clusters, so main bottle neck will normally
+     not be {sechub} but maybe used security products.
+
+===== High available
+SecHub server must be able to handle new job requests at any time so at least jobs must must be accepted and added to queue.
+
+
+===== Resilient
+- Security product connection failure +
+  One failing security product shall not lead in a non working SecHub "state" but produce a dedicated entry in scan results!
+- The system shall be still working on errors
+
+===== Stable
+- API and configuration syntax are stable and do NOT change in a breaking way
+
+===== Acceptable
+SecHub shall be accepted by developers. So it must be easy to use, to embed and also ... just work!
+
+==== Functional requirements
+- One single and easy to use API / client to secure
+- Easy to integrate new security products
+
+More and also more detailed functional requirements can be found in issue tracker system
+
+=== Quality Goals
+- Documentation shall be always up-to-date
+- ... TBD
+
+=== Stakeholders
+
+[options="header",cols="1,2,2"]
+|===
+|Role/Name					|Contact			|Expectations
+//-------------------------------------------------------------------------------------------------------------------------------------------
+| Product Owner				| {websiteURL}      |
+| User	  					|                   | A person who wants to execute scans by {sechub}. +
+                                                  *Will expect:* easy to use, "It works", not too much false positives
+| Administrator				|                   | A person who installs {sechub} server and does maintenance of
+                                                  target security products. Also responsible for onboarding of
+                                                  projects and users. +
+                                                  *Will expect:* simple installation, easy to configure, reliable, easy to maintain
+| External Systems			|  					| Another system which will call the REST API or the SecHub client. E.g. Build Servers like Jenkins. +
+                                                  *Will expect:* Always available
+|===

@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+@startuml
+' syntax, see http://plantuml.com/sequence-diagram
+title Technical overview as sequence diagram
+
+Developer -> BuildTool
+Developer -> Client
+BuildTool -> Client
+Client <-> RestAPI : communication
+
+note over Client
+ sends job request,
+ uploads sources,
+ receives job status, ..
+end note
+
+RestAPI <-> Scheduler
+Scheduler <-> "Batch job"
+"Batch job" <-> "Product Executors"
+"Product Executors" <-> "Product Adapter"
+"Product Adapter" <-> "3rd party product"
+"Product Adapter" <-> "Sereco"
+note over "3rd party product"
+ Any security product,
+  - static code analyser
+  - web scanner
+  - infrastructure scanners
+  - ...
+end note
+note over "Sereco"
+ SecHub report collector
+end note
+@enduml

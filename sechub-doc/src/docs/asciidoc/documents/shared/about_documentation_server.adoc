@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+**About documentation**
+
+This documentation was build for SecHub Server v
+include::../gen/server-version.adoc[]

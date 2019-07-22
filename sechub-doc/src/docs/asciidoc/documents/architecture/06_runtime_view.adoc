@@ -1,0 +1,107 @@
+// SPDX-License-Identifier: MIT
+[[section-runtime-view]]
+== Runtime View
+
+=== About
+// see https://docs.arc42.org/section-6/
+=== Content
+The runtime view describes concrete behavior and interactions of the system’s building blocks in form of scenarios from the following areas:
+
+    - important use cases or features: how do building blocks execute them?
+    - interactions at critical external interfaces: how do building blocks cooperate with users and neighbouring systems?
+    - operation and administration: launch, start-up, stop
+    - error and exception scenarios
+
+NOTE: The main criterion for the choice of possible scenarios (sequences, workflows) is their architectural relevancy.
+      It is not important to describe a large number of scenarios. You should rather document a representative selection.
+
+=== Motivation
+
+You should understand how (instances of) building blocks of your system perform their job and communicate at runtime. You will mainly capture scenarios in your documentation to communicate your architecture to stakholders that are less willing or able to read and understand the static models (building block view, deployment view).
+
+=== Form
+There are many notations for describing scenarios, e.g.
+
+    - numbered list of steps (in natural language)
+    - activity diagrams or flow charts
+    - sequence diagrams
+    - BPMN or EPCs (event process chains)
+    - state machines
+    - ...
+
+include::./../gen/gen_usecases.adoc[]
+
+include::./../gen/gen_uc_restdoc.adoc[]
+=== Domain Driven Design
+We use domain driven design, but communication is done very simple - for more
+details read the <<section-concepts-domain-driven-design,concept>>.
+
+==== Domain Message Bus
+The domain message bus represents an abstraction layer for communication between different domains.
+It shall be the ONLY way to communicate between the different domains.
+Purpose: In future maybe the domains will be separate spring boot applications and be also
+autark deployable!
+
+Currently SecHub contains of ONE deployable spring boot application.
+But to prevent the "Big ball of mud" this abstraction must be always used when
+one domain calls another one.
+
+==== Domain communication and actions
+image::domain-communication-and-actions.svg[title="Domain communication and actions" opts="interactive,inline"]
+
+include::../gen/gen_messaging.adoc[]
+
+=== Calling Security Products
+
+==== Product adapter
+A *Product adapter* is _"stupid"_ and does NOT know anything about SecHub.
+
+It only knows a product and is able to provide methods for access. That's all.
+In most cases there exists also a simple test application which can be used to
+play around with the product. So we got rapid response if product adapter works
+well.
+
+image::adapter-big-picture.svg[title="Adapter Big picture" opts="interactive,inline"]
+
+
+*Every* product adapter must be provided and used by its own interface. Also the adapter project must provide:
+
+. Real adapter implementation
+. Additional mock variant
+.. mock REST api calls etc.
+.. returns a predefined set of an real output
+.. maybe has possibilities to change the behaviour on runtime
+
+By the *mock variant* it is possible to
+- test the complete szenario in a very fast way...
+- test configuration values from sechub are passed through adapter
+
+===== Implementation of new adapters
+*Only green highlighted classes* in former image above *needs to be*
+*implmemented* to get a new adapter running.
+
+The abstract implementation does have the most technical parts already inside,
+so implementing a new adapter should be very easy and developers can
+concentrate on adapter business logic.
+
+For example the handling of proxies or self signed certificates is already
+managed there. Please look into existing adapters for more information / inspiration.
+
+
+==== Product executor
+A `Product executor` does know {sechub} and has access to database etc. It *uses* a `Product adapter` inside!
+
+==== Product executors and results
+The `scan service` and the `report builder service` are using different product executors to create `ProductResult`
+table entries. +
+Each product executor will persist its state - so even `SERECO` will persist its full content as report result as well!
+This was made to store all information - for retry mechanism in future and also for easier debugging etc.
+When failures on last step are occurring (and e.g. we got a succesful scan(s) by other (product(s) which took
+3 hours....) we can retry the full step - or, at least interesting for debugging/analyzing.
+
+==== Product executor versus product execution service
+The service does execute and handle different product executors.
+
+=== Target handling
+
+include::../shared/concepts/concept_targets.adoc[]

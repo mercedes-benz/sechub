@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: MIT
+[[section-documentation]]
+== Documentation
+
+=== Documentation types
+
+[[section-documentation-markdown]]
+==== Markdown
+Simple technical information -e.g. about the content of an folder
+- will be written in markdown syntax.
+
+Normaly we use a README.md file to explain simple things.
+
+See https://en.wikipedia.org/wiki/Markdown for `markdown` definition
+
+[NOTE]
+====
+The main purpose of not using AsciiDoc for those parts was, that
+former used git hosting environment (before github.com) was not able
+to show up `.adoc` files in a appropriate formatted way, but only as plain
+source. So we started to use `markdown` for files which shall be pretty
+formatted there.
+
+Having now moved to `github.com` we can write those files of course
+also as `.adoc`
+====
+
+
+[[section-documentation-asciidoc]]
+==== Asciidoc
+When ever writing a full scaled documentation - means more than some lines to explain a folder etc. - we do this with Asciidoc.
+
+TIP: You can use http://asciidoctor.org/docs/user-manual or
+     look into http://asciidoctor.org/docs/asciidoc-syntax-quick-reference for more information
+
+
+[[section-documentation-in-code]]
+=== Documentation in code
+
+==== Automated description of important code part
+There exists an annotation `@MustBeDocumented` , which is not
+only used as a marker for important code parts but also is used by an automatic
+generation of an `.adoc` file which are included in `asciidoc` documentation.
+
+[[section-documentation-configuration-properties]]
+==== Automated description of configuration properties
+With usage of `@MustBeDocumented` at Spring annotation `@Value`
+the <<section-infrastructure-setup-springboot, infrastructure properties>> can be documented
+automatically.
+
+[[section-documentation-usecases]]
+==== Automated description of use cases
+With usage of special usecase annotations which itself are marked with `@UseCaseDefintion` it's possible
+to create an automated use case description. See also
+<<section-coding-convention-usecases,Usecase coding conventions>>
+for more technical details.
+
+==== Automated Kubernetes files
+The `@MustBeDocumented` annotation is also used for automatic generation of `Kubernetes` deployment parts. See <<section-infrastructure-kubernetes-files-generator,Kubernetes Files Generator>> .
+for details.
+
+==== Automated Diagrams
+[[section-documentation-messaging-overview]]
+
+===== Domain messaging overview
+Using Annotations, which are itself tagged with `@DomainMessaging` annotation, those parts will automatically
+listed inside generated messaging diagram(s) `gen_domain_messaging_overview.plantuml` :
+
+plantuml::diagrams/gen/gen_domain_messaging_overview.plantuml[format=svg, alt="Sequence diagram of messaging", width=1024]
+
+TIP: For an example look into `@IsReceivingAsyncMessage` and look also for its
+     references.
+
+[[section-documentation-generation]]
+=== Documentation generation
+By calling `gradlew documentation` the `AsciidocGenerator` is build and used. This generator will automatically
+generate documentation areas like <<link-gen-systemproperties,System properties>> or <<link-gen-scheduling,Scheduling>> which will
+be rendered by Asciidoctor afterwards.
+
+

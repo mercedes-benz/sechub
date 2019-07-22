@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+[[section-concepts]]
+== Cross-cutting Concepts
+
+=== Simple Domain Driven Design (SDDD)
+
+include::../shared/concepts/concept_simple_domain_driven_design.adoc[]
+
+
+=== _<Concept 2>_
+
+_<explanation>_
+
+...
+
+=== _<Concept n>_
+
+_<explanation>_

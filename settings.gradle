@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: MIT
+include 'sechub-cli',
+/* documentation */
+'sechub-doc',
+'sechub-doc:architecture',
+'sechub-doc:techdoc',
+'sechub-doc:user-handbook',
+
+/* server POD area */
+'sechub-server',
+'sechub-integrationtest',
+'sechub-schedule',
+'sechub-scan',
+'sechub-scan-testbase',
+'sechub-scan-product-netsparker',
+'sechub-scan-product-nessus',
+'sechub-scan-product-checkmarx',
+'sechub-scan-product-sereco',
+
+// adapters
+'sechub-adapter',
+'sechub-adapter-netsparker',
+'sechub-adapter-nessus',
+'sechub-adapter-checkmarx',
+
+// authorization
+'sechub-authorization',
+// administration
+'sechub-administration', /* administration provides a rest api */
+'sechub-notification',
+
+'sechub-sereco', /* security report collector = sereco */
+
+'sechub-shared-kernel',
+'sechub-other',
+
+'sechub-test', /* a special overall test project - has ALL dependencies */
+
+'sechub-testframework',
+
+'sechub-scan-testframework',
+'sechub-shared-kernel-testframework',
+
+'sechub-developertools'
+

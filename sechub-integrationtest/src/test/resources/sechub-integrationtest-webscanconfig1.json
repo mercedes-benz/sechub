@@ -1,0 +1,10 @@
+{
+
+	"apiVersion": "1.0",
+
+	"project"   : "__projectname__",
+
+	"webScan"   : {
+        "uris": ["__acceptedUri1__"]
+    }
+}

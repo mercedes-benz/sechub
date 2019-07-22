@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: MIT
+include::launchconfig_common_server_header.adoc[]
+[source]
+----
+-Dspring.profiles.active=prod <1>
+...
+-Dsechub.adapter.name.something.specific=${necessaryData} <2>
+...
+-Dsechub.storage.sharedvolume.upload.dir=/srv/storage/persistent-volume1 <3>
+-Dsechub.initialadmin.userid=real-superadmin<4>
+-Dsechub.initialadmin.email=real-superadmin@example.org<4>
+-Dserver.ssl.key-store=path/to/keystore.p12 <5>
+-Dserver.ssl.key-store-type=PKCS12 <5>
+-Dserver.ssl.key-alias=yourKeyAlias <5>
+-Dserver.ssl.key-store-password=yourKeyStorePassword <5>
+-Dsechub.notification.smtp.hostname=intranet.example.org <6>
+-Dsechub.notification.smtp.port=50<6>
+-Dsechub.notification.smtp.config=mail.smtp.auth=false<6>
+----
+<1> Starts server with
+    - production certificate
+    - uses *real products*
+    - uses always postgres database
+    - real notification
+<2> This is just an example for a adapter specific setting. Please look into
+    <<link-gen-systemproperties,system property definitions>> and look for adapter parts.
+<3> Define here the *absolute path* used for shared volume storage
+    (_necessary for source upload)_
+<4> When there is no existing admin inside sechub database on startup,
+    the given user credentials will be automatically created. +
+    Look at the log output to get the initial, generated API token for admin.
+    Be aware that you must regenerate a new api token for this user,
+    or delete the initial admin account after creating another admin,
+    because credentials are inside logs...
+<5> This is PROD environment SSL configuration. The example shows setup for p12
+    certificate storage - see spring boot documentation for exact syntax.
+<6> Setup for smtp server for mail sending. Port and config are optional.
+    See <<link-gen-systemproperties,system property definitions>> for details.
+
+[WARNING]
+====
+Your server will not start if you forget an adapter key!
+====

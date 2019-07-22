@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   Library definitions for project 'sechub'
+   ============================================================================
+   Define here library dependencies and use them inside your build.gradle
+   files in sub projects.
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+
+ */
+ext {
+
+   libraryVersion= [
+      springBoot:   "2.0.4.RELEASE"
+   ]
+
+   library = [
+      /* spring */
+         springboot_starter_thymeleaf:          "org.springframework.boot:spring-boot-starter-thymeleaf",
+
+         springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",
+
+         springboot_starter_data_jpa:           "org.springframework.boot:spring-boot-starter-data-jpa",
+         springboot_starter_data_mongodb:       "org.springframework.boot:spring-boot-starter-data-mongodb",
+         springboot_starter_data_rest:          "org.springframework.boot:spring-boot-starter-data-rest",
+         springboot_starter_security :          "org.springframework.boot:spring-boot-starter-security",
+         springboot_starter_web:                "org.springframework.boot:spring-boot-starter-web",
+         springboot_starter_test:               "org.springframework.boot:spring-boot-starter-test",
+         springboot_starter_batch:              "org.springframework.boot:spring-boot-starter-batch",
+         springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
+         springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
+         springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
+
+         springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
+         springframework_security_test:         "org.springframework.security:spring-security-test",
+
+         wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.16.0",
+
+         database_h2:                           "com.h2database:h2", //:1.4.196",
+         database_postgres:                     "org.postgresql:postgresql:42.2.2",
+
+         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+
+         webjars_jquery:                        "org.webjars:jquery:2.2.4",
+         webjars_bootstrap:                     "org.webjars:bootstrap:3.3.7",
+
+         apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.9",
+         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.5",
+         apache_commons_validator:              "commons-validator:commons-validator:1.6",
+         apache_commons_io:                     "commons-io:commons-io:2.6",
+
+         openjson:                              "com.github.openjson:openjson:1.0.10",
+
+         flyway:                                "org.flywaydb:flyway-core:5.2.1",
+
+        // JDK 10 build problems handling
+        // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
+        jdk_missing_jaxb_api:						"javax.xml.bind:jaxb-api:2.3.1",
+        jdk_missing_activation:						"javax.activation:activation:1.1.1",
+        jdk_missing_jaxb_impl:						"javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
+   ]
+
+}

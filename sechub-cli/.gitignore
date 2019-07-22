@@ -1,0 +1,5 @@
+pkg
+# We currently cannot setup this eclipse project by gradle so commiting .project and .settings in oldschool way to git...
+.settings
+.project
+src/daimler.com/sechub/cli/version.go

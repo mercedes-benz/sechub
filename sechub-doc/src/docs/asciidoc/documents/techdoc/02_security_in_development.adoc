@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+[[section-security-in-development]]
+== Security in development
+
+CAUTION: We enable security even in early stage of development! There is no test, no integration test or anything else which would use `http` only!
+
+=== CLI client
+There are some options for CLI client which were *not* supposed to be
+used in production. So instead of exposing such options by help we
+use those by explicit ENV entries
+[options="header",cols="1,1,1"]
+|===
+|ENV-NAME       |Value    |Description
+//-----------------------------------------
+|SECHUB_DEBUG   |"true"   |Shows debug outputs
+|SECHUB_QUIET   |"true"   |Suppresses warning outputs
+|SECHUB_TRUSTALL|"true"   |Trust all certificates (only for development). Normally SecHub client does show a warning when `trustall` option is enabled
+|===
+
+=== Server
+==== Spring Boot Security
+Spring boot security is always turned on, no matter if development or in production.
+
+==== Certificates
+
+For development gradle task `ensureLocalhostCertificate` in `sechub-server` will automatically generate a
+localhost server certificate. For details look into task and called bash script.
+

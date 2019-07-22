@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-projectwhitelist]]
+==== Project whitelist
+
+A project contains always a whitelist of allowed URIs. If a scan is triggered for URI not listed inside the whitelist the scan cannot be done.
+
+This prevents usage of `{sechub}` as an malicous software to scan other sites and forcing an DoS attack.
+

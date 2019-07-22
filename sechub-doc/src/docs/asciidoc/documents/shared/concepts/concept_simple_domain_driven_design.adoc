@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+[[section-concepts-domain-driven-design]]
+To have loose coupling we decided to have an *simple* DDD approach (see https://en.wikipedia.org/wiki/Domain-driven_design).
+To avoid too much complexity but keep the domains clearly separated following was done:
+
+1. Domains do only communicate between each other via EventBus with explicit Domain Messages.
+   (see also <<section-architecture-constraints-domain-communication,domain communication constraints>> )
+2. Every domain has got it's own data pool. We currently use only *ONE* database. But every
+   domain has got it's own Tables! The tables names starting with a string describing domain
+   (for example `AUTH_USER` would represent user data for domain authorization...)
+3. The "Event Bus" is currently - sechub is a self contained system at the moment -
+   just a simple Spring injection based publish/subscribe system done simply by implementing Observer pattern. +
+ +
+   If there is a need to more decoupling parts the first approach would be
+   to do a rest call mechanism. Ultra heavyweight approaches like using KAFKA etc.
+   would be too much (at least at the current situation).
+
+NOTE: Developers are able to define meta information inside code to obtain full generated messaging diagrams. +
+      +
+      See `Technical documentation` for details about documentation generation and how to
+      use annotations to establish results.

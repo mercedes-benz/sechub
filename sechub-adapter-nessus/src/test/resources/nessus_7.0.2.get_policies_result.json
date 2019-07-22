@@ -1,0 +1,236 @@
+{
+	"templates": [
+		{
+			"unsupported": false,
+			"desc": "Approved for quarterly external scanning as required by PCI.",
+			"subscription_only": false,
+			"title": "PCI Quarterly External Scan",
+			"is_agent": null,
+			"uuid": "cfc46c2d-30e7-bb2b-3b92-c75da136792d080c1fffcc429cfd",
+			"manager_only": false,
+			"name": "asv"
+		},
+		{
+			"unsupported": false,
+			"desc": "A simple scan to discover live hosts and open ports.",
+			"subscription_only": false,
+			"title": "Host Discovery",
+			"is_agent": null,
+			"uuid": "bbd4f805-3966-d464-b2d1-0079eb89d69708c3a05ec2812bcf",
+			"manager_only": false,
+			"name": "discovery"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote and local checks for MS17-010.",
+			"subscription_only": false,
+			"title": "WannaCry Ransomware",
+			"is_agent": null,
+			"uuid": "861a8b95-f04c-40b0-ece6-263b1bec457c09cfc122c9666645",
+			"manager_only": false,
+			"name": "wannacry"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote and local checks for CVE-2017-5689.",
+			"subscription_only": false,
+			"title": "Intel AMT Security Bypass",
+			"is_agent": null,
+			"uuid": "3f514e0e-66e0-8ea2-b6e7-d2d86b526999a93a89944d19e1f1",
+			"manager_only": false,
+			"name": "intelamt"
+		},
+		{
+			"unsupported": false,
+			"desc": "A full system scan suitable for any host.",
+			"subscription_only": false,
+			"title": "Basic Network Scan",
+			"is_agent": null,
+			"uuid": "731a8e52-3ea6-a291-ec0a-d2ff0619c19d7bd788d6be818b65",
+			"manager_only": false,
+			"name": "basic"
+		},
+		{
+			"unsupported": false,
+			"desc": "Authenticate to hosts and enumerate missing updates.",
+			"subscription_only": false,
+			"title": "Credentialed Patch Audit",
+			"is_agent": null,
+			"uuid": "0625147c-30fe-d79f-e54f-ce7ccd7523e9b63d84cb81c23c2f",
+			"manager_only": false,
+			"name": "patch_audit"
+		},
+		{
+			"unsupported": false,
+			"desc": "Scan for published and unknown web vulnerabilities.",
+			"subscription_only": false,
+			"title": "Web Application Tests",
+			"is_agent": null,
+			"uuid": "c3cbcd46-329f-a9ed-1077-554f8c2af33d0d44f09d736969bf",
+			"manager_only": false,
+			"name": "webapp"
+		},
+		{
+			"unsupported": false,
+			"desc": "Scan for malware on Windows and Unix systems.",
+			"subscription_only": false,
+			"title": "Malware Scan",
+			"is_agent": null,
+			"uuid": "d16c51fa-597f-67a8-9add-74d5ab066b49a918400c42a035f7",
+			"manager_only": false,
+			"name": "malware"
+		},
+		{
+			"more_info": "http://www.tenable.com/products/nessus/nessus-manager",
+			"unsupported": false,
+			"desc": "Assess mobile devices via Microsoft Exchange or an MDM.",
+			"subscription_only": false,
+			"title": "Mobile Device Scan",
+			"is_agent": null,
+			"uuid": "8382be4c-2056-51fe-65a3-a376b7912a013d58cfc392e0fac5",
+			"manager_only": true,
+			"name": "mobile"
+		},
+		{
+			"more_info": "http://www.tenable.com/products/nessus/nessus-manager",
+			"unsupported": false,
+			"desc": "Audit the configuration of mobile device managers.",
+			"subscription_only": false,
+			"title": "MDM Config Audit",
+			"is_agent": null,
+			"uuid": "fbcff9e6-0c8c-e6a9-4d8a-a43a6ee7c04b3fa5e24c0fc81b34",
+			"manager_only": true,
+			"name": "mdm"
+		},
+		{
+			"unsupported": false,
+			"desc": "Audit system configurations against a known baseline.",
+			"subscription_only": false,
+			"title": "Policy Compliance Auditing",
+			"is_agent": null,
+			"uuid": "40345bfc-48be-37bc-9bce-526bdce37582e8fee83bcefdc746",
+			"manager_only": false,
+			"name": "compliance"
+		},
+		{
+			"unsupported": false,
+			"desc": "Perform an internal PCI DSS (11.2.1) vulnerability scan.",
+			"subscription_only": false,
+			"title": "Internal PCI Network Scan",
+			"is_agent": null,
+			"uuid": "e460ea7c-7916-d001-51dc-e43ef3168e6e20f1d97bdebf4a49",
+			"manager_only": false,
+			"name": "pci"
+		},
+		{
+			"unsupported": false,
+			"desc": "Audit the configuration of network devices.",
+			"subscription_only": false,
+			"title": "Offline Config Audit",
+			"is_agent": null,
+			"uuid": "1384f3ce-0376-7801-22db-a91e1ae16dea8d863e17313802b1",
+			"manager_only": false,
+			"name": "offline"
+		},
+		{
+			"unsupported": false,
+			"desc": "Audit the configuration of third-party cloud services.",
+			"subscription_only": false,
+			"title": "Audit Cloud Infrastructure",
+			"is_agent": null,
+			"uuid": "97f94b3b-f843-92d1-5e7a-df02f9dbfaaef40ae03bfdfa7239",
+			"manager_only": false,
+			"name": "cloud_audit"
+		},
+		{
+			"unsupported": false,
+			"desc": "Audit systems using SCAP and OVAL definitions.",
+			"subscription_only": false,
+			"title": "SCAP and OVAL Auditing",
+			"is_agent": null,
+			"uuid": "fb9cbabc-af67-109e-f023-1e0d926c9e5925eee7a0aa8a8bd1",
+			"manager_only": false,
+			"name": "scap"
+		},
+		{
+			"unsupported": false,
+			"desc": "Create a scan using a previously defined policy.",
+			"subscription_only": false,
+			"title": "Custom Scan",
+			"is_agent": null,
+			"uuid": "ab4bacd2-05f6-425c-9d79-3ba3940ad1c24e51e1f403febe40",
+			"manager_only": false,
+			"name": "custom"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote and local checks for CVE-2014-6271 and CVE-2014-7169.",
+			"subscription_only": false,
+			"title": "Bash Shellshock Detection",
+			"is_agent": null,
+			"uuid": "65d5b7ce-8d3b-d0df-f473-40633bb6122108a510a44374a167",
+			"manager_only": false,
+			"name": "shellshock"
+		},
+		{
+			"unsupported": false,
+			"desc": "Local checks for CVE-2015-0235.",
+			"subscription_only": false,
+			"title": "GHOST (glibc) Detection",
+			"is_agent": null,
+			"uuid": "f10bc363-deb5-7218-b4ae-e08c85f84aa089ba9aa631170429",
+			"manager_only": false,
+			"name": "ghost"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote checks for CVE-2016-0800.",
+			"subscription_only": false,
+			"title": "DROWN Detection",
+			"is_agent": null,
+			"uuid": "b9e01ede-c502-a064-cbca-e0f75d7743549709aaa0d800a65e",
+			"manager_only": false,
+			"name": "drown"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote and local checks for CVE-2016-2118 and CVE-2016-0128.",
+			"subscription_only": false,
+			"title": "Badlock Detection",
+			"is_agent": null,
+			"uuid": "94077f40-5408-f59f-07b1-658c66bed20e1a2c8dfd7bf7c12a",
+			"manager_only": false,
+			"name": "badlock"
+		},
+		{
+			"unsupported": false,
+			"desc": "Scan for vulnerabilities disclosed in the Shadow Brokers leaks.",
+			"subscription_only": false,
+			"title": "Shadow Brokers Scan",
+			"is_agent": null,
+			"uuid": "2e823751-74a7-4d93-8067-ae301b2523037a8a9aaabacadaea",
+			"manager_only": false,
+			"name": "shadow_brokers"
+		},
+		{
+			"unsupported": false,
+			"desc": "Remote and local checks for CVE-2017-5753, CVE-2017-5715, and CVE-2017-5754",
+			"subscription_only": false,
+			"title": "Spectre and Meltdown",
+			"is_agent": null,
+			"uuid": "5dd44847-3c6a-412c-b916-6cc21dd80785df97ab44910aceee",
+			"manager_only": false,
+			"name": "spectre_meltdown"
+		},
+		{
+			"unsupported": false,
+			"desc": "Configure a scan without using any recommendations.",
+			"subscription_only": false,
+			"title": "Advanced Scan",
+			"is_agent": null,
+			"uuid": "ad629e16-03b6-8c1d-cef6-ef8c9dd3c658d24bd260ef5f9e66",
+			"manager_only": false,
+			"name": "advanced"
+		}
+	]
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CxXMLResults InitiatorName="Tim Herres" Owner="TFS_Test" ScanId="1000471" ProjectId="113" ProjectName="sechub-continous-integration" TeamFullPathOnReportDate="CxServer\SP\Company\sechub" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113" ScanStart="Thursday, October 11, 2018 4:25:39 PM" Preset="Checkmarx Default" ScanTime="00h:01m:33s" LinesOfCodeScanned="3651" FilesScanned="34" ReportCreationTime="Thursday, October 11, 2018 4:45:55 PM" Team="sechub" CheckmarxVersion="8.8.0.72 HF1" ScanComments="Attempt to perform scan on 10/11/2018 4:45:13 PM - No code changes were detected; sechub job:FALLBACK_TRACE_ID#256179899025653" ScanType="Incremental" SourceOrigin="LocalPath" Visibility="Private">
+  
+</CxXMLResults>

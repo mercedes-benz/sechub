@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: MIT
+[[section-architecture-constraints]]
+== Architecture Constraints
+=== About
+// see https://docs.arc42.org/section-2/
+
+==== Content
+Any requirement that constrains software architects in their freedom of design and implementation
+decisions or decision about the development process. These constraints sometimes go beyond individual
+systems and are valid for whole organizations and companies.
+
+==== Motivation
+Architects should know exactly where they are free in their design decisions and where they must adhere to constraints.
+Constraints must always be dealt with; they may be negotiable, though.
+
+==== Form
+Simple tables of constraints with explanations. If needed you can subdivide them into technical constraints,
+organizational and political constraints and conventions (e.g. programming or versioning guidelines, documentation or naming conventions)
+
+
+[[section-architecture-constraints-domain-communication]]
+=== Domain communication
+
+Direct communication between different domains may not appear - to avoid the "big ball of mud", even when we have
+no real micro-service landscape at the moment and {sechub} is a self-contained-system.
+
+For more information please refer to <<section-concepts-domain-driven-design,Domain Driven Design>>
+
+==== DB constraints
+As long as there is no really need there will be only *ONE database* instance across the SecHub system!!!!!
+
+Even when the spring boot application is a single one and shares a database *every domain* has only access to *dedicated tables* and
+does not share its tables across other domains! This includes relation ships between tables as well.
+
+This is to prevent the database becoming part of a "hidden shared kernel" /"central bottleneck". If we decide to
+transform `sechub-server` from self-contained-system into single separate deployment units we can achieve this without too
+much effort/impact.
+
+// TODO de-jcup: create a generator for the tables already used in domains...
+[options="header",cols="1,2,2"]
+|===
+|Domain|Table|Description
+| SCHEDULE | SCHEDULE_SECHUBJOB| Represents a SecHub Job instance
+| SCHEDULE | BATCH_xxx         | *Exception*: done by spring batch framework. Those batch operations shall only be accessed by schedule domain
+| SCAN     | SCAN_RESULT       | Contains the collected scan result from all scan product. Shall represent entity ScanResult
+| SCAN     | SCAN_DATA         | Does contain (intermediate) information from job scans etc.
+| ...      | ...               | ...
+|===
+
+For more information please refer to <<section-concepts-domain-driven-design,Domain Driven Design>>

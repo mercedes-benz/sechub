@@ -1,0 +1,203 @@
+{
+  "Generated": "2018-02-13T15:50:49.6965442+00:00",
+  "Target": {
+    "ScanId": "93cc5894f38546f45f7aa8860366c07e",
+    "Url": "https://fscan.intranet.example.org/",
+    "Initiated": "2018-02-13T15:51:05.5981218+01:00",
+    "Duration": "00:30:10.8284631"
+  },
+  "Vulnerabilities": [
+    {
+      "Url": "https://fscan.intranet.example.org/",
+      "Type": "ApacheVersionDisclosure",
+      "Name": "Version Disclosure (Apache)",
+      "Severity": "Low",
+      "Certainty": 90,
+      "Confirmed": false,
+      "State": "Present",
+      "Classification": {
+        "Owasp": "",
+        "Wasc": "45",
+        "Cwe": "205",
+        "Capec": "170",
+        "Pci31": "",
+        "Pci32": "",
+        "Hipaa": "164.306(a), 164.308(a)",
+        "OwaspProactiveControls": ""
+      },
+      "HttpRequest": {
+        "Method": "GET",
+        "Content": "GET / HTTP/1.1\r\nHost: fscan.intranet.example.org\r\nCache-Control: no-cache\r\nConnection: Keep-Alive\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36\r\nAccept-Language: en-us,en;q=0.5\r\nX-Scanner: Netsparker Cloud\r\nAccept-Encoding: gzip, deflate\r\n\r\n",
+        "Parameters": []
+      },
+      "HttpResponse": {
+        "StatusCode": 200,
+        "Duration": 62.4938,
+        "Content": "HTTP/1.1 200 OK\r\nServer: Apache/2.4.10 (Debian)\r\nConnection: Keep-Alive\r\nKeep-Alive: timeout=5, max=100\r\nContent-Length: 1564\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: \r\nDate: Tue, 13 Feb 2018 14:50:31 GMT\r\nVary: Accept-Encoding\r\n\r\n\n<!DOCTYPE html><html lang=\"en\" class=\"no-js\">\n<head>\n\t<meta charset=\"utf-8\">\n\t<title>File-Scan Service</title>\n\t<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n  <link rel=\"stylesheet\" href=\"main.css\" />\n  \n  <script type=\"text/javascript\">\n  function doforward(cook) {\n\n    if((document.getElementById(\"forwardmail\").value).length < 4) {\n        \n        alert(\"Please enter an e-mail address.\");\n        return;\n    }\n    \n    var xmlHttp = new XMLHttpRequest();\n    xmlHttp.onreadystatechange = function() { \n    \n        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {\n\n            document.getElementById(\"forwardpanel\").innerHTML = \"</br></br><font color=\\\"green\\\">Thank you. You will receive a reply soon.</font></br></br>\";\n        }\n    }\n    xmlHttp.open(\"GET\", \"https://fscan.intranet.example.org/forward.php?email=\" + btoa(document.getElementById(\"forwardmail\").value) + \"&token=\" + cook, true);\n    xmlHttp.send(null);\n  }\n  </script>\n  \n  <script type=\"text/javascript\">\n  document.onkeydown = function(event) {\n      if (event.keyCode == 13) {\n          event.cancelBubble = true;\n          event.returnValue = false;\n      }\n      return event.returnValue;\n  }\n  </script>\n  <script type=\"text/javascript\">\n  var _paq = _paq || [];\n  _paq.push(['trackPageView']);\n  _paq.push(['enableLinkTracking']);\n  (function() {\n    var u=\"//fscan.intranet.example.org/piwik/\";\n    _paq.push(['setTrackerUrl', u+'piwik.php']);\n    _paq.push(['setSiteId', '1']);\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);\n  })();\n  </script>\n  <script src=\"main.js\"></script> \n  <script type=\"text/javascript\">\n  function toggle(control) {\n    var elem = document.getElementById(control);\n    if(elem.style.display == \"none\"){elem.style.display = \"block\";} \n    else {elem.style.display = \"none\";}\n  }\n</script>\n</head>\n\n<body onload=\"setup();\">\n  <center><br/><br/><img src=\"logo.jpg\"/><br/><br/><br/><br/>\n  <form method=\"post\" id=\"myform\" action=\"/\" enctype=\"multipart/form-data\" novalidate class=\"box\">\n  <div id=\"drop_zone\" class=\"dropzone\"><br/><br/>1) Drop a file here or click to select.</div><br/>\n\t<input type=\"file\" name=\"file\" id=\"file\" class=\"box__file\" style=\"display: none;\"/>\n\t<br/><br/><br/>\n\t<table border=\"0\" style=\"width:40%\">\n  <tr><td align=\"left\">2) Enter the code:  \n  <input type=\"text\" id=\"captcha_code\" name=\"captcha_code\" size=\"6\" maxlength=\"4\" /></br>\n\t<a href=\"#\" onclick=\"document.getElementById('captcha').src = '/simage/securimage_show.php?' + Math.random(); return false\">[ Different Image ]</a><br/><br/><br/>\n  </td>\n  <td align=\"left\"><img id=\"captcha\" src=\"/simage/securimage_show.php\" alt=\"CAPTCHA Image\" /></td></tr></table><br/>\n  \n  <br/><br/>  <button type=\"button\" class=\"ubutton\" onclick=\"bsubmit()\">3) Start Analysis</button>\n  </form><br/><br/>\n\t<font size=\"-1\">Quickly check a file for malicious activity or suspicious content.<br/>Your file is opened and/or executed in an isolated sandbox environment and every procedure it does is monitored.<br/>Your file is treated as confidential, it is deleted after the analysis and solely analyzed on this server.</font>\n</center></body></html>\n\n"
+      },
+      "ExtraInformation": [
+        {
+          "Name": "ExtractedVersion",
+          "Value": "2.4.10"
+        }
+      ],
+      "KnownVulnerabilities": [],
+      "Description": "<p>Netsparker Cloud identified a version disclosure (Apache) in the target web server's HTTP response.</p><p>This information might help an attacker gain a greater understanding of the systems in use and potentially develop further attacks targeted at the specific version of Apache.</p>",
+      "Impact": "<div>An attacker might use the disclosed information to harvest specific security vulnerabilities for the version identified.</div>",
+      "RemedialActions": "",
+      "ExploitationSkills": "",
+      "RemedialProcedure": "<div>Configure your web server to prevent information leakage from the <code>SERVER</code> header of its HTTP response.</div>",
+      "RemedyReferences": "<div><ul><li><a href='https://httpd.apache.org/docs/2.2/mod/core.html#servertokens'>Apache ServerTokens Directive</a></li></ul></div>",
+      "ExternalReferences": "",
+      "ProofOfConcept": ""
+    },
+    {
+      "Url": "https://fscan.intranet.example.org/",
+      "Type": "ApacheOutOfDate",
+      "Name": "Out-of-date Version (Apache)",
+      "Severity": "Medium",
+      "Certainty": 90,
+      "Confirmed": false,
+      "State": "Present",
+      "Classification": {
+        "Owasp": "A9",
+        "Wasc": "",
+        "Cwe": "",
+        "Capec": "310",
+        "Pci31": "6.2",
+        "Pci32": "6.2",
+        "Hipaa": "",
+        "OwaspProactiveControls": "C1"
+      },
+      "HttpRequest": {
+        "Method": "GET",
+        "Content": "GET / HTTP/1.1\r\nHost: fscan.intranet.example.org\r\nCache-Control: no-cache\r\nConnection: Keep-Alive\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36\r\nAccept-Language: en-us,en;q=0.5\r\nX-Scanner: Netsparker Cloud\r\nAccept-Encoding: gzip, deflate\r\n\r\n",
+        "Parameters": []
+      },
+      "HttpResponse": {
+        "StatusCode": 200,
+        "Duration": 62.4938,
+        "Content": "HTTP/1.1 200 OK\r\nServer: Apache/2.4.10 (Debian)\r\nConnection: Keep-Alive\r\nKeep-Alive: timeout=5, max=100\r\nContent-Length: 1564\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Encoding: \r\nDate: Tue, 13 Feb 2018 14:50:31 GMT\r\nVary: Accept-Encoding\r\n\r\n\n<!DOCTYPE html><html lang=\"en\" class=\"no-js\">\n<head>\n\t<meta charset=\"utf-8\">\n\t<title>File-Scan Service</title>\n\t<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n  <link rel=\"stylesheet\" href=\"main.css\" />\n  \n  <script type=\"text/javascript\">\n  function doforward(cook) {\n\n    if((document.getElementById(\"forwardmail\").value).length < 4) {\n        \n        alert(\"Please enter an e-mail address.\");\n        return;\n    }\n    \n    var xmlHttp = new XMLHttpRequest();\n    xmlHttp.onreadystatechange = function() { \n    \n        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {\n\n            document.getElementById(\"forwardpanel\").innerHTML = \"</br></br><font color=\\\"green\\\">Thank you. You will receive a reply soon.</font></br></br>\";\n        }\n    }\n    xmlHttp.open(\"GET\", \"https://fscan.intranet.example.org/forward.php?email=\" + btoa(document.getElementById(\"forwardmail\").value) + \"&token=\" + cook, true);\n    xmlHttp.send(null);\n  }\n  </script>\n  \n  <script type=\"text/javascript\">\n  document.onkeydown = function(event) {\n      if (event.keyCode == 13) {\n          event.cancelBubble = true;\n          event.returnValue = false;\n      }\n      return event.returnValue;\n  }\n  </script>\n  <script type=\"text/javascript\">\n  var _paq = _paq || [];\n  _paq.push(['trackPageView']);\n  _paq.push(['enableLinkTracking']);\n  (function() {\n    var u=\"//fscan.intranet.example.org/piwik/\";\n    _paq.push(['setTrackerUrl', u+'piwik.php']);\n    _paq.push(['setSiteId', '1']);\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);\n  })();\n  </script>\n  <script src=\"main.js\"></script> \n  <script type=\"text/javascript\">\n  function toggle(control) {\n    var elem = document.getElementById(control);\n    if(elem.style.display == \"none\"){elem.style.display = \"block\";} \n    else {elem.style.display = \"none\";}\n  }\n</script>\n</head>\n\n<body onload=\"setup();\">\n  <center><br/><br/><img src=\"logo.jpg\"/><br/><br/><br/><br/>\n  <form method=\"post\" id=\"myform\" action=\"/\" enctype=\"multipart/form-data\" novalidate class=\"box\">\n  <div id=\"drop_zone\" class=\"dropzone\"><br/><br/>1) Drop a file here or click to select.</div><br/>\n\t<input type=\"file\" name=\"file\" id=\"file\" class=\"box__file\" style=\"display: none;\"/>\n\t<br/><br/><br/>\n\t<table border=\"0\" style=\"width:40%\">\n  <tr><td align=\"left\">2) Enter the code:  \n  <input type=\"text\" id=\"captcha_code\" name=\"captcha_code\" size=\"6\" maxlength=\"4\" /></br>\n\t<a href=\"#\" onclick=\"document.getElementById('captcha').src = '/simage/securimage_show.php?' + Math.random(); return false\">[ Different Image ]</a><br/><br/><br/>\n  </td>\n  <td align=\"left\"><img id=\"captcha\" src=\"/simage/securimage_show.php\" alt=\"CAPTCHA Image\" /></td></tr></table><br/>\n  \n  <br/><br/>  <button type=\"button\" class=\"ubutton\" onclick=\"bsubmit()\">3) Start Analysis</button>\n  </form><br/><br/>\n\t<font size=\"-1\">Quickly check a file for malicious activity or suspicious content.<br/>Your file is opened and/or executed in an isolated sandbox environment and every procedure it does is monitored.<br/>Your file is treated as confidential, it is deleted after the analysis and solely analyzed on this server.</font>\n</center></body></html>\n\n"
+      },
+      "ExtraInformation": [
+        {
+          "Name": "Identified Version",
+          "Value": "2.4.10"
+        },
+        {
+          "Name": "Latest Version",
+          "Value": "2.4.29"
+        },
+        {
+          "Name": "Vulnerability Database",
+          "Value": "Result is based on 23.11.2017 vulnerability database content."
+        }
+      ],
+      "KnownVulnerabilities": [
+        {
+          "Title": "Apache Denial of Service Vulnerability",
+          "Severity": "Medium"
+        },
+        {
+          "Title": "Apache Restriction Bypass Vulnerability",
+          "Severity": "Medium"
+        },
+        {
+          "Title": "Apache Restriction Bypass Vulnerability",
+          "Severity": "Medium"
+        }
+      ],
+      "Description": "<p>Netsparker Cloud identified you are using an out-of-date version of Apache.</p>",
+      "Impact": "<div>Since this is an old version of the software, it may be vulnerable to attacks.</div>",
+      "RemedialActions": "",
+      "ExploitationSkills": "",
+      "RemedialProcedure": "<div><p>Please upgrade your installation of Apache to the latest stable version.</p></div>",
+      "RemedyReferences": "<div><ul><li><a href='https://httpd.apache.org/download.cgi'>Downloading the Apache HTTP Server</a></li></ul></div>",
+      "ExternalReferences": "",
+      "ProofOfConcept": ""
+    },
+    {
+      "Url": "https://fscan.intranet.example.org/",
+      "Type": "WeakSignatureAlgorithmDetected",
+      "Name": "Certificate is Signed Using a Weak Signature Algorithm",
+      "Severity": "High",
+      "Certainty": 100,
+      "Confirmed": true,
+      "State": "Present",
+      "Classification": {
+        "Owasp": "A6",
+        "Wasc": "4",
+        "Cwe": "",
+        "Capec": "459",
+        "Pci31": "6.5.4",
+        "Pci32": "6.5.4",
+        "Hipaa": "",
+        "OwaspProactiveControls": "C7"
+      },
+      "HttpRequest": {
+        "Method": "GET",
+        "Content": "[NETSPARKER] SSL Connection",
+        "Parameters": []
+      },
+      "HttpResponse": {
+        "StatusCode": 200,
+        "Duration": 1.0,
+        "Content": "[NETSPARKER] SSL Connection"
+      },
+      "ExtraInformation": [
+        {
+          "Name": "Weakly Signed Certificates",
+          "Value": "sha1RSA - E=exampleintegration@example.org, CN=fscan.intranet.example.org, OU=ITM-TSS, O=Daimler AG, L=Ulm, S=Baden-Wuerttemberg, C=DE"
+        }
+      ],
+      "KnownVulnerabilities": [],
+      "Description": "<p>Netsparker Cloud detected that a certificate is signed using a weak signature algorithm.</p><p>The weak signature algorithm is known to be cryptographically weak and vulnerable to collision attacks.</p>",
+      "Impact": "<div>Attackers can observe the encrypted traffic between your website and its visitors by leveraging the use of this vulnerability.</div>",
+      "RemedialActions": "",
+      "ExploitationSkills": "",
+      "RemedialProcedure": "<div>You'll need to generate a new certificate request, and get your CA to issue you a new certificate using SHA-2.</div>",
+      "RemedyReferences": "",
+      "ExternalReferences": "<div><ul><li><a href='https://www.win.tue.nl/hashclash/rogue-ca/'>MD5 considered harmful today - Creating a rogue CA certificate</a></li><li><a href='https://www.microsoft.com/technet/security/advisory/961509.mspx'>MS Security Advisory : Research proves feasibility of collision attacks against MD5</a></li><li><a href='https://www.owasp.org/index.php/Insecure_Configuration_Management'>OWASP - Insecure Configuration Management</a></li><li><a href='https://www.owasp.org/index.php/Top_10_2010-A9'>OWASP - Insufficient Transport Layer Protection</a></li><li><a href='https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html'>When Will We See Collisions for SHA-1?</a></li><li><a href='https://security.googleblog.com/2014/09/gradually-sunsetting-sha-1.html'>Gradually sunsetting SHA-1</a></li><li><a href='https://konklone.com/post/why-google-is-hurrying-the-web-to-kill-sha-1'>Why Google is Hurrying the Web to Kill SHA-1</a></li><li><a href='https://blog.qualys.com/ssllabs/2014/09/09/sha1-deprecation-what-you-need-to-know'>SHA1 Deprecation: What You Need to Know</a></li></ul></div>",
+      "ProofOfConcept": ""
+    },
+    {
+      "Url": "https://fscan.intranet.example.org/",
+      "Type": "TlsVersion1Support",
+      "Name": "Insecure Transportation Security Protocol Supported (TLS 1.0)",
+      "Severity": "Low",
+      "Certainty": 100,
+      "Confirmed": true,
+      "State": "Present",
+      "Classification": {
+        "Owasp": "A6",
+        "Wasc": "4",
+        "Cwe": "327",
+        "Capec": "217",
+        "Pci31": "6.5.4",
+        "Pci32": "6.5.4",
+        "Hipaa": "",
+        "OwaspProactiveControls": ""
+      },
+      "HttpRequest": {
+        "Method": "GET",
+        "Content": "[NETSPARKER] SSL Connection",
+        "Parameters": []
+      },
+      "HttpResponse": {
+        "StatusCode": 200,
+        "Duration": 1.0,
+        "Content": "[NETSPARKER] SSL Connection"
+      },
+      "ExtraInformation": [],
+      "KnownVulnerabilities": [],
+      "Description": "<p>Netsparker Cloud detected that insecure transportation security protocol (TLS 1.0) is supported by your web server.</p><p>TLS 1.0 has several flaws. An attacker can cause connection failures and they can trigger the use of TLS 1.0 to exploit vulnerabilities like BEAST (Browser Exploit Against SSL/TLS).</p><p>Websites using TLS 1.0 will be considered non-compliant by PCI after 30 June 2018.</p>",
+      "Impact": "<div>Attackers can perform man-in-the-middle attacks and observe the encryption traffic between your website and its visitors.</div>",
+      "RemedialActions": "",
+      "ExploitationSkills": "",
+      "RemedialProcedure": "<div><p>Configure your web server to disallow using weak ciphers. You need to restart the web server to enable changes.</p><ul><li>For Apache, adjust the SSLProtocol directive provided by the mod_ssl module. This directive can be set either at the server level or in a virtual host configuration.<pre class=\"xml code\">SSLProtocol +TLSv1.1 +TLSv1.2\n</pre></li><li>For Nginx, locate any use of the directive ssl_protocols in the <code>nginx.conf</code> file and remove <code>TLSv1</code>.<pre class=\"code\">ssl_protocols TLSv1.1 TLSv1.2;\n</pre></li><li>For Microsoft IIS, you should make some changes on the system registry.<ol><li>Click on Start and then Run, type <code>regedt32</code> or <code>regedit</code>, and then click OK.</li><li>In Registry Editor, locate the following registry key or create if it does not exist:<pre class=\"code\">HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\\n</pre></li><li>Locate a key named <code>Server</code> or create if it doesn't exist.</li><li>Under the <code>Server</code> key, locate a DWORD value named <code>Enabled</code> or create if it doesn't exist and set its value to \"0\".</li></ol></li></ul></div>",
+      "RemedyReferences": "",
+      "ExternalReferences": "<div><ul><li><a href='https://technet.microsoft.com/en-us/library/dn786418.aspx#BKMK_SchannelTR_TLS10'>How to disable TLS v1.0</a></li><li><a href='https://www.owasp.org/index.php/Insecure_Configuration_Management'>OWASP - Insecure Configuration Management</a></li><li><a href='https://www.owasp.org/index.php/Top_10_2010-A9'>OWASP - Insufficient Transport Layer Protection</a></li><li><a href='https://support.microsoft.com/en-us/kb/187498'>How to disable PCT 1.0, SSL 2.0, SSL 3.0, or TLS 1.0 in Internet Information Services</a></li><li><a href='https://www.nartac.com/Products/IISCrypto/'>IIS Crypto is a free tool that gives administrators the ability to enable or disable protocols, ciphers, hashes and key exchange algorithms on Windows Server 2003, 2008 and 2012</a></li><li><a href='https://blog.pcisecuritystandards.org/migrating-from-ssl-and-early-tls'>Date Change for Migrating from SSL and Early TLS</a></li><li><a href='http://resources.infosecinstitute.com/ssl-attacks/'>Browser Exploit Against SSL/TLS Attack (BEAST)</a></li></ul></div>",
+      "ProofOfConcept": ""
+    }
+  ]
+}

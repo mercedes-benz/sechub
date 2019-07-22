@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+Administrator creates a project inside `{sechub}`.
+
+A Project is the main entry point for every `{sechub}` operation!
+For example a user must have a project assigned to be able to scan on it!

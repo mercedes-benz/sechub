@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+==== General configuration properties 
+ifdef::showhintaboutgenerated[]
+include::./../shared/hint_generated_systemproperties.adoc[] 
+endif::[]  
+[[link-gen-systemproperties]]
+include::./../gen/gen_systemproperties.adoc[] 
+
+==== Scheduling definitions
+ifdef::showhintaboutgenerated[]
+include::./../shared/hint_generated_schedule.adoc[] 
+endif::[] 
+[[link-gen-scheduling]]
+include::./../gen/gen_scheduling.adoc[] 

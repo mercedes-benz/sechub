@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+TIP: The schedule setup described here is <<section-documentation-in-code,generated into this document>>
+     by build server when developers are using spring annotation `@Scheduled` in conjunction with the 
+     sechub annotation `@MustBeDocumented` annotation inside code!

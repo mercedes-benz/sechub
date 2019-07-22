@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub Client Documentation
+// ====================================
+include::documents/config.adoc[]
+
+= image:sechub-logo.png[sechub] SecHub Client Documentation
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_client.adoc[]
+
+
+// horizontal line
+***
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. SecHub client
+include::documents/code2doc/client/02_sechub_client.adoc[]

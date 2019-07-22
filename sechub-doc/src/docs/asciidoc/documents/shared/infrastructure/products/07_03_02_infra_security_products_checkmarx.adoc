@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MIT
+[[section-infrastructure-setup-security-products-checkmarx]]
+
+==== Checkmarx
+
+Static code analyzer
+see http://www.checkmarx.com/
+
+

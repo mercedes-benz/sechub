@@ -1,0 +1,104 @@
+=== Jenkins auto deployment
+
+When you want to build and automate deployment of {secHub} by https://jenkins.io/[Jenkins]  you can
+use a preconfigured pipeline script.
+
+Your Jenkins server should be at minimum: `Jenkins ver. 2.176.1`.
+
+NOTE: Of course you can setup {secHub} by your own in a way you like. But
+      the following documentation will always work.
+
+
+==== Continous integration build
+
+This setup builds all branches except `master` (master is always build by next
+job...). The multibranch pipeline build is for continous integration
+builds - means to get fast feedback.
+
+
+*Please setup CI by...*
+
+- Jenkins > create new Item -> `Multibranch pipeline`, name: `sechub-open-source-ci` +
+- Branch sources: `Git`+
+  * Project repository: `https://github.com/Daimler/sechub.git` +
+  * Behaviours:
+    . Discover branches
+    . Filter by name (with wildcards):
+----
+      Include: *
+      Exclude: master
+----
+- Build configuration: +
+  * Mode `by jenkinsfile`
+  * Script path: `continous-integration-multibranch-pipeline.jenkins`
+- Scan Multibranch Pipeline Triggers +
+  * Periodically if not otherwise run
+  * Interval `5 minutes`
+- Save ...
+
+==== Release build
+
+Release builds are only done at `master` branch and do also publish
+artifacts to maven repository when commit has been tagged.
+The tags are starting with a `v` then be followed
+by `major`.`minor`.`hotfix`, a hyphen and then the `type`. +
+ +
+A server could be released by a tag like
+`v1.1.0-server`, a new client by `v1.2.0-client` for example.
+
+
+
+*For setup release build please do following:*
+
+- Jenkins > create new Item -> `Pipeline`, name: `sechub-open-source-release` +
+- Build triggers : `Poll SCM` +
+  Schedule:
+----
+  # every five minutes
+  H/5 * * * *
+----
+
+- Pipeline: `Pipeline script from SCM` +
+  * SCM: Git
+    * Repository URL: `https://github.com/Daimler/sechub.git`
+    * Branches to build: `*/master`
+  * Script Path: `release-pipeline.jenkins`
+
+- Save ...
+
+
+WARNING: Don't use accidently a *multibranch pipeline* here but only
+         a *pipeline* job!
+         Otherwise the algorithm for automatical calling for
+         `sechub-serer-released` and `sechub-client-released` jobs
+         does not work. Reason: multibranch pipelines handle tags special
+         and will not fetch tags - what is necessary for release.
+
+==== Special client and server release trigger jobs
+If there are new versions of client or server available - means tagged with
+client or server versions  (e.g. `v1.1.0-server` or `v1.2.0-client`)  the former
+created release job will automatically publish client and server artifacts (includes
+documentation, spring boot jars, binaries etc.) to dedicated maven repository
+and after this calls one/or two of the following jobs:
+
+`sechub-server-released` with parameter `SERVERVERSION` as `1.1.0` +
+`sechub-client-released` with parameter `CLIENTVERSION` as `1.2.0`
+
+So you have to add these additional `Pipeline` jobs.
+
+IMPORTANT: The client and server release jobs has to be stored in *another git repository*
+containing your specific deployment parts etc.
+
+===== Examples
+Here are some simple examples - easy to adopt:
+
+[source,groovy,title='Example for a `sechub-server-released` job']
+----
+include::example-sechub-server-released-pipeline.jenkins[]
+----
+
+[source,groovy,title='Example for a `sechub-client-released` job']
+----
+include::example-sechub-client-released-pipeline.jenkins[]
+----
+

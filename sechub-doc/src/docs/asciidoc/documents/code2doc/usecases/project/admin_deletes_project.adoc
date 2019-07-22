@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: MIT
+Administrator deletes a project from `{sechub}`.
+
+A Project is the main entry point for every `{sechub}` operation and deleting this will result in: 
+
+- Terminate all running jobs for this project
+- Remove project administration setup
+- User to project association
+- All existing project report results
+
+WARNING: Albert Tregnaghi, 2018-08-03: This is currently not full implemented!

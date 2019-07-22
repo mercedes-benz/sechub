@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MIT
+include::launchconfig_common_dev_adminui_header.adoc[]
+
+----
+-Dsechub.developertools.admin.integrationtestserver=true
+-Dsechub.developertools.admin.server=localhost
+-Dsechub.developertools.admin.serverport=8443
+-Dsechub.developertools.admin.userid=int-test_superadmin
+-Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd
+----
+
+The given `userid` and `apitoken` are the credentials, used for every integration test. This are only
+test credentials and *never used* in production.

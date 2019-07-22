@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: MIT
+@startuml
+
+package "Sechub CLI client" {
+  [CLI] as cli
+}
+
+cloud "Kubernetes cluster"{
+
+	package "Sechub Server POD (1..n)" {
+	  	[Schedule] as job_engine
+	    [Source Upload] as source_upload
+	  	[Scan] as scan_engine
+	  	[Report] as report_service
+
+
+		node "SeReCo" as sereco {
+		}
+
+	}
+    package "Database POD (1)" {
+    	database "Postgres" as db {
+    	}
+    }
+
+    package "Shared Volumes"{
+	   storage "NFS"
+    }
+
+
+}
+
+cloud "Hosted 3rdParty security products" {
+  [Security Product] as product1
+  [...] as moreProducts
+  [Security Product] as productn
+}
+
+HTTPS -> job_engine
+HTTPS -> report_service
+
+job_engine -> source_upload
+
+NFS <- source_upload
+scan_engine -> NFS
+job_engine -> scan_engine
+
+
+
+
+cli --> HTTPS
+scan_engine --> product1
+scan_engine --> productn
+report_service --> sereco
+sereco --> db
+scan_engine --> db
+
+' layout
+job_engine -[hidden]--> sereco
+job_engine -[hidden]--> source_upload
+
+@enduml

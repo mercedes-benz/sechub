@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+    parameters {
+         string(
+             name: 'SERVERVERSION',
+             defaultValue: '0.0.0',
+             // OSS build does enter this automatically!
+             description: 'New server version...'
+         )
+    }
+
+    stages {
+        stage('Handle new server released') {
+            steps {
+                echo "Implement me: deploy server :${params.SERVERVERSION}"
+            }
+        }
+    }
+}

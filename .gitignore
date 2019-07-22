@@ -1,0 +1,34 @@
+# customization files
+build-custom.gradle
+build-custom-buildscript.gradle
+build-custom-allprojects.gradle
+
+# eclipse parts
+bin/
+gen/
+src-gen/
+.metadata
+.lck
+.classpath
+.project
+.settings/
+
+# intellij parts
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# gradle parts
+.gradle/
+
+# Build artifacts at all
+*.class
+build/
+*.jar
+*.log
+*.bak
+*.zip
+#*.json
+#!sechub.json
+

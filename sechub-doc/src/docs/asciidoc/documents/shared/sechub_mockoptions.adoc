@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: MIT
+[[sechub-mock-options]]
+==== Configuration properties for mocked adapters 
+ifdef::showhintaboutgenerated[]
+include::./../shared/hint_generated_mockadapterproperties.adoc[] 
+endif::[]  
+include::./../gen/gen_mockadapterproperties.adoc[] 

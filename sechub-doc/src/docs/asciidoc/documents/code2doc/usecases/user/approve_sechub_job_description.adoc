@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-approves-job]]
+A user wants to approve a former <<sechub-doclink-uc-user-creates-job, created sechub job>>.
+
+This means the user has done all necessary preparations - e.g. <<sechub-doclink-uc-user-uploads-sourcecode-for-job, uploading source code>> for code scanning
+- and wants the job marked as ready for execution

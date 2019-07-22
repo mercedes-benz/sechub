@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: MIT
+include::launchconfig_common_dev_adminui_header.adoc[]
+
+----
+-Dsechub.developertools.admin.server=sechub.example.org <1>
+-Dsechub.developertools.admin.serverport=8443 <2>
+-Dsechub.developertools.admin.userid=sechubadm <3>
+-Dsechub.developertools.admin.apitoken=changeme <3>
+----
+
+<1> Please replace this with your server location. For development `localhost`
+<2> This is the server port. This line is optional, if you do not set default
+    will be `443`. For development servers at your local machine
+    you should normally set to `8443`.
+<3> Thease are the credentials used for administrative access.
+
+//FIXME Albert Tregnaghi, 2019-06-12: We must provide environment entries here for security reasons
+// everybody able to list running processes of the user can see the API token...
+
+WARNING: At the moment we have no environment entries for this, but for security reasons this
+    will come inn next future. Ensure you are the only user on the
+

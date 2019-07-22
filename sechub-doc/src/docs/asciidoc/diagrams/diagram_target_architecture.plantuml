@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: MIT
+@startuml
+
+abstract class AbstractInstallSetupProductExecutor{
+   # <I extends InstallSetup> I getInstallSetup()
+}
+interface ProductExecutor 
+interface InstallSetup{
+    + boolean isAbleToScan(TargetType targetType)
+}
+interface TargetResolver
+class TargetRegistry
+class SecHubWebScanConfiguration
+class SecHubInfrastuctureScanConfiguration
+
+class Target{
+  + getURI()
+  + getIP()
+  + TargetType getType()
+}
+class TargetData{
+    + TargetType getTargetType() 
+    + Set<URI> getTargetURIs()
+    + Set<InetAddress> getTargetIPs()
+}
+enum TargetType {
+  INTERNET
+  DAIMLER_INTRANET
+  UNKNOWN
+}
+
+ProductExecutor <|-- AbstractInstallSetupProductExecutor
+AbstractInstallSetupProductExecutor o-- TargetResolver : uses
+AbstractInstallSetupProductExecutor o-- AbstractAdapterConfigBuilder: uses  
+AbstractInstallSetupProductExecutor o-- Adapter: calls the adapter with created config
+AbstractInstallSetupProductExecutor "1" - "1" InstallSetup : implemenation will \nhave this injected
+AbstractInstallSetupProductExecutor --> InstallSetup : reads
+AbstractInstallSetupProductExecutor *-- TargetRegistry: creates and uses
+  
+TargetRegistry "1" *-- "n" Target : contains
+TargetRegistry --> TargetData : provides
+TargetResolver "creates" --> Target 
+Target *-- TargetType
+Target "1" *-- "0..1" URI
+Target "1" *-- "0..1" InetAdress
+AbstractInstallSetupProductExecutor --> SecHubConfiguration : reads
+
+SecHubConfiguration *-- SecHubWebScanConfiguration  
+SecHubConfiguration *-- SecHubInfrastuctureScanConfiguration
+SecHubConfiguration *-- SecHubCodeScanConfiguration 
+
+SecHubWebScanConfiguration "1" *-- "n" URI
+SecHubInfrastuctureScanConfiguration "1" *-- "n" URI
+SecHubInfrastuctureScanConfiguration "1" *-- "n" InetAdress
+
+note top of TargetResolver: Resolves information on given IP or URI.\nDetermines also the TargetType.\nSo dedicated installation setup can be used 
+note bottom of TargetData: Contains information for a \ndedicated TargetType which\ncan be used to call the adapter
+
+note top of AbstractInstallSetupProductExecutor: This abstract implementation is able to automatically call\nadapter for multiple targets with correct setup data.\n\nE.g.a netsparker product executor uses its injected\nNetsparkerInstallationSetup and differs Intranet and \nIntranet by different agentgroups 
+note top of InstallSetup : The install setup contains the information about \nservers, usernames, passwords etc. for the\ncalling of the adaper 
+@enduml

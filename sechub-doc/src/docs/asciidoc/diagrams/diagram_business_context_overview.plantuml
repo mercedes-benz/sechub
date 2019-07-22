@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: MIT
+@startuml
+'left to right direction
+frame external{
+    frame "User" {
+        [SecHub Client] as Client
+        Developer --> Client
+        BuildTool --> Client
+    }
+
+    frame "Project" {
+        [Target Website] as website
+        [Target Code] as code
+        [Target Infrastructure] as infra
+
+        Owner -- website
+        Owner -- code
+        Owner -- infra
+    }
+
+}
+
+frame "SecHub infrastructure" as internal{
+
+    frame "SecHub backend " as backend{
+        [SecHub Server(s)] as Server
+
+    }
+
+    frame "3rd party software" as products{
+        [Infrastructure scanner] as infrascan
+        [Code scanner] as codescan
+        [Web scanner] as webscan
+        [...] as more
+    }
+
+    frame "Administration" {
+        [SecHub Admin UI] as AdminUI
+        Admin --> AdminUI
+    }
+}
+
+Client --> Server
+AdminUI --> Server
+
+backend => products
+
+
+' just for layouting: using hidden field
+' see https://mrhaki.blogspot.com/2017/10/plantuml-pleasantness-layout-elements.html
+Client -[hidden]- Owner
+backend -[hidden]- products
+
+
+@enduml

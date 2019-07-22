@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+[[section-building-block-view]]
+== About
+// see https://docs.arc42.org/section-5/
+=== Content
+The building block view shows the static decomposition of the system into building blocks
+(modules, components, subsystems, classes, interfaces, packages, libraries, frameworks, layers,
+partitions, tiers, functions, macros, operations, datas structures, …)
+as well as their dependencies (relationships, associations, …)
+
+This view is mandatory for every architecture documentation. In analogy to a
+house this is the floor plan.
+
+=== Motivation
+Maintain an overview of your source code by making its structure understandable through abstraction.
+
+This allows you to communicate with your stakeholder on an abstract level without disclosing implementation details.
+
+=== Form
+The building block view is a hierarchial collection of black boxes and white boxes and their descriptions.
+
+
+
+== Building Block View
+
+
+
+=== SecHub Overall System
+
+_**Overview Diagram**_
+
+plantuml::diagrams/diagram_sechub_server.plantuml[format=svg, title="Overview sechub overall"]
+
+
+

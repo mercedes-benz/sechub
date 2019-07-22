@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   Eclipse settings
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+	/* ensure eclipse source folders are always created, even when not inside GIT */
+	def eclipseJavaSourceFolders=[
+		'src/main/java',
+		'src/main/resources',
+		'src/test/java',
+		'src/test/resources'
+	];
+
+	subprojects {
+	    if (! projectType.eclipseProjects.contains(project)){
+			return;
+	    }
+
+		apply plugin: 'eclipse'
+
+		if (! projectType.javaProjects.contains(project)){
+			return;
+	    }
+		tasks.eclipse.dependsOn << {
+			    if (projectType.javaProjects.contains(project)){
+        			for (String sourceFolder: eclipseJavaSourceFolders){
+        				def resourceDir = new File(project.projectDir, sourceFolder)
+        				if( !resourceDir.exists() && ! resourceDir.mkdirs() ) {
+        		    		logger.info("Not able to create eclipse resource dir: %1",resourceDir);
+        		    	}
+        			}
+                }
+		}
+
+
+		/* To have javadocs in eclipse added - where no source are available - we need these lines:
+		 * see https://docs.gradle.org/current/dsl/org.gradle.plugins.ide.eclipse.model.EclipseClasspath.html
+		 */
+		eclipse {
+			  classpath {
+				downloadSources = true // default: true
+				downloadJavadoc = true // default: false
+			  }
+
+		}
+
+
+
+		/* setup eclipse with project encoding as UTF-8 (for editors) */
+		eclipseJdt.doLast {
+		  if (projectType.javaProjects.contains(project)){
+    			File f = file('.settings/org.eclipse.core.resources.prefs')
+    			f.write('eclipse.preferences.version=1\n')
+    			f.append('encoding/<project>=utf-8')
+		  }
+		}
+
+}

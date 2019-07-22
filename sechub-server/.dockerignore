@@ -1,0 +1,6 @@
+# ignore all
+*
+# upload server jar
+!build/libs/sechub-server*.jar
+!build/resources/main/run.sh
+!build/tmp/docker

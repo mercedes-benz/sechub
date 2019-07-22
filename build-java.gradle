@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   Java settings
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+if (JavaVersion.current().isJava8Compatible()) {
+  allprojects {
+    tasks.withType(Javadoc) {
+      // turn off doclint
+      options.addStringOption('Xdoclint:none', '-quiet')
+      enabled = false
+    }
+  }
+}
+subprojects{
+
+    if (! projectType.javaProjects.contains(project)){
+		return;
+    }
+
+    apply plugin: 'java'
+
+	/* Setup UTF-8 for compile AND test compilation*/
+	[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+
+
+    def wireMockHttpPortValue = 8180;
+    def wireMockHttpsPortValue = 8143;
+
+	/* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
+    test {
+        ignoreFailures = true
+
+        def wireMockHttpPortProperty="sechub.test.wiremock.http_port";
+        if ( project.hasProperty(wireMockHttpPortProperty)){
+            wireMockHttpPortValue = project.getProperty(wireMockHttpPortProperty)
+        }
+        def wireMockHttpsPortProperty="sechub.test.wiremock.https_port";
+        if ( project.hasProperty(wireMockHttpsPortProperty)){
+            wireMockHttpsPortValue = project.getProperty(wireMockHttpsPortProperty)
+        }
+
+        environment 'SECHUB_TEST_WIREMOCK_HTTP_PORT', "$wireMockHttpPortValue"
+        environment 'SECHUB_TEST_WIREMOCK_HTTPS_PORT', "$wireMockHttpsPortValue"
+
+    }
+
+	/**
+	 * Task to create source jars
+	 */
+	task sourcesJar(type: Jar, dependsOn:classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+    /**
+	 * Task to create javadoc jars
+	 */
+	task javadocJar(type: Jar, dependsOn:javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+
+	/**
+	 * Define artifacts
+	 */
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+
+}

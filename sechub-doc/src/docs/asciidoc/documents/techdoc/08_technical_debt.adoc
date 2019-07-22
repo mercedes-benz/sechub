@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+[[section-technical-debt]]
+== Technical debt
+
+=== Long running transactions
+There could be a problem about long running transactions.
+
+=== Domain messaging system
+==== Current implementation
+Currently the domain messaging is done by a simple observer pattern. +
+It's working, is easy to maintain, simple but has some caveats:
+
+ * Domain communication is done only inside ONE cluster member (seen from starting point). +
+   (We got still cluster side working! The scheduling approach handles it correctly. But a job will have
+    communication etc. only inside same JVM - which is maybe even a good thing ? - and reduces complexity)
+
+ ** What does this include?
+ *** We got no "cluster communication".
+ *** We got no fallback handling when e.g. a cluster fails we got no respawning of the handling or queue entry
+
+NOTE: This was a wanted architecture decision to keep things simple on startup. The used wrapper mechanism gives us t
+      the chance to change the implementation when necessary, without too much effort. The benefits of data separation
+      is still there.
+
+===== Additional information
+ * Sending asynchronous messages *are* really asynchronous +
+   The implementation in `DomainMessageService` uses a spring task executor to provide this in conjunction with observer pattern.
+
+==== What possibilities do we have to change this in future?
+ * Use Queuing System (maybe something more lightweight than KAFKA...)
+ * Write another spring application which has got REST API and is installed one time in cluster
+ ** Problem: Bottleneck, much effort, deployment, etc.
+ * Keep simple implementation as is but implement resilience
+

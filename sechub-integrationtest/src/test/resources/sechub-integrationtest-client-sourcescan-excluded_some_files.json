@@ -1,0 +1,11 @@
+{
+    "apiVersion" : "1.0" ,
+    
+    "codeScan": {
+        "fileSystem": {
+            "folders": ["../../../../../sechub-integrationtest/src/test/resources/checksum-testfiles"]     
+        },
+        "excludes": ["**/exclude-me.txt","README.md"]
+     }
+    
+}

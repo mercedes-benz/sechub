@@ -1,0 +1,220 @@
+// SPDX-License-Identifier: MIT
+[[section-coding-conventions]]
+== Coding conventions
+
+=== Commit messages
+We always commit with an issue id inside the headline message means e.g. on command line:
+
+[source,bash]
+----
+commit -m "Some short summary #${issueNr}"
+----
+
+When having details we always add an empty new line after summary and list details, maybe using "-" at 
+the beginning to have a pretty output in `GitHub`
+
+=== Database
+
+==== Naming in DB
+We are using PostgreSQL which does automatically use lower_case names
+
+==== Naming in JPA
+We are using upper cased names
+
+=== Java
+
+==== Classes
+Defined class names
+
+- `Rest controller` will be called `${name}RestController.java`
+- A `service` is something that will be called by controllers  and will be named `${name}Service.java`
+- A factory creating a `target` will be called `${target}Factory.java`
+- Something implementing an interface will be called `${nameWithAtLeastInterfacePartAtEnd}Impl.java`
+
+===== Subclassing/ Inheritance
+Normally sub classes shall add their custom part in front of the name as a prefix:
+
+E.g. Interface `JobRepository` extends `Repository`
+
+===== Adding additional parts without inheritance
+An exception are Custom parts
+
+E.g. Interface `JobRepositoryCustom` is a special addon to JobRepository without inheritance
+
+=== Logging
+
+==== General
+We try to avoid massive logging but we want to log relevant parts!
+
+==== Audit Logging
+We use a service from shared kernel: `AuditLogService`
+
+==== Security Logging
+We use a service from shared kernel: `SecurityLogService`
+
+[[sechub-logging-functional]]
+==== Functional Logging
+We use a dedicated static log field for functional logging.
+Normal logging contains `INFO` level. Problems which are just annoying will come up to `WARN` level.
+Bigger problems are logged in level `ERROR`.
+
+Technology used is `slf4j`. We always use logging with parameters - to avoid log injections (should be handled
+by logging framework automatically) and also to speed up.
+
+_For example:_
+----
+LOG.info("This is user:{} which is from department:{}",userId,department);
+----
+
+==== Debug Logging
+As described in <<sechub-logging-functional, functional logging>>, but with log level `DEBUG`.
+
+
+=== Services
+We try to create small spring services, in most cases a
+service with annotation `@Service` should have only one public method
+
+So pretty simple and easy to maintain.
+The name should provide information what the service does.
+
+=== RestController
+Rest controller should not do any business logic by themselves, but delegate only to dedicated
+(rest) controller.
+
+=== Code2Doc
+==== Spring values
+All spring `@Value` annotations which are necessary for documentation (except adapters, they got
+no access to sechub internal parts and are pretty dump) have to be taged
+with `@MustBeDocumented` annotation. See <<section-documentation-in-code,documentation in code>>
+
+==== Messaging
+The messaging flow must be documented by annotations as well. There are diagramms automatically generated.
+See <<section-documentation-messaging-overview,documentation messaging overview>> for further information.
+
+==== Use cases
+[[section-coding-convention-usecases]]
+The usecases and their steps have to be
+documented inside code by using a dedicated
+annotation which itself is tagged with an `@UseCaseDefinition` annotation.
+See existing examples in sechub code.
+
+TIP: Tag *relevant* entrypoints as dedicated usecase step so
+     other developers can easily find them by their IDE (in eclipse
+     for example you can use `CTRL + g` to find all references of the
+     selected usecase annotation class
+
+The `UseCaseModelAsciiDocGenerator` will automatically
+generate asciidoc file `gen_usecases.adoc` which will
+contain all the data from the code and linked
+adoc files. Also all *REST API documentation* for usecases having a `@UseCaseRestDoc` association will be automatically generated.
+
+See also <<section-documentation-usecases,Usecase documentation>>
+
+
+==== Tests
+
+In genereal unit tests which are testing a dedicated class *MUST* have same package as tested classes.
+So it's easier to find and also possible to use package private fields for mocking etc.
+
+===== Unit tests
+====== Fields
+We prefer fields to local variables, fields have to be rebuild by an `@Before` method.
+
+====== Naming of mocks and test targets
+- Creating a mock field for e.g. a service `UserService` will be named as `userService`.
+  We do NOT add something like a `mock` post or prefix!
+- The test target field - e.g. `MailService` will be called something like `....ToTest`.
+  For example `serviceToTest`
+
+====== Naming of unit tests
+"Normal" Junit tests will simply called ${nameOfClassToTest}Test.java
+They have no dependency to spring
+
+====== Using json in unit tests versus production code
+org.json.JSONxxyz will make problems because test implementation is using
+a lightweight variant with other api.
+
+There were some obscure problems with this situation. So inside
+the adapter framework the context has got a dedicated json
+support which is using only jackson parts
+and has a fluent api.
+
+Use only those for communication. It also has an
+automated support for deep tracing with product identification
+
+===== Unit tests (with spring context)
+Junit needing a running spring boot container will be called ${nameOfClassToTest}SpringBootTest.java
+They use `@SpringBootTest` inside and have access to dependency
+injection etc.
+
+TIP: Prefer normal junit tests to spring boot tests, as they are much
+           faster and often sufficient.
+
+===== Mocked RestController/MVC Tests (with spring context)
+Those tests will also be called `${name}MockTest.java` - will e.g. use use Spring annotation `@WebMvcTest`
+
+===== WireMock tests
+When we have to use wire mock - e.g. to mock up product servers, we
+call them `${name}WireMockTest.java`
+
+===== DB integration tests
+Those tests will be called `${name}DBTest.java` - and will use Spring annotation `@DataJpaTest`
+
+TIP: For an example look into `JobRepositoryDBTest`
+
+
+===== Integration tests
+In project `sechub-integrationtest` full integration tests are settled.
+The project needs a running server in profile `integrationtest`.
+For more details about those tests read the `README.md` file inside
+projects root folder.
+
+====== Integration tests using RestAPI
+These tests will be called `${name}IntTest.java`
+
+====== Integration tests using SecHubClient
+Some integration tests do need a build SecHub client and execute the client.
+These tests will be called `${name}SecHubClientIntTest.java`
+
+TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
+     otherwise no sechub client is available for test...
+
+
+[[section-coding-convention-restdoc]]
+===== RestDOC tests
+In project `sechub-doc` there are `RESTDOC tests` settled. Those tests are annotated with
+`UseCaseRestDoc` and associated with dedicated <<section-coding-convention-usecases, UseCase>>.
+The tests will automatically create REST api documentation by using `Spring REST DOC`.
+
+(See also <<section-tools-spring-restdoc,REST Doc tooling>>.)
+
+The tests *MUST* be settled here because gradle support classpath runtime information only at current project, so to prevent
+heavy changeds on build logic, we simply setup those tests inside `sechub-doc` project itself.
+
+TIP: As a side effect it is very much easier for developers to see what parts are rest doc tested at one glance.
+
+====== What is the difference between a MockTest and a RestDocTest?
+RestDoc tests are designed to check fields, params and results described in documentations are really as is.
+There is no logic testing inside those tests. They are more or less just for documentation. On the other hand
+the MockTest pendants are only for logic testing, so also destructive variants and more technical parts are tested here.
+
+====== How can I ensure that I do not forget to describe necesary REST API parts?
+Every call to REST API must be described as a part for <<section-coding-convention-usecases, use cases >>. So there is
+a usecase annotation used at the restcontroller method which should have a method with an `@Step` result. At the `@Step`
+annotation there is a field `needsRestDoc` which is per default set to `false`. For steps doing rest operations and
+needs to be documented, just set `needsRestDoc` to `true`. When you have done this you cannot forget to document, because
+there is an automated test which fail when you got not RestDoc tests annotated with `@UseCaseRestDoc` for the use case...
+It will not break the build, but produce a failing test. There is also an opposite check that you got no `@UseCaseRestDoc`
+tests without corrsponding set of steps having `needsRestDoc` enabled.
+
+TIP: You can also find easily restDoc relevant parts by search caller hierarchy of `needsRestDoc` inside your code.
+So you get a list of all controller methods having documented API...
+
+====== Naming
+We use `${restControllerClassName}RestDocTest.java` as name pattern to find `RestDoc` tests easier.
+
+`restControllerClassname` is just the java class name of the controller were the rest call is made
+(normally the `@Step` annotation must have there the `needRestAPI='true'` setup )
+
+TIP: Having always the Controllers and also the necessary `@MockBean` annotations as spring test
+     dependency this will reduce the boilerplate code to one location...

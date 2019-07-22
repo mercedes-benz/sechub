@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+[[section-howtos]]
+== HowTos
+
+include::09_01_howto_integrate_a_new_product.adoc[]
+
+include::09_02_howto_configure_mock_behaviours.adoc[]
+

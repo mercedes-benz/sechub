@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: MIT
+dependencies {
+    compile project(':sechub-server')
+    compile project(':sechub-testframework')
+    compile project(':sechub-doc') // here we got the dependency to Reflections lib..
+}

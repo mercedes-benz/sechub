@@ -1,0 +1,13 @@
+{
+    
+    "apiVersion": "1.0",
+    "server"    : "https://sechub.intranet.example.org",
+    
+    "project"   : "testproject1",
+    
+       "codeScan": {
+        "fileSystem": {
+            "folders": ["../../../src/main/java"]     
+        }
+     }
+}

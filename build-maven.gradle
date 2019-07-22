@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   Maven settings
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+subprojects {
+
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+
+	group = "com.daimler.sechub"
+	/* Continous integration part - use build number in version when 'ci.buildNumber' is set*/
+	def buildNr = System.getenv('ci.buildNumber')
+  	if (buildNr != null && ! buildNr.isEmpty()){
+		version= version + "_"+buildNr
+	}
+
+}

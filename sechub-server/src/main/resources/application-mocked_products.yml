@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+
+sechub:
+  adapter:
+    nessus:
+      defaultpolicyid: "nessus-default-policiy-id"
+      intranet:
+        baseurl: "https://nessus-intranet.mock.example.org:6000"
+        userid: "nessus-user-id"
+        password: "nessus-password"
+      internet:
+        baseurl: "https://nessus-internet.mock.example.org.com:6000"
+        userid: "nessus-user-id"
+        password: "nessus-password"
+    
+    netsparker:
+      baseurl: "https://netsparker.mock.example.org:4000"
+      apitoken: "netsparker-api-token"
+      userid: "netsparker-user-id"
+      licenseid: "netsparker-license-id"
+      defaultpolicyid: "netsparker-default-policiy-id"
+      internet:
+        agentgroupname: "netsparker-agent-group-internet"
+      intranet:
+        agentgroupname: "netsparker-agent-group-intranet"
+      
+    checkmarx:
+      baseurl: "https://checkmarx.mock.example.org:6011"
+      userid: "checkmarx-user-id"
+      password: "checkmarx-password"
+      newproject:
+        teamid: "checkmarx-newproject-teamid"

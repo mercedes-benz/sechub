@@ -1,0 +1,9 @@
+{
+    "apiVersion" : "1.0" ,
+    
+     "webScan": {
+        "uris": ["https://fscan.intranet.example.org/"]
+        
+     }
+    
+}

@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+[[section-infrastructure-setup-security-products-sereco]]
+==== Sereco
+
+`Sereco` is not a product to buy but a own developed `sechub report collector`.
+
+Why an own report collector? We formerly did try to use an commercial tool,
+but we were stuck with many problems, e.g.
+
+- crucial problems with installation
+- no clustering
+- missing REST API for imports
+- not supporting some product results
+- ... more...
+
+===== Install
+The software comes currently up with sechub server installation. So nothing more is to do.
+
+Scaling etc. is done with sechub scaling.
+
+====== Future
+Currently `Sereco` is an embedded component of `{sechub}`. Maybe there comes a time where `Sereco` will become a seperate server component which will be deployed standalone.
+If so there are some changes to do (e.g. creating a rest API) etc. But as long as there is no need for a separate installation
+it makes no sense to change this.
