@@ -23,6 +23,7 @@ import com.daimler.sechub.developertools.admin.ui.action.job.GetJSONReportForJob
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
@@ -136,7 +137,7 @@ public class CommandUI {
 
 		add(menu, new ShowRunningBatchJobsListAction(context));
 		add(menu, new ShowAdminListAction(context));
-
+		add(menu, new CreateOverviewCSVExportAction(context));
 
 	}
 	private void createJobMenu() {
