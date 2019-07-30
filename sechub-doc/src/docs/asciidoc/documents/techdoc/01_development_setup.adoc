@@ -84,7 +84,7 @@ include::../shared/launchconfig/launchconfig_start_integrationtest_server.adoc[]
 
 ====== Console
 ----
-./gradlew gradlew startIntegrationServer
+./gradlew startIntegrationTestServer
 ----
 
 ===== Start integration tests
@@ -134,7 +134,7 @@ Just stop your running server...
 
 ====== Console
 ----
-./gradlew gradlew stopIntegrationServer
+./gradlew stopIntegrationTestServer
 ----
 === Developer administration UI
 
