@@ -519,7 +519,7 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
+<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -1265,7 +1265,7 @@ are among your system’s most critical aspects. Make sure that you completely u
 <h4 id="overview">3.2.1. Overview</h4>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/diagram_business_context_overview.svg" alt="Overview business context" width="1053" height="661">
+<img src="images/diagram_business_context_overview.svg" alt="Overview business context" width="1053" height="661">
 </div>
 <div class="title">Overview business context</div>
 </div>
@@ -1275,7 +1275,7 @@ are among your system’s most critical aspects. Make sure that you completely u
 <h3 id="technical-context">3.3. Technical Context</h3>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/diagram_technical_context_overview.svg" alt="Overview business context" width="1155" height="490">
+<img src="images/diagram_technical_context_overview.svg" alt="Overview business context" width="1155" height="490">
 </div>
 <div class="title">Overview business context</div>
 </div>
@@ -1547,7 +1547,7 @@ house this is the floor plan.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/diagram_sechub_server.svg" alt="Overview sechub overall" width="1016" height="724">
+<img src="images/diagram_sechub_server.svg" alt="Overview sechub overall" width="1016" height="724">
 </div>
 <div class="title">Overview sechub overall</div>
 </div>
@@ -3818,7 +3818,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/e3ed4bce-685f-41dd-99a5-4fa2265e66ac' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/14673c7c-27a8-4539-9f83-93b621627af5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4336,7 +4336,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e9995a84-e0f7-46f4-a1aa-5e968801b840/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2844ea0f-640c-43e3-af96-4525b51e31b2/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -4382,7 +4382,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6c4f9393-b7d0-45e9-afde-e789a7a066e6/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eedc601d-80b3-4722-aadb-942bdf7d424c/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4482,7 +4482,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/340d672e-65e4-42ae-8198-530142b19d81' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b9870341-633e-4a5a-bea0-11616a4391a4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4499,7 +4499,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/1d0bc4fc-a113-4f52-84ce-a74f460c4752' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93a2682c-d505-493c-a426-6ea6251208aa' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
@@ -4512,7 +4512,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/ae2be995-ca15-40e9-9295-2f4790c54a0b' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93c4b4cb-e29b-4c69-bf64-ec18147b5838' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -4791,7 +4791,7 @@ one domain calls another one.</p>
 <h6 id="diagram">7.7.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="773" height="1692">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="773" height="1692">
 </div>
 </div>
 </div>
@@ -4867,7 +4867,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_done">7.7.2.2. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="528" height="219">
+<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="528" height="219">
 </div>
 </div>
 </div>
@@ -4875,7 +4875,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_failed">7.7.2.3. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="528" height="219">
+<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="528" height="219">
 </div>
 </div>
 </div>
@@ -4883,7 +4883,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_started">7.7.2.4. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="576" height="219">
+<img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="576" height="219">
 </div>
 </div>
 </div>
@@ -4891,7 +4891,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_created">7.7.2.5. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="501" height="219">
+<img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="501" height="219">
 </div>
 </div>
 </div>
@@ -4899,7 +4899,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_whitelist_updated">7.7.2.6. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="601" height="219">
+<img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="601" height="219">
 </div>
 </div>
 </div>
@@ -4907,7 +4907,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.7. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="1906" height="364">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="1906" height="364">
 </div>
 </div>
 </div>
@@ -4915,7 +4915,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scan_done">7.7.2.8. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="391" height="161">
+<img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="391" height="161">
 </div>
 </div>
 </div>
@@ -4923,7 +4923,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scan_failed">7.7.2.9. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="401" height="161">
+<img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="401" height="161">
 </div>
 </div>
 </div>
@@ -4931,7 +4931,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">7.7.2.10. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="420" height="352">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="420" height="352">
 </div>
 </div>
 </div>
@@ -4939,7 +4939,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-unsupported_operation">7.7.2.11. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="509" height="153">
+<img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="509" height="153">
 </div>
 </div>
 </div>
@@ -4947,7 +4947,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">7.7.2.12. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="248">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="248">
 </div>
 </div>
 </div>
@@ -4955,7 +4955,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">7.7.2.13. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1165" height="277">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1165" height="277">
 </div>
 </div>
 </div>
@@ -4963,7 +4963,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_becomes_superadmin">7.7.2.14. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="638" height="219">
+<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="638" height="219">
 </div>
 </div>
 </div>
@@ -4971,7 +4971,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">7.7.2.15. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="624" height="248">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="624" height="248">
 </div>
 </div>
 </div>
@@ -4979,7 +4979,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">7.7.2.16. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1031" height="306">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1031" height="306">
 </div>
 </div>
 </div>
@@ -4987,7 +4987,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">7.7.2.17. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="972" height="248">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="972" height="248">
 </div>
 </div>
 </div>
@@ -4995,7 +4995,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_no_longer_superadmin">7.7.2.18. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="661" height="219">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="661" height="219">
 </div>
 </div>
 </div>
@@ -5003,7 +5003,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">7.7.2.19. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="248">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="248">
 </div>
 </div>
 </div>
@@ -5011,7 +5011,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_roles_changed">7.7.2.20. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="522" height="219">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="522" height="219">
 </div>
 </div>
 </div>
@@ -5019,7 +5019,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_signup_requested">7.7.2.21. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="605" height="219">
+<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="605" height="219">
 </div>
 </div>
 </div>
@@ -5133,7 +5133,7 @@ way some framework mechanism was introduced, see next chapter:</p>
 <h4 id="sechub-concept-installsetup">7.9.1. Automatic Target resolving and calling of adapters</h4>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/diagram_target_architecture.svg" alt="Class diagram of target and install setup architecture" width="1580" height="675">
+<img src="images/diagram_target_architecture.svg" alt="Class diagram of target and install setup architecture" width="1580" height="675">
 </div>
 </div>
 <div class="paragraph">
@@ -5186,7 +5186,7 @@ For an example:
 <h6 id="overview-3">8.2.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_springprofiles.svg" alt="Spring profiles and their explicit/implicit included parts" width="1709" height="112">
+<img src="images/gen_springprofiles.svg" alt="Spring profiles and their explicit/implicit included parts" width="1709" height="112">
 </div>
 <div class="title">Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -5198,7 +5198,7 @@ For an example:
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_springprofiles-prod.svg" alt="Spring profile prod and its explicit/implicit included parts" width="404" height="216">
+<img src="images/gen_springprofiles-prod.svg" alt="Spring profile prod and its explicit/implicit included parts" width="404" height="216">
 </div>
 <div class="title">Spring profile prod and its explicit/implicit included parts</div>
 </div>
@@ -5207,7 +5207,7 @@ For an example:
 <h6 id="dev">8.2.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_springprofiles-dev.svg" alt="Spring profile dev and its explicit/implicit included parts" width="669" height="216">
+<img src="images/gen_springprofiles-dev.svg" alt="Spring profile dev and its explicit/implicit included parts" width="669" height="216">
 </div>
 <div class="title">Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -5220,7 +5220,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">8.2.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/gen_springprofiles-integrationtest.svg" alt="Spring profile integrationtest and its explicit/implicit included parts" width="762" height="216">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="Spring profile integrationtest and its explicit/implicit included parts" width="762" height="216">
 </div>
 <div class="title">Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
