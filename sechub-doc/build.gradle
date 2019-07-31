@@ -112,14 +112,45 @@ asciidoctor {
 
 }
 
+
 /* collector task for all documentation parts */
 task documentation(){
      group 'sechub'
-     description 'This will generate and build asciidoctor documentation and creates also website html pages having correct relative path '
+     description 'This will generate and build asciidoctor documentation '
 
      dependsOn 'generateAsciidoc'
      dependsOn 'asciidoctor'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
+}
+
+def sechubPagesTargetBaseFolder = "${rootProject.projectDir}/docs/latest"
+
+task docToPages(type: Copy){
+     group 'sechub'
+     description 'This will copy current documentation into sechub pages under /docs '
+
+     into sechubPagesTargetBaseFolder
+     from ("${rootProject.projectDir}/sechub-doc/build/asciidoc/"){
+        include '*.html'
+     }
+
+     into ("images") {
+         from ("${rootProject.projectDir}/sechub-doc/build/asciidoc/images") {
+            exclude '**/*.md', '**/*.xml'
+         }
+     }
+
+}
+
+task "documentation-with-pages" {
+     group 'sechub'
+     description 'This will create documentation and setup sechub pages under /docs '
+
+     dependsOn 'documentation'
+     dependsOn 'docToPages'
+
+     // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
+     tasks.findByName('docToPages').mustRunAfter 'documentation'
 }

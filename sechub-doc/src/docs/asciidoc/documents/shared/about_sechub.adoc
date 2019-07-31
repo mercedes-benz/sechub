@@ -6,8 +6,24 @@ all *one API to scan for different security problems*. Users of {sechub} do not
 care about which exact product is doing the real scan on server side, but only
 configure their wanted aim.
 
+[IMPORTANT]
+====
+{sechub} does *NOT* provide a security infrastructure but does orchestrate
+different security products/tools.
+
+So *you still need an existing security infrastructure* behind {sechub} !
+====
+
+
+
 It was designed to be very easy to integrate into any existing
 build pipeline / contionus integration (CI) and helps to provide
 **SecDevOps**.
 
-TIP: You can get more information about {sechub} project from {websiteURL}
+[TIP]
+====
+
+You can get more information about from {websiteURL}[{sechub} web page]  .
+
+The project ist hosted at {projectURL}
+====
