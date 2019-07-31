@@ -77,4 +77,7 @@ By calling `gradlew documentation` the `AsciidocGenerator` is build and used. Th
 generate documentation areas like <<link-gen-systemproperties,System properties>> or <<link-gen-scheduling,Scheduling>> which will
 be rendered by Asciidoctor afterwards.
 
+=== Generation of sechub pages
+just call `gradlew documentation-with-pages` or if documentation is already generated just call
+`gradlew docToPages`, so documentation parts will copied into `docs` folder.
 
