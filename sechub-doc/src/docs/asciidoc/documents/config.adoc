@@ -8,8 +8,8 @@
 // where are images located?
 :imagesdir: ./images
 :mailToAdmin: sechub@example.org
-:projectURL: https://github.com/daimler/sechub
-:websiteURL: https://daimler.github.io/sechub
+:projectSite: https://github.com/daimler/sechub
+:webPage: https://daimler.github.io/sechub
 :sechub: SecHub
 
 

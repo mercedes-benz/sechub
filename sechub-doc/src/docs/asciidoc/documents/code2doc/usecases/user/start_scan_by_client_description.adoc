@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 [[sechub-doclink-uc-user-starts-scan-by-client]]
 Sechub has got it's own client, written in go. The client is available for Linux and
-Windows and can be downloaded at {websiteURL} .
+Windows and can be downloaded at {projectSite} .
 
 The client encapsulated and simplifies the necessary steps to do a scan to one single step only
 

@@ -65,7 +65,7 @@ More and also more detailed functional requirements can be found in issue tracke
 |===
 |Role/Name					|Contact			|Expectations
 //-------------------------------------------------------------------------------------------------------------------------------------------
-| Product Owner				| {websiteURL}      |
+| Product Owner				| {projectSite}     |
 | User	  					|                   | A person who wants to execute scans by {sechub}. +
                                                   *Will expect:* easy to use, "It works", not too much false positives
 | Administrator				|                   | A person who installs {sechub} server and does maintenance of
