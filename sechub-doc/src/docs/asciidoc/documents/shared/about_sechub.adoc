@@ -23,7 +23,7 @@ build pipeline / contionus integration (CI) and helps to provide
 [TIP]
 ====
 
-You can get more information about from {websiteURL}[{sechub} web page]  .
+You can get more information about from {webPage}[{sechub} web page]  .
 
-The project ist hosted at {projectURL}
+The project ist hosted at {projectSite}
 ====
