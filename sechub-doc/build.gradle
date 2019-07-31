@@ -125,14 +125,49 @@ task documentation(){
      tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
 }
 
+task convertSecHubPages(type: Copy){
+
+     /* Albert: Why those replace pattern stuff ?
+      * Because of PDF problems with rendered images, we were forced to use absolute image pathes so
+      * PDF documented has got content inside (see build.gradle in sechub-doc for info)
+      *
+      * But here we do NOT want absolute pathes... we want a normal website with relative ones.
+      * I really tried to fix this by configuring asciidoctor plugin, but failed... either it worked for pdf or for html
+      * but not for both. No matter if using newest gradle plugin, newer asciidoc-pdf etc. etc.
+      *
+      * So this is a workaround - we render with absolute pathes. so getting correct pdf. For html files used here on website
+      * the absolute pathes are converted back to relative ones. Simplest way to provide this.
+      */
+     def originAbsPath = "${rootProject.projectDir}/sechub-doc/build/asciidoc"
+     println "originAbsPath=$originAbsPath"
+     def replacePattern = originAbsPath.replaceAll("\\\\", "/")
+     if (! replacePattern.endsWith("/")){
+        replacePattern+="/"
+     }
+     println "replacePattern=$replacePattern"
+
+     /* fix html only */
+     from("${originAbsPath}") {
+         include '**/*.html'
+         // remove absolute path...
+         filter { line -> line.replaceAll("${replacePattern}", '') }
+     }
+     into 'build/sechubpages'
+
+     includeEmptyDirs = false
+}
+
 def sechubPagesTargetBaseFolder = "${rootProject.projectDir}/docs/latest"
 
 task docToPages(type: Copy){
      group 'sechub'
      description 'This will copy current documentation into sechub pages under /docs '
 
+     dependsOn 'convertSecHubPages'
+
+
      into sechubPagesTargetBaseFolder
-     from ("${rootProject.projectDir}/sechub-doc/build/asciidoc/"){
+     from ("${rootProject.projectDir}/sechub-doc/build/sechubpages/"){
         include '*.html'
      }
 

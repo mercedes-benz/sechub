@@ -519,7 +519,7 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="/home/albert/dev/projects/sechub/sechub-open-source/sechub-doc/build/asciidoc/images/sechub-logo.png" alt="sechub"></span> SecHub Server Rest API Documentation</h1>
+<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Server Rest API Documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
@@ -659,7 +659,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-685dbb0-latest</p>
+0.0.0-79a3235-dirty-latest</p>
 </div>
 <hr>
 </div>
@@ -1135,7 +1135,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/e3ed4bce-685f-41dd-99a5-4fa2265e66ac' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/14673c7c-27a8-4539-9f83-93b621627af5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1653,7 +1653,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e9995a84-e0f7-46f4-a1aa-5e968801b840/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2844ea0f-640c-43e3-af96-4525b51e31b2/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -1699,7 +1699,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6c4f9393-b7d0-45e9-afde-e789a7a066e6/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eedc601d-80b3-4722-aadb-942bdf7d424c/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1799,7 +1799,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/340d672e-65e4-42ae-8198-530142b19d81' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b9870341-633e-4a5a-bea0-11616a4391a4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1816,7 +1816,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/1d0bc4fc-a113-4f52-84ce-a74f460c4752' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93a2682c-d505-493c-a426-6ea6251208aa' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
@@ -1829,7 +1829,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/ae2be995-ca15-40e9-9295-2f4790c54a0b' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93c4b4cb-e29b-4c69-bf64-ec18147b5838' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
