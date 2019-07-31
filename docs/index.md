@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: MIT -->
-![SecHub Logo](https://github.com/Daimler/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
+![SecHub Logo](https://daimler.github.io/sechub/latest/images/sechub-logo.png)
 
 
 # In a nutshell
