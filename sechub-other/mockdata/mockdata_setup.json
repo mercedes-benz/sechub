@@ -57,6 +57,12 @@
                     "timeToElapseInMilliseconds": 2000
                 },
                 {
+                    "target": "normalrunning.but.yellow",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-multiple.xml",
+                    "timeToElapseInMilliseconds": 2000
+                },
+                {
                     "target": "{any-other-target}",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
