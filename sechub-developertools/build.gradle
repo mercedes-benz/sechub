@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject 
+ * Build file for subproject
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
@@ -8,6 +8,22 @@
 dependencies {
 
     compile project(':sechub-testframework')
-    compile project(':sechub-integrationtest') 
+    compile project(':sechub-integrationtest')
 }
 
+task startIntegrationTestAdminUI(type: JavaExec){
+
+    group 'sechub'
+    description 'Starts developer admin ui ready to use with for a server started by gradle task <startIntegrationTestServer>'
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+
+    jvmArgs = ['-Dsechub.developertools.admin.integrationtestserver=true',
+               '-Dsechub.developertools.admin.server=localhost',
+               '-Dsechub.developertools.admin.serverport=8443',
+               '-Dsechub.developertools.admin.userid=int-test_superadmin',
+               '-Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd']
+
+}
