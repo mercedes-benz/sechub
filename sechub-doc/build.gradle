@@ -139,12 +139,10 @@ task convertSecHubPages(type: Copy){
       * the absolute pathes are converted back to relative ones. Simplest way to provide this.
       */
      def originAbsPath = "${rootProject.projectDir}/sechub-doc/build/asciidoc"
-     println "originAbsPath=$originAbsPath"
      def replacePattern = originAbsPath.replaceAll("\\\\", "/")
      if (! replacePattern.endsWith("/")){
         replacePattern+="/"
      }
-     println "replacePattern=$replacePattern"
 
      /* fix html only */
      from("${originAbsPath}") {
