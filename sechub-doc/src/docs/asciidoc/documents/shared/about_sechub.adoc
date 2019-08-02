@@ -25,5 +25,5 @@ build pipeline / contionus integration (CI) and helps to provide
 
 You can get more information about from {webPage}[{sechub} web page]  .
 
-The project ist hosted at {projectSite}
+The project is hosted at {projectSite}
 ====
