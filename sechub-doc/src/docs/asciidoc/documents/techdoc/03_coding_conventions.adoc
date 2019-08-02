@@ -10,7 +10,7 @@ We always commit with an issue id inside the headline message means e.g. on comm
 commit -m "Some short summary #${issueNr}"
 ----
 
-When having details we always add an empty new line after summary and list details, maybe using "-" at 
+When having details we always add an empty new line after summary and list details, maybe using "-" at
 the beginning to have a pretty output in `GitHub`
 
 === Database
@@ -78,8 +78,9 @@ So pretty simple and easy to maintain.
 The name should provide information what the service does.
 
 === RestController
-Rest controller should not do any business logic by themselves, but delegate only to dedicated
-(rest) controller.
+Rest controller should not do any business logic by themselves, but delegate
+only to a dedicated service which contains the logic and does the execution.
+
 
 === Code2Doc
 ==== Spring values

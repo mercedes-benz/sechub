@@ -14,7 +14,7 @@ public class SystemPropertiesJavaLaunchExampleGenerator extends SystemProperties
 	protected void appendStringContent(StringBuilder sb, Map<String, SortedSet<TableRow>> rowMap) {
 		sb.append("\nTIP: Next lines will show java launcher properties which MUST be set because");
 		sb.append("\n     there are no defaults defined. You have to define those values when not");
-		sb.append("\n     starting in mock or test mode! The example her is generated and will");
+		sb.append("\n     starting in mock mode! The example her is generated and will");
 		sb.append("\n     always show the current necessary parts.");
 		sb.append("\n----");
 		sb.append("\n-Dspring.profiles.active="+Profiles.DEV+",postgres,real_products");
@@ -28,7 +28,7 @@ public class SystemPropertiesJavaLaunchExampleGenerator extends SystemProperties
 			}
 		}
 		sb.append("\n----");
-		
+
 		sb.append("\nTIP: Instead of java system properties you can also define environment entries");
 		sb.append("\n     at your launch configuration or your shell and reduce parameter hell:");
 		sb.append("\n----");
