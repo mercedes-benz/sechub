@@ -1,7 +1,5 @@
 title: SecHub
 google_analytics: 
-show_downloads: true
+show_downloads: false
 theme: jekyll-theme-slate
 
-gems:
-  - jekyll-mentions
