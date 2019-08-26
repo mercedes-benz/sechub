@@ -2,7 +2,7 @@
 # SecHub
 ![SecHub Logo](https://github.com/Daimler/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
-## Indented Usage
+## Intended Usage
 
 SecHub represents a mechanism to integrate diverse security products like
 - static code analysis tools
