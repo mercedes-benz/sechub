@@ -25,17 +25,12 @@ public class CredentialUI {
 	}
 
 	public CredentialUI() {
-		String port = System.getProperty(ConfigurationSetup.ADMIN_SERVER_PORT.getId(),"443");
-		String userId = System.getProperty(ConfigurationSetup.ADMIN_USERNAME.getId(), "");
-		String apiToken = System.getProperty(ConfigurationSetup.ADMIN_APITOKEN.getId(), "");
-		String server = System.getProperty(ConfigurationSetup.ADMIN_SERVER.getId(), "");
-
-		assertNotEmpty(userId,"userid");
-		assertNotEmpty(apiToken,"apitoken");
-		assertNotEmpty(server,"server");
+		String port = ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getStringValue("443");
+		String server = ConfigurationSetup.SECHUB_ADMIN_SERVER.getStringValueOrFail();
+		String userId = ConfigurationSetup.SECHUB_ADMIN_USERID.getStringValueOrFail();
+		String apiToken = ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getStringValueOrFail();
 
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//		panel.setBorder(BorderFactory.createLineBorder(Color.RED));
 		useridField= new JTextField(userId);
 		passwordField= new JPasswordField(apiToken);
 		serverField = new JTextField(server);
@@ -72,17 +67,10 @@ public class CredentialUI {
 		passwordField.setEnabled(false);
 		serverPortSpinner.setEnabled(false);
 
-		serverField.setToolTipText(ConfigurationSetup.ADMIN_SERVER.getId());
-		useridField.setToolTipText(ConfigurationSetup.ADMIN_USERNAME.getId());
-		passwordField.setToolTipText(ConfigurationSetup.ADMIN_APITOKEN.getId());
-		serverPortSpinner.setToolTipText(ConfigurationSetup.ADMIN_SERVER_PORT.getId());
-	}
-
-	private void assertNotEmpty(String part, String missing) {
-		if (part==null || part.isEmpty()) {
-			throw new IllegalStateException("Missing configuration entry:"+missing+".\nYou have to configure these values:"+ConfigurationSetup.description());
-		}
-
+		serverField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER.getSystemPropertyid());
+		useridField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_USERID.getSystemPropertyid());
+		passwordField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getSystemPropertyid());
+		serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyid());
 	}
 
 	public int getPortNumber() {

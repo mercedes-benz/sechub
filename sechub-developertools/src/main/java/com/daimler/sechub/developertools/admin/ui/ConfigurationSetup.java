@@ -3,40 +3,107 @@ package com.daimler.sechub.developertools.admin.ui;
 
 public enum ConfigurationSetup {
 
-	ADMIN_USERNAME ("sechub.developertools.admin.userid"),
-	ADMIN_APITOKEN ("sechub.developertools.admin.apitoken"),
-	ADMIN_SERVER ("sechub.developertools.admin.server"),
-	ADMIN_SERVER_PORT ("sechub.developertools.admin.serverport"),
-	ENABLE_INTEGRATION_TESTSERVER_MENU ("sechub.developertools.admin.integrationtestserver"),
-	;
+	SECHUB_ADMIN_USERID(false),
 
-	private String id;
+	SECHUB_ADMIN_APITOKEN(false),
 
-	private ConfigurationSetup(String id) {
-		this.id=id;
+	SECHUB_ADMIN_SERVER("sechub.developertools.admin.server",false),
+
+	SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport",true),
+
+	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),;
+
+
+	private String systemPropertyid;
+	private String environmentEntryId;
+	private boolean optional;
+
+	private ConfigurationSetup(boolean optional) {
+		this.optional=optional;
+		this.systemPropertyid = null;
+		this.environmentEntryId = name();
 	}
 
-	public String getId() {
-		return id;
+	private ConfigurationSetup(String systemPropertyid, boolean optional) {
+		this.optional=optional;
+		this.systemPropertyid = systemPropertyid;
+		this.environmentEntryId = null;
+	}
+
+	public String getEnvironmentEntryId() {
+		return environmentEntryId;
+	}
+
+	public String getSystemPropertyid() {
+		return systemPropertyid;
 	}
 
 	public static boolean isIntegrationTestServerMenuEnabled() {
-		return Boolean.getBoolean(ConfigurationSetup.ENABLE_INTEGRATION_TESTSERVER_MENU.getId());
+		return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid());
 	}
 
-	public static String description() {
+	/**
+	 * Resolves string value of configuration and fails when not configured
+	 * @return value
+	 * @throws IllegalStateException when value not found
+	 */
+	public String getStringValueOrFail() {
+		return getStringValue(null);
+	}
+
+	/**
+	 * Resolves string value of configuration.
+	 * @param defaultValue
+	 * @return value or default value
+	 * @throws IllegalStateException when value not found and no default value available
+	 */
+	public String getStringValue(String defaultValue) {
+		String value = null;
+		if (environmentEntryId != null) {
+			value = System.getenv(environmentEntryId);
+		}else {
+			value = System.getProperty(getSystemPropertyid(), defaultValue);
+		}
+		assertNotEmpty(value, name());
+		return value;
+	}
+
+	private void assertNotEmpty(String part, String missing) {
+		if (part == null || part.isEmpty()) {
+			throw new IllegalStateException(
+					"Missing configuration entry:" + missing + ".\nYou have to configure these values:" + ConfigurationSetup.description());
+		}
+
+	}
+
+	private static String description() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Use following system properties:\n");
-		for (ConfigurationSetup setup: values()) {
+		for (ConfigurationSetup setup : values()) {
+			if (setup.systemPropertyid == null) {
+				continue;
+			}
 			sb.append("-D");
-			sb.append(setup.id);
+			sb.append(setup.systemPropertyid);
 			sb.append("=");
-			String val = System.getProperty(setup.id);
-			if (val!=null && !val.isEmpty()) {
-				val="****";
+			String val = System.getProperty(setup.systemPropertyid);
+			if (val != null && !val.isEmpty()) {
+				val = "**** (already set)";
 			}
 			sb.append(val);
+			if (setup.optional) {
+				sb.append(" (optional)");
+			}
 			sb.append("\n");
+		}
+		sb.append("\nFor security reasons next parts must be set as environment variables (so not visible in process view):\n");
+		for (ConfigurationSetup setup : values()) {
+			if (setup.environmentEntryId == null) {
+				continue;
+			}
+			sb.append("  ");
+			sb.append(setup.environmentEntryId);
+			sb.append("'\n");
 		}
 		return sb.toString();
 	}

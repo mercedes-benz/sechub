@@ -158,7 +158,7 @@ public class CommandUI {
 		menuBar.add(menu);
 		if (! ConfigurationSetup.isIntegrationTestServerMenuEnabled()) {
 			menu.setEnabled(false);
-			menu.setToolTipText("Not enabled, use \"-D"+ConfigurationSetup.ENABLE_INTEGRATION_TESTSERVER_MENU.getId()+"=true\" to enable it and run an integration test server!");
+			menu.setToolTipText("Not enabled, use \"-D"+ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid()+"=true\" to enable it and run an integration test server!");
 		}
 		add(menu, new FetchMockMailsAction(context));
 		menu.addSeparator();

@@ -4,26 +4,26 @@ include::launchconfig_common_dev_adminui_header.adoc[]
 ----
 -Dsechub.developertools.admin.server=localhost <1>
 -Dsechub.developertools.admin.serverport=8443<2>
--Dsechub.developertools.admin.userid=int-test_superadmin<3>
--Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd <3>
--Dsechub.developertools.admin.integrationtestserver=true <4>
+-Dsechub.developertools.admin.integrationtestserver=true <3>
 ----
+
+Environment entries:
+----
+SECHUB_ADMIN_USERID=int-test_superadmin<4>
+SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd<4>
+----
+
+
+TIP: We use environment variables for credentials because otherwise everybody
+     able to list running processes can see the user id and API token...
 
 <1> Please replace this with your server location. For development `localhost`
 <2> This is the server port. This line is optional, if you do not set default
     will be `443`. For development servers at your local machine
     you should normally set to `8443`.
-<3> These are the credentials used for administrative access. For integration
-    tests we got fix credentials - *so never use in production!*
-<4> Enable special integration test actions - e.g. create test data, start jobs
+<3> Enable special integration test actions - e.g. create test data, start jobs
     etc.
+<4> These are the credentials used for administrative access. For integration
+    tests we got fix credentials - *so never use in production!*
 
-//FIXME Albert Tregnaghi, 2019-06-12: We must provide environment entries here for security reasons
-// everybody able to list running processes of the user can see the API token...
-
-WARNING: At the moment we have no environment entries for credential on starting
-         developer admin UI _(will be handled by https://github.com/Daimler/sechub/issues/8)_. +
-          +
-         So when using develoepr admin UI at production, ensure you are the
-         only user able to see your process hierarchy in mean time!
 
