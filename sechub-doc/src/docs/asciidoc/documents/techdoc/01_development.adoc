@@ -149,6 +149,30 @@ WARNING: The developer administration UI is only a tool for developers and shoul
 include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui.adoc[]
 
 
+=== Branching model
+
+We got following branch types:
+
+[options="header",cols="1,1,1"]
+|===
+|Name-Pattern   |Parent branch  |Details
+//----------------------
+|master             |none            | This is the leading branch. Versions, Tags etc. are done here!
+                                            Direct commits to master have to be avoided. Version build
+                                            is done here. Hotfixes
+|hotfix             |master          | Hotfix branch. This is the branch we use for hot fixes.
+                                       So we ensure changes from current development are not in a hotfix.
+
+                                       After a hotfix has been merged to master the changes must be applied
+                                       to development branch as well.
+|develop            |master          | Development branch. This is the branch we use for development.
+                                       The stuff inside will be alway part of next release. So only
+                                       smaller features should be committed here directly. Bigger ones
+                                       must be inside a dedicated feature-branch!
+|feature-${issue}   |develop         |When we develop a feature which is bigger and where its not clear if it will be inside next release, we create a feature branch.
+|===
+
+
 [[section-infrastructure-setup]]
 == SecHub infrastructure setup
 include::../shared/infrastructure/infra_springboot.adoc[]

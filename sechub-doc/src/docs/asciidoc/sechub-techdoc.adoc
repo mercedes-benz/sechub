@@ -26,7 +26,7 @@ Target audience for this document are *SecHub Developers* only!
 
 <<<<
 // 1. Development setup
-include::documents/techdoc/01_development_setup.adoc[]
+include::documents/techdoc/01_development.adoc[]
 
 <<<<
 // 2. Security in developmewnt
