@@ -70,6 +70,37 @@ public class SecHubConfigurationValidatorTest {
 		verify(errors,never()).rejectValue(any(),any(),any());
 	}
 
+	@Test
+	public void empty_infrascanconfig_is_rejected() throws Exception {
+
+		/* prepare */
+		SecHubInfrastructureScanConfiguration infraScan = mock(SecHubInfrastructureScanConfiguration.class);
+		List<URI> list = new ArrayList<>();
+		when(infraScan.getUris()).thenReturn(list);
+		when(target.getInfraScan()).thenReturn(Optional.of(infraScan));
+
+		/* execute */
+		validatorToTest.validate(target, errors);
+
+		/* test */
+		assertError("api.error.infrascan.target.missing", Mockito.times(1));
+	}
+
+	@Test
+	public void empty_webconfig_is_rejected() throws Exception {
+
+		/* prepare */
+		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
+		List<URI> list = new ArrayList<>();
+		when(webscan.getUris()).thenReturn(list);
+		when(target.getWebScan()).thenReturn(Optional.of(webscan));
+
+		/* execute */
+		validatorToTest.validate(target, errors);
+
+		/* test */
+		assertError("api.error.webscan.target.missing", Mockito.times(1));
+	}
 
 	@Test
 	public void webconfig_with_uri_as_http_is_NOT_rejected() throws Exception {
@@ -210,14 +241,14 @@ public class SecHubConfigurationValidatorTest {
 	}
 
 	private void assertIllegalSchemaError() {
-		_assertIllegalSchemaError(Mockito.times(1));
+		assertError("api.error.webscan.uri.illegalschema", Mockito.times(1));
 	}
 	private void assertNoIllegalSchemaError() {
-		_assertIllegalSchemaError(Mockito.never());
+		assertError("api.error.webscan.uri.illegalschema", Mockito.never());
 	}
 
-	private void _assertIllegalSchemaError(VerificationMode mode) {
-		verify(errors,mode).reject(eq("api.error.webscan.uri.illegalschema"), any(), any());
+	private void assertError(String identifier, VerificationMode mode) {
+		verify(errors,mode).reject(eq(identifier), any(), any());
 	}
 
 
