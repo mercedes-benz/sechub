@@ -219,7 +219,7 @@ public class DeveloperAdministration {
 	}
 
 	public String deleteProject(String projectId) {
-		getRestHelper().post(getUrlBuilder().buildAdminDeletesProject(projectId));
+		getRestHelper().delete(getUrlBuilder().buildAdminDeletesProject(projectId));
 		return "sent";
 	}
 
