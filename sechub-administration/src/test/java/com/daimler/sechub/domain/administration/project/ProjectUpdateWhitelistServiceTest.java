@@ -21,6 +21,7 @@ import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
+import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class ProjectUpdateWhitelistServiceTest {
 
@@ -54,6 +55,7 @@ public class ProjectUpdateWhitelistServiceTest {
 		whitelist=new LinkedHashSet<>();
 		whitelist.add(new URI("127.0.0.1"));
 		when(project.getWhiteList()).thenReturn(whitelist);
+		when(uriValidation.validate(any())).thenReturn(new ValidationResult());
 	}
 
 
