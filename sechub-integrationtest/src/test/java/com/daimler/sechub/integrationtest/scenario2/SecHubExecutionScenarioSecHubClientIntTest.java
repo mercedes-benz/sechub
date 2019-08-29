@@ -6,7 +6,9 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -84,6 +86,44 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		assertProject(project).hasNoWhiteListEntries();
 
 		as(SUPER_ADMIN).
+			assignUserToProject(user, project);
+
+		/* execute */
+		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-green.json";
+		UUID jobUUID =
+	    as(user).
+			withSecHubClient().
+			startAsynchronScanFor(project, jsonConfigFile).
+			assertFileUploaded(project).
+			assertJobTriggered().
+			getJobUUID();
+
+		waitForJobDone(project, jobUUID);
+
+		as(user).
+			withSecHubClient().
+			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			hasTrafficLight(TrafficLight.GREEN)
+
+			;
+		/* @formatter:on */
+
+	}
+
+	@Test
+	public void a_project_having_a_whitelist_containing_only_empty_string_but_no_problems_can_be_executed_as_codescan_and_results_green() {
+		/* @formatter:off */
+
+		/* prepare */
+		TestProject project = PROJECT_3;
+		TestUser user = USER_1;
+
+		assertProject(project).hasNoWhiteListEntries();
+
+		List<String> list = new ArrayList<>();
+		list.add("");
+		as(SUPER_ADMIN).
+			updateWhiteListForProject(project, list).
 			assignUserToProject(user, project);
 
 		/* execute */
