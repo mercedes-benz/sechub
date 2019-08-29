@@ -29,6 +29,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
+import com.daimler.sechub.sharedkernel.validation.URIValidation;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -48,6 +49,9 @@ public class ProjectCreationService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	URIValidation uriValidation;
 
 
 	@Validated
@@ -73,9 +77,11 @@ public class ProjectCreationService {
 		Project project = new Project();
 		project.id = projectId;
 		project.description = description;
+
 		User ownerUser = foundOwner.get();
 		project.owner=ownerUser;
-		project.getWhiteList().addAll(whitelist);
+		/** add only accepted/valid URIs */
+		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
 		/* store */
 		projectRepository.save(project);

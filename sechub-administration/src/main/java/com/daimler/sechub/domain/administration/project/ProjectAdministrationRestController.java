@@ -34,6 +34,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministrat
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.validation.URIValidation;
 
 /**
  * The rest api for user administration done by a super admin.
@@ -65,7 +66,10 @@ public class ProjectAdministrationRestController {
 	ProjectRepository repository;
 
 	@Autowired
-	private CreateProjectInputValidator validator;
+	URIValidation uriValidation;
+
+	@Autowired
+	CreateProjectInputValidator validator;
 
 	/* @formatter:off */
 	@UseCaseAdministratorCreatesProject(
