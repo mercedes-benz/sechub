@@ -16,11 +16,15 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor;
+import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
+import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This test class tries to use the former build sechub execution
+ * This test class uses former build sechub client for execution.
  *
  * @author Albert Tregnaghi
  *
@@ -46,6 +50,51 @@ public class WithSecHubClient {
 	public WithSecHubClient enableStopOnYellow() {
 		this.stopOnYellow = true;
 		return this;
+	}
+
+	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
+		return new AssertJobReport(project, jobUUID, jsonConfigfile);
+	}
+
+	public class AssertJobReport{
+		UUID jobUUID;
+		TestProject project;
+		String jsonConfigfile;
+		TrafficLight trafficLight;
+
+		public AssertJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
+			this.jobUUID=jobUUID;
+			this.project=project;
+			this.jsonConfigfile=jsonConfigfile;
+
+			String report = executeReportDownloadAndGetPathOfFile();
+			LOG.debug("loaded report:{}",report);
+			JsonNode data = TestJSONHelper.get().readTree(report);
+			JsonNode tl = data.get("trafficLight");
+			String trafficLightText = tl.asText();
+			this.trafficLight=TrafficLight.fromString(trafficLightText);
+		}
+
+		private String executeReportDownloadAndGetPathOfFile() {
+			File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
+			SecHubClientExecutor executor = new SecHubClientExecutor();
+			List<String> list = buildCommand(project, false);
+			list.add("-jobUUID");
+			list.add(jobUUID.toString());
+
+			ExecutionResult result = doExecute(ClientAction.GET_REPORT, file, executor, list);
+			if (result.getExitCode() != 0) {
+				fail("Not exit code 0 but:" + result.getExitCode());
+			}
+			/* getReport returns always json in last line, no line separators*/
+			return result.getLastOutputLine();
+		}
+
+		public AssertJobReport hasTrafficLight(TrafficLight expected) {
+			assertEquals(expected, trafficLight);
+			return this;
+		}
+
 	}
 
 	public class AssertAsyncResult {
@@ -146,8 +195,7 @@ public class WithSecHubClient {
 		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 		List<String> list = buildCommand(project, false);
-		list.add("scanAsync");
-		ExecutionResult result = doExecute(file, executor, list);
+		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list);
 		if (result.getExitCode() != 0) {
 			fail("Not exit code 0 but:" + result.getExitCode());
 		}
@@ -156,6 +204,7 @@ public class WithSecHubClient {
 		asynchResult.configFile = file;
 		return asynchResult;
 	}
+
 
 	/**
 	 * Starts a synchronous scan for given project.
@@ -170,13 +219,12 @@ public class WithSecHubClient {
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 
 		List<String> list = buildCommand(project, true);
-		list.add("scan");
 
-		return doExecute(file, executor, list);
+		return doExecute(ClientAction.START_SYNC, file, executor, list);
 	}
 
-	private ExecutionResult doExecute(File file, SecHubClientExecutor executor, List<String> list) {
-		return executor.execute(file, asUser.user, list.toArray(new String[list.size()]));
+	private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list) {
+		return executor.execute(file, asUser.user, action, list.toArray(new String[list.size()]));
 	}
 
 	private List<String> buildCommand(TestProject project, boolean withWait0) {

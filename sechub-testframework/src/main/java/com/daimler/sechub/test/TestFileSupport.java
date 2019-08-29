@@ -14,7 +14,10 @@ import java.io.InputStreamReader;
  * Simplifies some issues with eclipse versus gradle scan testing etc. (Gradle
  * does use always the root folder, Eclipse is using the current project as
  * relative root). Does also support convenient text file reading etc.
- * 
+ *
+ * Shall not be used directly, but instead have always a child implementation
+ * which does the necessary setup etc.
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -25,6 +28,11 @@ public class TestFileSupport {
 
 	private String resourcePath;
 
+	/**
+	 * Protected constructor. Create a child class and provide a public
+	 * default constructor, which calls this one with correct path
+	 * @param projectTestResourcePath
+	 */
 	protected TestFileSupport(String projectTestResourcePath) {
 		if (projectTestResourcePath == null) {
 			this.resourcePath = "";
@@ -65,14 +73,14 @@ public class TestFileSupport {
 			throw new IllegalStateException("Create method does test file exists - and so this MUST exist here!",e);
 		}
 	}
-	
+
 	public File getRootFolder() {
 		return detectedGradleRoot;
 	}
 	/**
 	 * Loads a test file from defined project test resource path + given path, will
 	 * use \n as line break
-	 * 
+	 *
 	 * @param pathFromRoot
 	 * @return text file
 	 * @throws IllegalArgumentException
@@ -86,7 +94,7 @@ public class TestFileSupport {
 	/**
 	 * Loads a test file from defined project test resource path + given path - does
 	 * also asserts that file exists
-	 * 
+	 *
 	 * @param path
 	 *            - relative path, may not start with /
 	 * @return text file
@@ -104,7 +112,7 @@ public class TestFileSupport {
 
 	/**
 	 * Loads a test file from root path, will use \n as line break
-	 * 
+	 *
 	 * @param pathFromRoot
 	 * @return text file
 	 * @throws IllegalStateException
@@ -117,7 +125,7 @@ public class TestFileSupport {
 
 	/**
 	 * Loads a test file from root path - does also asserts that file exists
-	 * 
+	 *
 	 * @param pathFromRoot
 	 * @return text file
 	 * @throws IllegalStateException
@@ -133,9 +141,9 @@ public class TestFileSupport {
 		return loadTextFile(file, lineBreak);
 	}
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @param lineBreak
 	 * @return
@@ -158,7 +166,7 @@ public class TestFileSupport {
 
 	/**
 	 * Creates a file inside project - does also asserts that file exists
-	 * 
+	 *
 	 * @param pathFromRoot
 	 * @return file
 	 * @throws IllegalStateException
@@ -175,7 +183,7 @@ public class TestFileSupport {
 	 * call as resource path you must be aware that you have no access to normal
 	 * resources... In this case use the {@link #createFileFromRoot(String)} method
 	 * instead
-	 * 
+	 *
 	 * @param pathInProject
 	 * @return file
 	 * @throws IllegalStateException

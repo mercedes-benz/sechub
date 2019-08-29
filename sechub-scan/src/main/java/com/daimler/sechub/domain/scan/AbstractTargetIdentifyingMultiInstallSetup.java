@@ -16,7 +16,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getUsernameWhenDaimlerIntranetTarget());
 		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getPasswordWhenDaimlerIntranetTarget());
 		
-		info.canScanDaimlerIntranet=canScanDaimlerIntranet;
+		info.canScanIntranet=canScanDaimlerIntranet;
 		
 		boolean canScanInternet = notEmpty(getBaseURLWhenInternetTarget());
 		canScanInternet=canScanInternet && notEmpty(getUsernameWhenInternetTarget());
@@ -32,7 +32,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	
 	@Override
 	public final String getBaseURL(TargetType type) {
-		if (isDaimlerIntranet(type)) {
+		if (isIntranet(type)) {
 			return getBaseURLWhenDaimlerIntranetTarget();
 		}
 		if (isInternet(type)) {
@@ -43,7 +43,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	@Override
 	public final String getUserId(TargetType type) {
-		if (isDaimlerIntranet(type)) {
+		if (isIntranet(type)) {
 			return getUsernameWhenDaimlerIntranetTarget();
 		}
 		if (isInternet(type)) {
@@ -54,7 +54,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	@Override
 	public final String getPassword(TargetType target) {
-		if (isDaimlerIntranet(target)) {
+		if (isIntranet(target)) {
 			return getPasswordWhenDaimlerIntranetTarget();
 		}
 		if (isInternet(target)) {

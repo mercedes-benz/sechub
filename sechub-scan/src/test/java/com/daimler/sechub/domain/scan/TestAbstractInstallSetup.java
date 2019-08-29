@@ -8,7 +8,7 @@ public class TestAbstractInstallSetup extends AbstractInstallSetup {
 
 	@Override
 	protected void init(ScanInfo info) {
-		info.canScanDaimlerIntranet=canScanDaimlerIntranet;
+		info.canScanIntranet=canScanDaimlerIntranet;
 		info.canScanInternet=canScanInternet;
 	}
 

@@ -10,19 +10,19 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public abstract class AbstractInstallSetup implements InstallSetup{
 	private ScanInfo info;
-	private ReentrantLock lock = new ReentrantLock(); 
-	
+	private ReentrantLock lock = new ReentrantLock();
+
 	protected abstract void init(ScanInfo info);
-	
+
 	@Override
 	public boolean isAbleToScan(TargetType type) {
 		if (type==null) {
 			return false;
 		}
 		ensureInfo();
-		
-		if (isDaimlerIntranet(type)) {
-			return info.canScanDaimlerIntranet;
+
+		if (isIntranet(type)) {
+			return info.canScanIntranet;
 		}else if (isInternet(type)) {
 			return info.canScanInternet;
 		}else if (isCode(type)){
@@ -43,7 +43,7 @@ public abstract class AbstractInstallSetup implements InstallSetup{
 		}finally{
 			lock.unlock();
 		}
-		
+
 	}
 
 	protected boolean isInternet(TargetType type) {
@@ -52,7 +52,7 @@ public abstract class AbstractInstallSetup implements InstallSetup{
 		}
 		return type.isInternet();
 	}
-	
+
 	protected boolean isCode(TargetType type) {
 		if (type==null) {
 			return false;
@@ -61,22 +61,22 @@ public abstract class AbstractInstallSetup implements InstallSetup{
 	}
 
 
-	protected boolean isDaimlerIntranet(TargetType type) {
+	protected boolean isIntranet(TargetType type) {
 		if (type==null) {
 			return false;
 		}
 		return type.isIntranet();
 	}
-	
+
 	protected IllegalStateException createUnsupportedTargetTypeException(TargetType type) {
 		return new IllegalStateException("target type not supported:"+type);
 	}
 
 	protected class ScanInfo{
 
-		protected boolean canScanDaimlerIntranet;
+		protected boolean canScanIntranet;
 		protected boolean canScanInternet;
-		
+
 	}
-	
+
 }

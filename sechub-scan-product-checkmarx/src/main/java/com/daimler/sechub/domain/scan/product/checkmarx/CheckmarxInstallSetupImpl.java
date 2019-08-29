@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.daimler.sechub.domain.scan.AbstractAnyTargetOneInstallSetup;
+import com.daimler.sechub.domain.scan.AbstractInstallSetup;
+import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 @Component
-public class CheckmarxInstallSetupImpl extends AbstractAnyTargetOneInstallSetup implements CheckmarxInstallSetup {
+public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements CheckmarxInstallSetup {
 
 	@Value("${sechub.adapter.checkmarx.newproject.teamid}")
 	@MustBeDocumented(value = "Initial team ID. When a scan is started a and checkmarx project is still missing, "
@@ -58,5 +59,16 @@ public class CheckmarxInstallSetupImpl extends AbstractAnyTargetOneInstallSetup 
 	public boolean isHavingUntrustedCertificate() {
 		return trustAllCertificatesNecessary;
 	}
+
+	@Override
+	public final boolean isAbleToScan(TargetType type) {
+		return isCode(type);
+	}
+
+	@Override
+	protected void init(ScanInfo info) {
+		/* we do not care - not necessary to inspect, only code is supported*/
+	}
+
 
 }

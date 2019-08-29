@@ -34,17 +34,38 @@ public abstract class AbstractTestScenario implements TestScenario {
 	 * the real project on database etc. This is only the definition for a scenario.
 	 * The scenario itself will cleanup and handle the test project instance!
 	 *
+	 * <br>
+	 * Also white list entries are automatically added to this test project
+	 *
 	 * @param clazz
 	 * @param userIdPart
 	 * @return
 	 */
 	protected static TestProject createTestProject(Class<? extends AbstractTestScenario> clazz, String projectIdPart) {
+		return createTestProject(clazz, projectIdPart,true);
+	}
+	/**
+	 * Create a test project <b>instance</b> inside a scenario. But will not create
+	 * the real project on database etc. This is only the definition for a scenario.
+	 * The scenario itself will cleanup and handle the test project instance!
+	 *
+	 * @param clazz
+	 * @param userIdPart
+	 * @param createWhiteList when <code>true</code> white list entries are automatically created for long running
+	 *  and normal time consuming test calls (means fast)
+	 * @return
+	 */
+	protected static TestProject createTestProject(Class<? extends AbstractTestScenario> clazz, String projectIdPart, boolean createWhiteList) {
 		String projectId = clazz.getSimpleName().toLowerCase() + "_" + projectIdPart;
-
-		String whiteListURL = "http://locahost/" + projectId;
-		// we additinally add long running url because its configured in webscan and for
-		// infrascan mocks to have longer runs*/
-		TestProject testProject = new TestProject(projectId, whiteListURL, InternalConstants.URL_FOR_LONG_RUNNING);
+		TestProject testProject;
+		if (createWhiteList) {
+			String whiteListURL = "http://locahost/" + projectId;
+			// we additinally add long running url because its configured in webscan and for
+			// infrascan mocks to have longer runs*/
+			testProject = new TestProject(projectId, whiteListURL, InternalConstants.URL_FOR_LONG_RUNNING);
+		}else {
+			testProject = new TestProject(projectId);
+		}
 
 		List<TestProject> testProjects = getTestProjects(clazz);
 		testProjects.add(testProject);

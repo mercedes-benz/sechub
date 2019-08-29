@@ -164,6 +164,9 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 			LOG.debug("{} Setup says its not able to scan target type {} with {}", context.getTraceLogId(), targetType,
 					getIdentifier());
 			return;
+		}else {
+			LOG.debug("{} Setup says it IS able to scan target type {} with {}", context.getTraceLogId(), targetType,
+					getIdentifier());
 		}
 		TargetRegistryInfo registryInfo = registry.createRegistryInfo(targetType);
 
