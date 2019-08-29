@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.domain.schedule.whitelist.ProjectWhitelistEntry.ProjectWhiteListEntryCompositeKey;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
@@ -19,16 +22,18 @@ import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 @Service
 public class ProjectWhiteListSecHubConfigurationValidationService {
 
+
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectWhiteListSecHubConfigurationValidationService.class);
+
 	@Autowired
 	ProjectWhitelistEntryRepository projectWhiteListEntryRepository;
-	
+
 	@Autowired
 	ProjectWhiteListSupport support;
-	
+
 	public void assertAllowedForProject(SecHubConfiguration configuration) {
-		List<ProjectWhitelistEntry> whiteListEntries = projectWhiteListEntryRepository.fetchWhiteListEntriesForProject(configuration.getProjectId());
-		List<URI> allowed = fetchAllowedUris(whiteListEntries);
-		
+		List<URI> allowed = fetchAllowedUris(configuration);
+
 		Optional<SecHubInfrastructureScanConfiguration> infrascanOpt = configuration.getInfraScan();
 		if (infrascanOpt.isPresent()) {
 			SecHubInfrastructureScanConfiguration infraconf = infrascanOpt.get();
@@ -40,7 +45,7 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 			SecHubWebScanConfiguration webconf = webscanopt.get();
 			assertWhitelisted(allowed, webconf.getUris());
 		}
-		
+
 	}
 
 	private List<URI> asUris(List<InetAddress> ips) {
@@ -63,12 +68,18 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 		}
 	}
 
-	private List<URI> fetchAllowedUris(List<ProjectWhitelistEntry> whiteListEntries) {
+	private List<URI> fetchAllowedUris(SecHubConfiguration configuration) {
+		List<ProjectWhitelistEntry> whiteListEntries = projectWhiteListEntryRepository.fetchWhiteListEntriesForProject(configuration.getProjectId());
 		List<URI> list = new ArrayList<>();
 		for (ProjectWhitelistEntry entry: whiteListEntries) {
-			list.add(entry.getKey().getUri());
+			if (entry==null) {
+				LOG.warn("Found null entry inside whitelist for project:{}. In this case, please update whitelist entries and remove empty ones!",configuration.getProjectId());
+				continue;
+			}
+			ProjectWhiteListEntryCompositeKey key = entry.getKey();
+			list.add(key.getUri());
 		}
 		return list;
 	}
-	
+
 }
