@@ -47,6 +47,11 @@ public class Scenario2 extends AbstractTestScenario {
 	 */
 	public static final TestProject PROJECT_2 = createTestProject(Scenario2.class, "project2");
 
+	/**
+	 * Project 3 is created on startup, but has no users and also NO whitelist!
+	 */
+	public static final TestProject PROJECT_3 = createTestProject(Scenario2.class, "project3",false);
+
 	@Override
 	protected void initializeTestData() {
 		/* @formatter:off */
@@ -54,6 +59,7 @@ public class Scenario2 extends AbstractTestScenario {
 			createUser(OWNER_1).
 			createProject(PROJECT_1, OWNER_1).
 			createProject(PROJECT_2, OWNER_1).
+			createProject(PROJECT_3, OWNER_1).
 			createUser(USER_1).
 			createUser(USER_2)
 			;

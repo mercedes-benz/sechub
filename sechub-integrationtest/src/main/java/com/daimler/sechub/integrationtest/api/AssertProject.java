@@ -3,10 +3,15 @@ package com.daimler.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class AssertProject extends AbstractAssert {
 
@@ -52,6 +57,29 @@ public class AssertProject extends AbstractAssert {
 
 	public AssertProject hasNotOwner(TestUser user) {
 		return hasOwner(user,false);
+	}
+
+	public AssertProject hasNoWhiteListEntries() {
+		return hasWhiteListEntries();
+
+	}
+	public AssertProject hasWhiteListEntries(String ...expectedArray ) {
+
+		String content = fetchProjectDetails();
+
+		List<String> found = new ArrayList<>();
+		ArrayNode whiteListArray;
+		try {
+			whiteListArray = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fetch("whiteList",content).asArray();
+			for (JsonNode node: whiteListArray) {
+				found.add(node.asText());
+			}
+		} catch (AdapterException e) {
+			e.printStackTrace();
+			fail("adapter json failure:"+e.getMessage());
+		}
+		assertArrayEquals(expectedArray, found.toArray(new String[found.size()]));
+		return this;
 	}
 
 }

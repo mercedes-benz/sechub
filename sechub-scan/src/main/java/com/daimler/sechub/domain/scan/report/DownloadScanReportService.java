@@ -41,14 +41,14 @@ public class DownloadScanReportService {
 		notNull(projectId, "projectId may not be null!");
 		notNull(jobUUID, "job uuid may not be null!");
 
+		auditLogService.log("starts download of report for job: {}",jobUUID);
 		ScanReport report = reportRepository.findBySecHubJobUUID(jobUUID);
-		auditLogService.log("started download of report for job: {}",jobUUID);
-
-		assertService.assertUserHasAccessToReport(report);
 
 		if (report == null) {
 			throw new NotFoundException("Report not found or you have no access to report!");
 		}
+		assertService.assertUserHasAccessToReport(report);
+
 		return new ScanReportResult(report);
 	}
 

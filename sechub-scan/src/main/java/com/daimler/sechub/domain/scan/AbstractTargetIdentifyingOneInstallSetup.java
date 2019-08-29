@@ -14,7 +14,7 @@ public abstract class AbstractTargetIdentifyingOneInstallSetup extends AbstractI
 
 	@Override
 	protected void init(ScanInfo info) {
-		info.canScanDaimlerIntranet=notEmpty(getIdentifierWhenDaimlerIntranetTarget());
+		info.canScanIntranet=notEmpty(getIdentifierWhenDaimlerIntranetTarget());
 		info.canScanInternet=notEmpty(getIdentifierWhenInternetTarget());
 	}
 	
@@ -24,7 +24,7 @@ public abstract class AbstractTargetIdentifyingOneInstallSetup extends AbstractI
 	
 	@Override
 	public final String getIdentifier(TargetType target) {
-		if (isDaimlerIntranet(target)) {
+		if (isIntranet(target)) {
 			return getIdentifierWhenDaimlerIntranetTarget();
 		}
 		if (isInternet(target)) {

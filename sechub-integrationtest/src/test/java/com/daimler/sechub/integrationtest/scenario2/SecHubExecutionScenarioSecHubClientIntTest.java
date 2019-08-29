@@ -7,13 +7,17 @@ import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestProject;
+import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
 
@@ -65,6 +69,77 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			startAsynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-green.json").
 			assertJobTriggered();
 
+		/* @formatter:on */
+
+	}
+
+	@Test
+	public void a_project_having_no_white_list_entries_but_no_problems_can_be_executed_as_codescan_and_results_green() {
+		/* @formatter:off */
+
+		/* prepare */
+		TestProject project = PROJECT_3;
+		TestUser user = USER_1;
+
+		assertProject(project).hasNoWhiteListEntries();
+
+		as(SUPER_ADMIN).
+			assignUserToProject(user, project);
+
+		/* execute */
+		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-green.json";
+		UUID jobUUID =
+	    as(user).
+			withSecHubClient().
+			startAsynchronScanFor(project, jsonConfigFile).
+			assertFileUploaded(project).
+			assertJobTriggered().
+			getJobUUID();
+
+		waitForJobDone(project, jobUUID);
+
+		as(user).
+			withSecHubClient().
+			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			hasTrafficLight(TrafficLight.GREEN)
+
+			;
+		/* @formatter:on */
+
+	}
+
+	@Test
+	public void a_project_having_no_white_list_entries_but_some_problems_can_be_executed_as_codescan_and_results_yellow() {
+		/* @formatter:off */
+
+		/* prepare */
+		TestProject project = PROJECT_3;
+		TestUser user = USER_1;
+
+		assertProject(project).hasNoWhiteListEntries();
+
+		as(SUPER_ADMIN).
+			assignUserToProject(user, project);
+
+
+		/* execute */
+		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-yellow.json";
+		UUID jobUUID =
+	    as(user).
+			withSecHubClient().
+			startAsynchronScanFor(project, jsonConfigFile).
+			assertFileUploaded(project).
+			assertJobTriggered().
+			getJobUUID();
+
+		waitForJobDone(project, jobUUID);
+
+		as(user).
+			withSecHubClient().
+			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			hasTrafficLight(TrafficLight.YELLOW)
+
+			;
 		/* @formatter:on */
 
 	}
