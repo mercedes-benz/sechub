@@ -72,6 +72,12 @@ public class Project {
 	@Column(name = "VERSION")
 	Integer version;
 
+	/**
+	 * Returns white list entries. Why URIs and not URIs and IPs? Because an
+	 * IP can be contained as LITERALS inside a URI (v4 and v6)- see {@link URI}
+	 * for details
+	 * @return a set with white lists.
+	 */
 	public Set<URI> getWhiteList() {
 		return whiteList;
 	}

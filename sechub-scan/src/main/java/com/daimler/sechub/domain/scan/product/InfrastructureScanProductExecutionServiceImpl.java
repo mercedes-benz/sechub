@@ -34,8 +34,8 @@ public class InfrastructureScanProductExecutionServiceImpl extends AbstractProdu
 
 	public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID,
 			SecHubConfiguration configuration) {
-		Optional<SecHubInfrastructureScanConfiguration> webScanOption = configuration.getInfraScan();
-		if (!webScanOption.isPresent()) {
+		Optional<SecHubInfrastructureScanConfiguration> infraScanConfiguration = configuration.getInfraScan();
+		if (!infraScanConfiguration.isPresent()) {
 			LOG.debug("No infrastructure options found for {}", traceLogID);
 			return false;
 		}

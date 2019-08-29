@@ -26,6 +26,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectWhitelist;
+import com.daimler.sechub.sharedkernel.validation.URIValidation;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -40,6 +41,10 @@ public class ProjectUpdateWhitelistService {
 
 	@Autowired
 	DomainMessageService eventBus;
+
+	@Autowired
+	URIValidation uriValidation;
+
 
 	@Validated
 	/* @formatter:off */
@@ -59,12 +64,12 @@ public class ProjectUpdateWhitelistService {
 		/*
 		 * TODO Albert Tregnaghi, 2018-09-06: currently we check only role SUPER_ADMIN. Because
 		 * super admin is the only role having access. But when we got a project owner,
-		 * the access to this project must be checked too!
+		 * the access to this project must be checked too! Here we should use permissions instead of roles then
 		 */
 		Project project = found.get();
 		Set<URI> oldWhiteList = project.getWhiteList();
 		oldWhiteList.clear();
-		oldWhiteList.addAll(whitelist);
+		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(oldWhiteList::add);
 
 		repository.save(project);
 
