@@ -59,7 +59,7 @@ pipeline {
         }
         stage('Build CLI') {
             steps {
-              script{failed
+              script{
                   callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
                }
             }
