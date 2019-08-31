@@ -1,5 +1,4 @@
 title: SecHub
 google_analytics: 
 show_downloads: false
-theme: jekyll-theme-slate
-
+remote_theme: koppor/slate-daimler-tss
