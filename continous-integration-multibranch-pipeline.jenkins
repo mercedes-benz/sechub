@@ -12,8 +12,12 @@ def sechubGitBranch ="unknown"
 pipeline {
     agent any
 
+
+
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
+        SECHUB_SCAN_ENABLED = getStringCredentialOrEmpty('sechub-scan-enabled')
+
     }
 
     stages {
@@ -77,6 +81,33 @@ pipeline {
             }
         }
 
+       stage('Security scan') {
+            when{
+
+                environment name: 'SECHUB_SCAN_ENABLED', value: 'true'
+            }
+
+
+            environment {
+               SECHUB_USERID = credentials('sechub-userid')
+               SECHUB_APITOKEN = credentials('sechub-api-token')
+               SECHUB_SERVER= credentials('sechub-server')
+
+            }
+            steps {
+
+              script{
+                 executeSecHubScan()
+               }
+            }
+
+              steps {
+                 script{
+                  callGradleWrapper('tasks')
+                 }
+              }
+        }
+
         stage('Build Documentation') {
             steps {
               script{
@@ -106,7 +137,6 @@ pipeline {
         }
         always {
             archive '**/integrationtest-server.log'
-
             junit '**/build/test-results/*/TEST-*.xml'
 
         }
@@ -133,6 +163,36 @@ void callGradleWrapper(String gradleCommand) {
      } else {
            bat "gradlew.bat ${gradleCommand}"
      }
+}
+
+void executeSecHubScan() {
+
+     apiToken = env.SECHUB_APITOKEN
+     userid= env.SECHUB_USERID
+     server= env.SECHUB_SERVER
+
+     if (isUnix()) {
+         sh "sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+     } else {
+         bat "sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+     }
+}
+
+String getStringCredentialOrEmpty(String id){
+    if (stringCredentialsExist(id)){
+       return credentials(id)
+    }
+    return ''
+}
+
+boolean stringCredentialsExist(String id) {
+  try {
+    withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
+      true
+    }
+  } catch (_) {
+    false
+  }
 }
 
 /**
