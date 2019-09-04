@@ -16,8 +16,7 @@ pipeline {
 
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
-        SECHUB_SCAN_ENABLED = getStringCredentialOrEmpty('sechub-scan-enabled')
-
+        SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
     }
 
     stages {
@@ -25,9 +24,9 @@ pipeline {
          stage('Initialize') {
              steps {
                script{
+                    echo "SECHUB_SCAN_ENABLED has value '${env.SECHUB_SCAN_ENABLED}'"
                     sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
                     echo "Branch is $sechubGitBranch"
-
                     if( sechubGitBranch == "master" ) {
                        echo "Cancel build , because master is build on by release-pipeline.jenkins!"
                        currentBuild.result = 'SUCCESS'
@@ -83,8 +82,9 @@ pipeline {
 
        stage('Security scan') {
             when{
-
-                environment name: 'SECHUB_SCAN_ENABLED', value: 'true'
+                not {
+                    environment name: 'SECHUB_SCAN_ENABLED', value: '<undefined>'
+                }
             }
 
 
@@ -101,11 +101,6 @@ pipeline {
                }
             }
 
-              steps {
-                 script{
-                  callGradleWrapper('tasks')
-                 }
-              }
         }
 
         stage('Build Documentation') {
@@ -172,17 +167,17 @@ void executeSecHubScan() {
      server= env.SECHUB_SERVER
 
      if (isUnix()) {
-         sh "sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         sh "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      } else {
-         bat "sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         bat "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      }
 }
 
-String getStringCredentialOrEmpty(String id){
+String getStringCredentialsOrUndefined(String id){
     if (stringCredentialsExist(id)){
        return credentials(id)
     }
-    return ''
+    return '<undefined>'
 }
 
 boolean stringCredentialsExist(String id) {
