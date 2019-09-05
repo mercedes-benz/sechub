@@ -12,11 +12,13 @@ def sechubGitBranch ="unknown"
 pipeline {
     agent any
 
-
-
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
         SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
+
+        SECHUB_USERID = credentials('sechub-userid')
+        SECHUB_APITOKEN = credentials('sechub-api-token')
+        SECHUB_SERVER= credentials('sechub-server')
     }
 
     stages {
@@ -24,7 +26,7 @@ pipeline {
          stage('Initialize') {
              steps {
                script{
-                    echo "SECHUB_SCAN_ENABLED has value '${env.SECHUB_SCAN_ENABLED}'"
+
                     sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
                     echo "Branch is $sechubGitBranch"
                     if( sechubGitBranch == "master" ) {
@@ -173,7 +175,7 @@ void executeSecHubScan() {
      }
 }
 
-String getStringCredentialsOrUndefined(String id){
+Object getStringCredentialsOrUndefined(String id){
     if (stringCredentialsExist(id)){
        return credentials(id)
     }
