@@ -16,9 +16,6 @@ pipeline {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
         SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
 
-        SECHUB_USERID = credentials('sechub-userid')
-        SECHUB_APITOKEN = credentials('sechub-api-token')
-        SECHUB_SERVER= credentials('sechub-server')
     }
 
     stages {
@@ -36,7 +33,6 @@ pipeline {
                     }
 
                 }
-
 
             }
         }
