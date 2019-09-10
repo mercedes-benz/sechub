@@ -45,18 +45,19 @@ public class ScanServiceTest {
 	private StorageService storageService;
 	private JobStorage jobStorage;
 	private ProjectScanLogService scanLogService;
+	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Before
 	public void before() throws Exception {
 		storageService = mock(StorageService.class);
-		jobStorage=mock(JobStorage.class);
+		jobStorage = mock(JobStorage.class);
 
 		when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
 
 		webScanProductExecutionService = mock(WebScanProductExecutionService.class);
 		codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
 		infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
-		scanLogService=mock(ProjectScanLogService.class);
+		scanLogService = mock(ProjectScanLogService.class);
 
 		reportService = mock(CreateScanReportService.class);
 		report = mock(ScanReport.class);
@@ -66,10 +67,10 @@ public class ScanServiceTest {
 		serviceToTest = new ScanService();
 		serviceToTest.webScanProductExecutionService = webScanProductExecutionService;
 		serviceToTest.infraScanProductExecutionService = infrastructureScanProductExecutionService;
-		serviceToTest.codeScanProductExecutionService=codeScanProductExecutionService;
+		serviceToTest.codeScanProductExecutionService = codeScanProductExecutionService;
 		serviceToTest.reportService = reportService;
-		serviceToTest.storageService=storageService;
-		serviceToTest.scanLogService=scanLogService;
+		serviceToTest.storageService = storageService;
+		serviceToTest.scanLogService = scanLogService;
 	}
 
 	@Test
@@ -112,7 +113,6 @@ public class ScanServiceTest {
 		verify(codeScanProductExecutionService).executeProductsAndStoreResults(any());
 	}
 
-
 	@Test
 	public void scanservice_does_cleanup_storage_of_job__when_not_failed() throws Exception {
 
@@ -125,10 +125,12 @@ public class ScanServiceTest {
 	}
 
 	/**
-	 * Here we test that on failure the storage is ALSO cleaned. Why? Because in future there should be the
-	 * possiblity for a retry mechanism, but currently there is none. When this is implemented we
-	 * must change the test so it will check there is NO cleaning. But having no retry mechanism implemented, we
+	 * Here we test that on failure the storage is ALSO cleaned. Why? Because in
+	 * future there should be the possiblity for a retry mechanism, but currently
+	 * there is none. When this is implemented we must change the test so it will
+	 * check there is NO cleaning. But having no retry mechanism implemented, we
 	 * expect the cleanup process done even when failing.
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -136,18 +138,16 @@ public class ScanServiceTest {
 
 		/* prepare */
 		DomainMessage request = prepareValidRequest();
-		doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService)
-				.executeProductsAndStoreResults(any());
+		doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService).executeProductsAndStoreResults(any());
 
 		/* execute */
 		DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
 
 		/* test */
 		assertTrue(result.hasFailed());
-		verify(jobStorage/*when retry implemented:,never()*/).deleteAll();
+		verify(jobStorage/* when retry implemented:,never() */).deleteAll();
 
 	}
-
 
 	@Test
 	public void scanservice_does_execute_report_service() throws Exception {
@@ -174,8 +174,7 @@ public class ScanServiceTest {
 
 		/* prepare */
 		DomainMessage request = prepareValidRequest();
-		doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService)
-				.executeProductsAndStoreResults(any());
+		doThrow(new SecHubExecutionException("ups...", new RuntimeException())).when(webScanProductExecutionService).executeProductsAndStoreResults(any());
 
 		/* execute */
 		DomainMessageSynchronousResult result = serviceToTest.receiveSynchronMessage(request);
@@ -204,7 +203,7 @@ public class ScanServiceTest {
 
 		SecHubConfiguration configMin;
 		try {
-			configMin = SecHubConfiguration.OBJECT.fromJSON(SECHUB_CONFIG_VALID_MINIMUM);
+			configMin = SECHUB_CONFIG.fromJSON(SECHUB_CONFIG_VALID_MINIMUM);
 		} catch (JSONConverterException e) {
 			throw new IllegalStateException("testcase invalid!");
 		}
@@ -216,7 +215,7 @@ public class ScanServiceTest {
 		return request;
 	}
 
-	private DomainMessageSynchronousResult simulateEventSend(DomainMessage request,  SynchronMessageHandler handler) {
+	private DomainMessageSynchronousResult simulateEventSend(DomainMessage request, SynchronMessageHandler handler) {
 		List<AsynchronMessageHandler> injectedAsynchronousHandlers = new ArrayList<>();
 		List<SynchronMessageHandler> injectedSynchronousHandlers = new ArrayList<>();
 		injectedSynchronousHandlers.add(handler);
@@ -225,16 +224,16 @@ public class ScanServiceTest {
 		return fakeDomainMessageService.sendSynchron(request);
 	}
 
-	private class FakeDomainMessageService extends DomainMessageService{
+	private class FakeDomainMessageService extends DomainMessageService {
 
-		public FakeDomainMessageService(List<SynchronMessageHandler> injectedSynchronousHandlers,
-				List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
+		public FakeDomainMessageService(List<SynchronMessageHandler> injectedSynchronousHandlers, List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
 			super(injectedSynchronousHandlers, injectedAsynchronousHandlers);
-			this.taskExecutor=new TestTaskExecutor();
+			this.taskExecutor = new TestTaskExecutor();
 		}
 
 	}
-	private class TestTaskExecutor implements TaskExecutor{
+
+	private class TestTaskExecutor implements TaskExecutor {
 
 		@Override
 		public void execute(Runnable task) {
@@ -242,6 +241,5 @@ public class ScanServiceTest {
 		}
 
 	}
-
 
 }

@@ -77,6 +77,24 @@ public enum MessageID {
 	 */
 	USER_NO_LONGER_SUPERADMIN(MessageDataKeys.USER_CONTACT_DATA),
 
+
+	REQUEST_SCHEDULER_STOP,
+
+	SCHEDULER_STARTED,
+
+	SCHEDULER_STOPPED,
+
+	REQUEST_SCHEDULER_START,
+
+	/**
+	 * Request status recalculation and sendinf information events
+	 */
+	REQUEST_SCHEDULER_STATUS_UPDATE,
+
+
+	/* Scheduler status update message, contains information about status*/
+	SCHEDULER_STATUS_UPDATE,
+
 	;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

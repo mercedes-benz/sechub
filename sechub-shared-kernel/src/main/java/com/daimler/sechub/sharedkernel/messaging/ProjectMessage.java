@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class ProjectMessage implements JSONable<ProjectMessage> {
 
-	public static final ProjectMessage OBJECT = new ProjectMessage();
-
 	private Set<URI> whitelist = new LinkedHashSet<>();
 
 	private String projectId;

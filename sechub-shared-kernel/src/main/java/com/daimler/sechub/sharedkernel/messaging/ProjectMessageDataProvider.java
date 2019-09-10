@@ -6,17 +6,19 @@ import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
 public class ProjectMessageDataProvider implements MessageDataProvider<ProjectMessage>{
 
+	private static final ProjectMessage OBJECT = new ProjectMessage();
+
 	@Override
 	public ProjectMessage get(String data) {
 		if (data==null) {
 			return null;
 		}
 		try {
-			return ProjectMessage.OBJECT.fromJSON(data);
+			return OBJECT.fromJSON(data);
 		} catch (JSONConverterException e) {
 			throw new SecHubRuntimeException("Cannot convert", e);
 		}
-		
+
 	}
 
 	@Override

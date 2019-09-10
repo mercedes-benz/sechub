@@ -15,8 +15,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 /**
  * This message data object contains all possible information about a project
- * which can be interesting for messaging. BUT: It dependes on the
- * {@link MessageID} which parts are set.
  *
  * @author Albert Tregnaghi
  *
@@ -24,8 +22,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class JobMessage implements JSONable<JobMessage> {
-
-	public static final JobMessage OBJECT = new JobMessage();
 
 	private UUID jobUUID;
 
