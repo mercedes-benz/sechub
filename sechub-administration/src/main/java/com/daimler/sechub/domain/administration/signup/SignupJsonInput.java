@@ -12,16 +12,11 @@ public class SignupJsonInput implements JSONable<SignupJsonInput> {
 	public static final String PROPERTY_API_VERSION = "apiVersion";
 	public static final String PROPERTY_USER_ID = "userId";
 	public static final String PROPERTY_EMAIL_ADRESS = "emailAdress";
-	/**
-	 * Just an reusable instance for JSON from calls - so we do not need to create
-	 * always an empty object
-	 */
-	public static final SignupJsonInput OBJECT = new SignupJsonInput();
-	
+
 	private String apiVersion;
 	private String userId;
 	private String emailAdress;
-	
+
 
 	@Override
 	public Class<SignupJsonInput> getJSONTargetClass() {

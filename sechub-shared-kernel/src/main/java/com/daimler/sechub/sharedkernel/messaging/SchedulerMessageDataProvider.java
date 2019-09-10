@@ -4,12 +4,12 @@ package com.daimler.sechub.sharedkernel.messaging;
 import com.daimler.sechub.sharedkernel.util.JSONConverterException;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
-public class UserMessageDataProvider implements MessageDataProvider<UserMessage>{
+public class SchedulerMessageDataProvider implements MessageDataProvider<SchedulerMessage>{
 
-	private static final UserMessage OBJECT = new UserMessage();
+	private static final SchedulerMessage OBJECT = new SchedulerMessage();
 
 	@Override
-	public UserMessage get(String data) {
+	public SchedulerMessage get(String data) {
 		if (data==null) {
 			return null;
 		}
@@ -22,12 +22,12 @@ public class UserMessageDataProvider implements MessageDataProvider<UserMessage>
 	}
 
 	@Override
-	public String getString(UserMessage configuration) {
-		if (configuration==null) {
+	public String getString(SchedulerMessage message) {
+		if (message==null) {
 			return null;
 		}
 		try {
-			return configuration.toJSON();
+			return message.toJSON();
 		} catch (JSONConverterException e) {
 			throw new SecHubRuntimeException("Cannot convert", e);
 		}

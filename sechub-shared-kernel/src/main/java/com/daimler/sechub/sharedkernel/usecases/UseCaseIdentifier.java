@@ -84,6 +84,12 @@ public enum UseCaseIdentifier {
 
 	UC_ADMIN_LISTS_ALL_ADMINS,
 
+
+	UC_ADMIN_STOPS_SCHEDULER,
+
+	UC_ADMIN_STARTS_SCHEDULER,
+
+	UC_ADMIN_GET_SCHEDULER_STATUS,
 	;
 
 	/* +-----------------------------------------------------------------------+ */

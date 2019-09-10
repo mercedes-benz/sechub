@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.messaging;
 
+/**
+ * Just a factory for domain messages - so less boiler plate code...
+ * @author Albert Tregnaghi
+ *
+ */
 public class DomainMessageFactory {
 
 	public static DomainMessage createRequestRoleCalculation(String userId) {
@@ -33,5 +38,21 @@ public class DomainMessageFactory {
 
 		return userBecomesSuperAdminInfo;
 	}
+
+	public static DomainMessage createRequestSchedulerStopMessage() {
+		DomainMessage stopSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_STOP);
+		return stopSchedulerMessage;
+	}
+
+	public static DomainMessage createRequestSchedulerStartMessage() {
+		DomainMessage startSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_START);
+		return startSchedulerMessage;
+	}
+
+	public static DomainMessage createRequestSchedulerStatusUpdateMessage() {
+		DomainMessage startSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE);
+		return startSchedulerMessage;
+	}
+
 
 }

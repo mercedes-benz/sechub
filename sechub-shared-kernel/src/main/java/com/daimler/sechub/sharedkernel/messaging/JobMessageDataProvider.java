@@ -6,13 +6,15 @@ import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
 public class JobMessageDataProvider implements MessageDataProvider<JobMessage>{
 
+	private static final JobMessage OBJECT = new JobMessage();
+
 	@Override
 	public JobMessage get(String data) {
 		if (data==null) {
 			return null;
 		}
 		try {
-			return JobMessage.OBJECT.fromJSON(data);
+			return OBJECT.fromJSON(data);
 		} catch (JSONConverterException e) {
 			throw new SecHubRuntimeException("Cannot convert", e);
 		}

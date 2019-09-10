@@ -24,8 +24,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This is the job status returned from REST API. Must be kept stable for cli client and other systems")
 public class ScheduleJobStatus implements JSONable<ScheduleJobStatus> {
 
-	public static final ScheduleJobStatus OBJECT = new ScheduleJobStatus();
-
 	public static final String PROPERTY_JOBUUID = "jobUUID";
 	/**
 	 * The "owner" is only the user who started the job. Don't mix up with entity "Owner" who is responsible for the projects!

@@ -61,7 +61,7 @@ public class SecHubResultTest {
 
 		/* execute */
 		String json = result.toJSON();
-		SecHubResult reloaded = SecHubResult.OBJECT.fromJSON(json);
+		SecHubResult reloaded = new SecHubResult().fromJSON(json);
 
 		/* test @formatter:off */
 		assertSecHubResult(reloaded).

@@ -13,19 +13,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * not support it, but API V1 is still in use... and supported) If you dont
  * support a field in a special API variant you should trigger an error in
  * validation!
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
 @MustBeKeptStable("This configuration is used by users to schedule a job. It has to be backward compatible. To afford this we will NOT remove older parts since final API releases")
 public class SecHubConfiguration implements JSONable<SecHubConfiguration> {
-
-	/**
-	 * Just an reusable instance for JSON from calls - so we do not need to create
-	 * always an empty object
-	 */
-	public static final SecHubConfiguration OBJECT = new SecHubConfiguration();
 
 	public static final String PROPERTY_PROJECT_ID = "projectId";
 	public static final String PROPERTY_API_VERSION = "apiVersion";
