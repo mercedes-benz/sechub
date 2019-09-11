@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
 import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorTriggersRefreshOfSchedulerStatus;
 
 /**
  * The rest api for user administration done by a super admin.
@@ -53,5 +54,13 @@ public class SchedulerAdministrationRestController {
 		switchJobProcessingService.disableJobProcessing();
 	}
 
+	/* @formatter:off */
+	@UseCaseAdministratorTriggersRefreshOfSchedulerStatus(@Step(number=1,name="Rest call",description="Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.",needsRestDoc=true))
+	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_STATUS_REFRESH, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@ResponseStatus(HttpStatus.OK)
+	public void triggerRefreshOfSchedulerStatus() {
+		/* @formatter:on */
+		triggerRefreshService.triggerSchedulerStatusRefresh();
+	}
 
 }

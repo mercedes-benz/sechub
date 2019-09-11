@@ -46,7 +46,7 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
 
 	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED)
 	private void handleSchedulerJobProcessingEnabled(DomainMessage request) {
-
+		updateSchedulerJobProcessingEnabled(true);
 	}
 
 	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)
@@ -59,7 +59,7 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
 	private void handleSchedulerStatusChange(DomainMessage request) {
 		SchedulerMessage status = request.get(MessageDataKeys.SCHEDULER_STATUS_DATA);
 
-		updateSchedulerJobProcessingEnabled(status.isEnabled());
+		updateSchedulerJobProcessingEnabled(status.isJobProcessingEnabled());
 
 		updateSchedulerJobInformation(status);
 
@@ -73,13 +73,13 @@ public class SchedulerAdministrationMessageHandler implements AsynchronMessageHa
 
 	private void updateSchedulerJobInformation(SchedulerMessage status) {
 		StatusEntry jobsAll= fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
-		jobsAll.setValue(Integer.toString(status.getAmountOfAllJobs()));
+		jobsAll.setValue(Long.toString(status.getAmountOfAllJobs()));
 
 		StatusEntry jobsRunning = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
-		jobsRunning.setValue(Integer.toString(status.getAmountOfRunningJobs()));
+		jobsRunning.setValue(Long.toString(status.getAmountOfRunningJobs()));
 
 		StatusEntry jobsWaiting = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
-		jobsWaiting.setValue(Integer.toString(status.getAmountOfWaitingJobs()));
+		jobsWaiting.setValue(Long.toString(status.getAmountOfWaitingJobs()));
 
 		/* persist */
 		repository.save(jobsAll);

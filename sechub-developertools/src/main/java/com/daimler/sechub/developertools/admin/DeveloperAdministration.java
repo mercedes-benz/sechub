@@ -223,6 +223,25 @@ public class DeveloperAdministration {
 		return "sent";
 	}
 
+	public String enableSchedulerJobProcessing() {
+		getRestHelper().post(getUrlBuilder().buildAdminEnablesSchedulerJobProcessing());
+		return "triggered enable job processing";
+	}
+
+	public String disableSchedulerJobProcessing() {
+		getRestHelper().post(getUrlBuilder().buildAdminDisablesSchedulerJobProcessing());
+		return "triggered disable job processing";
+	}
+
+	public String refreshSchedulerStatus() {
+		getRestHelper().post(getUrlBuilder().buildAdminTriggersRefreshOfSchedulerStatus());
+		return "triggered refresh for scheduler status";
+	}
+
+	public String getStatusList() {
+		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
+	}
+
 	public String triggerDownloadFullScan(UUID sechubJobUUID) {
 
 		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);

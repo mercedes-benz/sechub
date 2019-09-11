@@ -4,17 +4,16 @@ package com.daimler.sechub.domain.schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
 import com.daimler.sechub.domain.schedule.config.SchedulerConfigService;
+import com.daimler.sechub.domain.schedule.status.SchedulerStatusService;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
-import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
@@ -44,8 +43,7 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	SchedulerConfigService configService;
 
 	@Autowired
-	@Lazy
-	DomainMessageService eventBus;
+	SchedulerStatusService statusService;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -74,9 +72,18 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 		case REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING:
 			handleEnableSchedulerJobProcessingRequest(request);
 			break;
+		case REQUEST_SCHEDULER_STATUS_UPDATE:
+			handleSchedulerStatusRefreshRequest(request);
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
+	private void handleSchedulerStatusRefreshRequest(DomainMessage request) {
+		statusService.buildStatus();
+
 	}
 
 	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
