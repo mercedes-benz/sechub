@@ -31,6 +31,10 @@ import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectList
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
+import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
+import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
+import com.daimler.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
@@ -138,6 +142,14 @@ public class CommandUI {
 		add(menu, new ShowRunningBatchJobsListAction(context));
 		add(menu, new ShowAdminListAction(context));
 		add(menu, new CreateOverviewCSVExportAction(context));
+
+		JMenu schedulerMenu = new JMenu("Scheduler");
+		add(schedulerMenu, new DisableSchedulerJobProcessingAction(context));
+		add(schedulerMenu, new EnableSchedulerJobProcessingAction(context));
+		add(schedulerMenu, new RefreshSchedulerStatusAction(context));
+		menu.add(schedulerMenu);
+
+		add(menu, new ListStatusEntriesAction(context));
 
 	}
 	private void createJobMenu() {

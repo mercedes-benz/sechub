@@ -53,7 +53,7 @@ public class ScheduleSecHubJob {
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
 	/* +-----------------------------------------------------------------------+ */
-	public static final String CLASS_NAME = ScheduleSecHubJob.class.getSimpleName();
+	public static final String CLASS_NAME = "ScheduleSecHubJob";
 
 	public static final String PROPERTY_EXECUTION_STATE = "executionState";
 	public static final String PROPERTY_EXECUTION_RESULT = "executionResult";

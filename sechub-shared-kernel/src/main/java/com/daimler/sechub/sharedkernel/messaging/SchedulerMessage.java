@@ -16,41 +16,41 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class SchedulerMessage implements JSONable<SchedulerMessage> {
 
-	private boolean enabled;
+	private boolean jobProcessingEnabled;
 
-	private int amountOfAllJobs;
-	private int amountOfWaitingJobs;
-	private int amountOfRunningJobs;
+	private long amountOfAllJobs;
+	private long amountOfWaitingJobs;
+	private long amountOfRunningJobs;
 
-	public void setAmountOfJobsAll(int amountOfJobsAll) {
+	public void setAmountOfJobsAll(long amountOfJobsAll) {
 		this.amountOfAllJobs = amountOfJobsAll;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public boolean isJobProcessingEnabled() {
+		return jobProcessingEnabled;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setJobProcessingEnabled(boolean enabled) {
+		this.jobProcessingEnabled = enabled;
 	}
 
-	public int getAmountOfAllJobs() {
+	public long getAmountOfAllJobs() {
 		return amountOfAllJobs;
 	}
 
-	public int getAmountOfWaitingJobs() {
+	public long getAmountOfWaitingJobs() {
 		return amountOfWaitingJobs;
 	}
 
-	public int getAmountOfRunningJobs() {
+	public long getAmountOfRunningJobs() {
 		return amountOfRunningJobs;
 	}
 
-	public void setAmountOfRunningJobs(int amountOfRunningJobs) {
+	public void setAmountOfRunningJobs(long amountOfRunningJobs) {
 		this.amountOfRunningJobs = amountOfRunningJobs;
 	}
 
-	public void setAmountOfWaitingJobs(int amountOfWaitingJobs) {
+	public void setAmountOfWaitingJobs(long amountOfWaitingJobs) {
 		this.amountOfWaitingJobs = amountOfWaitingJobs;
 	}
 
