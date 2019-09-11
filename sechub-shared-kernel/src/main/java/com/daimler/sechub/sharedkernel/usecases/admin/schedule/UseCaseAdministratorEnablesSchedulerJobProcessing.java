@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_STARTS_SCHEDULER,
+		id=UseCaseIdentifier.UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING,
 		group=UseCaseGroup.OTHER,
-		title="Admin starts scheduling",
-		description="An administrator starts scheduler. This can be a necessary step after for system wide update - when scheduling was stoped before.")
-public @interface UseCaseAdministratorStartScheduler {
+		title="Admin enables scheduler job processing",
+		description="An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.")
+public @interface UseCaseAdministratorEnablesSchedulerJobProcessing {
 
 	Step value();
 }

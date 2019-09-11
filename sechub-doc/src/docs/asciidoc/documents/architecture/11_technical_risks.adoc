@@ -2,5 +2,45 @@
 [[section-technical-risks]]
 == Risks and Technical Debts
 
+=== Domain message system
+In <<section-architecture-constraints-domain-communication,domain communication constraints>>
+is described that we use a very simple DDD approach by using a simple observer
+pattern inside JVMs.
+
+==== Handling of lost messages on a JVM crash /pod crash
+
+This currently not solved. When JVM/Pod crushes, the job is in state running
+and will not resurrect.
+
+==== Clustering
+
+===== Handling of domain requests for one member only
+
+At current situation there is no double processing of domain messages inside
+`sechub` server clusters because every instance of an `sechub` server sends its
+domain requests only inside its JVM.
+
+So we must not care about situations where multiple cluster members would handle
+domain requests in a multiple way...
+
+WARNING: If we would switch to a solution like
+`KAFKA` this must be considered: Events may (normally) only processed at one
+cluster member! This could be a critical task if we change domain messaging.
+Normally most of the events shall be processed only at one cluster member.
+
+===== Handling of domain requests for complete cluster
+Currently this cannot be done by a domain message. We must provide those
+central information inside database. An example: When we got 3 running instances
+of {sechub} and we want to inform that scheduling shall no longer processed,
+we have to inform every instance. But the reduced domain message system works
+only inside one JVM. So we must provide this by our cluster wide shared DB.
+
+=== Prevent lost {sechub} jobs on updates
+Jobs are running inside a dedicated JVM. When JVM crashes, the job will not
+resurrect and become a "zombie".
+
+To prevent such a situation on a rolling update of {sechub} administrators must
+disable scheduler job processing before doing the update.
+See https://github.com/Daimler/sechub/issues/12
 
 

@@ -10,5 +10,5 @@ CREATE TABLE schedule_config
    config_id integer not null,
    config_job_processing_enabled boolean not null,
    version integer,
-   PRIMARY KEY (uuid)
+   PRIMARY KEY (config_id)
 );

@@ -4,15 +4,17 @@ package com.daimler.sechub.domain.schedule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
-import com.daimler.sechub.domain.schedule.config.ScheduleConfigService;
+import com.daimler.sechub.domain.schedule.config.SchedulerConfigService;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
+import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
@@ -39,7 +41,11 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	ProjectWhiteListUpdateService projectWhiteListUpdateService;
 
 	@Autowired
-	ScheduleConfigService configService;
+	SchedulerConfigService configService;
+
+	@Autowired
+	@Lazy
+	DomainMessageService eventBus;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -62,32 +68,28 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 		case PROJECT_WHITELIST_UPDATED:
 			handleProjectWhiteListUpdated(request);
 			break;
-		case REQUEST_SCHEDULER_STOP:
-			handleSchedulerStopRequest(request);
+		case REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING:
+			handleDisableSchedulerJobProcessingRequest(request);
 			break;
-		case REQUEST_SCHEDULER_START:
-			handleSchedulerStartRequest(request);
+		case REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING:
+			handleEnableSchedulerJobProcessingRequest(request);
 			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
 	}
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_START)
-	private void handleSchedulerStartRequest(DomainMessage request) {
-		startOrStopSchedulerJobProcessing(request,true);
+	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
+	private void handleEnableSchedulerJobProcessingRequest(DomainMessage request) {
+		configService.enableJobProcessing();
 
 	}
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STOP)
-	private void handleSchedulerStopRequest(DomainMessage request) {
-		startOrStopSchedulerJobProcessing(request,false);
+	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING)
+	private void handleDisableSchedulerJobProcessingRequest(DomainMessage request) {
+		configService.disableJobProcessing();
 	}
 
-	private void startOrStopSchedulerJobProcessing(DomainMessage request, boolean enabled) {
-		configService.setJobProcessingEnabled(enabled);
-		/* FIXME ATRIGNA, 2019-09-10: rename the other parts (also in domain administration) so its clear this enabling/disabling of job processing */
-	}
 
 	@IsReceivingAsyncMessage(MessageID.PROJECT_CREATED)
 	private void handleProjectCreated(DomainMessage request) {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.usecases.admin.schedule;
+package com.daimler.sechub.sharedkernel.usecases.admin.status;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_TRIGGERS_REFRESH_SCHEDULER_STATUS,
+		id=UseCaseIdentifier.UC_ADMIN_LIST_STATUS_INFORMATION,
 		group=UseCaseGroup.OTHER,
-		title="Admin get scheduler status",
-		description="An administrator wants to update information about scheduler status")
-public @interface UseCaseAdministratorTriggersRefreshOfSchedulerStatus {
+		title="Admin lists status information",
+		description="An administrator fetches current known status information about sechub")
+public @interface UseCaseAdministratorListsStatusInformation {
 
 	Step value();
 }

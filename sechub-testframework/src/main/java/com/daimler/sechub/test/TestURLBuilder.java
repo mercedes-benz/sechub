@@ -52,6 +52,8 @@ public class TestURLBuilder {
 	private static final String API_ADMIN_PROJECT = API_ADMIN + "/project";
 	private static final String API_ADMIN_JOB = API_ADMIN + "/job";
 	private static final String API_ADMIN_JOBS = API_ADMIN_JOB+"s";
+	private static final String API_ADMIN_SCHEDULER = API_ADMIN+"/scheduler";
+
 	private static final String API_ADMIN_SCAN = API_ADMIN+"/scan";
 	private static final String API_PROJECT = "/api/project";
 	private String protocol;
@@ -253,6 +255,16 @@ public class TestURLBuilder {
 		return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
 	}
 	/* +-----------------------------------------------------------------------+ */
+	/* +............................ admin/scheduler/..........................+ */
+	/* +-----------------------------------------------------------------------+ */
+	public String buildAdminDisablesSchedulerJobProcessing() {
+		return buildUrl(API_ADMIN_SCHEDULER, "disable/job-processing");
+	}
+
+	public String buildAdminEnablesSchedulerJobProcessing() {
+		return buildUrl(API_ADMIN_SCHEDULER, "enable/job-processing");
+	}
+	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/admin...............................+ */
 	/* +-----------------------------------------------------------------------+ */
 	public String buildAdminGrantsSuperAdminRightsTo(String targetUser) {
@@ -306,6 +318,7 @@ public class TestURLBuilder {
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {
 		return buildUrl(API_PROJECT, projectId, "report",sechubJobUUID.toString());
 	}
+
 
 
 

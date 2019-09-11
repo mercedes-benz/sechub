@@ -1,4 +1,4 @@
-package com.daimler.sechub.domain.administration.schedule;
+package com.daimler.sechub.domain.administration.scheduler;
 
 import com.daimler.sechub.domain.administration.status.StatusEntryKey;
 
