@@ -7,32 +7,37 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+/**
+ * Configuration entry for scheduler inside database. Contains only ONE row! see {@link #ID}
+ * @author Albert Tregnaghi
+ *
+ */
 @Entity
-@Table(name = ScheduleConfig.TABLE_NAME)
-public class ScheduleConfig {
+@Table(name = SchedulerConfig.TABLE_NAME)
+public class SchedulerConfig {
+
+	/**
+	 * We got only ONE schedule configuration entry inside table. So we use always only the first one here!
+	 */
+	public static final Integer ID = Integer.valueOf(0);
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ SQL ......................................+ */
 	/* +-----------------------------------------------------------------------+ */
 	public static final String TABLE_NAME = "SCHEDULE_CONFIG";
 
-	public static final String COLUMN_KEY_ID = "CONFIG_ID";
-
-	public static final String COLUMN_ONE_ROW_ONLY = "CONFIG_ONE_ROW_ONLY";
+	public static final String COLUMN_ID = "CONFIG_ID";
 
 	public static final String COLUMN_JOB_PROCESSING_ENABLED = "CONFIG_JOB_PROCESSING_ENABLED";
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
 	/* +-----------------------------------------------------------------------+ */
-	public static final String CLASS_NAME = ScheduleConfig.class.getSimpleName();
+	public static final String CLASS_NAME = SchedulerConfig.class.getSimpleName();
 
 	@Id
-	@Column(name = COLUMN_KEY_ID, unique = true, nullable = false)
-	Integer id;
-
-	@Column(name = COLUMN_ONE_ROW_ONLY, unique = true, nullable = false)
-	String value="enforce-only-one-row"; // because unique and not changeable we enforce only one row inside database...
+	@Column(name = COLUMN_ID, unique = true, nullable = false)
+	Integer id = ID;
 
 	@Column(name = COLUMN_JOB_PROCESSING_ENABLED, nullable = false)
 	boolean jobProcessingEnabled = true;
@@ -72,7 +77,7 @@ public class ScheduleConfig {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ScheduleConfig other = (ScheduleConfig) obj;
+		SchedulerConfig other = (SchedulerConfig) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

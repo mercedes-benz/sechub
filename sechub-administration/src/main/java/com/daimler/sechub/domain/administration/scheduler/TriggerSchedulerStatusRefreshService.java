@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.administration.schedule;
+package com.daimler.sechub.domain.administration.scheduler;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -13,26 +13,27 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorStopScheduler;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class StopSchedulerService {
+public class TriggerSchedulerStatusRefreshService {
 
 	@Autowired
 	DomainMessageService eventBusService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorStopScheduler(@Step(number=2,name="Service call",description="Sends request to scheduler domain to stop scheduler"))
-	public void stopScheduler() {
+	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler to send updates about current status."))
+	public void triggerSchedulerStatusRefresh() {
 		/* @formatter:on */
-		sendStopSchedulerEvent();
+		sendUpdateSchedulerStatusEvent();
 	}
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_STOP)
-	private void sendStopSchedulerEvent() {
-		DomainMessage request = DomainMessageFactory.createRequestSchedulerStopMessage();
+	@IsSendingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
+	private void sendUpdateSchedulerStatusEvent() {
+		DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE);
 		eventBusService.sendAsynchron(request);
 	}
+
 
 }

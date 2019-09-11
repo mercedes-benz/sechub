@@ -8,6 +8,17 @@ package com.daimler.sechub.sharedkernel.messaging;
  */
 public class DomainMessageFactory {
 
+	/**
+	 * Creates an empty request containing no data but only message id
+	 * @param messageId
+	 * @return message
+	 */
+	public static DomainMessage createEmptyRequest(MessageID messageId) {
+		DomainMessage emptyMessage = new DomainMessage(messageId);
+		return emptyMessage;
+
+	}
+
 	public static DomainMessage createRequestRoleCalculation(String userId) {
 		DomainMessage roleChangeRequest = new DomainMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION);
 		UserMessage userMessage = new UserMessage();
@@ -38,21 +49,5 @@ public class DomainMessageFactory {
 
 		return userBecomesSuperAdminInfo;
 	}
-
-	public static DomainMessage createRequestSchedulerStopMessage() {
-		DomainMessage stopSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_STOP);
-		return stopSchedulerMessage;
-	}
-
-	public static DomainMessage createRequestSchedulerStartMessage() {
-		DomainMessage startSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_START);
-		return startSchedulerMessage;
-	}
-
-	public static DomainMessage createRequestSchedulerStatusUpdateMessage() {
-		DomainMessage startSchedulerMessage = new DomainMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE);
-		return startSchedulerMessage;
-	}
-
 
 }

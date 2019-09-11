@@ -1,4 +1,4 @@
-package com.daimler.sechub.domain.administration.schedule;
+package com.daimler.sechub.domain.administration.scheduler;
 
 import java.util.Optional;
 
@@ -17,9 +17,9 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SchedulerMessage;
 
 @Component
-public class SchedulerMessageHandler implements AsynchronMessageHandler{
+public class SchedulerAdministrationMessageHandler implements AsynchronMessageHandler{
 
-	private static final Logger LOG = LoggerFactory.getLogger(SchedulerMessageHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SchedulerAdministrationMessageHandler.class);
 
 	@Autowired
 	StatusEntryRepository repository;
@@ -33,18 +33,45 @@ public class SchedulerMessageHandler implements AsynchronMessageHandler{
 		case SCHEDULER_STATUS_UPDATE :
 			handleSchedulerStatusChange(request);
 			break;
+		case SCHEDULER_JOB_PROCESSING_DISABLED:
+			handleSchedulerJobProcessingDisabled(request);
+			break;
+		case SCHEDULER_JOB_PROCESSING_ENABLED:
+			handleSchedulerJobProcessingEnabled(request);
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
 	}
 
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED)
+	private void handleSchedulerJobProcessingEnabled(DomainMessage request) {
+
+	}
+
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)
+	private void handleSchedulerJobProcessingDisabled(DomainMessage request) {
+		updateSchedulerJobProcessingEnabled(false);
+	}
+
+
 	@IsReceivingAsyncMessage(MessageID.SCHEDULER_STATUS_UPDATE)
 	private void handleSchedulerStatusChange(DomainMessage request) {
 		SchedulerMessage status = request.get(MessageDataKeys.SCHEDULER_STATUS_DATA);
 
-		StatusEntry enabled = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
-		enabled.setValue(Boolean.toString(status.isEnabled()));
+		updateSchedulerJobProcessingEnabled(status.isEnabled());
 
+		updateSchedulerJobInformation(status);
+
+	}
+
+	private void updateSchedulerJobProcessingEnabled(boolean processingEnabled) {
+		StatusEntry enabled = fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
+		enabled.setValue(Boolean.toString(processingEnabled));
+		repository.save(enabled);
+	}
+
+	private void updateSchedulerJobInformation(SchedulerMessage status) {
 		StatusEntry jobsAll= fetchOrCreateEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
 		jobsAll.setValue(Integer.toString(status.getAmountOfAllJobs()));
 
@@ -55,11 +82,9 @@ public class SchedulerMessageHandler implements AsynchronMessageHandler{
 		jobsWaiting.setValue(Integer.toString(status.getAmountOfWaitingJobs()));
 
 		/* persist */
-		repository.save(enabled);
 		repository.save(jobsAll);
 		repository.save(jobsRunning);
 		repository.save(jobsWaiting);
-
 	}
 
 	private StatusEntry fetchOrCreateEntry(SchedulerStatusEntryKeys key) {
