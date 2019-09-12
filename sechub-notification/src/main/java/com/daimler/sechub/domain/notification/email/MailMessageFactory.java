@@ -17,8 +17,8 @@ public class MailMessageFactory {
 
 	/**
 	 * Creates a simple mail message. date, from and subject are automatically set.
-	 * @param subject
-	 * @return
+	 * @param subject subject of email message
+	 * @return message
 	 */
 	public SimpleMailMessage createMessage(String subject) {
 		SimpleMailMessage message = new SimpleMailMessage();

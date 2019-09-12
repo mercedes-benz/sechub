@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
+import static com.daimler.sechub.integrationtest.api.AssertMail.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 
@@ -39,11 +40,9 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* prepare */
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1);
-
 		/* execute */
 		as(SUPER_ADMIN).
 			disableSchedulerJobProcessing();
-
 		/* prepare */
 		waitSeconds(1); // give event handling a chance...
 		UUID jobUUID = assertUser(USER_1).
@@ -56,6 +55,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* test */
 		assertUser(SUPER_ADMIN).
 			onJobAdministration().canNotFindRunningJob(jobUUID); // means here, the job is not executed at all.. */
+		assertMailToAdminsExists("Scheduler job processing disabled");
 
 		/* execute */
 		as(SUPER_ADMIN).enableSchedulerJobProcessing();
@@ -65,6 +65,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* test */
 		assertUser(SUPER_ADMIN).
 			onJobAdministration().canFindRunningJob(jobUUID); // means here, the job is not executed at all.. we know this, because we used long running job (10s) */
+		assertMailToAdminsExists("Scheduler job processing disabled");
 
 		/* @formatter:on */
 

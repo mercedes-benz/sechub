@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
 import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing;
@@ -19,6 +22,10 @@ public class SchedulerConfigService {
 
 	@Autowired
 	SchedulerConfigRepository repository;
+
+	@Autowired
+	SecHubEnvironment environmentData;
+
 
 	@Autowired
 	@Lazy
@@ -52,11 +59,14 @@ public class SchedulerConfigService {
 
 		repository.save(config);
 
+		DomainMessage domainMessage = null;
 		if (enableJobProcessing) {
-			domainMessageService.sendAsynchron(DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED));
+			domainMessage = DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED);
 		} else {
-			domainMessageService.sendAsynchron(DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED));
+			domainMessage = DomainMessageFactory.createEmptyRequest(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED);
 		}
+		domainMessage.set(MessageDataKeys.ENVIRONMENT_BASE_URL, environmentData.getServerBaseUrl());
+		domainMessageService.sendAsynchron(domainMessage);
 		return true;
 	}
 

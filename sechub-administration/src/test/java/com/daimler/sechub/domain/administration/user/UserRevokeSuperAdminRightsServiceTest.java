@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.data.domain.Example;
 
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -19,7 +19,7 @@ public class UserRevokeSuperAdminRightsServiceTest {
 
 	private UserRevokeSuperAdminRightsService serviceToTest;
 
-	private AdministrationEnvironment environment;
+	private SecHubEnvironment environment;
 	private AuditLogService auditLogService;
 	private DomainMessageService eventBusService;
 	private UserRepository userRepository;
@@ -31,7 +31,7 @@ public class UserRevokeSuperAdminRightsServiceTest {
 
 	@Before
 	public void before() throws Exception {
-		environment = mock(AdministrationEnvironment.class);
+		environment = mock(SecHubEnvironment.class);
 		auditLogService = mock(AuditLogService.class);
 		eventBusService = mock(DomainMessageService.class);
 		userRepository = mock(UserRepository.class);
@@ -44,7 +44,7 @@ public class UserRevokeSuperAdminRightsServiceTest {
 		when(userRepository.findOrFailUser(eq(ADMIN_USER))).thenReturn(superUser);
 
 		serviceToTest = new UserRevokeSuperAdminRightsService();
-		serviceToTest.administrationEnvironment = environment;
+		serviceToTest.secHubEnvironment = environment;
 		serviceToTest.auditLogService = auditLogService;
 		serviceToTest.eventBusService = eventBusService;
 		serviceToTest.userRepository = userRepository;
