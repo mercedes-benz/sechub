@@ -25,6 +25,9 @@ public class StatusEntry {
 	/* +-----------------------------------------------------------------------+ */
 	public static final String CLASS_NAME = StatusEntry.class.getSimpleName();
 
+	public static final String PROPERTY_KEY = "key";
+	public static final String PROPERTY_VALUE = "value";
+
 	@Id
 	@Column(name = COLUMN_KEY_ID, unique = true, nullable = false)
 	String key;
