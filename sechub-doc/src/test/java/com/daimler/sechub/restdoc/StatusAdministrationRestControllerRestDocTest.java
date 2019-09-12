@@ -2,7 +2,6 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -64,29 +63,32 @@ public class StatusAdministrationRestControllerRestDocTest {
 		List<StatusEntry> list = new ArrayList<StatusEntry>();
 		StatusEntry enabled = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
 		enabled.setValue("true");
+		list.add(enabled);
 
 		StatusEntry allJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
 		allJobs.setValue("200");
+		list.add(allJobs);
 
 		StatusEntry runningJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
 		runningJobs.setValue("3");
+		list.add(runningJobs);
 
 		StatusEntry waitingJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
 		waitingJobs.setValue("42");
+		list.add(waitingJobs);
 
 		/* there could be more status examples in future - currently only scheduler status info available */
-
 		when(listStatusService.fetchAllStatusEntries()).thenReturn(list);
 	}
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdministratorListsStatusInformation.class)
-	public void restdoc_show_project_details() throws Exception {
+	public void restdoc_admin_lists_status_information() throws Exception {
 		/*  prepare */
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement()),"projectId1").
+				get(https(PORT_USED).buildAdminListsStatusEntries()).
 				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				)./*
 				*/
@@ -94,8 +96,8 @@ public class StatusAdministrationRestControllerRestDocTest {
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsStatusInformation.class),
 				responseFields(
-							fieldWithPath(StatusEntry.PROPERTY_KEY).description("Status key identifier"),
-							fieldWithPath(StatusEntry.PROPERTY_VALUE).description("Status value")
+							fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
+							fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")
 						)
 					)
 				);

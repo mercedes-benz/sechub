@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
@@ -35,7 +35,7 @@ public class UserGrantSuperAdminRightsService {
 	AuditLogService auditLogService;
 
 	@Autowired
-	AdministrationEnvironment administrationEnvironment;
+	SecHubEnvironment sechubEnvironment;
 
 	/* @formatter:off */
 	@Validated
@@ -65,7 +65,7 @@ public class UserGrantSuperAdminRightsService {
 
 	@IsSendingAsyncMessage(MessageID.USER_BECOMES_SUPERADMIN)
 	private void informUserBecomesSuperadmin(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(),administrationEnvironment.getAdministrationBaseURL()));
+		eventBusService.sendAsynchron(DomainMessageFactory.createUserBecomesSuperAdmin(user.getName(), user.getEmailAdress(),sechubEnvironment.getServerBaseUrl()));
 	}
 
 	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
