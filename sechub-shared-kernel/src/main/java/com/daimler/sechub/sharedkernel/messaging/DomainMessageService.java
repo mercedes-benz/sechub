@@ -21,13 +21,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DomainMessageService {
-	/* FIXME Albert Tregnaghi, 2018-01-29:parameter validation */
-	/* FIXME Albert Tregnaghi, 2018-01-29:handle web scan not wanted... */
-	/* FIXME Albert Tregnaghi, 2018-01-29:null handling ... */
-	/*
-	 * TODO Albert Tregnaghi, 2018-02-04:check if it is not better to use eureka server for
-	 * discovery...
-	 */
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomainMessageService.class);
 
@@ -124,7 +117,7 @@ public class DomainMessageService {
 	/**
 	 * Triggers request and waits for result. Will be handled only by ONE
 	 * {@link SynchronMessageHandler} instance
-	 * 
+	 *
 	 * @param request
 	 * @return result
 	 * @throws UnsupportedOperationException
@@ -149,9 +142,9 @@ public class DomainMessageService {
 	 * Triggers request but does NOT waits for result. This can be handled by
 	 * multiple {@link AsynchronMessageHandler} instances. When no async handler can
 	 * handle the request a error log entry will be written
-	 * 
+	 *
 	 * @param request
-	 * 
+	 *
 	 */
 	public void sendAsynchron(DomainMessage request) {
 		assertRequestNotNull(request);

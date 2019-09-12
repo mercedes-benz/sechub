@@ -84,6 +84,14 @@ public enum UseCaseIdentifier {
 
 	UC_ADMIN_LISTS_ALL_ADMINS,
 
+
+	UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING,
+
+	UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING,
+
+	UC_ADMIN_TRIGGERS_REFRESH_SCHEDULER_STATUS,
+
+	UC_ADMIN_LIST_STATUS_INFORMATION,
 	;
 
 	/* +-----------------------------------------------------------------------+ */

@@ -24,7 +24,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-//	@Rule
+//	@Rule 
 //	public Timeout timeOut = Timeout.seconds(60);
 
 	@Rule

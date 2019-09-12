@@ -29,14 +29,17 @@ public class TestURLBuilder {
 		/**
 		 *
 		 * We do NOT use name() because its an enum...
-		 * @return The name of the parameter - e.g. when path element is "{userId}" then this method returns "userId".
+		 *
+		 * @return The name of the parameter - e.g. when path element is "{userId}" then
+		 *         this method returns "userId".
 		 */
 		public String paramName() {
 			return restDocName;
 		}
 
 		/**
-		 * @return path element in url. For example: when pathName is "userId" this method returns "{userId}"
+		 * @return path element in url. For example: when pathName is "userId" this
+		 *         method returns "{userId}"
 		 */
 		public String pathElement() {
 			return urlPart;
@@ -47,12 +50,13 @@ public class TestURLBuilder {
 	private static final String API_USER = "/api/user";
 	private static final String API_ANONYMOUS = "/api/anonymous";
 
-
 	private static final String API_ADMIN_USER = API_ADMIN + "/user";
 	private static final String API_ADMIN_PROJECT = API_ADMIN + "/project";
 	private static final String API_ADMIN_JOB = API_ADMIN + "/job";
-	private static final String API_ADMIN_JOBS = API_ADMIN_JOB+"s";
-	private static final String API_ADMIN_SCAN = API_ADMIN+"/scan";
+	private static final String API_ADMIN_JOBS = API_ADMIN_JOB + "s";
+	private static final String API_ADMIN_SCHEDULER = API_ADMIN + "/scheduler";
+
+	private static final String API_ADMIN_SCAN = API_ADMIN + "/scan";
 	private static final String API_PROJECT = "/api/project";
 	private String protocol;
 	private String hostname;
@@ -99,7 +103,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildApproveJobUrl(String projectId, String jobUUID) {
-		return buildUrl(API_PROJECT, projectId, "job", jobUUID,"approve");
+		return buildUrl(API_PROJECT, projectId, "job", jobUUID, "approve");
 	}
 
 	public String buildGetJobStatusUrl(String projectId, String jobUUID) {
@@ -111,11 +115,11 @@ public class TestURLBuilder {
 	}
 
 	public String buildUploadSourceCodeUrl(String projectId, UUID jobUUID) {
-		return buildUploadSourceCodeUrl(projectId,jobUUID.toString());
+		return buildUploadSourceCodeUrl(projectId, jobUUID.toString());
 	}
 
 	public String buildUploadSourceCodeUrl(String projectId, String jobUUID) {
-		return buildUrl(API_PROJECT, projectId, "job", jobUUID,"sourcecode");
+		return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
 	}
 
 	/* +-----------------------------------------------------------------------+ */
@@ -131,13 +135,12 @@ public class TestURLBuilder {
 	}
 
 	public String buildAnonymousRequestNewApiToken(String emailAddress) {
-		return buildUrl(API_ANONYMOUS,"refresh/apitoken",emailAddress);
+		return buildUrl(API_ANONYMOUS, "refresh/apitoken", emailAddress);
 	}
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/signup .............................+ */
 	/* +-----------------------------------------------------------------------+ */
-
 
 	public String buildAdminAcceptsUserSignUpUrl(String userId) {
 		return buildUrl(API_ADMIN, "signup/accept", userId);
@@ -150,7 +153,6 @@ public class TestURLBuilder {
 	public String buildAdminListsUserSignupsUrl() {
 		return buildUrl(API_ADMIN, "signups");
 	}
-
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/users ..............................+ */
@@ -179,7 +181,6 @@ public class TestURLBuilder {
 	public String buildAdminShowsUserDetailsUrl(String userId) {
 		return buildUrl(API_ADMIN_USER, userId);
 	}
-
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/projects ...........................+ */
@@ -230,16 +231,15 @@ public class TestURLBuilder {
 	}
 
 	public String buildAdminFetchesScanLogsForProject(String projectId) {
-		return buildUrl(API_ADMIN_PROJECT, projectId,"scan","logs");
+		return buildUrl(API_ADMIN_PROJECT, projectId, "scan", "logs");
 	}
-
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ project ..................................+ */
 	/* +-----------------------------------------------------------------------+ */
 
 	public String buildFetchJobStatus(String projectId, String jobUUID) {
-		return buildUrl(API_PROJECT,projectId,"job",jobUUID);
+		return buildUrl(API_PROJECT, projectId, "job", jobUUID);
 	}
 
 	/* +-----------------------------------------------------------------------+ */
@@ -252,17 +252,39 @@ public class TestURLBuilder {
 	public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID sechubJobUUID) {
 		return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
 	}
+
+	/* +-----------------------------------------------------------------------+ */
+	/* +............................ admin/scheduler/..........................+ */
+	/* +-----------------------------------------------------------------------+ */
+	public String buildAdminDisablesSchedulerJobProcessing() {
+		return buildUrl(API_ADMIN_SCHEDULER, "disable/job-processing");
+	}
+
+	public String buildAdminEnablesSchedulerJobProcessing() {
+		return buildUrl(API_ADMIN_SCHEDULER, "enable/job-processing");
+	}
+
+	public String buildAdminTriggersRefreshOfSchedulerStatus() {
+		return buildUrl(API_ADMIN_SCHEDULER, "status","refresh");
+	}
+
+	/* +-----------------------------------------------------------------------+ */
+	/* +............................ admin/status/.............................+ */
+	/* +-----------------------------------------------------------------------+ */
+	public String buildAdminListsStatusEntries() {
+		return buildUrl(API_ADMIN, "status");
+	}
+
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/admin...............................+ */
 	/* +-----------------------------------------------------------------------+ */
 	public String buildAdminGrantsSuperAdminRightsTo(String targetUser) {
-		return buildUrl(API_ADMIN_USER, targetUser, "grant","superadmin");
+		return buildUrl(API_ADMIN_USER, targetUser, "grant", "superadmin");
 	}
 
 	public String buildAdminRevokesSuperAdminRightsFrom(String targetUser) {
-		return buildUrl(API_ADMIN_USER, targetUser, "revoke","superadmin");
+		return buildUrl(API_ADMIN_USER, targetUser, "revoke", "superadmin");
 	}
-
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ integration test special (anonymous) .....+ */
@@ -280,34 +302,33 @@ public class TestURLBuilder {
 		return buildUrl(API_ANONYMOUS, "integrationtest/alive");
 	}
 
-	public String buildGetFileUpload(String projectId, String jobUUID,String fileName) {
-		return buildUrl(API_ANONYMOUS,"integrationtest/"+projectId+"/"+jobUUID+"/uploaded/"+fileName);
+	public String buildGetFileUpload(String projectId, String jobUUID, String fileName) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
 	}
 
 	public String buildServerURL() {
 		return createRootPath();
 	}
-	public String buildGetServerVersionUrl() {
-		return buildUrl(API_ANONYMOUS,"info/version");
-	}
 
+	public String buildGetServerVersionUrl() {
+		return buildUrl(API_ANONYMOUS, "info/version");
+	}
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ integration test special (from user) .....+ */
 	/* +-----------------------------------------------------------------------+ */
 
 	public String buildCheckRoleUser() {
-		return  buildUrl(API_USER , "integrationtest/check/role/user");
+		return buildUrl(API_USER, "integrationtest/check/role/user");
 	}
+
 	public String buildCheckRoleOwner() {
-		return  buildUrl(API_USER , "integrationtest/check/role/owner");
+		return buildUrl(API_USER, "integrationtest/check/role/owner");
 	}
 
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {
-		return buildUrl(API_PROJECT, projectId, "report",sechubJobUUID.toString());
+		return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
 	}
-
-
 
 
 

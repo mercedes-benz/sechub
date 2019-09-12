@@ -26,6 +26,25 @@ public class AdministrationAPIConstants{
 	 */
 	public static final String API_ACCEPT_USER_SIGNUP = API_ADMINISTRATION + "signup/accept/{userId}";
 
+
+	/**
+	 * Stop scheduling (pause)
+	 */
+	public static final String API_SCHEDULER_DISABLE_JOB_PROCESSING = API_ADMINISTRATION + "scheduler/disable/job-processing";
+
+	/**
+	 * Stop scheduling (pause)
+	 */
+	public static final String API_SCHEDULER_ENABLE_JOB_PROCESSING = API_ADMINISTRATION + "scheduler/enable/job-processing";
+
+
+	/**
+	 * Refresh scheduler status
+	 */
+	public static final String API_SCHEDULER_STATUS_REFRESH = API_ADMINISTRATION + "scheduler/status/refresh";
+
+	public static final String API_SCHEDULER_GET_STATUS = API_ADMINISTRATION + "status";
+
 	/**
 	 * show all users wanting to sign up
 	 */
@@ -67,6 +86,8 @@ public class AdministrationAPIConstants{
 	/* +-----------------------------------------------------------------------+ */
 	public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS+"apitoken";
 	public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS+"refresh/apitoken/{emailAddress}";
+
+
 
 
 }

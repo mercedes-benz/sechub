@@ -106,11 +106,18 @@ public class MessageDataKeys {
 	 */
 	public static final MessageDataKey<JobMessage> JOB_FAILED_DATA = createJobMessageKey("job.failed.data");
 
+	public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
+
+
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Helpers ..................................+ */
 	/* +-----------------------------------------------------------------------+ */
 	private static MessageDataKey<UserMessage> createUserMessageKey(String id) {
 		return createKey(id, new UserMessageDataProvider());
+	}
+
+	private static MessageDataKey<SchedulerMessage> createSchedulerStatusMessageKey(String id) {
+		return createKey(id, new SchedulerMessageDataProvider());
 	}
 
 	private static MessageDataKey<ProjectMessage> createProjectMessageKey(String id) {

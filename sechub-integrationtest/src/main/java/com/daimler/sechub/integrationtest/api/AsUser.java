@@ -353,6 +353,24 @@ public class AsUser {
 		return getRestHelper().getJSon(url);
 	}
 
+	/**
+	 * Disbles job processing by scheduler.<br><br><b> WARNING:</b> You must ensure that your test will
+	 * do a <code>as(SUPER_ADMIN).enableSchedulerJobProcessing();</code> at the end of your test (no matter if
+	 * test fails somewhere in your test case), otherwise you got a extreme side effect to your other integration tests...
+	 * @return
+	 */
+	public AsUser disableSchedulerJobProcessing() {
+		String url = getUrlBuilder().buildAdminDisablesSchedulerJobProcessing();
+		getRestHelper().post(url);
+		return this;
+	}
+
+	public AsUser enableSchedulerJobProcessing() {
+		String url = getUrlBuilder().buildAdminEnablesSchedulerJobProcessing();
+		getRestHelper().post(url);
+		return this;
+	}
+
 
 
 }

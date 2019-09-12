@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserNoLongerAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.InformUserThatUserBecomesAdminNotificationService;
@@ -50,6 +52,13 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	@Autowired
 	InformAdminsThatUserNoLongerAdminNotificationService informAdminsThatUserNoLongerAdminNotificationService;
 
+	@Autowired
+	InformAdminsThatSchedulerJobProcessingHasBeenDisabledService informAdminSchedulerDisabledService;
+
+	@Autowired
+	InformAdminsThatSchedulerJobProcessingHasBeenEnabledService informAdminSchedulerEnabledService;
+
+
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
 		MessageID messageId = request.getMessageId();
@@ -75,9 +84,25 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case USER_NO_LONGER_SUPERADMIN:
 			handleUserNoLongerSuperAdmin(request.get(MessageDataKeys.USER_CONTACT_DATA),request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 			break;
+		case SCHEDULER_JOB_PROCESSING_DISABLED:
+			handleSchedulerJobProcessingDisabled(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			break;
+		case SCHEDULER_JOB_PROCESSING_ENABLED:
+			handleSchedulerJobProcessingEnabled(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)
+	private void handleSchedulerJobProcessingDisabled(String envBaseUrl) {
+		informAdminSchedulerDisabledService.notify(envBaseUrl);
+	}
+
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED)
+	private void handleSchedulerJobProcessingEnabled(String envBaseUrl) {
+		informAdminSchedulerEnabledService.notify(envBaseUrl);
 	}
 
 	@IsReceivingAsyncMessage(MessageID.USER_NO_LONGER_SUPERADMIN)

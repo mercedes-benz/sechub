@@ -1,7 +1,23 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.messaging;
 
+/**
+ * Just a factory for domain messages - so less boiler plate code...
+ * @author Albert Tregnaghi
+ *
+ */
 public class DomainMessageFactory {
+
+	/**
+	 * Creates an empty request containing no data but only message id
+	 * @param messageId
+	 * @return message
+	 */
+	public static DomainMessage createEmptyRequest(MessageID messageId) {
+		DomainMessage emptyMessage = new DomainMessage(messageId);
+		return emptyMessage;
+
+	}
 
 	public static DomainMessage createRequestRoleCalculation(String userId) {
 		DomainMessage roleChangeRequest = new DomainMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION);

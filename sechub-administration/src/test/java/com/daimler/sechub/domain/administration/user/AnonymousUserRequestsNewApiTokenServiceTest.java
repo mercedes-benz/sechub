@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -22,14 +22,14 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 	private static final String FAKE_ONE_TIME_TOKEN = "T1234567890";
 	private AnonymousUserRequestsNewApiTokenService serviceToTest;
 	private OneTimeTokenGenerator mockedOneTimeTokenGenerator;
-	private AdministrationEnvironment mockedEnvironment;
+	private SecHubEnvironment mockedEnvironment;
 	private DomainMessageService mockedEventBusService;
 	private UserRepository mockedUserRepository;
 
 	@Before
 	public void before() {
 		mockedOneTimeTokenGenerator = mock(OneTimeTokenGenerator.class);
-		mockedEnvironment = mock(AdministrationEnvironment.class);
+		mockedEnvironment = mock(SecHubEnvironment.class);
 		mockedEventBusService = mock(DomainMessageService.class);
 		mockedUserRepository = mock(UserRepository.class);
 		when(mockedOneTimeTokenGenerator.generateNewOneTimeToken()).thenReturn(FAKE_ONE_TIME_TOKEN);

@@ -18,6 +18,7 @@ import com.daimler.sechub.test.PojoTester;
 public class SecHubConfigurationTest {
 
 	private SecHubConfiguration configurationToTest;
+	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Before
 	public void before() {
@@ -30,7 +31,7 @@ public class SecHubConfigurationTest {
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config0.json");
 
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
 		/* test */
 		assertFalse("webscan config must NOT be present", result.getWebScan().isPresent());
@@ -44,69 +45,69 @@ public class SecHubConfigurationTest {
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config1.json");
 
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
 		/* test */
 		assertTrue("webscan config must be present", result.getWebScan().isPresent());
 		assertTrue(result.getWebScan().get().getUris().contains(new URI("https://fscan.intranet.example.org/")));
 	}
-	
+
 	@Test
 	public void sechub_config2_json_file_from_json_has_infraconfig_with_url() throws Exception {
 		/* prepare */
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
 
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
 
 		/* test */
 		assertTrue("infrascan config must be present", result.getInfraScan().isPresent());
 		assertTrue(result.getInfraScan().get().getUris().contains(new URI("https://fscan.intranet.example.org/")));
 	}
-	
+
 	@Test
 	public void sechub_config2_json_file_from_json_has_infraconfig_with_ips() throws Exception {
 		/* prepare */
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
-		
+
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
-		
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
 		/* test */
 		assertTrue("infrascan config must be present", result.getInfraScan().isPresent());
 		List<InetAddress> ips = result.getInfraScan().get().getIps();
 		assertTrue(ips.contains(InetAddress.getByName("192.168.1.1")));
 		assertTrue(ips.contains(InetAddress.getByName("58.112.44.32")));
-	}	
-	
+	}
+
 	@Test
 	public void sechub_config2_json_file_from_json_has_no_codescanconfig() throws Exception {
 		/* prepare */
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config2.json");
-		
+
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
-		
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
 		/* test */
 		assertFalse("codescan config must NOT be present", result.getCodeScan().isPresent());
-	
+
 	}
-	
-		
+
+
 	@Test
 	public void sechub_config4_json_file_from_json_has_codescanconfig_with_folders() throws Exception {
 		/* prepare */
 		String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("sechub_config4.json");
-		
+
 		/* execute */
-		SecHubConfiguration result = SecHubConfiguration.OBJECT.fromJSON(json);
-		
+		SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
 		/* test */
 		assertTrue("codescan config must be present", result.getCodeScan().isPresent());
 		List<String> ips = result.getCodeScan().get().getFileSystem().get().getFolders();
 		assertTrue(ips.contains("src/main/java"));
 		assertTrue(ips.contains("src/main/resources"));
-	}		
+	}
 
 
 	@Test
@@ -156,7 +157,7 @@ public class SecHubConfigurationTest {
 		/* test */
 		assertTrue(configurationToTest.getWebScan().isPresent());
 	}
-	
+
 	@Test
 	public void when_infracan_set_its_present() {
 		/* prepare */

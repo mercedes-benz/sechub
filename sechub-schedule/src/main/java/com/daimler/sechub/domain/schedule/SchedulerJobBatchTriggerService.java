@@ -11,6 +11,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.domain.schedule.config.SchedulerConfigService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
@@ -50,14 +51,20 @@ public class SchedulerJobBatchTriggerService {
 	@Autowired
 	ClusterEnvironmentService environmentService;
 
+	@Autowired
+	SchedulerConfigService configService;
+
 	// default 10 seconds
 	@MustBeDocumented("Job scheduling is triggered by a cron job operation - default is 10 seconds. It can be configured different")
 	@Scheduled(cron = "${sechub.config.trigger.nextjob.cron:*/10 * * * * *}")
 	@UseCaseSchedulerStartsJob(@Step(number = 1, name = "Scheduling", description = "Fetches next schedule job from queue and trigger execution."))
 	public void triggerExecutionOfNextJob() {
-
 		if (LOG.isTraceEnabled()) {
 			/* NOSONAR */LOG.trace("Trigger execution of next job started. Environment: {}",environmentService.getEnvironment());
+		}
+		if (!configService.isJobProcessingEnabled()){
+			LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}",environmentService.getEnvironment());
+			return;
 		}
 		RetryContext retryContext = new RetryContext(markNextJobRetries);
 		do {

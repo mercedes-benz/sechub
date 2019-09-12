@@ -7,17 +7,19 @@ import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
 public class SecHubConfigurationMessageDataProvider implements MessageDataProvider<SecHubConfiguration>{
 
+	private static final SecHubConfiguration OBJECT = new SecHubConfiguration();
+
 	@Override
 	public SecHubConfiguration get(String data) {
 		if (data==null) {
 			return null;
 		}
 		try {
-			return SecHubConfiguration.OBJECT.fromJSON(data);
+			return OBJECT.fromJSON(data);
 		} catch (JSONConverterException e) {
 			throw new SecHubRuntimeException("Cannot convert", e);
 		}
-		
+
 	}
 
 	@Override

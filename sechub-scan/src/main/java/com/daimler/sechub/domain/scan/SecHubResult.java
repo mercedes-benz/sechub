@@ -15,18 +15,12 @@ import com.daimler.sechub.sharedkernel.util.JSONable;
  * <br>
  * We do not ignore properties like in {@link SecHubConfiguration} because here
  * we are the only writing instance
- * 
+ *
  * @author Albert Tregnaghi
  */
 public class SecHubResult implements JSONable<SecHubResult> {
 
 	public static final String PROPERTY_FINDINGS="findings";
-	
-	/**
-	 * Just an reusable instance for JSON from calls - so we do not need to create
-	 * always an empty object
-	 */
-	public static final SecHubResult OBJECT = new SecHubResult();
 
 	long count;
 	List<SecHubFinding> findings = new ArrayList<>();
