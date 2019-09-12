@@ -37,7 +37,7 @@ public class StatusAdministrationRestController {
 	@UseCaseAdministratorListsStatusInformation(@Step(number=1,name="Rest call",description="Administrator wants to list status information about sechub",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_GET_STATUS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public List<StatusEntry> triggerSchedulerStatusRefresh() {
+	public List<StatusEntry> listStatusInformation() {
 		/* @formatter:on */
 		return listStatusService.fetchAllStatusEntries();
 	}
