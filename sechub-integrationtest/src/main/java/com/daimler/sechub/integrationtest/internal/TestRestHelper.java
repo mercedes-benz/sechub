@@ -180,8 +180,14 @@ public class TestRestHelper {
 			}catch(Exception e){
 				sb.append("Failed:"+e.getMessage());
 			}
-			LOG.error("CLIENT RESPONSE error:"+statusCode+", response:"+sb.toString());
-			super.handleError(response, statusCode);
+			LOG.error("############################################################################");
+			LOG.error("## CLIENT RESPONSE ERROR:"+statusCode+", response:"+sb.toString());
+			LOG.error("############################################################################");
+			try {
+				super.handleError(response, statusCode);
+			}catch(IOException e) {
+				throw new IOException("REST call to integration test server failed for\nURL:"+getLastUrl()+"\nDATA:"+getLastData()+"\nSTATUSCODE:"+statusCode+"\nRESPONSE:"+sb.toString(),e);
+			}
 		}
 	}
 }
