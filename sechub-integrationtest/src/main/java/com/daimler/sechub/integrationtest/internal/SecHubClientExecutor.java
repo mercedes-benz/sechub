@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,22 @@ import com.daimler.sechub.test.TestUtil;
 
 public class SecHubClientExecutor {
 
+	public enum ClientAction {
+
+		START_ASYNC("scanAsync"), START_SYNC("scan"), GET_REPORT("getReport"), GET_STATUS("getStatus"),
+
+		;
+		private String command;
+
+		private ClientAction(String command) {
+			this.command = command;
+		}
+
+		public String getCommand() {
+			return command;
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
 
 	public class ExecutionResult {
@@ -24,6 +41,7 @@ public class SecHubClientExecutor {
 		private String lastOutputLine;
 		private File outputFolder;
 		public UUID sechubJobUUD;
+		public String[] lines;
 
 		public int getExitCode() {
 			return exitCode;
@@ -34,18 +52,38 @@ public class SecHubClientExecutor {
 		}
 
 		public String getLastOutputLine() {
+			if (lastOutputLine == null) {
+				lastOutputLine = lines[lines.length - 1];
+			}
 			return lastOutputLine;
 		}
 
 		public UUID getSechubJobUUD() {
+			if (sechubJobUUD == null) {
+				for (String line : lines) {
+					if (sechubJobUUD != null) {
+						break;
+					}
+					int index = line.indexOf("job ");
+					if (index != -1) {
+						try {
+							String remaining = line.substring(index + 4).split(" ")[0];
+							sechubJobUUD = UUID.fromString(remaining);
+							break;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 			return sechubJobUUD;
 		}
 	}
 
-	public ExecutionResult execute(File file, TestUser user, String... commands) {
+	public ExecutionResult execute(File file, TestUser user, ClientAction action, String... options) {
 		String path = "sechub-cli/build/go/platform/";
 		List<String> commandsAsList = new ArrayList<>();
-		String sechubExeName=null;
+		String sechubExeName = null;
 		if (TestUtil.isWindows()) {
 			sechubExeName = "sechub.exe";
 			path += "windows-386";
@@ -54,12 +92,12 @@ public class SecHubClientExecutor {
 			commandsAsList.add(sechubExeName);
 		} else {
 			sechubExeName = "sechub";
-			commandsAsList.add("./"+sechubExeName);
+			commandsAsList.add("./" + sechubExeName);
 			path += "linux-386";
 		}
 		File pathToExecutable = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
-		File executable = new File(pathToExecutable,sechubExeName);
-		if (! executable.exists()) {
+		File executable = new File(pathToExecutable, sechubExeName);
+		if (!executable.exists()) {
 			throw new SecHubClientNotFoundException(executable);
 		}
 
@@ -78,7 +116,13 @@ public class SecHubClientExecutor {
 			commandsAsList.add("-apitoken");
 			commandsAsList.add(user.getApiToken());
 		}
-		commandsAsList.addAll(Arrays.asList(commands));
+
+		commandsAsList.addAll(Arrays.asList(options));
+
+		if (action != null) {
+			commandsAsList.add(action.getCommand());
+		}
+
 		try {
 			/* create temp file for output */
 			File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
@@ -97,7 +141,15 @@ public class SecHubClientExecutor {
 			}
 			pb.directory(pathToExecutable);
 
-			LOG.info("starting {}", commandsAsList);
+			StringBuilder sb = new StringBuilder();
+			Iterator<String> it  = commandsAsList.iterator();
+			while (it.hasNext()) {
+				sb.append(it.next());
+				if (it.hasNext()) {
+					sb.append(" ");
+				}
+			}
+			LOG.info("Execute command '{}'", sb.toString());
 
 			/* start process and wait for execution done */
 			Process process = pb.start();
@@ -105,27 +157,12 @@ public class SecHubClientExecutor {
 
 			/* show go output */
 			String output = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(tmpGoOutputFile, "\n");
-			LOG.info("OUTPUT:\n{}", output);
+			LOG.info("Command output:\n{}", output);
 
 			/* prepare and return result */
 			ExecutionResult result = new ExecutionResult();
-			String[] lines = output.trim().split("\\n");
-			for (String line : lines) {
-				if (result.sechubJobUUD!=null) {
-					break;
-				}
-				int index = line.indexOf("job ");
-				if (index!=-1) {
-					try {
-						String remaining = line.substring(index+4).split(" ")[0];
-						result.sechubJobUUD = UUID.fromString(remaining);
-						break;
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			result.lastOutputLine = lines[lines.length - 1];
+			result.lines = output.trim().split("\\n");
+
 			result.exitCode = exitCode;
 
 			return result;
@@ -140,14 +177,14 @@ public class SecHubClientExecutor {
 	}
 
 	public static void main(String[] args) {
-		new SecHubClientExecutor().execute(null, null, "-help");
+		new SecHubClientExecutor().execute(null, null, null, "-help");
 	}
 
-	public class SecHubClientNotFoundException extends IllegalStateException{
+	public class SecHubClientNotFoundException extends IllegalStateException {
 		private static final long serialVersionUID = 1L;
 
 		public SecHubClientNotFoundException(File executable) {
-			super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:"+executable);
+			super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:" + executable);
 		}
 	}
 }

@@ -14,6 +14,8 @@ pipeline {
 
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
+        SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
+
     }
 
     stages {
@@ -21,9 +23,9 @@ pipeline {
          stage('Initialize') {
              steps {
                script{
+
                     sechubGitBranch = sh(returnStdout: true, script: "git branch | grep \\* | cut -d ' ' -f2").trim()
                     echo "Branch is $sechubGitBranch"
-
                     if( sechubGitBranch == "master" ) {
                        echo "Cancel build , because master is build on by release-pipeline.jenkins!"
                        currentBuild.result = 'SUCCESS'
@@ -31,7 +33,6 @@ pipeline {
                     }
 
                 }
-
 
             }
         }
@@ -59,7 +60,7 @@ pipeline {
         }
         stage('Build CLI') {
             steps {
-              script{failed
+              script{
                   callGradleWrapper(':sechub-cli:buildGo :sechub-cli:testGo')
                }
             }
@@ -75,6 +76,29 @@ pipeline {
                   callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
                }
             }
+        }
+
+       stage('Security scan') {
+            when{
+                not {
+                    environment name: 'SECHUB_SCAN_ENABLED', value: '<undefined>'
+                }
+            }
+
+
+            environment {
+               SECHUB_USERID = credentials('sechub-userid')
+               SECHUB_APITOKEN = credentials('sechub-api-token')
+               SECHUB_SERVER= credentials('sechub-server')
+
+            }
+            steps {
+
+              script{
+                 executeSecHubScan()
+               }
+            }
+
         }
 
         stage('Build Documentation') {
@@ -106,7 +130,6 @@ pipeline {
         }
         always {
             archive '**/integrationtest-server.log'
-
             junit '**/build/test-results/*/TEST-*.xml'
 
         }
@@ -133,6 +156,36 @@ void callGradleWrapper(String gradleCommand) {
      } else {
            bat "gradlew.bat ${gradleCommand}"
      }
+}
+
+void executeSecHubScan() {
+
+     apiToken = env.SECHUB_APITOKEN
+     userid= env.SECHUB_USERID
+     server= env.SECHUB_SERVER
+
+     if (isUnix()) {
+         sh "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+     } else {
+         bat "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+     }
+}
+
+Object getStringCredentialsOrUndefined(String id){
+    if (stringCredentialsExist(id)){
+       return credentials(id)
+    }
+    return '<undefined>'
+}
+
+boolean stringCredentialsExist(String id) {
+  try {
+    withCredentials([string(credentialsId: id, variable: 'irrelevant')]) {
+      true
+    }
+  } catch (_) {
+    false
+  }
 }
 
 /**

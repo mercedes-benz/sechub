@@ -657,6 +657,10 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-usecase-UC_027">7.5.28. UC_027-Admin grants admin rights to user</a></li>
 <li><a href="#section-usecase-UC_028">7.5.29. UC_028-Admin revokes admin rights from an admin</a></li>
 <li><a href="#section-usecase-UC_029">7.5.30. UC_029-Admin lists all admins</a></li>
+<li><a href="#section-usecase-UC_030">7.5.31. UC_030-Admin disables job processing in scheduler</a></li>
+<li><a href="#section-usecase-UC_031">7.5.32. UC_031-Admin enables scheduler job processing</a></li>
+<li><a href="#section-usecase-UC_032">7.5.33. UC_032-Admin get scheduler status</a></li>
+<li><a href="#section-usecase-UC_033">7.5.34. UC_033-Admin lists status information</a></li>
 </ul>
 </li>
 <li><a href="#section-ucrestdoc">7.6. Rest API documentation</a>
@@ -669,6 +673,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#sechub-execution-2">7.6.1.4. Sechub execution</a></li>
 <li><a href="#sign-up-2">7.6.1.5. Sign up</a></li>
 <li><a href="#job-administration-2">7.6.1.6. Job administration</a></li>
+<li><a href="#other-2">7.6.1.7. Other</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">7.6.2. Admin lists all users</a></li>
@@ -703,6 +708,10 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#admin-deletes-user-signup">7.6.26. Admin deletes user signup</a></li>
 <li><a href="#user-requests-new-api-token">7.6.27. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">7.6.28. Admin lists all running jobs</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">7.6.29. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">7.6.30. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">7.6.31. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">7.6.32. Admin lists status information</a></li>
 </ul>
 </li>
 <li><a href="#domain-driven-design">7.7. Domain Driven Design</a>
@@ -721,21 +730,27 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-gen-messaging-job_started">7.7.2.4. Message JOB_STARTED</a></li>
 <li><a href="#section-gen-messaging-project_created">7.7.2.5. Message PROJECT_CREATED</a></li>
 <li><a href="#section-gen-messaging-project_whitelist_updated">7.7.2.6. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">7.7.2.7. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_done">7.7.2.8. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">7.7.2.9. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-start_scan">7.7.2.10. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">7.7.2.11. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">7.7.2.12. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">7.7.2.13. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">7.7.2.14. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">7.7.2.15. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">7.7.2.16. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">7.7.2.17. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">7.7.2.18. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">7.7.2.19. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">7.7.2.20. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">7.7.2.21. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">7.7.2.7. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">7.7.2.8. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">7.7.2.9. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">7.7.2.10. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-scan_done">7.7.2.11. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">7.7.2.12. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">7.7.2.13. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">7.7.2.14. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">7.7.2.15. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-start_scan">7.7.2.16. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">7.7.2.17. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">7.7.2.18. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">7.7.2.19. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">7.7.2.20. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">7.7.2.21. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">7.7.2.22. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">7.7.2.23. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">7.7.2.24. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">7.7.2.25. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">7.7.2.26. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">7.7.2.27. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -776,7 +791,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#general-configuration-properties">8.2.2. General configuration properties</a></li>
+<li><a href="#general-configuration">8.2.2. General configuration</a></li>
 <li><a href="#scheduling-definitions">8.2.3. Scheduling definitions</a></li>
 <li><a href="#sechub-mock-options">8.2.4. Configuration properties for mocked adapters</a></li>
 </ul>
@@ -827,7 +842,22 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#quality-scenarios">11.2. Quality Scenarios</a></li>
 </ul>
 </li>
-<li><a href="#section-technical-risks">12. Risks and Technical Debts</a></li>
+<li><a href="#section-technical-risks">12. Risks and Technical Debts</a>
+<ul class="sectlevel2">
+<li><a href="#domain-message-system">12.1. Domain message system</a>
+<ul class="sectlevel3">
+<li><a href="#handling-of-lost-messages-on-a-jvm-crash-pod-crash">12.1.1. Handling of lost messages on a JVM crash /pod crash</a></li>
+<li><a href="#clustering">12.1.2. Clustering</a>
+<ul class="sectlevel4">
+<li><a href="#handling-of-domain-requests-for-one-member-only">12.1.2.1. Handling of domain requests for one member only</a></li>
+<li><a href="#handling-of-domain-requests-for-complete-cluster">12.1.2.2. Handling of domain requests for complete cluster</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#prevent-lost-sechub-jobs-on-updates">12.2. Prevent lost SecHub jobs on updates</a></li>
+</ul>
+</li>
 <li><a href="#section-glossary">13. Glossary</a></li>
 </ul>
 </div>
@@ -878,7 +908,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <p>You can get more information about from <a href="https://daimler.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
-<p>The project ist hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
+<p>The project is hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
 </div>
 </td>
 </tr>
@@ -1805,6 +1835,22 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 <h5 id="other">7.5.1.9. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_032">UC_032-Admin get scheduler status</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_033">UC_033-Admin lists status information</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -3370,6 +3416,199 @@ user signup is accepted by admin.</p>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="section-usecase-UC_030">7.5.31. UC_030-Admin disables job processing in scheduler</h4>
+<div class="paragraph">
+<p>An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to stop (pause) scheduler job processing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable processing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disables job processing inside scheduler database</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that scheduler job processing has been disabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_031">7.5.32. UC_031-Admin enables scheduler job processing</h4>
+<div class="paragraph">
+<p>An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to start (unpause) scheduler job processing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to enable scheduler job processing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable processing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables job processing inside scheduler database</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that scheduler job processing has been enabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_032">7.5.33. UC_032-Admin get scheduler status</h4>
+<div class="paragraph">
+<p>An administrator wants to update information about scheduler status</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_033">7.5.34. UC_033-Admin lists status information</h4>
+<div class="paragraph">
+<p>An administrator fetches current known status information about sechub</p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to list status information about sechub</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="section-ucrestdoc">7.6. Rest API documentation</h3>
@@ -3515,6 +3754,28 @@ user signup is accepted by admin.</p>
 <ul>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other-2">7.6.1.7. Other</h5>
+<div class="paragraph">
+<p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_030">REST API for UC_030-Admin disables job processing in scheduler </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_031">REST API for UC_031-Admin enables scheduler job processing </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_032">REST API for UC_032-Admin get scheduler status </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_033">REST API for UC_033-Admin lists status information </a></p>
 </li>
 </ul>
 </div>
@@ -3818,7 +4079,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/14673c7c-27a8-4539-9f83-93b621627af5' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78fe5bf0-87bd-4c0f-a268-ad43031143f0' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4336,7 +4597,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2844ea0f-640c-43e3-af96-4525b51e31b2/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf1cdc82-53b7-4db1-8bd8-ebc810770823/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -4382,7 +4643,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eedc601d-80b3-4722-aadb-942bdf7d424c/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/76d93bd0-84ac-45f6-8d49-a3990cbc0602/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4482,7 +4743,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b9870341-633e-4a5a-bea0-11616a4391a4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab8668a2-3732-4b19-a593-a1cb5e43b2da' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4499,7 +4760,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93a2682c-d505-493c-a426-6ea6251208aa' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b635962c-ae2e-4d14-8c0c-bd2f12c70139' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
@@ -4512,7 +4773,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93c4b4cb-e29b-4c69-bf64-ec18147b5838' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/be1fd177-fee6-4701-b974-e6492e49a254' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -4756,6 +5017,95 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">7.6.29. Admin disables job processing in scheduler</h4>
+<div id="section-ucrestdoc-uc-UC_030" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
+</div>
+<div id="section-ucrestdoc-UC_030-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/disable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-enables-scheduler-job-processing">7.6.30. Admin enables scheduler job processing</h4>
+<div id="section-ucrestdoc-uc-UC_031" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
+</div>
+<div id="section-ucrestdoc-UC_031-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/enable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-get-scheduler-status">7.6.31. Admin get scheduler status</h4>
+<div id="section-ucrestdoc-uc-UC_032" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
+</div>
+<div id="section-ucrestdoc-UC_032-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/status/refresh' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-status-information">7.6.32. Admin lists status information</h4>
+<div id="section-ucrestdoc-uc-UC_033" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
+</div>
+<div id="section-ucrestdoc-UC_033-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status key identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/status' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="domain-driven-design">7.7. Domain Driven Design</h3>
@@ -4791,7 +5141,7 @@ one domain calls another one.</p>
 <h6 id="diagram">7.7.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="773" height="1692">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="860" height="2100">
 </div>
 </div>
 </div>
@@ -4815,6 +5165,15 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-project_whitelist_updated">PROJECT_WHITELIST_UPDATED</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-request_scheduler_disable_job_processing">REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_scheduler_enable_job_processing">REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_scheduler_status_update">REQUEST_SCHEDULER_STATUS_UPDATE</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
 </li>
 <li>
@@ -4822,6 +5181,15 @@ one domain calls another one.</p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scan_failed">SCAN_FAILED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_job_processing_disabled">SCHEDULER_JOB_PROCESSING_DISABLED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_job_processing_enabled">SCHEDULER_JOB_PROCESSING_ENABLED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_status_update">SCHEDULER_STATUS_UPDATE</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-start_scan">START_SCAN</a></p>
@@ -4904,7 +5272,31 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.7. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">7.7.2.7. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="763" height="219">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">7.7.2.8. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="759" height="219">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_status_update">7.7.2.9. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="700" height="219">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.10. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="1906" height="364">
@@ -4912,7 +5304,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">7.7.2.8. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">7.7.2.11. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="391" height="161">
@@ -4920,7 +5312,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">7.7.2.9. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">7.7.2.12. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="401" height="161">
@@ -4928,15 +5320,39 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">7.7.2.10. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">7.7.2.13. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="420" height="352">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="920" height="248">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">7.7.2.11. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">7.7.2.14. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="916" height="248">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-scheduler_status_update">7.7.2.15. Message SCHEDULER_STATUS_UPDATE</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="625" height="219">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-start_scan">7.7.2.16. Message START_SCAN</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="406" height="352">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-unsupported_operation">7.7.2.17. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="509" height="153">
@@ -4944,15 +5360,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">7.7.2.12. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_added_to_project">7.7.2.18. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="248">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="743" height="248">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">7.7.2.13. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_api_token_changed">7.7.2.19. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1165" height="277">
@@ -4960,7 +5376,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">7.7.2.14. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">7.7.2.20. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="638" height="219">
@@ -4968,7 +5384,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">7.7.2.15. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_created">7.7.2.21. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="624" height="248">
@@ -4976,15 +5392,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">7.7.2.16. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_deleted">7.7.2.22. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1031" height="306">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1042" height="306">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">7.7.2.17. Message USER_NEW_API_TOKEN_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">7.7.2.23. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="972" height="248">
@@ -4992,7 +5408,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">7.7.2.18. Message USER_NO_LONGER_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_no_longer_superadmin">7.7.2.24. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="661" height="219">
@@ -5000,15 +5416,15 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">7.7.2.19. Message USER_REMOVED_FROM_PROJECT</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">7.7.2.25. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="248">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="788" height="248">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">7.7.2.20. Message USER_ROLES_CHANGED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">7.7.2.26. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="522" height="219">
@@ -5016,7 +5432,7 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">7.7.2.21. Message USER_SIGNUP_REQUESTED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">7.7.2.27. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
 <img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="605" height="219">
@@ -5280,31 +5696,29 @@ write some junit tests using TestAPI.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="general-configuration-properties">8.2.2. General configuration properties</h4>
+<h4 id="general-configuration">8.2.2. General configuration</h4>
+<div class="paragraph">
+<p>SecHub can be configured  by keys on server startup.
+Using the spring <code>@Value</code> annotation we are able to
+use these keys as Java system properties but also as environment entries.</p>
+</div>
+<div class="paragraph">
+<p>E.g. a key like <code>sechub.server.baseurl</code> can be set with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java ... -Dsechub.server.baseurl=https://sechub.example.org</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or with an environment entry <code>SECHUB_SERVER_BASEURL</code> which
+is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
+</div>
+<div class="paragraph">
+<p>The next text blocks describe the keys available on SecHub:</p>
+</div>
 <table id="link-gen-systemproperties" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 18. Scope 'administration'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.administration.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base url for server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 19. Scope 'anonymous'</caption>
+<caption class="title">Table 18. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5326,7 +5740,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 20. Scope 'checkmarx'</caption>
+<caption class="title">Table 19. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5379,7 +5793,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 21. Scope 'development'</caption>
+<caption class="title">Table 20. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5401,7 +5815,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 22. Scope 'initial'</caption>
+<caption class="title">Table 21. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5433,7 +5847,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 23. Scope 'mock'</caption>
+<caption class="title">Table 22. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5455,7 +5869,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 24. Scope 'nessus'</caption>
+<caption class="title">Table 23. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5532,7 +5946,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 25. Scope 'netsparker'</caption>
+<caption class="title">Table 24. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5604,7 +6018,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 26. Scope 'notification'</caption>
+<caption class="title">Table 25. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5626,7 +6040,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 27. Scope 's'</caption>
+<caption class="title">Table 26. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5658,7 +6072,7 @@ write some junit tests using TestAPI.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 28. Scope 'scheduler'</caption>
+<caption class="title">Table 27. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5681,6 +6095,28 @@ write some junit tests using TestAPI.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 28. Scope 'sec'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of sechub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -6297,7 +6733,74 @@ Developers are able to define meta information inside code to obtain full genera
 <div class="sect1">
 <h2 id="section-technical-risks">12. Risks and Technical Debts</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="domain-message-system">12.1. Domain message system</h3>
+<div class="paragraph">
+<p>In <a href="#section-architecture-constraints-domain-communication">domain communication constraints</a>
+is described that we use a very simple DDD approach by using a simple observer
+pattern inside JVMs.</p>
+</div>
+<div class="sect3">
+<h4 id="handling-of-lost-messages-on-a-jvm-crash-pod-crash">12.1.1. Handling of lost messages on a JVM crash /pod crash</h4>
+<div class="paragraph">
+<p>This currently not solved. When JVM/Pod crushes, the job is in state running
+and will not resurrect.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="clustering">12.1.2. Clustering</h4>
+<div class="sect4">
+<h5 id="handling-of-domain-requests-for-one-member-only">12.1.2.1. Handling of domain requests for one member only</h5>
+<div class="paragraph">
+<p>At current situation there is no double processing of domain messages inside
+<code>sechub</code> server clusters because every instance of an <code>sechub</code> server sends its
+domain requests only inside its JVM.</p>
+</div>
+<div class="paragraph">
+<p>So we must not care about situations where multiple cluster members would handle
+domain requests in a multiple way&#8230;&#8203;</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+If we would switch to a solution like
+<code>KAFKA</code> this must be considered: Events may (normally) only processed at one
+cluster member! This could be a critical task if we change domain messaging.
+Normally most of the events shall be processed only at one cluster member.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="handling-of-domain-requests-for-complete-cluster">12.1.2.2. Handling of domain requests for complete cluster</h5>
+<div class="paragraph">
+<p>Currently this cannot be done by a domain message. We must provide those
+central information inside database. An example: When we got 3 running instances
+of SecHub and we want to inform that scheduling shall no longer processed,
+we have to inform every instance. But the reduced domain message system works
+only inside one JVM. So we must provide this by our cluster wide shared DB.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="prevent-lost-sechub-jobs-on-updates">12.2. Prevent lost SecHub jobs on updates</h3>
+<div class="paragraph">
+<p>Jobs are running inside a dedicated JVM. When JVM crashes, the job will not
+resurrect and become a "zombie".</p>
+</div>
+<div class="paragraph">
+<p>To prevent such a situation on a rolling update of SecHub administrators must
+disable scheduler job processing before doing the update.
+See <a href="https://github.com/Daimler/sechub/issues/12" class="bare">https://github.com/Daimler/sechub/issues/12</a></p>
+</div>
 <div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">

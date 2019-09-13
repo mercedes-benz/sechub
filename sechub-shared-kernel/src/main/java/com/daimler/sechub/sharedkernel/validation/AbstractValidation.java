@@ -15,6 +15,10 @@ public abstract class AbstractValidation<T> implements Validation<T> {
 		setup(config);
 	}
 
+	/**
+	 * Setup configuration for validation - if necessary.
+	 * @param config
+	 */
 	protected abstract void setup(ValidationConfig config);
 
 	public final ValidationResult validate(T target) {
@@ -30,6 +34,13 @@ public abstract class AbstractValidation<T> implements Validation<T> {
 		context.addError("May not be null");
 	}
 
+	/**
+	 * Validation implementation called by abstract implementation.<br>
+	 * Either use methods from abstract class to validate here the context,
+	 * or write your own custom validation and just use information found
+	 * inside context
+	 * @param context object containing information about target, validation and more
+	 */
 	protected abstract void validate(ValidationContext<T> context);
 
 	protected final int getMinLength() {

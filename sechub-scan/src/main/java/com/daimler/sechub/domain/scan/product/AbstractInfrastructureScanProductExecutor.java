@@ -13,18 +13,18 @@ public abstract class AbstractInfrastructureScanProductExecutor<S extends Instal
 
 	@Override
 	protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
-		/* assert WEBSCAN configuration available */
+		/* assert INFRASCAN configuration available */
 		Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
 		if (!infraScan.isPresent()) {
 			throw new IllegalStateException("At this state there must be a infrascan setup!");
 		}
 		/* Fetch URI */
 		SecHubInfrastructureScanConfiguration infraScanConfiguration = infraScan.get();
-		List<URI> urls = infraScanConfiguration.getUris();
-		if (urls == null) {
-			throw new IllegalStateException("At this state the URI must be set - validation failed!");
+		List<URI> uris = infraScanConfiguration.getUris();
+		if (uris == null) {
+			throw new IllegalStateException("At this state URIs must be set - validation failed!");
 		}
-		return urls;
+		return uris;
 	}
 
 }

@@ -1,14 +1,30 @@
 // SPDX-License-Identifier: MIT
-==== General configuration properties 
+==== General configuration
+{sechub} can be configured  by keys on server startup.
+Using the spring `@Value` annotation we are able to
+use these keys as Java system properties but also as environment entries.
+
+E.g. a key like `sechub.server.baseurl` can be set with
+
+----
+java ... -Dsechub.server.baseurl=https://sechub.example.org
+----
+
+or with an environment entry `SECHUB_SERVER_BASEURL` which
+is e.g. more suitable for a `kubernetes` cluster deployment.
+
+The next text blocks describe the keys available on {sechub}:
+
+
 ifdef::showhintaboutgenerated[]
-include::./../shared/hint_generated_systemproperties.adoc[] 
-endif::[]  
+include::./../shared/hint_generated_systemproperties.adoc[]
+endif::[]
 [[link-gen-systemproperties]]
-include::./../gen/gen_systemproperties.adoc[] 
+include::./../gen/gen_systemproperties.adoc[]
 
 ==== Scheduling definitions
 ifdef::showhintaboutgenerated[]
-include::./../shared/hint_generated_schedule.adoc[] 
-endif::[] 
+include::./../shared/hint_generated_schedule.adoc[]
+endif::[]
 [[link-gen-scheduling]]
-include::./../gen/gen_scheduling.adoc[] 
+include::./../gen/gen_scheduling.adoc[]

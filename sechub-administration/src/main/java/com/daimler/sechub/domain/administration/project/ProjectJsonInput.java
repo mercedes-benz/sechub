@@ -27,11 +27,6 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	public static final String PROPERTY_DESCRIPTION = "description";
 	public static final String PROPERTY_WHITELIST = "whiteList";
 	public static final String PROPERTY_OWNER = "owner";
-	/**
-	 * Just an reusable instance for JSON from calls - so we do not need to create
-	 * always an empty object
-	 */
-	public static final ProjectJsonInput OBJECT = new ProjectJsonInput();
 
 	private String apiVersion;
 	private String name;

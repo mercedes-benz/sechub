@@ -586,6 +586,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#developer-administration-ui">2.3. Developer administration UI</a></li>
 <li><a href="#integration-test-variant">2.4. Integration test variant</a></li>
+<li><a href="#branching-model">2.5. Branching model</a></li>
 </ul>
 </li>
 <li><a href="#section-infrastructure-setup">3. SecHub infrastructure setup</a>
@@ -604,7 +605,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#general-configuration-properties">3.1.2. General configuration properties</a></li>
+<li><a href="#general-configuration">3.1.2. General configuration</a></li>
 <li><a href="#scheduling-definitions">3.1.3. Scheduling definitions</a></li>
 <li><a href="#sechub-mock-options">3.1.4. Configuration properties for mocked adapters</a></li>
 </ul>
@@ -819,6 +820,10 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-usecase-UC_027">9.1.28. UC_027-Admin grants admin rights to user</a></li>
 <li><a href="#section-usecase-UC_028">9.1.29. UC_028-Admin revokes admin rights from an admin</a></li>
 <li><a href="#section-usecase-UC_029">9.1.30. UC_029-Admin lists all admins</a></li>
+<li><a href="#section-usecase-UC_030">9.1.31. UC_030-Admin disables job processing in scheduler</a></li>
+<li><a href="#section-usecase-UC_031">9.1.32. UC_031-Admin enables scheduler job processing</a></li>
+<li><a href="#section-usecase-UC_032">9.1.33. UC_032-Admin get scheduler status</a></li>
+<li><a href="#section-usecase-UC_033">9.1.34. UC_033-Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -835,6 +840,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#sechub-execution-2">10.1.1.4. Sechub execution</a></li>
 <li><a href="#sign-up-2">10.1.1.5. Sign up</a></li>
 <li><a href="#job-administration-2">10.1.1.6. Job administration</a></li>
+<li><a href="#other-2">10.1.1.7. Other</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">10.1.2. Admin lists all users</a></li>
@@ -869,6 +875,10 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#admin-deletes-user-signup">10.1.26. Admin deletes user signup</a></li>
 <li><a href="#user-requests-new-api-token">10.1.27. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">10.1.28. Admin lists all running jobs</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">10.1.29. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">10.1.30. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">10.1.31. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">10.1.32. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -961,7 +971,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <p>You can get more information about from <a href="https://daimler.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
-<p>The project ist hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
+<p>The project is hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
 </div>
 </td>
 </tr>
@@ -1338,10 +1348,30 @@ following arguments:</p>
 <div class="content">
 <pre>-Dsechub.developertools.admin.server=localhost <i class="conum" data-value="1"></i><b>(1)</b>
 -Dsechub.developertools.admin.serverport=8443<i class="conum" data-value="2"></i><b>(2)</b>
--Dsechub.developertools.admin.userid=int-test_superadmin<i class="conum" data-value="3"></i><b>(3)</b>
--Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd <i class="conum" data-value="3"></i><b>(3)</b>
--Dsechub.developertools.admin.integrationtestserver=true <i class="conum" data-value="4"></i><b>(4)</b></pre>
+-Dsechub.developertools.admin.integrationtestserver=true <i class="conum" data-value="3"></i><b>(3)</b></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Environment entries:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SECHUB_ADMIN_USERID=int-test_superadmin<i class="conum" data-value="4"></i><b>(4)</b>
+SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd<i class="conum" data-value="4"></i><b>(4)</b></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+We use environment variables for credentials because otherwise everybody
+     able to list running processes can see the user id and API token&#8230;&#8203;
+</td>
+</tr>
+</table>
 </div>
 <div class="colist arabic">
 <table>
@@ -1357,32 +1387,66 @@ you should normally set to <code>8443</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>These are the credentials used for administrative access. For integration
-tests we got fix credentials - <strong>so never use in production!</strong></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Enable special integration test actions - e.g. create test data, start jobs
 etc.</td>
 </tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
 <tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-At the moment we have no environment entries for credential on starting
-         developer admin UI <em>(will be handled by <a href="https://github.com/Daimler/sechub/issues/8" class="bare">https://github.com/Daimler/sechub/issues/8</a>)</em>.<br>
-         <br>
-         So when using develoepr admin UI at production, ensure you are the
-         only user able to see your process hierarchy in mean time!
-</td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>These are the credentials used for administrative access. For integration
+tests we got fix credentials - <strong>so never use in production!</strong></td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect2">
+<h3 id="branching-model">2.5. Branching model</h3>
+<div class="paragraph">
+<p>We got following branch types:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name-Pattern</th>
+<th class="tableblock halign-left valign-top">Parent branch</th>
+<th class="tableblock halign-left valign-top">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is the leading branch. Versions, Tags etc. are done here!
+                                            Direct commits to master have to be avoided. Version build
+                                            is done here. Hotfixes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hotfix</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hotfix branch. This is the branch we use for hot fixes.
+                                       So we ensure changes from current development are not in a hotfix.</p>
+<p class="tableblock">                                       After a hotfix has been merged to master the changes must be applied
+                                       to development branch as well.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">develop</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">master</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development branch. This is the branch we use for development.
+                                       The stuff inside will be alway part of next release. So only
+                                       smaller features should be committed here directly. Bigger ones
+                                       must be inside a dedicated feature-branch!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">feature-${issue}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">develop</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When we develop a feature which is bigger and where its not clear if it will be inside next release, we create a feature branch.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1496,7 +1560,27 @@ write some junit tests using TestAPI.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="general-configuration-properties">3.1.2. General configuration properties</h4>
+<h4 id="general-configuration">3.1.2. General configuration</h4>
+<div class="paragraph">
+<p>SecHub can be configured  by keys on server startup.
+Using the spring <code>@Value</code> annotation we are able to
+use these keys as Java system properties but also as environment entries.</p>
+</div>
+<div class="paragraph">
+<p>E.g. a key like <code>sechub.server.baseurl</code> can be set with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java ... -Dsechub.server.baseurl=https://sechub.example.org</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or with an environment entry <code>SECHUB_SERVER_BASEURL</code> which
+is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
+</div>
+<div class="paragraph">
+<p>The next text blocks describe the keys available on SecHub:</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -1513,29 +1597,7 @@ The system properties described here are <strong>automatically</strong>
 </table>
 </div>
 <table id="link-gen-systemproperties" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Scope 'administration'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.administration.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base url for server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Scope 'anonymous'</caption>
+<caption class="title">Table 1. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1557,7 +1619,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Scope 'checkmarx'</caption>
+<caption class="title">Table 2. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1610,7 +1672,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 4. Scope 'development'</caption>
+<caption class="title">Table 3. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1632,7 +1694,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 5. Scope 'initial'</caption>
+<caption class="title">Table 4. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1664,7 +1726,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 6. Scope 'mock'</caption>
+<caption class="title">Table 5. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1686,7 +1748,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 7. Scope 'nessus'</caption>
+<caption class="title">Table 6. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1763,7 +1825,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 8. Scope 'netsparker'</caption>
+<caption class="title">Table 7. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1835,7 +1897,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 9. Scope 'notification'</caption>
+<caption class="title">Table 8. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1857,7 +1919,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 10. Scope 's'</caption>
+<caption class="title">Table 9. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1889,7 +1951,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 11. Scope 'scheduler'</caption>
+<caption class="title">Table 10. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1912,6 +1974,28 @@ The system properties described here are <strong>automatically</strong>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 11. Scope 'sec'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of sechub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2880,8 +2964,8 @@ The name should provide information what the service does.</p>
 <div class="sect2">
 <h3 id="restcontroller">6.6. RestController</h3>
 <div class="paragraph">
-<p>Rest controller should not do any business logic by themselves, but delegate only to dedicated
-(rest) controller.</p>
+<p>Rest controller should not do any business logic by themselves, but delegate
+only to a dedicated service which contains the logic and does the execution.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3267,7 +3351,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="1692">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="2100">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -3839,6 +3923,22 @@ The complete documentation about use cases is generated. If you want to change c
 <h5 id="other">9.1.1.9. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_032">UC_032-Admin get scheduler status</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_033">UC_033-Admin lists status information</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -5709,6 +5809,244 @@ user signup is accepted by admin.</p>
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_029">REST API documentation for usecase UC_029-Admin lists all admins </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_030">9.1.31. UC_030-Admin disables job processing in scheduler</h4>
+<div class="paragraph">
+<p>An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to stop (pause) scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SchedulerAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable processing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disables job processing inside scheduler database</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.schedule.config.SchedulerConfigService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that scheduler job processing has been disabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_030">REST API documentation for usecase UC_030-Admin disables job processing in scheduler </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_031">9.1.32. UC_031-Admin enables scheduler job processing</h4>
+<div class="paragraph">
+<p>An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to start (unpause) scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>enableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SchedulerAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to enable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>enableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable processing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enables job processing inside scheduler database</p>
+<p class="tableblock"><em>This step is defined at method <code>enableJobProcessing</code> in class `com.daimler.sechub.domain.schedule.config.SchedulerConfigService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that scheduler job processing has been enabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_031">REST API documentation for usecase UC_031-Admin enables scheduler job processing </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_032">9.1.33. UC_032-Admin get scheduler status</h4>
+<div class="paragraph">
+<p>An administrator wants to update information about scheduler status</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorTriggersRefreshOfSchedulerStatus</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerRefreshOfSchedulerStatus</code> in class `com.daimler.sechub.domain.administration.scheduler.SchedulerAdministrationRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_032">REST API documentation for usecase UC_032-Admin get scheduler status </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_033">9.1.34. UC_033-Admin lists status information</h4>
+<div class="paragraph">
+<p>An administrator fetches current known status information about sechub</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorListsStatusInformation</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to list status information about sechub</p>
+<p class="tableblock"><em>This step is defined at method <code>listStatusInformation</code> in class `com.daimler.sechub.domain.administration.status.StatusAdministrationRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_033">REST API documentation for usecase UC_033-Admin lists status information </a></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -5874,6 +6212,28 @@ The complete documentation about REST API is generated. If you want to change co
 <ul>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other-2">10.1.1.7. Other</h5>
+<div class="paragraph">
+<p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_030">REST API for UC_030-Admin disables job processing in scheduler </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_031">REST API for UC_031-Admin enables scheduler job processing </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_032">REST API for UC_032-Admin get scheduler status </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_033">REST API for UC_033-Admin lists status information </a></p>
 </li>
 </ul>
 </div>
@@ -6177,7 +6537,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/14673c7c-27a8-4539-9f83-93b621627af5' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78fe5bf0-87bd-4c0f-a268-ad43031143f0' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6695,7 +7055,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2844ea0f-640c-43e3-af96-4525b51e31b2/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf1cdc82-53b7-4db1-8bd8-ebc810770823/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -6741,7 +7101,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eedc601d-80b3-4722-aadb-942bdf7d424c/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/76d93bd0-84ac-45f6-8d49-a3990cbc0602/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6841,7 +7201,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b9870341-633e-4a5a-bea0-11616a4391a4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab8668a2-3732-4b19-a593-a1cb5e43b2da' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6858,7 +7218,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93a2682c-d505-493c-a426-6ea6251208aa' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b635962c-ae2e-4d14-8c0c-bd2f12c70139' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
@@ -6871,7 +7231,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93c4b4cb-e29b-4c69-bf64-ec18147b5838' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/be1fd177-fee6-4701-b974-e6492e49a254' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -7111,6 +7471,95 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/running' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">10.1.29. Admin disables job processing in scheduler</h4>
+<div id="section-ucrestdoc-uc-UC_030" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
+</div>
+<div id="section-ucrestdoc-UC_030-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/disable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-enables-scheduler-job-processing">10.1.30. Admin enables scheduler job processing</h4>
+<div id="section-ucrestdoc-uc-UC_031" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
+</div>
+<div id="section-ucrestdoc-UC_031-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/enable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-get-scheduler-status">10.1.31. Admin get scheduler status</h4>
+<div id="section-ucrestdoc-uc-UC_032" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
+</div>
+<div id="section-ucrestdoc-UC_032-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/status/refresh' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-status-information">10.1.32. Admin lists status information</h4>
+<div id="section-ucrestdoc-uc-UC_033" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
+</div>
+<div id="section-ucrestdoc-UC_033-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status key identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/status' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7397,24 +7846,10 @@ and <code>SERECO</code> is returning an expected traffic light and also the corr
 <div class="sect2">
 <h3 id="section-howto-configure-mock-behaviours">12.2. Howto configure mock behaviours</h3>
 <div class="paragraph">
-<p>The <code>MockedAdapterSetupService</code> reads a JSON configfile from file path. The default
-setup is generated by <code>MockSetupGeneratorApplication.java</code></p>
+<p>The <code>MockedAdapterSetupService</code> reads a JSON configfile from file path.</p>
 </div>
 <div class="paragraph">
-<p>Per default it&#8217;s located at <code>/sechub-other/mockdata/mockdata_setup.json</code></p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Please change the <code>MockSetupGeneratorApplication.java</code> and start as java application
-to generate the file. This prevents making typos etc.
-</td>
-</tr>
-</table>
+<p>Default file is located at <code>/sechub-other/mockdata/mockdata_setup.json</code></p>
 </div>
 <div class="paragraph">
 <p>If you want to use another location, use system property defined in
@@ -7485,7 +7920,7 @@ thow an adapter execution. Interesting for tests</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-06-26 14:39:34 CEST
+Last updated 2019-08-28 12:16:17 CEST
 </div>
 </div>
 </body>

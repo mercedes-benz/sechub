@@ -65,7 +65,7 @@ public class ProjectAdministrationRestController {
 	ProjectRepository repository;
 
 	@Autowired
-	private CreateProjectInputValidator validator;
+	CreateProjectInputValidator validator;
 
 	/* @formatter:off */
 	@UseCaseAdministratorCreatesProject(

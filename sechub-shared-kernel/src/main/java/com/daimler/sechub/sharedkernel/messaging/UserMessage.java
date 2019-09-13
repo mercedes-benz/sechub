@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This configuration is used by communication between (api) authorization domain and administration - and maybe others")
 public class UserMessage implements JSONable<UserMessage> {
 
-	public static final UserMessage OBJECT = new UserMessage();
-
 	private String emailAdress;
 
 	private String userId;

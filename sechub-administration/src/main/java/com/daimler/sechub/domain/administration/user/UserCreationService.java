@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
 import com.daimler.sechub.domain.administration.signup.Signup;
 import com.daimler.sechub.domain.administration.signup.SignupRepository;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -38,7 +38,7 @@ public class UserCreationService {
 	UserContextService userContext;
 
 	@Autowired
-	AdministrationEnvironment environment;
+	SecHubEnvironment environment;
 
 	@Autowired
 	SignupRepository selfRegistrationRepository;
@@ -131,7 +131,7 @@ public class UserCreationService {
 		 * the link he/she is not able to use fetched api token because not knowing
 		 * which userid...
 		 */
-		String linkWithOneTimeToken = environment.getAdministrationBaseURL()
+		String linkWithOneTimeToken = environment.getServerBaseUrl()
 				+ AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN + "/" + user.getOneTimeToken();
 
 		userMessage.setLinkWithOneTimeToken(linkWithOneTimeToken);

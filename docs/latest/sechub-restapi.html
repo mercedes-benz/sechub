@@ -536,6 +536,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#sechub-execution">2.1.1.4. Sechub execution</a></li>
 <li><a href="#sign-up">2.1.1.5. Sign up</a></li>
 <li><a href="#job-administration">2.1.1.6. Job administration</a></li>
+<li><a href="#other">2.1.1.7. Other</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">2.1.2. Admin lists all users</a></li>
@@ -570,6 +571,10 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#admin-deletes-user-signup">2.1.26. Admin deletes user signup</a></li>
 <li><a href="#user-requests-new-api-token">2.1.27. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">2.1.28. Admin lists all running jobs</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.1.29. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.1.30. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.1.31. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.1.32. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -624,7 +629,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <p>You can get more information about from <a href="https://daimler.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
-<p>The project ist hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
+<p>The project is hosted at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a></p>
 </div>
 </td>
 </tr>
@@ -659,7 +664,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-79a3235-dirty-latest</p>
+0.0.0-4c7bcbc-latest</p>
 </div>
 <hr>
 </div>
@@ -832,6 +837,28 @@ It makes usage of sechub much more comfortable!</p>
 <ul>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other">2.1.1.7. Other</h5>
+<div class="paragraph">
+<p>All other use cases</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_030">REST API for UC_030-Admin disables job processing in scheduler </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_031">REST API for UC_031-Admin enables scheduler job processing </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_032">REST API for UC_032-Admin get scheduler status </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_033">REST API for UC_033-Admin lists status information </a></p>
 </li>
 </ul>
 </div>
@@ -1135,7 +1162,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/14673c7c-27a8-4539-9f83-93b621627af5' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78fe5bf0-87bd-4c0f-a268-ad43031143f0' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1653,7 +1680,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2844ea0f-640c-43e3-af96-4525b51e31b2/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf1cdc82-53b7-4db1-8bd8-ebc810770823/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -1699,7 +1726,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/eedc601d-80b3-4722-aadb-942bdf7d424c/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/76d93bd0-84ac-45f6-8d49-a3990cbc0602/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1799,7 +1826,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b9870341-633e-4a5a-bea0-11616a4391a4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab8668a2-3732-4b19-a593-a1cb5e43b2da' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -1816,7 +1843,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93a2682c-d505-493c-a426-6ea6251208aa' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b635962c-ae2e-4d14-8c0c-bd2f12c70139' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
@@ -1829,7 +1856,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/93c4b4cb-e29b-4c69-bf64-ec18147b5838' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/be1fd177-fee6-4701-b974-e6492e49a254' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -2069,6 +2096,95 @@ It makes usage of sechub much more comfortable!</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/running' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">2.1.29. Admin disables job processing in scheduler</h4>
+<div id="section-ucrestdoc-uc-UC_030" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
+</div>
+<div id="section-ucrestdoc-UC_030-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/disable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-enables-scheduler-job-processing">2.1.30. Admin enables scheduler job processing</h4>
+<div id="section-ucrestdoc-uc-UC_031" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
+</div>
+<div id="section-ucrestdoc-UC_031-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/enable/job-processing' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-get-scheduler-status">2.1.31. Admin get scheduler status</h4>
+<div id="section-ucrestdoc-uc-UC_032" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
+</div>
+<div id="section-ucrestdoc-UC_032-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/status/refresh' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-status-information">2.1.32. Admin lists status information</h4>
+<div id="section-ucrestdoc-uc-UC_033" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
+</div>
+<div id="section-ucrestdoc-UC_033-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status key identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Status value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/status' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>

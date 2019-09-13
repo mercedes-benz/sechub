@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -31,7 +31,7 @@ public class AnonymousUserRequestsNewApiTokenService {
 	UserRepository userRepository;
 
 	@Autowired
-	AdministrationEnvironment environment;
+	SecHubEnvironment environment;
 
 	@Autowired
 	OneTimeTokenGenerator oneTimeTokenGenerator;
@@ -63,7 +63,7 @@ public class AnonymousUserRequestsNewApiTokenService {
 		 * the link he/she is not able to use fetched api token because not knowing
 		 * which userid...
 		 */
-		String linkWithOneTimeToken = environment.getAdministrationBaseURL()
+		String linkWithOneTimeToken = environment.getServerBaseUrl()
 				+ AdministrationAPIConstants.API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN + "/" + user.getOneTimeToken();
 
 		userMessage.setLinkWithOneTimeToken(linkWithOneTimeToken);

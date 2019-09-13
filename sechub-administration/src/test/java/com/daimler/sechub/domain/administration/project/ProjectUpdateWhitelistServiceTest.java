@@ -20,6 +20,8 @@ import org.junit.rules.ExpectedException;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.validation.URIValidation;
+import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class ProjectUpdateWhitelistServiceTest {
 
@@ -33,6 +35,7 @@ public class ProjectUpdateWhitelistServiceTest {
 	private Set<URI> whitelist;
 	private Project project;
 	private DomainMessageService eventBus;
+	private URIValidation uriValidation;
 
 	@Before
 	public void before() throws Exception {
@@ -41,16 +44,18 @@ public class ProjectUpdateWhitelistServiceTest {
 		repository = mock(ProjectRepository.class);
 		userContext = mock(UserContextService.class);
 		eventBus = mock(DomainMessageService.class);
+		uriValidation = mock(URIValidation.class);
 
 		serviceToTest.repository=repository;
 		serviceToTest.userContext=userContext;
 		serviceToTest.eventBus=eventBus;
-
+		serviceToTest.uriValidation=uriValidation;
 
 		project = mock(Project.class);
 		whitelist=new LinkedHashSet<>();
 		whitelist.add(new URI("127.0.0.1"));
 		when(project.getWhiteList()).thenReturn(whitelist);
+		when(uriValidation.validate(any())).thenReturn(new ValidationResult());
 	}
 
 

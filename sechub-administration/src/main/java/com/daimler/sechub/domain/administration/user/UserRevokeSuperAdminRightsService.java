@@ -10,8 +10,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.daimler.sechub.domain.administration.AdministrationEnvironment;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
@@ -37,7 +37,7 @@ public class UserRevokeSuperAdminRightsService {
 	AuditLogService auditLogService;
 
 	@Autowired
-	AdministrationEnvironment administrationEnvironment;
+	SecHubEnvironment secHubEnvironment;
 
 	/* @formatter:off */
 	@Validated
@@ -79,7 +79,7 @@ public class UserRevokeSuperAdminRightsService {
 
 	@IsSendingAsyncMessage(MessageID.USER_NO_LONGER_SUPERADMIN)
 	private void informUserNoLongerSuperadmin(User user) {
-		eventBusService.sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAdress(), administrationEnvironment.getAdministrationBaseURL()));
+		eventBusService.sendAsynchron(DomainMessageFactory.createUserNoLongerSuperAdmin(user.getName(), user.getEmailAdress(), secHubEnvironment.getServerBaseUrl()));
 	}
 
 	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
