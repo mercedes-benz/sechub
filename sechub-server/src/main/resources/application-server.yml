@@ -1,0 +1,11 @@
+server:
+  ssl:
+    keyStoreType:
+      ${SECHUB_SERVER_SSL_KEYSTORE_TYPE}
+    key-store:
+       # we use a configurable keystore location, e.g. "file:/var/server/certificate/prod-keystore.p12" 
+       ${SECHUB_SERVER_SSL_KEYSTORE_LOCATION}
+    key-store-password:
+       ${SECHUB_SERVER_SSL_KEYSTORE_PASSWORD}
+    key-alias:
+       ${SECHUB_SERVER_SSL_KEYSTORE_ALIAS}
