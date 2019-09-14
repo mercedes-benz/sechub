@@ -2,3 +2,4 @@
 spring.profiles.include:
  - postgres
  - real_products
+ - server
