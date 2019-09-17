@@ -11,6 +11,8 @@ public enum ConfigurationSetup {
 
 	SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport",true),
 
+	SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol",true),
+
 	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),;
 
 

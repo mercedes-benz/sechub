@@ -113,4 +113,9 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 		outputPanelUI.output("ERROR:\n" + error);
 	}
 
+	@Override
+	public String getProtocol() {
+		return credentialUI.protocolField.getText();
+	}
+
 }

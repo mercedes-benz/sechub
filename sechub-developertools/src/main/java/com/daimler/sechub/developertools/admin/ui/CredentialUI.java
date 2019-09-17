@@ -17,7 +17,9 @@ public class CredentialUI {
 	JPasswordField passwordField;
 	JTextField useridField;
 	JTextField serverField;
+	JTextField protocol;
 	JSpinner serverPortSpinner;
+	JTextField protocolField;
 	private JPanel panel;
 
 	public JPanel getPanel() {
@@ -26,6 +28,7 @@ public class CredentialUI {
 
 	public CredentialUI() {
 		String port = ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getStringValue("443");
+		String protocol = ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getStringValue("https");
 		String server = ConfigurationSetup.SECHUB_ADMIN_SERVER.getStringValueOrFail();
 		String userId = ConfigurationSetup.SECHUB_ADMIN_USERID.getStringValueOrFail();
 		String apiToken = ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getStringValueOrFail();
@@ -34,6 +37,8 @@ public class CredentialUI {
 		useridField= new JTextField(userId);
 		passwordField= new JPasswordField(apiToken);
 		serverField = new JTextField(server);
+
+		protocolField = new JTextField(protocol);
 
 		serverPortSpinner = new JSpinner(new SpinnerNumberModel());
 		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(serverPortSpinner);
@@ -53,6 +58,7 @@ public class CredentialUI {
 		serverPortSpinner.setPreferredSize(new Dimension(100,30));
 
 		panel.add(new JLabel("Server:"));
+		panel.add(protocolField);
 		panel.add(serverField);
 		panel.add(new JLabel("Port:"));
 		panel.add(serverPortSpinner);
@@ -66,11 +72,13 @@ public class CredentialUI {
 		useridField.setEnabled(false);
 		passwordField.setEnabled(false);
 		serverPortSpinner.setEnabled(false);
+		protocolField.setEnabled(false);
 
 		serverField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER.getSystemPropertyid());
 		useridField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_USERID.getSystemPropertyid());
 		passwordField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getSystemPropertyid());
 		serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyid());
+		protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyid());
 	}
 
 	public int getPortNumber() {

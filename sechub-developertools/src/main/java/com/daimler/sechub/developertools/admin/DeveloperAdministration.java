@@ -70,7 +70,7 @@ public class DeveloperAdministration {
 		if (urlBuilder == null) {
 			int port = provider.getPort();
 			String server = provider.getServer();
-			urlBuilder = new TestURLBuilder("https", port, server);
+			urlBuilder = new TestURLBuilder(provider.getProtocol(), port, server);
 		}
 		return urlBuilder;
 	}
