@@ -39,5 +39,7 @@ include::launchconfig_common_server_header.adoc[]
 
 [WARNING]
 ====
-Your server will not start if you forget an adapter key!
+Your server will not start if you forget an adapter key !
+(this will change in future when sechub becomes more modular)
 ====
+
