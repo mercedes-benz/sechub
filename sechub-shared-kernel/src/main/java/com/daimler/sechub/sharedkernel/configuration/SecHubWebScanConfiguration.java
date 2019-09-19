@@ -11,9 +11,11 @@ import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration
 public class SecHubWebScanConfiguration {
 
 	public static final String PROPERTY_URIS = "uris";
+	public static final String PROPERTY_LOGIN = "login";
 
-	private List<URI> uris = new ArrayList<>();
 	private Optional<WebLoginConfiguration> login = Optional.empty();
+	private List<URI> uris = new ArrayList<>();
+
 
 	public List<URI> getUris() {
 		return uris;
