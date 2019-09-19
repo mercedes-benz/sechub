@@ -1,0 +1,38 @@
+{
+    "apiVersion": "1.0",
+    "webScan": {
+        "uris": [
+            "https://productfailure.demo.example.org"
+        ],
+        "login": {
+            "url": "https://productfailure.demo.example.org/login",
+            "basic": {
+                "realm": "realm0",
+                "user": "user0",
+                "password": "pwd0"
+            },
+            "form": {
+                "autodetect": {
+                    "user": "user1",
+                    "password": "pwd1"
+                },
+                "script": [
+                    {
+                        "step": "input",
+                        "selector": "#example_login_userid",
+                        "value": "user2"
+                    },
+                    {
+                        "step": "input",
+                        "selector": "#example_login_pwd",
+                        "value": "pwd2"
+                    },
+                    {
+                        "step": "click",
+                        "selector": "#example_login_login_button"
+                    }
+                ]
+            }
+        }
+    }
+}
