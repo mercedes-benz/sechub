@@ -143,6 +143,7 @@ public class SchedulerRestControllerRestDocTest {
 										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
 										fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
 										fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional(),
 										fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
