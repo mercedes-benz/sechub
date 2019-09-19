@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
-import com.daimler.sechub.adapter.AbstractAdapterConfig;
-import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
+import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.support.MessageDigestSupport;
 
-public class NetsparkerConfig extends AbstractAdapterConfig implements NetsparkerAdapterConfig{
+public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
 
 	private String licenseID;
 
@@ -13,7 +13,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 	private String agentGroupName;
 
 	private String websiteName;
-	
+
 	@Override
 	public String getLicenseID() {
 		return licenseID;
@@ -46,8 +46,9 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		return new NetsparkerConfigBuilder();
 	}
 
+
 	public static class NetsparkerConfigBuilder
-			extends AbstractAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerAdapterConfig> {
+			extends AbstractWebScanAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerConfig> {
 
 		MessageDigestSupport md5Builder = new MessageDigestSupport();
 
@@ -74,7 +75,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		}
 
 		@Override
-		protected void customBuild(NetsparkerAdapterConfig adapterConfig) {
+		protected void customBuild(NetsparkerConfig adapterConfig) {
 			if (! (adapterConfig instanceof NetsparkerConfig)) {
 				throw new IllegalArgumentException("not a netsparker config:"+adapterConfig);
 			}
@@ -104,7 +105,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		}
 
 		@Override
-		protected NetsparkerAdapterConfig buildInitialConfig() {
+		protected NetsparkerConfig buildInitialConfig() {
 			return new NetsparkerConfig();
 		}
 
