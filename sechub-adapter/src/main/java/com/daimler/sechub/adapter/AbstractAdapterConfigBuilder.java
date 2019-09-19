@@ -111,8 +111,12 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	@SuppressWarnings("unchecked")
 	public final B setPassword(String password) {
-		this.password=CryptoAccess.CRYPTO_STRING.seal(password);
+		this.password=encrypt(password);
 		return (B) this;
+	}
+
+	protected SealedObject encrypt(String password) {
+		return CryptoAccess.CRYPTO_STRING.seal(password);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -251,6 +255,11 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		return config;
 	}
 
+	/**
+	 * Customization method - is package private, so can only be changed inside
+	 * main adapter package
+	 * @param config
+	 */
 	void packageInternalCustomBuild(C config) {
 		/* per default do nothing*/
 	}

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
-import com.daimler.sechub.adapter.AdapterConfig;
+import com.daimler.sechub.adapter.WebScanAdapterConfig;
 
-public interface NetsparkerAdapterConfig extends AdapterConfig{
+public interface NetsparkerAdapterConfig extends WebScanAdapterConfig{
 
 	String getLicenseID();
 
@@ -15,6 +15,6 @@ public interface NetsparkerAdapterConfig extends AdapterConfig{
 
 	boolean hasAgentGroup();
 
-	
+
 
 }
