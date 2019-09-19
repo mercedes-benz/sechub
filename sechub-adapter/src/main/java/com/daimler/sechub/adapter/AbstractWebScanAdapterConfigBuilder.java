@@ -18,8 +18,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 		}
 
 		public class FormLoginBuilder{
-			public FormAutomatedLoginBuilder automated() {
-				return new FormAutomatedLoginBuilder();
+			public FormAutoDetectLoginBuilder autoDetect() {
+				return new FormAutoDetectLoginBuilder();
 			}
 
 			public FormScriptLoginBuilder script() {
@@ -67,16 +67,16 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 			}
 		}
 
-		public class FormAutomatedLoginBuilder{
+		public class FormAutoDetectLoginBuilder{
 
-			private FormAutomatedLoginConfig formAutomatedLoginConfig = new FormAutomatedLoginConfig();
+			private FormAutoDetectLoginConfig formAutomatedLoginConfig = new FormAutoDetectLoginConfig();
 
-			public FormAutomatedLoginBuilder username(String user) {
+			public FormAutoDetectLoginBuilder username(String user) {
 				formAutomatedLoginConfig.user=encrypt(user);
 				return this;
 			}
 
-			public FormAutomatedLoginBuilder password(String password) {
+			public FormAutoDetectLoginBuilder password(String password) {
 				formAutomatedLoginConfig.password=encrypt(password);
 				return this;
 			}

@@ -3,6 +3,7 @@ package com.daimler.sechub.adapter;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -13,7 +14,8 @@ import javax.crypto.SealedObject;
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;
-	String base64Token;
+	SealedObject apiToken;
+	private SealedObject base64Token;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
 	int timeOutInMilliseconds;
@@ -39,6 +41,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	protected AbstractAdapterConfig() {
 	}
+
 
 
 
@@ -126,7 +129,12 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	@Override
 	public final String getBase64Token() {
-		return base64Token;
+		if (base64Token==null) {
+			String tokenString = user + ":" + CryptoAccess.CRYPTO_STRING.unseal(apiToken);
+			byte[] tokenBytes = tokenString.getBytes();
+			base64Token =  CryptoAccess.CRYPTO_STRING.seal(Base64.getEncoder().encodeToString(tokenBytes));
+		}
+		return CryptoAccess.CRYPTO_STRING.unseal(base64Token);
 	}
 
 	@Override
@@ -142,6 +150,10 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	@Override
 	public final String getPassword() {
 		return CryptoAccess.CRYPTO_STRING.unseal(password);
+	}
+
+	public final String getApiToken() {
+		return CryptoAccess.CRYPTO_STRING.unseal(apiToken);
 	}
 
 	@Override

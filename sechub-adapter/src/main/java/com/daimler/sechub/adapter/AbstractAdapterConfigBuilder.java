@@ -32,7 +32,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private String traceID;
 	private String user;
-	private String apiToken;
+	private SealedObject apiToken;
 	private String productBaseURL;
 
 	private int timeToWaitForNextCheckOperationInMinutes = DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES;// one minute check default
@@ -67,6 +67,17 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	 */
 	protected URIShrinkSupport createURIShrinker() {
 		return new URIShrinkSupport();
+	}
+
+	/**
+	 * Configure this builder by given strategy
+	 * @param strategy
+	 * @return builder (configured by strategy)
+	 */
+	@SuppressWarnings("unchecked")
+	public final B configure(AdapterConfigurationStrategy strategy) {
+		strategy.configure((B) this);
+		return (B) this;
 	}
 
 	/**
@@ -121,7 +132,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	@SuppressWarnings("unchecked")
 	public final B setApiToken(String apiToken) {
-		this.apiToken = apiToken;
+		this.apiToken = encrypt(apiToken);
 		return (B) this;
 	}
 
@@ -228,10 +239,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		}
 		AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
 		abstractAdapterConfig.productBaseURL = productBaseURL;
-
-		String tokenString = user + ":" + apiToken;
-		byte[] tokenBytes = tokenString.getBytes();
-		abstractAdapterConfig.base64Token = Base64.getEncoder().encodeToString(tokenBytes);
+		abstractAdapterConfig.apiToken=apiToken;
 
 		abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
 		abstractAdapterConfig.timeOutInMilliseconds = scanResultTimeOutInMinutes * 60 * 1000;

@@ -13,7 +13,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 	@Test
 	public void login_basic() {
 		/* @formatter:off */
-		TestCodeScanAdapterConfig x = new TestAbstractCodeScanAdapterConfigBuilder().
+		TestWebScanAdapterConfig x = new TestAbstractWebScanAdapterConfigBuilder().
 				login().
 					basic().
 						username("user1").
@@ -36,9 +36,9 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 	@Test
 	public void login_form_automated() {
 		/* @formatter:off */
-		TestCodeScanAdapterConfig x = new TestAbstractCodeScanAdapterConfigBuilder().
+		TestWebScanAdapterConfig x = new TestAbstractWebScanAdapterConfigBuilder().
 				login().
-					form().automated().
+					form().autoDetect().
 						username("user1").
 						password("passwd1").
 				endLogin()
@@ -49,15 +49,15 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 		assertNotNull(x);
 		LoginConfig config = x.getLoginConfig();
 		assertNotNull(config);
-		assertTrue(null, config.isFormAutomated());
-		assertEquals("user1",config.asFormAutomated().getUser());
-		assertEquals("passwd1",config.asFormAutomated().getPassword());
+		assertTrue(null, config.isFormAutoDetect());
+		assertEquals("user1",config.asFormAutoDetect().getUser());
+		assertEquals("passwd1",config.asFormAutoDetect().getPassword());
 	}
 
 	@Test
 	public void login_form_scripted() {
 		/* @formatter:off */
-		TestCodeScanAdapterConfig x = new TestAbstractCodeScanAdapterConfigBuilder().
+		TestWebScanAdapterConfig x = new TestAbstractWebScanAdapterConfigBuilder().
 				login().
 					form().script().
 					    addStep("input").select("#user_id").enterValue("user1").endStep().
@@ -99,18 +99,18 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 
 
 
-	private class TestAbstractCodeScanAdapterConfigBuilder extends
-			AbstractWebScanAdapterConfigBuilder<TestAbstractCodeScanAdapterConfigBuilder, TestCodeScanAdapterConfig> {
+	private class TestAbstractWebScanAdapterConfigBuilder extends
+			AbstractWebScanAdapterConfigBuilder<TestAbstractWebScanAdapterConfigBuilder, TestWebScanAdapterConfig> {
 
 		@Override
-		protected void customBuild(TestCodeScanAdapterConfig config) {
+		protected void customBuild(TestWebScanAdapterConfig config) {
 
 		}
 
 
 		@Override
-		protected TestCodeScanAdapterConfig buildInitialConfig() {
-			return new TestCodeScanAdapterConfig();
+		protected TestWebScanAdapterConfig buildInitialConfig() {
+			return new TestWebScanAdapterConfig();
 		}
 
 		@Override
@@ -120,7 +120,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 
 	}
 
-	private class TestCodeScanAdapterConfig extends AbstractWebScanAdapterConfig {
+	private class TestWebScanAdapterConfig extends AbstractWebScanAdapterConfig {
 
 	}
 }

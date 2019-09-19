@@ -16,6 +16,7 @@ import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.nessus.NessusAdapter;
 import com.daimler.sechub.adapter.nessus.NessusAdapterConfig;
 import com.daimler.sechub.adapter.nessus.NessusConfig;
+import com.daimler.sechub.domain.scan.TargetIdentifyingMultiInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.AbstractInfrastructureScanProductExecutor;
@@ -47,13 +48,13 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 	@Value("${sechub.adapter.nessus.scanresultcheck.timeout.minutes:-1}")
 	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
 	private int scanResultCheckTimeOutInMinutes;
-	
+
 	@Autowired
 	NessusAdapter nessusAdapter;
 
 	@Autowired
 	NessusInstallSetup installSetup;
-	
+
 	@Override
 	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, NessusInstallSetup setup, TargetRegistryInfo data)
 			throws Exception {
@@ -64,17 +65,14 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 		LOG.debug("Trigger nessus adapter execution for target type {} and setup {} ", targetType ,setup);
 		/* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
+				configure(new TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(setup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-				setUser(setup.getUserId(targetType)).
-				setPassword(setup.getPassword(targetType)).
-				setTrustAllCertificates(setup.isHavingUntrustedCertificate(targetType)).
 				setProxyHostname(proxyHostname).
 				setProxyPort(proxyPort).
 				setTraceID(context.getTraceLogIdAsString()).
 				/* TODO Albert Tregnaghi, 2018-02-13:policy id - always default id - what about config.getPoliciyID() ?!?! */
 				setPolicyID(setup.getDefaultPolicyId()).
-				setProductBaseUrl(setup.getBaseURL(targetType)).
 				setTargetIPs(data.getIPs()).
 				setTargetURIs(data.getURIs()).build();
 		/* @formatter:on */
@@ -107,6 +105,6 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 		return infraScan.get().getIps();
 	}
 
-	
+
 
 }

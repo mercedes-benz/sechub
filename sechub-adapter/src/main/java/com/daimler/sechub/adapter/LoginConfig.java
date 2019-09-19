@@ -8,8 +8,8 @@ public interface LoginConfig {
 		return this instanceof BasicLoginConfig;
 	}
 
-	default boolean isFormAutomated() {
-		return this instanceof FormAutomatedLoginConfig;
+	default boolean isFormAutoDetect() {
+		return this instanceof FormAutoDetectLoginConfig;
 	}
 	default boolean isFormScript() {
 		return this instanceof FormScriptLoginConfig;
@@ -19,8 +19,8 @@ public interface LoginConfig {
 		return (BasicLoginConfig)this;
 	}
 
-	default FormAutomatedLoginConfig asFormAutomated() {
-		return (FormAutomatedLoginConfig)this;
+	default FormAutoDetectLoginConfig asFormAutoDetect() {
+		return (FormAutoDetectLoginConfig)this;
 	}
 
 	default FormScriptLoginConfig asFormScript() {
