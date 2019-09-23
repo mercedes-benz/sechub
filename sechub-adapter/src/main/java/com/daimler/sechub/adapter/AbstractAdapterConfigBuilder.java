@@ -32,7 +32,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private String traceID;
 	private String user;
-	private SealedObject apiToken;
 	private String productBaseURL;
 
 	private int timeToWaitForNextCheckOperationInMinutes = DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES;// one minute check default
@@ -42,7 +41,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private int proxyPort;
 
-	private SealedObject password;
+	private SealedObject passwordOrApiToken;
 
 	private String policyID;
 
@@ -120,20 +119,19 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		return (B) this;
 	}
 
+	/**
+	 * Set password or API token
+	 * @param password a password or an API token
+	 * @return builder
+	 */
 	@SuppressWarnings("unchecked")
-	public final B setPassword(String password) {
-		this.password=encrypt(password);
+	public final B setPasswordOrAPIToken(String password) {
+		this.passwordOrApiToken=encrypt(password);
 		return (B) this;
 	}
 
 	protected SealedObject encrypt(String password) {
 		return CryptoAccess.CRYPTO_STRING.seal(password);
-	}
-
-	@SuppressWarnings("unchecked")
-	public final B setApiToken(String apiToken) {
-		this.apiToken = encrypt(apiToken);
-		return (B) this;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -239,7 +237,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		}
 		AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
 		abstractAdapterConfig.productBaseURL = productBaseURL;
-		abstractAdapterConfig.apiToken=apiToken;
 
 		abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
 		abstractAdapterConfig.timeOutInMilliseconds = scanResultTimeOutInMinutes * 60 * 1000;
@@ -248,7 +245,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		abstractAdapterConfig.proxyPort = proxyPort;
 		abstractAdapterConfig.user = user;
 		abstractAdapterConfig.trustAllCertificatesEnabled=trustAllCertificatesEnabled;
-		abstractAdapterConfig.password = password;
+		abstractAdapterConfig.passwordOrAPIToken = passwordOrApiToken;
 		abstractAdapterConfig.policyId = policyID;
 		abstractAdapterConfig.targetURIs = targetURIs;
 		abstractAdapterConfig.rootTargetUris.addAll(uriShrinker.shrinkToRootURIs(targetURIs));
@@ -326,7 +323,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	}
 
 	protected void assertPasswordSet() {
-		if (password == null) {
+		if (passwordOrApiToken == null) {
 			throw new IllegalStateException("no password given");
 		}
 	}
@@ -346,12 +343,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	protected void assertProxyPortSetWhenProxyHostnameDefined() {
 		if (isProxyDefinedButPortMissing()) {
 			throw new IllegalStateException("Proxy set, but no port!");
-		}
-	}
-
-	protected void assertAPITokenSet() {
-		if (apiToken == null) {
-			throw new IllegalStateException("no apiToken given");
 		}
 	}
 

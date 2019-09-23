@@ -2,6 +2,7 @@ package com.daimler.sechub.domain.scan;
 
 import static org.junit.Assert.*;
 
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class WebLoginConfigBuilderStrategyTest {
 	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Test
-	public void basic_login_data_transfered() {
+	public void basic_login_data_transfered() throws Exception{
 		/* prepare */
 		WebLoginConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic.json");
 		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
@@ -35,6 +36,8 @@ public class WebLoginConfigBuilderStrategyTest {
 		assertEquals("user0", loginConfig.asBasic().getUser());
 		assertEquals("pwd0", loginConfig.asBasic().getPassword());
 		assertEquals("realm0", loginConfig.asBasic().getRealm());
+		assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfig.asBasic().getLoginURL());
+
 	}
 
 	@Test

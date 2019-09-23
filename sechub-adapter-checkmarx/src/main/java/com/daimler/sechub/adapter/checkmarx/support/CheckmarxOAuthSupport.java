@@ -33,7 +33,7 @@ public class CheckmarxOAuthSupport {
 
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add("username", config.getUser());
-		map.add("password", config.getPassword());
+		map.add("password", config.getPasswordOrAPIToken());
 		map.add("grant_type", "password");
 		map.add("scope", "sast_rest_api");
 		map.add("client_id", "resource_owner_client");

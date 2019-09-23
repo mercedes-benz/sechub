@@ -14,8 +14,7 @@ import javax.crypto.SealedObject;
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;
-	SealedObject apiToken;
-	private SealedObject base64Token;
+	private SealedObject passwordOrAPITokenBase64encoded;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
 	int timeOutInMilliseconds;
@@ -23,7 +22,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	String proxyHostname;
 
 	String user;
-	SealedObject password;
+	SealedObject passwordOrAPIToken;
 
 	String policyId;
 
@@ -128,13 +127,16 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public final String getBase64Token() {
-		if (base64Token==null) {
-			String tokenString = user + ":" + CryptoAccess.CRYPTO_STRING.unseal(apiToken);
-			byte[] tokenBytes = tokenString.getBytes();
-			base64Token =  CryptoAccess.CRYPTO_STRING.seal(Base64.getEncoder().encodeToString(tokenBytes));
+	public final String getPasswordOrAPITokenBase64Encoded() {
+		if (passwordOrAPIToken==null) {
+			return null;
 		}
-		return CryptoAccess.CRYPTO_STRING.unseal(base64Token);
+		if (passwordOrAPITokenBase64encoded==null) {
+			String tokenString = user + ":" + CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPIToken);
+			byte[] tokenBytes = tokenString.getBytes();
+			passwordOrAPITokenBase64encoded =  CryptoAccess.CRYPTO_STRING.seal(Base64.getEncoder().encodeToString(tokenBytes));
+		}
+		return CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPITokenBase64encoded);
 	}
 
 	@Override
@@ -148,12 +150,8 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public final String getPassword() {
-		return CryptoAccess.CRYPTO_STRING.unseal(password);
-	}
-
-	public final String getApiToken() {
-		return CryptoAccess.CRYPTO_STRING.unseal(apiToken);
+	public final String getPasswordOrAPIToken() {
+		return CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPIToken);
 	}
 
 	@Override

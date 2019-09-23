@@ -55,15 +55,13 @@ public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
 	 *
 	 * @return a base 64 encoded token containing "USERID:APITOKEN" inside
 	 */
-	String getBase64Token();
+	String getPasswordOrAPITokenBase64Encoded();
 
 	String getUser();
 
 	String getPolicyId();
 
-	String getPassword();
-
-	String getApiToken();
+	String getPasswordOrAPIToken();
 
 	/**
 	 * Returns a map for options. Can be used to provide special behaviours which are not default. E.g. wire mock extensions etc.

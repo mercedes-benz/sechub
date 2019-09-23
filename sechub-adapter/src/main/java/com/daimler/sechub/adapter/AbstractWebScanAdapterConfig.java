@@ -3,7 +3,7 @@ package com.daimler.sechub.adapter;
 
 public class AbstractWebScanAdapterConfig extends AbstractAdapterConfig implements WebScanAdapterConfig{
 
-	LoginConfig loginConfig;
+	AbstractLoginConfig loginConfig;
 
 	public LoginConfig getLoginConfig() {
 		return loginConfig;

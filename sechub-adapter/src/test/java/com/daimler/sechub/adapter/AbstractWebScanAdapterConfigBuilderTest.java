@@ -13,7 +13,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 	@Test
 	public void login_basic() {
 		/* @formatter:off */
-		TestWebScanAdapterConfig x = new TestAbstractWebScanAdapterConfigBuilder().
+		TestWebScanAdapterConfig webScanConfig = new TestAbstractWebScanAdapterConfigBuilder().
 				login().
 					basic().
 						username("user1").
@@ -24,8 +24,7 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 		/* @formatter:on */
 
 		/* test */
-		assertNotNull(x);
-		LoginConfig config = x.getLoginConfig();
+		LoginConfig config = webScanConfig.getLoginConfig();
 		assertNotNull(config);
 		assertTrue(null, config.isBasic());
 		assertEquals("user1",config.asBasic().getUser());
