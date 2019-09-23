@@ -42,8 +42,7 @@ public class OneInstallSetupConfigBuilderStrategy
 		configBuilder.
 			setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
 			setUser(setup.getUserId()).
-			setApiToken(setup.getPassword()).// we use password also for token per default
-			setPassword(setup.getPassword()).
+			setPasswordOrAPIToken(setup.getPassword()).
 			setProductBaseUrl(setup.getBaseURL());
 		/* @formatter:on */
 

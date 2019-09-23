@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="229px" preserveAspectRatio="none" style="width:635px;height:229px;" version="1.1" viewBox="0 0 635 229" width="635px" zoomAndPan="magnify"><defs><filter height="300%" id="fqmzphr62nyxl" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="178" x="57" y="22.9951">Communication details</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="16" x="245" y="22.9951">of</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="305" x="266" y="22.9951">message SCHEDULER_STATUS_UPDATE</text><rect fill="#C8C8CF" height="183.9922" style="stroke: #A80036; stroke-width: 1.0;" width="310" x="122" y="34.2969"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="107" x="223.5" y="46.3638">administration</text><rect fill="#F8F8FF" height="183.9922" style="stroke: #A80036; stroke-width: 1.0;" width="190" x="434" y="34.2969"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="66" x="496" y="46.3638">schedule</text><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="44" x2="44" y1="88.7266" y2="166.9922"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="277" x2="277" y1="88.7266" y2="166.9922"/><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="529" x2="529" y1="88.7266" y2="166.9922"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="66" x="8" y="85.4248">EventBus</text><ellipse cx="44" cy="56.4297" fill="#FEFECE" filter="url(#fqmzphr62nyxl)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="40,44.4297,46,39.4297,44,44.4297,46,49.4297,40,44.4297" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="66" x="8" y="178.9873">EventBus</text><ellipse cx="44" cy="198.2891" fill="#FEFECE" filter="url(#fqmzphr62nyxl)" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="40,186.2891,46,181.2891,44,186.2891,46,191.2891,40,186.2891" style="stroke: #A80036; stroke-width: 1.0;"/><rect fill="#FEFECE" filter="url(#fqmzphr62nyxl)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="298" x="126" y="53.4297"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="284" x="133" y="73.4248">SchedulerAdministrationMessageHandler</text><rect fill="#FEFECE" filter="url(#fqmzphr62nyxl)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="298" x="126" y="165.9922"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="284" x="133" y="185.9873">SchedulerAdministrationMessageHandler</text><rect fill="#FEFECE" filter="url(#fqmzphr62nyxl)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="178" x="438" y="53.4297"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="164" x="445" y="73.4248">SchedulerStatusService</text><rect fill="#FEFECE" filter="url(#fqmzphr62nyxl)" height="30.2969" style="stroke: #A80036; stroke-width: 1.5;" width="178" x="438" y="165.9922"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="164" x="445" y="185.9873">SchedulerStatusService</text><line style="stroke: #A80036; stroke-width: 1.0;" x1="44" x2="54" y1="119.8594" y2="115.8594"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="44" x2="54" y1="119.8594" y2="123.8594"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="44" x2="528" y1="119.8594" y2="119.8594"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="9" x="61" y="114.7935">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="196" x="74" y="114.7935">SCHEDULER_STATUS_UPDATE</text><line style="stroke: #A80036; stroke-width: 1.0;" x1="275" x2="265" y1="148.9922" y2="144.9922"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="275" x2="265" y1="148.9922" y2="152.9922"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="44" x2="276" y1="148.9922" y2="148.9922"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="9" x="51" y="143.9263">2</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="196" x="64" y="143.9263">SCHEDULER_STATUS_UPDATE</text><!--
+@startuml
+
+
+title __Communication details __ of **message SCHEDULER_STATUS_UPDATE**
+
+
+control EventBus
+box "administration" #C8C8CF
+   participant SchedulerAdministrationMessageHandler
+end box
+box "schedule" #F8F8FF
+   participant SchedulerStatusService
+end box
+box "authorization" #C8C8CF
+end box
+box "scan" #F8F8FF
+end box
+box "notification" #C8C8CF
+end box
+autonumber 1
+SchedulerStatusService ->> EventBus:SCHEDULER_STATUS_UPDATE
+EventBus ->> SchedulerAdministrationMessageHandler:SCHEDULER_STATUS_UPDATE
+autonumber stop
+
+
+@enduml
+
+PlantUML version 1.2019.06(Fri May 24 19:10:25 CEST 2019)
+(APACHE source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10
+Operating System: Linux
+OS Version: 4.15.0-64-generic
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

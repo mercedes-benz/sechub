@@ -93,7 +93,7 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 		@Override
 		protected void customValidate() {
 			assertUserSet();
-			assertAPITokenSet();
+			assertPasswordSet();
 			assertLicenseIDSet();
 			assertProductBaseURLSet();
 		}

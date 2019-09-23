@@ -28,9 +28,8 @@ public class OneInstallSetupConfigBuilderStrategyTest {
 		/* test */
 		TestAdapterConfig result = configBuilder.build();
 		assertEquals("myuser",  result.getUser());
-		assertEquals("mypwd", result.getPassword());
-		assertEquals("mypwd", result.getApiToken());
-		assertNotNull(result.getBase64Token());
+		assertEquals("mypwd", result.getPasswordOrAPIToken());
+		assertNotNull(result.getPasswordOrAPITokenBase64Encoded());
 		assertEquals("http://www.example.com/baseurl", result.getProductBaseURL());
 		assertTrue(result.isTrustAllCertificatesEnabled());
 

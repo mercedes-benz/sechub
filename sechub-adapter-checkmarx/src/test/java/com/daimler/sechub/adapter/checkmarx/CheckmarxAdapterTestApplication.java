@@ -50,7 +50,7 @@ public class CheckmarxAdapterTestApplication {
 					setUser(user).
 					setProjectId(projectname).
 					setTeamIdForNewProjects(teamId).
-					setPassword(password).
+					setPasswordOrAPIToken(password).
 					setPathToZipFile(zipFile.getAbsolutePath()).
 					setTrustAllCertificates(true).
 					setProductBaseUrl(baseUrl).

@@ -2,7 +2,7 @@ package com.daimler.sechub.adapter;
 
 import javax.crypto.SealedObject;
 
-public class BasicLoginConfig implements LoginConfig{
+public class BasicLoginConfig extends AbstractLoginConfig{
 
 	SealedObject realm;
 	SealedObject user;

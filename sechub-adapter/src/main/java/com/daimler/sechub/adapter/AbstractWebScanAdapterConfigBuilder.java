@@ -1,13 +1,29 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
+import java.net.URL;
+
 public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig> extends AbstractAdapterConfigBuilder<B,C> {
 
-	private LoginBuilder loginBuilder;
+	private LoginBuilder currentLoginBuilder;
+
 
 	public class LoginBuilder{
 
-		private LoginConfig createdLoginConfig;
+		private AbstractLoginConfig createdLoginConfig;
+		private URL loginUrl;
+
+
+		/**
+		 * Setup login url
+		 * @param url
+		 * @return builder
+		 */
+		public LoginBuilder url(URL url) {
+			this.loginUrl=url;
+			return this;
+
+		}
 
 		public BasicLoginBuilder basic() {
 			return new BasicLoginBuilder();
@@ -37,9 +53,10 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 			@SuppressWarnings("unchecked")
 			public final B endLogin() {
-				createdLoginConfig=formScriptLoginConfig;
+				doEndLogin(formScriptLoginConfig);
 				return (B) AbstractWebScanAdapterConfigBuilder.this;
 			}
+
 
 			public class FormScriptLoginStepBuilder{
 
@@ -67,6 +84,10 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 			}
 		}
 
+		private void doEndLogin(AbstractLoginConfig loginConfig) {
+			createdLoginConfig=loginConfig;
+		}
+
 		public class FormAutoDetectLoginBuilder{
 
 			private FormAutoDetectLoginConfig formAutomatedLoginConfig = new FormAutoDetectLoginConfig();
@@ -83,9 +104,11 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 			@SuppressWarnings("unchecked")
 			public final B endLogin() {
-				createdLoginConfig=formAutomatedLoginConfig;
+				doEndLogin(formAutomatedLoginConfig);
 				return (B) AbstractWebScanAdapterConfigBuilder.this;
 			}
+
+
 		}
 
 		public class BasicLoginBuilder{
@@ -109,26 +132,31 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 			@SuppressWarnings("unchecked")
 			public final B endLogin() {
-				createdLoginConfig=basicLoginConfig;
+				doEndLogin(basicLoginConfig);
 				return (B) AbstractWebScanAdapterConfigBuilder.this;
 			}
 		}
+
 	}
 
+	/**
+	 * @return a new login builder when not already started or former login was ended. Otherwise current login builder is returned
+	 */
 	public LoginBuilder login() {
-		loginBuilder=new LoginBuilder();
-		return loginBuilder;
+		currentLoginBuilder=new LoginBuilder();
+		return currentLoginBuilder;
 	}
 
 	@Override
 	void packageInternalCustomBuild(C config) {
-		if (loginBuilder==null) {
+		if (currentLoginBuilder==null) {
 			return;
 		}
-		if (loginBuilder.createdLoginConfig==null) {
+		if (currentLoginBuilder.createdLoginConfig==null) {
 			return;
 		}
-		config.loginConfig=loginBuilder.createdLoginConfig;
+		config.loginConfig=currentLoginBuilder.createdLoginConfig;
+		config.loginConfig.loginUrl=currentLoginBuilder.loginUrl;
 	}
 
 }

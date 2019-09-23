@@ -290,7 +290,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
 		Map<String, String> json = new TreeMap<>();
 		json.put("username", config.getUser());
-		json.put("password", config.getPassword());
+		json.put("password", config.getPasswordOrAPIToken());
 
 		String jsonAsString = context.json().toJSON(json);
 

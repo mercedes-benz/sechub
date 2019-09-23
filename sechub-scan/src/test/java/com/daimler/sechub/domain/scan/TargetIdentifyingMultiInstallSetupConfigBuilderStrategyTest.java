@@ -35,9 +35,8 @@ public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategyTest {
 		/* test */
 		TestAdapterConfig result = configBuilder.build();
 		assertEquals("myuser1",  result.getUser());
-		assertEquals("mypwd1", result.getPassword());
-		assertEquals("mypwd1", result.getApiToken());
-		assertNotNull(result.getBase64Token());
+		assertEquals("mypwd1", result.getPasswordOrAPIToken());
+		assertNotNull(result.getPasswordOrAPITokenBase64Encoded());
 		assertEquals("http://192.168.178.131/baseurl/intranet", result.getProductBaseURL());
 		assertTrue(result.isTrustAllCertificatesEnabled());
 

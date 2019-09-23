@@ -1,5 +1,7 @@
 package com.daimler.sechub.adapter;
 
+import java.net.URL;
+
 import javax.crypto.SealedObject;
 
 public interface LoginConfig {
@@ -14,6 +16,8 @@ public interface LoginConfig {
 	default boolean isFormScript() {
 		return this instanceof FormScriptLoginConfig;
 	}
+
+	public URL getLoginURL();
 
 	default BasicLoginConfig asBasic() {
 		return (BasicLoginConfig)this;

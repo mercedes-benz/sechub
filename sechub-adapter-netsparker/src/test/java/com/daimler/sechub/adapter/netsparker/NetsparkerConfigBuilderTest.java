@@ -93,7 +93,7 @@ public class NetsparkerConfigBuilderTest {
 	private NetsparkerConfigBuilder validConfigAnd() {
 		/* @formatter:off */
 		return NetsparkerConfig.builder().
-					setApiToken("apiToken").
+					setPasswordOrAPIToken("apiToken").
 					setLicenseID("licenseId").
 					setProductBaseUrl("https://netsparker.test.example.org").
 					setPolicyID("policyId").

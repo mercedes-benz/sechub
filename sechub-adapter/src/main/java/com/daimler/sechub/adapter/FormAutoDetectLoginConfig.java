@@ -2,7 +2,7 @@ package com.daimler.sechub.adapter;
 
 import javax.crypto.SealedObject;
 
-public class FormAutoDetectLoginConfig implements LoginConfig{
+public class FormAutoDetectLoginConfig extends AbstractLoginConfig{
 
 	SealedObject user;
 	SealedObject password;

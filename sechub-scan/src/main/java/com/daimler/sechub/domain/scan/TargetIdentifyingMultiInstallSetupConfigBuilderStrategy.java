@@ -48,8 +48,7 @@ public class TargetIdentifyingMultiInstallSetupConfigBuilderStrategy
 		configBuilder.
 			setTrustAllCertificates(setup.isHavingUntrustedCertificate(targetType)).
 			setUser(setup.getUserId(targetType)).
-			setApiToken(setup.getPassword(targetType)).// we use password also for token per default
-			setPassword(setup.getPassword(targetType)).
+			setPasswordOrAPIToken(setup.getPassword(targetType)).
 			setProductBaseUrl(setup.getBaseURL(targetType));
 		/* @formatter:on */
 
