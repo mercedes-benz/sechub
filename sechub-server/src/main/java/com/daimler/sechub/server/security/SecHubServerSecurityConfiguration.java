@@ -13,7 +13,7 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 @Configuration
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
-@Profile({"!"+Profiles.DEMOMODE}) // not for demomode
+@Profile({"!"+Profiles.INTEGRATIONTEST}) // not for integration test
 @Order(1)
 public class SecHubServerSecurityConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 

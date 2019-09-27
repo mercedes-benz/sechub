@@ -21,8 +21,6 @@ public class Profiles {
 	 */
 	public static final String POSTGRES="postgres";
 
-	public static final String DEMOMODE="demomode";
-
 	public static final String MOCKED_NOTIFICATIONS="mocked_notifications";
 
 	/**
