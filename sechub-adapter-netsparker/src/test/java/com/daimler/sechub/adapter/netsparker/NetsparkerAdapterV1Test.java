@@ -61,7 +61,7 @@ public class NetsparkerAdapterV1Test {
 
 		/* test */
 		String expected= NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("login/basic_weblogin_expected1.json");
-		assertEquals(json, expected);
+		assertEquals(expected, json);
 	}
 
 	@Test

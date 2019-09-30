@@ -92,16 +92,20 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 		List<Map<String, Object>>credentialList = new ArrayList<>();
 		basicAuthenticationApiModel.put("Credentials", credentialList);
 
-		Map<String, Object> credentials = new TreeMap<>();
-		credentials.put("AuthenticationType", "Basic");
+		Map<String, Object> credentialEntry1 = new TreeMap<>();
+		credentialEntry1.put("AuthenticationType", "Basic");
 		String realm = config.asBasic().getRealm();
 		if (realm!=null) {
-			credentials.put("Domain", realm);
+			credentialEntry1.put("Domain", realm);
 		}
-		credentials.put("UserName", config.asBasic().getUser());
-		credentials.put("Password", config.asBasic().getPassword());
-		credentials.put("UriPrefix", config.asBasic().getLoginURL());
+		credentialEntry1.put("UserName", config.asBasic().getUser());
+		credentialEntry1.put("Password", config.asBasic().getPassword());
+		credentialEntry1.put("UriPrefix", config.asBasic().getLoginURL());
 
-		credentialList.add(credentials);
+		credentialList.add(credentialEntry1);
+
+		basicAuthenticationApiModel.put("IsEnabled", true);
+		basicAuthenticationApiModel.put("NoChallenge", false);
+
 	}
 }
