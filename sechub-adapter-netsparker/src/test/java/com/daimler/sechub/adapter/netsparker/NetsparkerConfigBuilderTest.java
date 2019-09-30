@@ -6,7 +6,9 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.util.Collections;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
@@ -18,8 +20,39 @@ import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBu
  *
  */
 public class NetsparkerConfigBuilderTest {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	@Test
-	public void websiteName_is_md5_of_root_target_uri() throws Exception {
+	/* reason of fail: this is not a valid java url */
+	public void xxx_www_example_com__is_throwing_illegal_argument() throws Exception {
+		/* prepare */
+		expectedException.expect(IllegalArgumentException.class);
+
+		/* execute */
+		validConfigAnd().setTargetURI(URI.create("xxx://www.example.com")).build();
+
+	}
+
+	@Test
+	/* reason of to not fail: valid url, port can be determined. Its up to the product to fail
+	 * or to support this combination - and may change in future. So keep stupid config as is.*/
+	public void ftp_www_example_com_8080_is_not_throwing_illegal_argumentx() throws Exception {
+		/* prepare */
+
+		/* execute */
+		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("ftp://www.example.com:8080")).build();
+
+		/* test */
+		String websiteName = cfg.getWebsiteName();
+		assertNotNull(websiteName);
+		assertEquals("www.example.com_8080", websiteName);
+
+	}
+
+	@Test
+	public void http_www_example_com__is_websitename__www_example_com_underscore_default() throws Exception {
 		/* prepare */
 		/* execute */
 		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("http://www.example.com")).build();
@@ -27,8 +60,57 @@ public class NetsparkerConfigBuilderTest {
 		/* test */
 		String websiteName = cfg.getWebsiteName();
 		assertNotNull(websiteName);
-		assertEquals("847310eb455f9ae37cb56962213c491d", websiteName);
+		assertEquals("www.example.com_default", websiteName);
 	}
+
+	@Test
+	public void http_www_EXAMPLE_com__is_websitename__www_example_com_underscore_default() throws Exception {
+		/* prepare */
+		/* execute */
+		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("http://www.EXAMPLE.com")).build();
+
+		/* test */
+		String websiteName = cfg.getWebsiteName();
+		assertNotNull(websiteName);
+		assertEquals("www.example.com_default", websiteName);
+	}
+
+	@Test
+	public void https_www_example_com__is_websitename__www_example_com_underscore_default() throws Exception {
+		/* prepare */
+		/* execute */
+		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("https://www.example.com")).build();
+
+		/* test */
+		String websiteName = cfg.getWebsiteName();
+		assertNotNull(websiteName);
+		assertEquals("www.example.com_default", websiteName);
+	}
+
+	@Test
+	public void http_www_example_com_8080_is_websitename__www_example_com_underscore_8080() throws Exception {
+		/* prepare */
+		/* execute */
+		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("http://www.example.com:8080")).build();
+
+		/* test */
+		String websiteName = cfg.getWebsiteName();
+		assertNotNull(websiteName);
+		assertEquals("www.example.com_8080", websiteName);
+	}
+
+	@Test
+	public void https_www_example_com_8443_is_websitename__www_example_com_underscore_8443() throws Exception {
+		/* prepare */
+		/* execute */
+		NetsparkerAdapterConfig cfg = validConfigAnd().setTargetURI(URI.create("http://www.example.com:8443")).build();
+
+		/* test */
+		String websiteName = cfg.getWebsiteName();
+		assertNotNull(websiteName);
+		assertEquals("www.example.com_8443", websiteName);
+	}
+
 	@Test
 	public void emptyAgentGroupSet_returns_has_agentgroup_false() throws Exception {
 		/* prepare */
