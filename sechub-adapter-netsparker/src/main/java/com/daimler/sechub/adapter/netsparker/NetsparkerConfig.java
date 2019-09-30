@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
-import com.daimler.sechub.adapter.support.MessageDigestSupport;
 
 public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
 
@@ -50,8 +52,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 	public static class NetsparkerConfigBuilder
 			extends AbstractWebScanAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerConfig> {
 
-		MessageDigestSupport md5Builder = new MessageDigestSupport();
-
 		private String licenseID;
 		private String agentName;
 		private String agentGroupName;
@@ -84,7 +84,22 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 			if (websiteURLAsString==null) {
 				throw new IllegalStateException("website url (root target url ) may not be null at this point!");
 			}
-			config.websiteName= md5Builder.createMD5(websiteURLAsString);
+			try {
+				URL url = new URL(websiteURLAsString);
+				StringBuilder sb = new StringBuilder();
+				sb.append(url.getHost());
+				sb.append("_");
+				int port = url.getPort();
+				if (port<1) {
+					sb.append("default");
+				}else {
+					sb.append(port);
+				}
+
+				config.websiteName= sb.toString().toLowerCase();
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException("website root url not a valid URL!"+websiteURLAsString);
+			}
 			config.licenseID = licenseID;
 			config.agentName = agentName;
 			config.agentGroupName = agentGroupName;
