@@ -25,9 +25,9 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 public class NetsparkerProductExecutorTest {
 
-	private static final URI URI_1_INTERNET = URI.create("www.coolstuf1.com");
-	private static final URI URI_2_INTERNET = URI.create("www.coolstuf2.com");
-	private static final URI URI_3_INTERNET = URI.create("www.coolstuf3.com");
+	private static final URI URI_1_INTERNET = URI.create("https://www.coolstuf1.example.com");
+	private static final URI URI_2_INTERNET = URI.create("https://www.coolstuf2.example.com");
+	private static final URI URI_3_INTERNET = URI.create("https://www.coolstuf3.example.com");
 
 	private TestNetsparkerProductExecutor executorToTest;
 	private SecHubExecutionContext context;
