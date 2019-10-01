@@ -3,7 +3,6 @@ package com.daimler.sechub.adapter;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -235,7 +234,10 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		if (!( config instanceof AbstractAdapterConfig)) {
 			throw new IllegalStateException(getClass().getName()+" does not return a child of AbstractAdapterConfig!");
 		}
+		Set<URI> shrinkedRootURIs = uriShrinker.shrinkToRootURIs(targetURIs);
+
 		AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
+
 		abstractAdapterConfig.productBaseURL = productBaseURL;
 
 		abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
@@ -248,7 +250,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		abstractAdapterConfig.passwordOrAPIToken = passwordOrApiToken;
 		abstractAdapterConfig.policyId = policyID;
 		abstractAdapterConfig.targetURIs = targetURIs;
-		abstractAdapterConfig.rootTargetUris.addAll(uriShrinker.shrinkToRootURIs(targetURIs));
+		abstractAdapterConfig.rootTargetUris.addAll(shrinkedRootURIs);
 		abstractAdapterConfig.targetIPs = targetIPs;
 
 		abstractAdapterConfig.traceID = traceID;

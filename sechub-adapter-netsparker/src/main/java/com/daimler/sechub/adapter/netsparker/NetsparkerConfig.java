@@ -80,6 +80,11 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 				throw new IllegalArgumentException("not a netsparker config:"+adapterConfig);
 			}
 			NetsparkerConfig config = (NetsparkerConfig)adapterConfig;
+			int size = config.getRootTargetURIs().size();
+			if (size!=1) {
+				/* netsparker needs ONE root uri */
+				throw new IllegalStateException("netsparker must have ONE unique root target uri and not many!");
+			}
 			String websiteURLAsString = config.getRootTargetURIasString();
 			if (websiteURLAsString==null) {
 				throw new IllegalStateException("website url (root target url ) may not be null at this point!");
@@ -98,7 +103,7 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 
 				config.websiteName= sb.toString().toLowerCase();
 			} catch (MalformedURLException e) {
-				throw new IllegalArgumentException("website root url not a valid URL!"+websiteURLAsString);
+				throw new IllegalArgumentException("website root url '"+websiteURLAsString+"' is not a valid URL!",e);
 			}
 			config.licenseID = licenseID;
 			config.agentName = agentName;
