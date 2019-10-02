@@ -2,6 +2,8 @@
 package com.daimler.sechub.developertools.admin.ui.action.job;
 
 import java.awt.event.ActionEvent;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,11 +11,11 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
-public class GetJSONReportForJobAction extends AbstractUIAction {
+public class DownloadJSONReportForJobAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
-	public GetJSONReportForJobAction(UIContext context) {
-		super("Get JSON report for job", context);
+	public DownloadJSONReportForJobAction(UIContext context) {
+		super("Download JSON report", context);
 	}
 
 	@Override
@@ -33,8 +35,17 @@ public class GetJSONReportForJobAction extends AbstractUIAction {
 			getContext().getOutputUI().error("Not a UUID:" + jobUUID.get(), ex);
 			return;
 		}
-		String data = getContext().getAdministration().fetchJSONReport(projectId.get(), sechubJobUUID);
-		output(data);
+
+		try {
+			String data = getContext().getAdministration().fetchJSONReport(projectId.get(), sechubJobUUID);
+			Path tempFile = Files.createTempFile("sechub-report-", "_"+sechubJobUUID+".json");
+			Files.write(tempFile, data.getBytes());
+
+			output("Report file downloaded to location:"+tempFile.toAbsolutePath().toString());
+		} catch (Exception ex) {
+			getContext().getOutputUI().error("Download of JSON report failed for job:" + jobUUID.get(), ex);
+			return;
+		}
 	}
 
 }
