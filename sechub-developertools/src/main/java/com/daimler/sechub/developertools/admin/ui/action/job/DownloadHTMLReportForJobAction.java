@@ -13,7 +13,7 @@ public class DownloadHTMLReportForJobAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
 	public DownloadHTMLReportForJobAction(UIContext context) {
-		super("Download html report for job", context);
+		super("Download HTML report", context);
 	}
 
 	@Override

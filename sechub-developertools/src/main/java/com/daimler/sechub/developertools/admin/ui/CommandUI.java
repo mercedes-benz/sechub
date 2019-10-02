@@ -19,7 +19,7 @@ import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.t
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
-import com.daimler.sechub.developertools.admin.ui.action.job.GetJSONReportForJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
@@ -139,28 +139,31 @@ public class CommandUI {
 		JMenu menu = new JMenu("Global");
 		menuBar.add(menu);
 
-		add(menu, new ShowRunningBatchJobsListAction(context));
-		add(menu, new ShowAdminListAction(context));
-		add(menu, new CreateOverviewCSVExportAction(context));
-
 		JMenu schedulerMenu = new JMenu("Scheduler");
 		add(schedulerMenu, new DisableSchedulerJobProcessingAction(context));
 		add(schedulerMenu, new EnableSchedulerJobProcessingAction(context));
 		add(schedulerMenu, new RefreshSchedulerStatusAction(context));
 		menu.add(schedulerMenu);
 
-		add(menu, new ListStatusEntriesAction(context));
+		JMenu statusMenu = new JMenu("Status");
+		menu.add(statusMenu);
+
+		add(statusMenu, new ListStatusEntriesAction(context));
+		add(statusMenu, new ShowRunningBatchJobsListAction(context));
+		add(statusMenu, new CreateOverviewCSVExportAction(context));
+		add(statusMenu, new ShowAdminListAction(context));
 
 	}
 	private void createJobMenu() {
 		JMenu menu = new JMenu("Job");
 		menuBar.add(menu);
-
 		add(menu, new GetJobStatusAction(context));
-		add(menu, new GetJSONReportForJobAction(context));
 		menu.addSeparator();
+		add(menu, new DownloadJSONReportForJobAction(context));
 		add(menu, new DownloadHTMLReportForJobAction(context));
+		menu.addSeparator();
 		add(menu, new DownloadFullscanDataForJobAction(context));
+		add(menu, new ShowRunningBatchJobsListAction(context));
 
 
 	}
