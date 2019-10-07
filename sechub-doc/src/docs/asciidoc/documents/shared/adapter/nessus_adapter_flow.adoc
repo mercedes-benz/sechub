@@ -1,0 +1,11 @@
+. All communication is done by REST API
+. Login by username and password
+. Fetch {nessus} session token by first REST call
+. Resolve {nessus} policy UUID
+. Start Scan
+.. Add new scan and resolve {nessus} scan id. +
+   As scan name sechub job UUID in cobination with target type (INTRANET, INTERNET)
+   will be used
+.. wait for scan done
+. Fetch report as XML by doing a {nessus} scan export
+. Logout

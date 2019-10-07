@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<title>SecHub Client Documentation</title>
+<title>SecHub Operations</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -519,84 +519,84 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
+<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
 <li><a href="#about">1. About</a></li>
-<li><a href="#section-sechub-client">2. SecHub client</a>
+<li><a href="#sechub-server">2. SecHub Server</a>
 <ul class="sectlevel2">
-<li><a href="#in-a-nutshell">2.1. In a nutshell</a></li>
-<li><a href="#download">2.2. Download</a></li>
-<li><a href="#usage">2.3. Usage</a>
+<li><a href="#deployment">2.1. Deployment</a>
 <ul class="sectlevel3">
-<li><a href="#show-help">2.3.1. Show help</a></li>
-<li><a href="#actions">2.3.2. Actions</a>
+<li><a href="#database">2.1.1. Database</a>
 <ul class="sectlevel4">
-<li><a href="#scan">2.3.2.1. scan</a></li>
-<li><a href="#scanasync">2.3.2.2. scanAsync</a></li>
-<li><a href="#getstatus">2.3.2.3. getStatus</a></li>
-<li><a href="#getreport">2.3.2.4. getReport</a></li>
+<li><a href="#plain-server">2.1.1.1. Plain server</a></li>
+<li><a href="#kubernetes">2.1.1.2. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#options">2.3.3. Options</a></li>
+<li><a href="#file-upload-storage">2.1.2. File upload storage</a>
+<ul class="sectlevel4">
+<li><a href="#plain-server-2">2.1.2.1. Plain server</a></li>
+<li><a href="#kubernetes-2">2.1.2.2. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#configuration-file">2.4. Configuration file</a></li>
-<li><a href="#sechub-scan-configuration">2.5. SecHub scan configuration</a>
+<li><a href="#server-application">2.1.3. Server Application</a>
+<ul class="sectlevel4">
+<li><a href="#mandatory-configuration">2.1.3.1. Mandatory configuration</a></li>
+<li><a href="#plain-server-3">2.1.3.2. Plain server</a>
+<ul class="sectlevel5">
+<li><a href="#logging">2.1.3.2.1. Logging</a></li>
+</ul>
+</li>
+<li><a href="#docker">2.1.3.3. Docker</a></li>
+<li><a href="#kubernetes-3">2.1.3.4. Kubernetes</a>
+<ul class="sectlevel5">
+<li><a href="#logging-2">2.1.3.4.1. Logging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#security-products">3. Security Products</a>
+<ul class="sectlevel2">
+<li><a href="#checkmarx">3.1. Checkmarx</a>
 <ul class="sectlevel3">
-<li><a href="#api-version">2.5.1. API version</a></li>
-<li><a href="#server">2.5.2. Server</a></li>
-<li><a href="#project">2.5.3. Project</a></li>
-<li><a href="#code-scan">2.5.4. Code scan</a>
+<li><a href="#what-does-the-adapter-do">3.1.1. What does the adapter do?</a>
 <ul class="sectlevel4">
-<li><a href="#upload-sources-from-file-system">2.5.4.1. Upload sources from file system</a>
-<ul class="sectlevel5">
-<li><a href="#example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</a></li>
+<li><a href="#what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</a></li>
 </ul>
 </li>
+<li><a href="#summary">3.1.2. Summary</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.5.5. Web scan</a>
-<ul class="sectlevel4">
-<li><a href="#uris">2.5.5.1. URIs</a>
-<ul class="sectlevel5">
-<li><a href="#example-anonymous">2.5.5.1.1. Example anonymous</a></li>
-</ul>
-</li>
-<li><a href="#login">2.5.5.2. Login</a>
-<ul class="sectlevel5">
-<li><a href="#options-2">2.5.5.2.1. Options</a></li>
-<li><a href="#example-basic-authentication">2.5.5.2.2. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</a></li>
-<li><a href="#example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.5.6. Infrastructure scan</a>
-<ul class="sectlevel4">
-<li><a href="#uris-2">2.5.6.1. URIs</a>
-<ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</a></li>
-</ul>
-</li>
-<li><a href="#ips">2.5.6.2. IPs</a>
-<ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#examples">2.6. Examples</a>
+<li><a href="#netsparker">3.2. Netsparker</a>
 <ul class="sectlevel3">
-<li><a href="#start-a-source-scan">2.6.1. Start a source scan</a></li>
-<li><a href="#start-a-web-scan">2.6.2. Start a web scan</a></li>
-<li><a href="#start-a-infra-scan">2.6.3. Start a infra scan</a></li>
+<li><a href="#what-does-the-adapter-do-2">3.2.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</a>
+<ul class="sectlevel4">
+<li><a href="#users">3.2.2.1. Users</a></li>
 </ul>
 </li>
+<li><a href="#summary-2">3.2.3. Summary</a></li>
+</ul>
+</li>
+<li><a href="#nessus">3.3. Nessus</a>
+<ul class="sectlevel3">
+<li><a href="#what-does-the-adapter-do-3">3.3.1. What does the adapter do?</a></li>
+<li><a href="#what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</a></li>
+<li><a href="#summary-3">3.3.3. Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#onboarding">4. Onboarding</a>
+<ul class="sectlevel2">
+<li><a href="#what-must-be-done-when-a-new-user-has-registered">4.1. What must be done when a new user has registered ?</a></li>
+<li><a href="#what-must-be-done-when-a-new-project-shall-be-created">4.2. What must be done when a new project shall be created ?</a></li>
+<li><a href="#what-must-be-done-when-a-user-wants-to-have-access-to-a-sechub-project">4.3. What must be done when a user wants to have access to a SecHub project ?</a></li>
 </ul>
 </li>
 </ul>
@@ -683,94 +683,51 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Version
-0.0.0-b00654f-dirty-20191007145318</p>
+<p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-sechub-client">2. SecHub client</h2>
+<h2 id="sechub-server">2. SecHub Server</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="in-a-nutshell">2.1. In a nutshell</h3>
+<h3 id="deployment">2.1. Deployment</h3>
+<div class="sect3">
+<h4 id="database">2.1.1. Database</h4>
 <div class="paragraph">
-<p>The <code>SecHub</code> client program is an executable binary which can be used from command
-line or in a build tool of your choice.</p>
+<p>SecHub requires a PostgreSQL DB, Version &gt; 10.x</p>
+</div>
+<div class="sect4">
+<h5 id="plain-server">2.1.1.1. Plain server</h5>
+<div class="paragraph">
+<p>In this scenario you would configure a database server available from SecHub.</p>
 </div>
 <div class="paragraph">
-<p>It&#8217;s very easy to use and using the client you have not to handle and REST-API calls by yourself.</p>
+<p><em>For example: Just install PostgreSQL DB server on same machine as your server.</em></p>
 </div>
-<div class="admonitionblock note">
+</div>
+<div class="sect4">
+<h5 id="kubernetes">2.1.1.2. Kubernetes</h5>
+<div class="paragraph">
+<p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
+define a network policy, services, endpoints etc. etc.</p>
+</div>
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Currently the client only supports only basic authentication, but of course always only over https.
+<div class="paragraph">
+<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all sechub server
+PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
+</div>
 </td>
 </tr>
 </table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="download">2.2. Download</h3>
-<div class="paragraph">
-<p>Download the binary for your operating system where you want to trigger <code>SecHub</code> scanning.
-You will have no dependencies, just place the single binary file to a location inside your path variable.</p>
-</div>
-<div class="paragraph">
-<p>The latest releases can be found at <a href="https://github.com/daimler/sechub/wiki/releases" class="bare">https://github.com/daimler/sechub/wiki/releases</a> . For documentation please look at <a href="https://daimler.github.io/sechub">SecHub web page</a> .</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="usage">2.3. Usage</h3>
-<div class="sect3">
-<h4 id="show-help">2.3.1. Show help</h4>
-<div class="listingblock">
-<div class="content">
-<pre>sechub -help</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>will print out a simple help of all command line options. Also an almost running example snippet is shown.
-The example config file does contain many fake entries, even for <code>server</code> and webscan <code>url</code>.
-Please change to correct values.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="actions">2.3.2. Actions</h4>
-<div class="paragraph">
-<p>Following actions are supported:</p>
-</div>
-<div class="sect4">
-<h5 id="scan">2.3.2.1. scan</h5>
-<div class="paragraph">
-<p>Does scan synchronous which means</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>will create a <code>SecHub</code> job</p>
-</li>
-<li>
-<p>upload necessary stuff to <code>SecHub</code> (e.g. zipped sourcefiles for source scans)</p>
-</li>
-<li>
-<p>approve job as being ready to start</p>
-</li>
-<li>
-<p>wait for job done,</p>
-</li>
-<li>
-<p>fetch automatically result report to output folder (html or json)</p>
-</li>
-<li>
-<p>break your build when not <code>green</code></p>
-</li>
-</ul>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -779,45 +736,128 @@ Please change to correct values.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The is the most preferred scan action for builds - you only have to make one
-     single client call and your are done.
+<div class="paragraph">
+<p>Think about an automated database backup - no matter which is your choosen
+installation variant&#8230;&#8203;</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="file-upload-storage">2.1.2. File upload storage</h4>
 <div class="paragraph">
-<p><strong>Minimum call syntax</strong></p>
+<p>SecHub requires a file system folder where source scan uploads can be transferred to.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>sechub -apitoken ${apitoken} scan</pre>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In a clustered environment like kubernetes the storage must be accessible by
+every cluster member!</p>
 </div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="plain-server-2">2.1.2.1. Plain server</h5>
+<div class="paragraph">
+<p>In this scenario you would just either reuse SecHub server file system or
+define a network share available form server.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="scanasync">2.3.2.2. scanAsync</h5>
+<h5 id="kubernetes-2">2.1.2.2. Kubernetes</h5>
 <div class="paragraph">
-<p>Does scan asynchronous which means</p>
+<p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
+define a network policy, services, endpoints etc.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>will create a <code>SecHub</code> job</p>
-</li>
-<li>
-<p>upload necessary stuff to <code>SecHub</code> (e.g. zipped sourcefiles for source scans)</p>
-</li>
-<li>
-<p>approve job as being ready to start</p>
-</li>
-<li>
-<p>returns <code>SecHub</code> job UUID<br>
-which can be used to get status and also reports etc.</p>
-</li>
-<li>
-<p>will <strong>never</strong> break your build!</p>
-</li>
-</ul>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be aware to mount <strong>only ONE pod</strong> - the database is <strong>shared by all sechub server
+PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</em></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="server-application">2.1.3. Server Application</h4>
+<div class="paragraph">
+<p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 8</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can configure SecHub server by system properties or also by  environment
+variables.</p>
+</div>
+<div class="paragraph">
+<p>Next blocks describe necessary system properties and their ENV pendants.</p>
+</div>
+<div class="sect4">
+<h5 id="mandatory-configuration">2.1.3.1. Mandatory configuration</h5>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Next lines will show java launcher properties which MUST be set because
+     there are no defaults defined. You have to define those values when not
+     starting in mock mode! The example her is generated and will
+     always show the current necessary parts.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Dspring.profiles.active=dev,postgres,real_products
+-Dsechub.adapter.checkmarx.baseurl=value
+-Dsechub.adapter.checkmarx.newproject.teamid=value
+-Dsechub.adapter.checkmarx.password=value
+-Dsechub.adapter.checkmarx.userid=value
+-Dsechub.initialadmin.apitoken=value
+-Dsechub.initialadmin.email=value
+-Dsechub.initialadmin.userid=value
+-Dsechub.adapter.nessus.defaultpolicyid=value
+-Dsechub.adapter.nessus.internet.baseurl=value
+-Dsechub.adapter.nessus.internet.password=value
+-Dsechub.adapter.nessus.internet.userid=value
+-Dsechub.adapter.nessus.intranet.baseurl=value
+-Dsechub.adapter.nessus.intranet.password=value
+-Dsechub.adapter.nessus.intranet.userid=value
+-Dsechub.adapter.nessus.proxy.hostname=value
+-Dsechub.adapter.netsparker.agentname=value
+-Dsechub.adapter.netsparker.apitoken=value
+-Dsechub.adapter.netsparker.baseurl=value
+-Dsechub.adapter.netsparker.defaultpolicyid=value
+-Dsechub.adapter.netsparker.internet.agentgroupname=value
+-Dsechub.adapter.netsparker.intranet.agentgroupname=value
+-Dsechub.adapter.netsparker.licenseid=value
+-Dsechub.adapter.netsparker.userid=value
+-Dsechub.notification.email.from=value
+-Dsechub.notification.smtp.hostname=value
+-Dsechub.server.baseurl=value
+-Dsechub.storage.sharedvolume.upload.dir=value
+-Dsechub.target.resolve.strategy.ip=value
+-Dsechub.target.resolve.strategy.uri=value</pre>
+</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -826,126 +866,325 @@ which can be used to get status and also reports etc.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-This can be interesting if you have long running scans and you want have a fast
-     continous integration build - but <strong>be aware</strong> that you have to manually check
-     job state, fetch reports and you got no automated build break!
+Instead of java system properties you can also define environment entries
+     at your launch configuration or your shell and reduce parameter hell:
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p><strong>Minimum call syntax</strong></p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} scanAsync</pre>
+<pre>export SPRING_PROFILES_ACTIVE=dev,postgres,real_products
+export SECHUB_ADAPTER_CHECKMARX_BASEURL=value
+export SECHUB_ADAPTER_CHECKMARX_NEWPROJECT_TEAMID=value
+export SECHUB_ADAPTER_CHECKMARX_PASSWORD=value
+export SECHUB_ADAPTER_CHECKMARX_USERID=value
+export SECHUB_INITIALADMIN_APITOKEN=value
+export SECHUB_INITIALADMIN_EMAIL=value
+export SECHUB_INITIALADMIN_USERID=value
+export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID=value
+export SECHUB_ADAPTER_NESSUS_INTERNET_BASEURL=value
+export SECHUB_ADAPTER_NESSUS_INTERNET_PASSWORD=value
+export SECHUB_ADAPTER_NESSUS_INTERNET_USERID=value
+export SECHUB_ADAPTER_NESSUS_INTRANET_BASEURL=value
+export SECHUB_ADAPTER_NESSUS_INTRANET_PASSWORD=value
+export SECHUB_ADAPTER_NESSUS_INTRANET_USERID=value
+export SECHUB_ADAPTER_NESSUS_PROXY_HOSTNAME=value
+export SECHUB_ADAPTER_NETSPARKER_AGENTNAME=value
+export SECHUB_ADAPTER_NETSPARKER_APITOKEN=value
+export SECHUB_ADAPTER_NETSPARKER_BASEURL=value
+export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID=value
+export SECHUB_ADAPTER_NETSPARKER_INTERNET_AGENTGROUPNAME=value
+export SECHUB_ADAPTER_NETSPARKER_INTRANET_AGENTGROUPNAME=value
+export SECHUB_ADAPTER_NETSPARKER_LICENSEID=value
+export SECHUB_ADAPTER_NETSPARKER_USERID=value
+export SECHUB_NOTIFICATION_EMAIL_FROM=value
+export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
+export SECHUB_SERVER_BASEURL=value
+export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR=value
+export SECHUB_TARGET_RESOLVE_STRATEGY_IP=value
+export SECHUB_TARGET_RESOLVE_STRATEGY_URI=value</pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getstatus">2.3.2.3. getStatus</h5>
+<h5 id="plain-server-3">2.1.3.2. Plain server</h5>
 <div class="paragraph">
-<p>Will fetch current job status and return result as json or html</p>
+<p>To start the server by executing</p>
 </div>
 <div class="paragraph">
-<p><strong>Minimum call syntax</strong></p>
+<p><code>java ${systemProperties} -jar sechub-server-x.y.z.jar</code></p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getStatus</pre>
+<div class="paragraph">
+<p>Where <code>${systemProperties}</code> is a place holder for Java system properties or
+you use environment entries (configuration is explained in common chapter before)</p>
+</div>
+<div class="sect5">
+<h6 id="logging">2.1.3.2.1. Logging</h6>
+<div class="paragraph">
+<p>SecHub uses per default logging to stdout. So you have to change this behaviour
+for your server when you want to change log output format, location etc.</p>
+</div>
+<div class="paragraph">
+<p>Please refer spring boot documentation for logging:
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html" class="bare">https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html</a></p>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getreport">2.3.2.4. getReport</h5>
+<h5 id="docker">2.1.3.3. Docker</h5>
 <div class="paragraph">
-<p>Will fetch report as json (result will only exist when job is done)</p>
-</div>
-<div class="paragraph">
-<p><strong>Minimum call syntax</strong></p>
+<p>At the moment there exists no default public docker image. But you can easily create your own one.
+Here an example dockerfile:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport</pre>
+<pre># +++++++++++++++++++++++++++++++++++++++++++++++++
+# Example for a Dockerfile-template for sechub
+# +++++++++++++++++++++++++++++++++++++++++++++++++
+
+# We use always latest stable jre alpine base image.
+# This includes, that we have always to check the
+# container inside a DEV or INT environment before
+# running inside PROD!
+# Latest means NOT latest stable...
+FROM dockerregistry.example.com/base-images/openjdk:8-jre-alpine-latest-stable
+
+VOLUME /tmp
+
+# start application with javarun-user (technial user...)
+# java.security.edg necessary for optimized random space -&gt; otherwise start is slow because of entropy scanning etc.
+# see run.sh for defails
+ENTRYPOINT [ "/home/javarun/run.sh" ]
+
+# copy build parts to javarun-user (technial user...) home...
+ADD build/docker-dependencies/sechub-server-{{ .SECHUB_SERVER_VERSION }}.jar /home/javarun/app.jar
+
+# add always sechub server certificate into container.
+# we use always user home directory of user creating this container
+# at jenkins this is /var/lib/jenkins !
+#
+# Only prod environment in kubernetes will set spring server location etc. by
+# this values
+ADD build/docker-dependencies/sechub.example.com.p12 /home/javarun/sechub.example.com.p12
+
+# Important:
+# ----------
+# We add this as last docker layer. Reason: sometimes we want change the call
+# done in run.sh (maybe for optimization) or just the unix permissions for script.
+# The big load is the jar before - so we do not want to
+# upload the jar layer all time ...
+ADD build/resources/main/run.sh /home/javarun/run.sh</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>An example for the used <code>run.sh</code> could be :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">#!/bin/bash
+
+echo &quot;Starting run script:run.sh $1 $2&quot;
+# Set debug options if required
+if [ x&quot;${JAVA_ENABLE_DEBUG}&quot; != x ] &amp;&amp; [ &quot;${JAVA_ENABLE_DEBUG}&quot; != &quot;false&quot; ]; then
+    JAVA_DBG_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${JAVA_DEBUG_PORT:-5005}&quot;
+fi
+
+if [ -z &quot;$1&quot; ] || [ $1 = &quot;byenv&quot; ]; then
+        PROFILE_TO_USE=$SPRING_PROFILE
+else
+        PROFILE_TO_USE=$1
+fi
+
+if [ -z &quot;$2&quot; ] ; then
+    JAR_LOCATION=&quot;/home/javarun/app.jar&quot;
+else
+    JAR_LOCATION=&quot;$2&quot;
+fi
+
+# java.security.edg necessary for optimized random space -&gt; otherwise start is slow becauase of entropy scanning etc.
+# file encoding per default UTF-8
+java $JAVA_DBG_OPTS -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom $SECHUB_OPTS -jar $JAR_LOCATION</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="kubernetes-3">2.1.3.4. Kubernetes</h5>
+<div class="paragraph">
+<p>Create a docker file as described before and upload it to your docker registry available from your kubernetes cluster.</p>
+</div>
+<div class="paragraph">
+<p>Same as before described for plain server, but you should use always environment
+variables here.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Provide credentials inside your kubernetes deployment files by at least using
+ kubernetes secrets!
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="logging-2">2.1.3.4.1. Logging</h6>
+<div class="paragraph">
+<p>SecHub uses per default logging to stdout, so you just need to use something like
+<code>fluentd</code> PODs to gather log output.</p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="security-products">3. Security Products</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="checkmarx">3.1. Checkmarx</h3>
+<div class="sect3">
+<h4 id="what-does-the-adapter-do">3.1.1. What does the adapter do?</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>All communication is done by REST API</p>
+</li>
+<li>
+<p>Login</p>
+</li>
+<li>
+<p>Ensure project exists (reuses existing project or creates new one)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>projectname is sechub project name</p>
+</li>
+<li>
+<p>teamId Is shared and always CHECKMARX installsetup team id for new projects&#8230;&#8203;</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Upload source code from SecHub upload folder per REST to Checkmarx server</p>
+</li>
+<li>
+<p>Start scan</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>When possible incremental scan is used</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Fetch report as XML</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>At the moment you have create initial a Checkmarx team which will be used for SecHub scans</p>
+</li>
+<li>
+<p>If users shall have access to Checkmarx UI you must add them to used Checkmarx team (manual)</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="options">2.3.3. Options</h4>
-<div class="ulist">
-<ul>
+<h4 id="summary">3.1.2. Summary</h4>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>apitoken <code>&lt;string&gt;</code><br>
-The api token. This is a mandatory option for every action. Can <strong>NOT</strong> be defined in config file</p>
+<p>Projects are initially created and reused automatically</p>
 </li>
 <li>
-<p>configfile <code>&lt;string&gt;</code><br>
-Path to <code>SecHub</code> config file, if not defined <code>sechub.json</code> will be used in current directory</p>
+<p>Old scans are <strong>NOT</strong> automatically deleted</p>
 </li>
 <li>
-<p>help<br>
-Shows help and terminates</p>
+<p>Multi tenancy is currently problematic: Same Team ID is always used
+<em>(will be changed with <a href="https://github.com/Daimler/sechub/issues/58">Issue 58</a>)</em></p>
 </li>
-<li>
-<p>jobUUID <code>&lt;string&gt;</code><br>
-<code>SecHub</code> job uuid (mandatory when using 'getStatus' or 'getReport')</p>
-</li>
-<li>
-<p>output <code>&lt;string&gt;</code><br>
-Output folder for reports etc. per default current dir</p>
-</li>
-<li>
-<p>project <code>&lt;string&gt;</code><br>
-Unique project id - mandatory, but can also be defined in config file</p>
-</li>
-<li>
-<p>reportformat <code>&lt;string&gt;</code><br>
-Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")</p>
-</li>
-<li>
-<p>server <code>&lt;string&gt;</code><br>
-Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file</p>
-</li>
-<li>
-<p>user <code>&lt;string&gt;</code><br>
-Username - mandatory, but can also be defined in config file</p>
-</li>
-<li>
-<p>version<br>
-Shows version info and terminates</p>
-</li>
-<li>
-<p>wait <code>&lt;int&gt;</code> +<br>
-wait time in seconds. Will be used for automatic status checks etc. when action='scan'. Default is 60 seconds (default 60)</p>
-</li>
-</ul>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Fix team ID will change in future to provide grouping of results in
+           product(for multi tenancy).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-file">2.4. Configuration file</h3>
-<div class="paragraph">
-<p>If not defined, secHub client will load <code>sechub.json</code> file from current directory
-and use it as sechub configuration. There must be always a valid configuration
-file - otherwise client will not work.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="sechub-scan-configuration">2.5. SecHub scan configuration</h3>
-<div class="paragraph">
-<p>A <code>SecHub</code> scan configuration  must be valid <code>JSON</code>.</p>
-</div>
-<div class="paragraph">
-<p>This configuration is used by client and also by rest calls to start sechub
-scan jobs and add meta data. Some minor parts are client specific and must
-be handled by direct REST calls in a special way, but this is mentioned in
-following description of JSON syntax.</p>
-</div>
+<h3 id="netsparker">3.2. Netsparker</h3>
 <div class="sect3">
-<h4 id="api-version">2.5.1. API version</h4>
-<div class="paragraph">
-<p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
+<h4 id="what-does-the-adapter-do-2">3.2.1. What does the adapter do?</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>All communication is done by REST API</p>
+</li>
+<li>
+<p>Login</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>To differ between intranet and internet scans adapter will use agent name or
+given agent group. If a group is defined the group will be used.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check website already defined in Netsparker</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Website identifier is defined by pattern (see info box below)</p>
+</li>
+<li>
+<p>If not defined, create new Netsparker website by given identifier otherwise
+reuse existing one</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Start scan</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Create new scan for web page identifier and fetch scan ID</p>
+</li>
+<li>
+<p>Wait for scan being done</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Fetch report as XML</p>
+</li>
+</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -955,11 +1194,18 @@ following description of JSON syntax.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>As long as the SecHub configuration is still strongly developed,
-the API version remains - despite changes - to 1.0.</p>
+<p>Website identifier is created by uri root part and port number.<br>
+When no port is defined instead of port number the protocol default will be used.</p>
 </div>
 <div class="paragraph">
-<p>During this time, however, the API always remains backwards compatible!</p>
+<p>For example: <a href="https://test.example.com/myapp:8080" class="bare">https://test.example.com/myapp:8080</a> will be identified by <code>test.example.com_8080</code>,
+but <a href="https://test.example.com/myapp" class="bare">https://test.example.com/myapp</a> leads to <code>test.example.com_default</code> as identifier.</p>
+</div>
+<div class="paragraph">
+<p>Using <code>default</code> to identify standard ports for https (443) and http (80) combines results - this
+can reduce amount of webscan identifiers. Also it handles situation that Netsparker
+does internally not differ between http and https scans, but differs between ports when
+not default.</p>
 </div>
 </td>
 </tr>
@@ -967,494 +1213,128 @@ the API version remains - despite changes - to 1.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="server">2.5.2. Server</h4>
-<div class="paragraph">
-<p><code>server</code> (optional) defines the location to <code>SecHub</code> server.
-Information can be used by client implementations.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-When using REST calls directly you do not need the information inside
-      configuration because you use server URL in every call&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="project">2.5.3. Project</h4>
-<div class="paragraph">
-<p><code>project</code> (optional) defines the project to use. Information can be used by
-client implementations.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-When using REST calls directly you do not need the information inside
-      configuration because you use project id inside URL.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="code-scan">2.5.4. Code scan</h4>
-<div class="paragraph">
-<p><code>codeScan</code> (optional) defines the code scan settings.</p>
-</div>
+<h4 id="what-must-be-done-on-netsparker-ui">3.2.2. What must be done on Netsparker UI</h4>
 <div class="sect4">
-<h5 id="upload-sources-from-file-system">2.5.4.1. Upload sources from file system</h5>
-<div class="paragraph">
-<p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
-<code>folders</code> sub entry.</p>
-</div>
-<div class="paragraph">
-<p>Those folders will be automatically zipped and uploaded by <code>SecHub</code> client
-to server side for ongoing source analysis.</p>
-</div>
-<div class="paragraph">
-<p>Pathes must be defined relative from caller location - for example
-on a Jenkins Build Server this is normally the root folder of repository.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The configuration parts inside <code>fileSystem</code> entry are interpreted by
-      <code>SecHub</code> client! When you directly use the REST API you do not need
-      to define this data but you have to upload sources as a `zip`file by
-      your own over REST!
-</td>
-</tr>
-</table>
-</div>
-<div class="sect5">
-<h6 id="example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</h6>
-<div id="sechub-config-example-sourcescan" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-              <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
-                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
-        }
-      }</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define code scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use filesystem - so means upload sources to server</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Upload will contain sources from <code>gamechanger-android/src/main/java</code> and <code>gamechanger-server/src/main/java</code> and their sub folders</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Exclude files (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - <code>**/*</code> is used to identify any folder<br>
-In example above following files are excluded from upload:<br>
+<h5 id="users">3.2.2.1. Users</h5>
 <div class="ulist">
 <ul>
 <li>
-<p><code>**/*.log</code> - excludes any log file in any sub directories of given folders</p>
+<p>Users must be manual created at Netsparker UI</p>
 </li>
 <li>
-<p><code>README*.md</code> excludes all markdown README files in given folders. For example above this means:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><code>gamechanger-android/src/main/java/README.md</code> and</p>
+<p>Users must be added to the Netsparker team used by SecHub</p>
 </li>
 <li>
-<p><code>gamechanger-server/src/main/java/README.md</code></p>
+<p>If you want to have multi tenancy you have to define website groups
+(see <a href="https://github.com/Daimler/sechub/issues/59" class="bare">https://github.com/Daimler/sechub/issues/59</a> for details)</p>
 </li>
 </ul>
-</div>
-</li>
-</ul>
-</div></td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.5.5. Web scan</h4>
-<div class="paragraph">
-<p><code>webScan</code> (optional) defines the web scan settings.</p>
+<h4 id="summary-2">3.2.3. Summary</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Websites are initially created and reused automatically</p>
+</li>
+<li>
+<p>Old scans are <strong>NOT</strong> automatically deleted</p>
+</li>
+</ol>
 </div>
-<div class="sect4">
-<h5 id="uris">2.5.5.1. URIs</h5>
-<div class="paragraph">
-<p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
-</div>
-<div class="admonitionblock warning">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
+Currently Netsparker adapter will always use ONE team user (admin) to
+           create scans. The current logical structure of Netsparker permissions
+           gives all assigned users access to all scans! Keep this in mind.
 </td>
 </tr>
 </table>
-</div>
-<div class="sect5">
-<h6 id="example-anonymous">2.5.5.1.1. Example anonymous</h6>
-<div id="sechub-config-example-webscan-anonymous" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define web scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="login">2.5.5.2. Login</h5>
-<div class="paragraph">
-<p>A web scan does work very much better if it has got access to all content
- - so a login is necessary most time. If you do not define a login configuration
- your web scan will be done only as anonymous user.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Providing login will enable web scanner to execute ALL possible
-actions!</p>
-</div>
-<div class="paragraph">
-<p>An example: Your test application has a Web UI for sending SMS which can
-be triggered by an user the web scan will trigger those operations as well!</p>
-</div>
-<div class="paragraph">
-<p>If you do this inside an environment where a real SMS provider is connected,
-this could result into mass SMS and also in a bigger invoice from your
-SMS provider - <strong>so be careful!</strong></p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="sect5">
-<h6 id="options-2">2.5.5.2.1. Options</h6>
-<div class="paragraph">
-<p>SecHub provides you with 3 options for login:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>basic authentication</p>
-</li>
-<li>
-<p>form based login</p>
-<div class="ulist">
-<ul>
-<li>
-<p>auto detect</p>
-</li>
-<li>
-<p>script based</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>When a web scan product (or its adapter) does not support your wanted options you
-will have a failure at execution time!</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="example-basic-authentication">2.5.5.2.2. Example basic authentication</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
-        ],
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">basic</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">realm</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_REALM }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
-            }
-        }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Basic authentication start, needs user id/name and password.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><strong>Optional</strong>: You can set the realm used for basic authentication. But normally
-this is not necessary</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
-        ],
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">autodetect</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
-                    <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
-                }
-            }
-        }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Start of form based login with auto detection.</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
-        ],
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="2"></i><b>(2)</b>
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="5"></i><b>(5)</b>
-                    },
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
-                    },
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_login_button</span><span class="delimiter">&quot;</span></span>
-                    }
-                ]
-            }
-        }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Start of form based login by script. Contains step entries which are executed
-in given order</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Type of step. Valid steps are <code>input|click</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Selector (CSS) to identify web element</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Value , used by <code>input</code> step</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="infrastructure-scan">2.5.6. Infrastructure scan</h4>
-<div class="paragraph">
-<p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
-</div>
-<div class="sect4">
-<h5 id="uris-2">2.5.6.1. URIs</h5>
-<div class="paragraph">
-<p>Use <code>uris</code> element to define a string array containing URIs you want to scan.</p>
-</div>
-<div class="sect5">
-<h6 id="example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</h6>
-<div id="sechub-config-example-infrascan-with-uri" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define infrastructure scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="ips">2.5.6.2. IPs</h5>
-<div class="paragraph">
-<p>Use <code>ips</code> element to define a string array containing <code>IP</code> s you want to scan.</p>
-</div>
-<div class="sect5">
-<h6 id="example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</h6>
-<div id="sechub-config-example-infrascan-with-ip" class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Define infrastructure scan</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
-The given example with <code>127.0.0.1</code> represents only an example and will always not work
-because scanners would scan themselves&#8230;&#8203;</td>
-</tr>
-</table>
-</div>
-</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="examples">2.6. Examples</h3>
+<h3 id="nessus">3.3. Nessus</h3>
+<div class="sect3">
+<h4 id="what-does-the-adapter-do-3">3.3.1. What does the adapter do?</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>All communication is done by REST API</p>
+</li>
+<li>
+<p>Login by username and password</p>
+</li>
+<li>
+<p>Fetch Nessus session token by first REST call</p>
+</li>
+<li>
+<p>Resolve Nessus policy UUID</p>
+</li>
+<li>
+<p>Start Scan</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Add new scan and resolve Nessus scan id.<br>
+As scan name sechub job UUID in cobination with target type (INTRANET, INTERNET)
+will be used</p>
+</li>
+<li>
+<p>wait for scan done</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Fetch report as XML by doing a Nessus scan export</p>
+</li>
+<li>
+<p>Logout</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="what-must-be-done-on-nessus-ui">3.3.2. What must be done on Nessus UI</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>define the Nessus policy UUID</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="summary-3">3.3.3. Summary</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>At the moment only one Nessus policy UUID is used</p>
+</li>
+<li>
+<p>Every scan has got its own name which starts with sechub job UUID</p>
+</li>
+<li>
+<p>Old scans are <strong>NOT</strong> automatically deleted</p>
+</li>
+</ol>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="onboarding">4. Onboarding</h2>
+<div class="sectionbody">
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1462,59 +1342,69 @@ because scanners would scan themselves&#8230;&#8203;</td>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Next following sub chapters contain some <code>SecHub</code> configuration examples.
-      You can use them as templates for your own files.
-      At least replace example credentials <code>7536a8c4aa82407da7e06bdbEXAMPLE</code> and <code>alice</code> with your real ones to
-      get them working.
+Registration process of new users is done by rest API call, for details
+      about URL etc. please refer to REST API documentation described at <code>User self registration</code>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="start-a-source-scan">2.6.1. Start a source scan</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+<div class="sect2">
+<h3 id="what-must-be-done-when-a-new-user-has-registered">4.1. What must be done when a new user has registered ?</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check user is wellknown and should have access</p>
+</li>
+<li>
+<p>Check user name is valid for your purpose / company.<br>
+SecHub will automatically check for uniqueness of user name and email address.</p>
+</li>
+<li>
+<p>Accept signup by REST API (or tool)</p>
+</li>
+<li>
+<p>If necessary create accounts in your installed security products.</p>
+</li>
+</ol>
 </div>
 </div>
-<div class="paragraph">
-<p>with corresponding 'sechub.json' config file: see <a href="#sechub-config-example-sourcescan">source scan example</a> .</p>
+<div class="sect2">
+<h3 id="what-must-be-done-when-a-new-project-shall-be-created">4.2. What must be done when a new project shall be created ?</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new project inside SecHub by REST API (or tool)+</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>At least the project owner must be set</p>
+</li>
+<li>
+<p>If you do not define any white list URIs there, no web scans or
+infrastructure scans can be executed!<br>
+Check if requested white list entries are really valid for the project and do not belong to another project or
+organization.</p>
+</li>
+</ol>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>with corresponding 'sechub.json' config file:
-see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymous)</a></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="start-a-infra-scan">2.6.3. Start a infra scan</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+</li>
+<li>
+<p>Assign users to project<br>
+Currently its only possible by administrators to add / remove project members. This will change in future, see
+<a href="https://github.com/Daimler/sechub/issues/60" class="bare">https://github.com/Daimler/sechub/issues/60</a></p>
+</li>
+</ol>
 </div>
 </div>
-<div class="paragraph">
-<p>with corresponding <code>sechub.json</code> config file: <a href="#sechub-config-example-infrascan-with-ip">infrastructure scan example</a> .</p>
-</div>
+<div class="sect2">
+<h3 id="what-must-be-done-when-a-user-wants-to-have-access-to-a-sechub-project">4.3. What must be done when a user wants to have access to a SecHub project ?</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As long as <a href="https://github.com/Daimler/sechub/issues/60" class="bare">https://github.com/Daimler/sechub/issues/60</a> is not solved, the project owner must request
+the assignment to a super administrator. Only with permission of project owner the assignment should be done!</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -1522,7 +1412,7 @@ see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-06-26 14:39:32 CEST
+Last updated 2019-10-02 14:06:31 CEST
 </div>
 </div>
 </body>

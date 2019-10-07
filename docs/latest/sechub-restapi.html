@@ -526,55 +526,102 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#about">1. About</a></li>
 <li><a href="#section-sechub-rest-api">2. SecHub REST API</a>
 <ul class="sectlevel2">
-<li><a href="#section-ucrestdoc">2.1. Rest API documentation</a>
+<li><a href="#sechub-scan-configuration">2.1. SecHub scan configuration</a>
 <ul class="sectlevel3">
-<li><a href="#overview">2.1.1. Overview</a>
+<li><a href="#api-version">2.1.1. API version</a></li>
+<li><a href="#server">2.1.2. Server</a></li>
+<li><a href="#project">2.1.3. Project</a></li>
+<li><a href="#code-scan">2.1.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#user-administration">2.1.1.1. User administration</a></li>
-<li><a href="#project-administration">2.1.1.2. Project administration</a></li>
-<li><a href="#user-profile">2.1.1.3. User profile</a></li>
-<li><a href="#sechub-execution">2.1.1.4. Sechub execution</a></li>
-<li><a href="#sign-up">2.1.1.5. Sign up</a></li>
-<li><a href="#job-administration">2.1.1.6. Job administration</a></li>
-<li><a href="#other">2.1.1.7. Other</a></li>
+<li><a href="#upload-sources-from-file-system">2.1.4.1. Upload sources from file system</a>
+<ul class="sectlevel5">
+<li><a href="#example-upload-folders-with-excludes">2.1.4.1.1. Example upload folders with excludes</a></li>
 </ul>
 </li>
-<li><a href="#admin-lists-all-users">2.1.2. Admin lists all users</a></li>
-<li><a href="#admin-assigns-user-to-project">2.1.3. Admin assigns user to project</a></li>
-<li><a href="#admin-unassigns-user-from-project">2.1.4. Admin unassigns user from project</a></li>
-<li><a href="#admin-shows-user-details">2.1.5. Admin shows user details</a></li>
-<li><a href="#admin-deletes-a-user">2.1.6. Admin deletes a user</a></li>
-<li><a href="#admin-shows-project-details">2.1.7. Admin shows project details</a></li>
-<li><a href="#admin-downloads-all-details-about-a-scan-job">2.1.8. Admin downloads all details about a scan job</a></li>
-<li><a href="#admin-grants-admin-rights-to-user">2.1.9. Admin grants admin rights to user</a></li>
-<li><a href="#admin-revokes-admin-rights-from-an-admin">2.1.10. Admin revokes admin rights from an admin</a></li>
-<li><a href="#admin-lists-all-admins">2.1.11. Admin lists all admins</a></li>
-<li><a href="#admin-creates-a-project">2.1.12. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">2.1.13. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">2.1.14. Admin deletes a project</a></li>
-<li><a href="#update-project-whitelist">2.1.15. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">2.1.16. Admin shows scan logs for project</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">2.1.17. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">2.1.18. User creates a new sechub job</a></li>
-<li><a href="#user-uploads-source-code">2.1.19. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">2.1.20. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">2.1.21. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">2.1.22. User downloads sechub job report</a>
-<ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-JSON">2.1.22.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-HTML">2.1.22.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-self-registration">2.1.23. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">2.1.24. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">2.1.25. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">2.1.26. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">2.1.27. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">2.1.28. Admin lists all running jobs</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">2.1.29. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">2.1.30. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">2.1.31. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">2.1.32. Admin lists status information</a></li>
+<li><a href="#web-scan">2.1.5. Web scan</a>
+<ul class="sectlevel4">
+<li><a href="#uris">2.1.5.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-anonymous">2.1.5.1.1. Example anonymous</a></li>
+</ul>
+</li>
+<li><a href="#login">2.1.5.2. Login</a>
+<ul class="sectlevel5">
+<li><a href="#options">2.1.5.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.1.5.2.2. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-with-auto-detect">2.1.5.2.3. Example form based login with auto detect</a></li>
+<li><a href="#example-form-based-login-by-script">2.1.5.2.4. Example form based login by script</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#infrastructure-scan">2.1.6. Infrastructure scan</a>
+<ul class="sectlevel4">
+<li><a href="#uris-2">2.1.6.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.1.6.1.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.1.6.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.1.6.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#section-ucrestdoc">2.2. Rest API documentation</a>
+<ul class="sectlevel3">
+<li><a href="#overview">2.2.1. Overview</a>
+<ul class="sectlevel4">
+<li><a href="#user-administration">2.2.1.1. User administration</a></li>
+<li><a href="#project-administration">2.2.1.2. Project administration</a></li>
+<li><a href="#user-profile">2.2.1.3. User profile</a></li>
+<li><a href="#sechub-execution">2.2.1.4. Sechub execution</a></li>
+<li><a href="#sign-up">2.2.1.5. Sign up</a></li>
+<li><a href="#job-administration">2.2.1.6. Job administration</a></li>
+<li><a href="#other">2.2.1.7. Other</a></li>
+</ul>
+</li>
+<li><a href="#admin-lists-all-users">2.2.2. Admin lists all users</a></li>
+<li><a href="#admin-assigns-user-to-project">2.2.3. Admin assigns user to project</a></li>
+<li><a href="#admin-unassigns-user-from-project">2.2.4. Admin unassigns user from project</a></li>
+<li><a href="#admin-shows-user-details">2.2.5. Admin shows user details</a></li>
+<li><a href="#admin-deletes-a-user">2.2.6. Admin deletes a user</a></li>
+<li><a href="#admin-shows-project-details">2.2.7. Admin shows project details</a></li>
+<li><a href="#admin-downloads-all-details-about-a-scan-job">2.2.8. Admin downloads all details about a scan job</a></li>
+<li><a href="#admin-grants-admin-rights-to-user">2.2.9. Admin grants admin rights to user</a></li>
+<li><a href="#admin-revokes-admin-rights-from-an-admin">2.2.10. Admin revokes admin rights from an admin</a></li>
+<li><a href="#admin-lists-all-admins">2.2.11. Admin lists all admins</a></li>
+<li><a href="#admin-creates-a-project">2.2.12. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">2.2.13. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">2.2.14. Admin deletes a project</a></li>
+<li><a href="#update-project-whitelist">2.2.15. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">2.2.16. Admin shows scan logs for project</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">2.2.17. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">2.2.18. User creates a new sechub job</a></li>
+<li><a href="#user-uploads-source-code">2.2.19. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">2.2.20. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">2.2.21. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">2.2.22. User downloads sechub job report</a>
+<ul class="sectlevel4">
+<li><a href="#section-ucrestdoc-UC_010-JSON">2.2.22.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-HTML">2.2.22.2. HTML</a></li>
+</ul>
+</li>
+<li><a href="#user-self-registration">2.2.23. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">2.2.24. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">2.2.25. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">2.2.26. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">2.2.27. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">2.2.28. Admin lists all running jobs</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.2.29. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.2.30. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.2.31. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.2.32. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -664,7 +711,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-4c7bcbc-latest</p>
+0.0.0-b00654f-dirty-20191007145318</p>
 </div>
 <hr>
 </div>
@@ -680,8 +727,8 @@ build pipeline / contionus integration (CI) and helps to provide
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You are encouraged to use sechub client instead of using REST API direct!
-It makes usage of sechub much more comfortable!</p>
+<p>You are encouraged to use SecHub client instead of using REST API direct!
+It makes usage of SecHub much more comfortable!</p>
 </div>
 <div class="paragraph">
 <p>Using REST API directly can be a little bit cumbesome&#8230;&#8203;</p>
@@ -694,11 +741,533 @@ It makes usage of sechub much more comfortable!</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="section-ucrestdoc">2.1. Rest API documentation</h3>
+<h3 id="sechub-scan-configuration">2.1. SecHub scan configuration</h3>
+<div class="paragraph">
+<p>A <code>SecHub</code> scan configuration  must be valid <code>JSON</code>.</p>
+</div>
+<div class="paragraph">
+<p>This configuration is used by client and also by rest calls to start sechub
+scan jobs and add meta data. Some minor parts are client specific and must
+be handled by direct REST calls in a special way, but this is mentioned in
+following description of JSON syntax.</p>
+</div>
 <div class="sect3">
-<h4 id="overview">2.1.1. Overview</h4>
+<h4 id="api-version">2.1.1. API version</h4>
+<div class="paragraph">
+<p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As long as the SecHub configuration is still strongly developed,
+the API version remains - despite changes - to 1.0.</p>
+</div>
+<div class="paragraph">
+<p>During this time, however, the API always remains backwards compatible!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="server">2.1.2. Server</h4>
+<div class="paragraph">
+<p><code>server</code> (optional) defines the location to <code>SecHub</code> server.
+Information can be used by client implementations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using REST calls directly you do not need the information inside
+      configuration because you use server URL in every call&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="project">2.1.3. Project</h4>
+<div class="paragraph">
+<p><code>project</code> (optional) defines the project to use. Information can be used by
+client implementations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using REST calls directly you do not need the information inside
+      configuration because you use project id inside URL.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="code-scan">2.1.4. Code scan</h4>
+<div class="paragraph">
+<p><code>codeScan</code> (optional) defines the code scan settings.</p>
+</div>
 <div class="sect4">
-<h5 id="user-administration">2.1.1.1. User administration</h5>
+<h5 id="upload-sources-from-file-system">2.1.4.1. Upload sources from file system</h5>
+<div class="paragraph">
+<p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
+<code>folders</code> sub entry.</p>
+</div>
+<div class="paragraph">
+<p>Those folders will be automatically zipped and uploaded by <code>SecHub</code> client
+to server side for ongoing source analysis.</p>
+</div>
+<div class="paragraph">
+<p>Pathes must be defined relative from caller location - for example
+on a Jenkins Build Server this is normally the root folder of repository.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The configuration parts inside <code>fileSystem</code> entry are interpreted by
+      <code>SecHub</code> client! When you directly use the REST API you do not need
+      to define this data but you have to upload sources as a `zip`file by
+      your own over REST!
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="example-upload-folders-with-excludes">2.1.4.1.1. Example upload folders with excludes</h6>
+<div id="sechub-config-example-sourcescan" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">      {
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+              <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
+                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
+           <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
+        }
+      }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define code scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use filesystem - so means upload sources to server</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Upload will contain sources from <code>gamechanger-android/src/main/java</code> and <code>gamechanger-server/src/main/java</code> and their sub folders</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Exclude files (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - <code>**/*</code> is used to identify any folder<br>
+In example above following files are excluded from upload:<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>**/*.log</code> - excludes any log file in any sub directories of given folders</p>
+</li>
+<li>
+<p><code>README*.md</code> excludes all markdown README files in given folders. For example above this means:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>gamechanger-android/src/main/java/README.md</code> and</p>
+</li>
+<li>
+<p><code>gamechanger-server/src/main/java/README.md</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-scan">2.1.5. Web scan</h4>
+<div class="paragraph">
+<p><code>webScan</code> (optional) defines the web scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="uris">2.1.5.1. URIs</h5>
+<div class="paragraph">
+<p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
+         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="example-anonymous">2.1.5.1.1. Example anonymous</h6>
+<div id="sechub-config-example-webscan-anonymous" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+        }
+      }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define web scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="login">2.1.5.2. Login</h5>
+<div class="paragraph">
+<p>A web scan does work very much better if it has got access to all content
+ - so a login is necessary most time. If you do not define a login configuration
+ your web scan will be done only as anonymous user.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Providing login will enable web scanner to execute ALL possible
+actions!</p>
+</div>
+<div class="paragraph">
+<p>An example: Your test application has a Web UI for sending SMS which can
+be triggered by an user the web scan will trigger those operations as well!</p>
+</div>
+<div class="paragraph">
+<p>If you do this inside an environment where a real SMS provider is connected,
+this could result into mass SMS and also in a bigger invoice from your
+SMS provider - <strong>so be careful!</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="options">2.1.5.2.1. Options</h6>
+<div class="paragraph">
+<p>SecHub provides you with 3 options for login:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>basic authentication</p>
+</li>
+<li>
+<p>form based login</p>
+<div class="ulist">
+<ul>
+<li>
+<p>auto detect</p>
+</li>
+<li>
+<p>script based</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When a web scan product (or its adapter) does not support your wanted options you
+will have a failure at execution time!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-basic-authentication">2.1.5.2.2. Example basic authentication</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">basic</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">realm</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_REALM }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Basic authentication start, needs user id/name and password.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><strong>Optional</strong>: You can set the realm used for basic authentication. But normally
+this is not necessary</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-form-based-login-with-auto-detect">2.1.5.2.3. Example form based login with auto detect</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">autodetect</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                }
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Start of form based login with auto detection.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-form-based-login-by-script">2.1.5.2.4. Example form based login by script</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="2"></i><b>(2)</b>
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="5"></i><b>(5)</b>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_login_button</span><span class="delimiter">&quot;</span></span>
+                    }
+                ]
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Start of form based login by script. Contains step entries which are executed
+in given order</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Type of step. Valid steps are <code>input|click</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Selector (CSS) to identify web element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Value , used by <code>input</code> step</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="infrastructure-scan">2.1.6. Infrastructure scan</h4>
+<div class="paragraph">
+<p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="uris-2">2.1.6.1. URIs</h5>
+<div class="paragraph">
+<p>Use <code>uris</code> element to define a string array containing URIs you want to scan.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-uri">2.1.6.1.1. Example infrascan one URI</h6>
+<div id="sechub-config-example-infrascan-with-uri" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+        }
+      }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define infrastructure scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ips">2.1.6.2. IPs</h5>
+<div class="paragraph">
+<p>Use <code>ips</code> element to define a string array containing <code>IP</code> s you want to scan.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-ip">2.1.6.2.1. Example infrascan one IP</h6>
+<div id="sechub-config-example-infrascan-with-ip" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">      {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+        }
+      }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define infrastructure scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
+The given example with <code>127.0.0.1</code> represents only an example and will always not work
+because scanners would scan themselves&#8230;&#8203;</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-ucrestdoc">2.2. Rest API documentation</h3>
+<div class="sect3">
+<h4 id="overview">2.2.1. Overview</h4>
+<div class="sect4">
+<h5 id="user-administration">2.2.1.1. User administration</h5>
 <div class="paragraph">
 <p>Usecases handling administration of users</p>
 </div>
@@ -738,7 +1307,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="project-administration">2.1.1.2. Project administration</h5>
+<h5 id="project-administration">2.2.1.2. Project administration</h5>
 <div class="paragraph">
 <p>Usecases for project administration</p>
 </div>
@@ -766,7 +1335,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile">2.1.1.3. User profile</h5>
+<h5 id="user-profile">2.2.1.3. User profile</h5>
 <div class="paragraph">
 <p>User actions belonging to their profiles</p>
 </div>
@@ -779,7 +1348,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-execution">2.1.1.4. Sechub execution</h5>
+<h5 id="sechub-execution">2.2.1.4. Sechub execution</h5>
 <div class="paragraph">
 <p>Execution of sechub -either by CLI or direct with REST api call</p>
 </div>
@@ -804,7 +1373,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="sign-up">2.1.1.5. Sign up</h5>
+<h5 id="sign-up">2.2.1.5. Sign up</h5>
 <div class="paragraph">
 <p>All these usecases are handling user sign up (part of user self registration process)</p>
 </div>
@@ -829,7 +1398,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="job-administration">2.1.1.6. Job administration</h5>
+<h5 id="job-administration">2.2.1.6. Job administration</h5>
 <div class="paragraph">
 <p>Usecases about job administration</p>
 </div>
@@ -842,7 +1411,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="other">2.1.1.7. Other</h5>
+<h5 id="other">2.2.1.7. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -865,7 +1434,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-users">2.1.2. Admin lists all users</h4>
+<h4 id="admin-lists-all-users">2.2.2. Admin lists all users</h4>
 <div id="section-ucrestdoc-uc-UC_004" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_004">UC_004-Admin lists all users </a></p>
 </div>
@@ -879,7 +1448,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-user-to-project">2.1.3. Admin assigns user to project</h4>
+<h4 id="admin-assigns-user-to-project">2.2.3. Admin assigns user to project</h4>
 <div id="section-ucrestdoc-uc-UC_015" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_015">UC_015-Admin assigns user to project </a></p>
 </div>
@@ -920,7 +1489,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-user-from-project">2.1.4. Admin unassigns user from project</h4>
+<h4 id="admin-unassigns-user-from-project">2.2.4. Admin unassigns user from project</h4>
 <div id="section-ucrestdoc-uc-UC_016" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_016">UC_016-Admin unassigns user from project </a></p>
 </div>
@@ -961,7 +1530,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-user-details">2.1.5. Admin shows user details</h4>
+<h4 id="admin-shows-user-details">2.2.5. Admin shows user details</h4>
 <div id="section-ucrestdoc-uc-UC_017" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_017">UC_017-Admin shows user details </a></p>
 </div>
@@ -1041,7 +1610,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-user">2.1.6. Admin deletes a user</h4>
+<h4 id="admin-deletes-a-user">2.2.6. Admin deletes a user</h4>
 <div id="section-ucrestdoc-uc-UC_018" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_018">UC_018-Admin deletes a user </a></p>
 </div>
@@ -1077,7 +1646,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-project-details">2.1.7. Admin shows project details</h4>
+<h4 id="admin-shows-project-details">2.2.7. Admin shows project details</h4>
 <div id="section-ucrestdoc-uc-UC_021" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
 </div>
@@ -1153,7 +1722,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-all-details-about-a-scan-job">2.1.8. Admin downloads all details about a scan job</h4>
+<h4 id="admin-downloads-all-details-about-a-scan-job">2.2.8. Admin downloads all details about a scan job</h4>
 <div id="section-ucrestdoc-uc-UC_026" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
 </div>
@@ -1162,13 +1731,13 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78fe5bf0-87bd-4c0f-a268-ad43031143f0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/e5ef5541-09aa-46f1-b5d6-54cee760ba26' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-grants-admin-rights-to-user">2.1.9. Admin grants admin rights to user</h4>
+<h4 id="admin-grants-admin-rights-to-user">2.2.9. Admin grants admin rights to user</h4>
 <div id="section-ucrestdoc-uc-UC_027" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
 </div>
@@ -1204,7 +1773,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-revokes-admin-rights-from-an-admin">2.1.10. Admin revokes admin rights from an admin</h4>
+<h4 id="admin-revokes-admin-rights-from-an-admin">2.2.10. Admin revokes admin rights from an admin</h4>
 <div id="section-ucrestdoc-uc-UC_028" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
 </div>
@@ -1240,7 +1809,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-admins">2.1.11. Admin lists all admins</h4>
+<h4 id="admin-lists-all-admins">2.2.11. Admin lists all admins</h4>
 <div id="section-ucrestdoc-uc-UC_029" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
 </div>
@@ -1254,7 +1823,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-a-project">2.1.12. Admin creates a project</h4>
+<h4 id="admin-creates-a-project">2.2.12. Admin creates a project</h4>
 <div id="section-ucrestdoc-uc-UC_013" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
 </div>
@@ -1304,7 +1873,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-projects">2.1.13. Admin lists all projects</h4>
+<h4 id="admin-lists-all-projects">2.2.13. Admin lists all projects</h4>
 <div id="section-ucrestdoc-uc-UC_014" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
 </div>
@@ -1319,7 +1888,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-project">2.1.14. Admin deletes a project</h4>
+<h4 id="admin-deletes-a-project">2.2.14. Admin deletes a project</h4>
 <div id="section-ucrestdoc-uc-UC_020" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
 </div>
@@ -1356,7 +1925,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">2.1.15. Update project whitelist</h4>
+<h4 id="update-project-whitelist">2.2.15. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
@@ -1423,7 +1992,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">2.1.16. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">2.2.16. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
@@ -1487,7 +2056,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">2.1.17. User clicks link to get new api token</h4>
+<h4 id="user-clicks-link-to-get-new-api-token">2.2.17. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
@@ -1524,7 +2093,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">2.1.18. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">2.2.18. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
@@ -1581,6 +2150,11 @@ It makes usage of sechub much more comfortable!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
@@ -1640,12 +2214,12 @@ It makes usage of sechub much more comfortable!</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:null,&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">2.1.19. User uploads source code</h4>
+<h4 id="user-uploads-source-code">2.2.19. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -1680,7 +2254,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf1cdc82-53b7-4db1-8bd8-ebc810770823/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/57ec7ecf-3a12-4759-934f-0d5926060c41/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -1691,7 +2265,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">2.1.20. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">2.2.20. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -1726,13 +2300,13 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/76d93bd0-84ac-45f6-8d49-a3990cbc0602/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6652112f-a826-4f6a-ab36-8e45352f8ecb/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">2.1.21. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">2.2.21. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -1826,37 +2400,37 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab8668a2-3732-4b19-a593-a1cb5e43b2da' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c8679c5a-eed5-4ac9-8f1b-c367a7c8ae1e' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">2.1.22. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">2.2.22. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-JSON">2.1.22.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-JSON">2.2.22.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b635962c-ae2e-4d14-8c0c-bd2f12c70139' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/dd1092d0-2d12-42d3-9a47-9d922a93d7d0' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-HTML">2.1.22.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-HTML">2.2.22.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/be1fd177-fee6-4701-b974-e6492e49a254' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/892b326a-8dc2-4d2f-a491-5a298304cefa' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -1864,7 +2438,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">2.1.23. User self registration</h4>
+<h4 id="user-self-registration">2.2.23. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -1914,7 +2488,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">2.1.24. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">2.2.24. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -1928,7 +2502,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">2.1.25. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">2.2.25. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -1964,7 +2538,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">2.1.26. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">2.2.26. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -2000,7 +2574,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">2.1.27. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">2.2.27. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -2037,7 +2611,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">2.1.28. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">2.2.28. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -2101,7 +2675,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">2.1.29. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">2.2.29. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -2116,7 +2690,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">2.1.30. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">2.2.30. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -2131,7 +2705,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">2.1.31. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">2.2.31. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -2146,7 +2720,7 @@ It makes usage of sechub much more comfortable!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">2.1.32. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">2.2.32. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
