@@ -60,9 +60,6 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
 			loginAndFetchToken(context);
 			updateContextWithNessusPolicyUUID(context);
-			/*
-			 * FIXME Albert Tregnaghi, 2018-04-03:ask tim and daniel about creating always new scans
-			 */
 			addNewScan(context);
 			launchScan(context);
 

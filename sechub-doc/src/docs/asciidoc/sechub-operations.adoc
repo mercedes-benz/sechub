@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub operations Documentation
+// ====================================
+= image:sechub-logo.png[sechub] SecHub Operations
+include::documents/config.adoc[]
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+Target audience for this document are *SecHub Operators/Administrators*.
+
+
+// horizontal line
+***
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. server setup
+include::documents/operations/01_sechub_server.adoc[]
+
+<<<<
+// 2. Security in developmewnt
+include::documents/operations/02_security_products.adoc[]
+
+<<<<
+// 3. Coding conventions
+include::documents/operations/03_onboarding.adoc[]
+
+
+

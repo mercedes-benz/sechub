@@ -57,7 +57,6 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 		String path = storage.getAbsolutePath("sourcecode.zip");
-		String projectName = context.getConfiguration().getProjectId();
 
 		/* @formatter:off */
 
@@ -68,13 +67,13 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 				setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
 				setPathToZipFile(path).
 				setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
-				setProjectId(projectName).
+				setProjectId(projectId).
 				setTraceID(context.getTraceLogIdAsString()).
 				/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
 				build();
 		/* @formatter:on */
 
-		/* execute nessus by adapter and return product result */
+		/* execute checkmarx by adapter and return product result */
 		String xml = checkmarxAdapter.start(checkMarxConfig);
 		ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
 		return Collections.singletonList(result);

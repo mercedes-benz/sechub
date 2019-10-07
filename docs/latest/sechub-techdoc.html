@@ -648,77 +648,82 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#start-server-in-prod-mode">4.2. Start server in PROD mode</a></li>
 </ul>
 </li>
-<li><a href="#section-security-in-development">5. Security in development</a>
+<li><a href="#special-setup">5. Special setup</a>
 <ul class="sectlevel2">
-<li><a href="#cli-client">5.1. CLI client</a></li>
-<li><a href="#server-2">5.2. Server</a>
-<ul class="sectlevel3">
-<li><a href="#spring-boot-security">5.2.1. Spring Boot Security</a></li>
-<li><a href="#certificates">5.2.2. Certificates</a></li>
+<li><a href="#terminate-ssl-and-use-http-only">5.1. Terminate SSL and use HTTP only</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#section-coding-conventions">6. Coding conventions</a>
+<li><a href="#section-security-in-development">6. Security in development</a>
 <ul class="sectlevel2">
-<li><a href="#commit-messages">6.1. Commit messages</a></li>
-<li><a href="#database">6.2. Database</a>
+<li><a href="#cli-client">6.1. CLI client</a></li>
+<li><a href="#server-2">6.2. Server</a>
 <ul class="sectlevel3">
-<li><a href="#naming-in-db">6.2.1. Naming in DB</a></li>
-<li><a href="#naming-in-jpa">6.2.2. Naming in JPA</a></li>
+<li><a href="#spring-boot-security">6.2.1. Spring Boot Security</a></li>
+<li><a href="#certificates">6.2.2. Certificates</a></li>
 </ul>
 </li>
-<li><a href="#java">6.3. Java</a>
+</ul>
+</li>
+<li><a href="#section-coding-conventions">7. Coding conventions</a>
+<ul class="sectlevel2">
+<li><a href="#commit-messages">7.1. Commit messages</a></li>
+<li><a href="#database">7.2. Database</a>
 <ul class="sectlevel3">
-<li><a href="#classes">6.3.1. Classes</a>
+<li><a href="#naming-in-db">7.2.1. Naming in DB</a></li>
+<li><a href="#naming-in-jpa">7.2.2. Naming in JPA</a></li>
+</ul>
+</li>
+<li><a href="#java">7.3. Java</a>
+<ul class="sectlevel3">
+<li><a href="#classes">7.3.1. Classes</a>
 <ul class="sectlevel4">
-<li><a href="#subclassing-inheritance">6.3.1.1. Subclassing/ Inheritance</a></li>
-<li><a href="#adding-additional-parts-without-inheritance">6.3.1.2. Adding additional parts without inheritance</a></li>
+<li><a href="#subclassing-inheritance">7.3.1.1. Subclassing/ Inheritance</a></li>
+<li><a href="#adding-additional-parts-without-inheritance">7.3.1.2. Adding additional parts without inheritance</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#logging">6.4. Logging</a>
+<li><a href="#logging">7.4. Logging</a>
 <ul class="sectlevel3">
-<li><a href="#general">6.4.1. General</a></li>
-<li><a href="#audit-logging">6.4.2. Audit Logging</a></li>
-<li><a href="#security-logging">6.4.3. Security Logging</a></li>
-<li><a href="#sechub-logging-functional">6.4.4. Functional Logging</a></li>
-<li><a href="#debug-logging">6.4.5. Debug Logging</a></li>
+<li><a href="#general">7.4.1. General</a></li>
+<li><a href="#audit-logging">7.4.2. Audit Logging</a></li>
+<li><a href="#security-logging">7.4.3. Security Logging</a></li>
+<li><a href="#sechub-logging-functional">7.4.4. Functional Logging</a></li>
+<li><a href="#debug-logging">7.4.5. Debug Logging</a></li>
 </ul>
 </li>
-<li><a href="#services">6.5. Services</a></li>
-<li><a href="#restcontroller">6.6. RestController</a></li>
-<li><a href="#code2doc">6.7. Code2Doc</a>
+<li><a href="#services">7.5. Services</a></li>
+<li><a href="#restcontroller">7.6. RestController</a></li>
+<li><a href="#code2doc">7.7. Code2Doc</a>
 <ul class="sectlevel3">
-<li><a href="#spring-values">6.7.1. Spring values</a></li>
-<li><a href="#messaging">6.7.2. Messaging</a></li>
-<li><a href="#use-cases">6.7.3. Use cases</a></li>
-<li><a href="#tests">6.7.4. Tests</a>
+<li><a href="#spring-values">7.7.1. Spring values</a></li>
+<li><a href="#messaging">7.7.2. Messaging</a></li>
+<li><a href="#use-cases">7.7.3. Use cases</a></li>
+<li><a href="#tests">7.7.4. Tests</a>
 <ul class="sectlevel4">
-<li><a href="#unit-tests">6.7.4.1. Unit tests</a>
+<li><a href="#unit-tests">7.7.4.1. Unit tests</a>
 <ul class="sectlevel5">
-<li><a href="#fields">6.7.4.1.1. Fields</a></li>
-<li><a href="#naming-of-mocks-and-test-targets">6.7.4.1.2. Naming of mocks and test targets</a></li>
-<li><a href="#naming-of-unit-tests">6.7.4.1.3. Naming of unit tests</a></li>
-<li><a href="#using-json-in-unit-tests-versus-production-code">6.7.4.1.4. Using json in unit tests versus production code</a></li>
+<li><a href="#fields">7.7.4.1.1. Fields</a></li>
+<li><a href="#naming-of-mocks-and-test-targets">7.7.4.1.2. Naming of mocks and test targets</a></li>
+<li><a href="#naming-of-unit-tests">7.7.4.1.3. Naming of unit tests</a></li>
+<li><a href="#using-json-in-unit-tests-versus-production-code">7.7.4.1.4. Using json in unit tests versus production code</a></li>
 </ul>
 </li>
-<li><a href="#unit-tests-with-spring-context">6.7.4.2. Unit tests (with spring context)</a></li>
-<li><a href="#mocked-restcontroller-mvc-tests-with-spring-context">6.7.4.3. Mocked RestController/MVC Tests (with spring context)</a></li>
-<li><a href="#wiremock-tests">6.7.4.4. WireMock tests</a></li>
-<li><a href="#db-integration-tests">6.7.4.5. DB integration tests</a></li>
-<li><a href="#integration-tests">6.7.4.6. Integration tests</a>
+<li><a href="#unit-tests-with-spring-context">7.7.4.2. Unit tests (with spring context)</a></li>
+<li><a href="#mocked-restcontroller-mvc-tests-with-spring-context">7.7.4.3. Mocked RestController/MVC Tests (with spring context)</a></li>
+<li><a href="#wiremock-tests">7.7.4.4. WireMock tests</a></li>
+<li><a href="#db-integration-tests">7.7.4.5. DB integration tests</a></li>
+<li><a href="#integration-tests">7.7.4.6. Integration tests</a>
 <ul class="sectlevel5">
-<li><a href="#integration-tests-using-restapi">6.7.4.6.1. Integration tests using RestAPI</a></li>
-<li><a href="#integration-tests-using-sechubclient">6.7.4.6.2. Integration tests using SecHubClient</a></li>
+<li><a href="#integration-tests-using-restapi">7.7.4.6.1. Integration tests using RestAPI</a></li>
+<li><a href="#integration-tests-using-sechubclient">7.7.4.6.2. Integration tests using SecHubClient</a></li>
 </ul>
 </li>
-<li><a href="#section-coding-convention-restdoc">6.7.4.7. RestDOC tests</a>
+<li><a href="#section-coding-convention-restdoc">7.7.4.7. RestDOC tests</a>
 <ul class="sectlevel5">
-<li><a href="#what-is-the-difference-between-a-mocktest-and-a-restdoctest">6.7.4.7.1. What is the difference between a MockTest and a RestDocTest?</a></li>
-<li><a href="#how-can-i-ensure-that-i-do-not-forget-to-describe-necesary-rest-api-parts">6.7.4.7.2. How can I ensure that I do not forget to describe necesary REST API parts?</a></li>
-<li><a href="#naming">6.7.4.7.3. Naming</a></li>
+<li><a href="#what-is-the-difference-between-a-mocktest-and-a-restdoctest">7.7.4.7.1. What is the difference between a MockTest and a RestDocTest?</a></li>
+<li><a href="#how-can-i-ensure-that-i-do-not-forget-to-describe-necesary-rest-api-parts">7.7.4.7.2. How can I ensure that I do not forget to describe necesary REST API parts?</a></li>
+<li><a href="#naming">7.7.4.7.3. Naming</a></li>
 </ul>
 </li>
 </ul>
@@ -727,198 +732,198 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#section-documentation">7. Documentation</a>
+<li><a href="#section-documentation">8. Documentation</a>
 <ul class="sectlevel2">
-<li><a href="#documentation-types">7.1. Documentation types</a>
+<li><a href="#documentation-types">8.1. Documentation types</a>
 <ul class="sectlevel3">
-<li><a href="#section-documentation-markdown">7.1.1. Markdown</a></li>
-<li><a href="#section-documentation-asciidoc">7.1.2. Asciidoc</a></li>
+<li><a href="#section-documentation-markdown">8.1.1. Markdown</a></li>
+<li><a href="#section-documentation-asciidoc">8.1.2. Asciidoc</a></li>
 </ul>
 </li>
-<li><a href="#section-documentation-in-code">7.2. Documentation in code</a>
+<li><a href="#section-documentation-in-code">8.2. Documentation in code</a>
 <ul class="sectlevel3">
-<li><a href="#automated-description-of-important-code-part">7.2.1. Automated description of important code part</a></li>
-<li><a href="#section-documentation-configuration-properties">7.2.2. Automated description of configuration properties</a></li>
-<li><a href="#section-documentation-usecases">7.2.3. Automated description of use cases</a></li>
-<li><a href="#automated-kubernetes-files">7.2.4. Automated Kubernetes files</a></li>
-<li><a href="#automated-diagrams">7.2.5. Automated Diagrams</a>
+<li><a href="#automated-description-of-important-code-part">8.2.1. Automated description of important code part</a></li>
+<li><a href="#section-documentation-configuration-properties">8.2.2. Automated description of configuration properties</a></li>
+<li><a href="#section-documentation-usecases">8.2.3. Automated description of use cases</a></li>
+<li><a href="#automated-kubernetes-files">8.2.4. Automated Kubernetes files</a></li>
+<li><a href="#automated-diagrams">8.2.5. Automated Diagrams</a>
 <ul class="sectlevel4">
-<li><a href="#section-documentation-messaging-overview">7.2.5.1. Domain messaging overview</a></li>
+<li><a href="#section-documentation-messaging-overview">8.2.5.1. Domain messaging overview</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#section-documentation-generation">7.3. Documentation generation</a></li>
-<li><a href="#generation-of-sechub-pages">7.4. Generation of sechub pages</a></li>
+<li><a href="#section-documentation-generation">8.3. Documentation generation</a></li>
+<li><a href="#generation-of-sechub-pages">8.4. Generation of sechub pages</a></li>
 </ul>
 </li>
-<li><a href="#build">8. Build</a>
+<li><a href="#build">9. Build</a>
 <ul class="sectlevel2">
-<li><a href="#about-build-technology">8.1. About build technology</a></li>
-<li><a href="#jenkins-auto-deployment">8.2. Jenkins auto deployment</a>
+<li><a href="#about-build-technology">9.1. About build technology</a></li>
+<li><a href="#jenkins-auto-deployment">9.2. Jenkins auto deployment</a>
 <ul class="sectlevel3">
-<li><a href="#continous-integration-build">8.2.1. Continous integration build</a></li>
-<li><a href="#release-build">8.2.2. Release build</a></li>
-<li><a href="#special-client-and-server-release-trigger-jobs">8.2.3. Special client and server release trigger jobs</a>
+<li><a href="#continous-integration-build">9.2.1. Continous integration build</a></li>
+<li><a href="#release-build">9.2.2. Release build</a></li>
+<li><a href="#special-client-and-server-release-trigger-jobs">9.2.3. Special client and server release trigger jobs</a>
 <ul class="sectlevel4">
-<li><a href="#examples">8.2.3.1. Examples</a></li>
+<li><a href="#examples">9.2.3.1. Examples</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#gradle-build-commands-overview">8.3. Gradle build commands overview</a></li>
-<li><a href="#build-server">8.4. Build Server</a></li>
-<li><a href="#build-client">8.5. Build Client</a></li>
-<li><a href="#execute-integration-tests">8.6. Execute integration tests</a></li>
-<li><a href="#build-documentation">8.7. Build Documentation</a></li>
-<li><a href="#publish-artefacts">8.8. Publish artefacts</a></li>
+<li><a href="#gradle-build-commands-overview">9.3. Gradle build commands overview</a></li>
+<li><a href="#build-server">9.4. Build Server</a></li>
+<li><a href="#build-client">9.5. Build Client</a></li>
+<li><a href="#execute-integration-tests">9.6. Execute integration tests</a></li>
+<li><a href="#build-documentation">9.7. Build Documentation</a></li>
+<li><a href="#publish-artefacts">9.8. Publish artefacts</a></li>
 </ul>
 </li>
-<li><a href="#concepts">9. Concepts</a>
+<li><a href="#concepts">10. Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#section-usecases">9.1. Use cases</a>
+<li><a href="#section-usecases">10.1. Use cases</a>
 <ul class="sectlevel3">
-<li><a href="#overview-about-usecase-groups">9.1.1. Overview about usecase groups</a>
+<li><a href="#overview-about-usecase-groups">10.1.1. Overview about usecase groups</a>
 <ul class="sectlevel4">
-<li><a href="#anonymous">9.1.1.1. Anonymous</a></li>
-<li><a href="#user-administration">9.1.1.2. User administration</a></li>
-<li><a href="#project-administration">9.1.1.3. Project administration</a></li>
-<li><a href="#user-profile">9.1.1.4. User profile</a></li>
-<li><a href="#sechub-execution">9.1.1.5. Sechub execution</a></li>
-<li><a href="#sign-up">9.1.1.6. Sign up</a></li>
-<li><a href="#job-administration">9.1.1.7. Job administration</a></li>
-<li><a href="#technical">9.1.1.8. Technical</a></li>
-<li><a href="#other">9.1.1.9. Other</a></li>
+<li><a href="#anonymous">10.1.1.1. Anonymous</a></li>
+<li><a href="#user-administration">10.1.1.2. User administration</a></li>
+<li><a href="#project-administration">10.1.1.3. Project administration</a></li>
+<li><a href="#user-profile">10.1.1.4. User profile</a></li>
+<li><a href="#sechub-execution">10.1.1.5. Sechub execution</a></li>
+<li><a href="#sign-up">10.1.1.6. Sign up</a></li>
+<li><a href="#job-administration">10.1.1.7. Job administration</a></li>
+<li><a href="#technical">10.1.1.8. Technical</a></li>
+<li><a href="#other">10.1.1.9. Other</a></li>
 </ul>
 </li>
-<li><a href="#section-usecase-UC_001">9.1.2. UC_001-User self registration</a></li>
-<li><a href="#section-usecase-UC_002">9.1.3. UC_002-Admin lists open user signups</a></li>
-<li><a href="#section-usecase-UC_003">9.1.4. UC_003-Admin applies self registration</a></li>
-<li><a href="#section-usecase-UC_004">9.1.5. UC_004-Admin lists all users</a></li>
-<li><a href="#section-usecase-UC_005">9.1.6. UC_005-User creates a new sechub job</a></li>
-<li><a href="#section-usecase-UC_006">9.1.7. UC_006-User uploads source code</a></li>
-<li><a href="#section-usecase-UC_007">9.1.8. UC_007-User approves sechub job</a></li>
-<li><a href="#section-usecase-UC_008">9.1.9. UC_008-Sechub scheduler starts job</a></li>
-<li><a href="#section-usecase-UC_009">9.1.10. UC_009-User checks sechub job state</a></li>
-<li><a href="#section-usecase-UC_010">9.1.11. UC_010-User downloads sechub job report</a></li>
-<li><a href="#section-usecase-UC_011">9.1.12. UC_011-User starts scan by client</a></li>
-<li><a href="#section-usecase-UC_012">9.1.13. UC_012-User clicks link to get new api token</a></li>
-<li><a href="#section-usecase-UC_013">9.1.14. UC_013-Admin creates a project</a></li>
-<li><a href="#section-usecase-UC_014">9.1.15. UC_014-Admin lists all projects</a></li>
-<li><a href="#section-usecase-UC_015">9.1.16. UC_015-Admin assigns user to project</a></li>
-<li><a href="#section-usecase-UC_016">9.1.17. UC_016-Admin unassigns user from project</a></li>
-<li><a href="#section-usecase-UC_017">9.1.18. UC_017-Admin shows user details</a></li>
-<li><a href="#section-usecase-UC_018">9.1.19. UC_018-Admin deletes a user</a></li>
-<li><a href="#section-usecase-UC_019">9.1.20. UC_019-Admin deletes user signup</a></li>
-<li><a href="#section-usecase-UC_020">9.1.21. UC_020-Admin deletes a project</a></li>
-<li><a href="#section-usecase-UC_021">9.1.22. UC_021-Admin shows project details</a></li>
-<li><a href="#section-usecase-UC_022">9.1.23. UC_022-Update project whitelist</a></li>
-<li><a href="#section-usecase-UC_023">9.1.24. UC_023-Admin lists all running jobs</a></li>
-<li><a href="#section-usecase-UC_024">9.1.25. UC_024-User requests new API token</a></li>
-<li><a href="#section-usecase-UC_025">9.1.26. UC_025-Admin shows scan logs for project</a></li>
-<li><a href="#section-usecase-UC_026">9.1.27. UC_026-Admin downloads all details about a scan job</a></li>
-<li><a href="#section-usecase-UC_027">9.1.28. UC_027-Admin grants admin rights to user</a></li>
-<li><a href="#section-usecase-UC_028">9.1.29. UC_028-Admin revokes admin rights from an admin</a></li>
-<li><a href="#section-usecase-UC_029">9.1.30. UC_029-Admin lists all admins</a></li>
-<li><a href="#section-usecase-UC_030">9.1.31. UC_030-Admin disables job processing in scheduler</a></li>
-<li><a href="#section-usecase-UC_031">9.1.32. UC_031-Admin enables scheduler job processing</a></li>
-<li><a href="#section-usecase-UC_032">9.1.33. UC_032-Admin get scheduler status</a></li>
-<li><a href="#section-usecase-UC_033">9.1.34. UC_033-Admin lists status information</a></li>
+<li><a href="#section-usecase-UC_001">10.1.2. UC_001-User self registration</a></li>
+<li><a href="#section-usecase-UC_002">10.1.3. UC_002-Admin lists open user signups</a></li>
+<li><a href="#section-usecase-UC_003">10.1.4. UC_003-Admin applies self registration</a></li>
+<li><a href="#section-usecase-UC_004">10.1.5. UC_004-Admin lists all users</a></li>
+<li><a href="#section-usecase-UC_005">10.1.6. UC_005-User creates a new sechub job</a></li>
+<li><a href="#section-usecase-UC_006">10.1.7. UC_006-User uploads source code</a></li>
+<li><a href="#section-usecase-UC_007">10.1.8. UC_007-User approves sechub job</a></li>
+<li><a href="#section-usecase-UC_008">10.1.9. UC_008-Sechub scheduler starts job</a></li>
+<li><a href="#section-usecase-UC_009">10.1.10. UC_009-User checks sechub job state</a></li>
+<li><a href="#section-usecase-UC_010">10.1.11. UC_010-User downloads sechub job report</a></li>
+<li><a href="#section-usecase-UC_011">10.1.12. UC_011-User starts scan by client</a></li>
+<li><a href="#section-usecase-UC_012">10.1.13. UC_012-User clicks link to get new api token</a></li>
+<li><a href="#section-usecase-UC_013">10.1.14. UC_013-Admin creates a project</a></li>
+<li><a href="#section-usecase-UC_014">10.1.15. UC_014-Admin lists all projects</a></li>
+<li><a href="#section-usecase-UC_015">10.1.16. UC_015-Admin assigns user to project</a></li>
+<li><a href="#section-usecase-UC_016">10.1.17. UC_016-Admin unassigns user from project</a></li>
+<li><a href="#section-usecase-UC_017">10.1.18. UC_017-Admin shows user details</a></li>
+<li><a href="#section-usecase-UC_018">10.1.19. UC_018-Admin deletes a user</a></li>
+<li><a href="#section-usecase-UC_019">10.1.20. UC_019-Admin deletes user signup</a></li>
+<li><a href="#section-usecase-UC_020">10.1.21. UC_020-Admin deletes a project</a></li>
+<li><a href="#section-usecase-UC_021">10.1.22. UC_021-Admin shows project details</a></li>
+<li><a href="#section-usecase-UC_022">10.1.23. UC_022-Update project whitelist</a></li>
+<li><a href="#section-usecase-UC_023">10.1.24. UC_023-Admin lists all running jobs</a></li>
+<li><a href="#section-usecase-UC_024">10.1.25. UC_024-User requests new API token</a></li>
+<li><a href="#section-usecase-UC_025">10.1.26. UC_025-Admin shows scan logs for project</a></li>
+<li><a href="#section-usecase-UC_026">10.1.27. UC_026-Admin downloads all details about a scan job</a></li>
+<li><a href="#section-usecase-UC_027">10.1.28. UC_027-Admin grants admin rights to user</a></li>
+<li><a href="#section-usecase-UC_028">10.1.29. UC_028-Admin revokes admin rights from an admin</a></li>
+<li><a href="#section-usecase-UC_029">10.1.30. UC_029-Admin lists all admins</a></li>
+<li><a href="#section-usecase-UC_030">10.1.31. UC_030-Admin disables job processing in scheduler</a></li>
+<li><a href="#section-usecase-UC_031">10.1.32. UC_031-Admin enables scheduler job processing</a></li>
+<li><a href="#section-usecase-UC_032">10.1.33. UC_032-Admin get scheduler status</a></li>
+<li><a href="#section-usecase-UC_033">10.1.34. UC_033-Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#api">10. API</a>
+<li><a href="#api">11. API</a>
 <ul class="sectlevel2">
-<li><a href="#section-ucrestdoc">10.1. Rest API documentation</a>
+<li><a href="#section-ucrestdoc">11.1. Rest API documentation</a>
 <ul class="sectlevel3">
-<li><a href="#overview-2">10.1.1. Overview</a>
+<li><a href="#overview-2">11.1.1. Overview</a>
 <ul class="sectlevel4">
-<li><a href="#user-administration-2">10.1.1.1. User administration</a></li>
-<li><a href="#project-administration-2">10.1.1.2. Project administration</a></li>
-<li><a href="#user-profile-2">10.1.1.3. User profile</a></li>
-<li><a href="#sechub-execution-2">10.1.1.4. Sechub execution</a></li>
-<li><a href="#sign-up-2">10.1.1.5. Sign up</a></li>
-<li><a href="#job-administration-2">10.1.1.6. Job administration</a></li>
-<li><a href="#other-2">10.1.1.7. Other</a></li>
+<li><a href="#user-administration-2">11.1.1.1. User administration</a></li>
+<li><a href="#project-administration-2">11.1.1.2. Project administration</a></li>
+<li><a href="#user-profile-2">11.1.1.3. User profile</a></li>
+<li><a href="#sechub-execution-2">11.1.1.4. Sechub execution</a></li>
+<li><a href="#sign-up-2">11.1.1.5. Sign up</a></li>
+<li><a href="#job-administration-2">11.1.1.6. Job administration</a></li>
+<li><a href="#other-2">11.1.1.7. Other</a></li>
 </ul>
 </li>
-<li><a href="#admin-lists-all-users">10.1.2. Admin lists all users</a></li>
-<li><a href="#admin-assigns-user-to-project">10.1.3. Admin assigns user to project</a></li>
-<li><a href="#admin-unassigns-user-from-project">10.1.4. Admin unassigns user from project</a></li>
-<li><a href="#admin-shows-user-details">10.1.5. Admin shows user details</a></li>
-<li><a href="#admin-deletes-a-user">10.1.6. Admin deletes a user</a></li>
-<li><a href="#admin-shows-project-details">10.1.7. Admin shows project details</a></li>
-<li><a href="#admin-downloads-all-details-about-a-scan-job">10.1.8. Admin downloads all details about a scan job</a></li>
-<li><a href="#admin-grants-admin-rights-to-user">10.1.9. Admin grants admin rights to user</a></li>
-<li><a href="#admin-revokes-admin-rights-from-an-admin">10.1.10. Admin revokes admin rights from an admin</a></li>
-<li><a href="#admin-lists-all-admins">10.1.11. Admin lists all admins</a></li>
-<li><a href="#admin-creates-a-project">10.1.12. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">10.1.13. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">10.1.14. Admin deletes a project</a></li>
-<li><a href="#update-project-whitelist">10.1.15. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">10.1.16. Admin shows scan logs for project</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">10.1.17. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">10.1.18. User creates a new sechub job</a></li>
-<li><a href="#user-uploads-source-code">10.1.19. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">10.1.20. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">10.1.21. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">10.1.22. User downloads sechub job report</a>
+<li><a href="#admin-lists-all-users">11.1.2. Admin lists all users</a></li>
+<li><a href="#admin-assigns-user-to-project">11.1.3. Admin assigns user to project</a></li>
+<li><a href="#admin-unassigns-user-from-project">11.1.4. Admin unassigns user from project</a></li>
+<li><a href="#admin-shows-user-details">11.1.5. Admin shows user details</a></li>
+<li><a href="#admin-deletes-a-user">11.1.6. Admin deletes a user</a></li>
+<li><a href="#admin-shows-project-details">11.1.7. Admin shows project details</a></li>
+<li><a href="#admin-downloads-all-details-about-a-scan-job">11.1.8. Admin downloads all details about a scan job</a></li>
+<li><a href="#admin-grants-admin-rights-to-user">11.1.9. Admin grants admin rights to user</a></li>
+<li><a href="#admin-revokes-admin-rights-from-an-admin">11.1.10. Admin revokes admin rights from an admin</a></li>
+<li><a href="#admin-lists-all-admins">11.1.11. Admin lists all admins</a></li>
+<li><a href="#admin-creates-a-project">11.1.12. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">11.1.13. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">11.1.14. Admin deletes a project</a></li>
+<li><a href="#update-project-whitelist">11.1.15. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">11.1.16. Admin shows scan logs for project</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">11.1.17. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">11.1.18. User creates a new sechub job</a></li>
+<li><a href="#user-uploads-source-code">11.1.19. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">11.1.20. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">11.1.21. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">11.1.22. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-JSON">10.1.22.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-HTML">10.1.22.2. HTML</a></li>
+<li><a href="#section-ucrestdoc-UC_010-JSON">11.1.22.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-HTML">11.1.22.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-self-registration">10.1.23. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">10.1.24. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">10.1.25. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">10.1.26. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">10.1.27. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">10.1.28. Admin lists all running jobs</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">10.1.29. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">10.1.30. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">10.1.31. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">10.1.32. Admin lists status information</a></li>
+<li><a href="#user-self-registration">11.1.23. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">11.1.24. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">11.1.25. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">11.1.26. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">11.1.27. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">11.1.28. Admin lists all running jobs</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.29. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.30. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.31. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.32. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#section-technical-debt">11. Technical debt</a>
+<li><a href="#section-technical-debt">12. Technical debt</a>
 <ul class="sectlevel2">
-<li><a href="#long-running-transactions">11.1. Long running transactions</a></li>
-<li><a href="#domain-messaging-system">11.2. Domain messaging system</a>
+<li><a href="#long-running-transactions">12.1. Long running transactions</a></li>
+<li><a href="#domain-messaging-system">12.2. Domain messaging system</a>
 <ul class="sectlevel3">
-<li><a href="#current-implementation">11.2.1. Current implementation</a>
+<li><a href="#current-implementation">12.2.1. Current implementation</a>
 <ul class="sectlevel4">
-<li><a href="#additional-information">11.2.1.1. Additional information</a></li>
+<li><a href="#additional-information">12.2.1.1. Additional information</a></li>
 </ul>
 </li>
-<li><a href="#what-possibilities-do-we-have-to-change-this-in-future">11.2.2. What possibilities do we have to change this in future?</a></li>
+<li><a href="#what-possibilities-do-we-have-to-change-this-in-future">12.2.2. What possibilities do we have to change this in future?</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#section-howtos">12. HowTos</a>
+<li><a href="#section-howtos">13. HowTos</a>
 <ul class="sectlevel2">
-<li><a href="#section-howto-integrate-a-new-product">12.1. Howto integrate a new product</a>
+<li><a href="#section-howto-integrate-a-new-product">13.1. Howto integrate a new product</a>
 <ul class="sectlevel3">
-<li><a href="#section-howtos-write-a-new-adapter">12.1.1. Write a new adapter</a>
+<li><a href="#section-howtos-write-a-new-adapter">13.1.1. Write a new adapter</a>
 <ul class="sectlevel4">
-<li><a href="#copy-an-existing-adapter-subproject">12.1.1.1. Copy an existing adapter subproject</a></li>
-<li><a href="#reimport-into-ide">12.1.1.2. Reimport into IDE</a></li>
-<li><a href="#rename-packages">12.1.1.3. Rename packages</a></li>
-<li><a href="#rename-classes">12.1.1.4. Rename Classes</a></li>
-<li><a href="#rewrite-mockadapter">12.1.1.5. Rewrite Mockadapter</a></li>
-<li><a href="#rewrite-adapter-logic">12.1.1.6. Rewrite Adapter logic</a></li>
-<li><a href="#adapt-testapplication">12.1.1.7. Adapt TestApplication</a></li>
+<li><a href="#copy-an-existing-adapter-subproject">13.1.1.1. Copy an existing adapter subproject</a></li>
+<li><a href="#reimport-into-ide">13.1.1.2. Reimport into IDE</a></li>
+<li><a href="#rename-packages">13.1.1.3. Rename packages</a></li>
+<li><a href="#rename-classes">13.1.1.4. Rename Classes</a></li>
+<li><a href="#rewrite-mockadapter">13.1.1.5. Rewrite Mockadapter</a></li>
+<li><a href="#rewrite-adapter-logic">13.1.1.6. Rewrite Adapter logic</a></li>
+<li><a href="#adapt-testapplication">13.1.1.7. Adapt TestApplication</a></li>
 </ul>
 </li>
-<li><a href="#write-a-new-product-executor">12.1.2. Write a new product executor</a></li>
-<li><a href="#extend-sereco-to-support-the-new-product">12.1.3. Extend SERECO to support the new product</a></li>
-<li><a href="#adopt-and-write-tests">12.1.4. Adopt and write tests</a></li>
+<li><a href="#write-a-new-product-executor">13.1.2. Write a new product executor</a></li>
+<li><a href="#extend-sereco-to-support-the-new-product">13.1.3. Extend SERECO to support the new product</a></li>
+<li><a href="#adopt-and-write-tests">13.1.4. Adopt and write tests</a></li>
 </ul>
 </li>
-<li><a href="#section-howto-configure-mock-behaviours">12.2. Howto configure mock behaviours</a></li>
+<li><a href="#section-howto-configure-mock-behaviours">13.2. Howto configure mock behaviours</a></li>
 </ul>
 </li>
 </ul>
@@ -1348,7 +1353,8 @@ following arguments:</p>
 <div class="content">
 <pre>-Dsechub.developertools.admin.server=localhost <i class="conum" data-value="1"></i><b>(1)</b>
 -Dsechub.developertools.admin.serverport=8443<i class="conum" data-value="2"></i><b>(2)</b>
--Dsechub.developertools.admin.integrationtestserver=true <i class="conum" data-value="3"></i><b>(3)</b></pre>
+-Dsechub.developertools.admin.integrationtestserver=true <i class="conum" data-value="3"></i><b>(3)</b>
+-Dsechub.developertools.admin.serverprotocol=https<i class="conum" data-value="4"></i><b>(4)</b></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1356,11 +1362,11 @@ following arguments:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>SECHUB_ADMIN_USERID=int-test_superadmin<i class="conum" data-value="4"></i><b>(4)</b>
-SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd<i class="conum" data-value="4"></i><b>(4)</b></pre>
+<pre>SECHUB_ADMIN_USERID=int-test_superadmin<i class="conum" data-value="5"></i><b>(5)</b>
+SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd<i class="conum" data-value="5"></i><b>(5)</b></pre>
 </div>
 </div>
-<div class="admonitionblock tip">
+<div id="section-developer-adminui-setup" class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
@@ -1381,17 +1387,22 @@ We use environment variables for credentials because otherwise everybody
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This is the server port. This line is optional, if you do not set default
-will be <code>443</code>. For development servers at your local machine
+<td><strong>Optional:</strong> This is the server port - default
+is <code>443</code>. For development servers at your local machine
 you should normally set to <code>8443</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Enable special integration test actions - e.g. create test data, start jobs
+<td><strong>Optional:</strong> Enable special integration test actions - e.g. create test data, start jobs
 etc.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><strong>Optional:</strong> Per default <code>https</code> will be used. If you have started (not recommended) SecHub
+with <code>SSL</code> disabled and spring security disabled</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>These are the credentials used for administrative access. For integration
 tests we got fix credentials - <strong>so never use in production!</strong></td>
 </tr>
@@ -1466,7 +1477,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="Spring profiles and their explicit/implicit included parts" width="1709" height="112">
+<img src="images/gen_springprofiles.svg" alt="Spring profiles and their explicit/implicit included parts" width="1828" height="114">
 </div>
 <div class="title">Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1478,7 +1489,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-prod.svg" alt="Spring profile prod and its explicit/implicit included parts" width="404" height="216">
+<img src="images/gen_springprofiles-prod.svg" alt="Spring profile prod and its explicit/implicit included parts" width="522" height="216">
 </div>
 <div class="title">Spring profile prod and its explicit/implicit included parts</div>
 </div>
@@ -2421,7 +2432,8 @@ See <a href="#link-gen-systemproperties">system property definitions</a> for det
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Your server will not start if you forget an adapter key!</p>
+<p>Your server will not start if you forget an adapter key !
+<strong>(this will change in future when sechub becomes more modular)</strong></p>
 </div>
 </td>
 </tr>
@@ -2744,18 +2756,52 @@ See <a href="#link-gen-systemproperties">system property definitions</a> for det
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Your server will not start if you forget an adapter key!</p>
+<p>Your server will not start if you forget an adapter key !
+<strong>(this will change in future when sechub becomes more modular)</strong></p>
 </div>
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="special-setup">5. Special setup</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="terminate-ssl-and-use-http-only">5.1. Terminate SSL and use HTTP only</h3>
+<div class="paragraph">
+<p>Per default SecHub will always use <code>HTTPS</code> for communication.</p>
+</div>
+<div class="paragraph">
+<p>Its not recommended, but if anybody wants to use SecHub with <code>HTTP</code> only
+<em>(e.g. when running behind a SSL proxy)</em> this can be done in this way:</p>
+</div>
+<div class="paragraph">
+<p>Start your server as described before but add following additional
+system properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Dserver.ssl.enabled=false
+-Dsecurity.require-ssl=false</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will disable ssl encryption and also spring security requiring ssl.</p>
+</div>
+<div class="paragraph">
+<p>When you want to administrate this by developer admin ui, you should also
+switch to HTTP protocol, as described at
+<a href="#section-developer-adminui-setup">developer admin UI setup</a></p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-security-in-development">5. Security in development</h2>
+<h2 id="section-security-in-development">6. Security in development</h2>
 <div class="sectionbody">
 <div class="admonitionblock caution">
 <table>
@@ -2770,7 +2816,7 @@ We enable security even in early stage of development! There is no test, no inte
 </table>
 </div>
 <div class="sect2">
-<h3 id="cli-client">5.1. CLI client</h3>
+<h3 id="cli-client">6.1. CLI client</h3>
 <div class="paragraph">
 <p>There are some options for CLI client which were <strong>not</strong> supposed to be
 used in production. So instead of exposing such options by help we
@@ -2809,15 +2855,15 @@ use those by explicit ENV entries</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="server-2">5.2. Server</h3>
+<h3 id="server-2">6.2. Server</h3>
 <div class="sect3">
-<h4 id="spring-boot-security">5.2.1. Spring Boot Security</h4>
+<h4 id="spring-boot-security">6.2.1. Spring Boot Security</h4>
 <div class="paragraph">
 <p>Spring boot security is always turned on, no matter if development or in production.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="certificates">5.2.2. Certificates</h4>
+<h4 id="certificates">6.2.2. Certificates</h4>
 <div class="paragraph">
 <p>For development gradle task <code>ensureLocalhostCertificate</code> in <code>sechub-server</code> will automatically generate a
 localhost server certificate. For details look into task and called bash script.</p>
@@ -2828,10 +2874,10 @@ localhost server certificate. For details look into task and called bash script.
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-coding-conventions">6. Coding conventions</h2>
+<h2 id="section-coding-conventions">7. Coding conventions</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="commit-messages">6.1. Commit messages</h3>
+<h3 id="commit-messages">7.1. Commit messages</h3>
 <div class="paragraph">
 <p>We always commit with an issue id inside the headline message means e.g. on command line:</p>
 </div>
@@ -2846,24 +2892,24 @@ the beginning to have a pretty output in <code>GitHub</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="database">6.2. Database</h3>
+<h3 id="database">7.2. Database</h3>
 <div class="sect3">
-<h4 id="naming-in-db">6.2.1. Naming in DB</h4>
+<h4 id="naming-in-db">7.2.1. Naming in DB</h4>
 <div class="paragraph">
 <p>We are using PostgreSQL which does automatically use lower_case names</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="naming-in-jpa">6.2.2. Naming in JPA</h4>
+<h4 id="naming-in-jpa">7.2.2. Naming in JPA</h4>
 <div class="paragraph">
 <p>We are using upper cased names</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="java">6.3. Java</h3>
+<h3 id="java">7.3. Java</h3>
 <div class="sect3">
-<h4 id="classes">6.3.1. Classes</h4>
+<h4 id="classes">7.3.1. Classes</h4>
 <div class="paragraph">
 <p>Defined class names</p>
 </div>
@@ -2884,7 +2930,7 @@ the beginning to have a pretty output in <code>GitHub</code></p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="subclassing-inheritance">6.3.1.1. Subclassing/ Inheritance</h5>
+<h5 id="subclassing-inheritance">7.3.1.1. Subclassing/ Inheritance</h5>
 <div class="paragraph">
 <p>Normally sub classes shall add their custom part in front of the name as a prefix:</p>
 </div>
@@ -2893,7 +2939,7 @@ the beginning to have a pretty output in <code>GitHub</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="adding-additional-parts-without-inheritance">6.3.1.2. Adding additional parts without inheritance</h5>
+<h5 id="adding-additional-parts-without-inheritance">7.3.1.2. Adding additional parts without inheritance</h5>
 <div class="paragraph">
 <p>An exception are Custom parts</p>
 </div>
@@ -2904,27 +2950,27 @@ the beginning to have a pretty output in <code>GitHub</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging">6.4. Logging</h3>
+<h3 id="logging">7.4. Logging</h3>
 <div class="sect3">
-<h4 id="general">6.4.1. General</h4>
+<h4 id="general">7.4.1. General</h4>
 <div class="paragraph">
 <p>We try to avoid massive logging but we want to log relevant parts!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="audit-logging">6.4.2. Audit Logging</h4>
+<h4 id="audit-logging">7.4.2. Audit Logging</h4>
 <div class="paragraph">
 <p>We use a service from shared kernel: <code>AuditLogService</code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="security-logging">6.4.3. Security Logging</h4>
+<h4 id="security-logging">7.4.3. Security Logging</h4>
 <div class="paragraph">
 <p>We use a service from shared kernel: <code>SecurityLogService</code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-logging-functional">6.4.4. Functional Logging</h4>
+<h4 id="sechub-logging-functional">7.4.4. Functional Logging</h4>
 <div class="paragraph">
 <p>We use a dedicated static log field for functional logging.
 Normal logging contains <code>INFO</code> level. Problems which are just annoying will come up to <code>WARN</code> level.
@@ -2944,14 +2990,14 @@ by logging framework automatically) and also to speed up.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="debug-logging">6.4.5. Debug Logging</h4>
+<h4 id="debug-logging">7.4.5. Debug Logging</h4>
 <div class="paragraph">
 <p>As described in <a href="#sechub-logging-functional">functional logging</a>, but with log level <code>DEBUG</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="services">6.5. Services</h3>
+<h3 id="services">7.5. Services</h3>
 <div class="paragraph">
 <p>We try to create small spring services, in most cases a
 service with annotation <code>@Service</code> should have only one public method</p>
@@ -2962,16 +3008,16 @@ The name should provide information what the service does.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="restcontroller">6.6. RestController</h3>
+<h3 id="restcontroller">7.6. RestController</h3>
 <div class="paragraph">
 <p>Rest controller should not do any business logic by themselves, but delegate
 only to a dedicated service which contains the logic and does the execution.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="code2doc">6.7. Code2Doc</h3>
+<h3 id="code2doc">7.7. Code2Doc</h3>
 <div class="sect3">
-<h4 id="spring-values">6.7.1. Spring values</h4>
+<h4 id="spring-values">7.7.1. Spring values</h4>
 <div class="paragraph">
 <p>All spring <code>@Value</code> annotations which are necessary for documentation (except adapters, they got
 no access to sechub internal parts and are pretty dump) have to be taged
@@ -2979,14 +3025,14 @@ with <code>@MustBeDocumented</code> annotation. See <a href="#section-documentat
 </div>
 </div>
 <div class="sect3">
-<h4 id="messaging">6.7.2. Messaging</h4>
+<h4 id="messaging">7.7.2. Messaging</h4>
 <div class="paragraph">
 <p>The messaging flow must be documented by annotations as well. There are diagramms automatically generated.
 See <a href="#section-documentation-messaging-overview">documentation messaging overview</a> for further information.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="use-cases">6.7.3. Use cases</h4>
+<h4 id="use-cases">7.7.3. Use cases</h4>
 <div id="section-coding-convention-usecases" class="paragraph">
 <p>The usecases and their steps have to be
 documented inside code by using a dedicated
@@ -3019,21 +3065,21 @@ adoc files. Also all <strong>REST API documentation</strong> for usecases having
 </div>
 </div>
 <div class="sect3">
-<h4 id="tests">6.7.4. Tests</h4>
+<h4 id="tests">7.7.4. Tests</h4>
 <div class="paragraph">
 <p>In genereal unit tests which are testing a dedicated class <strong>MUST</strong> have same package as tested classes.
 So it&#8217;s easier to find and also possible to use package private fields for mocking etc.</p>
 </div>
 <div class="sect4">
-<h5 id="unit-tests">6.7.4.1. Unit tests</h5>
+<h5 id="unit-tests">7.7.4.1. Unit tests</h5>
 <div class="sect5">
-<h6 id="fields">6.7.4.1.1. Fields</h6>
+<h6 id="fields">7.7.4.1.1. Fields</h6>
 <div class="paragraph">
 <p>We prefer fields to local variables, fields have to be rebuild by an <code>@Before</code> method.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="naming-of-mocks-and-test-targets">6.7.4.1.2. Naming of mocks and test targets</h6>
+<h6 id="naming-of-mocks-and-test-targets">7.7.4.1.2. Naming of mocks and test targets</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -3048,14 +3094,14 @@ For example <code>serviceToTest</code></p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="naming-of-unit-tests">6.7.4.1.3. Naming of unit tests</h6>
+<h6 id="naming-of-unit-tests">7.7.4.1.3. Naming of unit tests</h6>
 <div class="paragraph">
 <p>"Normal" Junit tests will simply called ${nameOfClassToTest}Test.java
 They have no dependency to spring</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="using-json-in-unit-tests-versus-production-code">6.7.4.1.4. Using json in unit tests versus production code</h6>
+<h6 id="using-json-in-unit-tests-versus-production-code">7.7.4.1.4. Using json in unit tests versus production code</h6>
 <div class="paragraph">
 <p>org.json.JSONxxyz will make problems because test implementation is using
 a lightweight variant with other api.</p>
@@ -3073,7 +3119,7 @@ automated support for deep tracing with product identification</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="unit-tests-with-spring-context">6.7.4.2. Unit tests (with spring context)</h5>
+<h5 id="unit-tests-with-spring-context">7.7.4.2. Unit tests (with spring context)</h5>
 <div class="paragraph">
 <p>Junit needing a running spring boot container will be called ${nameOfClassToTest}SpringBootTest.java
 They use <code>@SpringBootTest</code> inside and have access to dependency
@@ -3094,20 +3140,20 @@ Prefer normal junit tests to spring boot tests, as they are much
 </div>
 </div>
 <div class="sect4">
-<h5 id="mocked-restcontroller-mvc-tests-with-spring-context">6.7.4.3. Mocked RestController/MVC Tests (with spring context)</h5>
+<h5 id="mocked-restcontroller-mvc-tests-with-spring-context">7.7.4.3. Mocked RestController/MVC Tests (with spring context)</h5>
 <div class="paragraph">
 <p>Those tests will also be called <code>${name}MockTest.java</code> - will e.g. use use Spring annotation <code>@WebMvcTest</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="wiremock-tests">6.7.4.4. WireMock tests</h5>
+<h5 id="wiremock-tests">7.7.4.4. WireMock tests</h5>
 <div class="paragraph">
 <p>When we have to use wire mock - e.g. to mock up product servers, we
 call them <code>${name}WireMockTest.java</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="db-integration-tests">6.7.4.5. DB integration tests</h5>
+<h5 id="db-integration-tests">7.7.4.5. DB integration tests</h5>
 <div class="paragraph">
 <p>Those tests will be called <code>${name}DBTest.java</code> - and will use Spring annotation <code>@DataJpaTest</code></p>
 </div>
@@ -3125,7 +3171,7 @@ For an example look into <code>JobRepositoryDBTest</code>
 </div>
 </div>
 <div class="sect4">
-<h5 id="integration-tests">6.7.4.6. Integration tests</h5>
+<h5 id="integration-tests">7.7.4.6. Integration tests</h5>
 <div class="paragraph">
 <p>In project <code>sechub-integrationtest</code> full integration tests are settled.
 The project needs a running server in profile <code>integrationtest</code>.
@@ -3133,13 +3179,13 @@ For more details about those tests read the <code>README.md</code> file inside
 projects root folder.</p>
 </div>
 <div class="sect5">
-<h6 id="integration-tests-using-restapi">6.7.4.6.1. Integration tests using RestAPI</h6>
+<h6 id="integration-tests-using-restapi">7.7.4.6.1. Integration tests using RestAPI</h6>
 <div class="paragraph">
 <p>These tests will be called <code>${name}IntTest.java</code></p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="integration-tests-using-sechubclient">6.7.4.6.2. Integration tests using SecHubClient</h6>
+<h6 id="integration-tests-using-sechubclient">7.7.4.6.2. Integration tests using SecHubClient</h6>
 <div class="paragraph">
 <p>Some integration tests do need a build SecHub client and execute the client.
 These tests will be called <code>${name}SecHubClientIntTest.java</code></p>
@@ -3160,7 +3206,7 @@ If these tests are failing, please check you have called <code>gradlew buildGo</
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-coding-convention-restdoc">6.7.4.7. RestDOC tests</h5>
+<h5 id="section-coding-convention-restdoc">7.7.4.7. RestDOC tests</h5>
 <div class="paragraph">
 <p>In project <code>sechub-doc</code> there are <code>RESTDOC tests</code> settled. Those tests are annotated with
 <code>UseCaseRestDoc</code> and associated with dedicated <a href="#section-coding-convention-usecases">UseCase</a>.
@@ -3186,7 +3232,7 @@ As a side effect it is very much easier for developers to see what parts are res
 </table>
 </div>
 <div class="sect5">
-<h6 id="what-is-the-difference-between-a-mocktest-and-a-restdoctest">6.7.4.7.1. What is the difference between a MockTest and a RestDocTest?</h6>
+<h6 id="what-is-the-difference-between-a-mocktest-and-a-restdoctest">7.7.4.7.1. What is the difference between a MockTest and a RestDocTest?</h6>
 <div class="paragraph">
 <p>RestDoc tests are designed to check fields, params and results described in documentations are really as is.
 There is no logic testing inside those tests. They are more or less just for documentation. On the other hand
@@ -3194,7 +3240,7 @@ the MockTest pendants are only for logic testing, so also destructive variants a
 </div>
 </div>
 <div class="sect5">
-<h6 id="how-can-i-ensure-that-i-do-not-forget-to-describe-necesary-rest-api-parts">6.7.4.7.2. How can I ensure that I do not forget to describe necesary REST API parts?</h6>
+<h6 id="how-can-i-ensure-that-i-do-not-forget-to-describe-necesary-rest-api-parts">7.7.4.7.2. How can I ensure that I do not forget to describe necesary REST API parts?</h6>
 <div class="paragraph">
 <p>Every call to REST API must be described as a part for <a href="#section-coding-convention-usecases">use cases </a>. So there is
 a usecase annotation used at the restcontroller method which should have a method with an <code>@Step</code> result. At the <code>@Step</code>
@@ -3219,7 +3265,7 @@ So you get a list of all controller methods having documented API&#8230;&#8203;
 </div>
 </div>
 <div class="sect5">
-<h6 id="naming">6.7.4.7.3. Naming</h6>
+<h6 id="naming">7.7.4.7.3. Naming</h6>
 <div class="paragraph">
 <p>We use <code>${restControllerClassName}RestDocTest.java</code> as name pattern to find <code>RestDoc</code> tests easier.</p>
 </div>
@@ -3248,12 +3294,12 @@ Having always the Controllers and also the necessary <code>@MockBean</code> anno
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-documentation">7. Documentation</h2>
+<h2 id="section-documentation">8. Documentation</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="documentation-types">7.1. Documentation types</h3>
+<h3 id="documentation-types">8.1. Documentation types</h3>
 <div class="sect3">
-<h4 id="section-documentation-markdown">7.1.1. Markdown</h4>
+<h4 id="section-documentation-markdown">8.1.1. Markdown</h4>
 <div class="paragraph">
 <p>Simple technical information -e.g. about the content of an folder
 - will be written in markdown syntax.</p>
@@ -3288,7 +3334,7 @@ also as <code>.adoc</code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-documentation-asciidoc">7.1.2. Asciidoc</h4>
+<h4 id="section-documentation-asciidoc">8.1.2. Asciidoc</h4>
 <div class="paragraph">
 <p>When ever writing a full scaled documentation - means more than some lines to explain a folder etc. - we do this with Asciidoc.</p>
 </div>
@@ -3308,9 +3354,9 @@ You can use <a href="http://asciidoctor.org/docs/user-manual" class="bare">http:
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-documentation-in-code">7.2. Documentation in code</h3>
+<h3 id="section-documentation-in-code">8.2. Documentation in code</h3>
 <div class="sect3">
-<h4 id="automated-description-of-important-code-part">7.2.1. Automated description of important code part</h4>
+<h4 id="automated-description-of-important-code-part">8.2.1. Automated description of important code part</h4>
 <div class="paragraph">
 <p>There exists an annotation <code>@MustBeDocumented</code> , which is not
 only used as a marker for important code parts but also is used by an automatic
@@ -3318,7 +3364,7 @@ generation of an <code>.adoc</code> file which are included in <code>asciidoc</c
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-documentation-configuration-properties">7.2.2. Automated description of configuration properties</h4>
+<h4 id="section-documentation-configuration-properties">8.2.2. Automated description of configuration properties</h4>
 <div class="paragraph">
 <p>With usage of <code>@MustBeDocumented</code> at Spring annotation <code>@Value</code>
 the <a href="#section-infrastructure-setup-springboot">infrastructure properties</a> can be documented
@@ -3326,7 +3372,7 @@ automatically.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-documentation-usecases">7.2.3. Automated description of use cases</h4>
+<h4 id="section-documentation-usecases">8.2.3. Automated description of use cases</h4>
 <div class="paragraph">
 <p>With usage of special usecase annotations which itself are marked with <code>@UseCaseDefintion</code> it&#8217;s possible
 to create an automated use case description. See also
@@ -3335,16 +3381,16 @@ for more technical details.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="automated-kubernetes-files">7.2.4. Automated Kubernetes files</h4>
+<h4 id="automated-kubernetes-files">8.2.4. Automated Kubernetes files</h4>
 <div class="paragraph">
 <p>The <code>@MustBeDocumented</code> annotation is also used for automatic generation of <code>Kubernetes</code> deployment parts. See <a href="#section-infrastructure-kubernetes-files-generator">Kubernetes Files Generator</a> .
 for details.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="automated-diagrams">7.2.5. Automated Diagrams</h4>
+<h4 id="automated-diagrams">8.2.5. Automated Diagrams</h4>
 <div class="sect4">
-<h5 id="section-documentation-messaging-overview">7.2.5.1. Domain messaging overview</h5>
+<h5 id="section-documentation-messaging-overview">8.2.5.1. Domain messaging overview</h5>
 <div class="paragraph">
 <p>Using Annotations, which are itself tagged with <code>@DomainMessaging</code> annotation, those parts will automatically
 listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview.plantuml</code> :</p>
@@ -3371,7 +3417,7 @@ For an example look into <code>@IsReceivingAsyncMessage</code> and look also for
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-documentation-generation">7.3. Documentation generation</h3>
+<h3 id="section-documentation-generation">8.3. Documentation generation</h3>
 <div class="paragraph">
 <p>By calling <code>gradlew documentation</code> the <code>AsciidocGenerator</code> is build and used. This generator will automatically
 generate documentation areas like <a href="#link-gen-systemproperties">System properties</a> or <a href="#link-gen-scheduling">Scheduling</a> which will
@@ -3379,7 +3425,7 @@ be rendered by Asciidoctor afterwards.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="generation-of-sechub-pages">7.4. Generation of sechub pages</h3>
+<h3 id="generation-of-sechub-pages">8.4. Generation of sechub pages</h3>
 <div class="paragraph">
 <p>just call <code>gradlew documentation-with-pages</code> or if documentation is already generated just call
 <code>gradlew docToPages</code>, so documentation parts will copied into <code>docs</code> folder.</p>
@@ -3389,10 +3435,10 @@ be rendered by Asciidoctor afterwards.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="build">8. Build</h2>
+<h2 id="build">9. Build</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="about-build-technology">8.1. About build technology</h3>
+<h3 id="about-build-technology">9.1. About build technology</h3>
 <div class="paragraph">
 <p>Leading entry point/technology is always <code>gradle</code>. So if you want to build something, please look at the
 corresponding gradle tasks.</p>
@@ -3404,7 +3450,7 @@ to use pipeline script (and two custom jobs).</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="jenkins-auto-deployment">8.2. Jenkins auto deployment</h3>
+<h3 id="jenkins-auto-deployment">9.2. Jenkins auto deployment</h3>
 <div class="paragraph">
 <p>When you want to build and automate deployment of SecHub by <a href="https://jenkins.io/">Jenkins</a>  you can
 use a preconfigured pipeline script.</p>
@@ -3426,7 +3472,7 @@ Of course you can setup SecHub by your own in a way you like. But
 </table>
 </div>
 <div class="sect3">
-<h4 id="continous-integration-build">8.2.1. Continous integration build</h4>
+<h4 id="continous-integration-build">9.2.1. Continous integration build</h4>
 <div class="paragraph">
 <p>This setup builds all branches except <code>master</code> (master is always build by next
 job&#8230;&#8203;). The multibranch pipeline build is for continous integration
@@ -3506,7 +3552,7 @@ builds - means to get fast feedback.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="release-build">8.2.2. Release build</h4>
+<h4 id="release-build">9.2.2. Release build</h4>
 <div class="paragraph">
 <p>Release builds are only done at <code>master</code> branch and do also publish
 artifacts to maven repository when commit has been tagged.
@@ -3581,7 +3627,7 @@ Don&#8217;t use accidently a <strong>multibranch pipeline</strong> here but only
 </div>
 </div>
 <div class="sect3">
-<h4 id="special-client-and-server-release-trigger-jobs">8.2.3. Special client and server release trigger jobs</h4>
+<h4 id="special-client-and-server-release-trigger-jobs">9.2.3. Special client and server release trigger jobs</h4>
 <div class="paragraph">
 <p>If there are new versions of client or server available - means tagged with
 client or server versions  (e.g. <code>v1.1.0-server</code> or <code>v1.2.0-client</code>)  the former
@@ -3610,7 +3656,7 @@ containing your specific deployment parts etc.
 </table>
 </div>
 <div class="sect4">
-<h5 id="examples">8.2.3.1. Examples</h5>
+<h5 id="examples">9.2.3.1. Examples</h5>
 <div class="paragraph">
 <p>Here are some simple examples - easy to adopt:</p>
 </div>
@@ -3666,11 +3712,11 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="gradle-build-commands-overview">8.3. Gradle build commands overview</h3>
+<h3 id="gradle-build-commands-overview">9.3. Gradle build commands overview</h3>
 
 </div>
 <div class="sect2">
-<h3 id="build-server">8.4. Build Server</h3>
+<h3 id="build-server">9.4. Build Server</h3>
 <div class="paragraph">
 <p>Just call</p>
 </div>
@@ -3681,7 +3727,7 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="build-client">8.5. Build Client</h3>
+<h3 id="build-client">9.5. Build Client</h3>
 <div class="paragraph">
 <p>Just call</p>
 </div>
@@ -3692,7 +3738,7 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="execute-integration-tests">8.6. Execute integration tests</h3>
+<h3 id="execute-integration-tests">9.6. Execute integration tests</h3>
 <div class="paragraph">
 <p>Just call</p>
 </div>
@@ -3706,7 +3752,7 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="build-documentation">8.7. Build Documentation</h3>
+<h3 id="build-documentation">9.7. Build Documentation</h3>
 <div class="paragraph">
 <p>Just call</p>
 </div>
@@ -3717,7 +3763,7 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="publish-artefacts">8.8. Publish artefacts</h3>
+<h3 id="publish-artefacts">9.8. Publish artefacts</h3>
 <div class="paragraph">
 <p>Just call</p>
 </div>
@@ -3734,10 +3780,10 @@ containing your specific deployment parts etc.
 </div>
 </div>
 <div class="sect1">
-<h2 id="concepts">9. Concepts</h2>
+<h2 id="concepts">10. Concepts</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="section-usecases">9.1. Use cases</h3>
+<h3 id="section-usecases">10.1. Use cases</h3>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -3752,15 +3798,15 @@ The complete documentation about use cases is generated. If you want to change c
 </table>
 </div>
 <div class="sect3">
-<h4 id="overview-about-usecase-groups">9.1.1. Overview about usecase groups</h4>
+<h4 id="overview-about-usecase-groups">10.1.1. Overview about usecase groups</h4>
 <div class="sect4">
-<h5 id="anonymous">9.1.1.1. Anonymous</h5>
+<h5 id="anonymous">10.1.1.1. Anonymous</h5>
 <div class="paragraph">
 <p>All these usecases handling anonymous access.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-administration">9.1.1.2. User administration</h5>
+<h5 id="user-administration">10.1.1.2. User administration</h5>
 <div class="paragraph">
 <p>Usecases handling administration of users</p>
 </div>
@@ -3800,7 +3846,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="project-administration">9.1.1.3. Project administration</h5>
+<h5 id="project-administration">10.1.1.3. Project administration</h5>
 <div class="paragraph">
 <p>Usecases for project administration</p>
 </div>
@@ -3828,7 +3874,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile">9.1.1.4. User profile</h5>
+<h5 id="user-profile">10.1.1.4. User profile</h5>
 <div class="paragraph">
 <p>User actions belonging to their profiles</p>
 </div>
@@ -3841,7 +3887,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-execution">9.1.1.5. Sechub execution</h5>
+<h5 id="sechub-execution">10.1.1.5. Sechub execution</h5>
 <div class="paragraph">
 <p>Execution of sechub -either by CLI or direct with REST api call</p>
 </div>
@@ -3869,7 +3915,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="sign-up">9.1.1.6. Sign up</h5>
+<h5 id="sign-up">10.1.1.6. Sign up</h5>
 <div class="paragraph">
 <p>All these usecases are handling user sign up (part of user self registration process)</p>
 </div>
@@ -3894,7 +3940,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="job-administration">9.1.1.7. Job administration</h5>
+<h5 id="job-administration">10.1.1.7. Job administration</h5>
 <div class="paragraph">
 <p>Usecases about job administration</p>
 </div>
@@ -3907,7 +3953,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="technical">9.1.1.8. Technical</h5>
+<h5 id="technical">10.1.1.8. Technical</h5>
 <div class="paragraph">
 <p>Usecases about technical operations being executed by sechub itself</p>
 </div>
@@ -3920,7 +3966,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect4">
-<h5 id="other">9.1.1.9. Other</h5>
+<h5 id="other">10.1.1.9. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -3943,7 +3989,7 @@ The complete documentation about use cases is generated. If you want to change c
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_001">9.1.2. UC_001-User self registration</h4>
+<h4 id="section-usecase-UC_001">10.1.2. UC_001-User self registration</h4>
 <div class="paragraph">
 <p>The self registration can be done by <code>anonymous</code> users.</p>
 </div>
@@ -4009,7 +4055,7 @@ is persisted.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_002">9.1.3. UC_002-Admin lists open user signups</h4>
+<h4 id="section-usecase-UC_002">10.1.3. UC_002-Admin lists open user signups</h4>
 <div class="paragraph">
 <p>In this usecase the administrator will list the currently unapplied user self registrations/signups.</p>
 </div>
@@ -4055,7 +4101,7 @@ is persisted.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_003">9.1.4. UC_003-Admin applies self registration</h4>
+<h4 id="section-usecase-UC_003">10.1.4. UC_003-Admin applies self registration</h4>
 <div class="paragraph">
 <p>In this usecase the administrator will accept the self registration done by an user.</p>
 </div>
@@ -4126,7 +4172,7 @@ It will also remove the existing user signup because no longer necessary.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_004">9.1.5. UC_004-Admin lists all users</h4>
+<h4 id="section-usecase-UC_004">10.1.5. UC_004-Admin lists all users</h4>
 <div class="paragraph">
 <p>An administrator downloads a json file containing all user ids</p>
 </div>
@@ -4180,7 +4226,7 @@ It will also remove the existing user signup because no longer necessary.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_005">9.1.6. UC_005-User creates a new sechub job</h4>
+<h4 id="section-usecase-UC_005">10.1.6. UC_005-User creates a new sechub job</h4>
 <div id="sechub-doclink-uc-user-creates-job" class="paragraph">
 <p>A user wants to create a new sechub job.</p>
 </div>
@@ -4259,7 +4305,7 @@ After this the user is able to</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_006">9.1.7. UC_006-User uploads source code</h4>
+<h4 id="section-usecase-UC_006">10.1.7. UC_006-User uploads source code</h4>
 <div id="sechub-doclink-uc-user-uploads-sourcecode-for-job" class="paragraph">
 <p>A user wants to upload sourcecode for a former <a href="#sechub-doclink-uc-user-creates-job">created sechub job</a>.</p>
 </div>
@@ -4315,7 +4361,7 @@ After this the user is able to</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_007">9.1.8. UC_007-User approves sechub job</h4>
+<h4 id="section-usecase-UC_007">10.1.8. UC_007-User approves sechub job</h4>
 <div id="sechub-doclink-uc-user-approves-job" class="paragraph">
 <p>A user wants to approve a former <a href="#sechub-doclink-uc-user-creates-job">created sechub job</a>.</p>
 </div>
@@ -4372,7 +4418,7 @@ After this the user is able to</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_008">9.1.9. UC_008-Sechub scheduler starts job</h4>
+<h4 id="section-usecase-UC_008">10.1.9. UC_008-Sechub scheduler starts job</h4>
 <div class="paragraph">
 <p>Scheduler service starts next <code>SchedulerJob</code>. Before a user has only created and approved a job which was lead only to database persistence of JobData.
 The work itself is triggered/executed here by asynchronous batch operation.</p>
@@ -4448,7 +4494,7 @@ The work itself is triggered/executed here by asynchronous batch operation.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_009">9.1.10. UC_009-User checks sechub job state</h4>
+<h4 id="section-usecase-UC_009">10.1.10. UC_009-User checks sechub job state</h4>
 <div id="sechub-doclink-uc-user-checks-job-state" class="paragraph">
 <p>User wants to get the state of the current running job.</p>
 </div>
@@ -4500,7 +4546,7 @@ The work itself is triggered/executed here by asynchronous batch operation.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_010">9.1.11. UC_010-User downloads sechub job report</h4>
+<h4 id="section-usecase-UC_010">10.1.11. UC_010-User downloads sechub job report</h4>
 <div id="sechub-doclink-uc-user-downloads-job-report" class="paragraph">
 <p>A user wants to download an executed <code>SecHub</code> job by its given job UUID.</p>
 </div>
@@ -4567,7 +4613,7 @@ results. Code snippets etc. can be found on the real security products.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_011">9.1.12. UC_011-User starts scan by client</h4>
+<h4 id="section-usecase-UC_011">10.1.12. UC_011-User starts scan by client</h4>
 <div id="sechub-doclink-uc-user-starts-scan-by-client" class="paragraph">
 <p>Sechub has got it&#8217;s own client, written in go. The client is available for Linux and
 Windows and can be downloaded at <a href="https://github.com/daimler/sechub" class="bare">https://github.com/daimler/sechub</a> .</p>
@@ -4670,7 +4716,7 @@ build will break.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_012">9.1.13. UC_012-User clicks link to get new api token</h4>
+<h4 id="section-usecase-UC_012">10.1.13. UC_012-User clicks link to get new api token</h4>
 <div id="sechub-doclink-uc-user-clicks-link-to-get-new-apitoken" class="paragraph">
 <p>The user has to open the received email and click there on the contained link with a onetimetoken api which is another usecase.</p>
 </div>
@@ -4743,7 +4789,7 @@ build will break.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_013">9.1.14. UC_013-Admin creates a project</h4>
+<h4 id="section-usecase-UC_013">10.1.14. UC_013-Admin creates a project</h4>
 <div class="paragraph">
 <p>Administrator creates a project inside <code>SecHub</code>.</p>
 </div>
@@ -4801,7 +4847,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_014">9.1.15. UC_014-Admin lists all projects</h4>
+<h4 id="section-usecase-UC_014">10.1.15. UC_014-Admin lists all projects</h4>
 <div class="paragraph">
 <p>An administrator downloads a json file containing all project ids</p>
 </div>
@@ -4847,7 +4893,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_015">9.1.16. UC_015-Admin assigns user to project</h4>
+<h4 id="section-usecase-UC_015">10.1.16. UC_015-Admin assigns user to project</h4>
 <div class="paragraph">
 <p>An administrator assigns an user to an existing sechub project.</p>
 </div>
@@ -4923,7 +4969,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_016">9.1.17. UC_016-Admin unassigns user from project</h4>
+<h4 id="section-usecase-UC_016">10.1.17. UC_016-Admin unassigns user from project</h4>
 <div class="paragraph">
 <p>An administrator unassigns an user from a sechub project.</p>
 </div>
@@ -4999,7 +5045,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_017">9.1.18. UC_017-Admin shows user details</h4>
+<h4 id="section-usecase-UC_017">10.1.18. UC_017-Admin shows user details</h4>
 <div class="paragraph">
 <p>An administrator downloads a json file containing json containing user details</p>
 </div>
@@ -5053,7 +5099,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_018">9.1.19. UC_018-Admin deletes a user</h4>
+<h4 id="section-usecase-UC_018">10.1.19. UC_018-Admin deletes a user</h4>
 <div class="paragraph">
 <p>An administrator deletes an user. All associations etc. are removed as well</p>
 </div>
@@ -5152,7 +5198,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_019">9.1.20. UC_019-Admin deletes user signup</h4>
+<h4 id="section-usecase-UC_019">10.1.20. UC_019-Admin deletes user signup</h4>
 <div class="paragraph">
 <p>In this usecase the administrator will not accept the self registration done by an user but delete the entry.</p>
 </div>
@@ -5198,7 +5244,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_020">9.1.21. UC_020-Admin deletes a project</h4>
+<h4 id="section-usecase-UC_020">10.1.21. UC_020-Admin deletes a project</h4>
 <div class="paragraph">
 <p>Administrator deletes a project from <code>SecHub</code>.</p>
 </div>
@@ -5275,7 +5321,7 @@ Albert Tregnaghi, 2018-08-03: This is currently not full implemented!
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_021">9.1.22. UC_021-Admin shows project details</h4>
+<h4 id="section-usecase-UC_021">10.1.22. UC_021-Admin shows project details</h4>
 <div class="paragraph">
 <p>An administrator downloads a json file containing json with project details</p>
 </div>
@@ -5329,7 +5375,7 @@ Albert Tregnaghi, 2018-08-03: This is currently not full implemented!
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_022">9.1.23. UC_022-Update project whitelist</h4>
+<h4 id="section-usecase-UC_022">10.1.23. UC_022-Update project whitelist</h4>
 <div class="paragraph">
 <p>Administrator creates a project inside <code>SecHub</code>.</p>
 </div>
@@ -5387,7 +5433,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_023">9.1.24. UC_023-Admin lists all running jobs</h4>
+<h4 id="section-usecase-UC_023">10.1.24. UC_023-Admin lists all running jobs</h4>
 <div class="paragraph">
 <p>Administrator lists all running jobs inside <code>SecHub</code>.
 The list entries do contain</p>
@@ -5470,7 +5516,7 @@ The list entries do contain</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_024">9.1.25. UC_024-User requests new API token</h4>
+<h4 id="section-usecase-UC_024">10.1.25. UC_024-User requests new API token</h4>
 <div id="sechub-doclink-uc-user-requests-new-apittoken" class="paragraph">
 <p>It shall be possible to achieve this by calling REST API and also by just visiting
 static sechub website and entering mail adress and post request by simple web form.</p>
@@ -5524,7 +5570,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_025">9.1.26. UC_025-Admin shows scan logs for project</h4>
+<h4 id="section-usecase-UC_025">10.1.26. UC_025-Admin shows scan logs for project</h4>
 <div class="paragraph">
 <p>An admin downloads a json file containing log for scans of project</p>
 </div>
@@ -5569,7 +5615,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_026">9.1.27. UC_026-Admin downloads all details about a scan job</h4>
+<h4 id="section-usecase-UC_026">10.1.27. UC_026-Admin downloads all details about a scan job</h4>
 <div class="paragraph">
 <p>An administrator downloads a zip file containing full details of a scan. Main reason for this use case is for debugging when there are problems with security products.Another reason is for developers to adopt new security products easier.</p>
 </div>
@@ -5621,7 +5667,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_027">9.1.28. UC_027-Admin grants admin rights to user</h4>
+<h4 id="section-usecase-UC_027">10.1.28. UC_027-Admin grants admin rights to user</h4>
 <div class="paragraph">
 <p>An administrator grants admin rights to another user. So this user will become also an administrator.</p>
 </div>
@@ -5689,7 +5735,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_028">9.1.29. UC_028-Admin revokes admin rights from an admin</h4>
+<h4 id="section-usecase-UC_028">10.1.29. UC_028-Admin revokes admin rights from an admin</h4>
 <div class="paragraph">
 <p>An administrator revokes existing admin rights from another administrator.</p>
 </div>
@@ -5757,7 +5803,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_029">9.1.30. UC_029-Admin lists all admins</h4>
+<h4 id="section-usecase-UC_029">10.1.30. UC_029-Admin lists all admins</h4>
 <div class="paragraph">
 <p>An administrator downloads a json file containing all names of sechub admins</p>
 </div>
@@ -5811,7 +5857,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_030">9.1.31. UC_030-Admin disables job processing in scheduler</h4>
+<h4 id="section-usecase-UC_030">10.1.31. UC_030-Admin disables job processing in scheduler</h4>
 <div class="paragraph">
 <p>An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster</p>
 </div>
@@ -5888,7 +5934,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_031">9.1.32. UC_031-Admin enables scheduler job processing</h4>
+<h4 id="section-usecase-UC_031">10.1.32. UC_031-Admin enables scheduler job processing</h4>
 <div class="paragraph">
 <p>An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.</p>
 </div>
@@ -5957,7 +6003,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_032">9.1.33. UC_032-Admin get scheduler status</h4>
+<h4 id="section-usecase-UC_032">10.1.33. UC_032-Admin get scheduler status</h4>
 <div class="paragraph">
 <p>An administrator wants to update information about scheduler status</p>
 </div>
@@ -6003,7 +6049,7 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_033">9.1.34. UC_033-Admin lists status information</h4>
+<h4 id="section-usecase-UC_033">10.1.34. UC_033-Admin lists status information</h4>
 <div class="paragraph">
 <p>An administrator fetches current known status information about sechub</p>
 </div>
@@ -6053,10 +6099,10 @@ user signup is accepted by admin.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="api">10. API</h2>
+<h2 id="api">11. API</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="section-ucrestdoc">10.1. Rest API documentation</h3>
+<h3 id="section-ucrestdoc">11.1. Rest API documentation</h3>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -6071,9 +6117,9 @@ The complete documentation about REST API is generated. If you want to change co
 </table>
 </div>
 <div class="sect3">
-<h4 id="overview-2">10.1.1. Overview</h4>
+<h4 id="overview-2">11.1.1. Overview</h4>
 <div class="sect4">
-<h5 id="user-administration-2">10.1.1.1. User administration</h5>
+<h5 id="user-administration-2">11.1.1.1. User administration</h5>
 <div class="paragraph">
 <p>Usecases handling administration of users</p>
 </div>
@@ -6113,7 +6159,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="project-administration-2">10.1.1.2. Project administration</h5>
+<h5 id="project-administration-2">11.1.1.2. Project administration</h5>
 <div class="paragraph">
 <p>Usecases for project administration</p>
 </div>
@@ -6141,7 +6187,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile-2">10.1.1.3. User profile</h5>
+<h5 id="user-profile-2">11.1.1.3. User profile</h5>
 <div class="paragraph">
 <p>User actions belonging to their profiles</p>
 </div>
@@ -6154,7 +6200,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-execution-2">10.1.1.4. Sechub execution</h5>
+<h5 id="sechub-execution-2">11.1.1.4. Sechub execution</h5>
 <div class="paragraph">
 <p>Execution of sechub -either by CLI or direct with REST api call</p>
 </div>
@@ -6179,7 +6225,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="sign-up-2">10.1.1.5. Sign up</h5>
+<h5 id="sign-up-2">11.1.1.5. Sign up</h5>
 <div class="paragraph">
 <p>All these usecases are handling user sign up (part of user self registration process)</p>
 </div>
@@ -6204,7 +6250,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="job-administration-2">10.1.1.6. Job administration</h5>
+<h5 id="job-administration-2">11.1.1.6. Job administration</h5>
 <div class="paragraph">
 <p>Usecases about job administration</p>
 </div>
@@ -6217,7 +6263,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="other-2">10.1.1.7. Other</h5>
+<h5 id="other-2">11.1.1.7. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -6240,7 +6286,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-users">10.1.2. Admin lists all users</h4>
+<h4 id="admin-lists-all-users">11.1.2. Admin lists all users</h4>
 <div id="section-ucrestdoc-uc-UC_004" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_004">UC_004-Admin lists all users </a></p>
 </div>
@@ -6254,7 +6300,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-user-to-project">10.1.3. Admin assigns user to project</h4>
+<h4 id="admin-assigns-user-to-project">11.1.3. Admin assigns user to project</h4>
 <div id="section-ucrestdoc-uc-UC_015" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_015">UC_015-Admin assigns user to project </a></p>
 </div>
@@ -6295,7 +6341,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-user-from-project">10.1.4. Admin unassigns user from project</h4>
+<h4 id="admin-unassigns-user-from-project">11.1.4. Admin unassigns user from project</h4>
 <div id="section-ucrestdoc-uc-UC_016" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_016">UC_016-Admin unassigns user from project </a></p>
 </div>
@@ -6336,7 +6382,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-user-details">10.1.5. Admin shows user details</h4>
+<h4 id="admin-shows-user-details">11.1.5. Admin shows user details</h4>
 <div id="section-ucrestdoc-uc-UC_017" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_017">UC_017-Admin shows user details </a></p>
 </div>
@@ -6416,7 +6462,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-user">10.1.6. Admin deletes a user</h4>
+<h4 id="admin-deletes-a-user">11.1.6. Admin deletes a user</h4>
 <div id="section-ucrestdoc-uc-UC_018" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_018">UC_018-Admin deletes a user </a></p>
 </div>
@@ -6452,7 +6498,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-project-details">10.1.7. Admin shows project details</h4>
+<h4 id="admin-shows-project-details">11.1.7. Admin shows project details</h4>
 <div id="section-ucrestdoc-uc-UC_021" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
 </div>
@@ -6528,7 +6574,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-all-details-about-a-scan-job">10.1.8. Admin downloads all details about a scan job</h4>
+<h4 id="admin-downloads-all-details-about-a-scan-job">11.1.8. Admin downloads all details about a scan job</h4>
 <div id="section-ucrestdoc-uc-UC_026" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
 </div>
@@ -6537,13 +6583,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78fe5bf0-87bd-4c0f-a268-ad43031143f0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/e5ef5541-09aa-46f1-b5d6-54cee760ba26' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-grants-admin-rights-to-user">10.1.9. Admin grants admin rights to user</h4>
+<h4 id="admin-grants-admin-rights-to-user">11.1.9. Admin grants admin rights to user</h4>
 <div id="section-ucrestdoc-uc-UC_027" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
 </div>
@@ -6579,7 +6625,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-revokes-admin-rights-from-an-admin">10.1.10. Admin revokes admin rights from an admin</h4>
+<h4 id="admin-revokes-admin-rights-from-an-admin">11.1.10. Admin revokes admin rights from an admin</h4>
 <div id="section-ucrestdoc-uc-UC_028" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
 </div>
@@ -6615,7 +6661,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-admins">10.1.11. Admin lists all admins</h4>
+<h4 id="admin-lists-all-admins">11.1.11. Admin lists all admins</h4>
 <div id="section-ucrestdoc-uc-UC_029" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
 </div>
@@ -6629,7 +6675,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-a-project">10.1.12. Admin creates a project</h4>
+<h4 id="admin-creates-a-project">11.1.12. Admin creates a project</h4>
 <div id="section-ucrestdoc-uc-UC_013" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
 </div>
@@ -6679,7 +6725,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-projects">10.1.13. Admin lists all projects</h4>
+<h4 id="admin-lists-all-projects">11.1.13. Admin lists all projects</h4>
 <div id="section-ucrestdoc-uc-UC_014" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
 </div>
@@ -6694,7 +6740,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-project">10.1.14. Admin deletes a project</h4>
+<h4 id="admin-deletes-a-project">11.1.14. Admin deletes a project</h4>
 <div id="section-ucrestdoc-uc-UC_020" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
 </div>
@@ -6731,7 +6777,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">10.1.15. Update project whitelist</h4>
+<h4 id="update-project-whitelist">11.1.15. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
@@ -6798,7 +6844,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">10.1.16. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">11.1.16. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
@@ -6862,7 +6908,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">10.1.17. User clicks link to get new api token</h4>
+<h4 id="user-clicks-link-to-get-new-api-token">11.1.17. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
@@ -6899,7 +6945,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">10.1.18. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">11.1.18. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
@@ -6956,6 +7002,11 @@ The complete documentation about REST API is generated. If you want to change co
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
@@ -7015,12 +7066,12 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:null,&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">10.1.19. User uploads source code</h4>
+<h4 id="user-uploads-source-code">11.1.19. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -7055,7 +7106,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf1cdc82-53b7-4db1-8bd8-ebc810770823/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/57ec7ecf-3a12-4759-934f-0d5926060c41/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7066,7 +7117,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">10.1.20. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">11.1.20. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -7101,13 +7152,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/76d93bd0-84ac-45f6-8d49-a3990cbc0602/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/6652112f-a826-4f6a-ab36-8e45352f8ecb/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">10.1.21. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">11.1.21. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -7201,37 +7252,37 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ab8668a2-3732-4b19-a593-a1cb5e43b2da' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c8679c5a-eed5-4ac9-8f1b-c367a7c8ae1e' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">10.1.22. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">11.1.22. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-JSON">10.1.22.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-JSON">11.1.22.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b635962c-ae2e-4d14-8c0c-bd2f12c70139' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/dd1092d0-2d12-42d3-9a47-9d922a93d7d0' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-HTML">10.1.22.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-HTML">11.1.22.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/be1fd177-fee6-4701-b974-e6492e49a254' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/892b326a-8dc2-4d2f-a491-5a298304cefa' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -7239,7 +7290,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">10.1.23. User self registration</h4>
+<h4 id="user-self-registration">11.1.23. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -7289,7 +7340,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">10.1.24. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">11.1.24. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -7303,7 +7354,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">10.1.25. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">11.1.25. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -7339,7 +7390,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">10.1.26. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">11.1.26. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -7375,7 +7426,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">10.1.27. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">11.1.27. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -7412,7 +7463,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">10.1.28. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">11.1.28. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -7476,7 +7527,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">10.1.29. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.29. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -7491,7 +7542,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">10.1.30. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.30. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -7506,7 +7557,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">10.1.31. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.31. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -7521,7 +7572,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">10.1.32. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.32. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -7569,18 +7620,18 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-technical-debt">11. Technical debt</h2>
+<h2 id="section-technical-debt">12. Technical debt</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="long-running-transactions">11.1. Long running transactions</h3>
+<h3 id="long-running-transactions">12.1. Long running transactions</h3>
 <div class="paragraph">
 <p>There could be a problem about long running transactions.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="domain-messaging-system">11.2. Domain messaging system</h3>
+<h3 id="domain-messaging-system">12.2. Domain messaging system</h3>
 <div class="sect3">
-<h4 id="current-implementation">11.2.1. Current implementation</h4>
+<h4 id="current-implementation">12.2.1. Current implementation</h4>
 <div class="paragraph">
 <p>Currently the domain messaging is done by a simple observer pattern.<br>
 It&#8217;s working, is easy to maintain, simple but has some caveats:</p>
@@ -7626,7 +7677,7 @@ This was a wanted architecture decision to keep things simple on startup. The us
 </table>
 </div>
 <div class="sect4">
-<h5 id="additional-information">11.2.1.1. Additional information</h5>
+<h5 id="additional-information">12.2.1.1. Additional information</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7638,7 +7689,7 @@ The implementation in <code>DomainMessageService</code> uses a spring task execu
 </div>
 </div>
 <div class="sect3">
-<h4 id="what-possibilities-do-we-have-to-change-this-in-future">11.2.2. What possibilities do we have to change this in future?</h4>
+<h4 id="what-possibilities-do-we-have-to-change-this-in-future">12.2.2. What possibilities do we have to change this in future?</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -7665,12 +7716,12 @@ The implementation in <code>DomainMessageService</code> uses a spring task execu
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-howtos">12. HowTos</h2>
+<h2 id="section-howtos">13. HowTos</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="section-howto-integrate-a-new-product">12.1. Howto integrate a new product</h3>
+<h3 id="section-howto-integrate-a-new-product">13.1. Howto integrate a new product</h3>
 <div class="sect3">
-<h4 id="section-howtos-write-a-new-adapter">12.1.1. Write a new adapter</h4>
+<h4 id="section-howtos-write-a-new-adapter">13.1.1. Write a new adapter</h4>
 <div class="paragraph">
 <p>When you want to write a new adapter you should should base on an existing one.</p>
 </div>
@@ -7678,7 +7729,7 @@ The implementation in <code>DomainMessageService</code> uses a spring task execu
 <p>Here is an easy to go list:</p>
 </div>
 <div class="sect4">
-<h5 id="copy-an-existing-adapter-subproject">12.1.1.1. Copy an existing adapter subproject</h5>
+<h5 id="copy-an-existing-adapter-subproject">13.1.1.1. Copy an existing adapter subproject</h5>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7717,7 +7768,7 @@ filesystem</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="reimport-into-ide">12.1.1.2. Reimport into IDE</h5>
+<h5 id="reimport-into-ide">13.1.1.2. Reimport into IDE</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7728,7 +7779,7 @@ use <code>EGradle &#8594; Reimport</code>.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="rename-packages">12.1.1.3. Rename packages</h5>
+<h5 id="rename-packages">13.1.1.3. Rename packages</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7740,7 +7791,7 @@ for <code>hubabuba</code> you should rename the package to <code>com.daimler.sec
 </div>
 </div>
 <div class="sect4">
-<h5 id="rename-classes">12.1.1.4. Rename Classes</h5>
+<h5 id="rename-classes">13.1.1.4. Rename Classes</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7752,7 +7803,7 @@ This will help you to have <code>Config</code>, <code>ConfigBuilder</code> and m
 </div>
 </div>
 <div class="sect4">
-<h5 id="rewrite-mockadapter">12.1.1.5. Rewrite Mockadapter</h5>
+<h5 id="rewrite-mockadapter">13.1.1.5. Rewrite Mockadapter</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7763,13 +7814,13 @@ for the new adapter as well - means another file must be returned.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="rewrite-adapter-logic">12.1.1.6. Rewrite Adapter logic</h5>
+<h5 id="rewrite-adapter-logic">13.1.1.6. Rewrite Adapter logic</h5>
 <div class="paragraph">
 <p>Cleanup the old adapter implementation parts and start recreating</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="adapt-testapplication">12.1.1.7. Adapt TestApplication</h5>
+<h5 id="adapt-testapplication">13.1.1.7. Adapt TestApplication</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7781,7 +7832,7 @@ without spring container startup etc. So very fast and simple to use, without de
 </div>
 </div>
 <div class="sect3">
-<h4 id="write-a-new-product-executor">12.1.2. Write a new product executor</h4>
+<h4 id="write-a-new-product-executor">13.1.2. Write a new product executor</h4>
 <div class="paragraph">
 <p>It&#8217;s the same as described at <a href="#section-howtos-write-a-new-adapter">Write a new adapter</a>: Just copy an existing product executor subproject.</p>
 </div>
@@ -7819,7 +7870,7 @@ check class hierarchy and javadoc of <code>InstallSetup</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="extend-sereco-to-support-the-new-product">12.1.3. Extend SERECO to support the new product</h4>
+<h4 id="extend-sereco-to-support-the-new-product">13.1.3. Extend SERECO to support the new product</h4>
 <div class="paragraph">
 <p><a href="#section-infrastructure-setup-security-products-sereco">Sereco</a> (<code>SecHub Report Collector</code>) must
 be able to extract all necessary data from product results got from
@@ -7832,7 +7883,7 @@ Of course can use an existing importer as a template.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="adopt-and-write-tests">12.1.4. Adopt and write tests</h4>
+<h4 id="adopt-and-write-tests">13.1.4. Adopt and write tests</h4>
 <div class="paragraph">
 <p>Copied tests from adapter and product executors must be (of course) adapted as well.
 Either remove them or use the existing tests as a template to write your own tests.</p>
@@ -7844,7 +7895,7 @@ and <code>SERECO</code> is returning an expected traffic light and also the corr
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-howto-configure-mock-behaviours">12.2. Howto configure mock behaviours</h3>
+<h3 id="section-howto-configure-mock-behaviours">13.2. Howto configure mock behaviours</h3>
 <div class="paragraph">
 <p>The <code>MockedAdapterSetupService</code> reads a JSON configfile from file path.</p>
 </div>
