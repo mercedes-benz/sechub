@@ -132,18 +132,18 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	}
 
 	String buildJsonForCreateNewScan(JSONAdapterSupport jsonAdapterSupport, NetsparkerAdapterConfig config) throws AdapterException {
-		Map<String, Object> json = new TreeMap<>();
-		json.put(TARGET_URI, config.getTargetAsString());
+		Map<String, Object> map = new TreeMap<>();
+		map.put(TARGET_URI, config.getTargetAsString());
 		if (config.hasAgentGroup()) {
-			json.put(AGENT_GROUP_NAME, config.getAgentGroupName());
+			map.put(AGENT_GROUP_NAME, config.getAgentGroupName());
 		} else {
-			json.put(AGENT_NAME, config.getAgentName());
+			map.put(AGENT_NAME, config.getAgentName());
 		}
-		json.put(POLICY_ID, config.getPolicyId());
+		map.put(POLICY_ID, config.getPolicyId());
 
-		webLoginSupport.addAuthorizationInfo(config, json);
+		webLoginSupport.addAuthorizationInfo(config, map);
 
-		String jsonAsString = jsonAdapterSupport.toJSON(json);
+		String jsonAsString = jsonAdapterSupport.toJSON(map);
 		return jsonAsString;
 	}
 

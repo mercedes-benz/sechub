@@ -24,6 +24,14 @@ public class LoginScriptStep {
 		return "input".equalsIgnoreCase(type);
 	}
 
+	public boolean isUserName() {
+		return "username".equalsIgnoreCase(type);
+	}
+
+	public boolean isPassword() {
+		return "password".equalsIgnoreCase(type);
+	}
+
 	public boolean isClick() {
 		return "click".equalsIgnoreCase(type);
 	}
