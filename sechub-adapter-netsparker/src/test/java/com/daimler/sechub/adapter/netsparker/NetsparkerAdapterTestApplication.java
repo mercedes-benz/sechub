@@ -34,6 +34,12 @@ public class NetsparkerAdapterTestApplication {
 			handleBasicLogin(builder);
 		}else if ("formAutodetect".equalsIgnoreCase(loginType))	{
 			handleFormAutodetect(builder);
+		}else if ("formScript".equalsIgnoreCase(loginType)) {
+			handleFormScript(builder);
+		}else if ("<none>".equalsIgnoreCase(loginType)) {
+			/*ignore*/
+		}else {
+			throw new IllegalArgumentException("login type:"+loginType+" not supported!");
 		}
 		NetsparkerAdapterConfig config = builder.build();
 		NetsparkerAdapter netsparker = new NetsparkerAdapterV1();
@@ -47,6 +53,27 @@ public class NetsparkerAdapterTestApplication {
 	private static void handleFormAutodetect(NetsparkerConfigBuilder builder) throws MalformedURLException {
 		builder.login().url(new URL(getSystemProperty("sechub.adapter.netsparker.login.url"))).form().autoDetect().username(getSystemProperty("sechub.adapter.netsparker.login.user"))
 				.password(getSystemProperty("sechub.adapter.netsparker.login.password")).endLogin();
+	}
+
+	private static void handleFormScript(NetsparkerConfigBuilder builder) throws MalformedURLException {
+		/* @formatter:off */
+		builder.login().
+				url(new URL(getSystemProperty("sechub.adapter.netsparker.login.url"))).
+				form().
+					script().
+						addStep("username").
+							select(getSystemProperty("sechub.adapter.netsparker.login.script.step1.input.selector","#username")).
+							enterValue(getSystemProperty("sechub.adapter.netsparker.login.user")).
+					    endStep().
+					    addStep("password").
+							select(getSystemProperty("sechub.adapter.netsparker.login.script.step2.input.selector","#password")).
+							enterValue(getSystemProperty("sechub.adapter.netsparker.login.password")).
+						endStep().
+						addStep("click").
+							select(getSystemProperty("sechub.adapter.netsparker.login.script.step3.click.selector","#doLogin")).
+						endStep().
+				endLogin();
+		/* @formatter:on */
 	}
 
 	private static void handleBasicLogin(NetsparkerConfigBuilder builder) throws MalformedURLException{

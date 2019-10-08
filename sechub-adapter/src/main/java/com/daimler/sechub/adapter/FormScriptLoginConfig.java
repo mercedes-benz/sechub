@@ -10,4 +10,22 @@ public class FormScriptLoginConfig extends AbstractLoginConfig{
 	public List<LoginScriptStep> getSteps() {
 		return steps;
 	}
+
+	public String getUserName() {
+		for (LoginScriptStep step : steps) {
+			if (step.isUserName()) {
+				return step.getValue();
+			}
+		}
+		return "<unknown-user>";
+	}
+
+	public String getPassword() {
+		for (LoginScriptStep step : steps) {
+			if (step.isPassword()) {
+				return step.getValue();
+			}
+		}
+		return "<unknown-pwd>";
+	}
 }
