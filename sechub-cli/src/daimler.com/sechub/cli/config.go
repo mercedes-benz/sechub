@@ -69,10 +69,10 @@ func init() {
 	userPtr = flag.String("user", "", "userid - mandatory, but can also be defined in config file")
 	projectIdPtr = flag.String("project", "", "unique project id - mandatory, but can also be defined in config file")
 	serverPtr = flag.String("server", "", "server url of sechub server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file")
-	configFilePathPtr = flag.String("configfile", "", "path to sechub config file, if not defined './"+DEFAULT_SECHUB_CONFIG_FILE+"' will be used")
+	configFilePathPtr = flag.String("configfile", "", "path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
 
-	secHubJobUUIDPtr = flag.String("jobUUID", "", "sechub job uuid (mandatory when using '"+ACTION_EXECUTE_GET_STATUS+"' or '"+ACTION_EXECUTE_GET_REPORT+"')")
-	waitSecondsPtr = flag.Int("wait", defaultWaitTime, "wait time in seconds. Will be used for automatic status checks etc. when action='"+ACTION_EXECUTE_SYNCHRON+"'.")
+	secHubJobUUIDPtr = flag.String("jobUUID", "", "sechub job uuid (mandatory when using '"+ActionExecuteGetStatus+"' or '"+ActionExecuteGetReport+"')")
+	waitSecondsPtr = flag.Int("wait", defaultWaitTime, "wait time in seconds. Will be used for automatic status checks etc. when action='"+ActionExecuteSynchron+"'.")
 	timeOutSecondsPtr = flag.Int("timeout", defaultTimeoutInSeconds, "time out for network communication in seconds.")
 	outputFolderPathPtr = flag.String("output", "", "output folder for reports etc. per default current dir")
 	reportFormatPtr = flag.String("reportformat", "json", "output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback.")
@@ -112,7 +112,7 @@ func NewConfigByFlags() *Config {
 	config.stopOnYellow = *stopOnYellowPtr
 
 	if config.configFilePath == "" {
-		config.configFilePath = DEFAULT_SECHUB_CONFIG_FILE
+		config.configFilePath = DefaultSecHubConfigFile
 	}
 	config.action = flag.Arg(0)
 
@@ -127,31 +127,31 @@ func assertValidConfig(configPtr *Config) {
 	 */
 	if configPtr.user == "" {
 		fmt.Println("userid missing!")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 
 	if configPtr.apiToken == "" {
 		fmt.Println("api token missing!")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 
 	if configPtr.projectId == "" {
 		fmt.Println("project id missing!")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 
 	if configPtr.server == "" {
 		fmt.Println("sechub server not defined!")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 
 	if configPtr.configFilePath == "" {
 		fmt.Println("sechub config file not set")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 
 	if configPtr.action == "" {
 		fmt.Println("sechub action not set")
-		os.Exit(EXIT_CODE_MISSING_PARAMETER)
+		os.Exit(ExitCodeMissingParameter)
 	}
 }
