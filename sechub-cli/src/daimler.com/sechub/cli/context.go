@@ -9,6 +9,7 @@ import (
 
 type Context struct {
 	config                *Config
+	unfilledByteValue     []byte
 	byteValue             []byte
 	HttpClient            *http.Client
 	sechubConfig          *SecHubConfig

@@ -2,6 +2,8 @@
 package util
 
 import (
+	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -28,10 +30,31 @@ func AssertSize(list []string, wantedLength int, t *testing.T) {
 	}
 }
 
+// AssertJSONEqualsBytes checks expected json equals given json
+func AssertJSONEqualsBytes(expected []byte, given []byte, t *testing.T) {
+	eq, err := jsonBytesEqual(expected, given)
+
+	if err != nil {
+		t.Fatalf("Internal compare failure:%s", err)
+	}
+	if !eq {
+
+		t.Fatalf("JSON differs:\nExpected:\n-----\n%s\n-----\nGot        :\n-----\n%s\n-----\n", string(expected), string(given))
+	}
+}
+
+// AssertJSONEquals checks expected json equals given json
+func AssertJSONEquals(expected string, given string, t *testing.T) {
+	a := []byte(expected)
+	b := []byte(given)
+	AssertJSONEqualsBytes(a, b, t)
+}
+
 // AssertEquals checks expected string equals given
 func AssertEquals(expected string, given string, t *testing.T) {
 	if expected != given {
-		t.Fatalf("Strings differ:\nExpected:%s\nGot     :%s", expected, given)
+
+		t.Fatalf("Strings differ:\nExpected:\n-----\n%s\n-----\nGot        :\n-----\n%s\n-----\n", expected, given)
 	}
 }
 
@@ -76,4 +99,15 @@ func Contains(list []string, wanted string) bool {
 /* converts a path containing windows separators to unix ones */
 func ConvertBackslashPath(path string) string {
 	return strings.Replace(path, "\\", "/", -1) /* convert all \ to / if on a windows machine */
+}
+
+func jsonBytesEqual(a, b []byte) (bool, error) {
+	var j, j2 interface{}
+	if err := json.Unmarshal(a, &j); err != nil {
+		return false, err
+	}
+	if err := json.Unmarshal(b, &j2); err != nil {
+		return false, err
+	}
+	return reflect.DeepEqual(j2, j), nil
 }
