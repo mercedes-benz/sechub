@@ -18,17 +18,17 @@ func initHelp() {
 		flag.PrintDefaults()
 		action := "action\n"
 		action += "  following actions are supported:\n"
-		action += "   '" + ACTION_EXECUTE_SYNCHRON + "' will start scan, wait for job done, fetch automatifcally result report to output folder\n"
-		action += "   '" + ACTION_EXECUTE_ASYNCHRON + "' will just trigger scan and return job id in json\n"
-		action += "   '" + ACTION_EXECUTE_GET_STATUS + "' will fetch current job status and return result as json\n"
-		action += "   '" + ACTION_EXECUTE_GET_REPORT + "' will fetch report as json (result will only exist when job is done)\n"
+		action += "   '" + ActionExecuteSynchron + "' will start scan, wait for job done, fetch automatifcally result report to output folder\n"
+		action += "   '" + ActionExecuteAsynchron + "' will just trigger scan and return job id in json\n"
+		action += "   '" + ActionExecuteGetStatus + "' will fetch current job status and return result as json\n"
+		action += "   '" + ActionExecuteGetReport + "' will fetch report as json (result will only exist when job is done)\n"
 
 		fmt.Fprintf(w, "Arguments:\n %s", action)
 		fmt.Fprintln(w)
 		fmt.Fprint(w, "Example for starting a scan which will block until results are availabe:\n")
 		fmt.Fprint(w, "   sechub -apitoken 7536a8c4aa82407da7e06bdbf8dd772f scan\n")
 		fmt.Fprint(w, "\n")
-		fmt.Fprint(w, "Example '"+DEFAULT_SECHUB_CONFIG_FILE+"' config file which will configure a webscan and also source scan:\n\n")
+		fmt.Fprint(w, "Example '"+DefaultSecHubConfigFile+"' config file which will configure a webscan and also source scan:\n\n")
 
 		fmt.Fprintf(w, "      {\n")
 		fmt.Fprintf(w, "      	\"apiVersion\": \"1.0\",\n")

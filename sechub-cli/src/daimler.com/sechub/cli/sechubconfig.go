@@ -42,7 +42,7 @@ func fillTemplate(templateSource string, data map[string]string) []byte {
 	if err != nil {
 		fmt.Println("sechub confiuration json is is not a valid template")
 		showHelpHint()
-		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
+		os.Exit(ExitCodeMissingConfigFile)
 	}
 	return tpl.Bytes()
 }
@@ -55,7 +55,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 	if err != nil {
 		fmt.Println("sechub confiuration json is not valid json")
 		showHelpHint()
-		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
+		os.Exit(ExitCodeMissingConfigFile)
 	}
 	return sechubConfig
 }
@@ -74,7 +74,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	if err != nil {
 		fmt.Println(err)
 		showHelpHint()
-		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
+		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
@@ -83,7 +83,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	if err != nil {
 		fmt.Println(err)
 		showHelpHint()
-		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
+		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	data, _ := envToMap()
