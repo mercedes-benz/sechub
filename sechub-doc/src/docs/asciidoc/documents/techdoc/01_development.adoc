@@ -68,6 +68,19 @@ just call  `./gradlew ensureLocalhostCertificate`
 This will generate a randomized server certificate for localhost, necessary for
 development
 
+==== Go development setup
+
+===== Common
+You should create a soft link inside your go sources to real git repository parts
+So this uses standard go structures and it should work out of the box in any
+go development IDE:
+
+For example:
+[source,bash]
+----
+mkdir ~/go/src/daimler.com/
+ln -s $pathToSecHubRepo/sechub-cli/src/daimler.com/sechub ~/go/src/daimler.com/sechub
+----
 
 === First steps
 Here some first steps to get {sechub} running and being able to develop parts.
