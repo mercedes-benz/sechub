@@ -3,3 +3,4 @@ pkg
 .settings
 .project
 src/daimler.com/sechub/cli/version.go
+.vscode

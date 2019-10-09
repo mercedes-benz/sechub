@@ -10,7 +10,7 @@ import (
 )
 
 /**
-* Configuration for internal CLI calls
+* Config for internal CLI calls
  */
 type Config struct {
 	user               string

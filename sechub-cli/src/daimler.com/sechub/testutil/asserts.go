@@ -1,20 +1,26 @@
 // SPDX-License-Identifier: MIT
 package util
 
-import "testing"
-import "strings"
+import (
+	"strings"
+	"testing"
+)
 
+// AssertContains checks wanted string is inside given list
 func AssertContains(list []string, wanted string, t *testing.T) {
 	if !Contains(list, wanted) {
 		t.Fatalf("Did not found %s inside %s", wanted, list)
 	}
 }
 
-func AssertContainsNot(list []string, wanted string, t *testing.T) {
-	if Contains(list, wanted) {
-		t.Fatalf("Did found %s inside %s", wanted, list)
+// AssertContainsNot checks unwanted string is NOT inside given list
+func AssertContainsNot(list []string, unwanted string, t *testing.T) {
+	if Contains(list, unwanted) {
+		t.Fatalf("Did found %s inside %s", unwanted, list)
 	}
 }
+
+// AssertSize checks list has wanted length
 func AssertSize(list []string, wantedLength int, t *testing.T) {
 	length := len(list)
 	if length != wantedLength {
@@ -22,31 +28,42 @@ func AssertSize(list []string, wantedLength int, t *testing.T) {
 	}
 }
 
-func AssertEquals(expected string, found string, t *testing.T) {
-	if expected != found {
-		t.Fatalf("Strings differ:\nExpected:%s\nGot     :%s", expected, found)
+// AssertEquals checks expected string equals given
+func AssertEquals(expected string, given string, t *testing.T) {
+	if expected != given {
+		t.Fatalf("Strings differ:\nExpected:%s\nGot     :%s", expected, given)
 	}
 }
 
+// AssertNotEquals checks notExpected string equals given
+func AssertNotEquals(notExpected string, given string, t *testing.T) {
+	if notExpected == given {
+		t.Fatalf("Strings do NOT differ:\nUnexpected:%s\nGot     :%s", notExpected, given)
+	}
+}
+
+// AssertTrue checks given boolean is true
 func AssertTrue(found bool, t *testing.T) {
 	if !found {
 		t.Fatalf("Assert failed - not true, but false")
 	}
 }
 
+// AssertFalse checks given boolean is false
 func AssertFalse(found bool, t *testing.T) {
 	if found {
 		t.Fatalf("Assert failed - not false, but true")
 	}
 }
 
-
+// Check given error is nil, otherwise fails fatal
 func Check(err error, t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error detected:%s", err)
 	}
 }
 
+// Contains does check if wanted string is contained in list
 func Contains(list []string, wanted string) bool {
 	for _, found := range list {
 		if found == wanted {
