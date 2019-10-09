@@ -8,7 +8,9 @@ import static java.util.Arrays.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -23,11 +25,13 @@ import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
 
+	private static final String GREEN_RESULT_SOURCE_SCAN_IDENTIFIER = "../../../../src";
+
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(11135);
+	public Timeout timeOut = Timeout.seconds(60 * 5);
 
 	@Test
 	public void sechub_client_is_able_to_trigger_sourcescan_asynchronous() {
@@ -138,6 +142,55 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		waitForJobDone(project, jobUUID);
 
+		as(user).
+			withSecHubClient().
+			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			hasTrafficLight(TrafficLight.GREEN)
+
+			;
+		/* @formatter:on */
+
+	}
+
+	@Test
+	public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
+		/* @formatter:off */
+
+		/* prepare */
+		TestProject project = PROJECT_3;
+		TestUser user = USER_1;
+
+		assertProject(project).hasNoWhiteListEntries();
+
+		List<String> list = new ArrayList<>();
+		list.add("");
+		as(SUPER_ADMIN).
+			updateWhiteListForProject(project, list).
+			assignUserToProject(user, project);
+
+		Map<String, String> envEntries = new LinkedHashMap<>();
+		envEntries.put("SHTEST_VERSION", "1.0");
+		envEntries.put("SHTEST_FOLDERS1", GREEN_RESULT_SOURCE_SCAN_IDENTIFIER);
+
+		/* execute */
+		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-generic-template.json";
+		UUID jobUUID =
+	    as(user).
+			withSecHubClient().
+			startAsynchronScanFor(project, jsonConfigFile,envEntries).
+			assertFileUploaded(project).
+			assertJobTriggered().
+			getJobUUID();
+
+		waitForJobDone(project, jobUUID);
+
+		/* why test green result ? Bcause we set test folders in a way we
+		 * will expect green traffic light - which is only the case when
+		 * we have an explicit path set by the environment entry inside
+		 * template... We could also rely on server validation of version
+		 * but this way is better, because we rely on test environment /mocked
+		 * adapter behavior which is well known.
+		 */
 		as(user).
 			withSecHubClient().
 			startDownloadJobReport(project, jobUUID, jsonConfigFile).

@@ -33,9 +33,9 @@ type FileSystemConfig struct {
 	Folders []string `json:"folders"`
 }
 
-func newSecHubConfigFromTemplate(json string, data map[string]string) SecHubConfig {
+func fillTemplate(templateSource string, data map[string]string) []byte {
 	var tpl bytes.Buffer
-	t := template.Must(template.New("sechubConfig").Parse(json))
+	t := template.Must(template.New("sechubConfig").Parse(templateSource))
 
 	err := t.Execute(&tpl, data)
 
@@ -44,7 +44,7 @@ func newSecHubConfigFromTemplate(json string, data map[string]string) SecHubConf
 		showHelpHint()
 		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
 	}
-	return newSecHubConfigFromBytes(tpl.Bytes())
+	return tpl.Bytes()
 }
 
 func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
@@ -77,8 +77,9 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 		os.Exit(EXIT_CODE_MISSING_CONFIGFILE)
 	}
 
-	/* read text content */
-	context.byteValue, err = ioutil.ReadAll(jsonFile)
+	/* read text content as "unfilled byte value". This will be used for debug outputs,
+	   so we do not have passwords etc. accidently leaked */
+	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
 	if err != nil {
 		fmt.Println(err)
 		showHelpHint()
@@ -86,8 +87,9 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	}
 
 	data, _ := envToMap()
+	context.byteValue = fillTemplate(string(context.unfilledByteValue), data)
 
-	return newSecHubConfigFromTemplate(string(context.byteValue), data)
+	return newSecHubConfigFromBytes(context.byteValue)
 }
 
 func envToMap() (map[string]string, error) {

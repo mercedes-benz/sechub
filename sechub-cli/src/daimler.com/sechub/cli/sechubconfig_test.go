@@ -3,12 +3,14 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	. "daimler.com/sechub/testutil"
 )
 
-func Test_newSecHubConfigFromString_works_for_given_json(t *testing.T) {
+func Test_fillTemplate_without_data_keeps_data_as_is(t *testing.T) {
 
 	jStr := `
     {
@@ -23,17 +25,16 @@ func Test_newSecHubConfigFromString_works_for_given_json(t *testing.T) {
     `
 	data := map[string]string{}
 
-	var config SecHubConfig = newSecHubConfigFromTemplate(jStr, data)
-	fmt.Printf("Loaded config: %s", config)
-	AssertEquals("1.2.3", config.APIVersion, t)
-	AssertEquals("1111", config.CodeScan.FileSystem.Folders[0], t)
-	AssertEquals("2222", config.CodeScan.FileSystem.Folders[1], t)
+	result := fillTemplate(jStr, data)
+
+	AssertJSONEquals(string(result), jStr, t)
+
 }
 
-func Test_newSecHubConfigFromString_works_for_given_json_with_template_map(t *testing.T) {
+func Test_fillTemplate_with_data_changes_template_content(t *testing.T) {
 
-	jStr := `
-    {
+	jStrA := `
+    { 
         "apiVersion" : "1.2.3",
         "codeScan":{
             "zipDate":"1234",
@@ -42,16 +43,26 @@ func Test_newSecHubConfigFromString_works_for_given_json_with_template_map(t *te
             }
         }
     }
-    `
+	`
+	jStrB := `
+	{ 
+        "apiVersion" : "1.2.3",
+        "codeScan":{
+            "zipDate":"1234",
+            "fileSystem": {
+                "folders": ["12345","67890"]
+            }
+        }
+    }
+	`
 	data := map[string]string{
 		"DATA1": "12345",
 		"DATA2": "67890",
 	}
-	var config SecHubConfig = newSecHubConfigFromTemplate(jStr, data)
-	fmt.Printf("Loaded config: %s", config)
-	AssertEquals("1.2.3", config.APIVersion, t)
-	AssertEquals("12345", config.CodeScan.FileSystem.Folders[0], t)
-	AssertEquals("67890", config.CodeScan.FileSystem.Folders[1], t)
+
+	result := fillTemplate(jStrA, data)
+
+	AssertJSONEquals(string(result), jStrB, t)
 }
 
 func Test_envToMap_works_as_expected(t *testing.T) {
@@ -61,5 +72,21 @@ func Test_envToMap_works_as_expected(t *testing.T) {
 	/* test */
 	AssertEquals("", data["THIS_VARIABLE_SHOULD_NEVER_EXIST_12345"], t)
 	AssertNotEquals("", data["GOPATH"], t) // must exist, we need GOPATH to run test...
+
+}
+
+func Test_newSecHubConfigFromFile_does_resolve_map_entries(t *testing.T) {
+	configPtr := NewConfigByFlags()
+	context := NewContext(configPtr)
+
+	os.Setenv("SHTEST_VERSION", "1.0")
+	os.Setenv("SHTEST_FOLDERS1", "../../../../src")
+
+	path := filepath.Join("testdata", "sechub-testfile1.json") // relative path
+
+	var config SecHubConfig = newSecHubConfigurationFromFile(context, path)
+	fmt.Printf("Loaded config: %s", config)
+	AssertEquals("1.0", config.APIVersion, t)
+	AssertEquals("../../../../src", config.CodeScan.FileSystem.Folders[0], t)
 
 }
