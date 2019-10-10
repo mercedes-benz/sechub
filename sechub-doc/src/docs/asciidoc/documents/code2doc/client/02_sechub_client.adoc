@@ -116,8 +116,32 @@ If not defined, secHub client will load `sechub.json` file from current director
 and use it as sechub configuration. There must be always a valid configuration
 file - otherwise client will not work.
 
-include::./../../shared/sechub_config.adoc[]
+==== Variables inside configuration files
+All environment variables are available inside your configuration file in go
+template syntax:
 
+`{{ .ENV_VARIABLE_NAME }}`
+
+For example: When you have defined `USED_API_VERSION` with value `1.0`, you can use
+it in json config like
+
+[source,json]
+----
+{
+    "apiVersion" : "{{ .USED_API_VERSION }}"
+}
+----
+
+`{sechub} client` will automatically fill the variable with content from environment
+variable.
+
+TIP: When you have enabled debug log by setting environment entry `SECHUB_DEBUG` to `true`
+you will see network traffic and also JSON sent to server. This JSON will only
+contain the origin template but not the replaced parts. This was done to prevent
+accidently logging of variables - e.g. credentials.
+
+
+include::../../shared/configuration/sechub_config.adoc[]
 
 === Examples
 
