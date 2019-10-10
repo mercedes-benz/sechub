@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,7 +22,6 @@ import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@SpringBootTest
 @ContextConfiguration(classes= {ProductResultRepository.class,ProductResultRepositoryDBTest.SimpleTestConfiguration.class})
 public class ProductResultRepositoryDBTest {
 
@@ -37,11 +35,11 @@ public class ProductResultRepositoryDBTest {
 	public void before() {
 	}
 
-	
+
 	@TestConfiguration
 	@EnableAutoConfiguration
 	public static class SimpleTestConfiguration{
-		
+
 	}
 	@Test
 	public void findProduct_results_is_executable_and_returns_an_empty_list_for_faraday_and_netsparker()
