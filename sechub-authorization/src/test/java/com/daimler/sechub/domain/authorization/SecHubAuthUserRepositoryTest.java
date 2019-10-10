@@ -12,14 +12,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@SpringBootTest
 @ContextConfiguration(classes = { AuthUserRepository.class, SecHubAuthUserRepositoryTest.SimpleTestConfiguration.class })
 public class SecHubAuthUserRepositoryTest {
 
@@ -42,7 +40,7 @@ public class SecHubAuthUserRepositoryTest {
 
 		/* execute */
 		sechubUserRepository.save(user);
-		
+
 		/* test */
 		List<AuthUser> users = sechubUserRepository.findAll();
 		assertNotNull(users);
@@ -58,22 +56,22 @@ public class SecHubAuthUserRepositoryTest {
 	@Test
 	public void is_able_to_store_user()
 			throws Exception {
-		
+
 		/* prepare */
 		AuthUser user = new AuthUser();
 		user.userId="userToSearchByName";
 		user.hashedApiToken="1234";
 		sechubUserRepository.save(user);
-		
+
 		/* execute */
 		Optional<AuthUser> foundUser = sechubUserRepository.findByUserId("userToSearchByName");
-		
+
 		/* test */
 		assertNotNull(foundUser);
 		assertTrue(foundUser.isPresent());
-		
+
 	}
-	
+
 	@TestConfiguration
 	@EnableAutoConfiguration
 	public static class SimpleTestConfiguration {
