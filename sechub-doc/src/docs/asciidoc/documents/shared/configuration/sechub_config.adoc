@@ -50,24 +50,24 @@ NOTE: The configuration parts inside `fileSystem` entry are interpreted by
       to define this data but you have to upload sources as a `zip`file by
       your own over REST!
 
+[WARNING]
+====
+Please do *NOT* use `\` inside pathes *but* always `/`.
+
+Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
+call {sechub} inside root folder of your source repository - this is the standard situation
+on build servers.
+
+====
+
 ====== Example upload folders with excludes
+
+
+
 [[sechub-config-example-sourcescan]]
 [source, json]
 ----
-      {
-
-        "apiVersion": "1.0",
-        "server"    : "https://sechub.example.org",
-
-        "project"   : "gamechanger",
-
-        "codeScan": {<1>
-           "fileSystem": {<2>
-              "folders": ["gamechanger-android/src/main/java",
-                          "gamechanger-server/src/main/java"], //<3>
-           "excludes"  : ["**/*.log","README*.md"]  //<4>
-        }
-      }
+include::sechub_config_example1_sourcescan_filesystem.json[]
 ----
 <1> Define code scan
 <2> Use filesystem - so means upload sources to server
@@ -92,19 +92,7 @@ WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it w
 [[sechub-config-example-webscan-anonymous]]
 [source, json]
 ----
-
-      {
-        "apiVersion": "1.0",
-
-        "server"   : "https://sechub.example.org",
-        "user"     : "alice",
-
-        "project"  : "gamechanger",
-
-        "webScan"  : {//<1>
-            "uris": ["https://www.gamechanger.example.org"]//<2>
-        }
-      }
+include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
 <2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
@@ -121,7 +109,7 @@ Providing login will enable web scanner to execute ALL possible
 actions!
 
 An example: Your test application has a Web UI for sending SMS which can
-be triggered by an user the web scan will trigger those operations as well!
+be triggered by an user than the web scan will trigger those operations as well!
 
 If you do this inside an environment where a real SMS provider is connected,
 this could result into mass SMS and also in a bigger invoice from your
@@ -148,22 +136,7 @@ will have a failure at execution time!
 ====== Example basic authentication
 [source,json]
 ----
-{
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",<1>
-            "basic": {<2>
-                "user": "${{ .LOGIN_USER }}",
-                "password": "${{ .LOGIN_PWD }}",
-                "realm": "${{ .LOGIN_REALM }}" <3>
-            }
-        }
-    }
-}
+include::sechub_config_example3_webscan_login_basicauth.json[]
 ----
 <1> URL for web login
 <2> Basic authentication start, needs user id/name and password.
@@ -173,117 +146,67 @@ will have a failure at execution time!
 ====== Example form based login with auto detect
 [source,json]
 ----
-{
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",<1>
-            "form": {
-                "autodetect": {<2>
-                    "user": "${{ .LOGIN_USER }}",
-                    "password": "${{ .LOGIN_PWD }}"
-                }
-            }
-        }
-    }
-}
+include::sechub_config_example4_webscan_login_form_autodetect.json[]
 ----
 <1> URL for web login
-<2> Start of form based login with auto detection.
+<2> Start of form based login with auto detection. +
+    In this example you see variables in `go template` format. This is {sechub} client specific.
+    If you use REST API directly, you must you must use real values!
 
 ====== Example form based login by script
 [source,json]
 ----
-{
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",<1>
-            "form": {
-                "script": [<2>
-                    {
-                        "step": "input", <3>
-                        "selector": "#example_login_userid",<4>
-                        "value": "${{ .LOGIN_USER }}"<5>
-                    },
-                    {
-                        "step": "input",
-                        "selector": "#example_login_pwd",
-                        "value": "${{ .LOGIN_PWD }}"
-                    },
-                    {
-                        "step": "click",
-                        "selector": "#example_login_login_button"
-                    }
-                ]
-            }
-        }
-    }
-}
+include::sechub_config_example5_webscan_login_from_sript.json[]
 ----
 <1> URL for web login
-<2> Start of form based login by script. Contains step entries which are executed
+<2> Start of form based login
+<3> Script definition parts. Contains step entries which are executed
     in given order
-<3> Type of step. Valid steps are `input|click`
-<4> Selector (CSS) to identify web element
-<5> Value , used by `input` step
+<4> Type of step. Valid steps are : +
+    - `username` +
+      name of user used for login
+    - `password` +
+      password entered at login
+    - `input` +
+      setup value for a field on UI
+    - `click` +
+      will simulate a mouse click on UI
+<5> Selector (CSS) to identify web element
+<6> Value , used by input steps (`username|password|input`). +
+    In this examples you see variables
+    in `go template` format. This is {sechub} client specific.
+    If you use REST API directly, you must you must use real values!
+
+WARNING: `username` and `password` are like input but {sechub} tries
+         to hide these information in logs or at UI where possible.
+         So do *NOT* use `input` for credentials!
 
 ==== Infrastructure scan
 `infraScan` (optional) defines the infrastructure scan settings.
 
 ===== URIs
-Use `uris` element to define a string array containing URIs you want to scan.
+Use `uris` element to define a string array containing `URIs` you want to scan.
 
 
 ====== Example infrascan one URI
 [[sechub-config-example-infrascan-with-uri]]
 [source, json]
 ----
-
-      {
-        "apiVersion": "1.0",
-
-        "server"   : "https://sechub.example.org",
-        "user"     : "alice",
-
-        "project"  : "gamechanger",
-
-        "infraScan": {//<1>
-            "uris": ["https://www.gamechanger.example.org/"]//<2>
-        }
-      }
+include::sechub_config_example7_infrascan_uri.json[]
 ----
 <1> Define infrastructure scan
 <2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
 
 ===== IPs
-Use `ips` element to define a string array containing `IP` s you want to scan.
+Use `ips` element to define a string array containing `IPs` you want to scan.
 
 ====== Example infrascan one IP
 [[sechub-config-example-infrascan-with-ip]]
 [source, json]
 ----
-
-      {
-        "apiVersion": "1.0",
-
-        "server"   : "https://sechub.example.org",
-        "user"     : "alice",
-
-        "project"  : "gamechanger",
-
-        "infraScan": {//<1>
-            "ips": ["127.0.0.1"]//<2>
-        }
-      }
+include::sechub_config_example6_infrascan_ip.json[]
 ----
 <1> Define infrastructure scan
 <2> The `IP` s to scan. Every `IP` listed here must be white listed in `{sechub}` project.
     The given example with `127.0.0.1` represents only an example and will always not work
-    because scanners would scan themselves...
+    because scanners do not scan them self.

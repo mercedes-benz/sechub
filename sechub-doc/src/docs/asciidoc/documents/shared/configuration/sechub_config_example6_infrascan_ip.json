@@ -1,0 +1,12 @@
+{
+  "apiVersion": "1.0",
+
+  "server"   : "https://sechub.example.org",
+  "user"     : "alice",
+
+  "project"  : "gamechanger",
+
+  "infraScan": {//<1>
+      "ips": ["127.0.0.1"]//<2>
+  }
+}
