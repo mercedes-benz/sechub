@@ -5,38 +5,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class SecHubFinding {
 
-	int id; // faraday: _id
+	int id;
 
-	// faraday: attachments - ignored
-	// faraday: data - ignored: null
-	// private String data; farrady uses this for checkmarkx but currently ignored
-	// by sechub
-	String description;// faraday: description
+	String description;
 
-	/**
-	 * Lookup resuls from IP
-	 */
 	List<String> hostnames = new ArrayList<>();
 
 	Date created;
 
 	String createdBy;
 
-	// private String method ; // faraday: method - check if necessary
-
 	String name;
 
-	String parameters; // faraday: params
+	String parameters;
 
-	String path; // faraday: path
+	String path;
 
-	String parameterName; // faraday: pname
+	String parameterName;
 
-	String query; // faraday: query
+	String query;
 
-	List<String> references = new ArrayList<>(); // faraday: refs array
+	List<String> references = new ArrayList<>();
 
 	String method;
 	String request;
@@ -47,10 +42,27 @@ public class SecHubFinding {
 	Severity severity;
 	String target;
 
-	/**
-	 * Represents the target of scan - e.g. you can have multiple
-	 */
 	String website;
+
+	SecHubCodeCallStack code;
+
+	String productResultLink;
+
+	public void setProductResultLink(String productResultLink) {
+		this.productResultLink = productResultLink;
+	}
+
+	public String getProductResultLink() {
+		return productResultLink;
+	}
+
+	public void setCode(SecHubCodeCallStack code) {
+		this.code = code;
+	}
+
+	public SecHubCodeCallStack getCode() {
+		return code;
+	}
 
 	public int getId() {
 		return id;

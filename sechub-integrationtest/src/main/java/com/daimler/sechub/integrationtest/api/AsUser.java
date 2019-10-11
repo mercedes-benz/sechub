@@ -190,6 +190,27 @@ public class AsUser {
 		return this;
 	}
 
+	private String createCodeScanJob(TestProject project, RunMode runMode) {
+		String folder = null;
+		if (runMode==RunMode.CODE_SCAN_GREEN__FAST) {
+			folder = "../../../../src"; // special path, always green in mocks
+		}else if (runMode==RunMode.CODE_SCAN_YELLOW__FAST) {
+			folder = "../sechub-doc/src/main/java";
+		}else {
+			folder =  "notexisting";
+		}
+	    String testfile = "sechub-integrationtest-sourcescanconfig1.json";
+		String json = IntegrationTestFileSupport.getTestfileSupport()
+				.loadTestFile(testfile);
+		String projectId = project.getProjectId();
+
+		json = json.replaceAll("__projectId__", projectId);
+
+		json = json.replaceAll("__folder__", folder);
+		String url = getUrlBuilder().buildAddJobUrl(projectId);
+		return getRestHelper().postJSon(url, json);
+	}
+
 	private String createWebScanJob(TestProject project, RunMode runMode) {
 		String json = IntegrationTestFileSupport.getTestfileSupport()
 				.loadTestFile("sechub-integrationtest-webscanconfig1.json");
@@ -198,8 +219,10 @@ public class AsUser {
 		json = json.replaceAll("__projectId__", projectId);
 		List<String> whites = project.getWhiteListUrls();
 		String acceptedURI1;
-		if (runMode==RunMode.LONG_RUNNING_BUT_GREEN) {
+		if (runMode==RunMode.WEBSCAN__RESULT_GREEN__LONG_RUNNING) {
 			acceptedURI1=InternalConstants.URL_FOR_LONG_RUNNING;
+		}if (runMode==RunMode.WEBSCAN__RESULT_ONE_FINDING__FAST) {
+			acceptedURI1=InternalConstants.URL_FOR_ONE_FINDING;
 		}else {
 			if (whites == null || whites.isEmpty()) {
 				acceptedURI1 = "https://undefined.com";
@@ -281,9 +304,37 @@ public class AsUser {
 	public UUID createWebScan(TestProject project, RunMode runMode) {
 		assertProject(project).doesExist();
 		if (runMode==null) {
-			runMode=RunMode.NORMAL;
+			runMode=RunMode.WEBSCAN__RESULT_GREEN__FAST;
 		}
 		String response = createWebScanJob(project,runMode);
+		try {
+			JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
+			JsonNode jobId = jsonNode.get("jobId");
+			if (jobId == null) {
+				fail("No jobID entry found in json:\n" + response);
+				return null;
+			}
+			return UUID.fromString(jobId.textValue());
+		} catch (IllegalArgumentException e) {
+			fail("Job did not return with a valid UUID!:" + response);
+			throw new IllegalStateException("fail not working");
+		} catch (IOException e) {
+			throw new IllegalStateException("io failure, should not occure", e);
+		}
+
+	}
+	/**
+	 *
+	 * @param project
+	 * @param useLongRunningButGreen
+	 * @return
+	 */
+	public UUID createCodeScan(TestProject project, RunMode runMode) {
+		assertProject(project).doesExist();
+		if (runMode==null) {
+			runMode=RunMode.CODE_SCAN_YELLOW__FAST;
+		}
+		String response = createCodeScanJob(project,runMode);
 		try {
 			JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
 			JsonNode jobId = jsonNode.get("jobId");
