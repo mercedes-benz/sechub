@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.MetaData;
 import com.daimler.sechub.sereco.metadata.Severity;
 import com.daimler.sechub.sereco.metadata.Vulnerability;
@@ -20,12 +21,10 @@ import com.daimler.sechub.sereco.metadata.Vulnerability;
 @Component
 public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
-
 	private static final Logger LOG = LoggerFactory.getLogger(CheckmarxV1XMLImporter.class);
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-	@SuppressWarnings("unchecked")
 	public MetaData importResult(String xml) throws IOException {
 		if (xml == null) {
 			xml = "";
@@ -36,6 +35,8 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 		} catch (DocumentException e) {
 			throw new IOException("Import cannot parse xml", e);
 		}
+
+		CheckmarxCategoriesToClassificationConverter categoryConverter = new CheckmarxCategoriesToClassificationConverter();
 
 		MetaData metaData = new MetaData();
 		Element checkmarxCxXMLResults = document.getRootElement();
@@ -53,15 +54,12 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
 				String falsePositive = resultElement.attributeValue("FalsePositive");
 				if (Boolean.parseBoolean(falsePositive)) {
-					String nodeId=resultElement.attributeValue("NodeId");
-					LOG.debug("Ignored marked false positive for NodeId:{}",nodeId);
+					String nodeId = resultElement.attributeValue("NodeId");
+					LOG.debug("Ignored marked false positive for NodeId:{}", nodeId);
 					continue;
 				}
 				String deeplink = resultElement.attributeValue("DeepLink");
 				String severity = resultElement.attributeValue("Severity");
-				String fileName = resultElement.attributeValue("FileName");
-				String line = resultElement.attributeValue("Line");
-				String column = resultElement.attributeValue("Column");
 
 				Vulnerability vulnerability = new Vulnerability();
 				vulnerability.setType(type);
@@ -71,18 +69,96 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 				}
 				vulnerability.setSeverity(Severity.fromString(severity));
 
-				StringBuilder sb = new StringBuilder();
-				sb.append("\n<br>Location:").append(fileName).append(" - line:").append(line).append(", column:")
-						.append(column);
-				sb.append("\\n<br>For details look at <a href='").append(deeplink).append("'>Full result</a>");
-				vulnerability.setDescription(sb.toString());
+				SerecoCodeCallStackElement codeInfo = resolveCodeInfoFromElement(resultElement);
+
+				vulnerability.setCode(codeInfo);
+				vulnerability.setProductResultLink(deeplink);
+				vulnerability.setDescription(""); // at least at the moment we set no description any more
 				vulnerability.getClassification().setCwe(cweId);
-				new CheckmarxCategoriesToClassificationConverter().convert(categories,
-						vulnerability.getClassification());
+
+				categoryConverter.convert(categories, vulnerability.getClassification());
+
 				metaData.getVulnerabilities().add(vulnerability);
 			}
 		}
 		return metaData;
+	}
+
+	private SerecoCodeCallStackElement resolveCodeInfoFromElement(Element resultElement) {
+		Element path = resultElement.element("Path");
+		if (path == null) {
+			return null;
+		}
+		List<Element> pathNodes = path.elements("PathNode");
+		SerecoCodeCallStackElement initialCodeInfo=null;
+		SerecoCodeCallStackElement infoBefore=null;
+		for (Element pathNode: pathNodes) {
+			SerecoCodeCallStackElement info = new SerecoCodeCallStackElement();
+			if (initialCodeInfo==null) {
+				initialCodeInfo=info;
+			}
+			fillPathNodeInfo(info,pathNode);
+			if (infoBefore!=null) {
+				infoBefore.setCalls(info);
+			}
+			infoBefore=info;
+		}
+		return initialCodeInfo;
+
+	}
+
+	private void fillPathNodeInfo(SerecoCodeCallStackElement info, Element pathNode) {
+
+		Element filename = pathNode.element("FileName");
+		if (filename == null) {
+			return ;
+		}
+		info.setLocation(filename.getStringValue());
+		Element line = pathNode.element("Line");
+		if (line == null) {
+			return ;
+		}
+		info.setLine(safeGetInteger(line));
+		Element column = pathNode.element("Column");
+		if (column == null) {
+			return ;
+		}
+		info.setColumn(safeGetInteger(column));
+
+		/* add source snippet */
+		Element snippet = pathNode.element("Snippet");
+		if (snippet == null) {
+			return ;
+		}
+		Element snippetLine = snippet.element("Line");
+		if (snippetLine==null) {
+			return;
+		}
+		Element snippetCode = snippetLine.element("Code");
+		if (snippetCode == null) {
+			return;
+		}
+		info.setSource(snippetCode.getStringValue());
+	}
+
+	/**
+	 * Parses element string value and tries to resolve as integer
+	 * @param element
+	 * @return integer value or <code>null</code>
+	 */
+	Integer safeGetInteger(Element element) {
+		if (element==null) {
+			return null;
+		}
+		String string = element.getStringValue();
+		if (string==null) {
+			return null;
+		}
+		try {
+			return Integer.valueOf(string);
+		}catch(NumberFormatException e) {
+			return null;
+		}
 	}
 
 	@Override

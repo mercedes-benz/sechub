@@ -16,6 +16,7 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
@@ -182,8 +183,12 @@ public class CommandUI {
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
 		testDataMenu.addSeparator();
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.NORMAL));
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.LONG_RUNNING_BUT_GREEN));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_GREEN__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_GREEN__LONG_RUNNING));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_ONE_FINDING__FAST));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN_YELLOW__FAST));
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN_GREEN__FAST));
 
 
 	}

@@ -20,7 +20,6 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-	@SuppressWarnings("unchecked")
 	public MetaData importResult(String xml) throws IOException {
 		if (xml == null) {
 			xml = "";

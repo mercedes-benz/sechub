@@ -12,10 +12,12 @@ import org.junit.Test;
 
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.Classification;
+import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.MetaData;
 import com.daimler.sechub.sereco.metadata.Severity;
 import com.daimler.sechub.sereco.metadata.Vulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
+
 public class CheckmarxV1XMLImporterTest {
 
 	private CheckmarxV1XMLImporter importerToTest;
@@ -35,8 +37,64 @@ public class CheckmarxV1XMLImporterTest {
 		/* execute */
 		ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
-		/*test */
-		assertEquals("Was not able to import xml!",ProductImportAbility.ABLE_TO_IMPORT,ableToImport);
+		/* test */
+		assertEquals("Was able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+	}
+
+	@Test
+	public void xmlReportFromCheckmarxVhasNoDescriptionButCodeInfo() throws Exception {
+		/* prepare */
+		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
+
+		/* execute */
+		MetaData result = importerToTest.importResult(xml);
+
+		/* test */
+		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+
+		Vulnerability v1 = vulnerabilities.get(0);
+		assertEquals(Severity.MEDIUM, v1.getSeverity());
+		assertEquals("", v1.getDescription());
+
+		SerecoCodeCallStackElement codeInfo = v1.getCode();
+		assertNotNull(codeInfo);
+		/*
+		 * v1 is not first entry, because first entry was a false positive which was
+		 * already filtered
+		 */
+		assertEquals("com/daimler/sechub/server/IntegrationTestServerRestController.java", codeInfo.getLocation());
+		assertEquals("86", codeInfo.getLine());
+		assertEquals("37", codeInfo.getColumn());
+		assertEquals("			@PathVariable(\"fileName\") String fileName) throws IOException {",codeInfo.getSource());
+
+		SerecoCodeCallStackElement calls1 = codeInfo.getCalls();
+		assertNotNull(calls1);
+		SerecoCodeCallStackElement calls2 = calls1.getCalls();
+		assertNotNull(calls2);
+
+		assertEquals("com/daimler/sechub/sharedkernel/storage/JobStorage.java", calls2.getLocation());
+		assertEquals("139", calls2.getLine());
+		assertEquals("39", calls2.getColumn());
+		assertEquals("	public String getAbsolutePath(String fileName) {",calls2.getSource());
+
+	}
+
+	@Test
+	public void xmlReportFromCheckmarxV8containsDeeplink() throws Exception {
+		/* prepare */
+		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
+
+		/* execute */
+		MetaData result = importerToTest.importResult(xml);
+
+		/* test */
+		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+
+		Vulnerability v1 = vulnerabilities.get(0);
+		assertEquals(Severity.MEDIUM, v1.getSeverity());
+
+		assertEquals("https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000866&projectid=279&pathid=2", v1.getProductResultLink());
+
 	}
 
 	@Test
@@ -68,28 +126,28 @@ public class CheckmarxV1XMLImporterTest {
 		assertEquals(109, vulnerabilities.size());
 
 		Vulnerability v1 = vulnerabilities.get(0);
-		assertEquals(Severity.MEDIUM,v1.getSeverity());
+		assertEquals(Severity.MEDIUM, v1.getSeverity());
 		Classification classification = v1.getClassification();
-		assertEquals("A5",classification.getOwasp());
-		assertEquals("6.5.8",classification.getPci32());
-		assertEquals("",classification.getPci31());
+		assertEquals("A5", classification.getOwasp());
+		assertEquals("6.5.8", classification.getPci32());
+		assertEquals("", classification.getPci31());
 
 		Vulnerability v100 = vulnerabilities.get(99);
-		assertEquals(Severity.LOW,v100.getSeverity());
+		assertEquals(Severity.LOW, v100.getSeverity());
 		classification = v100.getClassification();
-		assertEquals("",classification.getPci32());
-		assertEquals("",classification.getOwasp());
-		assertEquals("AC-3",classification.getNist());
-		assertEquals("Identification And Authentication",classification.getFisma());
+		assertEquals("", classification.getPci32());
+		assertEquals("", classification.getOwasp());
+		assertEquals("AC-3", classification.getNist());
+		assertEquals("Identification And Authentication", classification.getFisma());
 
 		Vulnerability v109 = vulnerabilities.get(108);
-		assertEquals(Severity.INFO,v109.getSeverity());
+		assertEquals(Severity.INFO, v109.getSeverity());
 		classification = v109.getClassification();
-		assertEquals("",classification.getOwasp());
-		assertEquals("",classification.getPci32());
-		assertEquals("",classification.getNist());
-		assertEquals("",classification.getFisma());
-		assertEquals("778",classification.getCwe());
+		assertEquals("", classification.getOwasp());
+		assertEquals("", classification.getPci32());
+		assertEquals("", classification.getNist());
+		assertEquals("", classification.getFisma());
+		assertEquals("778", classification.getCwe());
 
 		assertEquals("Insufficient Logging of Exceptions", v109.getType());
 	}

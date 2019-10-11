@@ -10,18 +10,18 @@ import com.daimler.sechub.integrationtest.api.RunMode;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.scenario3.Scenario3;
 
-public class TriggerNewWebScanJobScenario3User1Action extends IntegrationTestAction {
+public class TriggerNewCodeScanJobScenario3User1Action extends IntegrationTestAction {
 	private static final long serialVersionUID = 1L;
 	private RunMode mode;
 
-	public TriggerNewWebScanJobScenario3User1Action(UIContext context, RunMode mode) {
-		super("Trigger new web scan job (Scenario3) -"+mode, context);
+	public TriggerNewCodeScanJobScenario3User1Action(UIContext context, RunMode mode) {
+		super("Trigger new code scan job (Scenario3) -"+mode, context);
 		this.mode=mode;
 	}
 
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-		UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1,mode);
+		UUID uuid = TestAPI.as(Scenario3.USER_1).createCodeScan(Scenario3.PROJECT_1,mode);
 		output("Job created:"+uuid);
 		TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
 		output("Job approved:"+uuid);

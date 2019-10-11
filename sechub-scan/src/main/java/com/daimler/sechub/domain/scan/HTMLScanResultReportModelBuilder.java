@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,16 +31,16 @@ public class HTMLScanResultReportModelBuilder {
 	static final String HIDE_LIGHT = "opacity: 0.25";
 
 	private static final Logger LOG = LoggerFactory.getLogger(HTMLScanResultReportModelBuilder.class);
-	
+
 	@Value("${sechub.development.webdesignmode.enabled:false}")
 	@MustBeDocumented(scope="development",value="Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content")
 	boolean webDesignMode;
-	
+
 	@Value("classpath:templates/report/html/scanresult.css")
 	Resource cssResource;
-	
+
 	String embeddedCSS;
-	
+
 	@Autowired
 	ScanReportTrafficLightCalculator trafficLightCalculator;
 
@@ -63,15 +64,20 @@ public class HTMLScanResultReportModelBuilder {
 			break;
 		default:
 		}
-		
+		HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
 		SecHubResult result = scanResult.getResult();
-		
+
+		Map<Integer,List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
+		for (SecHubFinding finding: result.getFindings()) {
+			codeScanEntries.put(finding.id, codeScanSupport.buildEntries(finding));
+		}
+
 		Map<String, Object> model = new HashMap<>();
 		model.put("result", scanResult.getResult());
 		model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
 		model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
 		model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
-		
+
 		model.put("trafficlight", trafficLight);
 
 		model.put("styleRed", styleRed);
@@ -79,6 +85,10 @@ public class HTMLScanResultReportModelBuilder {
 		model.put("styleGreen", styleGreen);
 		model.put("isWebDesignMode", webDesignMode);
 		model.put("embeddedCSS", getEmbeddedCSS());
+		model.put("codeScanEntries", codeScanEntries);
+		model.put("codeScanSupport", codeScanSupport);
+
+
 		if (webDesignMode) {
 			File file;
 			try {
@@ -105,7 +115,7 @@ public class HTMLScanResultReportModelBuilder {
 		return model;
 
 	}
-	
+
 	public String getEmbeddedCSS() {
 		if (embeddedCSS!=null) {
 			return embeddedCSS;
@@ -121,14 +131,14 @@ public class HTMLScanResultReportModelBuilder {
 				}
 				embeddedCSS=sb.toString();
 			}
-			
+
 		} catch (IOException e) {
 			LOG.error("Was not able to load css resources",e);
 			embeddedCSS="/* not able to load css from server */";
 		}
 		return embeddedCSS;
 	}
-	
-	
+
+
 
 }

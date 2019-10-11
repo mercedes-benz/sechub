@@ -34,7 +34,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 		if (vulnerabilitiesElement==null) {
 			throw new IllegalStateException("no vulnerabilities element found!");
 		}
-		@SuppressWarnings("unchecked")
+
 		Iterator<Element> it = vulnerabilitiesElement.elementIterator();
 		while (it.hasNext()) {
 			Element vulnerabilityElement = it.next();
