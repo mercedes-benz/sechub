@@ -54,15 +54,15 @@ public class SerecoReportToSecHubResultTransformerTest {
 
 		SecHubCodeCallStack code1 = finding1.getCode();
 		assertNotNull(code1);
-		assertEquals("1",code1.getLine());
-		assertEquals("2",code1.getColumn());
+		assertEquals(Integer.valueOf(1),code1.getLine());
+		assertEquals(Integer.valueOf(2),code1.getColumn());
 		assertEquals("Location1",code1.getLocation());
 		assertEquals("source1",code1.getSource());
 
 		SecHubCodeCallStack code2 = code1.getCalls();
 		assertNotNull(code2);
-		assertEquals("3",code2.getLine());
-		assertEquals("4",code2.getColumn());
+		assertEquals(Integer.valueOf(3),code2.getLine());
+		assertEquals(Integer.valueOf(4),code2.getColumn());
 		assertEquals("Location2",code2.getLocation());
 		assertEquals("source2",code2.getSource());
 

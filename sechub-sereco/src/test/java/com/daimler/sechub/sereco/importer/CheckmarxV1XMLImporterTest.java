@@ -63,8 +63,8 @@ public class CheckmarxV1XMLImporterTest {
 		 * already filtered
 		 */
 		assertEquals("com/daimler/sechub/server/IntegrationTestServerRestController.java", codeInfo.getLocation());
-		assertEquals("86", codeInfo.getLine());
-		assertEquals("37", codeInfo.getColumn());
+		assertEquals(Integer.valueOf(86), codeInfo.getLine());
+		assertEquals(Integer.valueOf(37), codeInfo.getColumn());
 		assertEquals("			@PathVariable(\"fileName\") String fileName) throws IOException {",codeInfo.getSource());
 
 		SerecoCodeCallStackElement calls1 = codeInfo.getCalls();
@@ -73,8 +73,8 @@ public class CheckmarxV1XMLImporterTest {
 		assertNotNull(calls2);
 
 		assertEquals("com/daimler/sechub/sharedkernel/storage/JobStorage.java", calls2.getLocation());
-		assertEquals("139", calls2.getLine());
-		assertEquals("39", calls2.getColumn());
+		assertEquals(Integer.valueOf(139), calls2.getLine());
+		assertEquals(Integer.valueOf(39), calls2.getColumn());
 		assertEquals("	public String getAbsolutePath(String fileName) {",calls2.getSource());
 
 	}
