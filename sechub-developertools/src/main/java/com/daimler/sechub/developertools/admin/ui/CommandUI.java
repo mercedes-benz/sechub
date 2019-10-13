@@ -183,12 +183,13 @@ public class CommandUI {
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
 		testDataMenu.addSeparator();
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_GREEN__FAST));
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_GREEN__LONG_RUNNING));
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__RESULT_ONE_FINDING__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
 		testDataMenu.addSeparator();
-		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN_YELLOW__FAST));
-		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN_GREEN__FAST));
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,RunMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
 
 
 	}

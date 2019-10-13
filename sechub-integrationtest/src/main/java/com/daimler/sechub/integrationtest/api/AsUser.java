@@ -192,9 +192,9 @@ public class AsUser {
 
 	private String createCodeScanJob(TestProject project, RunMode runMode) {
 		String folder = null;
-		if (runMode==RunMode.CODE_SCAN_GREEN__FAST) {
+		if (runMode==RunMode.CODE_SCAN__CHECKMARX__GREEN__FAST) {
 			folder = "../../../../src"; // special path, always green in mocks
-		}else if (runMode==RunMode.CODE_SCAN_YELLOW__FAST) {
+		}else if (runMode==RunMode.CODE_SCAN__CHECKMARX__YELLOW__FAST) {
 			folder = "../sechub-doc/src/main/java";
 		}else {
 			folder =  "notexisting";
@@ -219,17 +219,19 @@ public class AsUser {
 		json = json.replaceAll("__projectId__", projectId);
 		List<String> whites = project.getWhiteListUrls();
 		String acceptedURI1;
-		if (runMode==RunMode.WEBSCAN__RESULT_GREEN__LONG_RUNNING) {
-			acceptedURI1=InternalConstants.URL_FOR_LONG_RUNNING;
-		}if (runMode==RunMode.WEBSCAN__RESULT_ONE_FINDING__FAST) {
-			acceptedURI1=InternalConstants.URL_FOR_ONE_FINDING;
+		if (runMode==RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING) {
+			acceptedURI1=InternalConstants.URL_FOR_NETSPARKER_GREEEN_LONG_RUNNING;
+		}if (runMode==RunMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST) {
+			acceptedURI1=InternalConstants.URL_FOR_NETSPARKER_ONE_FINDING;
+		}if (runMode==RunMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST) {
+			acceptedURI1=InternalConstants.URL_FOR_NETSPARKER_MANY_FINDINGS;
 		}else {
 			if (whites == null || whites.isEmpty()) {
 				acceptedURI1 = "https://undefined.com";
 			} else {
 				Iterator<String> iterator = whites.iterator();
 				acceptedURI1 = iterator.next();
-				if (InternalConstants.URL_FOR_LONG_RUNNING.equals(acceptedURI1)) {
+				if (InternalConstants.URL_FOR_NETSPARKER_GREEEN_LONG_RUNNING.equals(acceptedURI1)) {
 					// ups ignore this one and take next
 					acceptedURI1= iterator.next();
 				}
@@ -304,7 +306,7 @@ public class AsUser {
 	public UUID createWebScan(TestProject project, RunMode runMode) {
 		assertProject(project).doesExist();
 		if (runMode==null) {
-			runMode=RunMode.WEBSCAN__RESULT_GREEN__FAST;
+			runMode=RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
 		}
 		String response = createWebScanJob(project,runMode);
 		try {
@@ -332,7 +334,7 @@ public class AsUser {
 	public UUID createCodeScan(TestProject project, RunMode runMode) {
 		assertProject(project).doesExist();
 		if (runMode==null) {
-			runMode=RunMode.CODE_SCAN_YELLOW__FAST;
+			runMode=RunMode.CODE_SCAN__CHECKMARX__YELLOW__FAST;
 		}
 		String response = createCodeScanJob(project,runMode);
 		try {

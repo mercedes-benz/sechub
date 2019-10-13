@@ -33,7 +33,7 @@ public class JobScenario2IntTest {
 		/* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,RunMode.WEBSCAN__RESULT_GREEN__LONG_RUNNING);
+			canCreateWebScan(PROJECT_1,RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
 
 		assertUser(USER_1).
 			canApproveJob(PROJECT_1, jobUUID);
@@ -53,7 +53,7 @@ public class JobScenario2IntTest {
 		/* @formatter:off */
 
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,RunMode.WEBSCAN__RESULT_GREEN__FAST);
+			canCreateWebScan(PROJECT_1,RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
 
 		assertUser(USER_1).canApproveJob(PROJECT_1, jobUUID);
 

@@ -62,7 +62,11 @@ public abstract class AbstractTestScenario implements TestScenario {
 			String whiteListURL = "http://locahost/" + projectId;
 			// we additinally add long running url because its configured in webscan and for
 			// infrascan mocks to have longer runs*/
-			testProject = new TestProject(projectId, whiteListURL, InternalConstants.URL_FOR_LONG_RUNNING, InternalConstants.URL_FOR_ONE_FINDING);
+			testProject = new TestProject(projectId, whiteListURL,
+					InternalConstants.URL_FOR_NETSPARKER_GREEEN_LONG_RUNNING,
+					InternalConstants.URL_FOR_NETSPARKER_ONE_FINDING,
+					InternalConstants.URL_FOR_NETSPARKER_MANY_FINDINGS
+					);
 		}else {
 			testProject = new TestProject(projectId);
 		}
