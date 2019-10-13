@@ -28,6 +28,12 @@
                     "timeToElapseInMilliseconds": -1
                 },
                 {
+                    "target": "https://netsparker.manyfindings.demo.example.org",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/netsparker-mockdata-many-vulnerabilities.xml",
+                    "timeToElapseInMilliseconds": -1
+                },
+                {
                     "target": "{any-other-target}",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml",
