@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.metadata;
 
-public class Classification {
+public class SerecoClassification {
 
 	private static final String DEFAULT_MISSING_VALUE = "";
 	
@@ -123,7 +123,7 @@ public class Classification {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Classification other = (Classification) obj;
+		SerecoClassification other = (SerecoClassification) obj;
 		if (capec == null) {
 			if (other.capec != null)
 				return false;

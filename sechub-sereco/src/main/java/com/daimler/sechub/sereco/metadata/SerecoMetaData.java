@@ -4,11 +4,11 @@ package com.daimler.sechub.sereco.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetaData {
+public class SerecoMetaData {
 
-	private List<Vulnerability> vulnerabilities = new ArrayList<>();
+	private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 
-	public List<Vulnerability> getVulnerabilities() {
+	public List<SerecoVulnerability> getVulnerabilities() {
 		return vulnerabilities;
 	}
 

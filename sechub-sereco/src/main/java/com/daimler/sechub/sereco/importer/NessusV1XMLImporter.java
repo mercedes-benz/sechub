@@ -11,16 +11,16 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 @Component
 public class NessusV1XMLImporter extends AbstractProductResultImporter {
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-	public MetaData importResult(String xml) throws IOException {
+	public SerecoMetaData importResult(String xml) throws IOException {
 		if (xml == null) {
 			xml = "";
 		}
@@ -31,7 +31,7 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 			throw new IOException("Import cannot parse xml", e);
 		}
 
-		MetaData metaData = new MetaData();
+		SerecoMetaData metaData = new SerecoMetaData();
 		Element checkmarxCxXMLResults = document.getRootElement();
 		Element reportElement = checkmarxCxXMLResults.element("Report");
 		Element reportHost = reportElement.element("ReportHost");
@@ -42,17 +42,17 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 			String type = NAME_PATTERN.matcher(name).replaceAll(" ");
 			String output = reportItem.elementText("plugin_output");
 
-			Vulnerability vulnerability = new Vulnerability();
-			Severity severity = null;
+			SerecoVulnerability vulnerability = new SerecoVulnerability();
+			SerecoSeverity severity = null;
 			int severityLevel = Integer.parseInt(reportItem.attributeValue("severity"));
 			if (severityLevel == 0) {
-				severity = Severity.INFO;
+				severity = SerecoSeverity.INFO;
 			}else if (severityLevel==1) {
-				severity = Severity.LOW;
+				severity = SerecoSeverity.LOW;
 			}else if (severityLevel==2){
-				severity = Severity.MEDIUM;
+				severity = SerecoSeverity.MEDIUM;
 			}else {
-				severity = Severity.MEDIUM;
+				severity = SerecoSeverity.MEDIUM;
 			}
 			vulnerability.setSeverity(severity);
 			vulnerability.setType(type);

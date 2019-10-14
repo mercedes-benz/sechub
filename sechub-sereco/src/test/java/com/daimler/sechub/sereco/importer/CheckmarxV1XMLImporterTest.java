@@ -11,11 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.sereco.ImportParameter;
-import com.daimler.sechub.sereco.metadata.Classification;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
 
 public class CheckmarxV1XMLImporterTest {
@@ -47,13 +47,13 @@ public class CheckmarxV1XMLImporterTest {
 		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
 		/* execute */
-		MetaData result = importerToTest.importResult(xml);
+		SerecoMetaData result = importerToTest.importResult(xml);
 
 		/* test */
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		Vulnerability v1 = vulnerabilities.get(0);
-		assertEquals(Severity.MEDIUM, v1.getSeverity());
+		SerecoVulnerability v1 = vulnerabilities.get(0);
+		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 		assertEquals("", v1.getDescription());
 
 		SerecoCodeCallStackElement codeInfo = v1.getCode();
@@ -85,13 +85,13 @@ public class CheckmarxV1XMLImporterTest {
 		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
 		/* execute */
-		MetaData result = importerToTest.importResult(xml);
+		SerecoMetaData result = importerToTest.importResult(xml);
 
 		/* test */
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		Vulnerability v1 = vulnerabilities.get(0);
-		assertEquals(Severity.MEDIUM, v1.getSeverity());
+		SerecoVulnerability v1 = vulnerabilities.get(0);
+		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 
 		assertEquals("https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000866&projectid=279&pathid=2", v1.getProductResultLink());
 
@@ -103,11 +103,11 @@ public class CheckmarxV1XMLImporterTest {
 		String xml = SerecoTestFileSupport.INSTANCE.loadTestFile("checkmarx/sechub-continous-integration-with-false-positive.xml");
 
 		/* execute */
-		MetaData data = importerToTest.importResult(xml);
+		SerecoMetaData data = importerToTest.importResult(xml);
 
 		/* test @formatter:off */
 		assertVulnerabilities(data.getVulnerabilities()).
-			vulnerability().withSeverity(Severity.HIGH).isNotContained(). /* ONE is  high but false positive*/
+			vulnerability().withSeverity(SerecoSeverity.HIGH).isNotContained(). /* ONE is  high but false positive*/
 			hasVulnerabilities(230); /* inside xml there are 240 vulnerabilities, but 10 are false positives */
 		/* @formatter:on */
 	}
@@ -118,30 +118,30 @@ public class CheckmarxV1XMLImporterTest {
 		String xml = SerecoTestFileSupport.INSTANCE.loadTestFileFromRoot("sechub-other/testoutput/checkmarx-example1.xml");
 
 		/* execute */
-		MetaData data = importerToTest.importResult(xml);
+		SerecoMetaData data = importerToTest.importResult(xml);
 
 		/* test */
-		List<Vulnerability> vulnerabilities = data.getVulnerabilities();
+		List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
 
 		assertEquals(109, vulnerabilities.size());
 
-		Vulnerability v1 = vulnerabilities.get(0);
-		assertEquals(Severity.MEDIUM, v1.getSeverity());
-		Classification classification = v1.getClassification();
+		SerecoVulnerability v1 = vulnerabilities.get(0);
+		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
+		SerecoClassification classification = v1.getClassification();
 		assertEquals("A5", classification.getOwasp());
 		assertEquals("6.5.8", classification.getPci32());
 		assertEquals("", classification.getPci31());
 
-		Vulnerability v100 = vulnerabilities.get(99);
-		assertEquals(Severity.LOW, v100.getSeverity());
+		SerecoVulnerability v100 = vulnerabilities.get(99);
+		assertEquals(SerecoSeverity.LOW, v100.getSeverity());
 		classification = v100.getClassification();
 		assertEquals("", classification.getPci32());
 		assertEquals("", classification.getOwasp());
 		assertEquals("AC-3", classification.getNist());
 		assertEquals("Identification And Authentication", classification.getFisma());
 
-		Vulnerability v109 = vulnerabilities.get(108);
-		assertEquals(Severity.INFO, v109.getSeverity());
+		SerecoVulnerability v109 = vulnerabilities.get(108);
+		assertEquals(SerecoSeverity.INFO, v109.getSeverity());
 		classification = v109.getClassification();
 		assertEquals("", classification.getOwasp());
 		assertEquals("", classification.getPci32());

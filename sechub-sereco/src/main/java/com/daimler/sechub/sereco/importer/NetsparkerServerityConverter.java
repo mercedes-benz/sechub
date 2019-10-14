@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.importer;
 
-import com.daimler.sechub.sereco.metadata.Severity;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 
 // https://www.netsparker.com/support/vulnerability-severity-levels-netsparker/
 //Critical
@@ -14,29 +14,29 @@ public enum NetsparkerServerityConverter {
 
 		/* FIXME Albert Tregnaghi, 2019-04-09: hmm.. this must be checked .. see SECHUB-396 */
 
-		NONE(Severity.INFO),
+		NONE(SerecoSeverity.INFO),
 
-		LOW(Severity.LOW),
+		LOW(SerecoSeverity.LOW),
 
-		MEDIUM(Severity.MEDIUM),
+		MEDIUM(SerecoSeverity.MEDIUM),
 
-		HIGH(Severity.HIGH),
+		HIGH(SerecoSeverity.HIGH),
 
-		IMPORTANT(Severity.CRITICAL),
+		IMPORTANT(SerecoSeverity.CRITICAL),
 
 		;
 
-		private Severity severity;
+		private SerecoSeverity severity;
 
 
-		private NetsparkerServerityConverter(Severity severity) {
+		private NetsparkerServerityConverter(SerecoSeverity severity) {
 			this.severity=severity;
 		}
 
 
-		public static Severity convert(String severity) {
+		public static SerecoSeverity convert(String severity) {
 			if (severity==null) {
-				return Severity.UNCLASSIFIED;
+				return SerecoSeverity.UNCLASSIFIED;
 			}
 			String upperCased = severity.toUpperCase();
 			for (NetsparkerServerityConverter netsparkerSeverity: values()) {
@@ -44,6 +44,6 @@ public enum NetsparkerServerityConverter {
 					return netsparkerSeverity.severity;
 				}
 			}
-			return Severity.UNCLASSIFIED;
+			return SerecoSeverity.UNCLASSIFIED;
 		}
 }

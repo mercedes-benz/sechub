@@ -15,8 +15,8 @@ import com.daimler.sechub.domain.scan.Severity;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.util.JSONConverter;
@@ -33,12 +33,12 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
 
 	@Override
 	public SecHubResult transform(String origin) throws SecHubExecutionException {
-		MetaData data = JSONConverter.get().fromJSON(MetaData.class, origin);
+		SerecoMetaData data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
 		SecHubResult result = new SecHubResult();
 
 		List<SecHubFinding> findings = result.getFindings();
 		int id = 1;
-		for (Vulnerability v : data.getVulnerabilities()) {
+		for (SerecoVulnerability v : data.getVulnerabilities()) {
 			SecHubFinding finding = new SecHubFinding();
 			finding.setDescription(v.getDescription());
 			finding.setName(v.getType());
@@ -73,7 +73,7 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
 		return codeCallStack;
 	}
 
-	private Severity transformSeverity(com.daimler.sechub.sereco.metadata.Severity metaSeverity) {
+	private Severity transformSeverity(com.daimler.sechub.sereco.metadata.SerecoSeverity metaSeverity) {
 		if (metaSeverity==null) {
 			LOG.error("Missing Sereco Severity cannot transformed {} to sechub result! So returning unclassified!",metaSeverity);
 			return Severity.UNCLASSIFIED;

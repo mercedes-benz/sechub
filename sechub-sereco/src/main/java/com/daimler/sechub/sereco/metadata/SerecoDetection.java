@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.metadata;
 
-public class Detection {
+public class SerecoDetection {
 
 	String sechubJobUUID;
 	String productID;

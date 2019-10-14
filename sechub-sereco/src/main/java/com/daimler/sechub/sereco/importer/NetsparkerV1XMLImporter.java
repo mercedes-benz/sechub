@@ -10,15 +10,15 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
-import com.daimler.sechub.sereco.metadata.Classification;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 
-	public MetaData importResult(String xml) throws IOException{
-		MetaData metaData = new MetaData();
+	public SerecoMetaData importResult(String xml) throws IOException{
+		SerecoMetaData metaData = new SerecoMetaData();
 		if (xml==null) {
 			xml="";
 		}
@@ -38,7 +38,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 		Iterator<Element> it = vulnerabilitiesElement.elementIterator();
 		while (it.hasNext()) {
 			Element vulnerabilityElement = it.next();
-			Vulnerability vulnerability = new Vulnerability();
+			SerecoVulnerability vulnerability = new SerecoVulnerability();
 			metaData.getVulnerabilities().add(vulnerability);
 
 			vulnerability.setSeverity(NetsparkerServerityConverter.convert(vulnerabilityElement.elementText("severity")));
@@ -50,7 +50,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 			if (classificationElement==null) {
 				throw new IllegalStateException("no classificaton element found!");
 			}
-			Classification classification = vulnerability.getClassification();
+			SerecoClassification classification = vulnerability.getClassification();
 			classification.setOwasp(classificationElement.elementText("owasp"));
 			classification.setWasc(classificationElement.elementText("wasc"));
 			classification.setCwe(classificationElement.elementText("cwe"));

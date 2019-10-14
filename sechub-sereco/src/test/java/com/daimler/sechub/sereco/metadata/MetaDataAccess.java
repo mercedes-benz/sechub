@@ -5,13 +5,13 @@ import java.util.List;
 
 public class MetaDataAccess {
 
-	public static void setClassification(Vulnerability search, Classification classification) {
+	public static void setClassification(SerecoVulnerability search, SerecoClassification classification) {
 		search.classification=classification;
 	}
 
-	public static Vulnerability createVulnerability(String url, String type, Severity severity, List<Detection> list, String description,
-			Classification classification) {
-		return new Vulnerability(url, type, severity, list, description, classification);
+	public static SerecoVulnerability createVulnerability(String url, String type, SerecoSeverity severity, List<SerecoDetection> list, String description,
+			SerecoClassification classification) {
+		return new SerecoVulnerability(url, type, severity, list, description, classification);
 	}
 
 }

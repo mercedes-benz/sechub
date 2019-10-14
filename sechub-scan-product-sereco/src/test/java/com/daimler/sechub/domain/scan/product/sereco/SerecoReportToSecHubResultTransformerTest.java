@@ -12,11 +12,11 @@ import com.daimler.sechub.domain.scan.AssertSecHubResult;
 import com.daimler.sechub.domain.scan.SecHubCodeCallStack;
 import com.daimler.sechub.domain.scan.SecHubFinding;
 import com.daimler.sechub.domain.scan.SecHubResult;
-import com.daimler.sechub.sereco.metadata.Classification;
-import com.daimler.sechub.sereco.metadata.MetaData;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 public class SerecoReportToSecHubResultTransformerTest {
@@ -88,16 +88,16 @@ public class SerecoReportToSecHubResultTransformerTest {
 	}
 
 	private String createMetaDataWithOneVulnerabilityFound() {
-		MetaData data = new MetaData();
-		List<Vulnerability> vulnerabilities = data.getVulnerabilities();
+		SerecoMetaData data = new SerecoMetaData();
+		List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
 
-		Vulnerability v1 = new Vulnerability();
+		SerecoVulnerability v1 = new SerecoVulnerability();
 		v1.setDescription("desc1");
-		v1.setSeverity(Severity.MEDIUM);
+		v1.setSeverity(SerecoSeverity.MEDIUM);
 		v1.setType("type1");
 		v1.setUrl("url1");
 
-		Classification cl = v1.getClassification();
+		SerecoClassification cl = v1.getClassification();
 		cl.setCapec("capec1");
 
 		vulnerabilities.add(v1);
@@ -107,11 +107,11 @@ public class SerecoReportToSecHubResultTransformerTest {
 	}
 
 	private String createMetaDataWithOneVulnerabilityAsCodeFound() {
-		MetaData data = new MetaData();
-		List<Vulnerability> vulnerabilities = data.getVulnerabilities();
+		SerecoMetaData data = new SerecoMetaData();
+		List<SerecoVulnerability> vulnerabilities = data.getVulnerabilities();
 
-		Vulnerability v1 = new Vulnerability();
-		v1.setSeverity(Severity.MEDIUM);
+		SerecoVulnerability v1 = new SerecoVulnerability();
+		v1.setSeverity(SerecoSeverity.MEDIUM);
 		v1.setType("type1");
 		v1.setUrl("url1");
 
@@ -130,7 +130,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 
 		serecoCode1.setCalls(serecoCode2);
 
-		Classification cl = v1.getClassification();
+		SerecoClassification cl = v1.getClassification();
 		cl.setCapec("capec1");
 
 		vulnerabilities.add(v1);

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.metadata;
 
-public enum Severity {
+public enum SerecoSeverity {
 	
 	INFO, // like faraday: info
 
@@ -20,12 +20,12 @@ public enum Severity {
 	 * @param string value of the enumeration (is not case sensitive)
 	 * @return
 	 */
-	public static Severity fromString(String string) {
+	public static SerecoSeverity fromString(String string) {
 		if (string==null) {
 			return null;
 		}
 		String upperCased=string.toUpperCase();
-		for (Severity severity: Severity.values()) {
+		for (SerecoSeverity severity: SerecoSeverity.values()) {
 			if (severity.name().equals(upperCased)) {
 				return severity;
 			}

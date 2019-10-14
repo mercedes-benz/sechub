@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 @Component
 public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
@@ -25,7 +25,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
-	public MetaData importResult(String xml) throws IOException {
+	public SerecoMetaData importResult(String xml) throws IOException {
 		if (xml == null) {
 			xml = "";
 		}
@@ -38,7 +38,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
 		CheckmarxCategoriesToClassificationConverter categoryConverter = new CheckmarxCategoriesToClassificationConverter();
 
-		MetaData metaData = new MetaData();
+		SerecoMetaData metaData = new SerecoMetaData();
 		Element checkmarxCxXMLResults = document.getRootElement();
 		List<Element> queryElements = checkmarxCxXMLResults.elements("Query");
 
@@ -61,13 +61,13 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 				String deeplink = resultElement.attributeValue("DeepLink");
 				String severity = resultElement.attributeValue("Severity");
 
-				Vulnerability vulnerability = new Vulnerability();
+				SerecoVulnerability vulnerability = new SerecoVulnerability();
 				vulnerability.setType(type);
 
 				if ("Information".equalsIgnoreCase(severity)) {
 					severity = "info";
 				}
-				vulnerability.setSeverity(Severity.fromString(severity));
+				vulnerability.setSeverity(SerecoSeverity.fromString(severity));
 
 				SerecoCodeCallStackElement codeInfo = resolveCodeInfoFromElement(resultElement);
 
