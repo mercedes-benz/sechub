@@ -16,8 +16,17 @@ public class SecHubCodeCallStack {
 
 	String source;
 
+	String relevantPart;
+
 	SecHubCodeCallStack calls;
 
+	public String getRelevantPart() {
+		return relevantPart;
+	}
+
+	public void setRelevantPart(String relevantPart) {
+		this.relevantPart = relevantPart;
+	}
 
 
 	public String getLocation() {

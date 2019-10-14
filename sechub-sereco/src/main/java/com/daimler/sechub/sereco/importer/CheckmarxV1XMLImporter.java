@@ -110,21 +110,31 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 	private void fillPathNodeInfo(SerecoCodeCallStackElement info, Element pathNode) {
 
 		Element filename = pathNode.element("FileName");
-		if (filename == null) {
-			return ;
+		if (filename != null) {
+			info.setLocation(filename.getStringValue());
 		}
-		info.setLocation(filename.getStringValue());
 		Element line = pathNode.element("Line");
-		if (line == null) {
-			return ;
+		if (line != null) {
+			info.setLine(safeGetInteger(line));
 		}
-		info.setLine(safeGetInteger(line));
 		Element column = pathNode.element("Column");
-		if (column == null) {
-			return ;
+		if (column != null) {
+			info.setColumn(safeGetInteger(column));
 		}
-		info.setColumn(safeGetInteger(column));
 
+		Element name = pathNode.element("Name");
+		if (name != null) {
+			info.setRelevantPart(name.getStringValue());
+		}
+
+		addSource(info, pathNode);
+
+	}
+
+	private void addSource(SerecoCodeCallStackElement info, Element pathNode) {
+		if (pathNode==null) {
+			return;
+		}
 		/* add source snippet */
 		Element snippet = pathNode.element("Snippet");
 		if (snippet == null) {

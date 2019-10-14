@@ -5,11 +5,25 @@ import java.util.Objects;
 public class SerecoCodeCallStackElement {
 
 	private String location;
+
 	private Integer line;
+
 	private Integer column;
+
 	private String source;
 
+	private String relevantPart;
+
 	private SerecoCodeCallStackElement calls;
+
+	public void setRelevantPart(String relevantPart) {
+		this.relevantPart = relevantPart;
+	}
+
+	public String getRelevantPart() {
+		return relevantPart;
+	}
+
 
 	public SerecoCodeCallStackElement getCalls() {
 		return calls;

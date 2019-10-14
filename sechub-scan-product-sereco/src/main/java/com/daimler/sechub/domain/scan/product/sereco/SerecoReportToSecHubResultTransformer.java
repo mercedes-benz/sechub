@@ -66,9 +66,9 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
 		codeCallStack.setLine(element.getLine());
 		codeCallStack.setColumn(element.getColumn());
 		codeCallStack.setLocation(element.getLocation());
-		String source = element.getSource();
-		codeCallStack.setSource(source);
+		codeCallStack.setSource(element.getSource());
 		codeCallStack.setCalls(convert(element.getCalls()));
+		codeCallStack.setRelevantPart(element.getRelevantPart());
 
 		return codeCallStack;
 	}

@@ -66,6 +66,7 @@ public class CheckmarxV1XMLImporterTest {
 		assertEquals(Integer.valueOf(86), codeInfo.getLine());
 		assertEquals(Integer.valueOf(37), codeInfo.getColumn());
 		assertEquals("			@PathVariable(\"fileName\") String fileName) throws IOException {",codeInfo.getSource());
+		assertEquals("fileName",codeInfo.getRelevantPart());
 
 		SerecoCodeCallStackElement calls1 = codeInfo.getCalls();
 		assertNotNull(calls1);
@@ -76,6 +77,7 @@ public class CheckmarxV1XMLImporterTest {
 		assertEquals(Integer.valueOf(139), calls2.getLine());
 		assertEquals(Integer.valueOf(39), calls2.getColumn());
 		assertEquals("	public String getAbsolutePath(String fileName) {",calls2.getSource());
+		assertEquals("fileName",codeInfo.getRelevantPart());
 
 	}
 

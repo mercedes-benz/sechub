@@ -75,16 +75,18 @@
 							    <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
 							    <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
 							           <div class="rTableRow">
-							             <div class="rTableHead" style="width:30%">Location</div>
+							             <div class="rTableHead" style="width:25%">Location</div>
 							             <div class="rTableHead" style="width:5%">Line</div>
 							             <div class="rTableHead" style="width:5%">Column</div>
-							             <div class="rTableHead" style="width:30%">Source</div>
+							             <div class="rTableHead" style="width:10%">Relevant part</div>
+							             <div class="rTableHead" style="width:25%">Source</div>
 							         </div>
 							         <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-							             <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:30%">Location</div>
+							             <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
 							             <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
 							             <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-							             <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:30%">Source</div>
+							             <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
+							             <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
 							         </div>
 							    </div>
 							</td>
@@ -121,16 +123,18 @@
                                 <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
                                 <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
                                        <div class="rTableRow">
-                                         <div class="rTableHead" style="width:30%">Location</div>
+                                         <div class="rTableHead" style="width:25%">Location</div>
                                          <div class="rTableHead" style="width:5%">Line</div>
                                          <div class="rTableHead" style="width:5%">Column</div>
-                                         <div class="rTableHead" style="width:30%">Source</div>
+                                         <div class="rTableHead" style="width:10%">Relevant part</div>
+                                         <div class="rTableHead" style="width:25%">Source</div>
                                      </div>
                                      <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:30%">Location</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
                                          <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
                                          <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:30%">Source</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
                                      </div>
                                 </div>
                             </td>
@@ -157,16 +161,18 @@
                                 <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
                                 <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
                                        <div class="rTableRow">
-                                         <div class="rTableHead" style="width:30%">Location</div>
+                                         <div class="rTableHead" style="width:25%">Location</div>
                                          <div class="rTableHead" style="width:5%">Line</div>
                                          <div class="rTableHead" style="width:5%">Column</div>
-                                         <div class="rTableHead" style="width:30%">Source</div>
+                                         <div class="rTableHead" style="width:10%">Relevant part</div>
+                                         <div class="rTableHead" style="width:25%">Source</div>
                                      </div>
                                      <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:30%">Location</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
                                          <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
                                          <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:30%">Source</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
+                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
                                      </div>
                                 </div>
                             </td>
