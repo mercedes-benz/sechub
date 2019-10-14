@@ -10,6 +10,8 @@ public class HTMLScanResultCodeScanEntry {
 
 	String source;
 
+	String relevantPart;
+
 
 	public Integer getLine() {
 		return line;
@@ -25,5 +27,9 @@ public class HTMLScanResultCodeScanEntry {
 
 	public String getLocation() {
 		return location;
+	}
+
+	public String getRelevantPart() {
+		return relevantPart;
 	}
 }

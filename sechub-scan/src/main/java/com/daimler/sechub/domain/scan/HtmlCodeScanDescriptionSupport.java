@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.scan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class builds descriptions suitable for HTML output
@@ -48,15 +49,20 @@ public class HtmlCodeScanDescriptionSupport {
 	}
 
 	private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
-		HTMLScanResultCodeScanEntry entry1 = new HTMLScanResultCodeScanEntry();
-		entry1.column = code.getColumn();
-		entry1.line = code.getLine();
-		entry1.location = code.getLocation();
+		Objects.nonNull(code);
+
+		HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
+
+		entry.column = code.getColumn();
+		entry.line = code.getLine();
+		entry.location = code.getLocation();
+		entry.relevantPart=code.getRelevantPart();
+
 		String source = code.getSource();
 		if (source != null) {
-			entry1.source = source.trim();// to improve HTML report readability we do trim leading spaces...
+			entry.source = source.trim();// to improve HTML report readability we do trim leading spaces...
 		}
 
-		return entry1;
+		return entry;
 	}
 }

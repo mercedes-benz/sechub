@@ -58,6 +58,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 		assertEquals(Integer.valueOf(2),code1.getColumn());
 		assertEquals("Location1",code1.getLocation());
 		assertEquals("source1",code1.getSource());
+		assertEquals("relevantPart1",code1.getRelevantPart());
 
 		SecHubCodeCallStack code2 = code1.getCalls();
 		assertNotNull(code2);
@@ -65,6 +66,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 		assertEquals(Integer.valueOf(4),code2.getColumn());
 		assertEquals("Location2",code2.getLocation());
 		assertEquals("source2",code2.getSource());
+		assertEquals("relevantPart2",code2.getRelevantPart());
 
 
 	}
@@ -120,13 +122,16 @@ public class SerecoReportToSecHubResultTransformerTest {
 		serecoCode1.setColumn(2);
 		serecoCode1.setLocation("Location1");
 		serecoCode1.setSource("source1");
+		serecoCode1.setRelevantPart("relevantPart1");
 
 		v1.setCode(serecoCode1);
+
 		SerecoCodeCallStackElement serecoCode2 = new SerecoCodeCallStackElement();
 		serecoCode2.setLine(3);
 		serecoCode2.setColumn(4);
 		serecoCode2.setLocation("Location2");
 		serecoCode2.setSource("source2");
+		serecoCode2.setRelevantPart("relevantPart2");
 
 		serecoCode1.setCalls(serecoCode2);
 
