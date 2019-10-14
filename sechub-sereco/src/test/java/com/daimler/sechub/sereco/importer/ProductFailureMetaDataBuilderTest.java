@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.sereco.ImportParameter;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class ProductFailureMetaDataBuilderTest {
 
@@ -30,16 +30,16 @@ public class ProductFailureMetaDataBuilderTest {
 		ImportParameter param = ImportParameter.builder().importId("id1").productId("productId").build();
 
 		/* execute*/
-		MetaData result = builderToTest.forParam(param).build();
+		SerecoMetaData result = builderToTest.forParam(param).build();
 
 		/* test*/
 		assertNotNull(result);
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 		assertNotNull(vulnerabilities);
 		assertEquals(1,vulnerabilities.size());
-		Vulnerability v = vulnerabilities.iterator().next();
+		SerecoVulnerability v = vulnerabilities.iterator().next();
 
-		assertEquals(Severity.CRITICAL, v.getSeverity());
+		assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
 		assertEquals("SecHub failure", v.getType());
 		assertEquals("Security product 'productId' failed, so cannot give a correct answer.", v.getDescription());
 	}
@@ -50,16 +50,16 @@ public class ProductFailureMetaDataBuilderTest {
 		ImportParameter param = ImportParameter.builder().build();
 
 		/* execute*/
-		MetaData result = builderToTest.forParam(param).build();
+		SerecoMetaData result = builderToTest.forParam(param).build();
 
 		/* test*/
 		assertNotNull(result);
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 		assertNotNull(vulnerabilities);
 		assertEquals(1,vulnerabilities.size());
-		Vulnerability v = vulnerabilities.iterator().next();
+		SerecoVulnerability v = vulnerabilities.iterator().next();
 
-		assertEquals(Severity.CRITICAL, v.getSeverity());
+		assertEquals(SerecoSeverity.CRITICAL, v.getSeverity());
 		assertEquals("SecHub failure", v.getType());
 		assertEquals("Security product 'null' failed, so cannot give a correct answer.", v.getDescription());
 	}
