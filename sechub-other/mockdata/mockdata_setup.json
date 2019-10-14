@@ -4,25 +4,25 @@
             "adapterId": "MockedNetsparkerAdapter",
             "combinations": [
                 {
-                    "target": "https://longrunning.but.green.demo.example.org",
+                    "target": "https://netsparker.longrunning.but.green.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml",
                     "timeToElapseInMilliseconds": 10000
                 },
                 {
-                    "target": "https://vulnerable.demo.example.org",
+                    "target": "https://netsparker.vulnerable.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/netsparker-mockdata-one-important-vulnerability.xml",
                     "timeToElapseInMilliseconds": -1
                 },
                 {
-                    "target": "https://safe.demo.example.org",
+                    "target": "https://netsparker.safe.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml",
                     "timeToElapseInMilliseconds": -1
                 },
                 {
-                    "target": "https://productfailure.demo.example.org",
+                    "target": "https://netsparker.productfailure.demo.example.org",
                     "throwsAdapterException": true,
                     "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml",
                     "timeToElapseInMilliseconds": -1
@@ -45,12 +45,6 @@
             "adapterId": "MockedCheckmarxAdapter",
             "combinations": [
                 {
-                    "target": "longrunning.but.green.demo.example.org",
-                    "throwsAdapterException": false,
-                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
-                    "timeToElapseInMilliseconds": 10000
-                },
-                {
                     "target": "../../../../../sechub-integrationtest/src/test/resources/checksum-testfiles",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
@@ -58,12 +52,6 @@
                 },
                 {
                     "target": "../sechub-doc/src/main/java",
-                    "throwsAdapterException": false,
-                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-multiple.xml",
-                    "timeToElapseInMilliseconds": 2000
-                },
-                {
-                    "target": "normalrunning.but.yellow",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-multiple.xml",
                     "timeToElapseInMilliseconds": 2000
@@ -80,19 +68,19 @@
             "adapterId": "MockedNessusAdapter",
             "combinations": [
                 {
-                    "target": "https://longrunning.but.green.demo.example.org",
+                    "target": "https://nessus.longrunning.but.green.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/nessus-mockdata-green.xml",
                     "timeToElapseInMilliseconds": 10000
                 },
                 {
-                    "target": "https://vulnerable.demo.example.org",
+                    "target": "https://nessus.vulnerable.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/nessus-mockdata-different-serverities.xml",
                     "timeToElapseInMilliseconds": -1
                 },
                 {
-                    "target": "https://safe.demo.example.org",
+                    "target": "https://nessus.safe.demo.example.org",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/nessus-mockdata-green.xml",
                     "timeToElapseInMilliseconds": -1
