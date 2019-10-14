@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -25,7 +26,6 @@ import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
 
-	private static final String GREEN_RESULT_SOURCE_SCAN_IDENTIFIER = "../../../../src";
 
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
@@ -170,7 +170,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		Map<String, String> envEntries = new LinkedHashMap<>();
 		envEntries.put("SHTEST_VERSION", "1.0");
-		envEntries.put("SHTEST_FOLDERS1", GREEN_RESULT_SOURCE_SCAN_IDENTIFIER);
+		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST.getTarget());
 
 		/* execute */
 		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-generic-template.json";
@@ -371,8 +371,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* @formatter:off */
 		/* prepare */
 		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://vulnerable.demo.example.org"));
+			assignUserToProject(USER_1, PROJECT_1);
 
 		assertUser(USER_1).
 			doesExist().

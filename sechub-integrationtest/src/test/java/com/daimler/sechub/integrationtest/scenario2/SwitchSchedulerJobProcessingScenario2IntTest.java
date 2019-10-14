@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.api.RunMode;
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 
 public class SwitchSchedulerJobProcessingScenario2IntTest {
 
@@ -46,7 +46,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* prepare */
 		waitSeconds(1); // give event handling a chance...
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,RunMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
+			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
 
 		assertUser(USER_1).canApproveJob(PROJECT_1, jobUUID);
 

@@ -6,15 +6,15 @@ import java.util.UUID;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.IntegrationTestAction;
-import com.daimler.sechub.integrationtest.api.RunMode;
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.scenario3.Scenario3;
 
 public class TriggerNewWebScanJobScenario3User1Action extends IntegrationTestAction {
 	private static final long serialVersionUID = 1L;
-	private RunMode mode;
+	private IntegrationTestMockMode mode;
 
-	public TriggerNewWebScanJobScenario3User1Action(UIContext context, RunMode mode) {
+	public TriggerNewWebScanJobScenario3User1Action(UIContext context, IntegrationTestMockMode mode) {
 		super("Trigger new web scan job (Scenario3) -"+mode, context);
 		this.mode=mode;
 	}

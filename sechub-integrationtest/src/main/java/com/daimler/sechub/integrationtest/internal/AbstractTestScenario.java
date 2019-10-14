@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.test.ExampleConstants;
@@ -59,14 +60,20 @@ public abstract class AbstractTestScenario implements TestScenario {
 		String projectId = clazz.getSimpleName().toLowerCase() + "_" + projectIdPart;
 		TestProject testProject;
 		if (createWhiteList) {
+
 			String whiteListURL = "http://locahost/" + projectId;
+			List<String> whitelist= new ArrayList<>();
+			whitelist.add(whiteListURL);
+
+			for (IntegrationTestMockMode mode: IntegrationTestMockMode.values()) {
+				if (mode.isTargetUsableAsWhitelistEntry()) {
+					whitelist.add(mode.getTarget());
+				}
+			}
+
 			// we additinally add long running url because its configured in webscan and for
 			// infrascan mocks to have longer runs*/
-			testProject = new TestProject(projectId, whiteListURL,
-					InternalConstants.URL_FOR_NETSPARKER_GREEEN_LONG_RUNNING,
-					InternalConstants.URL_FOR_NETSPARKER_ONE_FINDING,
-					InternalConstants.URL_FOR_NETSPARKER_MANY_FINDINGS
-					);
+			testProject = new TestProject(projectId, whitelist.toArray(new String[whitelist.size()]));
 		}else {
 			testProject = new TestProject(projectId);
 		}
