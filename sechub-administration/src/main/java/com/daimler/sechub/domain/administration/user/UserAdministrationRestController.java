@@ -7,6 +7,7 @@ import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
+import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
@@ -35,6 +37,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorS
 @RestController
 @EnableAutoConfiguration
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+@Profile(Profiles.ADMIN_ACCESS)
 public class UserAdministrationRestController {
 
 	@Autowired
