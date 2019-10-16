@@ -45,7 +45,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @ContextConfiguration(classes = { ProjectAdministrationRestController.class,
 		ProjectAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles(Profiles.TEST)
+@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 public class ProjectAdministrationRestControllerMockTest {
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();

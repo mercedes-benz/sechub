@@ -34,7 +34,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @WebMvcTest(SignupAdministrationRestController.class)
 @ContextConfiguration(classes= {SignupAdministrationRestController.class, SignupAdministrationRestControllerMockTest.SimpleTestConfiguration.class})
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles(Profiles.TEST)
+@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 public class SignupAdministrationRestControllerMockTest {
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();

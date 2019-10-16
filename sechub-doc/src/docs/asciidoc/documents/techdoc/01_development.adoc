@@ -209,7 +209,6 @@ TIP: Please refer also
 === Start server in PROD mode
 include::./../shared/launchconfig/launchconfig_start_prod_server.adoc[]
 
-
 == Special setup
 
 === Terminate SSL and use HTTP only
