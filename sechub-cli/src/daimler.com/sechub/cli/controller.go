@@ -2,12 +2,13 @@
 package cli
 
 import (
-	. "daimler.com/sechub/util"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"time"
+
+	. "daimler.com/sechub/util"
 )
 
 type jobStatusResult struct {
@@ -23,6 +24,7 @@ type jobScheduleResult struct {
 	JobId string `json:"jobId"`
 }
 
+// Execute starts sechub client
 func Execute() {
 	initHelp()
 	context := InitializeContext()
@@ -34,30 +36,28 @@ func Execute() {
 			fmt.Println("WARNING: Configured to trust all - means unnown service certificate is accepted. Don't use this in production!")
 		}
 	}
-
 	action := context.config.action
-	if action == ACTION_EXECUTE_SYNCHRON {
+	if action == ActionExecuteSynchron {
 		commonWayToApprove(context)
 		waitForSecHubJobDoneAndFailOnTrafficLight(context)
-		os.Exit(EXIT_CODE_OK)
+		os.Exit(ExitCodeOK)
 
-	} else if action == ACTION_EXECUTE_ASYNCHRON {
+	} else if action == ActionExecuteAsynchron {
 		commonWayToApprove(context)
 		fmt.Println(context.config.secHubJobUUID)
-		os.Exit(EXIT_CODE_OK)
-
-	} else if action == ACTION_EXECUTE_GET_STATUS {
+		os.Exit(ExitCodeOK)
+	} else if action == ActionExecuteGetStatus {
 		state := getSecHubJobState(context, true, false, false)
 		fmt.Println(state)
-		os.Exit(EXIT_CODE_OK)
+		os.Exit(ExitCodeOK)
 
-	} else if action == ACTION_EXECUTE_GET_REPORT {
+	} else if action == ActionExecuteGetReport {
 		report := getSecHubJobReport(context)
 		fmt.Println(report)
-		os.Exit(EXIT_CODE_OK)
+		os.Exit(ExitCodeOK)
 	}
 	fmt.Printf("Unknown action '%s'", context.config.action)
-	os.Exit(EXIT_CODE_ILLEGAL_ACTION)
+	os.Exit(ExitCodeIllegalAction)
 }
 
 /* --------------------------------------------------
@@ -116,7 +116,7 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
 
 	/* compress all folders to one single zip file*/
-	config:= ZipConfig{Folders: json.CodeScan.FileSystem.Folders, Excludes: json.CodeScan.Excludes}
+	config := ZipConfig{Folders: json.CodeScan.FileSystem.Folders, Excludes: json.CodeScan.Excludes}
 	ZipFolders(context.sourceZipFileName, &config)
 	/* calculate checksum for zip file */
 	context.sourceZipFileChecksum = CreateChecksum(context.sourceZipFileName)
@@ -192,7 +192,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		err = json.Unmarshal(data, &status)
 		HandleHTTPError(err)
 
-		if status.State == EXECUTION_STATE_ENDED {
+		if status.State == ExecutionStateEnded {
 			done = true
 		}
 		if done {
@@ -218,17 +218,17 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 	/* FAIL mode */
 	if status.TrafficLight == "" {
 		fmt.Println("  No traffic light available! Seems job has been broken.")
-		os.Exit(EXIT_CODE_FAILED)
+		os.Exit(ExitCodeFailed)
 	}
 	if status.TrafficLight == "RED" {
 		fmt.Println("  RED alert - security vulnerabilities identified (critical or high)")
-		os.Exit(EXIT_CODE_FAILED)
+		os.Exit(ExitCodeFailed)
 	}
 	if status.TrafficLight == "YELLOW" {
 		fmt.Println("  YELLOW alert - security vulnerabilities identified (but not critical or high)")
-		if (context.config.stopOnYellow == true){
-			os.Exit(EXIT_CODE_FAILED)
-		}else{
+		if context.config.stopOnYellow == true {
+			os.Exit(ExitCodeFailed)
+		} else {
 			return ""
 		}
 	}
@@ -237,7 +237,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		return ""
 	}
 	fmt.Printf("UNKNOWN traffic light:%s\n", status.TrafficLight)
-	os.Exit(EXIT_CODE_FAILED)
+	os.Exit(ExitCodeFailed)
 	return "" // dummy - will never happen
 
 }

@@ -16,10 +16,11 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
-import com.daimler.sechub.developertools.admin.ui.action.job.GetJSONReportForJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
@@ -42,7 +43,7 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserDetailActi
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
-import com.daimler.sechub.integrationtest.api.RunMode;
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 
 public class CommandUI {
 	private JPanel panel;
@@ -139,28 +140,31 @@ public class CommandUI {
 		JMenu menu = new JMenu("Global");
 		menuBar.add(menu);
 
-		add(menu, new ShowRunningBatchJobsListAction(context));
-		add(menu, new ShowAdminListAction(context));
-		add(menu, new CreateOverviewCSVExportAction(context));
-
 		JMenu schedulerMenu = new JMenu("Scheduler");
 		add(schedulerMenu, new DisableSchedulerJobProcessingAction(context));
 		add(schedulerMenu, new EnableSchedulerJobProcessingAction(context));
 		add(schedulerMenu, new RefreshSchedulerStatusAction(context));
 		menu.add(schedulerMenu);
 
-		add(menu, new ListStatusEntriesAction(context));
+		JMenu statusMenu = new JMenu("Status");
+		menu.add(statusMenu);
+
+		add(statusMenu, new ListStatusEntriesAction(context));
+		add(statusMenu, new ShowRunningBatchJobsListAction(context));
+		add(statusMenu, new CreateOverviewCSVExportAction(context));
+		add(statusMenu, new ShowAdminListAction(context));
 
 	}
 	private void createJobMenu() {
 		JMenu menu = new JMenu("Job");
 		menuBar.add(menu);
-
 		add(menu, new GetJobStatusAction(context));
-		add(menu, new GetJSONReportForJobAction(context));
 		menu.addSeparator();
+		add(menu, new DownloadJSONReportForJobAction(context));
 		add(menu, new DownloadHTMLReportForJobAction(context));
+		menu.addSeparator();
 		add(menu, new DownloadFullscanDataForJobAction(context));
+		add(menu, new ShowRunningBatchJobsListAction(context));
 
 
 	}
@@ -179,8 +183,13 @@ public class CommandUI {
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
 		testDataMenu.addSeparator();
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.NORMAL));
-		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,RunMode.LONG_RUNNING_BUT_GREEN));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST));
+		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_MANY_RESULTS__FAST));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST));
+		add(testDataMenu, new TriggerNewCodeScanJobScenario3User1Action(context,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST));
 
 
 	}

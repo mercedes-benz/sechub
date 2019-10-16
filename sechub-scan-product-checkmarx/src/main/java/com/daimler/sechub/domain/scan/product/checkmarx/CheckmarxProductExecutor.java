@@ -15,6 +15,7 @@ import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
@@ -42,49 +43,43 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
 	@Autowired
 	CheckmarxInstallSetup installSetup;
-	
+
 	@Autowired
 	StorageService storageService;
-	
+
 	@Override
 	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data)
 			throws Exception {
 		LOG.debug("Trigger checkmarx adapter execution");
-		
+
 		UUID jobUUID = context.getSechubJobUUID();
 		String projectId = context.getConfiguration().getProjectId();
-		
+
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 		String path = storage.getAbsolutePath("sourcecode.zip");
-		String projectName = context.getConfiguration().getProjectId();
-		
+
 		/* @formatter:off */
-		
-		CheckmarxAdapterConfig nessusConfig =CheckmarxConfig.builder().
+
+		CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+				configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-				setUser(setup.getUserId()).
 				setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-				setPassword(setup.getPassword()).
-				setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
 				setPathToZipFile(path).
 				setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
-				setProjectId(projectName).
-				setUser(installSetup.getUserId()).
-				setPassword(installSetup.getPassword()).
+				setProjectId(projectId).
 				setTraceID(context.getTraceLogIdAsString()).
 				/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
-				setProductBaseUrl(setup.getBaseURL()).
 				build();
 		/* @formatter:on */
 
-		/* execute nessus by adapter and return product result */
-		String xml = checkmarxAdapter.start(nessusConfig);
+		/* execute checkmarx by adapter and return product result */
+		String xml = checkmarxAdapter.start(checkMarxConfig);
 		ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
 		return Collections.singletonList(result);
 	}
 
-	
+
 
 	@Override
 	public ProductIdentifier getIdentifier() {

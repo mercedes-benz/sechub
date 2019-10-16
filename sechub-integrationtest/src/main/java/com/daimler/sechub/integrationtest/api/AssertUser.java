@@ -274,7 +274,7 @@ public class AssertUser extends AbstractAssert {
 	 * @param runModem mode to use
 	 * @return uuid for created job
 	 */
-	public UUID canCreateWebScan(TestProject project, RunMode runMode) {
+	public UUID canCreateWebScan(TestProject project, IntegrationTestMockMode runMode) {
 		return TestAPI.as(user).createWebScan(project,runMode);
 	}
 

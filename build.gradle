@@ -23,7 +23,11 @@ buildscript{
 		classpath "org.asciidoctor:asciidoctorj-diagram:1.5.4.1"
 		classpath "org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16"
 		classpath "org.ajoberstar:grgit:2.1.0" // necessary for version calculation
+
 	}
+    // FIXME 2019-10-10, Albert Tregnaghi: Remove this workaround when using newer version than spring boot 2.1.9 (see https://github.com/Daimler/sechub/issues/31 for details)
+	ext['tomcat.version'] = '9.0.27'
+
 
 }
 

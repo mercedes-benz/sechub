@@ -1,7 +1,0 @@
-# SPDX-License-Identifier: MIT
-# demomode uses always only mocked adapters etc.
-spring.profiles.include:
- - mocked_products
- - localserver
- - h2
- - mocked_notifications

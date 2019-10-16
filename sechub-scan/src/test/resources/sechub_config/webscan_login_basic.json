@@ -1,0 +1,16 @@
+{
+    "apiVersion": "1.0",
+    "webScan": {
+        "uris": [
+            "https://productfailure.demo.example.org"
+        ],
+        "login": {
+            "url": "https://productfailure.demo.example.org/login",
+            "basic": {
+                "realm": "realm0",
+                "user": "user0",
+                "password": "pwd0"
+            }
+        }
+    }
+}

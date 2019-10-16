@@ -21,6 +21,7 @@ This project is licensed under the [MIT LICENSE](https://github.com/Daimler/sech
 ## Documentation
 
 [Architecture](https://daimler.github.io/sechub/latest/sechub-architecture.html),
-[Technical documentation](https://daimler.github.io/sechub/latest/sechub-techdoc.html),
+[Technical](https://daimler.github.io/sechub/latest/sechub-techdoc.html),
 [RestAPI](https://daimler.github.io/sechub/latest/sechub-restapi.html),
-[Client documentation](https://daimler.github.io/sechub/latest/sechub-client.html)
+[Client](https://daimler.github.io/sechub/latest/sechub-client.html)
+[Operations](https://daimler.github.io/sechub/latest/sechub-operations.html)

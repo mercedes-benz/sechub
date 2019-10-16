@@ -1,0 +1,116 @@
+== SecHub Server
+
+=== Deployment
+
+==== Database
+
+{sechub} requires a PostgreSQL DB, Version > 10.x
+
+===== Plain server
+In this scenario you would configure a database server available from {sechub}.
+
+_For example: Just install PostgreSQL DB server on same machine as your server._
+
+===== Kubernetes
+Here you must provide a PostgreSQL DB server deployment *(one POD only)*,
+define a network policy, services, endpoints etc. etc.
+
+[IMPORTANT]
+====
+Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+PODs* _(means this is a shared kernel / bottle neck but necessary)_
+====
+
+[TIP]
+====
+Think about an automated database backup - no matter which is your choosen
+installation variant...
+====
+
+==== File upload storage
+
+{sechub} requires a file system folder where source scan uploads can be transferred to.
+
+[IMPORTANT]
+====
+In a clustered environment like kubernetes the storage must be accessible by
+every cluster member!
+====
+
+===== Plain server
+In this scenario you would just either reuse {sechub} server file system or
+define a network share available form server.
+
+===== Kubernetes
+Here you must provide a PostgreSQL DB server deployment *(one POD only)*,
+define a network policy, services, endpoints etc.
+
+[IMPORTANT]
+====
+Be aware to mount *only ONE pod* - the database is *shared by all sechub server
+PODs* _(means this is a shared kernel / bottle neck but necessary)_
+====
+
+==== Server Application
+
+{sechub} server is a written in `Java` and needs at least `JDK 8`.
+
+You can configure {sechub} server by system properties or also by  environment
+variables.
+
+Next blocks describe necessary system properties and their ENV pendants.
+
+===== Mandatory configuration
+
+include::../gen/gen_javalaunchexample.adoc[]
+
+include::../shared/hint_admin_access_profile.adoc[]
+
+===== Plain server
+
+To start the server by executing
+
+`java ${systemProperties} -jar sechub-server-x.y.z.jar`
+
+Where `${systemProperties}` is a place holder for Java system properties or
+you use environment entries (configuration is explained in common chapter before)
+
+====== Logging
+
+{sechub} uses per default logging to stdout. So you have to change this behaviour
+for your server when you want to change log output format, location etc.
+
+Please refer spring boot documentation for logging:
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
+
+===== Docker
+At the moment there exists no default public docker image. But you can easily create your own one.
+Here an example dockerfile:
+
+----
+include::docker/examples/dockerfile[]
+----
+
+An example for the used `run.sh` could be :
+
+[source,bash]
+----
+include::docker/examples/run.sh[]
+----
+
+
+
+===== Kubernetes
+Create a docker file as described before and upload it to your docker registry available from your kubernetes cluster.
+
+Same as before described for plain server, but you should use always environment
+variables here.
+
+TIP: Provide credentials inside your kubernetes deployment files by at least using
+ kubernetes secrets!
+
+====== Logging
+
+{sechub} uses per default logging to stdout, so you just need to use something like
+`fluentd` PODs to gather log output.
+

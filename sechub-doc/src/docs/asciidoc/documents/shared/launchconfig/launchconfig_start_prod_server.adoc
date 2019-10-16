@@ -37,7 +37,12 @@ include::launchconfig_common_server_header.adoc[]
 <6> Setup for smtp server for mail sending. Port and config are optional.
     See <<link-gen-systemproperties,system property definitions>> for details.
 
+// TODO 2019-10-02, Albert Tregnaghi: change this part when we fixed startup setup
 [WARNING]
 ====
-Your server will not start if you forget an adapter key!
+Your server will not start if you forget an adapter key !
+*(this will change in future when sechub becomes more modular)*
 ====
+
+include::../../shared/hint_admin_access_profile.adoc[]
+

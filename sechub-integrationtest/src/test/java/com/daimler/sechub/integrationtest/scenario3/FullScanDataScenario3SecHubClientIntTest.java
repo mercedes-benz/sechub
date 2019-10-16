@@ -24,7 +24,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-//	@Rule 
+//	@Rule
 //	public Timeout timeOut = Timeout.seconds(60);
 
 	@Rule
@@ -39,7 +39,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 			hasOwnerRole().
 			hasUserRole();
 
-		as(SUPER_ADMIN).updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://productfailure.demo.example.org"));
+		as(SUPER_ADMIN).updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://netsparker.productfailure.demo.example.org"));
 
 		/* prepare - just execute a job */
 		ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, "sechub-integrationtest-webscanconfig-scenario3-productfailure.json");

@@ -3,6 +3,7 @@ package com.daimler.sechub.adapter;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -13,7 +14,7 @@ import javax.crypto.SealedObject;
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;
-	String base64Token;
+	private SealedObject passwordOrAPITokenBase64encoded;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
 	int timeOutInMilliseconds;
@@ -21,7 +22,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	String proxyHostname;
 
 	String user;
-	SealedObject password;
+	SealedObject passwordOrAPIToken;
 
 	String policyId;
 
@@ -39,6 +40,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	protected AbstractAdapterConfig() {
 	}
+
 
 
 
@@ -125,8 +127,16 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public final String getBase64Token() {
-		return base64Token;
+	public final String getPasswordOrAPITokenBase64Encoded() {
+		if (passwordOrAPIToken==null) {
+			return null;
+		}
+		if (passwordOrAPITokenBase64encoded==null) {
+			String tokenString = user + ":" + CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPIToken);
+			byte[] tokenBytes = tokenString.getBytes();
+			passwordOrAPITokenBase64encoded =  CryptoAccess.CRYPTO_STRING.seal(Base64.getEncoder().encodeToString(tokenBytes));
+		}
+		return CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPITokenBase64encoded);
 	}
 
 	@Override
@@ -140,8 +150,8 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public final String getPassword() {
-		return CryptoAccess.CRYPTO_STRING.unseal(password);
+	public final String getPasswordOrAPIToken() {
+		return CryptoAccess.CRYPTO_STRING.unseal(passwordOrAPIToken);
 	}
 
 	@Override

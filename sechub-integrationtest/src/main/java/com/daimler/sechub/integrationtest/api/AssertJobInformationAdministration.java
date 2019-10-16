@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class AssertJobInformationAdministration extends AbstractAssert {
 
-	private static final int DEFAULT_TIMEOUT_MS = 5000;
+	private static final int DEFAULT_TIMEOUT_MS = 6000;
 	private TestUser user;
 
 	/**
@@ -45,7 +45,8 @@ public class AssertJobInformationAdministration extends AbstractAssert {
 			boolean timeElapsed=false;
 			while (!timeElapsed) { /*NOSONAR*/
 
-				timeElapsed= System.currentTimeMillis()-start>timeOutInMilliseconds;
+				long waitedTimeInMilliseconds = System.currentTimeMillis()-start;
+				timeElapsed= waitedTimeInMilliseconds>timeOutInMilliseconds;
 
 				String json = getRestHelper(user).getJSon(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
 				/* very simple ... maybe this should be improved... */
@@ -55,14 +56,14 @@ public class AssertJobInformationAdministration extends AbstractAssert {
 						/* oh found - done */
 						break;
 					}else if ( timeElapsed) {
-						fail("JSON did not contain:\n" + jobUUID + "\nwas:\n" + json+"\n (waited :"+timeElapsed+" milliseconds!)");
+						fail("JSON did not contain:\n" + jobUUID + "\nwas:\n" + json+"\n (waited :"+waitedTimeInMilliseconds+" milliseconds!)");
 					}
 				} else {
 					if (!found) {
 						/* oh not found - done */
 						break;
 					}else if (timeElapsed) {
-						fail("JSON DID contain:\n" + jobUUID + "\nwas:\n" + json +"\n (waited :"+timeElapsed+" milliseconds!)");
+						fail("JSON DID contain:\n" + jobUUID + "\nwas:\n" + json +"\n (waited :"+waitedTimeInMilliseconds+" milliseconds!)");
 					}
 				}
 				TestAPI.waitMilliSeconds(300);

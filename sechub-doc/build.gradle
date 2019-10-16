@@ -89,6 +89,7 @@ asciidoctor {
         include 'sechub-techdoc.adoc',
         'sechub-architecture.adoc',
         'sechub-client.adoc',
+        'sechub-operations.adoc',
         'sechub-restapi.adoc'
     }
 

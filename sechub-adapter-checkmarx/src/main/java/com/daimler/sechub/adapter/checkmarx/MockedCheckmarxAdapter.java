@@ -26,8 +26,8 @@ public class MockedCheckmarxAdapter extends AbstractMockedAdapter<CheckmarxAdapt
 		 * the token is for the apiToken'nessus-api-token' and user id
 		 * 'nessus-user-id' from application-mock.yml!
 		 */
-		if (!"checkmarx-password".equals(config.getPassword())) {
-			throw new IllegalArgumentException(config.getPassword());
+		if (!"checkmarx-password".equals(config.getPasswordOrAPIToken())) {
+			throw new IllegalArgumentException(config.getPasswordOrAPIToken());
 		}
 		String productBaseURL = config.getProductBaseURL();
 

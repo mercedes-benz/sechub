@@ -111,150 +111,70 @@ sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport
 - wait `<int>` + +
        wait time in seconds. Will be used for automatic status checks etc. when action='scan'. Default is 60 seconds (default 60)
 
-==== Configuration file
+=== Configuration file
+If not defined, secHub client will load `sechub.json` file from current directory
+and use it as sechub configuration. There must be always a valid configuration
+file - otherwise client will not work.
 
-A `{sechub}` configuration files must be a valid json file.
-In following sub chapters the elements inside JSON format are described
+==== Variables inside configuration files
+All environment variables are available inside your configuration file in go
+template syntax:
 
-===== API version
-`apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
+`{{ .ENV_VARIABLE_NAME }}`
 
-===== Server
-`server` (optional) defines the location to `{sechub}` server. Normally always `https://sechub.example.org`.
-This option can be set as CLI option as well. CLI option overrides value from configuration script!
+For example: When you have defined `USED_API_VERSION` with value `1.0`, you can use
+it in json config like
 
-===== Project
-`project` (optional) defines the project to use.
-This option can be set as CLI option as well. CLI option overrides value from configuration script!
+[source,json]
+----
+{
+    "apiVersion" : "{{ .USED_API_VERSION }}"
+}
+----
 
-===== Code scan
-`codeScan` (optional) defines the code scan settings.
-(see <<sechub-client-example-sourcescan-config,source scan configuration example>>)
+`{sechub} client` will automatically fill the variable with content from environment
+variable.
 
-====== Use uploaded sources from file system
-Define `fileSystem` child entry and setup folders to use for code scanning by
-`folders` sub entry. +
-Those folders will be automatically zipped and uploaded to SecHub server for ongoing source analysis.
+TIP: When you have enabled debug log by setting environment entry `SECHUB_DEBUG` to `true`
+you will see network traffic and also JSON sent to server. This JSON will only
+contain the origin template but not the replaced parts. This was done to prevent
+accidently logging of variables - e.g. credentials.
 
-The folders should be defined relatively from caller location - for example on a Jenkins Build Server
-this is normally the root folder of repository(see
-<<sechub-client-example-sourcescan-config,source scan configuration example>>)
 
-WARNING: Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources...
+include::../../shared/configuration/sechub_config.adoc[]
 
-===== Web scan
-`webScan` (optional) defines the web scan settings (see <<sechub-client-example-webscan-config,web scan configuration example>>).
-
-====== URIs
-Use `uri` element to define a string array containing uris you want to scan.
-(see <<sechub-client-example-webscan-config,web scan configuration example>>)
-
-WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do _accidently_ an DoS attack...
-
-===== Infrastructure scan
-`infraScan` (optional) defines the infrastructure scan settings (see <<sechub-client-example-infrascan-config,web scan configuration example>>).
-
-====== URIs
-Use `uri` element to define a string array containing uris you want to scan.
-(see <<sechub-client-example-webscan-config,web scan configuration example>>)
-
-====== IPs
-Use `ips` element to define a string array containing `IP` s you want to scan.
-
-==== Examples
+=== Examples
 
 NOTE: Next following sub chapters contain some `{sechub}` configuration examples.
       You can use them as templates for your own files.
       At least replace example credentials `7536a8c4aa82407da7e06bdbEXAMPLE` and `alice` with your real ones to
       get them working.
 
-===== Start a source scan
+==== Start a source scan
+
+[source, bash]
+----
+sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+----
+with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
+
+WARNING: Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources...
+
+
+==== Start a web scan
 
 [source, bash]
 ----
 sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
 ----
 with corresponding 'sechub.json' config file:
-[[sechub-client-example-sourcescan-config]]
-[source, json]
-----
-      {
+see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
 
-        "apiVersion": "1.0",
-        "server"    : "https://sechub.example.org",
-
-        "project"   : "gamechanger",
-
-        "codeScan": {<1>
-           "fileSystem": {<2>
-              "folders": ["gamechanger-android/src/main/java",
-                          "gamechanger-server/src/main/java"], //<3>
-           "excludes"  : ["**/*.log","README*.md"]  //<4>
-        }
-      }
-----
-<1> Define code scan
-<2> Use filesystem - so means upload sources to server
-<3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Exclude files (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - `+**/*+` is used to identify any folder +
-    In example above following files are excluded from upload: +
-    * `+**/*.log+` - excludes any log file in any sub directories of given folders
-    * `+README*.md+` excludes all markdown README files in given folders. For example above this means:
-      ** `gamechanger-android/src/main/java/README.md` and
-      ** `gamechanger-server/src/main/java/README.md`
-
-===== Start a web scan
-
-[source, bash]
-----
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
-----
-with corresponding 'sechub.json' config file:
-[[sechub-client-example-webscan-config]]
-[source, json]
-----
-
-      {
-        "apiVersion": "1.0",
-
-        "server"   : "https://sechub.example.org",
-        "user"     : "alice",
-
-        "project"  : "gamechanger",
-
-        "webScan"  : {//<1>
-            "uris": ["https://www.gamechanger.example.org"]//<2>
-        }
-      }
-----
-<1> Define web scan
-<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
-
-===== Start a infra scan
+==== Start a infra scan
 
 [source, bash]
 ----
 
 sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
 ----
-with corresponding `sechub.json` config file:
-[[sechub-client-example-infrascan-config]]
-[source, json]
-----
-
-      {
-        "apiVersion": "1.0",
-
-        "server"   : "https://sechub.example.org",
-        "user"     : "alice",
-
-        "project"  : "gamechanger",
-
-        "infraScan": {//<1>
-            "uris": ["https://www.gamechanger.example.org/"]//<2>
-        }
-      }
-----
-<1> Define infrastructure scan
-<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
+with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
-import com.daimler.sechub.adapter.AbstractAdapterConfig;
-import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.daimler.sechub.adapter.support.MessageDigestSupport;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class NetsparkerConfig extends AbstractAdapterConfig implements NetsparkerAdapterConfig{
+import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
+import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
+
+public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
 
 	private String licenseID;
 
@@ -13,7 +15,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 	private String agentGroupName;
 
 	private String websiteName;
-	
+
 	@Override
 	public String getLicenseID() {
 		return licenseID;
@@ -46,10 +48,9 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		return new NetsparkerConfigBuilder();
 	}
 
-	public static class NetsparkerConfigBuilder
-			extends AbstractAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerAdapterConfig> {
 
-		MessageDigestSupport md5Builder = new MessageDigestSupport();
+	public static class NetsparkerConfigBuilder
+			extends AbstractWebScanAdapterConfigBuilder<NetsparkerConfigBuilder, NetsparkerConfig> {
 
 		private String licenseID;
 		private String agentName;
@@ -74,16 +75,36 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		}
 
 		@Override
-		protected void customBuild(NetsparkerAdapterConfig adapterConfig) {
+		protected void customBuild(NetsparkerConfig adapterConfig) {
 			if (! (adapterConfig instanceof NetsparkerConfig)) {
 				throw new IllegalArgumentException("not a netsparker config:"+adapterConfig);
 			}
 			NetsparkerConfig config = (NetsparkerConfig)adapterConfig;
+			int size = config.getRootTargetURIs().size();
+			if (size!=1) {
+				/* netsparker needs ONE root uri */
+				throw new IllegalStateException("netsparker must have ONE unique root target uri and not many!");
+			}
 			String websiteURLAsString = config.getRootTargetURIasString();
 			if (websiteURLAsString==null) {
 				throw new IllegalStateException("website url (root target url ) may not be null at this point!");
 			}
-			config.websiteName= md5Builder.createMD5(websiteURLAsString);
+			try {
+				URL url = new URL(websiteURLAsString);
+				StringBuilder sb = new StringBuilder();
+				sb.append(url.getHost());
+				sb.append("_");
+				int port = url.getPort();
+				if (port<1) {
+					sb.append("default");
+				}else {
+					sb.append(port);
+				}
+
+				config.websiteName= sb.toString().toLowerCase();
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException("website root url '"+websiteURLAsString+"' is not a valid URL!",e);
+			}
 			config.licenseID = licenseID;
 			config.agentName = agentName;
 			config.agentGroupName = agentGroupName;
@@ -92,7 +113,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		@Override
 		protected void customValidate() {
 			assertUserSet();
-			assertAPITokenSet();
+			assertPasswordSet();
 			assertLicenseIDSet();
 			assertProductBaseURLSet();
 		}
@@ -104,7 +125,7 @@ public class NetsparkerConfig extends AbstractAdapterConfig implements Netsparke
 		}
 
 		@Override
-		protected NetsparkerAdapterConfig buildInitialConfig() {
+		protected NetsparkerConfig buildInitialConfig() {
 			return new NetsparkerConfig();
 		}
 

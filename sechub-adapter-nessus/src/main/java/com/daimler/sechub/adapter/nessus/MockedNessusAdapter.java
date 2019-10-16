@@ -17,8 +17,8 @@ public class MockedNessusAdapter extends AbstractMockedAdapter<NessusAdapterCont
 		 * the token is for the apiToken'nessus-api-token' and user id
 		 * 'nessus-user-id' from application-mock.yml!
 		 */
-		if (!"nessus-password".equals(config.getPassword())) {
-			throw new IllegalArgumentException(config.getPassword());
+		if (!"nessus-password".equals(config.getPasswordOrAPIToken())) {
+			throw new IllegalArgumentException(config.getPasswordOrAPIToken());
 		}
 		if (!"nessus-default-policiy-id".equals(config.getPolicyId())) {
 			throw new IllegalArgumentException("Nessus policy not as expected:" + config.getPolicyId());

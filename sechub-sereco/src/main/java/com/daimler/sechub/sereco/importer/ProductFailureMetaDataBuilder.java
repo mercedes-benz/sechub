@@ -2,15 +2,15 @@
 package com.daimler.sechub.sereco.importer;
 
 import com.daimler.sechub.sereco.ImportParameter;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class ProductFailureMetaDataBuilder {
 
 	private ImportParameter parameter;
 
-	public MetaData build() {
+	public SerecoMetaData build() {
 
 		String productId = null;
 		if (parameter!=null) {
@@ -21,10 +21,10 @@ public class ProductFailureMetaDataBuilder {
 		description.append(productId);
 		description.append("' failed, so cannot give a correct answer.");
 
-		MetaData data = new MetaData();
+		SerecoMetaData data = new SerecoMetaData();
 
-		Vulnerability v = new Vulnerability();
-		v.setSeverity(Severity.CRITICAL);
+		SerecoVulnerability v = new SerecoVulnerability();
+		v.setSeverity(SerecoSeverity.CRITICAL);
 		v.setType("SecHub failure");
 		v.setDescription(description.toString());
 

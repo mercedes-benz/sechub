@@ -11,6 +11,14 @@ plantuml::diagrams/gen/gen_springprofiles.puml[format=svg, title="Spring profile
 ====== PROD
 As name offers, this profile is designed for production.
 
+[WARNING]
+====
+For production the profile `admin_access` is *NOT* included automatically for security reasons.
+You should provide an additional server instance where only administrators have network access - only activate
+the profile on this machine. So you prevent illegal administrative access attempts.
+
+====
+
 plantuml::diagrams/gen/gen_springprofiles-prod.puml[format=svg, title="Spring profile prod and its explicit/implicit included parts"]
 
 ====== DEV

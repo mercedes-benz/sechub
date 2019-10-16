@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.sereco.importer.ProductFailureMetaDataBuilder;
 import com.daimler.sechub.sereco.importer.ProductImportAbility;
 import com.daimler.sechub.sereco.importer.ProductResultImporter;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,14 +25,14 @@ public class Workspace {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Workspace.class);
 
-	private MetaData workspaceMetaData = new MetaData();
+	private SerecoMetaData workspaceMetaData = new SerecoMetaData();
 
 	@Autowired
 	private List<ProductResultImporter> importers;
 
 	private String id;
 
-	public List<Vulnerability> getVulnerabilties() {
+	public List<SerecoVulnerability> getVulnerabilties() {
 		return workspaceMetaData.getVulnerabilities();
 	}
 
@@ -64,13 +64,13 @@ public class Workspace {
 				 * so we add just a critical finding for the product itself
 				 */
 				ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
-				MetaData metaData = builder.forParam(param).build();
+				SerecoMetaData metaData = builder.forParam(param).build();
 				mergeWithWorkspaceData(metaData);
 				atLeastOneImporterWasAbleToImport=true;
 				break;
 			}
 			if (ProductImportAbility.ABLE_TO_IMPORT.equals(ableToImportForProduct)) {
-				MetaData metaData = importer.importResult(param.getImportData());
+				SerecoMetaData metaData = importer.importResult(param.getImportData());
 				if (metaData == null) {
 					LOG.error("Meta data was null for product={}, importer={}, importId={}", param.getProductId(),
 							importer.getClass().getSimpleName(), param.getImportId());
@@ -98,7 +98,7 @@ public class Workspace {
 
 	}
 
-	private void mergeWithWorkspaceData(MetaData metaData) {
+	private void mergeWithWorkspaceData(SerecoMetaData metaData) {
 		/* currently a very simple,stupid approach: */
 		this.workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
 	}

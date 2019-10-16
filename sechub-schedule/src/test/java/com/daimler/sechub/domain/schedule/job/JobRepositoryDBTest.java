@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.daimler.sechub.test.TestUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @DataJpaTest
 @ContextConfiguration(classes= {JobRepository.class, JobRepositoryDBTest.SimpleTestConfiguration.class})
 public class JobRepositoryDBTest {
@@ -33,7 +31,7 @@ public class JobRepositoryDBTest {
 
 	@Autowired
 	private SecHubJobRepository jobRepository;
-	
+
 	private JobCreator jobCreator;
 
 	@Before
@@ -74,26 +72,26 @@ public class JobRepositoryDBTest {
 	@Test
 	public void findNextJobToExecute__the_first_job_in_state_READY_TO_START_is_returned_when_existing() {
 		/* prepare @formatter:off*/
-		
+
 		jobCreator.newJob().being(STARTED).createAnd().
 				   newJob().being(CANCEL_REQUESTED).createAnd().
 				   newJob().being(ENDED).create();
-		
-		ScheduleSecHubJob expectedNextJob =  
+
+		ScheduleSecHubJob expectedNextJob =
 		jobCreator.newJob().being(READY_TO_START).create();
-		
+
 		TestUtil.waitMilliseconds(1); // just enough time to make the next job "older" than former one, so we got no flaky tests when checking jobUUID later
-		
-		
+
+
 		jobCreator.newJob().being(STARTED).createAnd().
 				   newJob().being(READY_TO_START).create();
-		
+
 		/* execute */
 		Optional<ScheduleSecHubJob> optional = jobRepository.findNextJobToExecute();
 		assertTrue(optional.isPresent());
-		
+
 		ScheduleSecHubJob job = optional.get();
-		
+
 		/* test @formatter:on*/
 		assertNotNull(job.getUUID());
 		assertEquals(expectedNextJob.getUUID(), job.getUUID());
@@ -102,6 +100,6 @@ public class JobRepositoryDBTest {
 	@TestConfiguration
 	@EnableAutoConfiguration
 	public static class SimpleTestConfiguration{
-		
+
 	}
 }

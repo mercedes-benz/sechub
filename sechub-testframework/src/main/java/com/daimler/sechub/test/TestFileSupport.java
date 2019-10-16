@@ -154,9 +154,13 @@ public class TestFileSupport {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"))) {
 			String line = null;
 
+			boolean firstEntry=true;
 			while ((line = br.readLine()) != null) {
+				if (!firstEntry) {
+					sb.append(lineBreak);
+				}
 				sb.append(line);
-				sb.append(lineBreak);
+				firstEntry=false;// this prevents additional line break at end of file...
 			}
 			return sb.toString();
 		} catch (Exception e) {

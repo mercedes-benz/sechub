@@ -3,11 +3,11 @@ package com.daimler.sechub.sereco.importer;
 
 import org.springframework.util.StringUtils;
 
-import com.daimler.sechub.sereco.metadata.Classification;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
 
 public class CheckmarxCategoriesToClassificationConverter {
 
-	public Classification convert(String categories, Classification classification) {
+	public SerecoClassification convert(String categories, SerecoClassification classification) {
 		if (categories==null || categories.isEmpty()) {
 			return classification;
 		}
@@ -23,7 +23,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		return classification;
 	}
 
-	private void inspect(String split, Classification classification) {
+	private void inspect(String split, SerecoClassification classification) {
 		if (split==null || split.isEmpty()) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		handleNIST(key,value,classification);
 	}
 
-	private void handleFISMA(String key, String value, Classification classification) {
+	private void handleFISMA(String key, String value, SerecoClassification classification) {
 		// "FISMA 2014;Identification And Authentication,NIST SP 800-53;AC-3 Access Enforcement (P1)
 		if (! key.contains("FISMA")) {
 			return;
@@ -61,7 +61,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		return number;
 	}
 
-	private void handleNIST(String key, String value, Classification classification) {
+	private void handleNIST(String key, String value, SerecoClassification classification) {
 		// "FISMA 2014;Identification And Authentication,NIST SP 800-53;AC-3 Access Enforcement (P1)
 		if (! key.contains("NIST")) {
 			return;
@@ -82,7 +82,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		return number.substring(0, index);
 	}
 
-	private void handleOWASP(String key, String value, Classification classification) {
+	private void handleOWASP(String key, String value, SerecoClassification classification) {
 		/* e.g. OWASP Top 10 2013;A7-Missing Function Level Access Control */
 		if (! key.contains("OWASP")) {
 			return;
@@ -104,7 +104,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		
 	}
 
-	private void handlePCI(String key, String value, Classification classification) {
+	private void handlePCI(String key, String value, SerecoClassification classification) {
 		/* e.g. "PCI DSS v3.2;PCI DSS (3.2) - 6.5.8 - Improper access control" */
 		if (! key.contains("PCI")) {
 			return;
@@ -130,14 +130,14 @@ public class CheckmarxCategoriesToClassificationConverter {
 		
 	}
 
-	private void handlePCI31(String key, String value, Classification classification) {
+	private void handlePCI31(String key, String value, SerecoClassification classification) {
 		if (key.indexOf("V3.1") == -1) {
 			return;
 		}
 		classification.setPci31(fetchPCINumber(value));
 	}
 
-	private void handlePCI32(String key, String value, Classification classification) {
+	private void handlePCI32(String key, String value, SerecoClassification classification) {
 		if (key.indexOf("V3.2") == -1) {
 			return;
 		}
