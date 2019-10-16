@@ -40,7 +40,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @ContextConfiguration(classes = { SchedulerAdministrationRestController.class,
 		SchedulerAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles(Profiles.TEST)
+@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 @AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
 public class SchedulerAdministrationRestControllerRestDocTest {
 
