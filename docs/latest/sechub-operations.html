@@ -906,6 +906,35 @@ export SECHUB_TARGET_RESOLVE_STRATEGY_IP=value
 export SECHUB_TARGET_RESOLVE_STRATEGY_URI=value</pre>
 </div>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please <strong>don&#8217;t forget</strong> to have <strong>at least one server</strong> running with active profile <code>admin_access</code>!</p>
+</div>
+<div class="paragraph">
+<p>Servers without having this profile activated, will provide only standard API access.
+Reason for this behavior: Administrators can reduce access to administrative API by IP and
+port firewall settings.</p>
+</div>
+<div class="paragraph">
+<p>This is only necessary for production! Development and Integrationtest profiles do automatically include
+the <code>admin_access</code> profile.</p>
+</div>
+<div class="paragraph">
+<p><strong>An example for production:</strong><br>
+In a Kubernetes environment you could  start 5 instances of SecHub without this profile at port 443 and 2 additional ones with <code>admin_access</code> profile
+enabled on port 8443 (all other settings are same). In your firewall configuration you allow public
+access to this server by port 443, but access to port 8443 is restricted to some dedicated IPs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="plain-server-3">2.1.3.2. Plain server</h5>
@@ -1412,7 +1441,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-10-02 14:06:31 CEST
+Last updated 2019-10-16 17:31:57 CEST
 </div>
 </div>
 </body>
