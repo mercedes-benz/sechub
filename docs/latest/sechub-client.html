@@ -542,7 +542,11 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#options">2.3.3. Options</a></li>
 </ul>
 </li>
-<li><a href="#configuration-file">2.4. Configuration file</a></li>
+<li><a href="#configuration-file">2.4. Configuration file</a>
+<ul class="sectlevel3">
+<li><a href="#variables-inside-configuration-files">2.4.1. Variables inside configuration files</a></li>
+</ul>
+</li>
 <li><a href="#sechub-scan-configuration">2.5. SecHub scan configuration</a>
 <ul class="sectlevel3">
 <li><a href="#api-version">2.5.1. API version</a></li>
@@ -684,7 +688,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-b00654f-dirty-20191007145318</p>
+0.17.0-latest</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -930,6 +934,46 @@ wait time in seconds. Will be used for automatic status checks etc. when action=
 and use it as sechub configuration. There must be always a valid configuration
 file - otherwise client will not work.</p>
 </div>
+<div class="sect3">
+<h4 id="variables-inside-configuration-files">2.4.1. Variables inside configuration files</h4>
+<div class="paragraph">
+<p>All environment variables are available inside your configuration file in go
+template syntax:</p>
+</div>
+<div class="paragraph">
+<p><code>{{ .ENV_VARIABLE_NAME }}</code></p>
+</div>
+<div class="paragraph">
+<p>For example: When you have defined <code>USED_API_VERSION</code> with value <code>1.0</code>, you can use
+it in json config like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>SecHub client</code> will automatically fill the variable with content from environment
+variable.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When you have enabled debug log by setting environment entry <code>SECHUB_DEBUG</code> to <code>true</code>
+you will see network traffic and also JSON sent to server. This JSON will only
+contain the origin template but not the replaced parts. This was done to prevent
+accidently logging of variables - e.g. credentials.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="sechub-scan-configuration">2.5. SecHub scan configuration</h3>
@@ -1040,19 +1084,38 @@ The configuration parts inside <code>fileSystem</code> entry are interpreted by
 </tr>
 </table>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please do <strong>NOT</strong> use <code>\</code> inside pathes <strong>but</strong> always <code>/</code>.</p>
+</div>
+<div class="paragraph">
+<p>Also do <strong>NOT</strong> use absolute pathes <strong>but</strong> always relative pathes! Normally you should
+call SecHub inside root folder of your source repository - this is the standard situation
+on build servers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect5">
 <h6 id="example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</h6>
 <div id="sechub-config-example-sourcescan" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
+<pre class="CodeRay highlight"><code data-lang="json">{
 
         <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
         <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
 
         <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
               <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
                           <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
            <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
@@ -1131,18 +1194,18 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 <h6 id="example-anonymous">2.5.5.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1179,7 +1242,7 @@ actions!</p>
 </div>
 <div class="paragraph">
 <p>An example: Your test application has a Web UI for sending SMS which can
-be triggered by an user the web scan will trigger those operations as well!</p>
+be triggered by an user than the web scan will trigger those operations as well!</p>
 </div>
 <div class="paragraph">
 <p>If you do this inside an environment where a real SMS provider is connected,
@@ -1302,7 +1365,9 @@ this is not necessary</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Start of form based login with auto detection.</td>
+<td>Start of form based login with auto detection.<br>
+In this example you see variables in <code>go template</code> format. This is SecHub client specific.
+If you use REST API directly, you must you must use real values!</td>
 </tr>
 </table>
 </div>
@@ -1319,17 +1384,22 @@ this is not necessary</td>
         ],
         <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
             <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="3"></i><b>(3)</b>
                     {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="3"></i><b>(3)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="5"></i><b>(5)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="6"></i><b>(6)</b>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
                     },
                     {
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_other_inputfield</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .OTHER_VALUE }}</span><span class="delimiter">&quot;</span></span>
                     },
                     {
                         <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
@@ -1350,20 +1420,61 @@ this is not necessary</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Start of form based login by script. Contains step entries which are executed
-in given order</td>
+<td>Start of form based login</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Type of step. Valid steps are <code>input|click</code></td>
+<td>Script definition parts. Contains step entries which are executed
+in given order</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Selector (CSS) to identify web element</td>
+<td>Type of step. Valid steps are :<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>username</code><br>
+name of user used for login</p>
+</li>
+<li>
+<p><code>password</code><br>
+password entered at login</p>
+</li>
+<li>
+<p><code>input</code><br>
+setup value for a field on UI</p>
+</li>
+<li>
+<p><code>click</code><br>
+will simulate a mouse click on UI</p>
+</li>
+</ul>
+</div></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Value , used by <code>input</code> step</td>
+<td>Selector (CSS) to identify web element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Value , used by input steps (<code>username|password|input</code>).<br>
+In this examples you see variables
+in <code>go template</code> format. This is SecHub client specific.
+If you use REST API directly, you must you must use real values!</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<code>username</code> and <code>password</code> are like input but SecHub tries
+         to hide these information in logs or at UI where possible.
+         So do <strong>NOT</strong> use <code>input</code> for credentials!
+</td>
 </tr>
 </table>
 </div>
@@ -1378,24 +1489,24 @@ in given order</td>
 <div class="sect4">
 <h5 id="uris-2">2.5.6.1. URIs</h5>
 <div class="paragraph">
-<p>Use <code>uris</code> element to define a string array containing URIs you want to scan.</p>
+<p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
 <h6 id="example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1415,24 +1526,24 @@ in given order</td>
 <div class="sect4">
 <h5 id="ips">2.5.6.2. IPs</h5>
 <div class="paragraph">
-<p>Use <code>ips</code> element to define a string array containing <code>IP</code> s you want to scan.</p>
+<p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
 <h6 id="example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1445,7 +1556,7 @@ in given order</td>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
 The given example with <code>127.0.0.1</code> represents only an example and will always not work
-because scanners would scan themselves&#8230;&#8203;</td>
+because scanners do not scan them self.</td>
 </tr>
 </table>
 </div>
