@@ -1,4 +1,6 @@
 <!-- SPDX-License-Identifier: MIT -->
+[![Build status](https://github.com/Daimler/sechub/workflows/Java%20&%20Go%20CI/badge.svg)](https://github.com/Daimler/sechub/actions?workflow=Java+%26+Go+CI)
+
 # SecHub
 ![SecHub Logo](https://github.com/Daimler/sechub/blob/master/sechub-doc/src/docs/asciidoc/images/sechub-logo.png)
 
