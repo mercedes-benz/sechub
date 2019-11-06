@@ -41,7 +41,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
  * which is different for each developer, not accidently committed to git, also
  * valid on builds etc.
  *
- * This is done by dev-create_localhost_certificate.sh - for details refer to bash script
+ * This is done by dev-ensure_localhost_certificate.sh - for details refer to bash script
  */
 task ensureLocalhostCertificate(type: Exec) {
     group 'sechub'
@@ -50,9 +50,9 @@ task ensureLocalhostCertificate(type: Exec) {
     workingDir "${projectDir}"
 
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'bash', "${projectDir}/dev-create_localhost_certificate.sh"
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/dev-ensure_localhost_certificate.sh"
     }else{
-        commandLine "${projectDir}/dev-create_localhost_certificate.sh"
+        commandLine "${projectDir}/dev-ensure_localhost_certificate.sh"
     }
 }
 
