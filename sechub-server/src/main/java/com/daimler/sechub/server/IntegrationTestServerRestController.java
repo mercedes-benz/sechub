@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.server;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -15,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -101,23 +98,24 @@ public class IntegrationTestServerRestController {
 		if (!storage.isExisting(fileName)) {
 			throw new NotFoundException("file not uploaded:" + fileName);
 		}
-		String absolutePath = storage.getAbsolutePath(fileName);
-		File file = new File(absolutePath);
+		try(InputStream inputStream = storage.fetch(fileName)){
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-		headers.add("Pragma", "no-cache");
-		headers.add("Expires", "0");
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+			headers.add("Pragma", "no-cache");
+			headers.add("Expires", "0");
 
-		/* @formatter:off */
-		 Path path = Paths.get(file.getAbsolutePath());
-	    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
-	    return ResponseEntity.ok()
-	            .headers(headers)
-	            .contentLength(file.length())
-	            .contentType(MediaType.parseMediaType("application/octet-stream"))
-	            .body(resource);
-		    /* @formatter:on */
+			/* @formatter:off */
+			InputStreamResource resource = new InputStreamResource(inputStream);
+			return ResponseEntity.ok()
+					.headers(headers)
+					.contentLength(resource.contentLength())
+					.contentType(MediaType.parseMediaType("application/octet-stream"))
+					.body(resource);
+			/* @formatter:on */
+
+		}
+
 	}
 
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -56,27 +57,29 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 		String projectId = context.getConfiguration().getProjectId();
 
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
-		String path = storage.getAbsolutePath("sourcecode.zip");
+		try(InputStream sourceCodeZipFileInputStream = storage.fetch("sourcecode.zip")){
 
-		/* @formatter:off */
+			/* @formatter:off */
 
-		CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
-				configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-				setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-				setPathToZipFile(path).
-				setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
-				setProjectId(projectId).
-				setTraceID(context.getTraceLogIdAsString()).
-				/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
-				build();
-		/* @formatter:on */
+			CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+					configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
+					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+					setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
+					setProjectId(projectId).
+					setTraceID(context.getTraceLogIdAsString()).
+					/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
+					build();
+			/* @formatter:on */
 
-		/* execute checkmarx by adapter and return product result */
-		String xml = checkmarxAdapter.start(checkMarxConfig);
-		ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
-		return Collections.singletonList(result);
+			/* execute checkmarx by adapter and return product result */
+			String xml = checkmarxAdapter.start(checkMarxConfig);
+			ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
+			return Collections.singletonList(result);
+		}
+
 	}
 
 

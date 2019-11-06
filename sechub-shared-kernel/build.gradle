@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject 
+ * Build file for subproject
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
 dependencies {
+
+    compile group: 'io.minio', name: 'minio', version: '6.0.11'
 
     testCompile project(':sechub-testframework')
 

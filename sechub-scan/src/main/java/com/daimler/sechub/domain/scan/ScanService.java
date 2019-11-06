@@ -5,6 +5,7 @@ import static com.daimler.sechub.sharedkernel.messaging.DomainDataTraceLogID.*;
 import static com.daimler.sechub.sharedkernel.messaging.MessageDataKeys.*;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -125,7 +126,11 @@ public class ScanService implements SynchronMessageHandler {
 		UUID jobUUID = context.getSechubJobUUID();
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-		storage.deleteAll();
+		try {
+			storage.deleteAll();
+		} catch (IOException e) {
+			LOG.error("Was not able to delete storage for job {}",jobUUID,e);
+		}
 
 	}
 

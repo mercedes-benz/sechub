@@ -16,9 +16,10 @@ import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.daimler.sechub.sharedkernel.util.ZipSupport;
 
 public class SchedulerUploadServiceTest {
-	
+
 	private static final String PROJECT1 = "project1";
 	private SchedulerUploadService serviceToTest;
 	private FileChecksumSHA256Service mockedChecksumService;
@@ -26,63 +27,65 @@ public class SchedulerUploadServiceTest {
 	private UUID randomUuid;
 	private ScheduleAssertService mockedAssertService;
 	private MultipartFile file;
-	
+
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	private JobStorage storage;
-	
+	private ZipSupport mockedZipSupport;
+
 	@Before
 	public void before() {
 		randomUuid = UUID.randomUUID();
-		
+
 		mockedChecksumService=mock(FileChecksumSHA256Service.class);
 		mockedStorageService=mock(StorageService.class);
 		mockedAssertService=mock(ScheduleAssertService.class);
-		
+
 		ScheduleSecHubJob job = new ScheduleSecHubJob();
 		when(mockedAssertService.assertJob(PROJECT1, randomUuid)).thenReturn(job);
 		storage = mock(JobStorage.class);
-		when(storage.getAbsolutePath(SchedulerUploadService.SOURCECODE_ZIP)).thenReturn("the-path");
 		when(mockedStorageService.getJobStorage(PROJECT1, randomUuid)).thenReturn(storage);
-		
+
 		file = mock(MultipartFile.class);
+		mockedZipSupport = mock(ZipSupport.class);
 
 		/* attach at service to test */
 		serviceToTest = new SchedulerUploadService();
 		serviceToTest.checksumSHA256Service=mockedChecksumService;
 		serviceToTest.storageService=mockedStorageService;
 		serviceToTest.assertService=mockedAssertService;
-		
+		serviceToTest.zipSupport=mockedZipSupport;
+
 	}
-	
+
 	@Test
 	public void when_checksum_correct_and_is_zip__correct_no_failure() {
 		/* prepare */
-		when(mockedChecksumService.hasCorrectChecksum("mychecksum", "the-path")).thenReturn(true);
-		when(storage.isValidZipFile(SchedulerUploadService.SOURCECODE_ZIP)).thenReturn(true);
-		
+		when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
+		when(mockedZipSupport.isZipFile(any())).thenReturn(true);
+
 		/* execute */
 		serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
 	}
-	
+
 	@Test
 	public void when_checksum_is_NOT_correct_but_valid_zipfile_throws_404() {
 		/* prepare */
-		when(mockedChecksumService.hasCorrectChecksum("mychecksum", "the-path")).thenReturn(false);
-		when(storage.isValidZipFile(SchedulerUploadService.SOURCECODE_ZIP)).thenReturn(true);
+		when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(false);
+		when(mockedZipSupport.isZipFile(any())).thenReturn(true);
 		expectedException.expect(NotAcceptableException.class);
-		
+
 		/* execute */
 		serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
 	}
-	
+
 	@Test
 	public void when_checksum_is_correct_but_not_valid_zipfile_throws_404() {
 		/* prepare */
-		when(mockedChecksumService.hasCorrectChecksum("mychecksum", "the-path")).thenReturn(true);
-		when(storage.isValidZipFile(SchedulerUploadService.SOURCECODE_ZIP)).thenReturn(false);
+		when(mockedChecksumService.hasCorrectChecksum(eq("mychecksum"), any())).thenReturn(true);
+		when(mockedZipSupport.isZipFile(any())).thenReturn(false);
 		expectedException.expect(NotAcceptableException.class);
-		
+
 		/* execute */
 		serviceToTest.uploadSourceCode(PROJECT1, randomUuid, file, "mychecksum");
 	}
