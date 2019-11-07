@@ -66,6 +66,9 @@ include::../gen/gen_javalaunchexample.adoc[]
 
 include::../shared/hint_admin_access_profile.adoc[]
 
+====== Storage configuration
+include::../shared/storage_configuration.adoc[]
+
 ===== Plain server
 
 To start the server by executing

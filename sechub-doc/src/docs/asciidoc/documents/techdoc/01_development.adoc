@@ -198,7 +198,18 @@ include::../shared/infrastructure/infra_docker.adoc[]
 
 include::../shared/infrastructure/infra_kubernetes.adoc[]
 
-== Test/Use real products
+[[section-develop-use-real-products]]
+== Test / Use real products
+
+=== Mandatory configuration
+
+include::../gen/gen_javalaunchexample.adoc[]
+
+include::../shared/hint_admin_access_profile.adoc[]
+
+==== Storage configuration
+include::../shared/storage_configuration.adoc[]
+
 
 === Start server in DEV mode
 include::./../shared/launchconfig/launchconfig_start_dev_server.adoc[]
@@ -208,6 +219,7 @@ TIP: Please refer also
 
 === Start server in PROD mode
 include::./../shared/launchconfig/launchconfig_start_prod_server.adoc[]
+
 
 == Special setup
 

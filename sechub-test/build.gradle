@@ -3,4 +3,8 @@ dependencies {
     compile project(':sechub-server')
     compile project(':sechub-testframework')
     compile project(':sechub-doc') // here we got the dependency to Reflections lib..
+
+     // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
+    testCompile group: 'com.adobe.testing', name: 's3mock', version: '2.1.16'
+    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.16'
 }

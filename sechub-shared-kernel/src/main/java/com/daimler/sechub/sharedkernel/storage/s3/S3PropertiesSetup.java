@@ -10,19 +10,19 @@ public class S3PropertiesSetup implements S3Setup{
 
 	private static final String UNDEFINED ="undefined";
 
-	@MustBeDocumented(value="Defines the access key for used s3 bucket")
+	@MustBeDocumented(value="Defines the access key for used s3 bucket",scope="storage")
 	@Value("${sechub.storage.s3.accesskey:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String accessKey;
 
-	@MustBeDocumented(value="Defines the secret key for used s3 bucket")
+	@MustBeDocumented(value="Defines the secret key for used s3 bucket",scope="storage")
 	@Value("${sechub.storage.s3.secretkey:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String secretKey;
 
-	@MustBeDocumented(value="Defines the s3 bucket name")
+	@MustBeDocumented(value="Defines the s3 bucket name",scope="storage")
 	@Value("${sechub.storage.s3.bucketname:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String bucketName;
 
-	@MustBeDocumented(value="Defines the s3 endpoint - e.g. https://play.min.io")
+	@MustBeDocumented(value="Defines the s3 endpoint - e.g. https://play.min.io",scope="storage")
 	@Value("${sechub.storage.s3.endpoint:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String endpoint;
 

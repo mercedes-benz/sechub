@@ -44,7 +44,7 @@ public class CheckmarxUploadSupport {
 
 		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 		if (! result.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
-			throw context.asAdapterException("Response HTTP status not as expected: "+result.getStatusCode(), null);
+			throw context.asAdapterException("Response HTTP status not as expected: "+result.getStatusCode());
 		}
 	}
 

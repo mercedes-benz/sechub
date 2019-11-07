@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.server;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -73,48 +74,50 @@ public class IntegrationTestServerRestController {
 	@RequestMapping(path = APIConstants.API_USER + "integrationtest/check/role/user", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public void checkRoleUser() {
-		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'",userContextService.getUserId(),RoleConstants.ROLE_USER,userContextService.getAuthories());
+		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
+				RoleConstants.ROLE_USER, userContextService.getAuthories());
 	}
 
 	@RolesAllowed(RoleConstants.ROLE_OWNER)
 	@RequestMapping(path = APIConstants.API_USER + "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public void checkRoleOwner() {
-		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'",userContextService.getUserId(),RoleConstants.ROLE_OWNER,userContextService.getAuthories());
+		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
+				RoleConstants.ROLE_OWNER, userContextService.getAuthories());
 	}
-
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/{projectId}/{jobUUID}/uploaded/{fileName}", method = RequestMethod.GET)
 	public ResponseEntity<Resource> getUploadedFile(@PathVariable("projectId") String projectId, @PathVariable("jobUUID") UUID jobUUID,
 			@PathVariable("fileName") String fileName) throws IOException {
 
 		ValidationResult projectIdValidationResult = projectIdValidation.validate(projectId);
-		if(! projectIdValidationResult.isValid()) {
+		if (!projectIdValidationResult.isValid()) {
 			LOG.warn("Called with illegal projectId '{}',projectId");
 			return ResponseEntity.notFound().build();
 		}
-
+		LOG.info("Integration test server: getJobStorage for {} {}", projectId, jobUUID);
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 		if (!storage.isExisting(fileName)) {
 			throw new NotFoundException("file not uploaded:" + fileName);
 		}
-		try(InputStream inputStream = storage.fetch(fileName)){
+		InputStream inputStream = storage.fetch(fileName);
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-			headers.add("Pragma", "no-cache");
-			headers.add("Expires", "0");
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
 
-			/* @formatter:off */
-			InputStreamResource resource = new InputStreamResource(inputStream);
-			return ResponseEntity.ok()
-					.headers(headers)
-					.contentLength(resource.contentLength())
-					.contentType(MediaType.parseMediaType("application/octet-stream"))
-					.body(resource);
-			/* @formatter:on */
+		/* @formatter:off */
+		byte[] bytes = new byte[inputStream.available()];
+		new DataInputStream(inputStream).readFully(bytes);
+		ByteArrayResource resource = new ByteArrayResource(bytes);
 
-		}
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(resource.contentLength())
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.body(resource);
+		/* @formatter:on */
 
 	}
 

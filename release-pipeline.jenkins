@@ -54,6 +54,9 @@ pipeline {
              /* against build race conditions - See TestPortProvider.java */
              SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
              SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
+
+             SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+             SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
           }
           steps {
               script{
@@ -80,12 +83,15 @@ pipeline {
         stage('Integration tests') {
             environment {
                /* against build race conditions - See TestPortProvider.java */
-               SERVER_PORT= getJenkinsExecutorPort(8243)
+               SECHUB_SERVER_PORT= getJenkinsExecutorPort(8243)
+                /* same for s3mock which is internally a spring boot application starting a jetty as well*/
+               SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+               SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
             }
 
             steps {
               script{
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
+                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SECHUB_SERVER_PORT}")
                }
             }
         }

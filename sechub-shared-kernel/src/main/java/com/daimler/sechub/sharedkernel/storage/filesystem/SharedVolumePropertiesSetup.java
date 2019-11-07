@@ -23,7 +23,7 @@ public class SharedVolumePropertiesSetup implements SharedVolumeSetup {
 	/**
      * Folder location for storing files. When using "temp" a temporary folder on server side will be used
      */
-	@MustBeDocumented(value="Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc.")
+	@MustBeDocumented(value="Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword *temp* as path, this will create a temporary directory (for testing).",scope="storage")
 	@Value("${sechub.storage.sharedvolume.upload.dir:"+UNDEFINED_UPLOAD_DIR+"}") // we use undefined here. Will be used in #isValid()
     private String propertiesUploadDir;
 
@@ -40,7 +40,7 @@ public class SharedVolumePropertiesSetup implements SharedVolumeSetup {
 
     @Override
     public boolean isAvailable() {
-    	return ! UNDEFINED_UPLOAD_DIR.equals(uploadDir);
+    	return ! UNDEFINED_UPLOAD_DIR.equals(propertiesUploadDir);
     }
 
 

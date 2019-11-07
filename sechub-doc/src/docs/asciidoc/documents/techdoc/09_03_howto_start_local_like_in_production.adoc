@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+[[section-howto-start-localserver-like-in-production]]
+=== Howto start a local development server like in production
+In most cases its enough to use mocked adapter variants for development.
+But sometimes its necessary to start up a local development server using
+real security products (e.g. full integration testing etc.)
+
+Launch configuration is described at <<section-develop-use-real-products,Test/Use real products>>.
+You should also use same storage as you use in production! So when you are
+using a S3 bucket for storage there you should define this as well!

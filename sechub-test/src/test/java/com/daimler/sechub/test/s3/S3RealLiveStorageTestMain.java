@@ -1,4 +1,4 @@
-package com.daimler.sechub.integrationtest.storage;
+package com.daimler.sechub.test.s3;
 
 import java.io.BufferedReader;
 import java.io.IOException;

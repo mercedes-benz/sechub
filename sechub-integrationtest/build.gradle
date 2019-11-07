@@ -11,10 +11,6 @@ dependencies {
     compile project(':sechub-adapter') // we reuse trustall approach from adapters
     compile project(':sechub-shared-kernel') // we want to have access to some shared kernel parts (e.g. trafficlight)
     compile library.springboot_starter_mail // to have easier access to email parts
-
-    // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
-    testCompile group: 'com.adobe.testing', name: 's3mock', version: '2.1.16'
-    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.16'
 }
 
 def integrationTestServerPortValue = 8443;

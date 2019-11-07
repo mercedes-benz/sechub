@@ -1,4 +1,4 @@
-package com.daimler.sechub.integrationtest.storage;
+package com.daimler.sechub.test.s3;
 
 import static org.junit.Assert.*;
 
@@ -22,11 +22,16 @@ import org.mockito.Mockito;
 import com.adobe.testing.s3mock.junit4.S3MockRule;
 import com.amazonaws.services.s3.AmazonS3;
 import com.daimler.sechub.sharedkernel.storage.s3.AwsS3JobStorage;
+import com.daimler.sechub.test.TestPortProvider;
 
 public class AwsS3JobStorageTest {
 
 	@ClassRule
-	public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().silent().build();
+	public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().
+			withHttpPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpPort()).
+			withHttpsPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpsPort()).
+//			silent().
+			build();
 
 	private static AmazonS3 amazonTestClient;
 

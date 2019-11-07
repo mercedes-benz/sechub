@@ -32,8 +32,13 @@ public class TestPortProvider {
 	private static final String ENV_SECHUB_TEST_RESTDOC_HTTPS_PORT = "SECHUB_TEST_RESTDOC_HTTPS_PORT";
 	private static final String ENV_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "SECHUB_TEST_WIREMOCK_HTTPS_PORT";
 	private static final String ENV_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "SECHUB_TEST_MVCMOCK_HTTPS_PORT";
+	private static final String ENV_SECHUB_TEST_S3MOCK_HTTP_PORT = "SECHUB_TEST_S3MOCK_HTTP_PORT";
+	private static final String ENV_SECHUB_TEST_S3MOCK_HTTPS_PORT = "SECHUB_TEST_S3MOCK_HTTPS_PORT";
 
 	private static final String ENV_SERVER_PORT = "SERVER_PORT"; // we reuse spring boot "server.port"
+
+	private static final int DEFAULT_S3MOCK_HTTP_PORT = 9090;
+	private static final int DEFAULT_S3MOCK_HTTPS_PORT = 9190;
 
 	private int wireMockHttpPort;
 	private int wireMockHttpsPort;
@@ -41,6 +46,8 @@ public class TestPortProvider {
 	private EnvironmentEntryProvider envProvider = new DefaultEnvironmentEntryProvider();
 	private int restDocPort;
 	private int mvcMockPort;
+	private int s3MockHttpPort;
+	private int s3MockHttpsPort;
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestPortProvider.class);
 
@@ -52,6 +59,8 @@ public class TestPortProvider {
 		restDocPort = getEnvOrDefault(ENV_SECHUB_TEST_RESTDOC_HTTPS_PORT, DEFAULT_RESTDOC_HTTPS_PORT);
 		mvcMockPort = getEnvOrDefault(ENV_SECHUB_TEST_MVCMOCK_HTTPS_PORT, DEFAULT_MVC_MOCK_HTTPS_PORT);
 		integrationTestServerPort = getEnvOrDefault(ENV_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
+		s3MockHttpPort= getEnvOrDefault(ENV_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
+		s3MockHttpsPort= getEnvOrDefault(ENV_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
 	}
 
 	int getEnvOrDefault(String name, int defaultValue) {
@@ -104,6 +113,14 @@ public class TestPortProvider {
 
 	EnvironmentEntryProvider getEnvProvider() {
 		return envProvider;
+	}
+
+	public int getS3MockServerHttpPort() {
+		return s3MockHttpPort;
+	}
+
+	public int getS3MockServerHttpsPort() {
+		return s3MockHttpsPort;
 	}
 
 

@@ -3,6 +3,7 @@ package com.daimler.sechub.sharedkernel.storage.filesystem;
 
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -43,7 +44,7 @@ public class SharedVolumeJobStorage implements JobStorage {
 		if (path == null) {
 			return null;
 		}
-		return Files.newInputStream(path);
+		return new FileInputStream(path.toFile());
 	}
 
 	@Override

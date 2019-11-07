@@ -72,9 +72,9 @@ public class AwsS3JobStorage implements JobStorage {
 
 	@Override
 	public void deleteAll() throws IOException {
-		LOG.info("delete all from bucket, bucket={}", bucketName);
+		String objectPrefix = getObjectPrefix();
+		LOG.info("delete all job storage parts from prefix:{}",objectPrefix);
 
-	    String objectPrefix = getObjectPrefix();
 
 		ObjectListing listing = client.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(objectPrefix));
 	    try {
@@ -94,7 +94,7 @@ public class AwsS3JobStorage implements JobStorage {
 	    		listing = client.listNextBatchOfObjects(listing);
 	    	}
 		}catch(RuntimeException e) {
-			throw new IOException("Cannot delete all parts from "+objectPrefix,e);
+			throw new IOException("Cannot delete all parts from prefix:"+objectPrefix,e);
 		}
 	}
 
