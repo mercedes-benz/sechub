@@ -56,4 +56,6 @@ apply from: "${rootProject.projectDir}/build-java.gradle"
 apply from: "${rootProject.projectDir}/build-spring.gradle"
 apply from: "${rootProject.projectDir}/build-maven.gradle"
 apply from: "${rootProject.projectDir}/build-eclipse.gradle"
+apply from: "${rootProject.projectDir}/build-report.gradle"
+
 

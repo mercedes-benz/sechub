@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   common test report creation
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
+}
+
+def reportPostFix = getDate();
+
+subprojects{
+
+    task createCombinedJavaTestReport(type: TestReport, dependsOn: build) {
+        destinationDir = file("$buildDir/reports/allTests")
+        // Include the results from the `test` task in all java subprojects
+        reportOn projectType.javaProjects*.test
+    }
+
+    task createCombinedTestReport(type: TestReport, dependsOn: createCombinedJavaTestReport) {
+        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+    }
+
+    task zipCombinedTestReport(type: Zip, dependsOn: createCombinedTestReport) {
+       from "$buildDir/reports/allTests"
+       include '*'
+       include '*/*' //to include contents of a folder present inside Reports directory
+       archiveName 'SecHubCombinedTestReport_$reportPostFix.zip'
+       destinationDir(file("$buildDir/reports/allTests"))
+    }
+
+
+
+}
