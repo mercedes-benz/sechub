@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import com.daimler.sechub.sharedkernel.storage.StorageException;
+import com.daimler.sechub.sharedkernel.storage.core.SharedVolumeSetup;
+import com.daimler.sechub.sharedkernel.storage.core.StorageException;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
 @Component

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.storage.filesystem;
+package com.daimler.sechub.sharedkernel.storage.core;
 
 public interface SharedVolumeSetup {
 

@@ -1,5 +1,6 @@
+
 // SPDX-License-Identifier: MIT
- /*============================================================================
+/*============================================================================
  * Build file for subproject
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
@@ -7,11 +8,8 @@
  */
 dependencies {
 
-    compile library.junit
-    compile library.mockito
-    compile library.harmcrest
-    compile library.slf4j
-
+    testCompile library.junit
+    testCompile library.mockito
+    testCompile project(':sechub-testframework')
 
 }
-

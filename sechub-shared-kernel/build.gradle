@@ -7,7 +7,8 @@
  */
 dependencies {
 
-    compile project(':sechub-shared-kernel-storage')
+    compile project(':sechub-shared-kernel-storage-core')
+    compile project(':sechub-shared-kernel-storage-s3-amazon')
 
     testCompile project(':sechub-testframework')
 

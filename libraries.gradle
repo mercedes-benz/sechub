@@ -16,12 +16,15 @@ ext {
    ]
 
    library = [
-      /* autark parts, with same versions like current spring (2.1.19*/
+      /* autark parts, with same versions like current used spring boot version (2.1.19*/
         // https://mvnrepository.com/artifact/junit/junit
         junit: "junit:junit:4.12",
 
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
         mockito: "org.mockito:mockito-core:2.23.4",
+
+        // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library
+        harmcrest: "org.hamcrest:hamcrest-library:1.3",
 
         // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
         slf4j: "org.slf4j:slf4j-api:1.7.28",

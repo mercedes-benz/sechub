@@ -39,7 +39,8 @@ include 'sechub-cli',
 'sechub-testframework',
 
 'sechub-scan-testframework',
-'sechub-shared-kernel-storage',
+'sechub-shared-kernel-storage-core',
+'sechub-shared-kernel-storage-s3-amazon',
 'sechub-shared-kernel-testframework',
 
 'sechub-developertools'

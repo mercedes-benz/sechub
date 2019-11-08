@@ -17,7 +17,7 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
+import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
 
 public class AwsS3JobStorage implements JobStorage {
 

@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
+import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
 

@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.client.ResourceAccessException;
 
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
-import com.daimler.sechub.sharedkernel.storage.StorageException;
+import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
+import com.daimler.sechub.sharedkernel.storage.core.StorageException;
 
 public class SharedVolumeJobStorage implements JobStorage {
 

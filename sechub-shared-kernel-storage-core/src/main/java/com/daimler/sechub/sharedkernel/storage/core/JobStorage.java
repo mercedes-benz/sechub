@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.storage;
+package com.daimler.sechub.sharedkernel.storage.core;
 
 import java.io.IOException;
 import java.io.InputStream;

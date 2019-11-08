@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.storage.s3;
+package com.daimler.sechub.sharedkernel.storage.core;
 
 public interface S3Setup {
 

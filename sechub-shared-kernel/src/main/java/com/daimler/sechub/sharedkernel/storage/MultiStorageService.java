@@ -17,10 +17,11 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
+import com.daimler.sechub.sharedkernel.storage.core.S3Setup;
+import com.daimler.sechub.sharedkernel.storage.core.SharedVolumeSetup;
 import com.daimler.sechub.sharedkernel.storage.filesystem.SharedVolumeJobStorage;
-import com.daimler.sechub.sharedkernel.storage.filesystem.SharedVolumeSetup;
 import com.daimler.sechub.sharedkernel.storage.s3.AwsS3JobStorage;
-import com.daimler.sechub.sharedkernel.storage.s3.S3Setup;
 
 /**
  * MultiStorageService - will provide job storage objects depending on

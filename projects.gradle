@@ -7,7 +7,8 @@ projectType = [
             ],
 
             javaProjects: [
-               project(':sechub-shared-kernel-storage'),
+               project(':sechub-shared-kernel-storage-core'),
+               project(':sechub-shared-kernel-storage-s3-amazon'),
                project(':sechub-testframework'),
             ],
 

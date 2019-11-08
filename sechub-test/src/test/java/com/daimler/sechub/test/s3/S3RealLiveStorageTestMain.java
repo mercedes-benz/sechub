@@ -7,11 +7,10 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 import com.amazonaws.util.StringInputStream;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.MultiStorageService;
-import com.daimler.sechub.sharedkernel.storage.filesystem.SharedVolumeSetup;
-import com.daimler.sechub.sharedkernel.storage.s3.S3Setup;
-import com.daimler.sechub.storage.s3.AwsS3JobStorageTest;
+import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
+import com.daimler.sechub.sharedkernel.storage.core.S3Setup;
+import com.daimler.sechub.sharedkernel.storage.core.SharedVolumeSetup;
 
 /**
  * This is not really a test, but a simple test program where we can check if
