@@ -16,7 +16,17 @@ ext {
    ]
 
    library = [
-      /* spring */
+      /* autark parts, with same versions like current spring (2.1.19*/
+        // https://mvnrepository.com/artifact/junit/junit
+        junit: "junit:junit:4.12",
+
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        mockito: "org.mockito:mockito-core:2.23.4",
+
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+        slf4j: "org.slf4j:slf4j-api:1.7.28",
+
+       /* spring */
          springboot_starter_thymeleaf:          "org.springframework.boot:spring-boot-starter-thymeleaf",
 
          springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",

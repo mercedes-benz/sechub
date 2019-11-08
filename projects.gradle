@@ -7,11 +7,12 @@ projectType = [
             ],
 
             javaProjects: [
+               project(':sechub-shared-kernel-storage'),
+               project(':sechub-testframework'),
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here*/
             springBootProjects: [
-                    project(':sechub-testframework'),//we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-shared-kernel-testframework'),//we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-scan-testframework'), //we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-integrationtest'),

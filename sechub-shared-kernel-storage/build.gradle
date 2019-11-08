@@ -1,0 +1,22 @@
+
+// SPDX-License-Identifier: MIT
+/*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.666'
+
+     // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
+    testCompile group: 'com.adobe.testing', name: 's3mock', version: '2.1.16'
+    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.16'
+
+    testCompile library.junit
+    testCompile library.mockito
+    testCompile project(':sechub-testframework')
+
+}

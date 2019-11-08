@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.test;
+package com.daimler.sechub.integrationtest;
 
 import java.io.IOException;
 import java.util.Map;

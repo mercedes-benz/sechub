@@ -11,6 +11,7 @@ import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.MultiStorageService;
 import com.daimler.sechub.sharedkernel.storage.filesystem.SharedVolumeSetup;
 import com.daimler.sechub.sharedkernel.storage.s3.S3Setup;
+import com.daimler.sechub.storage.s3.AwsS3JobStorageTest;
 
 /**
  * This is not really a test, but a simple test program where we can check if

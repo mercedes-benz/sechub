@@ -7,9 +7,7 @@
  */
 dependencies {
 
-    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.666'
-
+    compile project(':sechub-shared-kernel-storage')
 
     testCompile project(':sechub-testframework')
 

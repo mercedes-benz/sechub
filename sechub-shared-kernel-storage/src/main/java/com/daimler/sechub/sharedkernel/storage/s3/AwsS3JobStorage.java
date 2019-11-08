@@ -1,6 +1,6 @@
 package com.daimler.sechub.sharedkernel.storage.s3;
 
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
+import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +37,8 @@ public class AwsS3JobStorage implements JobStorage {
 
 	@Override
 	public void store(String name, InputStream inputStream) throws IOException {
-		notNull(name, "name may not be null!");
-		notNull(inputStream, "inputStream may not be null!");
+		requireNonNull(name, "name may not be null!");
+		requireNonNull(inputStream, "inputStream may not be null!");
 
 		try (InputStream stream=inputStream){
 			if (!client.doesBucketExistV2(bucketName)) {
@@ -52,6 +52,7 @@ public class AwsS3JobStorage implements JobStorage {
 		}
 
 	}
+
 
 	private String getObjectName(String name) {
 		return getObjectPrefix() + name;

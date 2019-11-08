@@ -1,4 +1,4 @@
-package com.daimler.sechub.test.s3;
+package com.daimler.sechub.storage.s3;
 
 import static org.junit.Assert.*;
 

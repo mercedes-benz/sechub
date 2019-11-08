@@ -39,6 +39,7 @@ include 'sechub-cli',
 'sechub-testframework',
 
 'sechub-scan-testframework',
+'sechub-shared-kernel-storage',
 'sechub-shared-kernel-testframework',
 
 'sechub-developertools'
