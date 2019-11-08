@@ -8,24 +8,22 @@
    ============================================================================
  */
 
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMddHHmmss')
-    return formattedDate
-}
-
-def reportPostFix = getDate();
-
-subprojects{
-
-    task createCombinedJavaTestReport(type: TestReport, dependsOn: build) {
-        destinationDir = file("$buildDir/reports/allTests")
+task createCombinedJavaTestReport(type: TestReport) {
+        destinationDir = file("${rootProject.projectDir}/build/reports/allTests")
         // Include the results from the `test` task in all java subprojects
         reportOn projectType.javaProjects*.test
-    }
-
-    task createCombinedTestReport(type: TestReport, dependsOn: createCombinedJavaTestReport) {
-        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
-    }
-
+        // integration tests seems to be very often  "up-to-date"
+        // but we want them always to be executed, so next line...
+        outputs.upToDateWhen { false }
 }
+
+
+task createCombinedTestReport(type: TestReport, dependsOn: createCombinedJavaTestReport) {
+    /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+}
+
+task copyIntegrationTestLogToReports(type: Copy){
+   from "sechub-integrationtest/integrationtest-server.log"
+   destinationDir(file("${rootProject.projectDir}/build/reports/allTests/"))
+}
+tasks.createCombinedTestReport.dependsOn (copyIntegrationTestLogToReports)

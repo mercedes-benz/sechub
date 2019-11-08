@@ -31,4 +31,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
           name: combined-sechub-testreport
-          path: reports/allTests
+          path: build/reports/allTests

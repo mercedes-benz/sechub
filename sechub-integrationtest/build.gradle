@@ -2,7 +2,7 @@
  /*============================================================================
  * Build file for subproject
  *
- * Root build file: "${project.projectDir}/build.gradle"
+ * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
 dependencies {
