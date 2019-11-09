@@ -48,6 +48,7 @@ public class TestURLBuilder {
 
 	private static final String API_ADMIN = "/api/admin";
 	private static final String API_USER = "/api/user";
+	private static final String API_OWNER = "/api/owner";
 	private static final String API_ANONYMOUS = "/api/anonymous";
 
 	private static final String API_ADMIN_USER = API_ADMIN + "/user";
@@ -323,7 +324,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildCheckRoleOwner() {
-		return buildUrl(API_USER, "integrationtest/check/role/owner");
+		return buildUrl(API_OWNER, "integrationtest/check/role/owner");
 	}
 
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {

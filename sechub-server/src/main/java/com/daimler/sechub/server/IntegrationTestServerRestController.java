@@ -79,7 +79,7 @@ public class IntegrationTestServerRestController {
 	}
 
 	@RolesAllowed(RoleConstants.ROLE_OWNER)
-	@RequestMapping(path = APIConstants.API_USER + "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
+	@RequestMapping(path = APIConstants.API_OWNER+ "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public void checkRoleOwner() {
 		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
