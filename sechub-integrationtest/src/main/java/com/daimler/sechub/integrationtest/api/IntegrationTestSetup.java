@@ -28,7 +28,7 @@ public class IntegrationTestSetup implements TestRule {
 	private static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
 	private static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
 
-	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 2000;
+	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 100;
 	private static final String SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "sechub.integrationtest.prepare.wait.ms";
 	private static final String ENV_SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS";
 
