@@ -28,7 +28,7 @@ public class IntegrationTestSetup implements TestRule {
 	private static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
 	private static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
 
-	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 1000;
+	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 2000;
 	private static final String SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "sechub.integrationtest.prepare.wait.ms";
 	private static final String ENV_SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS";
 
@@ -166,13 +166,7 @@ public class IntegrationTestSetup implements TestRule {
 		}
 
 		private void waitForPreparationEventsDone() throws InterruptedException {
-			// Why this?
-			// Because of race conditions - at a slow build server it can happen that the
-			// event handling takes some time - e.g. to cleanup former role owner ship. An
-			// example: adminstration layer has already cleanup a former created user, but he/she still exists on
-			// scheduler site and will be deleted short time later.
-
-			// Where fast build servers are used and wait is not necessary, callers can override this by environment entry or setting system property.
+			// Callers can override this by environment entry or setting system property.
 
 			int timeToWaitMilliseconds=DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION;
 			/* system property variant:*/
