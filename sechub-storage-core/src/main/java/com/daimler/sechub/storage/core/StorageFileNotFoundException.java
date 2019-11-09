@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.storage;
+package com.daimler.sechub.storage.core;
 public class StorageFileNotFoundException extends StorageException {
 
 	private static final long serialVersionUID = -8773166342983291310L;

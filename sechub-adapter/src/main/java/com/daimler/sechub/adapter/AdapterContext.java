@@ -17,15 +17,19 @@ public interface AdapterContext<C extends AdapterConfig> extends TraceIdProvider
 
 	/**
 	 * Returns an id used by the product to identify the request/session
-	 * 
+	 *
 	 * @return id
 	 */
 	String getProductContextId();
 
 	RestOperations getRestOperations();
 
+	default AdapterException asAdapterException(String message) {
+		return asAdapterException(message,null);
+	}
+
 	AdapterException asAdapterException(String message, Throwable t);
-	
+
 	/**
 	 * @return configuration, never <code>null</code>
 	 */
@@ -38,16 +42,16 @@ public interface AdapterContext<C extends AdapterConfig> extends TraceIdProvider
 	boolean isTimeOut();
 
 	long getMillisecondsRun();
-	
+
 	JSONAdapterSupport json();
-	
+
 	/**
 	 * Gives back full API URL, containing of base url from configuration and given api path
 	 * @param apiPath
 	 * @return full API URL - e.g. "https://localhost/prefix/$apiPath"
 	 */
 	String getAPIURL(String apiPath);
-	
+
 	/**
 	 * Gives back full API URL, containing of base url from configuration and given api path.
 	 * At the end of the url the map entries are added

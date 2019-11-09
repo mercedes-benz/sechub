@@ -23,3 +23,12 @@ jobs:
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
     - name: Integration test
       run: ./gradlew integrationtest
+    - name: Create combined test report
+      if: always()
+      run: ./gradlew createCombinedTestReport
+    - name: Archive combined test report
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+          name: combined-sechub-testreport
+          path: build/reports/allTests

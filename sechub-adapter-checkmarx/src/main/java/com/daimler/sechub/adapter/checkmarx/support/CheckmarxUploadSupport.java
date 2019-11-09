@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.checkmarx.support;
 
-import java.io.File;
+import java.io.InputStream;
 
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,7 +29,7 @@ public class CheckmarxUploadSupport {
 			throws AdapterException {
 		CheckmarxAdapterConfig config = context.getConfig();
 
-		FileSystemResource sourceCodeFile = fetchSystemResource(context, config);
+		Resource sourceCodeFile = fetchResource(context, config);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -38,23 +39,21 @@ public class CheckmarxUploadSupport {
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
 		String url = context.getAPIURL("projects/" + context.getSessionData().getProjectId() + "/sourceCode/attachments");
-		
+
 		RestOperations restTemplate = context.getRestOperations();
-		
+
 		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 		if (! result.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
-			throw context.asAdapterException("Response HTTP status not as expected: "+result.getStatusCode(), null);
+			throw context.asAdapterException("Response HTTP status not as expected: "+result.getStatusCode());
 		}
 	}
 
-	private FileSystemResource fetchSystemResource(CheckmarxAdapterContext context, CheckmarxAdapterConfig config)
+	private Resource fetchResource(CheckmarxAdapterContext context, CheckmarxAdapterConfig config)
 			throws AdapterException {
-		String pathToZipFile = config.getPathToZipFile();
-		/* currently we only provide file pathes... */
-		File file = new File(pathToZipFile);
-		if (!file.exists()) {
-			throw context.asAdapterException("File does not exist:" + pathToZipFile, null);
+		InputStream zipInputstream = config.getSourceCodeZipFileInputStream();
+		if (zipInputstream==null) {
+			throw context.asAdapterException("Input stream containing zip file is null!");
 		}
-		return new FileSystemResource(file);
+		return new InputStreamResource(zipInputstream);
 	}
 }

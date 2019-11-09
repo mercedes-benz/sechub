@@ -54,6 +54,9 @@ pipeline {
              /* against build race conditions - See TestPortProvider.java */
              SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
              SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
+
+             SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+             SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
           }
           steps {
               script{
@@ -81,6 +84,11 @@ pipeline {
             environment {
                /* against build race conditions - See TestPortProvider.java */
                SERVER_PORT= getJenkinsExecutorPort(8243)
+                /* same for s3mock which is internally a spring boot application starting a jetty as well*/
+               SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
+               SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
+
+               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=300
             }
 
             steps {

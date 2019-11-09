@@ -5,6 +5,7 @@ import static com.daimler.sechub.sharedkernel.messaging.DomainDataTraceLogID.*;
 import static com.daimler.sechub.sharedkernel.messaging.MessageDataKeys.*;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ import com.daimler.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.JSONConverterException;
+import com.daimler.sechub.storage.core.JobStorage;
 
 /**
  * Scan service - main entry point for scans. We use a REQUIRES_NEW propagation
@@ -125,7 +126,11 @@ public class ScanService implements SynchronMessageHandler {
 		UUID jobUUID = context.getSechubJobUUID();
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-		storage.deleteAll();
+		try {
+			storage.deleteAll();
+		} catch (IOException e) {
+			LOG.error("Was not able to delete storage for job {}",jobUUID,e);
+		}
 
 	}
 

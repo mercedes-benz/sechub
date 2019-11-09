@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import com.daimler.sechub.sharedkernel.Profiles;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
 @Order(4000)
 @Profile(Profiles.INTEGRATIONTEST)

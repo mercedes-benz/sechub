@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject 
+ * Build file for subproject
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
 dependencies {
+
+    compile project(':sechub-storage-core')
+    compile project(':sechub-storage-s3-aws')
 
     testCompile project(':sechub-testframework')
 

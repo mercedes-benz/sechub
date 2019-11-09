@@ -8,7 +8,7 @@ public class SpringValueExtractor {
 	public class SpringValue{
 		private String key="";
 		private String defaultValue;
-		
+
 		public String getKey() {
 			return key;
 		}
@@ -37,7 +37,7 @@ public class SpringValueExtractor {
 			}
 			return sb.toString();
 		}
-		
+
 		@Override
 		public String toString() {
 			return "SpringValue [key=" + key + ", defaultValue=" + defaultValue + "]";
@@ -64,17 +64,21 @@ public class SpringValueExtractor {
 			value.key=string;
 			return value;
 		}
-		
+
 		int leftIndex = firstNotEmpty.indexOf(":");
 		if (leftIndex==-1) {
 			value.key=firstNotEmpty;
+			value.defaultValue=null;
 			return value;
 		}
 		value.key= firstNotEmpty.substring(0,leftIndex);
-		
+
 		int startRight = leftIndex+1;
 		if (firstNotEmpty.length()>startRight) {
 			value.defaultValue=firstNotEmpty.substring(startRight);
+		}else {
+			/* we got an empty default value */
+			value.defaultValue="";
 		}
 		return value;
 	}

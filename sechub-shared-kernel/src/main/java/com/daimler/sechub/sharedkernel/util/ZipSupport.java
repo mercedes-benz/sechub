@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.zip.ZipFile;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ZipSupport {
-	
-	/**
-	 * A shared instance
-	 */
-	public static final ZipSupport INSTANCE = new ZipSupport();
 
 	public boolean isZipFile(Path pathToFile) {
 		try (ZipFile zipFile = new ZipFile(pathToFile.toFile())){
