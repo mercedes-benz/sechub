@@ -11,9 +11,16 @@
 subprojects{
 
     task copyJunitResults(type: Copy) {
-        from "${project.projectDir}/build/test-results/test"
-        into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
-        include "*.xml"
+        with{
+            from "${project.projectDir}/build/test-results/test"
+            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            include "*.xml"
+        }
+        with{
+            from "${project.projectDir}/build/test-results/integrationtest"
+            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            include "*.xml"
+        }
     }
 
     task createCombinedTestReport(dependsOn: copyJunitResults) {
