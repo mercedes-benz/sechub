@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import com.amazonaws.util.StringInputStream;
 import com.daimler.sechub.sharedkernel.storage.MultiStorageService;
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
-import com.daimler.sechub.sharedkernel.storage.core.S3Setup;
-import com.daimler.sechub.sharedkernel.storage.core.SharedVolumeSetup;
+import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.S3Setup;
+import com.daimler.sechub.storage.core.SharedVolumeSetup;
 
 /**
  * This is not really a test, but a simple test program where we can check if

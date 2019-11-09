@@ -30,8 +30,8 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
 import com.daimler.sechub.sharedkernel.util.JSONConverterException;
+import com.daimler.sechub.storage.core.JobStorage;
 
 /**
  * Scan service - main entry point for scans. We use a REQUIRES_NEW propagation

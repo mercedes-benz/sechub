@@ -2,7 +2,7 @@
 package com.daimler.sechub.sharedkernel.storage;
 import java.util.UUID;
 
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.JobStorage;
 
 public interface StorageService {
 

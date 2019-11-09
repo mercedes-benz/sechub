@@ -7,8 +7,6 @@ projectType = [
             ],
 
             javaProjects: [
-               project(':sechub-shared-kernel-storage-core'),
-               project(':sechub-shared-kernel-storage-s3-amazon'),
                project(':sechub-testframework'),
             ],
 
@@ -19,6 +17,11 @@ projectType = [
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
+                    /* only necessary ,because otherwise we got the (older)
+                       dependencies from aws as comiled projects in IDEs: */
+                    project(':sechub-storage-core'),
+                    project(':sechub-storage-s3-aws'),
+                    project(':sechub-storage-s3-aws-test'),
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */

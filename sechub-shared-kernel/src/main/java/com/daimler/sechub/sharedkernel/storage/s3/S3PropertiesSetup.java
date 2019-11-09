@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import com.daimler.sechub.sharedkernel.storage.core.S3Setup;
+import com.daimler.sechub.storage.core.S3Setup;
 
 @Component
 public class S3PropertiesSetup implements S3Setup{

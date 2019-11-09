@@ -29,9 +29,9 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
+import com.daimler.sechub.storage.core.JobStorage;
 
 /**
  * Contains additional rest call functionality for integration test server

@@ -24,7 +24,7 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {

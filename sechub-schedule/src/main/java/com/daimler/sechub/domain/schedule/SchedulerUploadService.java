@@ -18,11 +18,11 @@ import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.storage.core.JobStorage;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
+import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class SchedulerUploadService {
