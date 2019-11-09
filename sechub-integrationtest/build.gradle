@@ -80,6 +80,12 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
 
 }
 
+task copyIntegrationTestLogToReports(type: Copy){
+   from "integrationtest-server.log"
+   destinationDir(file("${rootProject.projectDir}/build/reports/allTests/"))
+}
+tasks.createCombinedTestReport.dependsOn (copyIntegrationTestLogToReports)
+
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.
  * Unfortunately this has blocked always when using exec in combination (server runs) - even when using "&" option.

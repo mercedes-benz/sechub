@@ -8,22 +8,33 @@
    ============================================================================
  */
 
-task createCombinedJavaTestReport(type: TestReport) {
-        destinationDir = file("${rootProject.projectDir}/build/reports/allTests")
-        // Include the results from the `test` task in all java subprojects
-        reportOn projectType.javaProjects*.test
-        // integration tests seems to be very often  "up-to-date"
-        // but we want them always to be executed, so next line...
-        outputs.upToDateWhen { false }
+subprojects{
+
+    task copyJunitResults(type: Copy) {
+        from "${project.projectDir}/build/test-results/test"
+        into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+        include "*.xml"
+    }
+
+    task createCombinedTestReport(dependsOn: copyJunitResults) {
+        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+
+    }
+
+}
+
+project('sechub-test'){
+    createCombinedTestReport {
+        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+
+        doLast {
+            new JunitFilesToOneFileConverter().combineFiles("${rootProject.projectDir}/build/reports/allTests-tmp/junit", "${rootProject.projectDir}/build/reports/allTests/junit-results-exported.xml");
+        }
+
+    }
 }
 
 
-task createCombinedTestReport(type: TestReport, dependsOn: createCombinedJavaTestReport) {
-    /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
-}
 
-task copyIntegrationTestLogToReports(type: Copy){
-   from "sechub-integrationtest/integrationtest-server.log"
-   destinationDir(file("${rootProject.projectDir}/build/reports/allTests/"))
-}
-tasks.createCombinedTestReport.dependsOn (copyIntegrationTestLogToReports)
+
+
