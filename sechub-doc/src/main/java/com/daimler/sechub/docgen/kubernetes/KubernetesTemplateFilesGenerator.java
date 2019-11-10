@@ -20,6 +20,7 @@ import com.daimler.sechub.docgen.util.TextFileWriter;
 
 class KubernetesTemplateFilesGenerator implements Generator {
 
+	private static final String SECHUB_KUBERNETES_GENO_TARGET_ROOT = "SECHUB_KUBERNETES_GENO_TARGET_ROOT";
 	// https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables
 
 	SpringValueExtractor springValueExtractor;
@@ -278,18 +279,12 @@ class KubernetesTemplateFilesGenerator implements Generator {
 		return assertExists(genFolder);
 	}
 
-	private File ensureKubernetesTargetRootFolder() {
-		File secHubServer = new File("./sechub-server");
-		if (!secHubServer.exists()) {
-			/* maybe not gradle but IDE .. so try other... */
-			secHubServer = new File("./../sechub-server");
-		}
-		// target root is parent of sechub-server... so we are definitely at root
-		return assertExists(secHubServer).getParentFile();
-	}
-
 	private File ensureKubernetesFolder() {
-		return assertExists(new File(ensureKubernetesTargetRootFolder(), "kubernetes"));
+		String targetKubernetesFolder = System.getenv(SECHUB_KUBERNETES_GENO_TARGET_ROOT);
+		if (targetKubernetesFolder==null ||targetKubernetesFolder.isEmpty()) {
+			throw new IllegalStateException(SECHUB_KUBERNETES_GENO_TARGET_ROOT+" must be set");
+		}
+		return assertExists(new File(targetKubernetesFolder));
 	}
 
 	private File assertExists(File folder) {

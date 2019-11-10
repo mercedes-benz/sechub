@@ -10,12 +10,11 @@ import com.daimler.sechub.storage.core.S3Setup;
 public class S3PropertiesSetup implements S3Setup{
 
 	private static final String UNDEFINED ="undefined";
-
-	@MustBeDocumented(value="Defines the access key for used s3 bucket",scope="storage")
+	@MustBeDocumented(value="Defines the access key for used s3 bucket",scope="storage",secret=true)
 	@Value("${sechub.storage.s3.accesskey:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String accessKey;
 
-	@MustBeDocumented(value="Defines the secret key for used s3 bucket",scope="storage")
+	@MustBeDocumented(value="Defines the secret key for used s3 bucket",scope="storage",secret=true)
 	@Value("${sechub.storage.s3.secretkey:"+UNDEFINED+"}") // we use undefined here. Will be used in isValid
     private String secretKey;
 
