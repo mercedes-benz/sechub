@@ -32,7 +32,7 @@ public class AwsS3JobStorageFactory implements JobStorageFactory{
 		s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds))
 				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), Regions.DEFAULT_REGION.name()))
 				.withClientConfiguration(clientConfiguration).build();
-
+		
 		bucketName=s3Setup.getBucketName();
 	}
 

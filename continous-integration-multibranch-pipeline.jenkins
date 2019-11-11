@@ -71,11 +71,15 @@ pipeline {
             environment {
                /* against build race conditions - See TestPortProvider.java */
                SERVER_PORT= getJenkinsExecutorPort(8243)
-               /* same for s3mock which is internally a spring boot application starting a jetty as well*/
-               SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
-               SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
 
-               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=300
+               /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
+               SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+               SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+               SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+               SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+
+               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+
             }
 
             steps {
@@ -88,7 +92,7 @@ pipeline {
        stage('Security scan') {
             when{
                 not {
-                    environment name: 'SECHUB_SCAN_ENABLED', value: '<undefined>'
+                    environment name: 'SECHUB_SCAN_ENABLED', value: 'undefined'
                 }
             }
 
@@ -179,10 +183,16 @@ void executeSecHubScan() {
 }
 
 Object getStringCredentialsOrUndefined(String id){
+    result = 'undefined'
     if (stringCredentialsExist(id)){
-       return credentials(id)
+        try {
+        withCredentials([string(credentialsId: id, variable: 'text')]) {
+          result = ''+text
+        }
+      } catch (_) {
+      }
     }
-    return '<undefined>'
+    return result
 }
 
 boolean stringCredentialsExist(String id) {
