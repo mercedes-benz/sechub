@@ -28,7 +28,7 @@ public class FileUploadSizeScenario2IntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class).markLongRunning();
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(60);
+	public Timeout timeOut = Timeout.seconds(240);
 
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
