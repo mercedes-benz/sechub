@@ -44,12 +44,12 @@ class KubernetesTemplateFilesGenerator implements Generator {
 		}
 		/* additional parts: */
 		/* database: */
-		list.add(newSecret("spring.datasource.userid", "database", "Define userid for database access"));
+		list.add(newSecret("spring.datasource.username", "database", "Define userid for database access"));
 		list.add(newSecret("spring.datasource.password", "database", "The password for database access"));
 		list.add(newSecret("spring.datasource.patroni.password", "database", "The password for patroni sync etc."));
 
 		/* database-backup: */
-		list.add(newSecret("spring.datasource.backup.userid", "database-backup", "The user for database backup access"));
+		list.add(newSecret("spring.datasource.backup.username", "database-backup", "The user for database backup access"));
 		list.add(newSecret("spring.datasource.backup.password", "database-backup", "The password for database backup access"));
 
 		/* ssl: */
