@@ -37,6 +37,8 @@ import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedul
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
@@ -108,6 +110,11 @@ public class CommandUI {
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
 		menu.addSeparator();
+
+		JMenu anonymous = new JMenu("Anonymous");
+		menu.add(anonymous);
+		add(anonymous,new AnonymousRequestNewAPITokenUserAction(context));
+		add(anonymous,new AnonymousSigninNewUserAction(context));
 
 		JMenu grantMenu = new JMenu("Grant");
 		add(grantMenu,new GrantAdminRightsToUserAction(context));
