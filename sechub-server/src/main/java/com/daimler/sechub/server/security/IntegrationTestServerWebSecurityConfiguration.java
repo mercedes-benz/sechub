@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 public class IntegrationTestServerWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		/* api for integration test is always allowed */
 		web.ignoring().antMatchers("api/integrationtest/*");
 	}
