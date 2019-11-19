@@ -6,7 +6,7 @@ import com.daimler.sechub.sharedkernel.SharedKernelCryptoAccess;
 
 public class AutoDetectUserLoginConfiguration{
 
-	private SharedKernelCryptoAccess<char[]> cryptoAccess = new SharedKernelCryptoAccess<>();
+	private SharedKernelCryptoAccess<char[]> cryptoAccess = SharedKernelCryptoAccess.CRYPTO_CHAR_ARRAY;
 	private char[] user;
 	SealedObject password;
 

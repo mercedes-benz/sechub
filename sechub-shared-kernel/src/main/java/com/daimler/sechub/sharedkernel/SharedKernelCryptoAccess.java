@@ -14,7 +14,8 @@ public class SharedKernelCryptoAccess<T extends Serializable> {
 	private char[] transformation = new char[] {'A','E','S'};
 	private SecretKey secretKey;
 
-	public static final SharedKernelCryptoAccess<String> CRYPTO_STRING = new SharedKernelCryptoAccess<String>();
+	public static final SharedKernelCryptoAccess<String> CRYPTO_STRING = new SharedKernelCryptoAccess<>();
+	public static final SharedKernelCryptoAccess<char[]> CRYPTO_CHAR_ARRAY = new SharedKernelCryptoAccess<>();
 
 	public SharedKernelCryptoAccess(){
 		secretKey = getkeyGen(transformation).generateKey();
