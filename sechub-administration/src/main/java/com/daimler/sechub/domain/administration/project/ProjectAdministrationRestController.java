@@ -95,9 +95,9 @@ public class ProjectAdministrationRestController {
 	/* @formatter:off */
 	@UseCaseAdministratorShowsProjectDetails(@Step(number=1,name="Rest call",description="Json returned containing details about project",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String userId) {
+	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		return detailsService.fetchDetails(userId);
+		return detailsService.fetchDetails(projectId);
 	}
 
 	/* @formatter:off */

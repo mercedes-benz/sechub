@@ -23,6 +23,7 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobFactory;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -39,6 +40,9 @@ public class SchedulerCreateJobServiceSpringBootTest {
 
 	@MockBean
 	private SecHubJobRepository jobRepository;
+
+	@MockBean
+	private UserInputAssertion assertion;
 
 
 	private SecHubConfiguration configuration;

@@ -10,8 +10,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class JobScenario2IntTest {
 

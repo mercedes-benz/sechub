@@ -101,7 +101,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 	        		);
 
 
-		verifyZeroInteractions(mockedProjectUpdateWhiteListService);
+		  verifyNoInteractions(mockedProjectUpdateWhiteListService);
 		/* @formatter:on */
 	}
 

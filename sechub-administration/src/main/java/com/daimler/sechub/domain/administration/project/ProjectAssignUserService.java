@@ -25,6 +25,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -47,6 +48,9 @@ public class ProjectAssignUserService {
 	@Autowired
 	UserContextService userContextService;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	/* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(
 			@Step(
@@ -56,6 +60,9 @@ public class ProjectAssignUserService {
 	/* @formatter:on */
 	public void assignUserToProject(String userId, String projectId) {
 		LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));
+
+		assertion.isValidUserId(userId);
+		assertion.isValidUserId(projectId);
 
 		Project project = projectRepository.findOrFailProject(projectId);
 		User user = userRepository.findOrFailUser(userId);

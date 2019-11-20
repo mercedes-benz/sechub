@@ -14,6 +14,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class UserRoleCalculationService {
@@ -24,7 +25,12 @@ public class UserRoleCalculationService {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	public void recalculateRolesOfUser(String userId) {
+		assertion.isValidUserId(userId);
+
 		User user = userRepository.findOrFailUser(userId);
 
 		boolean active = ! user.isDeactivated();

@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.daimler.sechub.sereco.metadata.MetaDataAccess;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoDetection;
-import com.daimler.sechub.sereco.metadata.MetaDataAccess;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 

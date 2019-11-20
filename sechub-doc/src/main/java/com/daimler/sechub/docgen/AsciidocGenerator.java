@@ -4,6 +4,8 @@ package com.daimler.sechub.docgen;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.LoggerFactory;
+
 import com.daimler.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
 import com.daimler.sechub.docgen.spring.ScheduleDescriptionGenerator;
@@ -18,7 +20,7 @@ import com.daimler.sechub.docgen.usecase.UseCaseRestDocModelAsciiDocGenerator;
 import com.daimler.sechub.docgen.util.ClasspathDataCollector;
 import com.daimler.sechub.docgen.util.TextFileWriter;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
-import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 

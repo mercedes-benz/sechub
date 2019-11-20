@@ -19,6 +19,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class AnonymousUserRequestsNewApiTokenService {
@@ -40,9 +41,14 @@ public class AnonymousUserRequestsNewApiTokenService {
 	@Autowired
 	LogSanitizer logSanitizer;
 
+	@Autowired
+	UserInputAssertion assertion;
 
 	public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {
 		LOG.info("New api token requested for email address: {})",logSanitizer.sanitize(userEmail,50));
+
+		assertion.isValidEmailAddress(userEmail);
+
 		Optional<User> found = userRepository.findByEmailAdress(userEmail);
 		if (! found.isPresent()) {
 			/* we just do nothing here - prevent user enumeration by hacking...*/

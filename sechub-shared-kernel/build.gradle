@@ -10,6 +10,8 @@ dependencies {
     compile project(':sechub-storage-core')
     compile project(':sechub-storage-s3-aws')
 
+    compile library.apache_commons_validator
+
     testCompile project(':sechub-testframework')
 
 }

@@ -1,13 +1,13 @@
 package com.daimler.sechub.domain.notification.email;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mail.SimpleMailMessage;
 
 import com.daimler.sechub.domain.notification.NotificationConfiguration;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 
 public class MailMessageFactoryTest {

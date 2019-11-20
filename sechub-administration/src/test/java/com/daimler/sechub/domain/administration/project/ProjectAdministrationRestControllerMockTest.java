@@ -143,7 +143,7 @@ public class ProjectAdministrationRestControllerMockTest {
 	        		);
 
 
-		verifyZeroInteractions(creationService);
+		  verifyNoInteractions(creationService);
 		/* @formatter:on */
 	}
 

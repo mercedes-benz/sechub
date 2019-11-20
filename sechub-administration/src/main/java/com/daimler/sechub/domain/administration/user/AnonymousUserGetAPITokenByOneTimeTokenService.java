@@ -21,6 +21,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetNewAPIToken;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class AnonymousUserGetAPITokenByOneTimeTokenService {
@@ -46,17 +47,16 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
 	LogSanitizer logSanitizer;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	UserInputAssertion assertion;
+
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number=2,next={3,4}, name="Validation and update",description="When its a valid one time token a new api token is generated and persisted hashed to user. The token itself is returned. When not valid an emtpy string is the result ..."))
 	@IsSendingAsyncMessage(MessageID.USER_API_TOKEN_CHANGED)
 	public String createNewAPITokenForUserByOneTimeToken(String oneTimeToken) {
-		if (oneTimeToken==null) {
-			return "";
-		}
-		if (oneTimeToken.isEmpty()) {
-			return "";
-		}
+		assertion.isValidOneTimeToken(oneTimeToken);
+
 		Optional<User> found = sechubUserRepository.findByOneTimeToken(oneTimeToken);
 		if (! found.isPresent()) {
 			LOG.warn(

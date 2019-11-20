@@ -21,6 +21,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorRevokesAdminRightsFromAdmin;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -43,6 +44,9 @@ public class UserRevokeSuperAdminRightsService {
 	@Autowired
 	LogSanitizer logSanitizer;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorRevokesAdminRightsFromAdmin(
@@ -54,6 +58,8 @@ public class UserRevokeSuperAdminRightsService {
 	/* @formatter:on */
 	public void revokeSuperAdminRightsFrom(String userId) {
 		auditLogService.log("Triggered revoking admin rights from user {}",logSanitizer.sanitize(userId,30));
+
+		assertion.isValidUserId(userId);
 
 		User user = userRepository.findOrFailUser(userId);
 

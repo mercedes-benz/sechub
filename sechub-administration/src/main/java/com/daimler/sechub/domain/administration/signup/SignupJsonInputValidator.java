@@ -3,7 +3,6 @@ package com.daimler.sechub.domain.administration.signup;
 
 import static com.daimler.sechub.domain.administration.signup.SignupJsonInput.*;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.EmailValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
@@ -23,10 +23,11 @@ public class SignupJsonInputValidator implements Validator {
 	@Autowired
 	UserIdValidation useridValidation;
 
-	EmailValidator emailValidator = EmailValidator.getInstance();
-
 	@Autowired
 	ApiVersionValidation apiVersionValidation;
+
+	@Autowired
+	EmailValidation emailValidation;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -42,25 +43,22 @@ public class SignupJsonInputValidator implements Validator {
 
 		ValidationResult apiVersionValidationResult = apiVersionValidation.validate(selfRegistration.getApiVersion());
 		if (!apiVersionValidationResult.isValid()) {
-			errors.rejectValue(PROPERTY_API_VERSION, "api.error.unsupported.version",
-					apiVersionValidationResult.getErrorDescription());
+			errors.rejectValue(PROPERTY_API_VERSION, "api.error.unsupported.version", apiVersionValidationResult.getErrorDescription());
 			return;
 		}
 		ValidationResult userIdValidationResult = useridValidation.validate(selfRegistration.getUserId());
 		if (!userIdValidationResult.isValid()) {
-			errors.rejectValue(PROPERTY_USER_ID, "api.error.registration.userid.invalid",
-					userIdValidationResult.getErrorDescription());
+			errors.rejectValue(PROPERTY_USER_ID, "api.error.registration.userid.invalid", userIdValidationResult.getErrorDescription());
 			return;
 		}
 
-		if (!emailValidator.isValid(selfRegistration.getEmailAdress())) {
-			errors.rejectValue(PROPERTY_EMAIL_ADRESS, "api.error.email.invalid",
-					"Invalid email adress");
+		ValidationResult emailValidationResult = emailValidation.validate(selfRegistration.getEmailAdress());
+		if (!emailValidationResult.isValid()) {
+			errors.rejectValue(PROPERTY_EMAIL_ADRESS, "api.error.email.invalid", "Invalid email adress");
 			return;
 		}
 		LOG.debug("Selfregistration of {} was accepted", selfRegistration.getUserId());
 
 	}
-
 
 }

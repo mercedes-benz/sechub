@@ -25,6 +25,7 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsS
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
@@ -52,10 +53,13 @@ public class SchedulerUploadService {
 	@Autowired
 	AuditLogService auditLogService;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project annd upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
 	public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
-		notEmpty(projectId, "Project id may not be empty!");
-		notNull(jobUUID, "jobUUID may not be null!");
+		assertion.isValidProjectId(projectId);
+		assertion.isValidJobUUID(jobUUID);
 		notNull(file, "file may not be null!");
 
 		String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID),-1);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
@@ -14,9 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.storage.core.JobStorage;
 
 public class SchedulerUploadServiceTest {
@@ -57,6 +60,8 @@ public class SchedulerUploadServiceTest {
 		serviceToTest.assertService=mockedAssertService;
 		serviceToTest.zipSupport=mockedZipSupport;
 		serviceToTest.logSanitizer=mock(LogSanitizer.class);
+		serviceToTest.assertion=mock(UserInputAssertion.class);
+		serviceToTest.auditLogService=mock(AuditLogService.class);
 
 	}
 

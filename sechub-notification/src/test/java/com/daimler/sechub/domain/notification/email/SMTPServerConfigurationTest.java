@@ -1,6 +1,7 @@
 package com.daimler.sechub.domain.notification.email;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Properties;

@@ -1,6 +1,6 @@
 package com.daimler.sechub.storage.s3.aws;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.*;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -5,9 +5,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.daimler.sechub.sharedkernel.validation.ProjectIdValidationImpl;
-import com.daimler.sechub.sharedkernel.validation.ValidationResult;
-
 public class ProjectIdValidationImplTest {
 
     private ProjectIdValidationImpl validationToTest = new ProjectIdValidationImpl();

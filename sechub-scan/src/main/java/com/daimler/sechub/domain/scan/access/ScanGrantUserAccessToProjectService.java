@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class ScanGrantUserAccessToProjectService {
@@ -22,8 +23,14 @@ public class ScanGrantUserAccessToProjectService {
 	@Autowired
 	ScanAccessRepository repository;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@UseCaseAdministratorAssignsUserToProject(@Step(number=3,name="Update scan authorization parts"))
 	public void grantUserAccessToProject(String userId, String projectId) {
+		assertion.isValidUserId(userId);
+		assertion.isValidProjectId(projectId);
+
 		ScanAccess scanAccess = new ScanAccess(userId,projectId);
 		Optional<ScanAccess> potentialAlreadyFound = repository.findById(scanAccess.getKey());
 		if (potentialAlreadyFound.isPresent()) {

@@ -7,7 +7,7 @@ spring.profiles.include:
 sechub:
   initialadmin:
     userid: int-test_superadmin
-    email: int-test_superadmin@$sechub.example.org
+    email: int-test_superadmin@sechub.example.org
     apitoken: int-test_superadmin-pwd
   adapter:
     mock:

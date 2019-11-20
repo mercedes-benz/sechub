@@ -27,6 +27,7 @@ public class ScheduleUserAccessToProjectValidationService {
 
 	@Autowired
 	LogSanitizer logSanitizer;
+
 	/**
 	 * Assert user logged in has access to project
 	 * @param projectId

@@ -25,12 +25,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationImpl;
+import com.daimler.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousSignupRestController.class)
-@ContextConfiguration(classes = { AnonymousSignupRestController.class, SignupJsonInputValidator.class, UserIdValidationImpl.class,
+@ContextConfiguration(classes = { AnonymousSignupRestController.class, SignupJsonInputValidator.class, UserIdValidationImpl.class, EmailValidationImpl.class,
 		ApiVersionValidationImpl.class, AnonymousSignupRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
@@ -43,6 +45,9 @@ public class AnonymousSignupRestControllerMockTest {
 
 	@MockBean
 	private AnonymousSignupCreateService mockedSignupCreateService;
+
+	@MockBean
+	private UserInputAssertion assertion;
 
 	@Test
 	public void calling_with_api_1_0_and_valid_userid_and_email_calls_signup_create_service_and_returns_HTTP_200() throws Exception {

@@ -7,7 +7,6 @@ import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +16,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;

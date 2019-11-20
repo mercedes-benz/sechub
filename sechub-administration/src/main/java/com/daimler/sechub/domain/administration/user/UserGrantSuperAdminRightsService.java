@@ -19,6 +19,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorGrantsAdminRightsToUser;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -41,6 +42,9 @@ public class UserGrantSuperAdminRightsService {
 	@Autowired
 	LogSanitizer logSanitizer;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorGrantsAdminRightsToUser(
@@ -52,6 +56,8 @@ public class UserGrantSuperAdminRightsService {
 	/* @formatter:on */
 	public void grantSuperAdminRightsFor(String userId) {
 		auditLogService.log("Triggered granting admin rights for user {}",logSanitizer.sanitize(userId,30));
+
+		assertion.isValidUserId(userId);
 
 		User user = userRepository.findOrFailUser(userId);
 

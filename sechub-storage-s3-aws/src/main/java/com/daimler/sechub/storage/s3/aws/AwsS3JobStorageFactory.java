@@ -1,8 +1,9 @@
 package com.daimler.sechub.storage.s3.aws;
 
+import static java.util.Objects.*;
+
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

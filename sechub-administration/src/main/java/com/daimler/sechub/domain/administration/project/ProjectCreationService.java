@@ -30,6 +30,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -53,6 +54,8 @@ public class ProjectCreationService {
 	@Autowired
 	URIValidation uriValidation;
 
+	@Autowired
+	UserInputAssertion assertion;
 
 	@Validated
 	/* @formatter:off */
@@ -63,6 +66,11 @@ public class ProjectCreationService {
 	/* @formatter:on */
 	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist) {
 		LOG.info("Administrator {} triggers create of project:{}, having owner:{}",userContext.getUserId(),projectId,owner);
+
+		assertion.isValidProjectId(projectId);
+		assertion.isValidUserId(owner);
+		assertion.isvalidProjectDescription(owner);
+
 		/* assert found */
 		Optional<Project> foundProject = projectRepository.findById(projectId);
 		if (foundProject.isPresent()) {
@@ -80,7 +88,7 @@ public class ProjectCreationService {
 
 		User ownerUser = foundOwner.get();
 		project.owner=ownerUser;
-		/** add only accepted/valid URIs */
+		/** add only accepted/valid URIs - sanitize */
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
 		/* store */

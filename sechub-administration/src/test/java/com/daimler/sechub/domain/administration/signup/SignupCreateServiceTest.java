@@ -13,6 +13,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class SignupCreateServiceTest {
 
@@ -27,6 +28,8 @@ public class SignupCreateServiceTest {
 		serviceToTest.eventBusService =mockedEventBusService;
 		serviceToTest.userRepository = mock(UserRepository.class);
 		serviceToTest.userSelfRegistrationRepository = mock(SignupRepository.class);
+		serviceToTest.assertion=mock(UserInputAssertion.class);
+
 	}
 
 	@Test

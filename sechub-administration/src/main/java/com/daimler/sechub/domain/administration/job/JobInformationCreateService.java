@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class JobInformationCreateService {
@@ -21,11 +22,17 @@ public class JobInformationCreateService {
 	@Autowired
 	JobInformationRepository repository;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@Validated
 	@UseCaseSchedulerStartsJob(@Step(number = 4, name = "Store admin job info", description = "Fetches event about started job and store info in admin domain."))
 	public void createByMessage(JobMessage message, JobStatus status) {
 		String projectId = message.getProjectId();
 		UUID jobUUID = message.getJobUUID();
+
+		assertion.isValidProjectId(projectId);
+		assertion.isValidJobUUID(jobUUID);
 
 		LOG.debug("creating a new job information entry for project={}, job={}", projectId,jobUUID);
 
