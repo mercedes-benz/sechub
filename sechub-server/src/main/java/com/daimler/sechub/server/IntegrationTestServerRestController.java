@@ -61,14 +61,12 @@ public class IntegrationTestServerRestController {
 	@Autowired
 	LogSanitizer logSanitizer;
 
-	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public void isAlive() {
 		LOG.info("Integration test server check for alive called...");
 	}
 
-	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = {
-			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/shutdown", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public void shutdownServer() {
 		LOG.info("Integration test server shutdown initiated by closing context...");
 		context.close();
@@ -76,15 +74,15 @@ public class IntegrationTestServerRestController {
 
 	@RolesAllowed(RoleConstants.ROLE_USER)
 	@RequestMapping(path = APIConstants.API_USER + "integrationtest/check/role/user", method = RequestMethod.GET, produces = {
-			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
+			MediaType.APPLICATION_JSON_VALUE })
 	public void checkRoleUser() {
 		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
 				RoleConstants.ROLE_USER, userContextService.getAuthories());
 	}
 
 	@RolesAllowed(RoleConstants.ROLE_OWNER)
-	@RequestMapping(path = APIConstants.API_OWNER+ "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
-			MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(path = APIConstants.API_OWNER + "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public void checkRoleOwner() {
 		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
 				RoleConstants.ROLE_OWNER, userContextService.getAuthories());
@@ -96,10 +94,10 @@ public class IntegrationTestServerRestController {
 
 		ValidationResult projectIdValidationResult = projectIdValidation.validate(projectId);
 		if (!projectIdValidationResult.isValid()) {
-			LOG.warn("Called with illegal projectId '{}'",logSanitizer.sanitize(projectId,30));
+			LOG.warn("Called with illegal projectId '{}'", logSanitizer.sanitize(projectId, 30));
 			return ResponseEntity.notFound().build();
 		}
-		LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId,30), jobUUID);
+		LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId, 30), jobUUID);
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 		if (!storage.isExisting(fileName)) {
 			throw new NotFoundException("file not uploaded:" + fileName);

@@ -52,7 +52,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()
@@ -69,7 +69,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"X.0\",\"userId\":\"\",\"emailAdress\":\"test@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isBadRequest()
@@ -85,7 +85,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("")
         		)./*andDo(print()).*/
         			andExpect(status().isBadRequest()
@@ -100,7 +100,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{")
         		)./*andDo(print()).*/
         			andExpect(status().isBadRequest()
@@ -115,7 +115,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content(createUserSelfRegistration("X.0", "test@test.com", null).toJSON())
         		)./*andDo(print()).*/
         			andExpect(status().isBadRequest()
@@ -135,7 +135,7 @@ public class AnonymousSignupRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"the tester\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isBadRequest()

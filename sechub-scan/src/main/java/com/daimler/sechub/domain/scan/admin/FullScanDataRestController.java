@@ -45,7 +45,7 @@ public class FullScanDataRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
-	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void getFullScanZipFileForJob(
 			@PathVariable("sechubJobUUID") UUID sechubJobUUID, HttpServletResponse response
 			) {

@@ -76,7 +76,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(PROJECT_ID.pathElement()),"projectId1").
-        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        		contentType(MediaType.APPLICATION_JSON_VALUE).
         		content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).

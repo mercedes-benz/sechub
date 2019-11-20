@@ -44,7 +44,7 @@ public class JobAdministrationRestController {
 				name="Rest call",
 				needsRestDoc=true,
 				description="Administrator lists all running jobs by calling rest api"))
-	@RequestMapping(path = AdministrationAPIConstants.API_LIST_JOBS_RUNNING, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_LIST_JOBS_RUNNING, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public List<JobInformation> fetchAllRunningJobs() {
 		/* @formatter:on */

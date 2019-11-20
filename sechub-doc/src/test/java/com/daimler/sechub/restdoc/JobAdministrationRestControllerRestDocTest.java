@@ -81,7 +81,7 @@ public class JobAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminFetchAllRunningJobsUrl()).
-				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 		andDo(print()).
 				*/

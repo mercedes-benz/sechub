@@ -94,7 +94,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
-        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        		contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.[0]", CoreMatchers.equalTo("project1"))).
@@ -110,7 +110,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAdminCreatesProjectUrl()).
-        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        		contentType(MediaType.APPLICATION_JSON_VALUE).
 
         		content("{\"name\":\"projectId1\",\"description\":\"description1\",\"owner\":\"ownerName1\",\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
         		)./*andDo(print()).*/
@@ -137,7 +137,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
 		  this.mockMvc.perform(
 	        		post(https(PORT_USED).buildAdminCreatesProjectUrl()).
-	        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	        		contentType(MediaType.APPLICATION_JSON_VALUE)
 	        		)./*andDo(print()).*/
 	        			andExpect(status().isBadRequest()
 	        		);
@@ -153,7 +153,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
-				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk());
 

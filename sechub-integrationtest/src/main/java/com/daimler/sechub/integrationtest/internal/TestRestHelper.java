@@ -65,7 +65,7 @@ public class TestRestHelper {
 
 	public String getJSon(String url) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		markLastURL(url);
 		return template.getForEntity(url, String.class).getBody();
@@ -86,7 +86,7 @@ public class TestRestHelper {
 	 */
 	public String postJSon(String url, String json) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
 
 		markLastURL(url,json);

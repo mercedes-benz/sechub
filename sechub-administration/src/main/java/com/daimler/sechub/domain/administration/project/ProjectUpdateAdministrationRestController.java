@@ -51,7 +51,7 @@ public class ProjectUpdateAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseUpdateProjectWhitelist(@Step(number=1,name="Rest call",description="White list will be updated",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_WHITELIST, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_WHITELIST, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void updateProjectWhitelist(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
 		Optional<ProjectWhiteList> projectWhiteList = input.getWhiteList();
