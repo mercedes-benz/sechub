@@ -22,6 +22,7 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
 
@@ -39,6 +40,9 @@ public class FullScanDataRestController {
 	@Autowired
 	AuditLogService auditLogService;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	/* @formatter:off */
 	@UseCaseAdministratorDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
 	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
@@ -46,6 +50,7 @@ public class FullScanDataRestController {
 			@PathVariable("sechubJobUUID") UUID sechubJobUUID, HttpServletResponse response
 			) {
 		/* @formatter:on */
+		auditLogService.log("Starts downloading full scan logs for sechub job {}", logSanitizer.sanitize(sechubJobUUID,-1));
 
 	    response.setContentType("application/zip");
 	    response.setHeader("Content-Disposition", "attachment; filename=full_scandata_"+sechubJobUUID.toString()+".zip");
@@ -56,10 +61,9 @@ public class FullScanDataRestController {
 			FullScanDataToZipOutputSupport support = new FullScanDataToZipOutputSupport();
 			support.writeScanData(fullScanData, outputStream);
 		} catch (IOException e) {
-			LOG.error("Was not able to provide zip file for full scan data of {}",sechubJobUUID, e);
+			LOG.error("Was not able to provide zip file for full scan data of {}",logSanitizer.sanitize(sechubJobUUID,-1), e);
 			throw new NotFoundException("Was not able to support zip file, see logs for details");
 		}
-	    auditLogService.log("Is Downloading full scan logs for sechub job {}", sechubJobUUID);
 	}
 
 

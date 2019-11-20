@@ -11,12 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 
 @Service
 public class AuditLogService {
 
 	@Autowired
 	UserContextService userContextService;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuditLogService.class);
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
 
 @Service
@@ -21,16 +22,20 @@ public class SignupDeleteService {
 
 	@Autowired
 	SignupRepository userSelfRegistrationRepository;
-	
+
 	@Autowired
 	UserContextService userContextService;
-	
+
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	@UseCaseAdministratorDeletesUser(@Step(number=2, name="Persistence", description="Existing signup will be deleted"))
 	public void delete(String userId) {
+		LOG.info("User {} triggered delete of user signup: {}",userContextService.getUserId(), logSanitizer.sanitize(userId,30));
+
 		Signup foundByName = userSelfRegistrationRepository.findOrFailSignup(userId);
 		userSelfRegistrationRepository.delete(foundByName);
-		
-		LOG.info("Existing user signup for {} deleted by {}",userId,userContextService.getUserId());
+
 	}
 
 }

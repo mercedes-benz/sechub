@@ -28,6 +28,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -56,6 +57,9 @@ public class IntegrationTestServerRestController {
 
 	@Autowired
 	private ProjectIdValidation projectIdValidation;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
@@ -92,10 +96,10 @@ public class IntegrationTestServerRestController {
 
 		ValidationResult projectIdValidationResult = projectIdValidation.validate(projectId);
 		if (!projectIdValidationResult.isValid()) {
-			LOG.warn("Called with illegal projectId '{}',projectId");
+			LOG.warn("Called with illegal projectId '{}'",logSanitizer.sanitize(projectId,30));
 			return ResponseEntity.notFound().build();
 		}
-		LOG.info("Integration test server: getJobStorage for {} {}", projectId, jobUUID);
+		LOG.info("Integration test server: getJobStorage for {} {}", logSanitizer.sanitize(projectId,30), jobUUID);
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 		if (!storage.isExisting(fileName)) {
 			throw new NotFoundException("file not uploaded:" + fileName);

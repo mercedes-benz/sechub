@@ -16,7 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
@@ -43,11 +46,21 @@ public class SchedulerUploadService {
 	@Autowired
 	ZipSupport zipSupport;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
+	@Autowired
+	AuditLogService auditLogService;
+
 	@UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project annd upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
 	public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
 		notEmpty(projectId, "Project id may not be empty!");
 		notNull(jobUUID, "jobUUID may not be null!");
 		notNull(file, "file may not be null!");
+
+		String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID),-1);
+
+		auditLogService.log("Wants to upload source code to project {}, {}", logSanitizer.sanitize(projectId, 30) ,traceLogID);
 
 		assertService.assertUserHasAccessToProject(projectId);
 
@@ -72,16 +85,16 @@ public class SchedulerUploadService {
 			try {
 				jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
 			} catch (IOException e) {
-				LOG.error("Was not able to store zipped sources!", e);
+				LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
 				throw new SecHubRuntimeException("Was not able to upload sources");
 			}
-			LOG.info("uploaded sourcecode for job {}", jobUUID);
+			LOG.info("uploaded sourcecode for {}", traceLogID);
 		} finally {
 			if (tmpFile != null && Files.exists(tmpFile)) {
 				try {
 					Files.delete(tmpFile);
 				} catch (IOException e) {
-					LOG.error("Was not able delete former temp file for zipped sources!", e);
+					LOG.error("Was not able delete former temp file for zipped sources! {}",traceLogID, e);
 				}
 			}
 		}

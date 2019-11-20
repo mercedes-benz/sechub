@@ -20,6 +20,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -52,24 +53,28 @@ public class UserCreationService {
 	@Autowired
 	OneTimeTokenGenerator oneTimeTokenGenerator;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	@Validated
 	@UseCaseAdministratorAcceptsSignup(@Step(number = 2, name = "Create user and send events", next = { 3,
 			4 }, description = "The service will create the user a one time token for api token generation and triggers asynchronous events.\n"
 					+ "It will also remove the existing user signup because no longer necessary."))
 	public void createUserFromSelfRegistration(String userId) {
-		LOG.info("Administrator {} accepts signup of user {}",userContext.getUserId(),userId);
+		String sanitizedLogUserId = logSanitizer.sanitize(userId,30);
+		LOG.info("Administrator {} accepts signup of user {}",userContext.getUserId(),sanitizedLogUserId);
 
 
 		Optional<Signup> selfRegistration = selfRegistrationRepository.findById(userId);
 		if (!selfRegistration.isPresent()) {
-			LOG.warn("Did not found a self registration for user with name:{}, so skipped creation", userId);
+			LOG.warn("Did not found a self registration for user with name:{}, so skipped creation", sanitizedLogUserId);
 			return;
 		}
 		Optional<User> found = userRepository.findById(userId);
 		if (found.isPresent()) {
 			LOG.warn(
 					"Self registration coming in for user:{} but user already exists. So just removing self registration entry",
-					userId);
+					sanitizedLogUserId);
 			selfRegistrationRepository.deleteById(userId);
 			return;
 		}
@@ -80,7 +85,7 @@ public class UserCreationService {
 		if (found.isPresent()) {
 			LOG.warn(
 					"Self registration coming in for user:{} but mailadress {} already exists. So just removing self registration entry",
-					userId, emailAdress);
+					sanitizedLogUserId, emailAdress);
 			selfRegistrationRepository.deleteById(userId);
 			return;
 		}
@@ -98,10 +103,10 @@ public class UserCreationService {
 
 		userRepository.save(user);
 
-		LOG.debug("Persisted new user:{}", userId);
+		LOG.debug("Persisted new user:{}", sanitizedLogUserId);
 
 		selfRegistrationRepository.deleteById(userId);
-		LOG.debug("Removed self registration data of user:{}", userId);
+		LOG.debug("Removed self registration data of user:{}", sanitizedLogUserId);
 
 		informUserAboutSignupAccepted(user);
 		informUserCreated(user);

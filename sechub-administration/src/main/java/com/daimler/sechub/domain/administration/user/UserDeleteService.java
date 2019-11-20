@@ -13,6 +13,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -40,6 +41,9 @@ public class UserDeleteService {
 	@Autowired
 	AuditLogService auditLogService;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorDeletesUser(
@@ -50,7 +54,7 @@ public class UserDeleteService {
 					description = "The service will delete the user with dependencies and triggers asynchronous events"))
 	/* @formatter:on */
 	public void deleteUser(String userId) {
-		auditLogService.log("Triggers delete of user {}",userId);
+		auditLogService.log("Triggers delete of user {}",logSanitizer.sanitize(userId,30));
 		if (userId==null) {
 			LOG.warn("Username was null! Should not happen");
 			return;

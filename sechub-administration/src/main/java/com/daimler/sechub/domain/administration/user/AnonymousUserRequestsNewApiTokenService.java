@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -36,13 +37,16 @@ public class AnonymousUserRequestsNewApiTokenService {
 	@Autowired
 	OneTimeTokenGenerator oneTimeTokenGenerator;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 
 	public void anonymousRequestToGetNewApiTokenForUserMailAdress(String userEmail) {
-
+		LOG.info("New api token requested for email address: {})",logSanitizer.sanitize(userEmail,50));
 		Optional<User> found = userRepository.findByEmailAdress(userEmail);
 		if (! found.isPresent()) {
 			/* we just do nothing here - prevent user enumeration by hacking...*/
-			LOG.warn("Anonymous request to get new api token, but user unknown: {})",userEmail);
+			LOG.warn("Anonymous request to get new api token, but user unknown: {})",logSanitizer.sanitize(userEmail,50));
 			return;
 		}
 

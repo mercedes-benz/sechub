@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -39,6 +40,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 		serviceToTest.environment = mockedEnvironment;
 		serviceToTest.eventBusService = mockedEventBusService;
 		serviceToTest.userRepository=mockedUserRepository;
+		serviceToTest.logSanitizer=mock(LogSanitizer.class);
 	}
 
 	@Test

@@ -35,6 +35,7 @@ import com.daimler.sechub.domain.scan.log.ProjectScanLog;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
@@ -59,6 +60,9 @@ public class DownloadsFullScanDataForJobRestDocTest {
 
 	@MockBean
 	AuditLogService auditLogService;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	private UUID sechubJobUUID;
 

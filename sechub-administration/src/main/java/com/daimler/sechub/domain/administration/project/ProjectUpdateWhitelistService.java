@@ -19,6 +19,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -45,6 +46,8 @@ public class ProjectUpdateWhitelistService {
 	@Autowired
 	URIValidation uriValidation;
 
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	@Validated
 	/* @formatter:off */
@@ -55,7 +58,7 @@ public class ProjectUpdateWhitelistService {
 	/* @formatter:on */
 	public void updateProjectWhitelist(@NotNull String projectId, @NotNull List<URI> whitelist) {
 		LOG.info("User {} triggers update of whitelist for project {}. Allowed URIs shall be {}",
-				userContext.getUserId(), projectId, whitelist);
+				userContext.getUserId(), logSanitizer.sanitize(projectId,30), whitelist);
 
 		Optional<Project> found = repository.findById(projectId);
 		if (!found.isPresent()) {
@@ -72,8 +75,6 @@ public class ProjectUpdateWhitelistService {
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(oldWhiteList::add);
 
 		repository.save(project);
-
-		LOG.debug("Updated whitelist for project {}", project.getId());
 
 		sendProjectCreatedEvent(project.getId(),project.getWhiteList());
 

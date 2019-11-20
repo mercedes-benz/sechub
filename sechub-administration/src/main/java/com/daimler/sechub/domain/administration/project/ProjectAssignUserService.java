@@ -14,7 +14,9 @@ import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.domain.administration.user.UserRepository;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.AlreadyExistsException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -39,6 +41,12 @@ public class ProjectAssignUserService {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
+	@Autowired
+	UserContextService userContextService;
+
 	/* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(
 			@Step(
@@ -47,6 +55,8 @@ public class ProjectAssignUserService {
 					description = "The service will add the user to the project. If user does not have ROLE_USER it will obtain it"))
 	/* @formatter:on */
 	public void assignUserToProject(String userId, String projectId) {
+		LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));
+
 		Project project = projectRepository.findOrFailProject(projectId);
 		User user = userRepository.findOrFailUser(userId);
 		if (!project.getUsers().add(user)) {
@@ -56,8 +66,6 @@ public class ProjectAssignUserService {
 		project.getUsers().add(user);
 
 		projectRepository.save(project);
-
-		LOG.debug("Persisted assignment of user:{} to project:{}", user.getName(), project.getId());
 
 		sendUserAddedToProjectEvent(projectId, user);
 		sendRequestUserRoleRecalculation(user);

@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
 
@@ -26,18 +27,21 @@ public class ProjectDeleteService {
 
 	@Autowired
 	ProjectRepository projectRepository;
-	
+
 	@Autowired
 	UserContextService userContext;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	@Validated
 	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3,
 			4 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
 	public void deletProject(String projectId) {
-		LOG.info("Administrator {} triggers delete of project {}",userContext.getUserId(),projectId);
-		
+		LOG.info("Administrator {} triggers delete of project {}",userContext.getUserId(),logSanitizer.sanitize(projectId,30));
+
 		Project project = projectRepository.findOrFailProject(projectId);
-		
+
 		/* FIXME Albert Tregnaghi, 2018-08-04: domain events missing! */
 		projectRepository.delete(project);
 

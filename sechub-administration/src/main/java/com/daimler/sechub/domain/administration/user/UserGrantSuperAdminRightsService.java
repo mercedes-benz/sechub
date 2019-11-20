@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -37,6 +38,9 @@ public class UserGrantSuperAdminRightsService {
 	@Autowired
 	SecHubEnvironment sechubEnvironment;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorGrantsAdminRightsToUser(
@@ -47,12 +51,12 @@ public class UserGrantSuperAdminRightsService {
 					description = "The service will grant user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
 	public void grantSuperAdminRightsFor(String userId) {
-		auditLogService.log("Triggered granting admin rights for user {}",userId);
+		auditLogService.log("Triggered granting admin rights for user {}",logSanitizer.sanitize(userId,30));
 
 		User user = userRepository.findOrFailUser(userId);
 
 		if (user.isSuperAdmin()) {
-			LOG.info("User:{} was already a super administrator, so just ignored",userId);
+			LOG.info("User:{} was already a super administrator, so just ignored",user.getName());
 			return;
 		}
 		user.superAdmin=true;

@@ -19,6 +19,7 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -50,6 +51,7 @@ public class ProjectUpdateWhitelistServiceTest {
 		serviceToTest.userContext=userContext;
 		serviceToTest.eventBus=eventBus;
 		serviceToTest.uriValidation=uriValidation;
+		serviceToTest.logSanitizer=mock(LogSanitizer.class);
 
 		project = mock(Project.class);
 		whitelist=new LinkedHashSet<>();

@@ -14,7 +14,9 @@ import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.domain.administration.user.UserRepository;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.AlreadyExistsException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -40,10 +42,18 @@ public class ProjectUnassignUserService {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
+	@Autowired
+	UserContextService userContextService;
+
 	/* @formatter:off */
 	@UseCaseAdministratorUnassignsUserFromProject(@Step(number = 2, name = "Unassign user", description = "The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed"))
 	/* @formatter:on */
 	public void unassignUserFromProject(String userId, String projectId) {
+		LOG.info("User {} triggers unassignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));
+
 		Project project = projectRepository.findOrFailProject(projectId);
 		User user = userRepository.findOrFailUser(userId);
 		if (!project.getUsers().remove(user)) {
@@ -53,8 +63,6 @@ public class ProjectUnassignUserService {
 
 		projectRepository.save(project);
 		userRepository.save(user);
-
-		LOG.debug("Persisted assignment of user:{} to project:{}", user.getName(), project.getId());
 
 		sendUserRemovedFromProjectEvent(projectId, user);
 		sendRequestUserRoleRecalculation(user);

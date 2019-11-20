@@ -14,6 +14,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -39,6 +40,9 @@ public class UserRevokeSuperAdminRightsService {
 	@Autowired
 	SecHubEnvironment secHubEnvironment;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorRevokesAdminRightsFromAdmin(
@@ -49,8 +53,7 @@ public class UserRevokeSuperAdminRightsService {
 					description = "The service will revoke user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
 	public void revokeSuperAdminRightsFrom(String userId) {
-		auditLogService.log("Triggered revoking admin rights from user {}",userId);
-
+		auditLogService.log("Triggered revoking admin rights from user {}",logSanitizer.sanitize(userId,30));
 
 		User user = userRepository.findOrFailUser(userId);
 

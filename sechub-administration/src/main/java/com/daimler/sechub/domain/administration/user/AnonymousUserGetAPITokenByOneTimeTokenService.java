@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.administration.APITokenGenerator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -42,6 +43,9 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
 	APITokenGenerator apiTokenGenerator;
 
 	@Autowired
+	LogSanitizer logSanitizer;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number=2,next={3,4}, name="Validation and update",description="When its a valid one time token a new api token is generated and persisted hashed to user. The token itself is returned. When not valid an emtpy string is the result ..."))
@@ -57,7 +61,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
 		if (! found.isPresent()) {
 			LOG.warn(
 					"Did not found a user having one time token :{}. Maybe an attack, so will just return empty string...",
-					oneTimeToken);
+					logSanitizer.sanitize(oneTimeToken,50));
 			return "";
 		}
 
@@ -66,7 +70,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenService {
 		if (user.isOneTimeTokenOutDated(oneTimeOutDatedMillis)) {
 			LOG.warn(
 					"Did found a user having one time token :{}, but token is outdated! Maybe an attack, so will just return empty string... and keep the old entry as is",
-					oneTimeToken);
+					logSanitizer.sanitize(oneTimeToken,50));
 			return "";
 		}
 
