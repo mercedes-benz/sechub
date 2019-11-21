@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.scan.access.ScanAccess.ProjectAccessCompositeKey;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.SecurityLogService;
 import com.daimler.sechub.sharedkernel.logging.SecurityLogType;
 

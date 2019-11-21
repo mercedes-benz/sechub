@@ -28,7 +28,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;

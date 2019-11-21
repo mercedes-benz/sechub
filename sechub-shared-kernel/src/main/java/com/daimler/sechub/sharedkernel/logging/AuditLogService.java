@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 
 @Service
 public class AuditLogService {

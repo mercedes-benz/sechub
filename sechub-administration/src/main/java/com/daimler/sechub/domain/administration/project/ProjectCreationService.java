@@ -69,7 +69,7 @@ public class ProjectCreationService {
 
 		assertion.isValidProjectId(projectId);
 		assertion.isValidUserId(owner);
-		assertion.isvalidProjectDescription(owner);
+		assertion.isvalidProjectDescription(description);
 
 		/* assert found */
 		Optional<Project> foundProject = projectRepository.findById(projectId);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.administration.APITokenGenerator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;

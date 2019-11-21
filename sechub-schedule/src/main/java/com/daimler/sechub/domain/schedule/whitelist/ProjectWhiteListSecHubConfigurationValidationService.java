@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 public class ProjectWhiteListSecHubConfigurationValidationService {

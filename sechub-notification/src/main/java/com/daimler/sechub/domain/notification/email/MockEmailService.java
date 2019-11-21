@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Profiles;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 @Profile(Profiles.MOCKED_NOTIFICATIONS)

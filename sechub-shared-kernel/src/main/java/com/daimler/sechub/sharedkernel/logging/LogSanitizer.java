@@ -1,4 +1,4 @@
-package com.daimler.sechub.sharedkernel.logforgery;
+package com.daimler.sechub.sharedkernel.logging;
 
 import java.util.regex.Pattern;
 

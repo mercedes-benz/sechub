@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 public class ProjectScanLogService {

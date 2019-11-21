@@ -1,9 +1,11 @@
-package com.daimler.sechub.sharedkernel.logforgery;
+package com.daimler.sechub.sharedkernel.logging;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 public class LogSanitizerTest {
 	private LogSanitizer sanitizerToTest;
@@ -88,9 +90,9 @@ public class LogSanitizerTest {
 	}
 
 	private class TestLogObject{
-	
+
 		private String asString;
-	
+
 		private TestLogObject(String asString) {
 			this.asString=asString;
 		}

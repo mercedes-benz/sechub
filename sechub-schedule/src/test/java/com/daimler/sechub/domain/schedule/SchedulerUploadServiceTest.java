@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;

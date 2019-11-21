@@ -22,8 +22,8 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.logforgery.LogSanitizer;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
 
 @RestController
