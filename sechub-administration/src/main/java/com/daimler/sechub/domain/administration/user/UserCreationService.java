@@ -85,6 +85,8 @@ public class UserCreationService {
 		}
 
 		String emailAdress = selfRegistration.get().getEmailAdress();
+		assertion.isValidUserId(emailAdress);
+
 		found = userRepository.findByEmailAdress(emailAdress);
 
 		if (found.isPresent()) {
@@ -111,6 +113,7 @@ public class UserCreationService {
 		LOG.debug("Persisted new user:{}", sanitizedLogUserId);
 
 		selfRegistrationRepository.deleteById(userId);
+
 		LOG.debug("Removed self registration data of user:{}", sanitizedLogUserId);
 
 		informUserAboutSignupAccepted(user);

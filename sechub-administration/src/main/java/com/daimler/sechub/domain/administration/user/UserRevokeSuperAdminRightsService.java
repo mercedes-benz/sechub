@@ -57,14 +57,15 @@ public class UserRevokeSuperAdminRightsService {
 					description = "The service will revoke user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
 	public void revokeSuperAdminRightsFrom(String userId) {
-		auditLogService.log("Triggered revoking admin rights from user {}",logSanitizer.sanitize(userId,30));
+		String sanitizedLogUserId = logSanitizer.sanitize(userId,30);
+		auditLogService.log("Triggered revoking admin rights from user {}",sanitizedLogUserId);
 
 		assertion.isValidUserId(userId);
 
 		User user = userRepository.findOrFailUser(userId);
 
 		if (!user.isSuperAdmin()) {
-			LOG.info("User:{} was already no super administrator, so just ignored",userId);
+			LOG.info("User:{} was already no super administrator, so just ignored",sanitizedLogUserId);
 			return;
 		}
 		assertNotLastSuperAdmin();
