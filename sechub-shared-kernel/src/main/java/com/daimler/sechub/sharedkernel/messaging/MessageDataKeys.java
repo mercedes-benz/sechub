@@ -87,6 +87,11 @@ public class MessageDataKeys {
 			"project.creation.data");
 
 	/**
+	 * Must contain project id
+	 */
+	public static final MessageDataKey<ProjectMessage> PROJECT_DELETE_DATA = createProjectMessageKey("project.delete.data");
+
+	/**
 	 * Must contain project id and whitelist entries
 	 */
 	public static final MessageDataKey<ProjectMessage> PROJECT_WHITELIST_UPDATE_DATA = createProjectMessageKey(

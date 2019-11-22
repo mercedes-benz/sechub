@@ -6,12 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserNoLongerAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.InformUserThatUserBecomesAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.InformUserThatUserNoLongerAdminNotificationService;
+import com.daimler.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService;
 import com.daimler.sechub.domain.notification.user.NewAPITokenAppliedUserNotificationService;
 import com.daimler.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
 import com.daimler.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
@@ -21,6 +24,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 
 @Component
@@ -58,6 +62,17 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	@Autowired
 	InformAdminsThatSchedulerJobProcessingHasBeenEnabledService informAdminSchedulerEnabledService;
 
+	/* +++++++++++++++++++++++++++++++++ */
+	/* ++++++ project delete +++++++++++ */
+	/* +++++++++++++++++++++++++++++++++ */
+	@Autowired
+	InformAdminsThatProjectHasBeenDeletedNotificationService informAdminsThatProjectHasBeenDeletedService;
+
+	@Autowired
+	InformOwnerThatProjectHasBeenDeletedNotificationService informOwnerThatProjectHasBeenDeletedService;
+
+	@Autowired
+	InformUsersThatProjectHasBeenDeletedNotificationService informUsersThatProjectHasBeenDeletedService;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -90,9 +105,19 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case SCHEDULER_JOB_PROCESSING_ENABLED:
 			handleSchedulerJobProcessingEnabled(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 			break;
+		case PROJECT_DELETED:
+			handleProjectDeleted(request.get(MessageDataKeys.PROJECT_DELETE_DATA),request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
+	private void handleProjectDeleted(ProjectMessage projectMessage,String baseUrl) {
+		informAdminsThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
+		informOwnerThatProjectHasBeenDeletedService.notify(projectMessage);
+		informUsersThatProjectHasBeenDeletedService.notify(projectMessage);
 	}
 
 	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)

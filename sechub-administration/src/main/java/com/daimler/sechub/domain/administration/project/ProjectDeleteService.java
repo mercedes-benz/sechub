@@ -8,11 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
+import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
+import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -37,8 +44,11 @@ public class ProjectDeleteService {
 	@Autowired
 	UserInputAssertion assertion;
 
+	@Autowired
+	SecHubEnvironment sechubEnvironment;
+
 	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3,
-			4 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
+			4,5 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
 	public void deletProject(String projectId) {
 		LOG.info("Administrator {} triggers delete of project {}",userContext.getUserId(),logSanitizer.sanitize(projectId,30));
 
@@ -46,9 +56,31 @@ public class ProjectDeleteService {
 
 		Project project = projectRepository.findOrFailProject(projectId);
 
-		/* FIXME Albert Tregnaghi, 2018-08-04: domain events missing! */
+		/* create message containing data before project is deleted */
+		ProjectMessage message = new ProjectMessage();
+		message.setProjectId(project.getId());
+		message.setProjectActionTriggeredBy(userContext.getUserId());
+
+		User owner = project.getOwner();
+		message.setProjectOwnerEmailAddress(owner.getEmailAdress());
+
+		for (User user: project.getUsers()) {
+			message.addUserEmailAddress(user.getEmailAdress());
+		}
+
+		/* do delete */
 		projectRepository.delete(project);
+
+		informProjectDeleted(message);
 
 	}
 
+	@IsSendingAsyncMessage(MessageID.PROJECT_DELETED)
+	private void informProjectDeleted(ProjectMessage message) {
+		DomainMessage infoRequest = new DomainMessage(MessageID.PROJECT_DELETED);
+		infoRequest.set(MessageDataKeys.PROJECT_DELETE_DATA, message);
+		infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
+
+		eventBusService.sendAsynchron(infoRequest);
+	}
 }
