@@ -85,7 +85,7 @@ public class UserCreationService {
 		}
 
 		String emailAdress = selfRegistration.get().getEmailAdress();
-		assertion.isValidUserId(emailAdress);
+		assertion.isValidEmailAddress(emailAdress);
 
 		found = userRepository.findByEmailAdress(emailAdress);
 
