@@ -299,9 +299,18 @@ public class TestURLBuilder {
 		return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails");
 	}
 
+	/**
+	 * Integration test only URL!
+	 * @return url for integration test check
+	 */
 	public String buildIsAliveUrl() {
 		return buildUrl(API_ANONYMOUS, "integrationtest/alive");
 	}
+
+	public String buildCheckIsAliveUrl() {
+		return buildUrl(API_ANONYMOUS, "check/alive");
+	}
+
 
 	public String buildGetFileUpload(String projectId, String jobUUID, String fileName) {
 		return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
@@ -330,6 +339,7 @@ public class TestURLBuilder {
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {
 		return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
 	}
+
 
 
 

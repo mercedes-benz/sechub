@@ -387,6 +387,11 @@ public class AsUser {
 		return getRestHelper().getJSon(getUrlBuilder().buildGetServerVersionUrl());
 	}
 
+	public boolean getIsAlive() {
+		getRestHelper().head(getUrlBuilder().buildCheckIsAliveUrl());
+		return true;
+	}
+
 	public AssertFullScanData downloadFullScanDataFor(UUID sechubJobUUID) {
 		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
 		File file = downloadAsTempFileFromURL(url, sechubJobUUID, "download-fullscan", ".zip");
@@ -431,5 +436,7 @@ public class AsUser {
 		getRestHelper().post(url);
 		return this;
 	}
+
+
 
 }

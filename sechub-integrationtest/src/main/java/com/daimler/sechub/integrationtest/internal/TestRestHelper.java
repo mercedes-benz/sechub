@@ -129,8 +129,13 @@ public class TestRestHelper {
 	public void post(String url) {
 		markLastURL(url);
 		getTemplate().postForLocation(url, HttpEntity.EMPTY);
-
 	}
+
+	public HttpHeaders head(String url) {
+		markLastURL(url);
+		return getTemplate().headForHeaders(url);
+	}
+
 	private void markLastURL(String url) {
 		markLastURL(url,null);
 	}
@@ -190,4 +195,6 @@ public class TestRestHelper {
 			}
 		}
 	}
+
+
 }
