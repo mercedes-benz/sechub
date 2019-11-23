@@ -131,7 +131,7 @@ public class ProjectAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void deleteProject(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		deleteService.deletProject(projectId);
+		deleteService.deleteProject(projectId);
 	}
 
 	@InitBinder
