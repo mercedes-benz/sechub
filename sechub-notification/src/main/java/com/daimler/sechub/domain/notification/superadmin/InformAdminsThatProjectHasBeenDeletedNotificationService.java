@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.notification.superadmin;
 
+import static java.util.Objects.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class InformAdminsThatProjectHasBeenDeletedNotificationService {
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 3, name = "Inform sechub admins that project has been deleted"))
 	public void notify(ProjectMessage projectMessage, String baseUrl) {
+		nonNull(projectMessage);
 
 		SimpleMailMessage message = factory.createMessage("SecHub Project "+projectMessage.getProjectId()+" has been deleted");
 

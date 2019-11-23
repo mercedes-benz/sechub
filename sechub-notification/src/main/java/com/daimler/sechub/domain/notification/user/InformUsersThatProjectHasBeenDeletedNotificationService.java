@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.notification.user;
 
+import static java.util.Objects.*;
+
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
 	public void notify(ProjectMessage projectMessage) {
+		nonNull(projectMessage);
+
 		Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
 		if (mailAdresses == null || mailAdresses.isEmpty()) {
 			LOG.info("No users found for project {} so ignore sending info mail about delete",projectMessage.getProjectId());
