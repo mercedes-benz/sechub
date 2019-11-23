@@ -34,6 +34,28 @@ public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
 		serviceToTest.factory=mockedMailMessageFactory;
 	}
 
+	@Test
+	public void sends_NO_email_when_no_users_where_defined_at_a_project() throws Exception {
+
+		/* prepare */
+		SimpleMailMessage mockedMailMessage = mock(SimpleMailMessage.class);
+		when(mockedMailMessageFactory.createMessage(any())).thenReturn(mockedMailMessage);
+
+		// message to receive from event bus
+		ProjectMessage message = mock(ProjectMessage.class);
+		when(message.getProjectId()).thenReturn("projectId1");
+		Set<String> emptyUserList= new LinkedHashSet<>();
+
+		when(message.getUserEmailAdresses()).thenReturn(emptyUserList);
+
+		/* execute */
+		serviceToTest.notify(message);
+
+		/* test */
+		// check mocked mail message was sent
+		verify(mockedEmailService,never()).send(any());
+	}
+
 
 	@Test
 	public void sends_email_to_all_former_project_users_as_bcc_containing_projectid() throws Exception {
