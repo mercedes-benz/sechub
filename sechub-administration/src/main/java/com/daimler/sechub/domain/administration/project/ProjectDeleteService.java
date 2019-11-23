@@ -3,6 +3,8 @@ package com.daimler.sechub.domain.administration.project;
 
 import javax.annotation.security.RolesAllowed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
+import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
@@ -47,6 +50,8 @@ public class ProjectDeleteService {
 	@Autowired
 	AuditLogService auditLogService;
 
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
+
 	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
 			5 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
 	public void deleteProject(String projectId) {
@@ -62,7 +67,9 @@ public class ProjectDeleteService {
 		message.setProjectActionTriggeredBy(userContext.getUserId());
 
 		User owner = project.getOwner();
-		if (owner != null) {
+		if (owner == null) {
+			LOG.warn("No owner found for project {} while deleting", project.getId());
+		} else {
 			message.setProjectOwnerEmailAddress(owner.getEmailAdress());
 		}
 
@@ -74,6 +81,9 @@ public class ProjectDeleteService {
 		projectRepository.delete(project);
 
 		informProjectDeleted(message);
+		if (owner != null) {
+			sendRefreshUserAuth(owner);
+		}
 
 	}
 
@@ -84,5 +94,10 @@ public class ProjectDeleteService {
 		infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
 
 		eventBusService.sendAsynchron(infoRequest);
+	}
+
+	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+	private void sendRefreshUserAuth(User ownerUser) {
+		eventBusService.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
 	}
 }

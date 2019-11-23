@@ -4,12 +4,15 @@ package com.daimler.sechub.domain.administration.project;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
+import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
@@ -84,13 +87,17 @@ public class ProjectDeleteServiceTest {
 
 
 	@Test
-	public void when_a_project_is_found_an_event_will_be_triggered_containing_project_id() {
+	public void when_a_project_is_found_2_events_will_be_triggered_first_project_deleted_second_owner_recalc() {
 
 		/* prepare */
 		ArgumentCaptor<DomainMessage> captorMessage = ArgumentCaptor.forClass(DomainMessage.class);
 
 		Project project1 = new Project();
 		project1.id="project1";
+		User owner1 = mock(User.class);
+		when(owner1.getName()).thenReturn("owner1");
+		project1.owner=owner1;
+
 
 		when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
 
@@ -98,10 +105,16 @@ public class ProjectDeleteServiceTest {
 		serviceToTest.deleteProject("project1");
 
 		/* test */
-		verify(eventBusService).sendAsynchron(captorMessage.capture());
-		DomainMessage value = captorMessage.getValue();
-		assertEquals(MessageID.PROJECT_DELETED, value.getMessageId());
-		assertEquals("project1", value.get(MessageDataKeys.PROJECT_DELETE_DATA).getProjectId());
+		verify(eventBusService,times(2)).sendAsynchron(captorMessage.capture());
+		List<DomainMessage> allMessages = captorMessage.getAllValues();
+
+		DomainMessage value1 = allMessages.get(0);
+		assertEquals(MessageID.PROJECT_DELETED, value1.getMessageId());
+		assertEquals("project1", value1.get(MessageDataKeys.PROJECT_DELETE_DATA).getProjectId());
+
+		DomainMessage value2 = allMessages.get(1);
+		assertEquals(MessageID.REQUEST_USER_ROLE_RECALCULATION, value2.getMessageId());
+		assertEquals("owner1", value2.get(MessageDataKeys.USER_ID_DATA).getUserId());
 	}
 
 
