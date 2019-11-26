@@ -144,7 +144,7 @@ public class AssertSecHubResult {
 			List<String> hostnamesAsList = Arrays.asList(hostnames);
 			if (!value.hostnames.containsAll(hostnamesAsList)) {
 				fail("Hostname count same, but hostnames not as expected!\nExpected: " + hostnamesAsList + "\nResulted:"
-						+ hostnames);
+						+ value.hostnames);
 			}
 
 			return this;
