@@ -76,7 +76,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
 			/* execute checkmarx by adapter and return product result */
 			String xml = checkmarxAdapter.start(checkMarxConfig);
-			ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
+			ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
 			return Collections.singletonList(result);
 		}
 

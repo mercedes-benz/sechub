@@ -72,7 +72,8 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 
 			/* execute NETSPARKER by adapter and return product result */
 			String xml = netsparkerAdapter.start(netsparkerConfig);
-			ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
+			String projectId = context.getConfiguration().getProjectId();
+			ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
 			results.add(result);
 		}
 		return results;

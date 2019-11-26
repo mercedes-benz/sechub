@@ -10,7 +10,6 @@ import com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllSe
 import com.daimler.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
-import com.daimler.sechub.domain.scan.log.ProjectScanLogDeleteService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
@@ -39,7 +38,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler{
 	ScanDeleteAnyAccessToProjectAtAllService deleteAllProjectAccessService;
 
 	@Autowired
-	ProjectScanLogDeleteService deleteScanLogService;
+	ProjectDataDeleteService projectDataDeleteService;
 
 
 	@Override
@@ -86,8 +85,10 @@ public class ScanMessageHandler implements AsynchronMessageHandler{
 	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
 	private void handleProjectDeleted(DomainMessage request) {
 		ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
+		/* first cut access */
 		deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
-		deleteScanLogService.deleteAllLogDataForProject(data.getProjectId());
+		/* now delete data */
+		projectDataDeleteService.deleteAllDataForProject(data.getProjectId());
 	}
 
 }

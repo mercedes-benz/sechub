@@ -29,7 +29,7 @@ public class ScanDeleteAnyAccessToProjectAtAllService {
 	LogSanitizer logSanitizer;
 
 	@Transactional
-	@UseCaseAdministratorDeleteProject(@Step(number=7,name="revoke user from schedule access"))
+	@UseCaseAdministratorDeleteProject(@Step(number=7,name="revoke any scan access from project"))
 	public void deleteAnyAccessDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);
 

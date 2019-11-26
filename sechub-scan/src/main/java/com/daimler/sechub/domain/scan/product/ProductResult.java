@@ -38,6 +38,8 @@ public class ProductResult {
 
 	public static final String COLUMN_RESULT = "RESULT";
 
+	public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
+
 	public static final String COLUMN_STARTED = "STARTED";
 	public static final String COLUMN_ENDED = "ENDED";
 	/* +-----------------------------------------------------------------------+ */
@@ -76,6 +78,9 @@ public class ProductResult {
 	@Column(name = "VERSION")
 	Integer version;
 
+	@Column(name = COLUMN_PROJECT_ID, nullable = false)
+	private String projectId;
+
 	@Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
 	LocalDateTime started;
 
@@ -88,13 +93,13 @@ public class ProductResult {
 
 	/**
 	 * Create the product result
-	 *
-	 * @param report
+	 * @param secHubJobUUID
+	 * @param projectId
 	 * @param productIdentifier
 	 * @param result
 	 *            as string
 	 */
-	public ProductResult(UUID secHubJobUUID, ProductIdentifier productIdentifier, String result) {
+	public ProductResult(UUID secHubJobUUID, String projectId, ProductIdentifier productIdentifier, String result) {
 		if (secHubJobUUID == null) {
 			throw new IllegalArgumentException("SecHub JOB UUID may not be null!");
 		}
@@ -102,10 +107,16 @@ public class ProductResult {
 			throw new IllegalArgumentException("Product identifier not be null!");
 		}
 		this.secHubJobUUID = secHubJobUUID;
+		this.projectId=projectId;
 		this.productIdentifier = productIdentifier;
 		this.result = result;
 
 	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
 
 	public ProductIdentifier getProductIdentifier() {
 		return productIdentifier;

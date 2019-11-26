@@ -14,7 +14,6 @@ import com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllSe
 import com.daimler.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
-import com.daimler.sechub.domain.scan.log.ProjectScanLogDeleteService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -42,7 +41,7 @@ public class ScanMessageHandlerTest {
 		scheduleHandlerToTest.revokeUserFromProjectService=mock(ScanRevokeUserAccessFromProjectService.class);
 		scheduleHandlerToTest.revokeUserService=mock(ScanRevokeUserAccessAtAllService.class);
 		scheduleHandlerToTest.deleteAllProjectAccessService=mock(ScanDeleteAnyAccessToProjectAtAllService.class);
-		scheduleHandlerToTest.deleteScanLogService=mock(ProjectScanLogDeleteService.class);
+		scheduleHandlerToTest.projectDataDeleteService=mock(ProjectDataDeleteService.class);
 
 
 		List<AsynchronMessageHandler> injectedAsynchronousHandlers = new ArrayList<>();
@@ -56,7 +55,7 @@ public class ScanMessageHandlerTest {
 
 
 	@Test
-	public void when_sending_message_id_PROJECT_DELETED_the_deleteScanLogService_is_called() {
+	public void when_sending_message_id_PROJECT_DELETED_the_deleteAllDataForProject_is_called() {
 		/* prepare */
 		DomainMessage request = new DomainMessage(MessageID.PROJECT_DELETED);
 		ProjectMessage content = new ProjectMessage();
@@ -67,7 +66,7 @@ public class ScanMessageHandlerTest {
 		simulateEventSend(request, scheduleHandlerToTest);
 
 		/* test */
-		verify(scheduleHandlerToTest.deleteScanLogService).deleteAllLogDataForProject("projectId1");
+		verify(scheduleHandlerToTest.projectDataDeleteService).deleteAllDataForProject("projectId1");
 
 	}
 

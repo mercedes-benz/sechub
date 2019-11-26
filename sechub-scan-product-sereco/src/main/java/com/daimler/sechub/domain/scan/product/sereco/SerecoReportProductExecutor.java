@@ -61,7 +61,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
 		if (foundProductResults.isEmpty()) {
 			LOG.warn("{} no product results for {} found, will return an empty sereco JSON as result! ", traceLogId, getSupportedProducts());
-			return new ProductResult(secHubJobUUID, getIdentifier(), "{}");
+			return new ProductResult(secHubJobUUID, projectId, getIdentifier(), "{}");
 		}
 
 		return createReport(projectId, secHubJobUUID, traceLogId, foundProductResults);
@@ -76,7 +76,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		}
 		String json = workspace.createReport();
 		/* fetch + return all vulnerabilities as JSON */
-		return new ProductResult(secHubJobUUID, getIdentifier(), json);
+		return new ProductResult(secHubJobUUID, projectId, getIdentifier(), json);
 	}
 
 	private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {

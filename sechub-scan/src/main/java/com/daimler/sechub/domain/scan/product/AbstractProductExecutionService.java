@@ -103,6 +103,8 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @param traceLogID
 	 */
 	protected void executeAndPersistResults(List<? extends ProductExecutor> executors, SecHubExecutionContext context, UUIDTraceLogID traceLogID) {
+		String projectId = context.getConfiguration().getProjectId();
+
 		for (ProductExecutor productExecutor : executors) {
 			List<ProductResult> productResults=Collections.emptyList();
 			try {
@@ -115,7 +117,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				getMockableLog().error("Product executor failed:"+productExecutor.getIdentifier()+" "+traceLogID,e);
 
 				productResults=new ArrayList<ProductResult>();
-				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(),productExecutor.getIdentifier(),"");
+				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(),projectId, productExecutor.getIdentifier(),"");
 				productResults.add(fallbackResult);
 			}
 
