@@ -53,7 +53,7 @@ public class ProjectDeleteService {
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
 
 	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
-			5 }, description = "The service will delete the project with dependencies and triggers asynchronous events"))
+			5, 6, 7}, description = "The service will delete the project with dependencies and triggers asynchronous events"))
 	public void deleteProject(String projectId) {
 		auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
@@ -14,6 +15,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 
 @Component
@@ -32,6 +34,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler{
 	@Autowired
 	ScanRevokeUserAccessAtAllService revokeUserService;
 
+	@Autowired
+	ScanDeleteAnyAccessToProjectAtAllService deleteAllProjectAccessService;
+
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
 		MessageID messageId = request.getMessageId();
@@ -46,6 +51,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler{
 			break;
 		case USER_DELETED:
 			handleUserDeleted(request);
+			break;
+		case PROJECT_DELETED:
+			handleProjectDeleted(request);
 			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
@@ -68,6 +76,12 @@ public class ScanMessageHandler implements AsynchronMessageHandler{
 	private void handleUserDeleted(DomainMessage request) {
 		UserMessage data = request.get(MessageDataKeys.USER_DELETE_DATA);
 		revokeUserService.revokeUserAccess(data.getUserId());
+	}
+
+	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
+	private void handleProjectDeleted(DomainMessage request) {
+		ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
+		deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
 	}
 
 }
