@@ -30,11 +30,11 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
 	public void notify(ProjectMessage projectMessage) {
-		nonNull(projectMessage);
+		requireNonNull(projectMessage);
 
 		Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
 		if (mailAdresses == null || mailAdresses.isEmpty()) {
-			LOG.info("No users found for project {} so ignore sending info mail about delete",projectMessage.getProjectId());
+			LOG.info("No users found for project {} so ignore sending info mail about delete", projectMessage.getProjectId());
 			return;
 		}
 		StringBuilder emailContent = new StringBuilder();
@@ -45,7 +45,8 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 
 		String[] userAdresses = projectMessage.getUserEmailAdresses().toArray(new String[mailAdresses.size()]);
 
-		message.setBcc(userAdresses); // we do send per BCC so users do not get other email addresses. Maybe necessary because of data protection
+		message.setBcc(userAdresses); // we do send per BCC so users do not get other email addresses. Maybe necessary
+										// because of data protection
 		message.setText(emailContent.toString());
 
 		emailService.send(message);

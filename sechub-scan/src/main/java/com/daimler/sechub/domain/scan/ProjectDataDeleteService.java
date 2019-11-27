@@ -36,7 +36,6 @@ public class ProjectDataDeleteService {
 	@Autowired
 	ScanReportRepository scanReportRepository;
 
-
 	@Autowired
 	UserInputAssertion assertion;
 

@@ -28,9 +28,9 @@ public class InformAdminsThatProjectHasBeenDeletedNotificationService {
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 3, name = "Inform sechub admins that project has been deleted"))
 	public void notify(ProjectMessage projectMessage, String baseUrl) {
-		nonNull(projectMessage);
+		requireNonNull(projectMessage);
 
-		SimpleMailMessage message = factory.createMessage("SecHub Project "+projectMessage.getProjectId()+" has been deleted");
+		SimpleMailMessage message = factory.createMessage("SecHub Project " + projectMessage.getProjectId() + " has been deleted");
 
 		message.setTo(notificationConfiguration.getEmailAdministrators());
 		message.setText(createEmailContent(projectMessage, baseUrl));

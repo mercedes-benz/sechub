@@ -28,7 +28,7 @@ public class InformOwnerThatProjectHasBeenDeletedNotificationService {
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 4, name = "Inform project owner that the project has been deleted"))
 	public void notify(ProjectMessage projectMessage) {
-		nonNull(projectMessage);
+		requireNonNull(projectMessage);
 
 		String projectOwnerEmailAddress = projectMessage.getProjectOwnerEmailAddress();
 		if (projectOwnerEmailAddress == null) {

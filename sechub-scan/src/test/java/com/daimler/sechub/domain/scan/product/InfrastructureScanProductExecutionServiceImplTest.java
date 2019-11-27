@@ -33,6 +33,8 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		uri = new URI("https://www.example.org");
 
 		configuration = mock(SecHubConfiguration.class);
+		when(configuration.getProjectId()).thenReturn("projectid1");
+
 		infraconfig = mock(SecHubInfrastructureScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);

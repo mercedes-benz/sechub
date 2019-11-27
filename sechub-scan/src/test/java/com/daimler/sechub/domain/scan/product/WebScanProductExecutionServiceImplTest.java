@@ -33,6 +33,8 @@ public class WebScanProductExecutionServiceImplTest {
 		uri = new URI("https://www.example.org");
 
 		configuration = mock(SecHubConfiguration.class);
+		when(configuration.getProjectId()).thenReturn("projectid1");
+
 		webconfiguration = mock(SecHubWebScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);
