@@ -1,4 +1,4 @@
 -- drop column
-ALTER TABLE adm_status
+ALTER TABLE scan_product_result
   DROP COLUMN project_id
 ;
