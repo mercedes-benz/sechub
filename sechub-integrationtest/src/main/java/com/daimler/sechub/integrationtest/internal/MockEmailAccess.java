@@ -30,6 +30,7 @@ public class MockEmailAccess {
 		ResponseEntity<List> result = getTemplate().getForEntity(url, List.class);
 		return result.getBody();
 	}
+
 	public List<MockEmailEntry> getMockMailListFor(String mailAdress) {
 		return convertToMockMailList(getMailsFor(mailAdress));
 	}
@@ -82,7 +83,7 @@ public class MockEmailAccess {
 		}
 		if (found == null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Did not found mail containing:\n-emailadress (TO): ");
+			sb.append("Did not found mail containing:\n-emailadress (TO/CC/BCC): ");
 			sb.append(email);
 			sb.append("\n-subject: '");
 			sb.append(subject);
@@ -103,7 +104,18 @@ public class MockEmailAccess {
 			entry.from = map.get("from").toString();
 			entry.subject = map.get("subject").toString();
 			entry.text = map.get("text").toString();
-			entry.to = map.get("to").toString();
+			Object to = map.get("to");
+			if (to != null) {
+				entry.to = to.toString();
+			}
+			Object cc = map.get("cc");
+			if (cc != null) {
+				entry.cc = cc.toString();
+			}
+			Object bcc = map.get("bcc");
+			if (bcc != null) {
+				entry.bcc = bcc.toString();
+			}
 			list.add(entry);
 		}
 		return list;

@@ -27,7 +27,7 @@ public class User {
 	/* +............................ SQL ......................................+ */
 	/* +-----------------------------------------------------------------------+ */
 	public static final String TABLE_NAME = "ADM_USER";
-	public static final String TABLE_ROLES_NAME = "ADM_USER_TO_ROLES";
+	public static final String TABLE_NAME_PROJECT_TO_USER = "ADM_PROJECT_TO_USER";
 
 	public static final String COLUMN_USER_ID = "USER_ID";
 	public static final String COLUMN_USER_HASHED_API_TOKEN = "USER_APITOKEN";
@@ -43,6 +43,9 @@ public class User {
 	public static final String COLUMN_USER_SUPERADMIN = "USER_SUPERADMIN";
 	public static final String COLUMN_USER_DEACTIVATED = "USER_DEACTIVATED";
 	public static final String COLUMN_USER_PROJECTS = "PROJECTS_PROJECT_ID";
+
+	public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_USER_ID = "USERS_USER_ID";
+
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
@@ -67,10 +70,10 @@ public class User {
 	Date oneTimeTokenDate;
 
 	@Column(name = COLUMN_USER_PROJECTS, nullable = false)
-    @ManyToMany(cascade=CascadeType.ALL, mappedBy=Project.PROPERTY_USERS, fetch=FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.REFRESH, mappedBy=Project.PROPERTY_USERS, fetch=FetchType.EAGER)
 	Set<Project> projects;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy=Project.PROPERTY_OWNER, fetch=FetchType.EAGER)
+    @OneToMany(cascade=CascadeType.REFRESH, mappedBy=Project.PROPERTY_OWNER, fetch=FetchType.EAGER)
    	Set<Project> ownedProjects;
 
     @Column(name = COLUMN_USER_SUPERADMIN)

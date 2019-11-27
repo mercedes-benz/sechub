@@ -5,6 +5,7 @@ import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -53,6 +54,7 @@ public class UserDeleteService {
 					next = { 3,	4 },
 					description = "The service will delete the user with dependencies and triggers asynchronous events"))
 	/* @formatter:on */
+	@Transactional
 	public void deleteUser(String userId) {
 		auditLogService.log("Triggers delete of user {}",logSanitizer.sanitize(userId,30));
 
@@ -68,7 +70,7 @@ public class UserDeleteService {
 		message.setUserId(user.getName());
 		message.setEmailAdress(user.getEmailAdress());
 
-		userRepository.delete(user);
+		userRepository.deleteUserWithAssociations(user.getName());
 
 		informUserDeleted(message);
 

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -24,7 +25,6 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
-
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectDeleteService {
@@ -54,6 +54,7 @@ public class ProjectDeleteService {
 
 	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
 			5, 6, 7}, description = "The service will delete the project with dependencies and triggers asynchronous events"))
+	@Transactional
 	public void deleteProject(String projectId) {
 		auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
 
@@ -77,8 +78,7 @@ public class ProjectDeleteService {
 			message.addUserEmailAddress(user.getEmailAdress());
 		}
 
-		/* do delete */
-		projectRepository.delete(project);
+		projectRepository.deleteProjectWithAssociations(projectId);
 
 		informProjectDeleted(message);
 		if (owner != null) {

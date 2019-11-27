@@ -10,14 +10,15 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 
 public class ProjectDeleteScenario3IntTest {
 
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-//	@Rule
-//	public Timeout timeOut = Timeout.seconds(60);
+	@Rule
+	public Timeout timeOut = Timeout.seconds(60);
 
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
@@ -41,16 +42,17 @@ public class ProjectDeleteScenario3IntTest {
 		as(SUPER_ADMIN).deleteProject(PROJECT_1);
 
 		/* test */
-		assertUser(USER_1).
-		doesExist().
-		hasNotOwnerRole(). // no longer role owner - was only owner of project1
-		hasUserRole(); // still user
+		TestAPI.waitMilliSeconds(400); // we wait here to let the new (async) role calculation be done
 
 		assertProject(PROJECT_1).
 			doesNotExist().
 			hasAccessEntriesInDomainSchedule(0).
 			hasAccessEntriesInDomainScan(0); // no longer access
 
+		assertUser(USER_1).
+			doesExist().
+			hasNotOwnerRole(). // no longer role owner - was only owner of project1
+			hasUserRole(); // still user
 
 	}
 	/* @formatter:on */

@@ -16,10 +16,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_USER,
 		group=UseCaseGroup.USER_ADMINISTRATION,
-		title="Admin deletes a user", 
-		description="An administrator deletes an user. All associations etc. are removed as well")
+		title="Admin deletes a user",
+		description="admin/deleteUser.adoc")
 public @interface UseCaseAdministratorDeletesUser {
-	
+
 	Step value();
 }
 /* @formatter:on */
