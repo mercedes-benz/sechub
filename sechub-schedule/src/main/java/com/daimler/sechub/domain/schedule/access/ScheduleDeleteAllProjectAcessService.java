@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.access;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class ScheduleDeleteAllProjectAcessService {
 	@Autowired
 	UserInputAssertion assertion;
 
+	@Transactional
 	@UseCaseAdministratorDeleteProject(@Step(number=6,name="Update authorization parts - remove entries for deleted project"))
 	public void deleteAnyAccessDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);

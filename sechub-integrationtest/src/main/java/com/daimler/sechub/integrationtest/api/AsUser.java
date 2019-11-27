@@ -437,6 +437,13 @@ public class AsUser {
 		return this;
 	}
 
+	public AsUser deleteProject(TestProject project) {
+		String url = getUrlBuilder().buildAdminDeletesProject(project.getProjectId());
+		getRestHelper().delete(url);
+		return this;
+
+	}
+
 
 
 }

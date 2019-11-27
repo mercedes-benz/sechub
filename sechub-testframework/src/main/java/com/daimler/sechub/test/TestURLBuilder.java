@@ -290,6 +290,12 @@ public class TestURLBuilder {
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ integration test special (anonymous) .....+ */
 	/* +-----------------------------------------------------------------------+ */
+	public String buildCountProjectScanAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/access/count");
+	}
+	public String buildCountProjectScheduleAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/schedule/access/count");
+	}
 
 	public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
 		return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);

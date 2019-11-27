@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.AssertFullScanData;
@@ -24,8 +25,8 @@ public class FullScanDataScenario3SecHubClientIntTest {
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
 
-//	@Rule
-//	public Timeout timeOut = Timeout.seconds(60);
+	@Rule
+	public Timeout timeOut = Timeout.seconds(300); // 5 minutes is more than enough...
 
 	@Rule
 	public ExpectedException expected = ExpectedException.none();

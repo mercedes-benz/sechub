@@ -155,6 +155,11 @@ public class TestRestHelper {
 		return template.getForEntity(link, String.class).getBody();
 	}
 
+	public long getLongFromURL(String link) {
+		String dataAsString = getStringFromURL(link);
+		return Long.parseLong(dataAsString);
+	}
+
 	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
 		HttpHeaders headers = new HttpHeaders();

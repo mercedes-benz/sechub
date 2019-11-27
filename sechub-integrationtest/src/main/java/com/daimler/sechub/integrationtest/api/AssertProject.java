@@ -32,6 +32,36 @@ public class AssertProject extends AbstractAssert {
 
 	}
 
+	/**
+	 * Asserts the project has expected scan domain access entries
+	 * @param expected
+	 * @return count
+	 */
+	public AssertProject hasAccessEntriesInDomainScan(long expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
+
+		assertEquals("Scan Access amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
+
+	}
+
+	/**
+	 * Asserts the project has expected schedule domain access entries
+	 * @param expected
+	 * @return count
+	 */
+	public AssertProject hasAccessEntriesInDomainSchedule(long expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
+
+		assertEquals("Scan Access amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
+
+	}
+
 	private String fetchProjectDetails() {
 		return getRestHelper().getJSon(getUrlBuilder().buildAdminGetProjectDetailsUrl(project.getProjectId()));
 	}
