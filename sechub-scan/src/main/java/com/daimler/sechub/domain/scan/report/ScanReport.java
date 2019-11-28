@@ -63,8 +63,7 @@ public class ScanReport {
 	@Column(name = COLUMN_TRAFFIC_LIGHT, nullable = true)
 	private TrafficLight trafficLight;
 
-	@Column(name = COLUMN_PROJECT_ID, nullable = false)
-	private String projectId;
+	@Column(name = COLUMN_PROJECT_ID, nullable = false) String projectId;
 
 	@Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
 	LocalDateTime started;

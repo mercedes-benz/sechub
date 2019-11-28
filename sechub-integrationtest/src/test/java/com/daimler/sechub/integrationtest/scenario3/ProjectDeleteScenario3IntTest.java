@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario3;
 
+import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
+import static org.junit.Assert.*;
+
+import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,7 +15,7 @@ import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestAPI;
-
+import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 public class ProjectDeleteScenario3IntTest {
 
 	@Rule
@@ -42,7 +46,7 @@ public class ProjectDeleteScenario3IntTest {
 		as(SUPER_ADMIN).deleteProject(PROJECT_1);
 
 		/* test */
-		TestAPI.waitMilliSeconds(400); // we wait here to let the new (async) role calculation be done
+		TestAPI.waitMilliSeconds(1000); // we wait here to let the new (async) role calculation be done
 
 		assertProject(PROJECT_1).
 			doesNotExist().
@@ -53,6 +57,43 @@ public class ProjectDeleteScenario3IntTest {
 			doesExist().
 			hasNotOwnerRole(). // no longer role owner - was only owner of project1
 			hasUserRole(); // still user
+
+	}
+	/* @formatter:on */
+
+	/* @formatter:off */
+	@Test
+	public void super_admin_deletes_project__deletes_also_all_scan_and_product_results() throws Exception {
+		/* check preconditions*/
+		assertUser(USER_1).
+			isAssignedToProject(PROJECT_1);
+
+		/* prepare - just execute two jobs */
+		ExecutionResult result1 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
+		UUID sechubJobUUID1 = result1.getSechubJobUUD();
+
+		ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
+		UUID sechubJobUUID2 = result2.getSechubJobUUD();
+
+		/* check preconditions */
+		assertNotNull(sechubJobUUID1);
+		assertNotNull(sechubJobUUID2);
+
+		assertProject(PROJECT_1).
+			doesExist().
+			hasProductResultsInDomainScan(4). // 2 x 2(means SERECO + SOURCSCAN RESULT for each job))
+			hasScanReportsInDomainScan(2); // 2 x 1 result
+
+		/* execute */
+		as(SUPER_ADMIN).deleteProject(PROJECT_1);
+
+		/* test */
+		TestAPI.waitMilliSeconds(1000); // we wait here to let the new (async) access change happen
+
+		assertProject(PROJECT_1).
+			doesNotExist().
+			hasProductResultsInDomainScan(0).
+			hasScanReportsInDomainScan(0);
 
 	}
 	/* @formatter:on */

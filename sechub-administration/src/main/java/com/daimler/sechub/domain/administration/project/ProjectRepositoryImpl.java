@@ -17,18 +17,14 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom{
 	public void deleteProjectWithAssociations(String projectId) {
 		Query deleteProjectToUser = em.createNativeQuery(QUERY_DELETE_PROJECT_TO_USER);
 		deleteProjectToUser.setParameter(1, projectId);
-
 		deleteProjectToUser.executeUpdate();
-
 
 		Query deleteProjectToURI = em.createNativeQuery(QUERY_DELETE_PROJECT_TO_URI);
 		deleteProjectToURI.setParameter(1, projectId);
-
 		deleteProjectToURI.executeUpdate();
 
 		Query deleteProject = em.createNativeQuery(QUERY_DELETE_PROJECT);
 		deleteProject.setParameter(1, projectId);
-
 		deleteProject.executeUpdate();
 
 

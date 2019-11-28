@@ -67,7 +67,7 @@ public class ProjectDeleteServiceTest {
 		serviceToTest.deleteProject("project1");
 
 		/* test */
-		verify(projectRepository).delete(project1);
+		verify(projectRepository).deleteProjectWithAssociations(project1.getId());
 
 	}
 

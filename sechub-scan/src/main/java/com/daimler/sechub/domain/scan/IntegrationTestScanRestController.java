@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.scan.access.ScanAccessCountService;
+import com.daimler.sechub.domain.scan.product.ProductResultCountService;
+import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 
@@ -26,9 +28,26 @@ public class IntegrationTestScanRestController {
 	@Autowired
 	private ScanAccessCountService scanAccessCountService;
 
+	@Autowired
+	private ProductResultCountService productResultCountService;
+
+	@Autowired
+	private ScanReportCountService scanReportCountService;
+
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProjectAccess(@PathVariable("projectId") String projectId) {
 		return scanAccessCountService.countProjectAccess(projectId);
+	}
+
+
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/report/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public long countProductResults(@PathVariable("projectId") String projectId) {
+		return scanReportCountService.countProjectProductResults(projectId);
+	}
+
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/productresult/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public long countScanResults(@PathVariable("projectId") String projectId) {
+		return productResultCountService.countProjectScanResults(projectId);
 	}
 
 

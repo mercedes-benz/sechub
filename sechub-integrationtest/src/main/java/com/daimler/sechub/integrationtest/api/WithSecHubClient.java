@@ -53,8 +53,8 @@ public class WithSecHubClient {
 		return this;
 	}
 
-	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
-		return new AssertJobReport(project, jobUUID, jsonConfigfile);
+	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+		return new AssertJobReport(project, jobUUID, location.getPath());
 	}
 
 	public class AssertJobReport{
@@ -192,12 +192,12 @@ public class WithSecHubClient {
 
 	}
 
-	public AssertAsyncResult startAsynchronScanFor(TestProject project, String jsonConfigfile) {
-		return startAsynchronScanFor(project, jsonConfigfile, null);
+	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
+		return startAsynchronScanFor(project, location, null);
 	}
 
-	public AssertAsyncResult startAsynchronScanFor(TestProject project, String jsonConfigfile, Map<String,String> environmentVariables) {
-		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
+	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String,String> environmentVariables) {
+		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 		List<String> list = buildCommand(project, false);
 		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list,environmentVariables);
@@ -214,24 +214,24 @@ public class WithSecHubClient {
 	 * Starts a synchronous scan for given project.
 	 *
 	 * @param project
-	 * @param jsonConfigfile name of the config file which shall be used. Its
+	 * @param location identifier for the config file which shall be used. Its
 	 *                       automatically resolved from test file support.
 	 * @return
 	 */
-	public ExecutionResult startSynchronScanFor(TestProject project, String jsonConfigfile) {
-		return startSynchronScanFor(project, jsonConfigfile,null);
+	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
+		return startSynchronScanFor(project, location,null);
 	}
 
 	/**
 	 * Starts a synchronous scan for given project.
 	 *
 	 * @param project
-	 * @param jsonConfigfile name of the config file which shall be used. Its
+	 * @param location identifier for the config file which shall be used. Its
 	 *                       automatically resolved from test file support.
 	 * @return
 	 */
-	public ExecutionResult startSynchronScanFor(TestProject project, String jsonConfigfile, Map<String, String> environmentVariables) {
-		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
+	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
+		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 
 		List<String> list = buildCommand(project, true);

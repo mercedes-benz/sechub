@@ -6,6 +6,8 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
 
+import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
@@ -48,7 +51,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute + test */
 		as(USER_1).
 			withSecHubClient().
-				startAsynchronScanFor(PROJECT_1, "sechub-integrationtest-client-infrascan.json").
+				startAsynchronScanFor(PROJECT_1, CLIENT_JSON_INFRASCAN).
 				assertJobTriggered();
 
 		/* @formatter:on */
@@ -71,7 +74,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute + test */
 		as(USER_1).
 			withSecHubClient().
-			startAsynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-green.json").
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
 			assertJobTriggered();
 
 		/* @formatter:on */
@@ -92,11 +95,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assignUserToProject(user, project);
 
 		/* execute */
-		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-green.json";
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
-			startAsynchronScanFor(project, jsonConfigFile).
+			startAsynchronScanFor(project, location).
 			assertFileUploaded(project).
 			assertJobTriggered().
 			getJobUUID();
@@ -105,7 +108,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		as(user).
 			withSecHubClient().
-			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			startDownloadJobReport(project, jobUUID, location).
 			hasTrafficLight(TrafficLight.GREEN)
 
 			;
@@ -130,11 +133,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			assignUserToProject(user, project);
 
 		/* execute */
-		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-green.json";
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
-			startAsynchronScanFor(project, jsonConfigFile).
+			startAsynchronScanFor(project, location).
 			assertFileUploaded(project).
 			assertJobTriggered().
 			getJobUUID();
@@ -143,7 +146,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		as(user).
 			withSecHubClient().
-			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			startDownloadJobReport(project, jobUUID, location).
 			hasTrafficLight(TrafficLight.GREEN)
 
 			;
@@ -172,11 +175,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		envEntries.put("SHTEST_FOLDERS1", IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__FAST.getTarget());
 
 		/* execute */
-		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-generic-template.json";
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
-			startAsynchronScanFor(project, jsonConfigFile,envEntries).
+			startAsynchronScanFor(project, location,envEntries).
 			assertFileUploaded(project).
 			assertJobTriggered().
 			getJobUUID();
@@ -192,7 +195,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		 */
 		as(user).
 			withSecHubClient().
-			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			startDownloadJobReport(project, jobUUID, location).
 			hasTrafficLight(TrafficLight.GREEN)
 
 			;
@@ -215,11 +218,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 
 		/* execute */
-		String jsonConfigFile = "sechub-integrationtest-client-sourcescan-yellow.json";
+		IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_YELLOW;
 		UUID jobUUID =
 	    as(user).
 			withSecHubClient().
-			startAsynchronScanFor(project, jsonConfigFile).
+			startAsynchronScanFor(project, location).
 			assertFileUploaded(project).
 			assertJobTriggered().
 			getJobUUID();
@@ -228,7 +231,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		as(user).
 			withSecHubClient().
-			startDownloadJobReport(project, jobUUID, jsonConfigFile).
+			startDownloadJobReport(project, jobUUID, location).
 			hasTrafficLight(TrafficLight.YELLOW)
 
 			;
@@ -251,7 +254,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		as(USER_1).
 			withSecHubClient().
-			startAsynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-green.json").
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
 			assertFileUploaded(PROJECT_1);
 
 		/* @formatter:on */
@@ -278,7 +281,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			// uses a mock with 5 seconds running job - enough to get access to
 			// the uploaded content, download it full. Otherwise file could
 			// be automated removed by cleanup actions on server!
-			startAsynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-excluded_some_files.json").
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_EXLUDE_SOME_FILES).
 				assertFileUploadedAsZip(PROJECT_1).
 					zipContains("not-excluded.txt").
 					zipContains("subfolder/not-excluded-2.txt").
@@ -302,7 +305,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* execute */
 		ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1,
-				"sechub-integrationtest-client-sourcescan-green.json");
+				CLIENT_JSON_SOURCESCAN_GREEN);
 
 		/* test */
 		assertResult(result).
@@ -327,7 +330,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
-				startSynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-yellow.json");
+				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
 
 		/* test */
 		assertResult(result).
@@ -353,7 +356,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
 				enableStopOnYellow().
-				startSynchronScanFor(PROJECT_1, "sechub-integrationtest-client-sourcescan-yellow.json");
+				startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
 
 		/* test */
 		assertResult(result).
@@ -379,7 +382,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute */
 		ExecutionResult result = as(USER_1).
 				withSecHubClient().
-				startSynchronScanFor(PROJECT_1, "sechub-integrationtest-webscanconfig-red-result.json");
+				startSynchronScanFor(PROJECT_1, JSON_WEBSCAN_RED);
 
 		/* test */
 		assertResult(result).
@@ -403,7 +406,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* execute */
 		ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1,
-				"sechub-integrationtest-client-sourcescan-green-extreme-big.json");
+				CLIENT_JSON_SOURCESCAN_GREEN_EXTREME_BIG);
 
 		/* test */
 		assertResult(result).

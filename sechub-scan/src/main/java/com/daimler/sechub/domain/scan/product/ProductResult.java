@@ -79,7 +79,7 @@ public class ProductResult {
 	Integer version;
 
 	@Column(name = COLUMN_PROJECT_ID, nullable = false)
-	private String projectId;
+	String projectId;
 
 	@Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
 	LocalDateTime started;
