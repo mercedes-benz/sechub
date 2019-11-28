@@ -21,6 +21,10 @@ public class AssertProject extends AbstractAssert {
 		this.project = project;
 	}
 
+	/**
+	 * Assert the project does not exist in administration domain
+	 * @return
+	 */
 	public AssertProject doesNotExist() {
 		expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetails(), project.getProjectId() + " found!");
 		return this;
@@ -30,6 +34,54 @@ public class AssertProject extends AbstractAssert {
 		fetchProjectDetails();// will fail with http error when not available
 		return this;
 
+	}
+
+	/**
+	 * Asserts the project has expected scan domain access entries
+	 * @param expected
+	 * @return count
+	 */
+	public AssertProject hasAccessEntriesInDomainScan(long expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
+
+		assertEquals("Scan Access amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
+
+	}
+
+	/**
+	 * Asserts the project has expected schedule domain access entries
+	 * @param expected
+	 * @return count
+	 */
+	public AssertProject hasAccessEntriesInDomainSchedule(long expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
+
+		assertEquals("Scan Access amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
+
+	}
+
+	public AssertProject hasProductResultsInDomainScan(int expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectProductResults(projectId));
+
+		assertEquals("Product results amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
+	}
+
+	public AssertProject hasScanReportsInDomainScan(int expected) {
+		String projectId = project.getProjectId();
+		long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanReports(projectId));
+
+		assertEquals("Product results amount for project "+projectId+" is not as expected!", value, expected);
+
+		return this;
 	}
 
 	private String fetchProjectDetails() {
@@ -81,5 +133,9 @@ public class AssertProject extends AbstractAssert {
 		assertArrayEquals(expectedArray, found.toArray(new String[found.size()]));
 		return this;
 	}
+
+
+
+
 
 }

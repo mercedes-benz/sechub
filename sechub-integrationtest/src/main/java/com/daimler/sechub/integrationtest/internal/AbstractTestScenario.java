@@ -232,8 +232,8 @@ public abstract class AbstractTestScenario implements TestScenario {
 		LOG.info("## [CLEAN] remove old test data");
 		LOG.info("############################################################################################################");
 		resetEmails();
-		cleanupAllTestUsers();
 		cleanupAllTestProjects();
+		cleanupAllTestUsers();
 
 		LOG.info("############################################################################################################");
 		LOG.info("## [INIT] trigger test data initialization on server side");

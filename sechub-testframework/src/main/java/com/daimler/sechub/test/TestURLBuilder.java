@@ -266,7 +266,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildAdminTriggersRefreshOfSchedulerStatus() {
-		return buildUrl(API_ADMIN_SCHEDULER, "status","refresh");
+		return buildUrl(API_ADMIN_SCHEDULER, "status", "refresh");
 	}
 
 	/* +-----------------------------------------------------------------------+ */
@@ -290,6 +290,21 @@ public class TestURLBuilder {
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ integration test special (anonymous) .....+ */
 	/* +-----------------------------------------------------------------------+ */
+	public String buildCountProjectScanAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/access/count");
+	}
+
+	public String buildCountProjectScheduleAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/schedule/access/count");
+	}
+
+	public String buildCountProjectProductResults(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/count");
+	}
+
+	public String buildCountProjectScanReports(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
+	}
 
 	public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
 		return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);
@@ -301,6 +316,7 @@ public class TestURLBuilder {
 
 	/**
 	 * Integration test only URL!
+	 *
 	 * @return url for integration test check
 	 */
 	public String buildIsAliveUrl() {
@@ -310,7 +326,6 @@ public class TestURLBuilder {
 	public String buildCheckIsAliveUrl() {
 		return buildUrl(API_ANONYMOUS, "check/alive");
 	}
-
 
 	public String buildGetFileUpload(String projectId, String jobUUID, String fileName) {
 		return buildUrl(API_ANONYMOUS, "integrationtest/" + projectId + "/" + jobUUID + "/uploaded/" + fileName);
@@ -339,8 +354,5 @@ public class TestURLBuilder {
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {
 		return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
 	}
-
-
-
 
 }

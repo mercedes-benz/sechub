@@ -158,7 +158,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		andExpect(status().isOk());
 
 		/* @formatter:on */
-		verify(projectDeleteService).deletProject("projectId1");
+		verify(projectDeleteService).deleteProject("projectId1");
 	}
 
 	@TestConfiguration

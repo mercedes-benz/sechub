@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.schedule.access.ScheduleDeleteAllProjectAcessService;
 import com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
@@ -45,6 +46,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	@Autowired
 	SchedulerStatusService statusService;
 
+	@Autowired
+	ScheduleDeleteAllProjectAcessService deleteAllProjectAccessService;
+
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
 		MessageID messageId = request.getMessageId();
@@ -62,6 +66,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 			break;
 		case PROJECT_CREATED:
 			handleProjectCreated(request);
+			break;
+		case PROJECT_DELETED:
+			handleProjectDeleted(request);
 			break;
 		case PROJECT_WHITELIST_UPDATED:
 			handleProjectWhiteListUpdated(request);
@@ -126,6 +133,12 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	private void handleUserDeleted(DomainMessage request) {
 		UserMessage data = request.get(MessageDataKeys.USER_DELETE_DATA);
 		revokeUserService.revokeUserAccess(data.getUserId());
+	}
+
+	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
+	private void handleProjectDeleted(DomainMessage request) {
+		ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
+		deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
 	}
 
 	private void updateWhiteList(ProjectMessage data) {

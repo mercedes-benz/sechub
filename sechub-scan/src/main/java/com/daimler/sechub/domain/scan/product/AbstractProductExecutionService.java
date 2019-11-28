@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan.product;
 
 import static com.daimler.sechub.sharedkernel.UUIDTraceLogID.*;
+import static java.util.Objects.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,6 +104,12 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @param traceLogID
 	 */
 	protected void executeAndPersistResults(List<? extends ProductExecutor> executors, SecHubExecutionContext context, UUIDTraceLogID traceLogID) {
+		SecHubConfiguration configuration = context.getConfiguration();
+		requireNonNull(configuration,"Configuration must be set");
+
+		String projectId = configuration.getProjectId();
+		requireNonNull(projectId, "Project id must be set");
+
 		for (ProductExecutor productExecutor : executors) {
 			List<ProductResult> productResults=Collections.emptyList();
 			try {
@@ -115,7 +122,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				getMockableLog().error("Product executor failed:"+productExecutor.getIdentifier()+" "+traceLogID,e);
 
 				productResults=new ArrayList<ProductResult>();
-				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(),productExecutor.getIdentifier(),"");
+				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(),projectId, productExecutor.getIdentifier(),"");
 				productResults.add(fallbackResult);
 			}
 

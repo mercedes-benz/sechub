@@ -39,6 +39,9 @@ public class AbstractProductExecutionServiceTest {
 
 	@Before
 	public void before() throws Exception {
+		SecHubConfiguration configuration = new SecHubConfiguration();
+		configuration.setProjectId("projectid1");
+
 		sechubJobUUID = UUID.randomUUID();
 		logger=mock(Logger.class);
 		traceLogID=mock(UUIDTraceLogID.class);
@@ -51,8 +54,11 @@ public class AbstractProductExecutionServiceTest {
 		executors.add(executor);
 		context = mock(SecHubExecutionContext.class);
 		when(context.getSechubJobUUID()).thenReturn(sechubJobUUID);
+		when(context.getConfiguration()).thenReturn(configuration);
+
 		productResultRepository=mock(ProductResultRepository.class);
 		serviceToTest.productResultRepository=productResultRepository;
+
 	}
 
 	@Test

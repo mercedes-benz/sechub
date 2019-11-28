@@ -21,8 +21,7 @@ import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 @Profile(Profiles.MOCKED_NOTIFICATIONS)
-public class MockEmailService implements EmailService{
-
+public class MockEmailService implements EmailService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MockEmailService.class);
 
@@ -33,7 +32,7 @@ public class MockEmailService implements EmailService{
 	@Value("${sechub.notification.email.mock.cache.enabled:false}")
 	private boolean cacheEmailsEnabled;
 
-	private Map<String,List<SimpleMailMessage>> mails = new HashMap<>();
+	private Map<String, List<SimpleMailMessage>> mails = new HashMap<>();
 
 	public boolean isCacheEmailsEnabled() {
 		return cacheEmailsEnabled;
@@ -44,30 +43,57 @@ public class MockEmailService implements EmailService{
 		if (!cacheEmailsEnabled) {
 			return;
 		}
-		String[] toUsers = message.getTo();
-		for (String to: toUsers) {
-			List<SimpleMailMessage> mailsInternal = getMailsInternal(to);
+		addMessages(message,MailTargetType.TO);
+		addMessages(message,MailTargetType.CC);
+		addMessages(message,MailTargetType.BCC);
+
+	}
+
+	private enum MailTargetType {
+		TO, CC, BCC
+	}
+
+	private void addMessages(SimpleMailMessage message, MailTargetType targetType) {
+		String[] targetMailAddresses;
+		switch (targetType) {
+		case TO:
+			targetMailAddresses = message.getTo();
+			break;
+		case CC:
+			targetMailAddresses = message.getCc();
+			break;
+		case BCC:
+			targetMailAddresses = message.getBcc();
+			break;
+		default:
+			targetMailAddresses = null;
+		}
+		if (targetMailAddresses == null) {
+			return;
+		}
+		for (String target : targetMailAddresses) {
+			List<SimpleMailMessage> mailsInternal = getMailsInternal(target);
 			mailsInternal.add(message);
-			LOG.info("add message:{} for user:{}. Has now {} mails.",message.getSubject(),to,mailsInternal.size());
+			LOG.info("Send {} target:{} [ {} ]: subject:'{}', ", targetType, target, mailsInternal.size(), message.getSubject()
+					);
 		}
 	}
 
 	public List<SimpleMailMessage> getMailsFor(String emailAdress) {
 		if (!cacheEmailsEnabled) {
-			LOG.debug("cache for emails is disabled, so returning empty mails list for emailAdress:{}",logSanitizer.sanitize(emailAdress,-1));
+			LOG.debug("cache for emails is disabled, so returning empty mails list for emailAdress:{}", logSanitizer.sanitize(emailAdress, -1));
 			return Collections.emptyList();
 		}
 		return getMailsInternal(emailAdress);
 	}
 
 	private List<SimpleMailMessage> getMailsInternal(String emailAdress) {
-		List<SimpleMailMessage> list = mails.computeIfAbsent(emailAdress,this::createMailList);
-		LOG.info("resolved messages:{} for user:{}",list.size(),logSanitizer.sanitize(emailAdress,-1));
+		List<SimpleMailMessage> list = mails.computeIfAbsent(emailAdress, this::createMailList);
+		LOG.info("resolved messages:{} for user:{}", list.size(), logSanitizer.sanitize(emailAdress, -1));
 		return list;
 	}
 
-
-	private List<SimpleMailMessage> createMailList(/*NOSONAR*/String emailAdress) {
+	private List<SimpleMailMessage> createMailList(/* NOSONAR */String emailAdress) {
 		return new ArrayList<>();
 	}
 

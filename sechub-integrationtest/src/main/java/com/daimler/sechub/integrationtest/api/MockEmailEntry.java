@@ -11,14 +11,16 @@ public class MockEmailEntry{
 	public String to;
 	public String subject;
 	public String text;
+	public String cc;
+	public String bcc;
 
 	@Override
 	public String toString() {
-		return "MockEmailEntry: [subject=" + subject + ", from=" + from + ", to=" + to + "]";
+		return "MockEmailEntry: [subject=" + subject + ", from=" + from + ", to=" + to + ", cco=" + cc + ", bcc=" + bcc + "]";
 	}
 
 	public String fullToString() {
-		return "MockEmail '" + subject + "'\nfrom=" + from + "\nto=" + to +"\n\n" + text + "]\n";
+		return "MockEmail '" + subject + "'\nfrom=" + from + "\nto=" + to +"\ncc=" + cc+"\nbcc=" + bcc+"\n\n" + text + "]\n";
 	}
 
 }
