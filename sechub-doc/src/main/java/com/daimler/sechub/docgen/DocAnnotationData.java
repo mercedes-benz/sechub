@@ -3,6 +3,8 @@ package com.daimler.sechub.docgen;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -10,7 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 /**
  * Annotation data for documentation
  * @author Albert Tregnaghi
- * 
+ *
  */
 public class DocAnnotationData implements Comparable<DocAnnotationData>{
 	/**
@@ -44,6 +46,11 @@ public class DocAnnotationData implements Comparable<DocAnnotationData>{
 	public Field  /*NOSONAR*/linkedField;
 	public String  /*NOSONAR*/description;
 	public boolean  /*NOSONAR*/isSecret;
+
+	/**
+	 * Here we can add some additional options - if necessary
+	 */
+	public Map<String,String> options = new TreeMap<>();
 
 
 	@Override
@@ -95,7 +102,7 @@ public class DocAnnotationData implements Comparable<DocAnnotationData>{
 	@Override
 	public String toString() {
 		return "TechInfoLinkAnnotationData [linkedClass=" + linkedClass + ", scope=" + scope + ", linkedMethod="
-				+ linkedMethod + ", linkedField=" + linkedField + "]";
+				+ linkedMethod + ", linkedField=" + linkedField + ", options = "+options+" ]";
 	}
 
 	@Override
