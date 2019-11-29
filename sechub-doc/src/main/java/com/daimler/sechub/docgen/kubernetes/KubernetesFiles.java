@@ -14,7 +14,8 @@ public class KubernetesFiles{
 	String serverDeploymentYaml = "";
 	Map<String, StringBuilder> deploymentMap = new TreeMap<>();
 	Map<String, Set<String>> secretInfoMap = new TreeMap<>();
-	
+	Map<String, String> secretFileNameMapping = new TreeMap<>();
+
 	StringBuilder getDeployment(DocAnnotationData data) {
 		StringBuilder sb = deploymentMap.get(data.scope);
 		if (sb==null) {
@@ -30,7 +31,7 @@ public class KubernetesFiles{
 	public Set<String> getSecretNames() {
 		return secretInfoMap.keySet();
 	}
-	
+
 	public Set<String> getSecretKeys(String secretName) {
 		Set<String> set = secretInfoMap.get(secretName);
 		if (set!=null) {
@@ -41,7 +42,16 @@ public class KubernetesFiles{
 		return set;
 	}
 
+	/**
+	 * Resolves filename for secret key content
+	 * @param key
+	 * @return filename for given key. If non special defined , it will always be "${key}.txt"
+	 */
 	public String getFileNameForSecretKey(String key) {
+		String secretFileName = secretFileNameMapping.get(key);
+		if (secretFileName!=null) {
+			return secretFileName;
+		}
 		return key+".txt";
 	}
 }
