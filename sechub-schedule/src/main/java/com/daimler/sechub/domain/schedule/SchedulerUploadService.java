@@ -106,8 +106,8 @@ public class SchedulerUploadService {
 	}
 
 	private void assertCheckSumCorrect(String checkSum, Path path) {
-		LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
 		if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
+			LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
 			throw new NotAcceptableException("Sourcecode checksum check failed");
 		}
 	}
