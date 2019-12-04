@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
@@ -79,6 +80,16 @@ public class CredentialUI {
 		passwordField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getSystemPropertyid());
 		serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyid());
 		protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyid());
+
+		/* colourize for special environments - if set */
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("");
+		if ("PROD".equalsIgnoreCase(env) || "PRODUCTION".equalsIgnoreCase(env)){
+			panel.setBackground(new Color(200,110,110));
+			panel.setForeground(Color.WHITE);
+		}else if ("INT".equalsIgnoreCase(env) || "INTEGRATION".equalsIgnoreCase(env)){
+			panel.setBackground(new Color(200,200,110));
+		}
+
 	}
 
 	public int getPortNumber() {

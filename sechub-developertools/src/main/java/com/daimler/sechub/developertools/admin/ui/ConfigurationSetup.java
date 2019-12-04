@@ -13,8 +13,14 @@ public enum ConfigurationSetup {
 
 	SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol",true),
 
-	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),;
+	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),
 
+	/**
+	 * Here you can set environment information. Currently supported: "PROD" and "INT"
+	 */
+	SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment",true),
+
+	;
 
 	private String systemPropertyid;
 	private String environmentEntryId;
