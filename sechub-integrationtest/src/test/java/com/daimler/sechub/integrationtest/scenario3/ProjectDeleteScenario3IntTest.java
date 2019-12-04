@@ -46,7 +46,7 @@ public class ProjectDeleteScenario3IntTest {
 		as(SUPER_ADMIN).deleteProject(PROJECT_1);
 
 		/* test */
-		TestAPI.waitMilliSeconds(1000); // we wait here to let the new (async) role calculation be done
+		waitAsyncDeleteEventsDone();
 
 		assertProject(PROJECT_1).
 			doesNotExist().
@@ -88,7 +88,7 @@ public class ProjectDeleteScenario3IntTest {
 		as(SUPER_ADMIN).deleteProject(PROJECT_1);
 
 		/* test */
-		TestAPI.waitMilliSeconds(1000); // we wait here to let the new (async) access change happen
+		waitAsyncDeleteEventsDone();
 
 		assertProject(PROJECT_1).
 			doesNotExist().
@@ -97,6 +97,15 @@ public class ProjectDeleteScenario3IntTest {
 
 	}
 	/* @formatter:on */
+
+	private void waitAsyncDeleteEventsDone() {
+		// We wait here to let the new (async) access change happen
+		// Unfortunately this depends on the environment where tests are
+		// executed! On a dedicated build server
+		// values between 500-1000 millis are more than enough to have no flaky
+		// tests, but on slower machines (like GitHub Actions) we must wait longer
+		TestAPI.waitMilliSeconds(2000);
+	}
 
 
 
