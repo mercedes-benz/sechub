@@ -22,8 +22,8 @@ public class AnonymousRequestNewAPITokenUserAction extends AbstractUIAction {
 			return;
 		}
 
-		String data = getContext().getAdministration().requestNewApiToken(email.get());
-		output(data);
+		String infoMessage = getContext().getAdministration().requestNewApiToken(email.get());
+		outputAsText(infoMessage);
 	}
 
 }

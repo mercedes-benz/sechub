@@ -13,7 +13,7 @@ import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class DeleteProjectAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(DeleteProjectAction.class);
 
 	public DeleteProjectAction(UIContext context) {
@@ -26,15 +26,15 @@ public class DeleteProjectAction extends AbstractUIAction {
 		if (! projectId.isPresent()) {
 			return;
 		}
-		
+
 		if (!confirm("Do you really want to\nDELETE\nproject "+projectId+"?")) {
-			output("CANCELED - delete");
+			outputAsText("CANCELED - delete");
 			LOG.info("canceled delete of {}",projectId);
 			return;
 		}
 		LOG.info("start delete of {}",projectId);
-		String data = getContext().getAdministration().deleteProject(projectId.get());
-		output(data);
+		String infoMessage = getContext().getAdministration().deleteProject(projectId.get());
+		outputAsText(infoMessage);
 	}
 
 }

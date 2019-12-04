@@ -16,7 +16,7 @@ public class ListSignupsAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchSignups();
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }
