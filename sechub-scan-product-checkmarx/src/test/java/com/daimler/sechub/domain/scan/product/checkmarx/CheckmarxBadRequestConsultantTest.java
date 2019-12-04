@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.resilience.ResilienceContext;
 import com.daimler.sechub.sharedkernel.resilience.ResilienceProposal;
 import com.daimler.sechub.sharedkernel.resilience.RetryResilienceProposal;
@@ -50,6 +51,23 @@ public class CheckmarxBadRequestConsultantTest {
 	public void http_bad_request_400_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
 		/* prepare*/
 		when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+		/* execute*/
+		ResilienceProposal proposal = consultantToTest.consultFor(context);
+
+		/* test*/
+		assertNotNull(proposal);
+		assertTrue(proposal instanceof RetryResilienceProposal);
+		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+		assertEquals(3, rrp.getMaximumAmountOfRetries());
+		assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
+	}
+
+	@Test
+	public void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
+
+		/* prepare*/
+		when(context.getCurrentError()).thenReturn(new SecHubExecutionException("se1",new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
 
 		/* execute*/
 		ResilienceProposal proposal = consultantToTest.consultFor(context);
