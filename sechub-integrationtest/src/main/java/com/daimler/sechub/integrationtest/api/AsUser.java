@@ -283,6 +283,7 @@ public class AsUser {
 				break;
 			}
 			TestUtil.waitMilliseconds(200);
+			++count;
 		}
 		if (!jobEnded) {
 			throw new IllegalStateException("Even after some retries no job report state was accessible!");
