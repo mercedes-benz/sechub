@@ -1,0 +1,32 @@
+interface ResilienceConsultant{
+    {method} proposalFor (ResilienceContext): ResilienceProposal
+}
+interface ResilienceContext
+
+interface ResilienceProposal
+
+interface RetryResilienceProposal extends ResilienceProposal{
+ {method} int getMaximumAmountOfRetries
+ {method} int getMillisecondsToWaitBeforeRetry
+}
+
+interface FallThroughResilienceProposal extends ResilienceProposal{
+ {method} int getMillisecondsForFallThrough
+}
+
+interface ActionWhichShallBeResilient{
+    <R> execute() throws Exception
+}
+
+class ResilientActionExecutor
+
+ResilienceConsultant .. ResilienceContext
+ResilientActionExecutor --> "creates" ResilienceContext
+
+ResilienceConsultant ..> "returns" ResilienceProposal
+
+
+ResilientActionExecutor "1" -- "0..*" ResilienceConsultant
+ResilientActionExecutor --> "inspects" ResilienceProposal
+
+ResilientActionExecutor  --> "executes" ActionWhichShallBeResilient
