@@ -134,7 +134,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	}
 
 	/**
-	 * Persists the result. This wil ALWAYS start a new transaction. So former
+	 * Persists the result. This will ALWAYS start a new transaction. So former
 	 * results will NOT get lost if this persistence fails. Necessary for debugging
 	 * and also the later possibility to relaunch already existing sechub jobs!
 	 * Reason: When a former scan did take a very long time and was done. The next

@@ -17,6 +17,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	private SealedObject passwordOrAPITokenBase64encoded;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
+	/* TODO Albert Tregnaghi, 2019-12-04: at the moment the time out settings seems to be not used. Also its corelated with check results. There is something odd should be checked*/
 	int timeOutInMilliseconds;
 	int proxyPort;
 	String proxyHostname;
