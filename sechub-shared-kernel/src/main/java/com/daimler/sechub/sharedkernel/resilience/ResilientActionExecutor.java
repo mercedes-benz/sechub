@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.sharedkernel.util.StacktraceUtil;
+
 /**
  * This class is able to execute actions which shall be resilient by help of
  * consultants. The proposals from consultants will be inspected and used for
@@ -49,11 +51,15 @@ public class ResilientActionExecutor<R>{
 	}
 
 	private void handleException(ResilienctActionContext context, Exception e) throws Exception, InterruptedException {
+		LOG.info("Handle exception of type:{}",e.getClass().getName());
+
+		context.prepareForNextCheck(e);
+
 		ResilienceProposal proposal = findFirstProposalFromConsultants(context);
 		if (proposal == null) {
+			LOG.info("None of the consultants ({}) gave any proposal, so rethrow exception {}",consultants.size(),StacktraceUtil.createDescription(e));
 			throw e;
 		}
-		context.prepareForNextCheck(e);
 		if (proposal instanceof RetryResilienceProposal) {
 
 			RetryResilienceProposal retryProposal = (RetryResilienceProposal) proposal;
@@ -75,7 +81,7 @@ public class ResilientActionExecutor<R>{
 			context.forceFallThrough(fallThroughProposal);
 			throw e;
 		} else {
-			LOG.error("Returned propsal is not wellknown and so cannt be handled:{}", proposal.getClass());
+			LOG.error("Returned proposal is not wellknown and so cannt be handled:{}", proposal.getClass().getName());
 			throw e;
 		}
 	}
