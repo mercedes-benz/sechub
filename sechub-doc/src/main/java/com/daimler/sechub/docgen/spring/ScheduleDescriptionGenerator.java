@@ -43,7 +43,7 @@ public class ScheduleDescriptionGenerator implements Generator{
 			row.scheduleDefinition = extracted.getScheduleDefinition();
 			row.description = data.description;
 			row.location = locationExtractor.extractLocation(data);
-			
+
 			SortedSet<TableRow> rows = rowMap.get(data.scope);
 			if (rows == null) {
 				rows = new TreeSet<>();
@@ -60,13 +60,12 @@ public class ScheduleDescriptionGenerator implements Generator{
 			sb.append("[options=\"header\",cols=\"1,1,1,1\"]\n");
 			sb.append(".").append(buildTitle(entries.getKey()));
 			sb.append("\n|===\n");
-			sb.append("|Type   |Definition   |Description |Location\n");
+			sb.append("|Type   |Definition   |Description\n");
 			sb.append("//----------------------\n");
 			for (TableRow row : table) {
 				sb.append("|").append(row.scheduleType);
 				sb.append("|").append(row.scheduleDefinition);
 				sb.append("|").append(row.description);
-				sb.append("|").append(row.location);
 				sb.append("\n");
 			}
 			sb.append("\n|===\n\n");

@@ -1,10 +1,5 @@
 # SPDX-License-Identifier: MIT
 sechub:
-  config:
-    trigger:
-      nextjob:
-        # every second
-        cron: "*/1 * * * * *"  
   targettype:
     detection:
       intranet:
