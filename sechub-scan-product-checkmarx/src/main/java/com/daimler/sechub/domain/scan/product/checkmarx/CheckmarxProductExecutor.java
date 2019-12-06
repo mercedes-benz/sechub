@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +51,20 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 	@Autowired
 	StorageService storageService;
 
+	@Autowired
+	CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+
 	ResilientActionExecutor<ProductResult> resilientActionExecutor;
 
 	public CheckmarxProductExecutor() {
 		/* we create here our own instance - only for this service!*/
 		this.resilientActionExecutor=new ResilientActionExecutor<>();
-		this.resilientActionExecutor.add(new CheckmarxBadRequestConsultant());
 
+	}
+
+	@PostConstruct
+	protected void postConstruct() {
+		this.resilientActionExecutor.add(checkmarxResilienceConsultant);
 	}
 
 	@Override

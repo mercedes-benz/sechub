@@ -65,14 +65,16 @@ public class ResilientActionExecutor<R>{
 			RetryResilienceProposal retryProposal = (RetryResilienceProposal) proposal;
 
 			int maxRetries = retryProposal.getMaximumAmountOfRetries();
-			LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
 			if (context.getAlreadyDoneRetries() >= maxRetries) {
-				LOG.warn("Maximum retry amount reached, will rethrow exception", context.getAlreadyDoneRetries(), maxRetries);
+				LOG.warn("Maximum retry amount ({}/{}) reached, will rethrow exception for :{}", context.getAlreadyDoneRetries(), maxRetries,proposal.getInfo());
 				throw e;
 			} else {
 				context.forceRetry();
+				LOG.debug("Wait {} millis before retry:{}", retryProposal.getMillisecondsToWaitBeforeRetry(), proposal.getInfo());
+
 				/* wait time for next retry */
 				Thread.sleep(retryProposal.getMillisecondsToWaitBeforeRetry());
+				LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
 			}
 		} else if (proposal instanceof FallthroughResilienceProposal) {
 			FallthroughResilienceProposal fallThroughProposal = (FallthroughResilienceProposal) proposal;

@@ -15,12 +15,12 @@ import com.daimler.sechub.sharedkernel.resilience.RetryResilienceProposal;
 
 public class CheckmarxBadRequestConsultantTest {
 
-	private CheckmarxBadRequestConsultant consultantToTest;
+	private CheckmarxResilienceConsultant consultantToTest;
 	private ResilienceContext context;
 
 	@Before
 	public void before() {
-		consultantToTest = new CheckmarxBadRequestConsultant();
+		consultantToTest = new CheckmarxResilienceConsultant();
 		context= mock(ResilienceContext.class);
 	}
 
@@ -61,6 +61,22 @@ public class CheckmarxBadRequestConsultantTest {
 		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
 		assertEquals(3, rrp.getMaximumAmountOfRetries());
 		assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
+	}
+
+	@Test
+	public void http_bad_server_error_500_exception_returns_retry_proposal_with_1_retries_and_5000_millis_to_wait() {
+		/* prepare*/
+		when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+		/* execute*/
+		ResilienceProposal proposal = consultantToTest.consultFor(context);
+
+		/* test*/
+		assertNotNull(proposal);
+		assertTrue(proposal instanceof RetryResilienceProposal);
+		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+		assertEquals(1, rrp.getMaximumAmountOfRetries());
+		assertEquals(5000, rrp.getMillisecondsToWaitBeforeRetry());
 	}
 
 	@Test
