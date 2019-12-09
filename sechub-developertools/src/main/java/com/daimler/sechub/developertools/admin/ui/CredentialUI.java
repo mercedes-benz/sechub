@@ -82,12 +82,14 @@ public class CredentialUI {
 		protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyid());
 
 		/* colourize for special environments - if set */
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("");
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
 		if ("PROD".equalsIgnoreCase(env) || "PRODUCTION".equalsIgnoreCase(env)){
 			panel.setBackground(new Color(200,110,110));
 			panel.setForeground(Color.WHITE);
 		}else if ("INT".equalsIgnoreCase(env) || "INTEGRATION".equalsIgnoreCase(env)){
 			panel.setBackground(new Color(200,200,110));
+		}else if (env.toLowerCase().indexOf("test")!=1) {
+			panel.setBackground(new Color(110,200,200));
 		}
 
 	}

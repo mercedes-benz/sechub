@@ -24,18 +24,17 @@ public enum ConfigurationSetup {
 
 	private String systemPropertyid;
 	private String environmentEntryId;
+
 	private boolean optional;
 
 	private ConfigurationSetup(boolean optional) {
-		this.optional=optional;
-		this.systemPropertyid = null;
-		this.environmentEntryId = name();
+		this(null,optional);
 	}
 
 	private ConfigurationSetup(String systemPropertyid, boolean optional) {
 		this.optional=optional;
 		this.systemPropertyid = systemPropertyid;
-		this.environmentEntryId = null;
+		this.environmentEntryId = name();
 	}
 
 	public String getEnvironmentEntryId() {
@@ -67,10 +66,17 @@ public enum ConfigurationSetup {
 	 */
 	public String getStringValue(String defaultValue) {
 		String value = null;
+		/* first try ENV entry */
 		if (environmentEntryId != null) {
 			value = System.getenv(environmentEntryId);
-		}else {
+		}
+		/* then try system property - if not already set*/
+		if (value==null) {
 			value = System.getProperty(getSystemPropertyid(), defaultValue);
+		}
+		/* then use default value - if not already set*/
+		if (value==null) {
+			value=defaultValue;
 		}
 		assertNotEmpty(value, name());
 		return value;
