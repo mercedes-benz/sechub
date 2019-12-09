@@ -158,7 +158,10 @@ WARNING: The developer administration UI is only a tool for developers and shoul
          It's an extreme simple client for administrative parts. For real administration a frontend for admins
          will be developed in future! It's not purposed to be in a deployment, but only for development.
 
-=== Integration test variant
+==== General launch setup
+include::./../shared/launchconfig/launchconfig_start_general_adminui.adoc[]
+
+==== Integration test variant
 include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui.adoc[]
 
 

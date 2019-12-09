@@ -22,18 +22,18 @@ public class DeleteProjectAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		Optional<String> projectId = getUserInput("Please enter project ID/name to DELETE", InputCacheIdentifier.PROJECT_ID);
-		if (! projectId.isPresent()) {
+		Optional<String> optProjectId = getUserInput("Please enter project ID/name to DELETE", InputCacheIdentifier.PROJECT_ID);
+		if (! optProjectId.isPresent()) {
 			return;
 		}
-
+		String projectId= optProjectId.get();
 		if (!confirm("Do you really want to\nDELETE\nproject "+projectId+"?")) {
 			outputAsText("CANCELED - delete");
-			LOG.info("canceled delete of {}",projectId);
+			LOG.info("canceled delete of project {}",projectId);
 			return;
 		}
-		LOG.info("start delete of {}",projectId);
-		String infoMessage = getContext().getAdministration().deleteProject(projectId.get());
+		LOG.info("start delete of project {}",projectId);
+		String infoMessage = getContext().getAdministration().deleteProject(projectId);
 		outputAsText(infoMessage);
 	}
 

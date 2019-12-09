@@ -236,6 +236,11 @@ public class DeveloperAdministration {
 		return "sent";
 	}
 
+	public String deleteUser(String userId) {
+		getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(userId));
+		return "sent";
+	}
+
 	public String requestNewApiToken(String emailAddress) {
 		getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
 		return "Sent request for new API token for email:"+emailAddress+"- New API token will be delived to this address if user exists!";
@@ -314,9 +319,6 @@ public class DeveloperAdministration {
 		}
 
 	}
-
-
-
 
 
 }

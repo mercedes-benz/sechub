@@ -39,6 +39,7 @@ import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntrie
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.DeleteUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
@@ -103,12 +104,17 @@ public class CommandUI {
 		add(signupMenu, new AcceptUserSignupAction(context));
 
 		menu.addSeparator();
+
 		add(menu, new ShowUserListAction(context));
 		add(menu, new ShowUserDetailAction(context));
 		add(menu, new ShowAdminListAction(context));
 		menu.addSeparator();
+
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
+		menu.addSeparator();
+
+		add(menu, new DeleteUserAction(context));
 		menu.addSeparator();
 
 		JMenu anonymous = new JMenu("Anonymous");
@@ -123,6 +129,7 @@ public class CommandUI {
 		JMenu revokeMenu = new JMenu("Revoke");
 		add(revokeMenu,new RevokeAdminRightsFromAdminAction(context));
 		menu.add(revokeMenu);
+
 
 	}
 

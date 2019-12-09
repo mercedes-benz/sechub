@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
 include::launchconfig_common_dev_adminui_header.adoc[]
 
+[source, bash]
 ----
--Dsechub.developertools.admin.integrationtestserver=true
--Dsechub.developertools.admin.server=localhost
--Dsechub.developertools.admin.serverport=8443
+-Dsechub.developertools.admin.server=${yourServerAddress}
 ----
 Environment entries:
 ----
-SECHUB_ADMIN_USERID=int-test_superadmin
-SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd
+SECHUB_ADMIN_USERID=${yourAdminAccount}
+SECHUB_ADMIN_APITOKEN=${yourAdminAPIToken}
+SECHUB_ADMIN_ENVIRONMENT=PROD|INT|Specific[TEST]<1>
 ----
 
-The given `userid` and `apitoken` are the credentials, used for every integration test. This are only
-test credentials and *never used* in production.
+<1> *Optional:* Your environment. This will be shown inside Application as Title.
+    Also the variable content will provide some color effects: `PROD` will have red, `INT` yellow and
+    any content having `TEST` (case insensitive) inside will have cyan credential page inside.
+    When not set `UNKNOWN` will be used in title and no special color is used for credential panel.

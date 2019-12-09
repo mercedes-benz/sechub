@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -52,7 +52,7 @@ public class ProjectDeleteService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
 
-	@UseCaseAdministratorDeletesUser(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
+	@UseCaseAdministratorDeleteProject(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
 			5, 6, 7}, description = "The service will delete the project with dependencies and triggers asynchronous events"))
 	@Transactional
 	public void deleteProject(String projectId) {

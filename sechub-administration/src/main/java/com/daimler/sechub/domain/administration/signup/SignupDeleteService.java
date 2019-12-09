@@ -10,7 +10,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorDeletesSignup;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -29,7 +29,7 @@ public class SignupDeleteService {
 	@Autowired
 	UserInputAssertion assertion;
 
-	@UseCaseAdministratorDeletesUser(@Step(number=2, name="Persistence", description="Existing signup will be deleted"))
+	@UseCaseAdministratorDeletesSignup(@Step(number=2, name="Persistence", description="Existing signup will be deleted"))
 	public void delete(String userId) {
 		auditLog.log("triggered delete of user signup: {}", logSanitizer.sanitize(userId,30));
 
