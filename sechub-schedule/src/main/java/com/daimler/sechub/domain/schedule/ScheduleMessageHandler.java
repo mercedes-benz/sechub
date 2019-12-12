@@ -16,6 +16,7 @@ import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateServic
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
@@ -48,6 +49,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 
 	@Autowired
 	ScheduleDeleteAllProjectAcessService deleteAllProjectAccessService;
+
+	@Autowired
+	SchedulerCancelJobService cancelJobService;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -82,9 +86,18 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 		case REQUEST_SCHEDULER_STATUS_UPDATE:
 			handleSchedulerStatusRefreshRequest(request);
 			break;
+		case REQUEST_JOB_CANCELATION:
+			handleCancelJobRequested(request);
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+	private void handleCancelJobRequested(DomainMessage request) {
+		JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+		cancelJobService.cancelJob(message.getJobUUID(), message.getOwnerEmailAddress());
 	}
 
 	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)

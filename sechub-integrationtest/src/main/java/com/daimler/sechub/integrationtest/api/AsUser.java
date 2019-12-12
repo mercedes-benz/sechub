@@ -445,6 +445,12 @@ public class AsUser {
 
 	}
 
+	public AsUser cancelJob(UUID jobUUID) {
+		String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
+		getRestHelper().post(url);
+		return this;
+	}
+
 
 
 }

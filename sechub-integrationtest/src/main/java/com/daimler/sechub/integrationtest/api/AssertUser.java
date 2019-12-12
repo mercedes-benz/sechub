@@ -299,6 +299,15 @@ public class AssertUser extends AbstractAssert {
 		return this;
 	}
 
+	public AssertUser afterThis() {
+		// just syntax sugar for more readable tests
+		return this;
+	}
+	public AssertUser now() {
+		// just syntax sugar for more readable tests
+		return this;
+	}
+
 	public AssertUser canNotApproveJob(TestProject project, UUID jobUUID) {
 		expectHttpFailure(() -> canApproveJob(project,jobUUID), HttpStatus.NOT_FOUND);
 		return this;
@@ -346,8 +355,12 @@ public class AssertUser extends AbstractAssert {
 		return this;
 	}
 
-	public AssertJobInformationAdministration onJobAdministration() {
-		return new AssertJobInformationAdministration(user);
+	public AssertJobInformationAdministration<AssertUser> onJobAdministration() {
+		return new AssertJobInformationAdministration<AssertUser>(this,user);
+	}
+
+	public AssertJobScheduler<AssertUser> onJobScheduling(TestProject project) {
+		return new AssertJobScheduler<AssertUser>(this,user,project);
 	}
 
 	public AssertUser hasUserRole() {

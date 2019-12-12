@@ -254,6 +254,10 @@ public class TestURLBuilder {
 		return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
 	}
 
+	public String buildAdminCancelsJob(UUID jobUUID) {
+		return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
+	}
+
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/scheduler/..........................+ */
 	/* +-----------------------------------------------------------------------+ */
@@ -354,5 +358,7 @@ public class TestURLBuilder {
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {
 		return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
 	}
+
+
 
 }

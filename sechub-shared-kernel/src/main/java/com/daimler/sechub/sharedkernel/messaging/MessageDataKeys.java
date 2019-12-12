@@ -111,6 +111,11 @@ public class MessageDataKeys {
 	 */
 	public static final MessageDataKey<JobMessage> JOB_FAILED_DATA = createJobMessageKey("job.failed.data");
 
+	/**
+	 * Must contain job uuid,job owner (but can be null)
+	 */
+	public static final MessageDataKey<JobMessage> JOB_CANCEL_DATA = createJobMessageKey("job.cancel.data");
+
 	public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
 
 

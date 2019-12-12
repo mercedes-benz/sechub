@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.administration.job.JobAdministrationRestController;
+import com.daimler.sechub.domain.administration.job.JobCancelService;
 import com.daimler.sechub.domain.administration.job.JobInformation;
 import com.daimler.sechub.domain.administration.job.JobInformationListService;
 import com.daimler.sechub.domain.administration.job.JobStatus;
@@ -37,6 +38,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorListsAllRunningJobs;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
@@ -57,6 +59,9 @@ public class JobAdministrationRestControllerRestDocTest {
 
 	@MockBean
 	JobInformationListService jobListService;
+
+	@MockBean
+	JobCancelService jobCancelService;
 
 	@Before
 	public void before() {
@@ -102,6 +107,27 @@ public class JobAdministrationRestControllerRestDocTest {
 						fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
 					)
 				)
+
+				);
+
+		/* @formatter:on */
+	}
+
+	@Test
+	@UseCaseRestDoc(useCase=UseCaseAdministratorCancelsJob.class)
+	public void restdoc_cancel_job() throws Exception {
+
+		/* execute + test @formatter:off */
+		UUID jobUUID = UUID.randomUUID();
+
+		this.mockMvc.perform(
+				post(https(PORT_USED).buildAdminCancelsJob(jobUUID)).
+				contentType(MediaType.APPLICATION_JSON_VALUE)
+				)./*
+		andDo(print()).
+				*/
+		andExpect(status().isOk()).
+		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCancelsJob.class))
 
 				);
 

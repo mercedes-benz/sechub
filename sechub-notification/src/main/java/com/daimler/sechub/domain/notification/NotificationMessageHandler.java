@@ -12,6 +12,7 @@ import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedul
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserNoLongerAdminNotificationService;
+import com.daimler.sechub.domain.notification.user.InformUserThatJobHasBeenCanceledService;
 import com.daimler.sechub.domain.notification.user.InformUserThatUserBecomesAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.InformUserThatUserNoLongerAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService;
@@ -22,6 +23,7 @@ import com.daimler.sechub.domain.notification.user.UserDeletedNotificationServic
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
@@ -63,6 +65,12 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	InformAdminsThatSchedulerJobProcessingHasBeenEnabledService informAdminSchedulerEnabledService;
 
 	/* +++++++++++++++++++++++++++++++++ */
+	/* ++++++ job canceled +++++++++++ */
+	/* +++++++++++++++++++++++++++++++++ */
+	@Autowired
+	InformUserThatJobHasBeenCanceledService informUserThatJobHasBeenCanceledService;
+
+	/* +++++++++++++++++++++++++++++++++ */
 	/* ++++++ project delete +++++++++++ */
 	/* +++++++++++++++++++++++++++++++++ */
 	@Autowired
@@ -94,10 +102,10 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 			handleSignupRequested(request.get(MessageDataKeys.USER_SIGNUP_DATA));
 			break;
 		case USER_BECOMES_SUPERADMIN:
-			handleUserBecomesSuperAdmin(request.get(MessageDataKeys.USER_CONTACT_DATA),request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			handleUserBecomesSuperAdmin(request.get(MessageDataKeys.USER_CONTACT_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 			break;
 		case USER_NO_LONGER_SUPERADMIN:
-			handleUserNoLongerSuperAdmin(request.get(MessageDataKeys.USER_CONTACT_DATA),request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			handleUserNoLongerSuperAdmin(request.get(MessageDataKeys.USER_CONTACT_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 			break;
 		case SCHEDULER_JOB_PROCESSING_DISABLED:
 			handleSchedulerJobProcessingDisabled(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
@@ -106,15 +114,23 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 			handleSchedulerJobProcessingEnabled(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 			break;
 		case PROJECT_DELETED:
-			handleProjectDeleted(request.get(MessageDataKeys.PROJECT_DELETE_DATA),request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			handleProjectDeleted(request.get(MessageDataKeys.PROJECT_DELETE_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+			break;
+		case JOB_CANCELED:
+			handleJobCanceled(request.get(MessageDataKeys.JOB_CANCEL_DATA));
 			break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
 	}
 
+	@IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
+	private void handleJobCanceled(JobMessage jobMessage) {
+		informUserThatJobHasBeenCanceledService.notify(jobMessage);
+	}
+
 	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
-	private void handleProjectDeleted(ProjectMessage projectMessage,String baseUrl) {
+	private void handleProjectDeleted(ProjectMessage projectMessage, String baseUrl) {
 		informAdminsThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
 		informOwnerThatProjectHasBeenDeletedService.notify(projectMessage);
 		informUsersThatProjectHasBeenDeletedService.notify(projectMessage);

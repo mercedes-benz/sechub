@@ -92,6 +92,8 @@ public enum UseCaseIdentifier {
 	UC_ADMIN_TRIGGERS_REFRESH_SCHEDULER_STATUS,
 
 	UC_ADMIN_LIST_STATUS_INFORMATION,
+
+	UC_ADMIN_CANCELS_JOB,
 	;
 
 	/* +-----------------------------------------------------------------------+ */
