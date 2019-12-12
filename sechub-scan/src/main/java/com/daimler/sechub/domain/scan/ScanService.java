@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,11 @@ import com.daimler.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportException;
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.sharedkernel.messaging.DomainDataTraceLogID;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
@@ -93,9 +96,11 @@ public class ScanService implements SynchronMessageHandler {
 	}
 
 	protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("start scan for {}", traceLogID(request));
-		}
+		DomainDataTraceLogID sechubJobUUID = traceLogID(request);
+		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
+
+		LOG.info("start scan for {}", sechubJobUUID);
+
 		UUID logUUID = scanLogService.logScanStarted(context);
 		try {
 			codeScanProductExecutionService.executeProductsAndStoreResults(context);

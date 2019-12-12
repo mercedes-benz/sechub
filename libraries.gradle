@@ -67,11 +67,13 @@ ext {
 
          flyway:                                "org.flywaydb:flyway-core:5.2.1",
 
-        // JDK 10 build problems handling
-        // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
-        jdk_missing_jaxb_api:						"javax.xml.bind:jaxb-api:2.3.1",
-        jdk_missing_activation:						"javax.activation:activation:1.1.1",
-        jdk_missing_jaxb_impl:						"javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
+         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.2",
+
+         // JDK 10 build problems handling
+         // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
+         jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:2.3.1",
+         jdk_missing_activation:                "javax.activation:activation:1.1.1",
+         jdk_missing_jaxb_impl:                 "javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
    ]
 
 }
