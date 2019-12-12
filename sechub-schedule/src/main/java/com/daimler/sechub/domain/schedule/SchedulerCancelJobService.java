@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +61,16 @@ public class SchedulerCancelJobService {
 		}
 		ScheduleSecHubJob secHubJob = optJob.get();
 
+		markJobAsCanceled(secHubJob);
+
+		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
+		LOG.info("job {} has been canceled", jobUUID);
+
+		sendJobCanceled(secHubJob,ownerEmailAddress);
+
+	}
+
+	private void markJobAsCanceled(ScheduleSecHubJob secHubJob) {
 		ExecutionState state = secHubJob.getExecutionState();
 		if (ExecutionState.ENDED.equals(state)) {
 			throw new NotAcceptableException("Not able to cancel because job has already ended!");
@@ -71,13 +82,8 @@ public class SchedulerCancelJobService {
 		secHubJob.setExecutionResult(ExecutionResult.FAILED); // we mark job as failed, because canceled and so did not work. So we need no
 																// special result like "CANCELED". Is simply did not work, reason can be found
 																// in execution state
+		secHubJob.setEnded(LocalDateTime.now());
 		jobRepository.save(secHubJob);
-
-		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
-		LOG.info("job {} has been canceled", jobUUID);
-
-		sendJobCanceled(secHubJob,ownerEmailAddress);
-
 	}
 
 	@IsSendingAsyncMessage(MessageID.JOB_CANCELED)

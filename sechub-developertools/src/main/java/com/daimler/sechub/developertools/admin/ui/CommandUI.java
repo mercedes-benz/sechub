@@ -18,6 +18,7 @@ import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.F
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
+import com.daimler.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
@@ -173,6 +174,8 @@ public class CommandUI {
 		JMenu menu = new JMenu("Job");
 		menuBar.add(menu);
 		add(menu, new GetJobStatusAction(context));
+		add(menu, new ShowRunningBatchJobsListAction(context));
+		add(menu, new CancelJobAction(context));
 		menu.addSeparator();
 		add(menu, new DownloadJSONReportForJobAction(context));
 		add(menu, new DownloadHTMLReportForJobAction(context));

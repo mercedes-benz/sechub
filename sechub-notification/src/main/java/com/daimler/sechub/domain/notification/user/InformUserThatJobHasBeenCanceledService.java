@@ -44,7 +44,7 @@ public class InformUserThatJobHasBeenCanceledService {
 		StringBuilder emailContent = new StringBuilder();
 		emailContent.append("Dear ").append(jobMessage.getOwner()).append(",\n\n");
 		emailContent.append("Job ").append(jobMessage.getJobUUID()).append(" in project ").append(jobMessage.getProjectId());
-		emailContent.append("has been canceled.");
+		emailContent.append(" has been canceled.");
 
 		String text = emailContent.toString();
 		return text;

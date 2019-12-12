@@ -35,8 +35,8 @@ public class CredentialUI {
 		String apiToken = ConfigurationSetup.SECHUB_ADMIN_APITOKEN.getStringValueOrFail();
 
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		useridField= new JTextField(userId);
-		passwordField= new JPasswordField(apiToken);
+		useridField = new JTextField(userId);
+		passwordField = new JPasswordField(apiToken);
 		serverField = new JTextField(server);
 
 		protocolField = new JTextField(protocol);
@@ -47,16 +47,19 @@ public class CredentialUI {
 		serverPortSpinner.setEditor(editor);
 		serverPortSpinner.setValue(new Integer(port));
 
-		/* when we run integration test server mode, we use the passwords from integration test super admin */
+		/*
+		 * when we run integration test server mode, we use the passwords from
+		 * integration test super admin
+		 */
 		if (ConfigurationSetup.isIntegrationTestServerMenuEnabled()) {
 			useridField.setText(TestAPI.SUPER_ADMIN.getUserId());
 			passwordField.setText(TestAPI.SUPER_ADMIN.getApiToken());
 		}
 
-		serverField.setPreferredSize(new Dimension(300,30));
-		useridField.setPreferredSize(new Dimension(200,30));
-		passwordField.setPreferredSize(new Dimension(200,30));
-		serverPortSpinner.setPreferredSize(new Dimension(100,30));
+		serverField.setPreferredSize(new Dimension(300, 30));
+		useridField.setPreferredSize(new Dimension(200, 30));
+		passwordField.setPreferredSize(new Dimension(200, 30));
+		serverPortSpinner.setPreferredSize(new Dimension(100, 30));
 
 		panel.add(new JLabel("Server:"));
 		panel.add(protocolField);
@@ -68,7 +71,10 @@ public class CredentialUI {
 		panel.add(new JLabel("API-Token:"));
 		panel.add(passwordField);
 
-		/* currently there is a bug - changes are not handled . So we disable edit fields etc.*/
+		/*
+		 * currently there is a bug - changes are not handled . So we disable edit
+		 * fields etc.
+		 */
 		serverField.setEnabled(false);
 		useridField.setEnabled(false);
 		passwordField.setEnabled(false);
@@ -81,20 +87,24 @@ public class CredentialUI {
 		serverPortSpinner.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getSystemPropertyid());
 		protocolField.setToolTipText(ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getSystemPropertyid());
 
-		/* colourize for special environments - if set */
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
-		if ("PROD".equalsIgnoreCase(env) || "PRODUCTION".equalsIgnoreCase(env)){
-			panel.setBackground(new Color(200,110,110));
-			panel.setForeground(Color.WHITE);
-		}else if ("INT".equalsIgnoreCase(env) || "INTEGRATION".equalsIgnoreCase(env)){
-			panel.setBackground(new Color(200,200,110));
-		}else if (env.toLowerCase().indexOf("test")!=1) {
-			panel.setBackground(new Color(110,200,200));
-		}
+		useDifferentColorsForWellknownEnvironments();
 
 	}
 
+	private void useDifferentColorsForWellknownEnvironments() {
+		/* colourize for special environments - if set */
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
+		if ("PROD".equalsIgnoreCase(env) || "PRODUCTION".equalsIgnoreCase(env)) {
+			panel.setBackground(new Color(200, 110, 110));
+			panel.setForeground(Color.WHITE);
+		} else if ("INT".equalsIgnoreCase(env) || "INTEGRATION".equalsIgnoreCase(env)) {
+			panel.setBackground(new Color(200, 200, 110));
+		} else if (env.toLowerCase().indexOf("test") != -1) {
+			panel.setBackground(new Color(110, 200, 200));
+		}
+	}
+
 	public int getPortNumber() {
-		return ((Integer)serverPortSpinner.getValue()).intValue();
+		return ((Integer) serverPortSpinner.getValue()).intValue();
 	}
 }
