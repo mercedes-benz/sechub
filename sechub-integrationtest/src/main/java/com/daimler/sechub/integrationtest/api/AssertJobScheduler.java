@@ -3,9 +3,8 @@ package com.daimler.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.UUID;
-
-import org.assertj.core.util.Arrays;
 
 public class AssertJobScheduler<R> extends AbstractAssert {
 
