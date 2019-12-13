@@ -589,9 +589,13 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#developer-administration-ui">2.3. Developer administration UI</a></li>
-<li><a href="#integration-test-variant">2.4. Integration test variant</a></li>
-<li><a href="#branching-model">2.5. Branching model</a></li>
+<li><a href="#developer-administration-ui">2.3. Developer administration UI</a>
+<ul class="sectlevel3">
+<li><a href="#general-launch-setup">2.3.1. General launch setup</a></li>
+<li><a href="#integration-test-variant">2.3.2. Integration test variant</a></li>
+</ul>
+</li>
+<li><a href="#branching-model">2.4. Branching model</a></li>
 </ul>
 </li>
 <li><a href="#section-infrastructure-setup">3. SecHub infrastructure setup</a>
@@ -610,7 +614,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#general-configuration">3.1.2. General configuration</a></li>
+<li><a href="#section-general-configuration">3.1.2. General configuration</a></li>
 <li><a href="#scheduling-definitions">3.1.3. Scheduling definitions</a></li>
 <li><a href="#sechub-mock-options">3.1.4. Configuration properties for mocked adapters</a></li>
 </ul>
@@ -647,10 +651,15 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-infrastructure-setup-kubernetes">3.5. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#test-use-real-products">4. Test/Use real products</a>
+<li><a href="#section-develop-use-real-products">4. Test / Use real products</a>
 <ul class="sectlevel2">
-<li><a href="#start-server-in-dev-mode">4.1. Start server in DEV mode</a></li>
-<li><a href="#start-server-in-prod-mode">4.2. Start server in PROD mode</a></li>
+<li><a href="#mandatory-configuration">4.1. Mandatory configuration</a>
+<ul class="sectlevel3">
+<li><a href="#storage-configuration">4.1.1. Storage configuration</a></li>
+</ul>
+</li>
+<li><a href="#start-server-in-dev-mode">4.2. Start server in DEV mode</a></li>
+<li><a href="#start-server-in-prod-mode">4.3. Start server in PROD mode</a></li>
 </ul>
 </li>
 <li><a href="#special-setup">5. Special setup</a>
@@ -834,6 +843,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-usecase-UC_031">10.1.32. UC_031-Admin enables scheduler job processing</a></li>
 <li><a href="#section-usecase-UC_032">10.1.33. UC_032-Admin get scheduler status</a></li>
 <li><a href="#section-usecase-UC_033">10.1.34. UC_033-Admin lists status information</a></li>
+<li><a href="#section-usecase-UC_034">10.1.35. UC_034-Admin cancels a job</a></li>
 </ul>
 </li>
 </ul>
@@ -885,10 +895,11 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#admin-deletes-user-signup">11.1.26. Admin deletes user signup</a></li>
 <li><a href="#user-requests-new-api-token">11.1.27. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">11.1.28. Admin lists all running jobs</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.29. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.30. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.31. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.32. Admin lists status information</a></li>
+<li><a href="#admin-cancels-a-job">11.1.29. Admin cancels a job</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.30. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.31. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.32. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.33. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -929,6 +940,7 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#section-howto-configure-mock-behaviours">13.2. Howto configure mock behaviours</a></li>
+<li><a href="#section-howto-start-localserver-like-in-production">13.3. Howto start a local development server like in production</a></li>
 </ul>
 </li>
 </ul>
@@ -1364,9 +1376,44 @@ The developer administration UI is only a tool for developers and should be hand
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="general-launch-setup">2.3.1. General launch setup</h4>
+<div class="paragraph">
+<p>To start simple swing application <code>DeveloperAdministrationUI</code> create a new launch configuration with
+following arguments:</p>
 </div>
-<div class="sect2">
-<h3 id="integration-test-variant">2.4. Integration test variant</h3>
+<div class="paragraph">
+<p>class: <code>com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">-Dsechub.developertools.admin.server=${yourServerAddress}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Environment entries:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SECHUB_ADMIN_USERID=${yourAdminAccount}
+SECHUB_ADMIN_APITOKEN=${yourAdminAPIToken}
+SECHUB_ADMIN_ENVIRONMENT=PROD|INT|Specific[TEST]<i class="conum" data-value="1"></i><b>(1)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><strong>Optional:</strong> Your environment. This will be shown inside Application as Title.
+Also the variable content will provide some color effects: <code>PROD</code> will have red, <code>INT</code> yellow and
+any content having <code>TEST</code> (case insensitive) inside will have cyan credential page inside.
+When not set <code>UNKNOWN</code> will be used in title and no special color is used for credential panel.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="integration-test-variant">2.3.2. Integration test variant</h4>
 <div class="paragraph">
 <p>To start simple swing application <code>DeveloperAdministrationUI</code> create a new launch configuration with
 following arguments:</p>
@@ -1434,8 +1481,9 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 </table>
 </div>
 </div>
+</div>
 <div class="sect2">
-<h3 id="branching-model">2.5. Branching model</h3>
+<h3 id="branching-model">2.4. Branching model</h3>
 <div class="paragraph">
 <p>We got following branch types:</p>
 </div>
@@ -1612,7 +1660,7 @@ write some junit tests using TestAPI.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="general-configuration">3.1.2. General configuration</h4>
+<h4 id="section-general-configuration">3.1.2. General configuration</h4>
 <div class="paragraph">
 <p>SecHub can be configured  by keys on server startup.
 Using the spring <code>@Value</code> annotation we are able to
@@ -1648,7 +1696,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </table>
 </div>
-<table id="link-gen-systemproperties" class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-administration" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 1. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1670,7 +1718,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 2. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1692,7 +1740,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-checkmarx" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 3. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1724,6 +1772,26 @@ The system properties described here are <strong>automatically</strong>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password of checkmarx user</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.period.minutes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
@@ -1745,7 +1813,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 4. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1767,7 +1835,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 5. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1799,7 +1867,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 6. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1821,7 +1889,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 7. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1898,7 +1966,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 8. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1970,7 +2038,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 9. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1988,11 +2056,16 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.from</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for emails sent by sechub system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.replyto</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for reply when email was sent by sechub system</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-s" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 10. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2009,8 +2082,18 @@ The system properties described here are <strong>automatically</strong>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
@@ -2024,7 +2107,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 11. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2051,7 +2134,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 12. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2073,8 +2156,8 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 13. Scope 'shared'</caption>
+<table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all spread">
+<caption class="title">Table 13. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2089,13 +2172,33 @@ The system properties described here are <strong>automatically</strong>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.accesskey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.bucketname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.secretkey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.sharedvolume.upload.dir</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword <strong>temp</strong> as path, this will create a temporary directory (for testing).</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-target" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 14. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2154,17 +2257,9 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 <th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Definition</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Location</th>
+<th class="tableblock halign-left valign-top">Fixed</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cron</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key:sechub.config.trigger.nextjob.cron, per default:*/10 * * * * *</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds. It can be configured different</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Method:SchedulerJobBatchTriggerService#triggerExecutionOfNextJob</p></td>
-</tr>
-</tbody>
 </table>
 </div>
 <div class="sect3">
@@ -2185,7 +2280,7 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </table>
 </div>
-<table class="tableblock frame-all grid-all spread">
+<table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all spread">
 <caption class="title">Table 16. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2226,8 +2321,8 @@ configured, or profile <code>mocked_products</code> must be active.</p>
 <div class="paragraph">
 <p>Because it takes too much time - even when security products are configured with
 test profiles (for testing persistence, transaction rollback etc.) a
-<code>mocked_products</code> profile was  introduced which can be used, see
-<a href="#section-sechub-spring-profiles">Spring Profiles</a>.</p>
+<code>mocked_products</code> profile was  introduced which can be used.
+See <a href="#section-sechub-spring-profiles">Spring Profiles</a>.</p>
 </div>
 <div class="paragraph">
 <p>It does use normal product executors but injects mocked adapters
@@ -2237,14 +2332,10 @@ instead preconfigured values (which where recorded from real communications).</p
 </div>
 <div class="paragraph">
 <p>Startup is done by using active spring profile <code>mocked_products</code>.
-Some mocks have special options to change their behaviour at runtime.
-Please refer to <a href="#sechub-mock-options">Mock options</a> for details.</p>
+Some mocks have special options to change their behaviour at runtime.</p>
 </div>
 <div class="paragraph">
-<p>But you have either to define additional profiles for other stuff or to use
- <code>demomode</code> where database and environment entries are defined and inherits
- automatically <code>mocked_products</code>, see
- <a href="#section-sechub-spring-profiles">Spring Profiles</a> for details.</p>
+<p>Please refer to <a href="#sechub-mock-options">Mock options</a> for details.</p>
 </div>
 <div class="sect4">
 <h5 id="launch-in-demo-mode">3.2.1.1. Launch in demo mode</h5>
@@ -2409,6 +2500,18 @@ stacktraces.</td>
 </div>
 <div class="sect4">
 <h5 id="launch-in-prod-mode">3.2.1.4. Launch in PROD mode</h5>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To run a local server like in production please refer <a href="#section-howto-start-localserver-like-in-production">How to start localserver like in production</a>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
@@ -2660,10 +2763,123 @@ The existing kubernetes deployment must be made more general.
 </div>
 </div>
 <div class="sect1">
-<h2 id="test-use-real-products">4. Test/Use real products</h2>
+<h2 id="section-develop-use-real-products">4. Test / Use real products</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="start-server-in-dev-mode">4.1. Start server in DEV mode</h3>
+<h3 id="mandatory-configuration">4.1. Mandatory configuration</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Next lines will show java launcher properties which MUST be set because
+     there are no defaults defined. You have to define those values when not
+     starting in mock mode! The example her is generated and will
+     always show the current necessary parts.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-Dspring.profiles.active=dev,postgres,real_products
+-Dsechub.adapter.checkmarx.baseurl=value
+-Dsechub.adapter.checkmarx.newproject.teamid=value
+-Dsechub.adapter.checkmarx.password=value
+-Dsechub.adapter.checkmarx.userid=value
+-Dsechub.initialadmin.email=value
+-Dsechub.initialadmin.userid=value
+-Dsechub.adapter.nessus.defaultpolicyid=value
+-Dsechub.adapter.netsparker.apitoken=value
+-Dsechub.adapter.netsparker.baseurl=value
+-Dsechub.adapter.netsparker.defaultpolicyid=value
+-Dsechub.adapter.netsparker.licenseid=value
+-Dsechub.adapter.netsparker.userid=value
+-Dsechub.notification.email.from=value
+-Dsechub.notification.smtp.hostname=value
+-Dsechub.server.baseurl=value</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Instead of java system properties you can also define environment entries
+     at your launch configuration or your shell and reduce parameter hell:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export SPRING_PROFILES_ACTIVE=dev,postgres,real_products
+export SECHUB_ADAPTER_CHECKMARX_BASEURL=value
+export SECHUB_ADAPTER_CHECKMARX_NEWPROJECT_TEAMID=value
+export SECHUB_ADAPTER_CHECKMARX_PASSWORD=value
+export SECHUB_ADAPTER_CHECKMARX_USERID=value
+export SECHUB_INITIALADMIN_EMAIL=value
+export SECHUB_INITIALADMIN_USERID=value
+export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID=value
+export SECHUB_ADAPTER_NETSPARKER_APITOKEN=value
+export SECHUB_ADAPTER_NETSPARKER_BASEURL=value
+export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID=value
+export SECHUB_ADAPTER_NETSPARKER_LICENSEID=value
+export SECHUB_ADAPTER_NETSPARKER_USERID=value
+export SECHUB_NOTIFICATION_EMAIL_FROM=value
+export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
+export SECHUB_SERVER_BASEURL=value</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please <strong>don&#8217;t forget</strong> to have <strong>at least one server</strong> running with active profile <code>admin_access</code>!</p>
+</div>
+<div class="paragraph">
+<p>Servers without having this profile activated, will provide only standard API access.
+Reason for this behavior: Administrators can reduce access to administrative API by IP and
+port firewall settings.</p>
+</div>
+<div class="paragraph">
+<p>This is only necessary for production! Development and Integrationtest profiles do automatically include
+the <code>admin_access</code> profile.</p>
+</div>
+<div class="paragraph">
+<p><strong>An example for production:</strong><br>
+In a Kubernetes environment you could  start 5 instances of SecHub without this profile at port 443 and 2 additional ones with <code>admin_access</code> profile
+enabled on port 8443 (all other settings are same). In your firewall configuration you allow public
+access to this server by port 443, but access to port 8443 is restricted to some dedicated IPs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="storage-configuration">4.1.1. Storage configuration</h4>
+<div class="paragraph">
+<p>In SecHub we need to store job data (e.g. zipped source code).</p>
+</div>
+<div class="paragraph">
+<p><strong>At least one storage setup must be defined</strong>- otherwise SecHub server will not start!
+You can either define a shared volume (normally a NFS) or a S3 storage.</p>
+</div>
+<div class="paragraph">
+<p>Look at <a href="#section-gen-config-scope-storage">Storage configuration</a> for configuration details.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="start-server-in-dev-mode">4.2. Start server in DEV mode</h3>
 <div class="paragraph">
 <p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
@@ -2761,7 +2977,7 @@ Please refer also
 </div>
 </div>
 <div class="sect2">
-<h3 id="start-server-in-prod-mode">4.2. Start server in PROD mode</h3>
+<h3 id="start-server-in-prod-mode">4.3. Start server in PROD mode</h3>
 <div class="paragraph">
 <p>To start spring boot application <code>SecHubServerApplication</code> create a new launch configuration with
 following arguments:</p>
@@ -3518,7 +3734,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="2100">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="2391">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -4070,6 +4286,9 @@ The complete documentation about use cases is generated. If you want to change c
 <li>
 <p><a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-UC_034">UC_034-Admin cancels a job</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -4526,10 +4745,10 @@ After this the user is able to</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Try to find project annd update execution state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to find job annd update execution state</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When project is found and user has access and job is initializing the state will be updated and marked as ready for execution</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found and user has access job will be marked as ready for execution</p>
 <p class="tableblock"><em>This step is defined at method <code>approveJob</code> in class `com.daimler.sechub.domain.schedule.SchedulerApproveJobService`</em></p></td>
 </tr>
 </tbody>
@@ -5222,7 +5441,23 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_018">10.1.19. UC_018-Admin deletes a user</h4>
 <div class="paragraph">
-<p>An administrator deletes an user. All associations etc. are removed as well</p>
+<p>An administrator deletes an user. All associations etc. are removed as well.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the user is still a project owner the delete will not work
+and an error message will appear that this is not acceptable
+and that the ownership must be moved before User delete is possible.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong>Technical information</strong></p>
@@ -5266,22 +5501,6 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3, 4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will delete the user with dependencies and triggers asynchronous events</p>
 <p class="tableblock"><em>This step is defined at method <code>deleteUser</code> in class `com.daimler.sechub.domain.administration.user.UserDeleteService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Persistence</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Existing signup will be deleted</p>
-<p class="tableblock"><em>This step is defined at method <code>delete</code> in class `com.daimler.sechub.domain.administration.signup.SignupDeleteService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service deletes projects.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3, 4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will delete the project with dependencies and triggers asynchronous events</p>
-<p class="tableblock"><em>This step is defined at method <code>deletProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectDeleteService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -5354,9 +5573,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest API call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest api called to remove user signup</p>
 <p class="tableblock"><em>This step is defined at method <code>deleteSignup</code> in class `com.daimler.sechub.domain.administration.signup.SignupAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Persistence</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Existing signup will be deleted</p>
+<p class="tableblock"><em>This step is defined at method <code>delete</code> in class `com.daimler.sechub.domain.administration.signup.SignupDeleteService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -5431,9 +5658,59 @@ Albert Tregnaghi, 2018-08-03: This is currently not full implemented!
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project will be deleted</p>
 <p class="tableblock"><em>This step is defined at method <code>deleteProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service deletes projects.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3, 4, 5, 6, 7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will delete the project with dependencies and triggers asynchronous events</p>
+<p class="tableblock"><em>This step is defined at method <code>deleteProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectDeleteService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that project has been deleted</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform project owner that the project has been deleted</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform users that the project has been deleted</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts - remove entries for deleted project</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>deleteAnyAccessDataForProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleDeleteAllProjectAcessService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">revoke any scan access from project</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>deleteAnyAccessDataForProject</code> in class `com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delete all project scan data</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>deleteAllDataForProject</code> in class `com.daimler.sechub.domain.scan.ProjectDataDeleteService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -6214,6 +6491,75 @@ user signup is accepted by admin.</p>
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_033">REST API documentation for usecase UC_033-Admin lists status information </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_034">10.1.35. UC_034-Admin cancels a job</h4>
+<div class="paragraph">
+<p>Administrator does cancel a job by its Job UUID</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Json returned containing details about project</p>
+<p class="tableblock"><em>This step is defined at method <code>cancelJob</code> in class `com.daimler.sechub.domain.administration.job.JobAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will trigger event that job cancel requested</p>
+<p class="tableblock"><em>This step is defined at method <code>cancelJob</code> in class `com.daimler.sechub.domain.administration.job.JobCancelService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to find job and mark as being canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found and user has access the state will be updated and marked as canceled</p>
+<p class="tableblock"><em>This step is defined at method <code>cancelJob</code> in class `com.daimler.sechub.domain.schedule.SchedulerCancelJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform user that her/his job has been canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.user.InformUserThatJobHasBeenCanceledService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_034">REST API documentation for usecase UC_034-Admin cancels a job </a></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -6380,6 +6726,9 @@ The complete documentation about REST API is generated. If you want to change co
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
 </li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_034">REST API for UC_034-Admin cancels a job </a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -6457,7 +6806,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/userId1/membership/projectId1' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6498,7 +6847,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/userId1/membership/projectId1' -i -X DELETE \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6690,7 +7039,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6704,8 +7053,8 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/af600753-ea96-4378-9232-3db966fbeac2' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/2acc9e22-4fd4-4da2-8224-60e2c8aef8bd' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6840,7 +7189,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{&quot;apiVersion&quot;:&quot;1.0&quot;, &quot;name&quot;:&quot;projectId&quot;, &quot;whiteList&quot;:{&quot;uris&quot;:[&quot;192.168.1.1&quot;,&quot;https://my.special.server.com/myapp1/&quot;]}}'</code></pre>
 </div>
 </div>
@@ -6856,7 +7205,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/projects' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6893,7 +7242,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X DELETE \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -6959,7 +7308,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/whitelist' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{&quot;apiVersion&quot;:&quot;1.0&quot;, &quot;whiteList&quot;:{&quot;uris&quot;:[&quot;192.168.1.1&quot;,&quot;https://my.special.server.com/myapp1/&quot;]}}'</code></pre>
 </div>
 </div>
@@ -7024,7 +7373,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/project1/scan/logs' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7061,7 +7410,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/apitoken/oneTimeToken1' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7186,7 +7535,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{&quot;webScan&quot;:{&quot;login&quot;:null,&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
 </div>
 </div>
@@ -7227,7 +7576,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/c281cb78-a356-4aa4-b630-bc931b8f2762/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/58b7e19e-d283-4fa9-a41b-78d73819d783/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7273,8 +7622,8 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7f4933bc-4543-4df9-ab58-b06ddf30717e/approve' -i -X PUT \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3b3180a3-b7ef-47a6-bda2-4cd43356ef2c/approve' -i -X PUT \
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7373,8 +7722,8 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e949f2bc-d44f-48b0-8c2b-86558497bcac' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0bf3743f-fc71-4282-9b4c-b890ca292e86' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7390,9 +7739,9 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/1d9b9c41-f4ad-4d1c-9ce3-74d9b4b2e701' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Accept: application/json;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/0d9d54d2-5f25-42dd-9548-f9aba88c42d9' -i -X GET \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7403,8 +7752,8 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/99520dc6-dd89-4548-bf6e-f366bd85960d' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8' \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/37d071c9-97d3-4ac2-84b1-862b0b3b6f05' -i -X GET \
+    -H 'Content-Type: application/json' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
 </div>
@@ -7455,7 +7804,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/signup' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;userId&quot;:&quot;valid_userid&quot;,&quot;emailAdress&quot;:&quot;valid_mailadress@test.com&quot;}'</code></pre>
 </div>
 </div>
@@ -7579,7 +7928,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/refresh/apitoken/emailAdress@test.com' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
@@ -7643,12 +7992,27 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/running' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.29. Admin disables job processing in scheduler</h4>
+<h4 id="admin-cancels-a-job">11.1.29. Admin cancels a job</h4>
+<div id="section-ucrestdoc-uc-UC_034" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_034-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/127432df-a2db-41a9-9f41-4983f7d7bdd7' -i -X POST \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.30. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -7658,12 +8022,12 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/disable/job-processing' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.30. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.31. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -7673,12 +8037,12 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/enable/job-processing' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.31. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.32. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -7688,12 +8052,12 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scheduler/status/refresh' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.32. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.33. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -7732,7 +8096,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/status' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+    -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -8087,12 +8451,25 @@ thow an adapter execution. Interesting for tests</td>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="section-howto-start-localserver-like-in-production">13.3. Howto start a local development server like in production</h3>
+<div class="paragraph">
+<p>In most cases its enough to use mocked adapter variants for development.
+But sometimes its necessary to start up a local development server using
+real security products (e.g. full integration testing etc.)</p>
+</div>
+<div class="paragraph">
+<p>Launch configuration is described at <a href="#section-develop-use-real-products">Test/Use real products</a>.
+You should also use same storage as you use in production! So when you are
+using a S3 bucket for storage there you should define this as well!</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-08-28 12:16:17 CEST
+Last updated 2019-10-30 17:13:05 CET
 </div>
 </div>
 </body>

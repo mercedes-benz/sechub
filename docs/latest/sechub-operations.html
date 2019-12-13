@@ -542,7 +542,11 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#server-application">2.1.3. Server Application</a>
 <ul class="sectlevel4">
-<li><a href="#mandatory-configuration">2.1.3.1. Mandatory configuration</a></li>
+<li><a href="#mandatory-configuration">2.1.3.1. Mandatory configuration</a>
+<ul class="sectlevel5">
+<li><a href="#storage-configuration">2.1.3.1.1. Storage configuration</a></li>
+</ul>
+</li>
 <li><a href="#plain-server-3">2.1.3.2. Plain server</a>
 <ul class="sectlevel5">
 <li><a href="#logging">2.1.3.2.1. Logging</a></li>
@@ -551,7 +555,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#docker">2.1.3.3. Docker</a></li>
 <li><a href="#kubernetes-3">2.1.3.4. Kubernetes</a>
 <ul class="sectlevel5">
-<li><a href="#logging-2">2.1.3.4.1. Logging</a></li>
+<li><a href="#generator">2.1.3.4.1. Generator</a></li>
+<li><a href="#logging-2">2.1.3.4.2. Logging</a></li>
 </ul>
 </li>
 </ul>
@@ -832,31 +837,17 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.adapter.checkmarx.newproject.teamid=value
 -Dsechub.adapter.checkmarx.password=value
 -Dsechub.adapter.checkmarx.userid=value
--Dsechub.initialadmin.apitoken=value
 -Dsechub.initialadmin.email=value
 -Dsechub.initialadmin.userid=value
 -Dsechub.adapter.nessus.defaultpolicyid=value
--Dsechub.adapter.nessus.internet.baseurl=value
--Dsechub.adapter.nessus.internet.password=value
--Dsechub.adapter.nessus.internet.userid=value
--Dsechub.adapter.nessus.intranet.baseurl=value
--Dsechub.adapter.nessus.intranet.password=value
--Dsechub.adapter.nessus.intranet.userid=value
--Dsechub.adapter.nessus.proxy.hostname=value
--Dsechub.adapter.netsparker.agentname=value
 -Dsechub.adapter.netsparker.apitoken=value
 -Dsechub.adapter.netsparker.baseurl=value
 -Dsechub.adapter.netsparker.defaultpolicyid=value
--Dsechub.adapter.netsparker.internet.agentgroupname=value
--Dsechub.adapter.netsparker.intranet.agentgroupname=value
 -Dsechub.adapter.netsparker.licenseid=value
 -Dsechub.adapter.netsparker.userid=value
 -Dsechub.notification.email.from=value
 -Dsechub.notification.smtp.hostname=value
--Dsechub.server.baseurl=value
--Dsechub.storage.sharedvolume.upload.dir=value
--Dsechub.target.resolve.strategy.ip=value
--Dsechub.target.resolve.strategy.uri=value</pre>
+-Dsechub.server.baseurl=value</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -879,31 +870,17 @@ export SECHUB_ADAPTER_CHECKMARX_BASEURL=value
 export SECHUB_ADAPTER_CHECKMARX_NEWPROJECT_TEAMID=value
 export SECHUB_ADAPTER_CHECKMARX_PASSWORD=value
 export SECHUB_ADAPTER_CHECKMARX_USERID=value
-export SECHUB_INITIALADMIN_APITOKEN=value
 export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
 export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID=value
-export SECHUB_ADAPTER_NESSUS_INTERNET_BASEURL=value
-export SECHUB_ADAPTER_NESSUS_INTERNET_PASSWORD=value
-export SECHUB_ADAPTER_NESSUS_INTERNET_USERID=value
-export SECHUB_ADAPTER_NESSUS_INTRANET_BASEURL=value
-export SECHUB_ADAPTER_NESSUS_INTRANET_PASSWORD=value
-export SECHUB_ADAPTER_NESSUS_INTRANET_USERID=value
-export SECHUB_ADAPTER_NESSUS_PROXY_HOSTNAME=value
-export SECHUB_ADAPTER_NETSPARKER_AGENTNAME=value
 export SECHUB_ADAPTER_NETSPARKER_APITOKEN=value
 export SECHUB_ADAPTER_NETSPARKER_BASEURL=value
 export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID=value
-export SECHUB_ADAPTER_NETSPARKER_INTERNET_AGENTGROUPNAME=value
-export SECHUB_ADAPTER_NETSPARKER_INTRANET_AGENTGROUPNAME=value
 export SECHUB_ADAPTER_NETSPARKER_LICENSEID=value
 export SECHUB_ADAPTER_NETSPARKER_USERID=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
 export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
-export SECHUB_SERVER_BASEURL=value
-export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR=value
-export SECHUB_TARGET_RESOLVE_STRATEGY_IP=value
-export SECHUB_TARGET_RESOLVE_STRATEGY_URI=value</pre>
+export SECHUB_SERVER_BASEURL=value</pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -934,6 +911,19 @@ access to this server by port 443, but access to port 8443 is restricted to some
 </td>
 </tr>
 </table>
+</div>
+<div class="sect5">
+<h6 id="storage-configuration">2.1.3.1.1. Storage configuration</h6>
+<div class="paragraph">
+<p>In SecHub we need to store job data (e.g. zipped source code).</p>
+</div>
+<div class="paragraph">
+<p><strong>At least one storage setup must be defined</strong>- otherwise SecHub server will not start!
+You can either define a shared volume (normally a NFS) or a S3 storage.</p>
+</div>
+<div class="paragraph">
+<p>Look at <a href="#section-gen-config-scope-storage">Storage configuration</a> for configuration details.</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1060,7 +1050,71 @@ Provide credentials inside your kubernetes deployment files by at least using
 </table>
 </div>
 <div class="sect5">
-<h6 id="logging-2">2.1.3.4.1. Logging</h6>
+<h6 id="generator">2.1.3.4.1. Generator</h6>
+<div class="paragraph">
+<p>There exists a class <code>KubernetesTemplateFilesGenerator</code>.
+Starting this class with <code>SECHUB_KUBERNETES_GENO_TARGET_ROOT</code> set to
+your deployment directory you will have following files generated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>$genoTargetRoot/build/gen/copy-templates/sechub-server-environment-deployment-parts.gen.yaml</code></p>
+</li>
+<li>
+<p><code>$genoTargetRoot/kubegen/env-setup/secrets</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>sechub-server-environment-deployment-parts</strong></p>
+</div>
+<div class="paragraph">
+<p>Inside the generated deployment yaml file you will find all
+Spring parts annotated with <code>@Value</code> and <code>@MustBeDocumented</code>.
+If <code>@MustBeDocumented</code> has attribute <code>secret</code> set to <code>true</code> the
+generated yaml part contains a reference to a kubernetes secret instead of
+a fixed value.</p>
+</div>
+<div class="paragraph">
+<p>The yaml file can be used when you initally create a deployment file, or
+when new attributes has been added to SecHub, identify missing/new ones
+very fast.</p>
+</div>
+<div class="paragraph">
+<p><strong>secrets</strong></p>
+</div>
+<div class="paragraph">
+<p>There will be some generated install scripts for secrets which do
+reference txt files where you can put secrets inside.</p>
+</div>
+<div class="paragraph">
+<p>So its easy to deploy multiple changes with one command.</p>
+</div>
+<div class="paragraph">
+<p>When Spring parts annotated with <code>@Value</code> and <code>@MustBeDocumented</code>
+has attribute <code>secret</code> set to <code>true</code> there will be a generated entry
+here. So you see automatically what should be a kubernetes secret.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you add those generated files inside a GIT repository, please ensure
+that you define a <code>.gitignore</code> file which ignores <code>*.txt</code> files, so you do not
+accidently add the credentials to your repository.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="logging-2">2.1.3.4.2. Logging</h6>
 <div class="paragraph">
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
