@@ -25,6 +25,8 @@ import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportF
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
+import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
+import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
@@ -168,8 +170,12 @@ public class CommandUI {
 		JMenu statusMenu = new JMenu("Status");
 		menu.add(statusMenu);
 
-		add(statusMenu, new ListStatusEntriesAction(context));
 		add(statusMenu, new ShowRunningBatchJobsListAction(context));
+		statusMenu.addSeparator();
+		add(statusMenu, new CheckAliveAction(context));
+		add(statusMenu, new CheckVersionAction(context));
+		statusMenu.addSeparator();
+		add(statusMenu, new ListStatusEntriesAction(context));
 		add(statusMenu, new CreateOverviewCSVExportAction(context));
 		add(statusMenu, new ShowAdminListAction(context));
 

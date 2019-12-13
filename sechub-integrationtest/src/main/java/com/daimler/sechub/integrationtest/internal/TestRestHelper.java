@@ -155,6 +155,12 @@ public class TestRestHelper {
 		return template.getForEntity(link, String.class).getBody();
 	}
 
+	public String headStringFromURL(String url) {
+		markLastURL(url);
+		return template.headForHeaders(url).toSingleValueMap().toString();
+	}
+
+
 	public long getLongFromURL(String link) {
 		String dataAsString = getStringFromURL(link);
 		return Long.parseLong(dataAsString);
@@ -200,6 +206,7 @@ public class TestRestHelper {
 			}
 		}
 	}
+
 
 
 }

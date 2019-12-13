@@ -340,7 +340,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildGetServerVersionUrl() {
-		return buildUrl(API_ANONYMOUS, "info/version");
+		return buildUrl(API_ADMIN, "info/version");
 	}
 
 	/* +-----------------------------------------------------------------------+ */

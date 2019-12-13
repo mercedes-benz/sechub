@@ -110,7 +110,6 @@ public class DeveloperAdministration {
 		return "SENT";
 	}
 
-
 	public String createNewUserSignup(String name, String email) {
 
 		String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
@@ -270,6 +269,15 @@ public class DeveloperAdministration {
 		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
 	}
 
+	public String checkAlive() {
+		return getRestHelper().headStringFromURL(getUrlBuilder().buildCheckIsAliveUrl());
+	}
+
+	public String checkVersion() {
+		return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+	}
+
+
 	public String triggerDownloadFullScan(UUID sechubJobUUID) {
 
 		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
@@ -279,8 +287,10 @@ public class DeveloperAdministration {
 	public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
 		String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
 		return commonTriggerDownloadInBrowser(url);
-
 	}
+
+
+
 
 	private String commonTriggerDownloadInBrowser(String url) {
 		try {
@@ -324,6 +334,5 @@ public class DeveloperAdministration {
 		}
 
 	}
-
 
 }
