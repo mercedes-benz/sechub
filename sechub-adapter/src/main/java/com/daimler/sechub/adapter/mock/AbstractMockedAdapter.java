@@ -46,7 +46,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>,C extend
 
 		waitIfConfigured(timeStarted, setup, target);
 
-		LOG.debug("Returning content:{}",result);
+		LOG.trace("Returning content:{}",result);
 
 		return result;
 	}
