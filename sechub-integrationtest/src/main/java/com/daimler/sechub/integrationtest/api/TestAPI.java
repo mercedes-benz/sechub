@@ -202,6 +202,7 @@ public class TestAPI {
 		if (expected == null || expected.length == 0) {
 			throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
 		}
+		/* sanity check: 20x is no HTTP failure...*/
 		assertNoHttp20xInside(expected);
 
 		long start = System.currentTimeMillis();
@@ -214,9 +215,11 @@ public class TestAPI {
 			try {
 				runnable.run();
 				if (timeElapsed) {
-					fail("No rest client exception - so user at least got a HTTP 200 what is wrong!");
+					fail("No rest client exception - so user at least got a HTTP 20x what is wrong! Timeout reached:"+waitedTimeInMilliseconds+"/"+timeOutInMilliseconds+" ms.");
 				}
-				TestAPI.waitMilliSeconds(500);
+				int wait=500;
+				LOG.debug("Expected HTTP failure did not occure. Timeout not reached:"+waitedTimeInMilliseconds+"/"+timeOutInMilliseconds+" ms. So Wait "+wait+" ms and retry");
+				TestAPI.waitMilliSeconds(wait);
 			} catch (HttpStatusCodeException he) {
 				int status = he.getRawStatusCode();
 				failedAsExpected = isAllowed(status, expected);
