@@ -20,6 +20,8 @@ public enum ConfigurationSetup {
 	 */
 	SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment",true),
 
+	SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory",true),
+
 	;
 
 	private String systemPropertyid;

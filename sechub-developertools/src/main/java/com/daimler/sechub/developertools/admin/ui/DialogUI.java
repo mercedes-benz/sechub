@@ -5,12 +5,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,6 +25,7 @@ import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 public class DialogUI {
 
 	private JFrame frame;
+	private JFileChooser fileChooser = new JFileChooser();
 
 	public DialogUI(JFrame frame) {
 		this.frame = frame;
@@ -35,6 +38,22 @@ public class DialogUI {
 
 	public void warn(String message) {
 		JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.WARNING_MESSAGE);
+	}
+
+	/**
+	 * Selects file by file chooser
+	 * @return file or <code>null</code>
+	 */
+	public File selectFile(String initialPath) {
+		if (initialPath!=null && new File(initialPath).exists()) {
+			fileChooser.setCurrentDirectory(new File(initialPath));
+		}
+		int result = fileChooser.showOpenDialog(frame);
+		if (result!=JFileChooser.APPROVE_OPTION) {
+			return null;
+		}
+		return fileChooser.getSelectedFile();
+
 	}
 
 	/**

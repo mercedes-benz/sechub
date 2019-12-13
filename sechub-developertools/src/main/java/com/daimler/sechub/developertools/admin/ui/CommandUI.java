@@ -15,6 +15,7 @@ import javax.swing.JProgressBar;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
@@ -27,7 +28,9 @@ import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJob
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
@@ -85,6 +88,7 @@ public class CommandUI {
 
 		createEditMenu();
 		createIntegrationTestServerMenu();
+		createMassOperationsMenu();
 
 	}
 
@@ -198,6 +202,7 @@ public class CommandUI {
 
 		JMenu testDataMenu = new JMenu("Testdata");
 		menu.add(testDataMenu);
+		add(testDataMenu, new CreateScenario2TestDataAction(context));
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
 		testDataMenu.addSeparator();
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
@@ -210,6 +215,15 @@ public class CommandUI {
 
 
 	}
+
+	private void createMassOperationsMenu() {
+		JMenu massOperationsMenu = new JMenu("Mass operations");
+		menuBar.add(massOperationsMenu);
+		add(massOperationsMenu, new CreateProjectMassCSVImportAction(context));
+		massOperationsMenu.addSeparator();
+		add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
+	}
+
 
 	private void add(JMenu menu, AbstractUIAction action) {
 		JMenuItem menuItem = new JMenuItem(action);
