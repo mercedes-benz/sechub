@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionResult;
 import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
@@ -20,8 +21,8 @@ public class JobScenario2IntTest {
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-//	@Rule
-//	public Timeout timeOut = Timeout.seconds(10);
+	@Rule
+	public Timeout timeOut = Timeout.seconds(10);
 
 	@Test
 	public void a_triggered_job_being_running_is_NOT_found_anymore_when_canceled_by_admin() {
@@ -106,12 +107,14 @@ public class JobScenario2IntTest {
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
 
 		assertUser(USER_1).
-			onJobScheduling(PROJECT_1).canNotFindJob(jobUUID).and().
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.INITIALIZING).
+			and().
 			canApproveJob(PROJECT_1, jobUUID).
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID);
+			afterThis().
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.READY_TO_START);
 
 		assertUser(SUPER_ADMIN).
-			onJobScheduling(PROJECT_1).canNotFindJob(jobUUID).
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.READY_TO_START).
 			and().
 			onJobAdministration().canNotFindRunningJob(jobUUID); // means events are triggered and handled */
 		/* @formatter:on */

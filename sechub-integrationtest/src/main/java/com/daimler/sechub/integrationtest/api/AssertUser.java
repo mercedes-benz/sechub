@@ -392,11 +392,11 @@ public class AssertUser extends AbstractAssert {
 	}
 
 	public AssertUser hasNotUserRole() {
-		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser()), HttpStatus.FORBIDDEN);
+		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser()), 4000, HttpStatus.FORBIDDEN);
 		return this;
 	}
 	public AssertUser hasNotOwnerRole() {
-		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner()), HttpStatus.FORBIDDEN);
+		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner()),4000, HttpStatus.FORBIDDEN);
 		return this;
 	}
 	public AssertUser isNotOwnerOf(TestProject project) {
