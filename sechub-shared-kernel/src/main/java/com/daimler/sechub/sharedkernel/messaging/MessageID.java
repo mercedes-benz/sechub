@@ -42,6 +42,8 @@ public enum MessageID {
 
 	PROJECT_CREATED(MessageDataKeys.PROJECT_CREATION_DATA),
 
+	PROJECT_DELETED(MessageDataKeys.PROJECT_DELETE_DATA),
+
 	PROJECT_WHITELIST_UPDATED(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA),
 
 	/**
@@ -87,7 +89,7 @@ public enum MessageID {
 	REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING,
 
 	/**
-	 * Request status recalculation and sendinf information events
+	 * Request status recalculation and send information events
 	 */
 	REQUEST_SCHEDULER_STATUS_UPDATE,
 
@@ -95,6 +97,11 @@ public enum MessageID {
 	/* Scheduler status update message, contains information about status*/
 	SCHEDULER_STATUS_UPDATE,
 
+	/* Request job to be canceled, contains JobUUID */
+	REQUEST_JOB_CANCELATION(MessageDataKeys.JOB_CANCEL_DATA),
+
+	/* Informs about Job being canceled, contains job uuid and owner*/
+	JOB_CANCELED(MessageDataKeys.JOB_CANCEL_DATA),
 	;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

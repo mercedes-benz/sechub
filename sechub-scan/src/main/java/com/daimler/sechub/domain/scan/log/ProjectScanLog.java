@@ -32,7 +32,7 @@ public class ProjectScanLog {
 	public static final String TABLE_NAME = "SCAN_PROJECT_LOG";
 
 	public static final String COLUMN_UUID = "UUID";
-	public static final String COLUMN_PROJECTID = "PROJECT_ID";
+	public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
 	public static final String COLUMN_EXECUTED_BY = "EXECUTED_BY";
 	public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 	public static final String COLUMN_CONFIG = "CONFIG";
@@ -66,7 +66,7 @@ public class ProjectScanLog {
 	@Column(name = COLUMN_EXECUTED_BY)
 	String executedBy;
 
-	@Column(name = COLUMN_PROJECTID, nullable = false)
+	@Column(name = COLUMN_PROJECT_ID, nullable = false)
 	String projectId;
 
 	@Column(name = COLUMN_SECHUB_JOB_UUID, nullable = false)

@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +25,9 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
+import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
+import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
@@ -47,39 +51,58 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 	@Autowired
 	StorageService storageService;
 
+	@Autowired
+	CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+
+	ResilientActionExecutor<ProductResult> resilientActionExecutor;
+
+	public CheckmarxProductExecutor() {
+		/* we create here our own instance - only for this service!*/
+		this.resilientActionExecutor=new ResilientActionExecutor<>();
+
+	}
+
+	@PostConstruct
+	protected void postConstruct() {
+		this.resilientActionExecutor.add(checkmarxResilienceConsultant);
+	}
+
 	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data)
-			throws Exception {
+	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data) throws Exception {
 		LOG.debug("Trigger checkmarx adapter execution");
 
 		UUID jobUUID = context.getSechubJobUUID();
 		String projectId = context.getConfiguration().getProjectId();
 
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
-		String path = storage.getAbsolutePath("sourcecode.zip");
+		ProductResult result = resilientActionExecutor.executeResilient(()-> {
 
-		/* @formatter:off */
+				try (InputStream sourceCodeZipFileInputStream = storage.fetch("sourcecode.zip")) {
 
-		CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
-				configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-				setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-				setPathToZipFile(path).
-				setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
-				setProjectId(projectId).
-				setTraceID(context.getTraceLogIdAsString()).
-				/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
-				build();
-		/* @formatter:on */
+					/* @formatter:off */
 
-		/* execute checkmarx by adapter and return product result */
-		String xml = checkmarxAdapter.start(checkMarxConfig);
-		ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
+					CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
+							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+							setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
+							setProjectId(projectId).
+							setTraceID(context.getTraceLogIdAsString()).
+							/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
+							build();
+					/* @formatter:on */
+
+					/* execute checkmarx by adapter and return product result */
+					String xml = checkmarxAdapter.start(checkMarxConfig);
+					ProductResult productResult = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
+					return productResult;
+				}
+		});
 		return Collections.singletonList(result);
+
 	}
-
-
 
 	@Override
 	public ProductIdentifier getIdentifier() {

@@ -25,14 +25,48 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
 	private String projectId;
 
+	private String projectOwnerEmailAddress;
+
+	private Set<String> userEmailAdresses = new LinkedHashSet<>(2);
+
+	private String projectActionTriggeredBy;
+
 	@Override
 	public Class<ProjectMessage> getJSONTargetClass() {
 		return ProjectMessage.class;
 	}
 
+	/**
+	 * Add user email address suitable
+	 * @param emailAddress
+	 */
+	public void addUserEmailAddress(String emailAddress) {
+		userEmailAdresses.add(emailAddress);
+	}
+
+	/**
+	 * Mail addresses for people being involved inside this message.
+	 * Will be only filled where necessary - e.g. when a project was deleted and
+	 * some persons (additional to super admins) have to be informed
+	 *
+	 * @return email addresses for this project message. never <code>null</code>
+	 */
+	public Set<String> getUserEmailAdresses() {
+		return userEmailAdresses;
+	}
+
+	public void setProjectOwnerEmailAddress(String projectOwner) {
+		this.projectOwnerEmailAddress = projectOwner;
+	}
+
+	public String getProjectOwnerEmailAddress() {
+		return projectOwnerEmailAddress;
+	}
+
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
+
 	public String getProjectId() {
 		return projectId;
 	}
@@ -43,6 +77,14 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
 	public Set<URI> getWhitelist() {
 		return whitelist;
+	}
+
+	public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
+		this.projectActionTriggeredBy = projectActionTriggeredBy;
+	}
+
+	public String getProjectActionTriggeredBy() {
+		return projectActionTriggeredBy;
 	}
 
 }

@@ -2,7 +2,7 @@
  /*============================================================================
  * Build file for subproject
  *
- * Root build file: "${project.projectDir}/build.gradle"
+ * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
 dependencies {
@@ -11,7 +11,6 @@ dependencies {
     compile project(':sechub-adapter') // we reuse trustall approach from adapters
     compile project(':sechub-shared-kernel') // we want to have access to some shared kernel parts (e.g. trafficlight)
     compile library.springboot_starter_mail // to have easier access to email parts
-
 }
 
 def integrationTestServerPortValue = 8443;
@@ -80,6 +79,12 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
    finalizedBy "stopIntegrationTestServer"
 
 }
+
+task copyIntegrationTestLogToReports(type: Copy){
+   from "integrationtest-server.log"
+   destinationDir(file("${rootProject.projectDir}/build/reports/allTests/"))
+}
+tasks.createCombinedTestReport.dependsOn (copyIntegrationTestLogToReports)
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.

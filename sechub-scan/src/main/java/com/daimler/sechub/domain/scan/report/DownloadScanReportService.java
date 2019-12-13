@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.report;
 
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
-
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,13 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class DownloadScanReportService {
 
 	@Autowired
-	ScanAssertService assertService;
+	ScanAssertService scanAssertService;
 
 	@Autowired
 	SecHubResultService secHubResultService;
@@ -30,6 +29,9 @@ public class DownloadScanReportService {
 	@Autowired
 	AuditLogService auditLogService;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	/**
 	 * There must be a a security check because useable from outside
 	 * @param projectId
@@ -38,8 +40,8 @@ public class DownloadScanReportService {
 	 */
 	@UseCaseUserDownloadsJobReport(@Step(number=3, name="Resolve scan report result"))
 	public ScanReportResult getScanReportResult(String projectId, UUID jobUUID) {
-		notNull(projectId, "projectId may not be null!");
-		notNull(jobUUID, "job uuid may not be null!");
+		assertion.isValidProjectId(projectId);
+		assertion.isValidJobUUID(jobUUID);
 
 		auditLogService.log("starts download of report for job: {}",jobUUID);
 		ScanReport report = reportRepository.findBySecHubJobUUID(jobUUID);
@@ -47,7 +49,7 @@ public class DownloadScanReportService {
 		if (report == null) {
 			throw new NotFoundException("Report not found or you have no access to report!");
 		}
-		assertService.assertUserHasAccessToReport(report);
+		scanAssertService.assertUserHasAccessToReport(report);
 
 		return new ScanReportResult(report);
 	}

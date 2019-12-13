@@ -1,0 +1,18 @@
+We do currently not use Hystrix or another framework to handle resilience,
+but use a simple own approach:
+
+plantuml::./diagrams/diagram_simple_resilience.plantuml[]
+
+A resilient action executor can be used to execute a dedicated
+action. Implementation of `ResilienctConsultant` will give
+dedicated proposals how to handle an error.
+
+There are currently two different ways:
+
+- Retry +
+  In this case the failed action will be retried some times
+  before the exception is thrown
+- Fall through +
+  Here the failure is recognized as a situation which will be
+  happen very often because a fix will take some time and so
+  to fail fast for a given time period instead of blocking

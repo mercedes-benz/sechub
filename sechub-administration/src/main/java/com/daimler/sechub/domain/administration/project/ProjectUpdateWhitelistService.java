@@ -9,16 +9,14 @@ import java.util.Set;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -27,14 +25,14 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectWhitelist;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectUpdateWhitelistService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectUpdateWhitelistService.class);
 	@Autowired
-	UserContextService userContext;
+	AuditLogService auditLog;
 
 	@Autowired
 	ProjectRepository repository;
@@ -45,26 +43,32 @@ public class ProjectUpdateWhitelistService {
 	@Autowired
 	URIValidation uriValidation;
 
+	@Autowired
+	LogSanitizer logSanitizer;
 
-	@Validated
+	@Autowired
+	UserInputAssertion assertion;
+
 	/* @formatter:off */
 	@UseCaseUpdateProjectWhitelist(
 			@Step(number = 2,
 			name = "Update project",
 			description = "The service will update the <<section-shared-project, Project whitelist>>."))
 	/* @formatter:on */
-	public void updateProjectWhitelist(@NotNull String projectId, @NotNull List<URI> whitelist) {
-		LOG.info("User {} triggers update of whitelist for project {}. Allowed URIs shall be {}",
-				userContext.getUserId(), projectId, whitelist);
+	public void updateProjectWhitelist(String projectId, @NotNull List<URI> whitelist) {
+		auditLog.log("triggers update of whitelist for project {}. Allowed URIs shall be {}", logSanitizer.sanitize(projectId, 30), whitelist);
+
+		assertion.isValidProjectId(projectId);
 
 		Optional<Project> found = repository.findById(projectId);
 		if (!found.isPresent()) {
 			throw new NotFoundException("Project '" + projectId + "' does not exist or you have now ");
 		}
 		/*
-		 * TODO Albert Tregnaghi, 2018-09-06: currently we check only role SUPER_ADMIN. Because
-		 * super admin is the only role having access. But when we got a project owner,
-		 * the access to this project must be checked too! Here we should use permissions instead of roles then
+		 * TODO Albert Tregnaghi, 2018-09-06: currently we check only role SUPER_ADMIN.
+		 * Because super admin is the only role having access. But when we got a project
+		 * owner, the access to this project must be checked too! Here we should use
+		 * permissions instead of roles then
 		 */
 		Project project = found.get();
 		Set<URI> oldWhiteList = project.getWhiteList();
@@ -73,9 +77,7 @@ public class ProjectUpdateWhitelistService {
 
 		repository.save(project);
 
-		LOG.debug("Updated whitelist for project {}", project.getId());
-
-		sendProjectCreatedEvent(project.getId(),project.getWhiteList());
+		sendProjectCreatedEvent(project.getId(), project.getWhiteList());
 
 	}
 
@@ -85,7 +87,7 @@ public class ProjectUpdateWhitelistService {
 		ProjectMessage message = new ProjectMessage();
 		message.setProjectId(projectId);
 		message.setWhitelist(whitelist);
-		request.set(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA,message);
+		request.set(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA, message);
 
 		eventBus.sendAsynchron(request);
 	}

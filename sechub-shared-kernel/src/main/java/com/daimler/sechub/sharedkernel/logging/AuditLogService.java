@@ -7,9 +7,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 
 @Service
@@ -17,6 +19,9 @@ public class AuditLogService {
 
 	@Autowired
 	UserContextService userContextService;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuditLogService.class);
 
@@ -37,7 +42,12 @@ public class AuditLogService {
 		list.add(userId);
 		list.addAll(Arrays.asList(objects));
 
-		LOG.info(AUDIT_USERNAME+message, list.toArray());
+		try {
+			MDC.put(LogConstants.MDC_SECHUB_AUDIT_USERID, userId);
+			LOG.info(AUDIT_USERNAME+message, list.toArray());
+		}finally {
+			MDC.remove(LogConstants.MDC_SECHUB_AUDIT_USERID);
+		}
 	}
 
 

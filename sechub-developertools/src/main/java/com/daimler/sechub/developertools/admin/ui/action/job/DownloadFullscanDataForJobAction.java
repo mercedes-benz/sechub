@@ -29,8 +29,8 @@ public class DownloadFullscanDataForJobAction extends AbstractUIAction {
 			getContext().getOutputUI().error("Not a UUID:" + jobUUID.get(), ex);
 			return;
 		}
-		String data = getContext().getAdministration().triggerDownloadFullScan(sechubJobUUID);
-		output(data);
+		String infoText = getContext().getAdministration().triggerDownloadFullScan(sechubJobUUID);
+		outputAsText(infoText);
 	}
 
 }

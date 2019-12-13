@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig;
-import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
+import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.product.AbstractWebScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
@@ -72,7 +72,8 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 
 			/* execute NETSPARKER by adapter and return product result */
 			String xml = netsparkerAdapter.start(netsparkerConfig);
-			ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
+			String projectId = context.getConfiguration().getProjectId();
+			ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
 			results.add(result);
 		}
 		return results;

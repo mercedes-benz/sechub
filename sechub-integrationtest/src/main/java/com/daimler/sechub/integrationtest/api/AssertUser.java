@@ -12,8 +12,8 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
-import com.daimler.sechub.test.JSONTestSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -299,6 +299,15 @@ public class AssertUser extends AbstractAssert {
 		return this;
 	}
 
+	public AssertUser afterThis() {
+		// just syntax sugar for more readable tests
+		return this;
+	}
+	public AssertUser now() {
+		// just syntax sugar for more readable tests
+		return this;
+	}
+
 	public AssertUser canNotApproveJob(TestProject project, UUID jobUUID) {
 		expectHttpFailure(() -> canApproveJob(project,jobUUID), HttpStatus.NOT_FOUND);
 		return this;
@@ -346,8 +355,12 @@ public class AssertUser extends AbstractAssert {
 		return this;
 	}
 
-	public AssertJobInformationAdministration onJobAdministration() {
-		return new AssertJobInformationAdministration(user);
+	public AssertJobInformationAdministration<AssertUser> onJobAdministration() {
+		return new AssertJobInformationAdministration<AssertUser>(this,user);
+	}
+
+	public AssertJobScheduler<AssertUser> onJobScheduling(TestProject project) {
+		return new AssertJobScheduler<AssertUser>(this,user,project);
 	}
 
 	public AssertUser hasUserRole() {
@@ -379,11 +392,11 @@ public class AssertUser extends AbstractAssert {
 	}
 
 	public AssertUser hasNotUserRole() {
-		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser()), HttpStatus.FORBIDDEN);
+		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleUser()), 4000, HttpStatus.FORBIDDEN);
 		return this;
 	}
 	public AssertUser hasNotOwnerRole() {
-		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner()), HttpStatus.FORBIDDEN);
+		expectHttpFailure(() -> as(user).getStringFromURL(getUrlBuilder().buildCheckRoleOwner()),4000, HttpStatus.FORBIDDEN);
 		return this;
 	}
 	public AssertUser isNotOwnerOf(TestProject project) {

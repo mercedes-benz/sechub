@@ -78,7 +78,7 @@ public class ScanReportRestControllerMockTest {
 	@Test
 	@WithMockUser
 	public void get_report_from_existing_job_returns_information_as_json_when_type_is_APPLICATION_JSON_UTF8() throws Exception {
-		internalTestAcceptedAndReturnsJSON(MediaType.APPLICATION_JSON_UTF8);
+		internalTestAcceptedAndReturnsJSON(MediaType.APPLICATION_JSON);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class ScanReportRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_PDF).
-        			contentType(MediaType.APPLICATION_JSON_UTF8)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isNotAcceptable()
         		);
@@ -128,7 +128,7 @@ public class ScanReportRestControllerMockTest {
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
-	    			contentType(MediaType.APPLICATION_JSON_UTF8)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
@@ -149,7 +149,7 @@ public class ScanReportRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
-        			contentType(MediaType.APPLICATION_JSON_UTF8)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).  andDo(print()).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).

@@ -18,16 +18,16 @@ import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
 @Service
 public class ScheduleAssertService {
-	
+
 	@Autowired
 	private SecHubJobRepository jobRepository;
-	
+
 	@Autowired
 	ScheduleUserAccessToProjectValidationService userAccessValidation;
 
 	@Autowired
 	ProjectWhiteListSecHubConfigurationValidationService executionIsInWhiteListValidation;
-	
+
 	/**
 	 * Assert current logged in user has access to project
 	 * @param projectId
@@ -35,7 +35,7 @@ public class ScheduleAssertService {
 	public void assertUserHasAccessToProject(String projectId) {
 		userAccessValidation.assertUserHasAccessToProject(projectId);
 	}
-	
+
 	/**
 	 * Asserts execution is allowed for given configuration
 	 * @param configuration
@@ -43,7 +43,7 @@ public class ScheduleAssertService {
 	public void assertExecutionAllowed(@Valid SecHubConfiguration configuration) {
 		executionIsInWhiteListValidation.assertAllowedForProject(configuration);
 	}
-	
+
 	/**
 	 * Asserts a job is existing and returns the job
 	 * @param projectId

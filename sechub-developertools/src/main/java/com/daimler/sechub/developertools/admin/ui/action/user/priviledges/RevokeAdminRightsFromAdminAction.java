@@ -21,8 +21,8 @@ public class RevokeAdminRightsFromAdminAction extends AbstractUIAction {
 		if (!userToSignup.isPresent()) {
 			return;
 		}
-		String data = getContext().getAdministration().revokeAddminRightsFrom(userToSignup.get());
-		output(data);
+		String infoMessage = getContext().getAdministration().revokeAddminRightsFrom(userToSignup.get());
+		outputAsText(infoMessage);
 	}
 
 }

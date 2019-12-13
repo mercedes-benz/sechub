@@ -16,12 +16,16 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 public class ProjectScanLogService {
 
 	@Autowired
 	ProjectScanLogRepository repository;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectScanLogService.class);
 
@@ -35,7 +39,6 @@ public class ProjectScanLogService {
 		log.setStatus(ProjectScanLog.STATUS_STARTED);
 		ProjectScanLog persistedLog = repository.save(log);
 		return persistedLog.getUUID();
-
 
 	}
 
@@ -59,9 +62,6 @@ public class ProjectScanLogService {
 		repository.save(log);
 	}
 
-//	public List<UUID> findAllJobUUIDsForProject(String projectId) {
-//		return repository.findJobUUIDSForProject(projectId);
-//	}
 
 	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 	public List<ProjectScanLogSummary> fetchSummaryLogsFor(String projectId) {

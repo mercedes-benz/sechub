@@ -28,6 +28,11 @@ public class IntegrationTestSetup implements TestRule {
 	private static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
 	private static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
 
+	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 100;
+	private static final String SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "sechub.integrationtest.prepare.wait.ms";
+	private static final String ENV_SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS";
+
+
 	private TestScenario scenario;
 	private boolean longrunning;
 
@@ -99,6 +104,7 @@ public class IntegrationTestSetup implements TestRule {
 	}
 
 	private class IntegrationTestStatement extends Statement {
+
 		private final Statement next;
 		private Description description;
 
@@ -134,6 +140,9 @@ public class IntegrationTestSetup implements TestRule {
 			try {
 				scenario.prepare(description.getClassName(),description.getMethodName());
 
+				waitForPreparationEventsDone();
+
+
 			} catch (Throwable e) {
 				LOG.error("#########################################################################");
 				LOG.error("#");
@@ -154,6 +163,24 @@ public class IntegrationTestSetup implements TestRule {
 				throw new IntegrationTestException(
 						"HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + description, e);
 			}
+		}
+
+		private void waitForPreparationEventsDone() throws InterruptedException {
+			// Callers can override this by environment entry or setting system property.
+
+			int timeToWaitMilliseconds=DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION;
+			/* system property variant:*/
+			String timeToWait = System.getProperty(SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS);
+			if (timeToWait!=null) {
+				timeToWaitMilliseconds=Integer.parseInt(timeToWait);
+			}
+			/* env setup variant:*/
+			timeToWait = System.getenv(ENV_SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS);
+			if (timeToWait!=null) {
+				timeToWaitMilliseconds=Integer.parseInt(timeToWait);
+			}
+			LOG.info("Start waiting for preparation done: {} milliseconds",timeToWaitMilliseconds);
+			Thread.sleep(timeToWaitMilliseconds);
 		}
 
 	}

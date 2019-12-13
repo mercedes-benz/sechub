@@ -6,6 +6,9 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService;
+import com.daimler.sechub.domain.notification.user.InformUsersThatProjectHasBeenDeletedNotificationService;
 import com.daimler.sechub.domain.notification.user.NewAPITokenAppliedUserNotificationService;
 import com.daimler.sechub.domain.notification.user.NewApiTokenRequestedUserNotificationService;
 import com.daimler.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
@@ -13,6 +16,7 @@ import com.daimler.sechub.domain.notification.user.UserDeletedNotificationServic
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 
 public class NotificationMessageHandlerTest {
@@ -22,6 +26,9 @@ public class NotificationMessageHandlerTest {
 	private NewAPITokenAppliedUserNotificationService mockedNewAPITokenAppliedUserNotificationService;
 	private NewApiTokenRequestedUserNotificationService mockedNewApiTokenRequestedUserNotificationService;
 	private UserDeletedNotificationService mockedUserDeletedNotificationService;
+	private InformAdminsThatProjectHasBeenDeletedNotificationService mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
+	private InformOwnerThatProjectHasBeenDeletedNotificationService mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
+	private InformUsersThatProjectHasBeenDeletedNotificationService mockedInformUsersThatProjectHasBeenDeletedNotificationService;
 
 	@Before
 	public void before() throws Exception {
@@ -29,12 +36,20 @@ public class NotificationMessageHandlerTest {
 		mockedNewAPITokenAppliedUserNotificationService = mock(NewAPITokenAppliedUserNotificationService.class);
 		mockedNewApiTokenRequestedUserNotificationService=mock(NewApiTokenRequestedUserNotificationService.class);
 		mockedUserDeletedNotificationService=mock(UserDeletedNotificationService.class);
+	    mockedInformAdminsThatProjectHasBeenDeletedNotificationService=mock(InformAdminsThatProjectHasBeenDeletedNotificationService.class);
+	    mockedInformOwnerThatProjectHasBeenDeletedNotificationService=mock(InformOwnerThatProjectHasBeenDeletedNotificationService.class);
+	    mockedInformUsersThatProjectHasBeenDeletedNotificationService=mock(InformUsersThatProjectHasBeenDeletedNotificationService.class);
 
 		handlerToTest = new NotificationMessageHandler();
 		handlerToTest.signupRequestedAdminNotificationService=mockedSignUpRequestedAdminNotificationService;
 		handlerToTest.newAPITokenAppliedUserNotificationService=mockedNewAPITokenAppliedUserNotificationService;
 		handlerToTest.newApiTokenRequestedUserNotificationService=mockedNewApiTokenRequestedUserNotificationService;
 		handlerToTest.userDeletedNotificationService=mockedUserDeletedNotificationService;
+
+		/* project deleted */
+		handlerToTest.informAdminsThatProjectHasBeenDeletedService=mockedInformAdminsThatProjectHasBeenDeletedNotificationService;
+		handlerToTest.informOwnerThatProjectHasBeenDeletedService=mockedInformOwnerThatProjectHasBeenDeletedNotificationService;
+		handlerToTest.informUsersThatProjectHasBeenDeletedService=mockedInformUsersThatProjectHasBeenDeletedNotificationService;
 	}
 
 	@Test
@@ -65,6 +80,25 @@ public class NotificationMessageHandlerTest {
 
 		/* test */
 		verify(mockedUserDeletedNotificationService).notify(userMessage);
+	}
+
+	@Test
+	public void an_event_about_deleted_project_triggers_3_snotification_ervices() {
+		/* prepare */
+		ProjectMessage projectMessage = mock(ProjectMessage.class);
+		DomainMessage request = mock(DomainMessage.class);
+		when(request.getMessageId()).thenReturn(MessageID.PROJECT_DELETED);
+		when(request.get(MessageDataKeys.PROJECT_DELETE_DATA)).thenReturn(projectMessage);
+		when(request.get(MessageDataKeys.ENVIRONMENT_BASE_URL)).thenReturn("base1");
+
+		/* execute */
+		handlerToTest.receiveAsyncMessage(request);
+
+		/* test */
+		verify(mockedInformAdminsThatProjectHasBeenDeletedNotificationService).notify(projectMessage,"base1");
+		verify(mockedInformOwnerThatProjectHasBeenDeletedNotificationService).notify(projectMessage);
+		verify(mockedInformUsersThatProjectHasBeenDeletedNotificationService).notify(projectMessage);
+
 	}
 
 	@Test

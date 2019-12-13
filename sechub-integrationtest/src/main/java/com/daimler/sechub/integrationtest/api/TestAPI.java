@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.UUID;
 
-import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -177,7 +177,6 @@ public class TestAPI {
 		}
 		return linkOfOneApiToken;
 	}
-
 	/**
 	 * Expects an http failure when runnable is executed. If this does not happen,
 	 * dedicated error messages comes up and unit test will fail.
@@ -186,25 +185,49 @@ public class TestAPI {
 	 * @param runnable
 	 */
 	public static void expectHttpFailure(Runnable runnable, HttpStatus... expected) {
+		expectHttpFailure(runnable,-1,expected);
+	}
+
+	/**
+	 * Expects an http failure when runnable is executed. If this does not happen,
+	 * dedicated error messages comes up and unit test will fail.
+	 *
+	 * @param expectedStatusCode
+	 * @param timeOutInMilliseconds as long this time out is not reached HTTP 200 messages will be
+	 *                              ignored and after a short break the runnnable wille be called again to
+	 *                              provoke expected failure.
+	 * @param runnable
+	 */
+	public static void expectHttpFailure(Runnable runnable, long timeOutInMilliseconds, HttpStatus... expected) {
 		if (expected == null || expected.length == 0) {
 			throw new IllegalArgumentException("test case corrupt please add at least one expected error!");
 		}
 		assertNoHttp20xInside(expected);
 
-		boolean failedAsExpected = false;
-		try {
-			runnable.run();
-			fail("No rest client exception - so user at least got a HTTP 200 what is wrong!");
-		} catch (HttpStatusCodeException he) {
-			int status = he.getRawStatusCode();
-			failedAsExpected = isAllowed(status, expected);
-			if (failedAsExpected) {
-				return;
+		long start = System.currentTimeMillis();
+		boolean timeElapsed=false;
+		while (!timeElapsed) { /*NOSONAR*/
+			long waitedTimeInMilliseconds = System.currentTimeMillis()-start;
+			timeElapsed= waitedTimeInMilliseconds>timeOutInMilliseconds;
+
+			boolean failedAsExpected = false;
+			try {
+				runnable.run();
+				if (timeElapsed) {
+					fail("No rest client exception - so user at least got a HTTP 200 what is wrong!");
+				}
+				TestAPI.waitMilliSeconds(500);
+			} catch (HttpStatusCodeException he) {
+				int status = he.getRawStatusCode();
+				failedAsExpected = isAllowed(status, expected);
+				if (failedAsExpected) {
+					return;
+				}
+				fail("Expected http status codes were:" + Arrays.asList(expected) + " but was " + status + "\nMessage:" + he.getMessage() + ",\nContent:"
+						+ he.getResponseBodyAsString());
+			} catch (RestClientException e) {
+				fail("Expected a " + HttpStatusCodeException.class.getSimpleName() + " but was " + e.getClass());
 			}
-			fail("Expected http status codes were:" + Arrays.asList(expected) + " but was " + status + "\nMessage:" + he.getMessage() + ",\nContent:"
-					+ he.getResponseBodyAsString());
-		} catch (RestClientException e) {
-			fail("Expected a " + HttpStatusCodeException.class.getSimpleName() + " but was " + e.getClass());
 		}
 
 	}

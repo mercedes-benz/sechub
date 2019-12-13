@@ -64,7 +64,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 		this.mockMvc.perform(
 				get(https(PORT_USED).
 						buildAnonymousGetNewApiTokenByLinkWithOneTimeTokenUrl(ONE_TIME_TOKEN.pathElement()),"oneTimeToken1").
-				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseUserClicksLinkToGetNewAPIToken.class),

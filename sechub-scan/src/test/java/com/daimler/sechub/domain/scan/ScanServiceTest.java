@@ -27,9 +27,9 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.JSONConverterException;
+import com.daimler.sechub.storage.core.JobStorage;
 
 public class ScanServiceTest {
 

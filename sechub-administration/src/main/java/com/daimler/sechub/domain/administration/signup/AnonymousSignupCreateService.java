@@ -22,6 +22,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class AnonymousSignupCreateService {
@@ -37,6 +38,10 @@ public class AnonymousSignupCreateService {
 	@Autowired
 	DomainMessageService eventBusService;
 
+	@Autowired
+	UserInputAssertion assertion;
+
+
 	/**
 	 * Tries to register a new user. If signup for user or a user with same name or
 	 * email already exists, nothing happens. No error or something. Only when
@@ -51,7 +56,11 @@ public class AnonymousSignupCreateService {
 	public void register(@Valid SignupJsonInput userSelfRegistrationInput) {
 		String userId = userSelfRegistrationInput.getUserId();
 		String emailAdress = userSelfRegistrationInput.getEmailAdress();
+
 		LOG.debug("user tries to register himself:{},mail:{}", userId, emailAdress);
+
+		assertion.isValidUserId(userId);
+		assertion.isValidEmailAddress(emailAdress);
 
 		assertNotAlreadySignedIn(userId, emailAdress);
 		assertUsernameNotUsedAlready(userId, emailAdress);

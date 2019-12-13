@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.checkmarx;
 
+import java.io.InputStream;
+
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
 
 public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements CheckmarxAdapterConfig{
-	
+
 	private String teamIdForNewProjects;
-	private String pathToZipFile;
-	
+	private InputStream sourceCodeZipFileInputStream;
+
 	private CheckmarxConfig() {
 	}
 
@@ -16,11 +18,12 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 	public String getTeamIdForNewProjects() {
 		return teamIdForNewProjects;
 	}
+
 	@Override
-	public String getPathToZipFile() {
-		return pathToZipFile;
+	public InputStream getSourceCodeZipFileInputStream() {
+		return sourceCodeZipFileInputStream;
 	}
-	
+
 	public static CheckmarxConfigBuilder builder() {
 		return new CheckmarxConfigBuilder();
 	}
@@ -28,7 +31,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 	public static class CheckmarxConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<CheckmarxConfigBuilder, CheckmarxConfig>{
 
 		private String teamIdForNewProjects;
-		private String pathToZipFile;
+		private InputStream sourceCodeZipFileInputStream;
 
 		/**
 		 * When we create a new project this is the team ID to use
@@ -39,15 +42,15 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 			this.teamIdForNewProjects=teamId;
 			return this;
 		}
-		public CheckmarxConfigBuilder setPathToZipFile(String pathToZipFile){
-			this.pathToZipFile=pathToZipFile;
+		public CheckmarxConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream){
+			this.sourceCodeZipFileInputStream=sourceCodeZipFileInputStream;
 			return this;
 		}
-		
+
 		@Override
 		protected void customBuild(CheckmarxConfig config) {
 			config.teamIdForNewProjects=teamIdForNewProjects;
-			config.pathToZipFile=pathToZipFile;
+			config.sourceCodeZipFileInputStream=sourceCodeZipFileInputStream;
 		}
 
 		@Override
@@ -70,5 +73,5 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 		}
 	}
 
-	
+
 }

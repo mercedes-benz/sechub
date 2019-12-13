@@ -16,7 +16,7 @@ public class ShowUserListAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchUserList();
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

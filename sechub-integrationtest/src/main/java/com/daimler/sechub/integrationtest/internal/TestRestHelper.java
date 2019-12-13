@@ -65,7 +65,7 @@ public class TestRestHelper {
 
 	public String getJSon(String url) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		markLastURL(url);
 		return template.getForEntity(url, String.class).getBody();
@@ -86,7 +86,7 @@ public class TestRestHelper {
 	 */
 	public String postJSon(String url, String json) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
 
 		markLastURL(url,json);
@@ -129,8 +129,13 @@ public class TestRestHelper {
 	public void post(String url) {
 		markLastURL(url);
 		getTemplate().postForLocation(url, HttpEntity.EMPTY);
-
 	}
+
+	public HttpHeaders head(String url) {
+		markLastURL(url);
+		return getTemplate().headForHeaders(url);
+	}
+
 	private void markLastURL(String url) {
 		markLastURL(url,null);
 	}
@@ -148,6 +153,17 @@ public class TestRestHelper {
 	public String getStringFromURL(String link) {
 		markLastURL(link);
 		return template.getForEntity(link, String.class).getBody();
+	}
+
+	public String headStringFromURL(String url) {
+		markLastURL(url);
+		return template.headForHeaders(url).toSingleValueMap().toString();
+	}
+
+
+	public long getLongFromURL(String link) {
+		String dataAsString = getStringFromURL(link);
+		return Long.parseLong(dataAsString);
 	}
 
 	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
@@ -190,4 +206,7 @@ public class TestRestHelper {
 			}
 		}
 	}
+
+
+
 }

@@ -30,7 +30,7 @@ public class ScanLogRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorShowsScanLogsForProject(@Step(number=1,next=2,name="REST API call to get JSON list",needsRestDoc=true))
-	@RequestMapping(path = "/scan/logs", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "/scan/logs", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<ProjectScanLogSummary> getScanLogsForProject(
 			@PathVariable("projectId") String projectId
 			) {

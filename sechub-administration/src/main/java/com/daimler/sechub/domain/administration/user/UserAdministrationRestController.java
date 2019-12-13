@@ -60,7 +60,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorAcceptsSignup(@Step(number=1,name="Rest call", description="Administrator accepts a persisted self registration entry by calling rest api",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_ACCEPT_USER_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_ACCEPT_USER_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public void acceptUserSignUp(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
@@ -69,7 +69,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorListsAllUsers(@Step(number=1,name="Rest call",description="All userids of sechub users are returned as json",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_USERS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_USERS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listUsers() {
 		/* @formatter:on */
 		return userListService.listUsers();
@@ -77,7 +77,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorListsAllAdmins(@Step(number=1,name="Rest call",description="All userids of sechub administrators are returned as json",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_ADMINS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_ADMINS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listAdministrators() {
 		/* @formatter:on */
 		return userListService.listAdministrators();
@@ -85,7 +85,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorShowsUserDetails(@Step(number=1,name="Rest call",description="Json returned containing details about user and her/his projects",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_USER_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_USER_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public UserDetailInformation showUserDetails(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
 		return detailsService.fetchDetails(userId);
@@ -93,7 +93,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorDeletesUser(@Step(number=1,name="Rest call",description="User will be deleted",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_USER, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_USER, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void deleteUser(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
 		deleteService.deleteUser(userId);
@@ -101,7 +101,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorGrantsAdminRightsToUser(@Step(number=1,name="Rest call",description="User will be granted admin rights",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_GRANT_ADMIN_RIGHTS_TO_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_GRANT_ADMIN_RIGHTS_TO_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void grantSuperAdminrights(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
 		userGrantSuperAdminRightsService.grantSuperAdminRightsFor(userId);
@@ -109,7 +109,7 @@ public class UserAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorRevokesAdminRightsFromAdmin(@Step(number=1,name="Rest call",description="Admin rights will be revoked from admin",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_REVOKE_ADMIN_RIGHTS_FROM_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_REVOKE_ADMIN_RIGHTS_FROM_USER, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void revokeSuperAdminrights(@PathVariable(name="userId") String userId) {
 		/* @formatter:on */
 		userRevokeSuperAdminRightsService.revokeSuperAdminRightsFrom(userId);

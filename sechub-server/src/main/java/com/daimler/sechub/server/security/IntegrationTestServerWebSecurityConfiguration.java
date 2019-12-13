@@ -12,14 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import com.daimler.sechub.sharedkernel.Profiles;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
 @Order(4000)
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestServerWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		/* api for integration test is always allowed */
 		web.ignoring().antMatchers("api/integrationtest/*");
 	}

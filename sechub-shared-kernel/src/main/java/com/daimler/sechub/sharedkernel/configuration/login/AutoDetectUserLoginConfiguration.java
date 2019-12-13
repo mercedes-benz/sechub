@@ -1,9 +1,14 @@
 package com.daimler.sechub.sharedkernel.configuration.login;
 
+import javax.crypto.SealedObject;
+
+import com.daimler.sechub.sharedkernel.SharedKernelCryptoAccess;
+
 public class AutoDetectUserLoginConfiguration{
 
+	private SharedKernelCryptoAccess<char[]> cryptoAccess = SharedKernelCryptoAccess.CRYPTO_CHAR_ARRAY;
 	private char[] user;
-	private char[] password;
+	SealedObject password;
 
 	public void setUser(char[] user) {
 		this.user = user;
@@ -14,11 +19,11 @@ public class AutoDetectUserLoginConfiguration{
 	}
 
 	public void setPassword(char[] password) {
-		this.password = password;
+		this.password= cryptoAccess.seal(password);
 	}
 
 	public char[] getPassword() {
-		return password;
+		return cryptoAccess.unseal(password);
 	}
 
 }

@@ -89,7 +89,7 @@ public class StatusAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminListsStatusEntries()).
-				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).

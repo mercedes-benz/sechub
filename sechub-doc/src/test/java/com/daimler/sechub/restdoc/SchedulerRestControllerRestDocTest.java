@@ -122,7 +122,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
-	    			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
 	    					webConfig().addURI("https://localhost/mywebapp").
@@ -229,7 +229,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		put(https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
-	    			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    					andDo(document(RestDocPathFactory.createPath(UseCaseUserApprovesJob.class),
@@ -267,7 +267,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).

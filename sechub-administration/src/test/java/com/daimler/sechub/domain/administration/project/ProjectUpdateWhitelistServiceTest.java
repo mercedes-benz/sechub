@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.administration.project;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
@@ -17,17 +18,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class ProjectUpdateWhitelistServiceTest {
 
 	private ProjectUpdateWhitelistService serviceToTest;
 	private ProjectRepository repository;
-	private UserContextService userContext;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -42,14 +44,15 @@ public class ProjectUpdateWhitelistServiceTest {
 		serviceToTest = new ProjectUpdateWhitelistService();
 
 		repository = mock(ProjectRepository.class);
-		userContext = mock(UserContextService.class);
 		eventBus = mock(DomainMessageService.class);
 		uriValidation = mock(URIValidation.class);
 
 		serviceToTest.repository=repository;
-		serviceToTest.userContext=userContext;
+		serviceToTest.auditLog=mock(AuditLogService.class);
+		serviceToTest.assertion=mock(UserInputAssertion.class);
 		serviceToTest.eventBus=eventBus;
 		serviceToTest.uriValidation=uriValidation;
+		serviceToTest.logSanitizer=mock(LogSanitizer.class);
 
 		project = mock(Project.class);
 		whitelist=new LinkedHashSet<>();

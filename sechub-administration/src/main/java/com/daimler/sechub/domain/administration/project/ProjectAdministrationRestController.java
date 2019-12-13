@@ -77,7 +77,7 @@ public class ProjectAdministrationRestController {
 				name="Rest call",
 				needsRestDoc=true,
 				description="Administrator creates a new project by calling rest api"))
-	@RequestMapping(path = AdministrationAPIConstants.API_CREATE_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_CREATE_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createProject(@RequestBody @Valid ProjectJsonInput input) {
 		Set<URI> whiteListedURIs = new LinkedHashSet<>();
@@ -94,15 +94,15 @@ public class ProjectAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorShowsProjectDetails(@Step(number=1,name="Rest call",description="Json returned containing details about project",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
-	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String userId) {
+	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		return detailsService.fetchDetails(userId);
+		return detailsService.fetchDetails(projectId);
 	}
 
 	/* @formatter:off */
 	@UseCaseAdministratorListsAllProjects(@Step(number=1,name="Rest call",description="All project ids of sechub are returned as json", needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_PROJECTS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_PROJECTS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listProjects() {
 		/* @formatter:on */
 		return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class ProjectAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign user",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public void assignUserToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
 		/* @formatter:on */
@@ -119,7 +119,7 @@ public class ProjectAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorUnassignsUserFromProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to unassign user",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_UNASSIGN_USER_TO_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_UNASSIGN_USER_TO_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void unassignUserFromProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
 		/* @formatter:on */
@@ -128,10 +128,10 @@ public class ProjectAdministrationRestController {
 
 	/* @formatter:off */
 	@UseCaseAdministratorDeleteProject(@Step(number=1,name="Rest call",description="Project will be deleted",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void deleteProject(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		deleteService.deletProject(projectId);
+		deleteService.deleteProject(projectId);
 	}
 
 	@InitBinder

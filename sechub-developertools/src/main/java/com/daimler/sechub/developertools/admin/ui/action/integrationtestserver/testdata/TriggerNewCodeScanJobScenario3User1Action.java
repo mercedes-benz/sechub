@@ -22,9 +22,9 @@ public class TriggerNewCodeScanJobScenario3User1Action extends IntegrationTestAc
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
 		UUID uuid = TestAPI.as(Scenario3.USER_1).createCodeScan(Scenario3.PROJECT_1,mode);
-		output("Job created:"+uuid);
+		outputAsText("Job created:"+uuid);
 		TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
-		output("Job approved:"+uuid);
+		outputAsText("Job approved:"+uuid);
 	}
 
 }

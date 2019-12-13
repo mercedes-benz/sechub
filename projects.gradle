@@ -7,16 +7,21 @@ projectType = [
             ],
 
             javaProjects: [
+               project(':sechub-testframework'),
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here*/
             springBootProjects: [
-                    project(':sechub-testframework'),//we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-shared-kernel-testframework'),//we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-scan-testframework'), //we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
+                    /* only necessary ,because otherwise we got the (older)
+                       dependencies from aws as comiled projects in IDEs: */
+                    project(':sechub-storage-core'),
+                    project(':sechub-storage-s3-aws'),
+                    project(':sechub-storage-s3-aws-test'),
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */

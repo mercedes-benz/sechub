@@ -87,6 +87,11 @@ public class MessageDataKeys {
 			"project.creation.data");
 
 	/**
+	 * Must contain project id
+	 */
+	public static final MessageDataKey<ProjectMessage> PROJECT_DELETE_DATA = createProjectMessageKey("project.delete.data");
+
+	/**
 	 * Must contain project id and whitelist entries
 	 */
 	public static final MessageDataKey<ProjectMessage> PROJECT_WHITELIST_UPDATE_DATA = createProjectMessageKey(
@@ -105,6 +110,11 @@ public class MessageDataKeys {
 	 * Must contain job uuid,since
 	 */
 	public static final MessageDataKey<JobMessage> JOB_FAILED_DATA = createJobMessageKey("job.failed.data");
+
+	/**
+	 * Must contain job uuid,job owner (but can be null)
+	 */
+	public static final MessageDataKey<JobMessage> JOB_CANCEL_DATA = createJobMessageKey("job.cancel.data");
 
 	public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
 

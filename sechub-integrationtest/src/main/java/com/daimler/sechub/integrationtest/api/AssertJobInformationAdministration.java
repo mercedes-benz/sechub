@@ -5,18 +5,23 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
-public class AssertJobInformationAdministration extends AbstractAssert {
+public class AssertJobInformationAdministration<R> extends AbstractAssert {
 
 	private static final int DEFAULT_TIMEOUT_MS = 6000;
 	private TestUser user;
+	private R returnTarget;
 
 	/**
 	 * Creates assert object - if user is able to fetch job list...
 	 *
 	 * @param user
 	 */
-	public AssertJobInformationAdministration(TestUser user) {
+	public AssertJobInformationAdministration(R returnTarget, TestUser user) {
 		this.user = user;
+		this.returnTarget=returnTarget;
+	}
+	public R and() {
+		return returnTarget;
 	}
 
 	public AssertJobInformation canFindRunningJob(UUID jobUUID) {
@@ -26,10 +31,10 @@ public class AssertJobInformationAdministration extends AbstractAssert {
 	public AssertJobInformation canFindRunningJob(UUID jobUUID, long timeOutInMilliseconds) {
 		return new AssertJobInformation(jobUUID, true,timeOutInMilliseconds);
 	}
-	public AssertJobInformationAdministration canNotFindRunningJob(UUID jobUUID) {
+	public AssertJobInformationAdministration<R> canNotFindRunningJob(UUID jobUUID) {
 		return canNotFindRunningJob(jobUUID, DEFAULT_TIMEOUT_MS);
 	}
-	public AssertJobInformationAdministration canNotFindRunningJob(UUID jobUUID, long timeOutInMilliseconds) {
+	public AssertJobInformationAdministration<R> canNotFindRunningJob(UUID jobUUID, long timeOutInMilliseconds) {
 		new AssertJobInformation(jobUUID, false,timeOutInMilliseconds);
 		return this;
 	}
@@ -66,8 +71,11 @@ public class AssertJobInformationAdministration extends AbstractAssert {
 						fail("JSON DID contain:\n" + jobUUID + "\nwas:\n" + json +"\n (waited :"+waitedTimeInMilliseconds+" milliseconds!)");
 					}
 				}
-				TestAPI.waitMilliSeconds(300);
+				TestAPI.waitMilliSeconds(500);
 			}
+		}
+		public R and() {
+			return AssertJobInformation.this.and();
 		}
 	}
 

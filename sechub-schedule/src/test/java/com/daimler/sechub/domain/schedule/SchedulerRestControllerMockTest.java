@@ -100,7 +100,7 @@ public class SchedulerRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT1_ID,randomUUID.toString())).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:NONE, state:STARTED, trafficLight:null}")
@@ -120,7 +120,7 @@ public class SchedulerRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
@@ -142,7 +142,7 @@ public class SchedulerRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
@@ -196,7 +196,7 @@ public class SchedulerRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(1234).buildAddJobUrl(PROJECT1_ID)).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()). */
         			andExpect(status().isBadRequest());
 
@@ -214,7 +214,7 @@ public class SchedulerRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).andDo(print()).
         			andExpect(status().isBadRequest());
 

@@ -37,7 +37,7 @@ public class ScanAccess {
 	public static final String CLASS_NAME = ScanAccess.class.getSimpleName();
 
 	@EmbeddedId
-	private ProjectAccessCompositeKey key;
+	ProjectAccessCompositeKey key;
 
 	@Version
 	@Column(name = "VERSION")

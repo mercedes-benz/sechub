@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
-import com.daimler.sechub.domain.scan.resolve.IntranetEndsWithURITargetResolveStrategy;
 
 public class IntranetEndsWithURITargetResolveStrategyTest {
 	private static URI URI_EMPTY = URI.create("");

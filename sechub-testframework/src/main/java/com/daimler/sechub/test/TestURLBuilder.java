@@ -48,6 +48,7 @@ public class TestURLBuilder {
 
 	private static final String API_ADMIN = "/api/admin";
 	private static final String API_USER = "/api/user";
+	private static final String API_OWNER = "/api/owner";
 	private static final String API_ANONYMOUS = "/api/anonymous";
 
 	private static final String API_ADMIN_USER = API_ADMIN + "/user";
@@ -253,6 +254,10 @@ public class TestURLBuilder {
 		return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
 	}
 
+	public String buildAdminCancelsJob(UUID jobUUID) {
+		return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
+	}
+
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ admin/scheduler/..........................+ */
 	/* +-----------------------------------------------------------------------+ */
@@ -265,7 +270,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildAdminTriggersRefreshOfSchedulerStatus() {
-		return buildUrl(API_ADMIN_SCHEDULER, "status","refresh");
+		return buildUrl(API_ADMIN_SCHEDULER, "status", "refresh");
 	}
 
 	/* +-----------------------------------------------------------------------+ */
@@ -289,6 +294,21 @@ public class TestURLBuilder {
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ integration test special (anonymous) .....+ */
 	/* +-----------------------------------------------------------------------+ */
+	public String buildCountProjectScanAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/access/count");
+	}
+
+	public String buildCountProjectScheduleAccess(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/schedule/access/count");
+	}
+
+	public String buildCountProjectProductResults(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/count");
+	}
+
+	public String buildCountProjectScanReports(String projectId) {
+		return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
+	}
 
 	public String buildFetchEmailsFromMockMailServiceUrl(String emailAdress) {
 		return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails/to", emailAdress);
@@ -298,8 +318,17 @@ public class TestURLBuilder {
 		return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails");
 	}
 
+	/**
+	 * Integration test only URL!
+	 *
+	 * @return url for integration test check
+	 */
 	public String buildIsAliveUrl() {
 		return buildUrl(API_ANONYMOUS, "integrationtest/alive");
+	}
+
+	public String buildCheckIsAliveUrl() {
+		return buildUrl(API_ANONYMOUS, "check/alive");
 	}
 
 	public String buildGetFileUpload(String projectId, String jobUUID, String fileName) {
@@ -311,7 +340,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildGetServerVersionUrl() {
-		return buildUrl(API_ANONYMOUS, "info/version");
+		return buildUrl(API_ADMIN, "info/version");
 	}
 
 	/* +-----------------------------------------------------------------------+ */
@@ -323,7 +352,7 @@ public class TestURLBuilder {
 	}
 
 	public String buildCheckRoleOwner() {
-		return buildUrl(API_USER, "integrationtest/check/role/owner");
+		return buildUrl(API_OWNER, "integrationtest/check/role/owner");
 	}
 
 	public String buildFetchReport(String projectId, UUID sechubJobUUID) {

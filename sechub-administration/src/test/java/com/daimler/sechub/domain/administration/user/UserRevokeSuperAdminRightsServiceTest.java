@@ -13,7 +13,9 @@ import org.springframework.data.domain.Example;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class UserRevokeSuperAdminRightsServiceTest {
 
@@ -48,6 +50,8 @@ public class UserRevokeSuperAdminRightsServiceTest {
 		serviceToTest.auditLogService = auditLogService;
 		serviceToTest.eventBusService = eventBusService;
 		serviceToTest.userRepository = userRepository;
+		serviceToTest.logSanitizer=mock(LogSanitizer.class);
+		serviceToTest.assertion=mock(UserInputAssertion.class);
 
 	}
 

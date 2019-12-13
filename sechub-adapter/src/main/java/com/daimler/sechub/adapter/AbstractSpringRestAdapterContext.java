@@ -22,7 +22,7 @@ import com.daimler.sechub.adapter.support.TrustAllSupport;
 
 /**
  * Context for REST execution per spring REST templates (per default with a simple String as result).
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -36,9 +36,9 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 		/* setup dedicated rest template */
 
 		ClientHttpRequestFactory requestFactory = createRequestFactory(config);
-		
+
 		restTemplate = new RestTemplate(requestFactory);
-		
+
 		restTemplate.getMessageConverters().addAll(createMessageConverters());
 
 		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
@@ -47,7 +47,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 		if (interceptor != null) {
 			interceptors.add(interceptor);
 		}
-		
+
 		Object obj = config.getOptions().get(SECHUB_OPTION_CLIENTHTTPREQUESTINTERCEPTOR);
 		if (obj instanceof ClientHttpRequestInterceptor) {
 			ClientHttpRequestInterceptor optionInterceptor = (ClientHttpRequestInterceptor) obj;
@@ -56,14 +56,14 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 		restTemplate.setInterceptors(interceptors);
 
 	}
-	
+
 	private ClientHttpRequestFactory createRequestFactory(C config) {
 		ClientHttpRequestFactory factory = null;
 		if (! config.isTrustAllCertificatesEnabled()) {
 			factory = createStandardSpringRequestFactory(config);
 		}else {
 			factory = new TrustAllSupport(getAdapter(),config).createTrustAllFactory();
-			
+
 		}
 		/* we create buffering variant, so we can do trace logging if necessary - see TraceLogClientHTTPRequestInterceptor*/
 		return new BufferingClientHttpRequestFactory(factory);
@@ -80,7 +80,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 		return requestFactory;
 	}
 
-	
+
 
 	private Set<HttpMessageConverter<?>> createMessageConverters() {
 		Set<HttpMessageConverter<?>> set = new HashSet<>();

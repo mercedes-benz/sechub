@@ -10,12 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.domain.administration.OneTimeTokenGenerator;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class AnonymousUserRequestsNewApiTokenServiceTest {
 
@@ -39,6 +41,8 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 		serviceToTest.environment = mockedEnvironment;
 		serviceToTest.eventBusService = mockedEventBusService;
 		serviceToTest.userRepository=mockedUserRepository;
+		serviceToTest.logSanitizer=mock(LogSanitizer.class);
+		serviceToTest.assertion=mock(UserInputAssertion.class);
 	}
 
 	@Test

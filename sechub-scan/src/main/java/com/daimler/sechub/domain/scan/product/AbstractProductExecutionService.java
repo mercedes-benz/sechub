@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan.product;
 
 import static com.daimler.sechub.sharedkernel.UUIDTraceLogID.*;
+import static java.util.Objects.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,16 +79,11 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		if (productResults != null) {
 			amount = productResults.size();
 		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Product '{}' returned for {} results:\n{}", executor.getIdentifier(), traceLogID, amount);
-		}
 		if (LOG.isTraceEnabled()) {
-			if (amount > 0) {
-				int pos = 1;
+			int pos = 1;
 
-				for (ProductResult result : productResults) {
-					LOG.trace("Product '{}' returned for {} result {}/{}:\n{}", executor.getIdentifier(), traceLogID, pos++, amount, result);
-				}
+			for (ProductResult result : productResults) {
+				LOG.trace("Product '{}' returned for {} result {}/{}:\n{}", executor.getIdentifier(), traceLogID, pos++, amount, result);
 			}
 		}
 		return productResults;
@@ -103,8 +99,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @param traceLogID
 	 */
 	protected void executeAndPersistResults(List<? extends ProductExecutor> executors, SecHubExecutionContext context, UUIDTraceLogID traceLogID) {
+		SecHubConfiguration configuration = context.getConfiguration();
+		requireNonNull(configuration, "Configuration must be set");
+
+		String projectId = configuration.getProjectId();
+		requireNonNull(projectId, "Project id must be set");
+
 		for (ProductExecutor productExecutor : executors) {
-			List<ProductResult> productResults=Collections.emptyList();
+			List<ProductResult> productResults = Collections.emptyList();
 			try {
 				productResults = execute(productExecutor, context, traceLogID);
 				if (productResults == null) {
@@ -112,10 +114,10 @@ public abstract class AbstractProductExecutionService implements ProductExection
 					continue;
 				}
 			} catch (Exception e) {
-				getMockableLog().error("Product executor failed:"+productExecutor.getIdentifier()+" "+traceLogID,e);
+				getMockableLog().error("Product executor failed:" + productExecutor.getIdentifier() + " " + traceLogID, e);
 
-				productResults=new ArrayList<ProductResult>();
-				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(),productExecutor.getIdentifier(),"");
+				productResults = new ArrayList<ProductResult>();
+				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
 				productResults.add(fallbackResult);
 			}
 
@@ -127,7 +129,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	}
 
 	/**
-	 * Persists the result. This wil ALWAYS start a new transaction. So former
+	 * Persists the result. This will ALWAYS start a new transaction. So former
 	 * results will NOT get lost if this persistence fails. Necessary for debugging
 	 * and also the later possibility to relaunch already existing sechub jobs!
 	 * Reason: When a former scan did take a very long time and was done. The next

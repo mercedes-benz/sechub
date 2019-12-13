@@ -24,11 +24,11 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
-import com.daimler.sechub.test.JSONTestSupport;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -388,6 +388,11 @@ public class AsUser {
 		return getRestHelper().getJSon(getUrlBuilder().buildGetServerVersionUrl());
 	}
 
+	public boolean getIsAlive() {
+		getRestHelper().head(getUrlBuilder().buildCheckIsAliveUrl());
+		return true;
+	}
+
 	public AssertFullScanData downloadFullScanDataFor(UUID sechubJobUUID) {
 		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
 		File file = downloadAsTempFileFromURL(url, sechubJobUUID, "download-fullscan", ".zip");
@@ -432,5 +437,20 @@ public class AsUser {
 		getRestHelper().post(url);
 		return this;
 	}
+
+	public AsUser deleteProject(TestProject project) {
+		String url = getUrlBuilder().buildAdminDeletesProject(project.getProjectId());
+		getRestHelper().delete(url);
+		return this;
+
+	}
+
+	public AsUser cancelJob(UUID jobUUID) {
+		String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
+		getRestHelper().post(url);
+		return this;
+	}
+
+
 
 }

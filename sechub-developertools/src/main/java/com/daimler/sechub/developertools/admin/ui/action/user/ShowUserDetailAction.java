@@ -21,9 +21,9 @@ public class ShowUserDetailAction extends AbstractUIAction {
 		if (! userId.isPresent()) {
 			return;
 		}
-		
+
 		String data = getContext().getAdministration().fetchUserInfo(userId.get());
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

@@ -86,6 +86,11 @@ public class RequestMappingForAdminAPImarkedWithAdminAccessProfileTest {
 			return data;
 		}
 
+		@SuppressWarnings("unused")
+		public Class<?> getKey() {
+			return key;
+		}
+
 		public boolean isAdminAPIDetectedWithoutAdminAccessProfile() {
 			return missingAdminAccess;
 		}

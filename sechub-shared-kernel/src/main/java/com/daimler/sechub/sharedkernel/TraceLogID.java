@@ -6,13 +6,14 @@ package com.daimler.sechub.sharedkernel;
  * have to provide a UUID usable for trace logging <br>
  * <b>Important:</b> You should use log.isXYZenabled() to reduce string creation
  * when not needed
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
 public abstract class TraceLogID<T> {
 
 	private String asString;
+	private String plainId;
 
 	public TraceLogID(T source) {
 		this(source, null);
@@ -25,18 +26,17 @@ public abstract class TraceLogID<T> {
 		} else {
 			postfix = postId;
 		}
-		String content;
 		try {
-			content = createContent(source);
+			plainId = createContent(source);
 		} catch (Exception e) {
-			content = null;
+			plainId = null;
 		}
-		asString = "__[SECHUB-" + postfix + ":" + content + "]__";
+		asString = "__[SECHUB-" + postfix + ":" + plainId + "]__";
 	}
 
 	/**
 	 * Creates content for ID
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 * @throws Exception
@@ -46,6 +46,10 @@ public abstract class TraceLogID<T> {
 	@Override
 	public final String toString() {
 		return asString;
+	}
+
+	public String getPlainId() {
+		return plainId;
 	}
 
 }

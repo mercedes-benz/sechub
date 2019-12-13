@@ -18,6 +18,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
 @Service
 public class ProjectWhiteListSecHubConfigurationValidationService {
@@ -30,6 +31,9 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 
 	@Autowired
 	ProjectWhiteListSupport support;
+
+	@Autowired
+	LogSanitizer logSanitizer;
 
 	public void assertAllowedForProject(SecHubConfiguration configuration) {
 		List<URI> allowed = fetchAllowedUris(configuration);
@@ -73,7 +77,7 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 		List<URI> list = new ArrayList<>();
 		for (ProjectWhitelistEntry entry: whiteListEntries) {
 			if (entry==null) {
-				LOG.warn("Found null entry inside whitelist for project:{}. In this case, please update whitelist entries and remove empty ones!",configuration.getProjectId());
+				LOG.warn("Found null entry inside whitelist for project:{}. In this case, please update whitelist entries and remove empty ones!",logSanitizer.sanitize(configuration.getProjectId(),-1));
 				continue;
 			}
 			ProjectWhiteListEntryCompositeKey key = entry.getKey();

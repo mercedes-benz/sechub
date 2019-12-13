@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class JobInformationDeleteService {
@@ -20,9 +21,14 @@ public class JobInformationDeleteService {
 	@Autowired
 	JobInformationRepository repository;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@Validated
 	@UseCaseSchedulerStartsJob(@Step(number = 5, name = "Update admin job info", description = "Deletes store info in admin domain when job is done."))
 	public void delete(UUID jobUUID) {
+		assertion.isValidJobUUID(jobUUID);
+
 		LOG.debug("deleting job information for job with uuid:{}",jobUUID);
 		repository.deleteJobInformationWithJobUUID(jobUUID);
 	}

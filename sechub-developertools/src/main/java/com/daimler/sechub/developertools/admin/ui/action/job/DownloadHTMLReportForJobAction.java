@@ -33,8 +33,8 @@ public class DownloadHTMLReportForJobAction extends AbstractUIAction {
 			getContext().getOutputUI().error("Not a UUID:" + jobUUID.get(), ex);
 			return;
 		}
-		String data = getContext().getAdministration().triggerDownloadReport(projectId.get(), sechubJobUUID);
-		output(data);
+		String infoMessage = getContext().getAdministration().triggerDownloadReport(projectId.get(), sechubJobUUID);
+		outputAsText(infoMessage);
 	}
 
 }

@@ -33,6 +33,8 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		uri = new URI("https://www.example.org");
 
 		configuration = mock(SecHubConfiguration.class);
+		when(configuration.getProjectId()).thenReturn("projectid1");
+
 		infraconfig = mock(SecHubInfrastructureScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);
@@ -88,10 +90,10 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, ProductIdentifier.FARRADAY, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, ProductIdentifier.NESSUS, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NESSUS, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));
@@ -110,19 +112,19 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		verify(productResultRepository).save(result2);
 
 	}
-	
+
 	@Test
 	public void infrascanservice_persists_3_results_of_2_registered_infrascan_product_executors() throws Exception {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, ProductIdentifier.FARRADAY, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, ProductIdentifier.NESSUS, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NESSUS, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
-		
-		ProductResult result3 = new ProductResult(secHubJobUUID, ProductIdentifier.NESSUS, "result3");
+
+		ProductResult result3 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NESSUS, "result3");
 		ProductResultTestAccess.setUUID(result3, UUID.randomUUID());
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));
@@ -133,7 +135,7 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		List<ProductResult> list = new ArrayList<>();
 		list.add(result2);
 		list.add(result3);
-		
+
 		when(infrascanner2.execute(context)).thenReturn(list);
 		when(infrascanner2.getIdentifier()).thenReturn(ProductIdentifier.NESSUS);
 

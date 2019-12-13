@@ -20,6 +20,9 @@ import com.daimler.sechub.docgen.util.TextFileWriter;
 
 class KubernetesTemplateFilesGenerator implements Generator {
 
+	private static final String OPTION_SECRET_FILE_NAME = "secretFileName";
+
+	private static final String SECHUB_KUBERNETES_GENO_TARGET_ROOT = "SECHUB_KUBERNETES_GENO_TARGET_ROOT";
 	// https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables
 
 	SpringValueExtractor springValueExtractor;
@@ -43,16 +46,17 @@ class KubernetesTemplateFilesGenerator implements Generator {
 		}
 		/* additional parts: */
 		/* database: */
-		list.add(newSecret("spring.datasource.userid", "database", "Define userid for database access"));
+		list.add(newSecret("spring.datasource.username", "database", "Define userid for database access"));
 		list.add(newSecret("spring.datasource.password", "database", "The password for database access"));
 		list.add(newSecret("spring.datasource.patroni.password", "database", "The password for patroni sync etc."));
 
 		/* database-backup: */
-		list.add(newSecret("spring.datasource.backup.userid", "database-backup", "The user for database backup access"));
+		list.add(newSecret("spring.datasource.backup.username", "database-backup", "The user for database backup access"));
 		list.add(newSecret("spring.datasource.backup.password", "database-backup", "The password for database backup access"));
 
 		/* ssl: */
 		list.add(newSecret("sechub.server.ssl.keystore.password", "ssl", "The password for server ssl certificate"));
+		list.add(newSecret("sechub.server.ssl.keystore.file", "ssl", "The server ssl certificate file","server-certificate.p12"));
 
 		Collections.sort(list);
 		generateDeploymentFilePart(result, list);
@@ -75,15 +79,27 @@ class KubernetesTemplateFilesGenerator implements Generator {
 	 * @return data
 	 */
 	private DocAnnotationData newSecret(String key, String scope, String description) {
-		return newAnnotationData(key, scope, description, true);
+		return newSecret(key, scope, description, null);
+	}
+	/**
+	 * Creates annotation data so generator will create deployment code and secret files + shell scripts
+	 * @param key - key to use for a) ENV entry (uppercased + . replaced by _) b) secret files containing data (same as env entr but lowercased +.txt)
+	 * @param scope - used for shellscript filenames
+	 * @param description
+	 * @param secretFileName
+	 * @return data
+	 */
+	private DocAnnotationData newSecret(String key, String scope, String description,String secretFileName) {
+		return newAnnotationData(key, scope, description, true,secretFileName);
 	}
 
-	private DocAnnotationData newAnnotationData(String springValue, String scope, String description, boolean secret) {
+	private DocAnnotationData newAnnotationData(String springValue, String scope, String description, boolean secret, String secretFileName) {
 		DocAnnotationData data = new DocAnnotationData();
 		data.isSecret = secret;
 		data.description = description;
 		data.scope = scope;
 		data.springValue = springValue;
+		data.options.put(OPTION_SECRET_FILE_NAME, secretFileName);
 		return data;
 	}
 
@@ -138,6 +154,9 @@ class KubernetesTemplateFilesGenerator implements Generator {
 			newLine(code, "            secretKeyRef:");
 			newLine(code, "               name: " + secretName);
 			newLine(code, "               key: " + secretKey);
+
+			/* handle custom secret file names */
+			result.secretFileNameMapping.put(secretKey, data.options.get(OPTION_SECRET_FILE_NAME));
 		} else {
 			String springValue = data.springValue;
 			if (springValue != null && !springValue.isEmpty()) {
@@ -278,18 +297,12 @@ class KubernetesTemplateFilesGenerator implements Generator {
 		return assertExists(genFolder);
 	}
 
-	private File ensureKubernetesTargetRootFolder() {
-		File secHubServer = new File("./sechub-server");
-		if (!secHubServer.exists()) {
-			/* maybe not gradle but IDE .. so try other... */
-			secHubServer = new File("./../sechub-server");
-		}
-		// target root is parent of sechub-server... so we are definitely at root
-		return assertExists(secHubServer).getParentFile();
-	}
-
 	private File ensureKubernetesFolder() {
-		return assertExists(new File(ensureKubernetesTargetRootFolder(), "kubernetes"));
+		String targetKubernetesFolder = System.getenv(SECHUB_KUBERNETES_GENO_TARGET_ROOT);
+		if (targetKubernetesFolder==null ||targetKubernetesFolder.isEmpty()) {
+			throw new IllegalStateException(SECHUB_KUBERNETES_GENO_TARGET_ROOT+" must be set");
+		}
+		return assertExists(new File(targetKubernetesFolder));
 	}
 
 	private File assertExists(File folder) {
