@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-@startuml
+' SPDX-License-Identifier: MIT
 
 abstract class AbstractInstallSetupProductExecutor{
    # <I extends InstallSetup> I getInstallSetup()

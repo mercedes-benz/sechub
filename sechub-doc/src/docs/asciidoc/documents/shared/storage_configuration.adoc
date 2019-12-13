@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 In SecHub we need to store job data (e.g. zipped source code).
 
 *At least one storage setup must be defined*- otherwise {sechub} server will not start!

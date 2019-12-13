@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 We do currently not use Hystrix or another framework to handle resilience,
 but use a simple own approach:
 

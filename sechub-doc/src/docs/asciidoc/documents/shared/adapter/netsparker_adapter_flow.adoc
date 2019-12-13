@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 . All communication is done by REST API
 . Login
 .. To differ between intranet and internet scans adapter will use agent name or

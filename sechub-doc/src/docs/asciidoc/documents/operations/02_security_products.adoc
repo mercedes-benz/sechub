@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 :nessus: Nessus
 :netsparker: Netsparker
 :checkmarx: Checkmarx

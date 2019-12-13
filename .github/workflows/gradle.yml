@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 name: Java & Go CI
 
 on: [push]

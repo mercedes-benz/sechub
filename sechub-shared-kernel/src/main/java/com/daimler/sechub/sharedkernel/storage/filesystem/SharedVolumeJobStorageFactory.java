@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.storage.filesystem;
 
 import static java.util.Objects.*;
