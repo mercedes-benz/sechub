@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
+import org.assertj.core.util.Arrays;
+
 public class AssertJobScheduler<R> extends AbstractAssert {
 
 	private static final int DEFAULT_TIMEOUT_MS = 6000;
@@ -103,6 +105,26 @@ public class AssertJobScheduler<R> extends AbstractAssert {
 				}
 				TestAPI.waitMilliSeconds(500);
 			}
+		}
+
+		/**
+		 * Means one the given states is current state of job
+		 * @param executionStates
+		 * @return
+		 */
+		public AssertSchedulerJob havingOneOfExecutionStates(TestExecutionState ...executionStates ) {
+			boolean foundOne=false;
+			for (TestExecutionState state: executionStates) {
+				if (json.contains(state.name())) {
+					foundOne=true;
+					break;
+				}
+
+			}
+			if (!foundOne) {
+				fail("Job data contains not any of "+Arrays.asList(executionStates)+" but:\n"+json);
+			}
+			return this;
 		}
 
 		public AssertSchedulerJob havingExecutionState(TestExecutionState state) {

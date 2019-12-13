@@ -49,7 +49,7 @@ public class JobScenario2IntTest {
 			onJobScheduling(PROJECT_1).
 				canFindJob(jobUUID).
 					havingExecutionResult(TestExecutionResult.NONE).
-					havingExecutionState(TestExecutionState.READY_TO_START);
+					havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED);// either ready or already started
 
 		assertUser(SUPER_ADMIN).
 			onJobAdministration().
@@ -111,10 +111,10 @@ public class JobScenario2IntTest {
 			and().
 			canApproveJob(PROJECT_1, jobUUID).
 			afterThis().
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.READY_TO_START);
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED);// either ready or already started
 
 		assertUser(SUPER_ADMIN).
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.READY_TO_START).
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED).// either ready or already started
 			and().
 			onJobAdministration().canNotFindRunningJob(jobUUID); // means events are triggered and handled */
 		/* @formatter:on */
