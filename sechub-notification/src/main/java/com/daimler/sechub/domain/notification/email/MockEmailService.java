@@ -43,9 +43,9 @@ public class MockEmailService implements EmailService {
 		if (!cacheEmailsEnabled) {
 			return;
 		}
-		addMessages(message,MailTargetType.TO);
-		addMessages(message,MailTargetType.CC);
-		addMessages(message,MailTargetType.BCC);
+		addMessages(message, MailTargetType.TO);
+		addMessages(message, MailTargetType.CC);
+		addMessages(message, MailTargetType.BCC);
 
 	}
 
@@ -74,8 +74,7 @@ public class MockEmailService implements EmailService {
 		for (String target : targetMailAddresses) {
 			List<SimpleMailMessage> mailsInternal = getMailsInternal(target);
 			mailsInternal.add(message);
-			LOG.info("Send {} target:{} [ {} ]: subject:'{}', ", targetType, target, mailsInternal.size(), message.getSubject()
-					);
+			LOG.info("Send {} target:{} [ {} ]: subject:'{}', ", targetType, target, mailsInternal.size(), message.getSubject());
 		}
 	}
 
@@ -84,13 +83,18 @@ public class MockEmailService implements EmailService {
 			LOG.debug("cache for emails is disabled, so returning empty mails list for emailAdress:{}", logSanitizer.sanitize(emailAdress, -1));
 			return Collections.emptyList();
 		}
-		return getMailsInternal(emailAdress);
+		List<SimpleMailMessage> copy = new ArrayList<>();
+		copy.addAll(getMailsInternal(emailAdress));
+		return copy;
 	}
 
 	private List<SimpleMailMessage> getMailsInternal(String emailAdress) {
-		List<SimpleMailMessage> list = mails.computeIfAbsent(emailAdress, this::createMailList);
-		LOG.info("resolved messages:{} for user:{}", list.size(), logSanitizer.sanitize(emailAdress, -1));
-		return list;
+		synchronized (mails) {
+			List<SimpleMailMessage> list = mails.computeIfAbsent(emailAdress, this::createMailList);
+			LOG.info("resolved messages:{} for user:{}", list.size(), logSanitizer.sanitize(emailAdress, -1));
+			return list;
+		}
+
 	}
 
 	private List<SimpleMailMessage> createMailList(/* NOSONAR */String emailAdress) {
@@ -98,7 +102,9 @@ public class MockEmailService implements EmailService {
 	}
 
 	public void resetMockMails() {
-		mails.clear();
+		synchronized (mails) {
+			mails.clear();
+		}
 	}
 
 }
