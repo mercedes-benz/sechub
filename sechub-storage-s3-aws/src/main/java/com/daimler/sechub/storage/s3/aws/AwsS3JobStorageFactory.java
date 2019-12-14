@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.storage.s3.aws;
 
 import static java.util.Objects.*;

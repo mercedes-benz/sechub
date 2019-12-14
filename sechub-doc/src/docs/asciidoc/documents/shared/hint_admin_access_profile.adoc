@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [IMPORTANT]
 ====
 Please *don't forget* to have *at least one server* running with active profile `admin_access`!

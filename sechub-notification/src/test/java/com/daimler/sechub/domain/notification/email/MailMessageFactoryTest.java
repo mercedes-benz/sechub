@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.notification.email;
 
 import static org.junit.Assert.*;

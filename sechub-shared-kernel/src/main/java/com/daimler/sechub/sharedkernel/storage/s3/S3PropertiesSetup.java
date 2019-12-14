@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.storage.s3;
 
 import org.springframework.beans.factory.annotation.Value;

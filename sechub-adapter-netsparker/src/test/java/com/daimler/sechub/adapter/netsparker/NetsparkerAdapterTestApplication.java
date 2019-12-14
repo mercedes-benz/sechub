@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
 import static com.daimler.sechub.test.TestUtil.*;

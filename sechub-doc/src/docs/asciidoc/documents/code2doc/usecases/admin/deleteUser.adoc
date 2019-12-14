@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 An administrator deletes an user. All associations etc. are removed as well.
 
 [WARNING]

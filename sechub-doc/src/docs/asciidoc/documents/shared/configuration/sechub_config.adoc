@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 === SecHub scan configuration
 
 A `{sechub}` scan configuration  must be valid `JSON`.

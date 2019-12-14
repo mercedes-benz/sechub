@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.storage.s3;
 
 import static org.junit.Assert.*;

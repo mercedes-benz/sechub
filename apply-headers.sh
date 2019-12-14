@@ -67,12 +67,8 @@ function startAutoApply {
     applySPDXonFirstLine "go" "spdx_template_doubleslash.txt"
     applySPDXonFirstLine "adoc" "spdx_template_doubleslash.txt"
 
-    # for plantuml we assume these files are starting with a @startuml
-    # so we add as first enry the //
-    # if there is a need to change this in a file where no @startuml is
-    # used, change manual to ' at the beginning and commit change manually
-    applySPDXonFirstLine "puml" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "plantuml" "spdx_template_doubleslash.txt"
+    # for plantuml we do no longer apply automatically, because a comment before
+    # a @startUml is problematic
 
     applySPDXonFirstLine "properties" "spdx_template_hash.txt"
 

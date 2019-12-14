@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools;
 
 import com.daimler.sechub.test.TestFileSupport;

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.test.s3;
 
 import java.io.BufferedReader;

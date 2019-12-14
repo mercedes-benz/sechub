@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 == Onboarding
 
 NOTE: Registration process of new users is done by rest API call, for details

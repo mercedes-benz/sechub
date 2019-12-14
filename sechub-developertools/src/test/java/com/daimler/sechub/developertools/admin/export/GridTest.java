@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.export;
 
 import static org.junit.Assert.*;

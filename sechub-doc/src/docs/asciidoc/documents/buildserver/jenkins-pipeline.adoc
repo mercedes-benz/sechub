@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 === Jenkins auto deployment
 
 When you want to build and automate deployment of {secHub} by https://jenkins.io/[Jenkins]  you can
