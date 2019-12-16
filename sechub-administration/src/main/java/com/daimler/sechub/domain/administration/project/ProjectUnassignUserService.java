@@ -48,6 +48,9 @@ public class ProjectUnassignUserService {
 	@Autowired
 	UserInputAssertion assertion;
 
+	@Autowired
+	ProjectTransactionService transactionService;
+
 	/* @formatter:off */
 	@UseCaseAdministratorUnassignsUserFromProject(@Step(number = 2, name = "Unassign user", description = "The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed"))
 	/* @formatter:on */
@@ -64,8 +67,7 @@ public class ProjectUnassignUserService {
 		}
 		user.getProjects().remove(project);
 
-		projectRepository.save(project);
-		userRepository.save(user);
+		transactionService.saveInOwnTransaction(project,user);
 
 		sendUserRemovedFromProjectEvent(projectId, user);
 		sendRequestUserRoleRecalculation(user);
