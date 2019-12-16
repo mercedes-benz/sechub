@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.scheduler;
 
 import com.daimler.sechub.domain.administration.status.StatusEntryKey;

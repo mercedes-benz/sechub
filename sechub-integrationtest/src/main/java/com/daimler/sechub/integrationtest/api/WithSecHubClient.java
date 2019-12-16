@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -52,8 +53,8 @@ public class WithSecHubClient {
 		return this;
 	}
 
-	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
-		return new AssertJobReport(project, jobUUID, jsonConfigfile);
+	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+		return new AssertJobReport(project, jobUUID, location.getPath());
 	}
 
 	public class AssertJobReport{
@@ -82,7 +83,7 @@ public class WithSecHubClient {
 			list.add("-jobUUID");
 			list.add(jobUUID.toString());
 
-			ExecutionResult result = doExecute(ClientAction.GET_REPORT, file, executor, list);
+			ExecutionResult result = doExecute(ClientAction.GET_REPORT, file, executor, list, null);
 			if (result.getExitCode() != 0) {
 				fail("Not exit code 0 but:" + result.getExitCode());
 			}
@@ -191,11 +192,15 @@ public class WithSecHubClient {
 
 	}
 
-	public AssertAsyncResult startAsynchronScanFor(TestProject project, String jsonConfigfile) {
-		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
+	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
+		return startAsynchronScanFor(project, location, null);
+	}
+
+	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String,String> environmentVariables) {
+		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 		List<String> list = buildCommand(project, false);
-		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list);
+		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list,environmentVariables);
 		if (result.getExitCode() != 0) {
 			fail("Not exit code 0 but:" + result.getExitCode());
 		}
@@ -205,26 +210,37 @@ public class WithSecHubClient {
 		return asynchResult;
 	}
 
+	/**
+	 * Starts a synchronous scan for given project.
+	 *
+	 * @param project
+	 * @param location identifier for the config file which shall be used. Its
+	 *                       automatically resolved from test file support.
+	 * @return
+	 */
+	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
+		return startSynchronScanFor(project, location,null);
+	}
 
 	/**
 	 * Starts a synchronous scan for given project.
 	 *
 	 * @param project
-	 * @param jsonConfigfile name of the config file which shall be used. Its
+	 * @param location identifier for the config file which shall be used. Its
 	 *                       automatically resolved from test file support.
 	 * @return
 	 */
-	public ExecutionResult startSynchronScanFor(TestProject project, String jsonConfigfile) {
-		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
+	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
+		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
 		SecHubClientExecutor executor = new SecHubClientExecutor();
 
 		List<String> list = buildCommand(project, true);
 
-		return doExecute(ClientAction.START_SYNC, file, executor, list);
+		return doExecute(ClientAction.START_SYNC, file, executor, list,environmentVariables);
 	}
 
-	private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list) {
-		return executor.execute(file, asUser.user, action, list.toArray(new String[list.size()]));
+	private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list, Map<String,String> environmentVariables) {
+		return executor.execute(file, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
 	}
 
 	private List<String> buildCommand(TestProject project, boolean withWait0) {

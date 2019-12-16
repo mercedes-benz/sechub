@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MIT
+An administrator deletes an user. All associations etc. are removed as well.
+
+[WARNING]
+====
+If the user is still a project owner the delete will not work
+and an error message will appear that this is not acceptable
+and that the ownership must be moved before User delete is possible.
+====

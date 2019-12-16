@@ -6,20 +6,20 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.daimler.sechub.sereco.metadata.Classification;
-import com.daimler.sechub.sereco.metadata.Detection;
 import com.daimler.sechub.sereco.metadata.MetaDataAccess;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
+import com.daimler.sechub.sereco.metadata.SerecoDetection;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class AssertVulnerabilities {
-	private List<Vulnerability> vulnerabilities = new ArrayList<>();
+	private List<SerecoVulnerability> vulnerabilities = new ArrayList<>();
 
-	AssertVulnerabilities(List<Vulnerability> list) {
+	AssertVulnerabilities(List<SerecoVulnerability> list) {
 		this.vulnerabilities.addAll(list);
 	}
 
-	public static AssertVulnerabilities assertVulnerabilities(List<Vulnerability> list) {
+	public static AssertVulnerabilities assertVulnerabilities(List<SerecoVulnerability> list) {
 		return new AssertVulnerabilities(list);
 	}
 
@@ -29,23 +29,23 @@ public class AssertVulnerabilities {
 
 	public class VulnerabilityFinder {
 
-		private Vulnerability search;
+		private SerecoVulnerability search;
 
 		private VulnerabilityFinder() {
 			/* we use null values for search to search only for wanted parts...,+ some defaults (empty list) and empty description */
 			String url = null;
 			String type = null;
-			Severity severity = null;
-			List<Detection> list = new ArrayList<>();
+			SerecoSeverity severity = null;
+			List<SerecoDetection> list = new ArrayList<>();
 			String description = "";
-			Classification classification = null;
+			SerecoClassification classification = null;
 
 			search = MetaDataAccess.createVulnerability(url, type, severity, list, description, classification);
 			;
 		}
 
-		private List<Vulnerability> find(StringBuilder metaInfo) {
-			List<Vulnerability> list = find(metaInfo, false);
+		private List<SerecoVulnerability> find(StringBuilder metaInfo) {
+			List<SerecoVulnerability> list = find(metaInfo, false);
 			if (list.isEmpty()) {
 				find(metaInfo, true);
 			}
@@ -66,10 +66,10 @@ public class AssertVulnerabilities {
 			return TestUtils.contains(string, partWhichShallBeContained);
 		}
 
-		private List<Vulnerability> find(StringBuilder message, boolean findClosest) {
-			List<Vulnerability> matching = new ArrayList<>();
+		private List<SerecoVulnerability> find(StringBuilder message, boolean findClosest) {
+			List<SerecoVulnerability> matching = new ArrayList<>();
 			SearchTracer trace = new SearchTracer();
-			for (Vulnerability v : AssertVulnerabilities.this.vulnerabilities) {
+			for (SerecoVulnerability v : AssertVulnerabilities.this.vulnerabilities) {
 
 				boolean contained = isEitherNullInSearchOrEqual(search.getSeverity(), v.getSeverity()) && trace.done(v, "severity");
 				contained = contained && isEitherNullInSearchOrEqual(search.getUrl(), v.getUrl()) && trace.done(v, "url");
@@ -89,12 +89,12 @@ public class AssertVulnerabilities {
 		private class SearchTracer {
 
 			private int count = 0;
-			private Vulnerability closest;
-			private Vulnerability last;
+			private SerecoVulnerability closest;
+			private SerecoVulnerability last;
 			private int closestCount = 0;
 			private String closestLastCheck;
 
-			boolean done(Vulnerability v, String description) {
+			boolean done(SerecoVulnerability v, String description) {
 				if (last != v) {
 					count = 0;
 				}
@@ -108,7 +108,7 @@ public class AssertVulnerabilities {
 				return true;
 			}
 
-			public Vulnerability getClosest() {
+			public SerecoVulnerability getClosest() {
 				return closest;
 			}
 
@@ -118,7 +118,7 @@ public class AssertVulnerabilities {
 
 		}
 
-		public VulnerabilityFinder withSeverity(Severity severity) {
+		public VulnerabilityFinder withSeverity(SerecoSeverity severity) {
 			search.setSeverity(severity);
 			return this;
 		}
@@ -152,12 +152,12 @@ public class AssertVulnerabilities {
 
 		private AssertVulnerabilities isContained(int expectedAmount) {
 			StringBuilder message = new StringBuilder();
-			List<Vulnerability> matches = find(message);
+			List<SerecoVulnerability> matches = find(message);
 			if (matches.size() == expectedAmount) {
 				return AssertVulnerabilities.this;
 			}
 			StringBuilder sb = new StringBuilder();
-			for (Vulnerability v : vulnerabilities) {
+			for (SerecoVulnerability v : vulnerabilities) {
 				sb.append(v.toString());
 				sb.append("\n");
 			}
@@ -168,10 +168,10 @@ public class AssertVulnerabilities {
 
 		public class AssertClassification {
 
-			private Classification classification;
+			private SerecoClassification classification;
 
 			private AssertClassification() {
-				classification = new Classification();
+				classification = new SerecoClassification();
 				MetaDataAccess.setClassification(VulnerabilityFinder.this.search, classification);
 			}
 

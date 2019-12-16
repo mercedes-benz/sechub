@@ -25,9 +25,9 @@ public class UnassignUserFromProjectAction extends AbstractUIAction {
 		if (! projectId.isPresent()) {
 			return;
 		}
-		
-		String data = getContext().getAdministration().unassignUserFromProject(userId.get(), projectId.get());
-		output(data);
+
+		String infoMessage = getContext().getAdministration().unassignUserFromProject(userId.get(), projectId.get());
+		outputAsText(infoMessage);
 	}
 
 }

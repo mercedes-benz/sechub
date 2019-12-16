@@ -39,7 +39,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @ContextConfiguration(classes = { ProjectUpdateAdministrationRestController.class,
 		ProjectUpdateAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles(Profiles.TEST)
+@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 public class ProjectUpdateAdministrationRestControllerMockTest {
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
@@ -67,7 +67,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUpdateProjectWhiteListUrl("projectId1")).
-        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        		contentType(MediaType.APPLICATION_JSON_VALUE).
         		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()
@@ -94,14 +94,14 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
 		  this.mockMvc.perform(
 	        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl("projectId1")).
-	        		contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+	        		contentType(MediaType.APPLICATION_JSON_VALUE).
 	        		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
 	        		)./*andDo(print()).*/
 	        			andExpect(status().isBadRequest()
 	        		);
 
 
-		verifyZeroInteractions(mockedProjectUpdateWhiteListService);
+		  verifyNoInteractions(mockedProjectUpdateWhiteListService);
 		/* @formatter:on */
 	}
 

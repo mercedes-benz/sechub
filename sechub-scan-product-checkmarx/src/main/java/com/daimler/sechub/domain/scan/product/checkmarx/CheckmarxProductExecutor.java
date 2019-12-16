@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +18,16 @@ import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
+import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
+import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
@@ -42,49 +47,62 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
 	@Autowired
 	CheckmarxInstallSetup installSetup;
-	
+
 	@Autowired
 	StorageService storageService;
-	
-	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data)
-			throws Exception {
-		LOG.debug("Trigger checkmarx adapter execution");
-		
-		UUID jobUUID = context.getSechubJobUUID();
-		String projectId = context.getConfiguration().getProjectId();
-		
-		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
-		String path = storage.getAbsolutePath("sourcecode.zip");
-		String projectName = context.getConfiguration().getProjectId();
-		
-		/* @formatter:off */
-		
-		CheckmarxAdapterConfig nessusConfig =CheckmarxConfig.builder().
-				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-				setUser(setup.getUserId()).
-				setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-				setPassword(setup.getPassword()).
-				setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
-				setPathToZipFile(path).
-				setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
-				setProjectId(projectName).
-				setUser(installSetup.getUserId()).
-				setPassword(installSetup.getPassword()).
-				setTraceID(context.getTraceLogIdAsString()).
-				/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
-				setProductBaseUrl(setup.getBaseURL()).
-				build();
-		/* @formatter:on */
 
-		/* execute nessus by adapter and return product result */
-		String xml = checkmarxAdapter.start(nessusConfig);
-		ProductResult result = new ProductResult(context.getSechubJobUUID(), getIdentifier(), xml);
-		return Collections.singletonList(result);
+	@Autowired
+	CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+
+	ResilientActionExecutor<ProductResult> resilientActionExecutor;
+
+	public CheckmarxProductExecutor() {
+		/* we create here our own instance - only for this service!*/
+		this.resilientActionExecutor=new ResilientActionExecutor<>();
+
 	}
 
-	
+	@PostConstruct
+	protected void postConstruct() {
+		this.resilientActionExecutor.add(checkmarxResilienceConsultant);
+	}
+
+	@Override
+	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data) throws Exception {
+		LOG.debug("Trigger checkmarx adapter execution");
+
+		UUID jobUUID = context.getSechubJobUUID();
+		String projectId = context.getConfiguration().getProjectId();
+
+		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+		ProductResult result = resilientActionExecutor.executeResilient(()-> {
+
+				try (InputStream sourceCodeZipFileInputStream = storage.fetch("sourcecode.zip")) {
+
+					/* @formatter:off */
+
+					CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
+							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+							setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
+							setProjectId(projectId).
+							setTraceID(context.getTraceLogIdAsString()).
+							/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
+							build();
+					/* @formatter:on */
+
+					/* execute checkmarx by adapter and return product result */
+					String xml = checkmarxAdapter.start(checkMarxConfig);
+					ProductResult productResult = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
+					return productResult;
+				}
+		});
+		return Collections.singletonList(result);
+
+	}
 
 	@Override
 	public ProductIdentifier getIdentifier() {

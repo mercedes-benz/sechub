@@ -21,9 +21,9 @@ public class ShowProjectDetailAction extends AbstractUIAction {
 		if (! projectId.isPresent()) {
 			return;
 		}
-		
+
 		String data = getContext().getAdministration().fetchProjectInfo(projectId.get());
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

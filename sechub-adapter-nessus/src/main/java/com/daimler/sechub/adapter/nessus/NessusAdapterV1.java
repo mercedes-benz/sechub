@@ -60,9 +60,6 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
 			loginAndFetchToken(context);
 			updateContextWithNessusPolicyUUID(context);
-			/*
-			 * FIXME Albert Tregnaghi, 2018-04-03:ask tim and daniel about creating always new scans
-			 */
 			addNewScan(context);
 			launchScan(context);
 
@@ -290,7 +287,7 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 
 		Map<String, String> json = new TreeMap<>();
 		json.put("username", config.getUser());
-		json.put("password", config.getPassword());
+		json.put("password", config.getPasswordOrAPIToken());
 
 		String jsonAsString = context.json().toJSON(json);
 

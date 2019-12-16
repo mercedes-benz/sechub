@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.daimler.sechub.sereco.Workspace;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class AssertWorkspace {
 
@@ -22,13 +22,13 @@ public class AssertWorkspace {
 		this.workspace=workspace;
 	}
 	
-	public WorkspaceAssertVulnerabilities hasVulnerabilitiesWith(Severity serverity) {
+	public WorkspaceAssertVulnerabilities hasVulnerabilitiesWith(SerecoSeverity serverity) {
 		return this.hasVulnerabilitiesWith(serverity,-1);
 	}
 	
-	public WorkspaceAssertVulnerabilities hasVulnerabilitiesWith(Severity severity, int expectedAmount) {
-		List<Vulnerability> list = new ArrayList<>();
-		for (Vulnerability v : workspace.getVulnerabilties()) {
+	public WorkspaceAssertVulnerabilities hasVulnerabilitiesWith(SerecoSeverity severity, int expectedAmount) {
+		List<SerecoVulnerability> list = new ArrayList<>();
+		for (SerecoVulnerability v : workspace.getVulnerabilties()) {
 			if (severity.equals(v.getSeverity())){
 				list.add(v);
 			}
@@ -41,7 +41,7 @@ public class AssertWorkspace {
 	
 	public class WorkspaceAssertVulnerabilities extends AssertVulnerabilities{
 
-		WorkspaceAssertVulnerabilities(List<Vulnerability> list) {
+		WorkspaceAssertVulnerabilities(List<SerecoVulnerability> list) {
 			super(list);
 		}
 		

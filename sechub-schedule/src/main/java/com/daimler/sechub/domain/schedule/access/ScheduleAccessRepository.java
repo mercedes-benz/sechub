@@ -14,4 +14,8 @@ public interface ScheduleAccessRepository extends JpaRepository<ScheduleAccess, 
 	@Modifying
 	@Query(value="DELETE FROM "+TABLE_NAME+" where "+COLUMN_USER_ID+" = ?1",nativeQuery=true)
 	public void deleteAcessForUserAtAll(String userId);
+
+	@Modifying
+	@Query(value="DELETE FROM "+TABLE_NAME+" where "+COLUMN_PROJECT_ID+" = ?1",nativeQuery=true)
+	public void deleteAnyAccessForProject(String projectId);
 }

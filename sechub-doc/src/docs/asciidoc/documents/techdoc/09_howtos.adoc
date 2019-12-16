@@ -6,3 +6,5 @@ include::09_01_howto_integrate_a_new_product.adoc[]
 
 include::09_02_howto_configure_mock_behaviours.adoc[]
 
+include::09_03_howto_start_local_like_in_production.adoc[]
+

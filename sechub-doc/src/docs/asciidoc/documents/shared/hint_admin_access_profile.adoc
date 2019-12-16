@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MIT
+[IMPORTANT]
+====
+Please *don't forget* to have *at least one server* running with active profile `admin_access`!
+
+Servers without having this profile activated, will provide only standard API access.
+Reason for this behavior: Administrators can reduce access to administrative API by IP and
+port firewall settings.
+
+This is only necessary for production! Development and Integrationtest profiles do automatically include
+the `admin_access` profile.
+
+*An example for production:* +
+In a Kubernetes environment you could  start 5 instances of {sechub} without this profile at port 443 and 2 additional ones with `admin_access` profile
+enabled on port 8443 (all other settings are same). In your firewall configuration you allow public
+access to this server by port 443, but access to port 8443 is restricted to some dedicated IPs.
+
+====
+

@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+== Onboarding
+
+NOTE: Registration process of new users is done by rest API call, for details
+      about URL etc. please refer to REST API documentation described at `User self registration`
+
+=== What must be done when a new user has registered ?
+
+. Check user is wellknown and should have access
+. Check user name is valid for your purpose / company. +
+  {sechub} will automatically check for uniqueness of user name and email address.
+. Accept signup by REST API (or tool)
+. If necessary create accounts in your installed security products.
+
+=== What must be done when a new project shall be created ?
+
+. Create a new project inside {sechub} by REST API (or tool)+
+.. At least the project owner must be set
+.. If you do not define any white list URIs there, no web scans or
+   infrastructure scans can be executed! +
+   Check if requested white list entries are really valid for the project and do not belong to another project or
+   organization.
+. Assign users to project +
+  Currently its only possible by administrators to add / remove project members. This will change in future, see
+  https://github.com/Daimler/sechub/issues/60
+
+=== What must be done when a user wants to have access to a {sechub} project ?
+. As long as https://github.com/Daimler/sechub/issues/60 is not solved, the project owner must request
+  the assignment to a super administrator. Only with permission of project owner the assignment should be done!

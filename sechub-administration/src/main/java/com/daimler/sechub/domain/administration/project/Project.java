@@ -37,6 +37,9 @@ public class Project {
 	public static final String COLUMN_PROJECT_DESCRIPTION = "PROJECT_DESCRIPTION";
 	public static final String COLUMN_WHITELIST_URIS = "PROJECT_WHITELIST_URIS";
 
+	public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
+	public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
+
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
 	/* +-----------------------------------------------------------------------+ */
@@ -44,6 +47,8 @@ public class Project {
 
 	public static final String PROPERTY_USERS = "users";
 	public static final String PROPERTY_OWNER = "owner";
+	public static final String PROPERTY_ID = "id";
+
 
 	@Id
 	@Column(name = COLUMN_PROJECT_ID)
@@ -54,12 +59,12 @@ public class Project {
 
 	// no merge cascade or persist, because owner and user in set
 	// otherwise leading to "java.lang.IllegalStateException: Multiple representations of the same entity ... are being merged"
-	@ManyToMany(cascade = {CascadeType.REMOVE,CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinTable(name = TABLE_NAME_PROJECT_TO_USER)
 	Set<User> users = new HashSet<>();
 
 	// we do not CascadeType.Persist or ALL because otherwise user will be persisted again and leads to unique constraint violation
-	@ManyToOne(cascade = {CascadeType.REMOVE,CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JoinColumn(name = COLUMN_PROJECT_OWNER, nullable = false)
 	User owner;
 
@@ -123,5 +128,6 @@ public class Project {
 		}
 		return true;
 	}
+
 
 }

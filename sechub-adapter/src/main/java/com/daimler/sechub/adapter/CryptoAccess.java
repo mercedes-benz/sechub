@@ -47,6 +47,9 @@ public class CryptoAccess<T extends Serializable> {
 	@SuppressWarnings("unchecked")
 	public T unseal(SealedObject object) {
 		try {
+			if (object==null) {
+				return null;
+			}
 			Cipher cipher = Cipher.getInstance(new String(transformation));
 			cipher.init(Cipher.DECRYPT_MODE, secretKey, new SecureRandom());
 			return (T) object.getObject(cipher);

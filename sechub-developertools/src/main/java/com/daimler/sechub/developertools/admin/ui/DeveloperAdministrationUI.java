@@ -3,7 +3,9 @@ package com.daimler.sechub.developertools.admin.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Image;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -57,8 +59,12 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	private void start(String[] args) {
 
 		useNimbusLookAndFeel();
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
 
-		JFrame frame = new JFrame(getClass().getSimpleName());
+		JFrame frame = new JFrame(env+" - SecHub");
+		ImageIcon imageIcon = new ImageIcon(DeveloperAdministrationUI.class.getClassLoader().getResource("sechub-logo.png"));
+		Image image = imageIcon.getImage();
+		frame.setIconImage(image);
 
 		Container contentPane = frame.getContentPane();
 
@@ -111,6 +117,11 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	@Override
 	public void handleClientError(String error) {
 		outputPanelUI.output("ERROR:\n" + error);
+	}
+
+	@Override
+	public String getProtocol() {
+		return credentialUI.protocolField.getText();
 	}
 
 }

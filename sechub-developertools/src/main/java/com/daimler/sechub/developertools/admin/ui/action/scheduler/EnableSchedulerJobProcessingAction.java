@@ -15,8 +15,8 @@ public class EnableSchedulerJobProcessingAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		String data = getContext().getAdministration().enableSchedulerJobProcessing();
-		output(data);
+		String infoMessage = getContext().getAdministration().enableSchedulerJobProcessing();
+		outputAsText(infoMessage);
 	}
 
 }

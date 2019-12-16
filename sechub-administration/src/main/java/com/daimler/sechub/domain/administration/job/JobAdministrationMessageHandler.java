@@ -39,9 +39,19 @@ public class JobAdministrationMessageHandler implements AsynchronMessageHandler{
 		case JOB_FAILED:
 			handleJobFailed(request);
 			break;
+		case JOB_CANCELED:
+			handleJobCanceled(request);
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
+	private void handleJobCanceled(DomainMessage request) {
+		JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+		// we do drop job info - we only hold running and waiting jobs!
+		deleteService.delete(message.getJobUUID());
 	}
 
 	@IsReceivingAsyncMessage(MessageID.JOB_STARTED)

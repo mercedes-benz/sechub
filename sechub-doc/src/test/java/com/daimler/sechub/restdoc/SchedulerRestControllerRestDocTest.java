@@ -122,7 +122,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
-	    			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
 	    					webConfig().addURI("https://localhost/mywebapp").
@@ -143,6 +143,7 @@ public class SchedulerRestControllerRestDocTest {
 										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
 										fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
 										fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional(),
 										fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
@@ -228,7 +229,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		put(https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
-	    			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    					andDo(document(RestDocPathFactory.createPath(UseCaseUserApprovesJob.class),
@@ -266,7 +267,7 @@ public class SchedulerRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).

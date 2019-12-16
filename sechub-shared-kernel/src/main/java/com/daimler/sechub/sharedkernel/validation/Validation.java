@@ -9,4 +9,7 @@ public interface Validation<T> {
 	 * @return result, never <code>null</code>
 	 */
 	public ValidationResult validate(T target);
+
+
+
 }

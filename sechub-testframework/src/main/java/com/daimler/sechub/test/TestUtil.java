@@ -13,6 +13,48 @@ public class TestUtil {
 
 	private static final OperationSystem operationSystem = new OperationSystem();
 
+	/**
+	 * Tries to get system property value
+	 * @param key
+	 * @return value, never <code>null</code>
+	 * @throws IllegalStateException when no system property can be resolved
+	 */
+	public static String getSystemProperty(String key) {
+		return getSystemProperty(key,null);
+	}
+
+	/**
+	 * Tries to get system property value
+	 * @param key
+	 * @param defaultValue value to use when system property is not found
+	 * @return value, never <code>null</code>
+	 * @throws IllegalStateException when no system property can be resolved - happens only when default value is set to <code>null</code>
+	 */
+	public static String getSystemProperty(String key, String defaultValue) {
+		String property = System.getProperty(key);
+		if (property==null) {
+			property = defaultValue;
+		}
+		if (property==null) {
+			throw new IllegalStateException("System property with key:"+key+" not set!");
+		}
+		return property;
+	}
+
+	/**
+	 * Tries to get system property value as boolean value. If not defined <code>false</code>  will be returned!
+	 * @param key
+	 * @return defined boolean value or <code>false</code> if not defined
+	 */
+	public static boolean getSystemPropertyBooleanOrFalse(String key) {
+		String property = System.getProperty(key);
+		return Boolean.parseBoolean(property);
+	}
+
+	public static void dumpSystemProperty(String key) {
+		System.out.println("property:"+key+"="+getSystemProperty(key, "<NOT DEFINED/>"));
+	}
+
 	public static void waitMilliseconds(long milliseconds) {
 		try {
 			Thread.sleep(milliseconds); // NOSONAR

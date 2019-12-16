@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: MIT
+/* ============================================================================
+   This file contains the configurations for
+   common test report creation
+   ============================================================================
+
+   Included from: "${rootProject.projectDir}/build.gradle"
+   ============================================================================
+ */
+
+subprojects{
+
+    task copyJunitResults(type: Copy) {
+        with{
+            from "${project.projectDir}/build/test-results/test"
+            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            include "*.xml"
+        }
+        with{
+            from "${project.projectDir}/build/test-results/integrationtest"
+            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            include "*.xml"
+        }
+    }
+
+    task createCombinedTestReport(dependsOn: copyJunitResults) {
+        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+
+    }
+
+}
+
+project('sechub-test'){
+    createCombinedTestReport {
+        /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
+
+        doLast {
+            new JunitFilesToOneFileConverter().combineFiles("${rootProject.projectDir}/build/reports/allTests-tmp/junit", "${rootProject.projectDir}/build/reports/allTests/junit-results-exported.xml");
+        }
+
+    }
+}
+
+
+
+
+

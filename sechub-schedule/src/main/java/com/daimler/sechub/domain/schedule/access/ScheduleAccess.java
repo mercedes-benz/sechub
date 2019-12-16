@@ -37,7 +37,7 @@ public class ScheduleAccess {
 	public static final String CLASS_NAME = ScheduleAccess.class.getSimpleName();
 
 	@EmbeddedId
-	private ProjectAccessCompositeKey key;
+	ProjectAccessCompositeKey key;
 
 	@Version
 	@Column(name = "VERSION")

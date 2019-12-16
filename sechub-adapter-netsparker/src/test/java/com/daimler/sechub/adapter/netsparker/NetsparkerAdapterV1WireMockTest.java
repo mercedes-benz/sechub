@@ -67,7 +67,7 @@ public class NetsparkerAdapterV1WireMockTest {
 
 		when(config.getTargetAsString()).thenReturn(TARGET_URL);
 		when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
-		when(config.getBase64Token()).thenReturn(BASE_64_TOKEN);
+		when(config.getPasswordOrAPITokenBase64Encoded()).thenReturn(BASE_64_TOKEN);
 		when(config.getLicenseID()).thenReturn(LICENSE_ID);
 		when(config.getPolicyId()).thenReturn(POLICY_ID);
 		when(config.getAgentName()).thenReturn("agentName");

@@ -40,6 +40,9 @@ include 'sechub-cli',
 
 'sechub-scan-testframework',
 'sechub-shared-kernel-testframework',
+'sechub-storage-core',
+'sechub-storage-s3-aws',
+'sechub-storage-s3-aws-test',
 
 'sechub-developertools'
 

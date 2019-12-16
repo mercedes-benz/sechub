@@ -19,14 +19,21 @@ public class NotificationConfiguration {
 	@Value("${sechub.notification.email.administrators:" + DEFAULT_MAIL_ADRESS_ADMINISTRATORS+ "}")
 	private String emailAdministrators;
 
-	@MustBeDocumented
+	@MustBeDocumented(value="Adress used for emails sent by sechub system")
 	@Value("${sechub.notification.email.from}")
 	private String emailFrom;
+
+	@MustBeDocumented(value="Adress used for reply when email was sent by sechub system")
+	@Value("${sechub.notification.email.replyto:}")
+	private String emailReplyTo;
 
 	public String getEmailAdministrators() {
 		return emailAdministrators;
 	}
 
+	public String getEmailReplyTo() {
+		return emailReplyTo;
+	}
 
 	public String getEmailFrom() {
 		return emailFrom;

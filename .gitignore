@@ -29,6 +29,6 @@ build/
 *.log
 *.bak
 *.zip
-#*.json
+sechub_report*.json
 #!sechub.json
 

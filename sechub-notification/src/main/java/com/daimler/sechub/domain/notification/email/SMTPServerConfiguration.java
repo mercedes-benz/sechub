@@ -30,43 +30,68 @@ public class SMTPServerConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SMTPServerConfiguration.class);
 
-	private static final int DEFAULT_SMTP_SERVER_PORT = 25;
+	static final int DEFAULT_SMTP_SERVER_PORT = 25;
 
-	private static final String DEFAULT_SMTP_CONFIG = "mail.smtp.auth=false";
+	static final String DEFAULT_SMTP_CONFIG = "mail.smtp.auth=false,mail.transport.protocol=smtp";
 
 	private SMTPConfigStringToMapConverter configConverter = new SMTPConfigStringToMapConverter();
 
 	@MustBeDocumented("Hostname of SMPTP server")
 	@Value("${sechub.notification.smtp.hostname}")
-	private String hostname;
+	String hostname;
+
+	@MustBeDocumented("Username on SMPTP server, empty value means no username")
+	@Value("${sechub.notification.smtp.credential.username:}")
+	String username;
+
+	@MustBeDocumented("Password on SMPTP server, empty value means no password")
+	@Value("${sechub.notification.smtp.credential.password:}")
+	String password;
 
 	@MustBeDocumented("Port of SMPTP server, per default:" + DEFAULT_SMTP_SERVER_PORT)
 	@Value("${sechub.notification.smtp.port:" + DEFAULT_SMTP_SERVER_PORT + "}")
-	private int hostPort = DEFAULT_SMTP_SERVER_PORT;
+	int hostPort = DEFAULT_SMTP_SERVER_PORT;
 
 	@MustBeDocumented("SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: `mail.smtp.auth=false,mail.smtp.timeout=4000`. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html for configuration mapping")
-	@Value("${sechub.notification.smtp.config:"+ DEFAULT_SMTP_CONFIG+"}")
-	private String smtpConfigString = DEFAULT_SMTP_CONFIG;
+	@Value("${sechub.notification.smtp.config:" + DEFAULT_SMTP_CONFIG + "}")
+	String smtpConfigString = DEFAULT_SMTP_CONFIG;
 
 	@Bean
 	public JavaMailSender getJavaMailSender() {
-	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	    mailSender.setHost(hostname);
-	    mailSender.setPort(hostPort);
+		JavaMailSenderImpl mailSender = createMailSender();
+		mailSender.setHost(hostname);
+		mailSender.setPort(hostPort);
 
-	    Properties props = mailSender.getJavaMailProperties();
-	    props.put("mail.transport.protocol", "smtp");
+		if (isNotEmpty(username)) {
+			mailSender.setUsername(username);
+		}
+		if (isNotEmpty(password)) {
+			mailSender.setPassword(password);
+		}
+
+		Properties props = mailSender.getJavaMailProperties();
 
 		try {
 			Map<String, String> map = configConverter.convertToMap(smtpConfigString);
-			for (String key: map.keySet()) {
+			for (String key : map.keySet()) {
 				props.put(key, map.get(key));
 			}
 		} catch (Exception e) {
 			LOG.error("Was not able to apply given smtp configuration");
 		}
 
-	    return mailSender;
+		return mailSender;
+	}
+
+	protected JavaMailSenderImpl createMailSender() {
+		return new JavaMailSenderImpl();
+	}
+
+	private boolean isNotEmpty(String value) {
+		if (value == null || value.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 }

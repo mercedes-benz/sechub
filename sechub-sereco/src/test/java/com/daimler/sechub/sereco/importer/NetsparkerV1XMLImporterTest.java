@@ -10,9 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.sereco.ImportParameter;
-import com.daimler.sechub.sereco.metadata.MetaData;
-import com.daimler.sechub.sereco.metadata.Severity;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoSeverity;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
 public class NetsparkerV1XMLImporterTest {
 
@@ -43,8 +43,8 @@ public class NetsparkerV1XMLImporterTest {
 		String json = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
 		/* execute */
-		MetaData result = importerToTest.importResult(json);
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		SerecoMetaData result = importerToTest.importResult(json);
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
 		/* test */
 		assertEquals(4,vulnerabilities.size());
@@ -57,14 +57,14 @@ public class NetsparkerV1XMLImporterTest {
 		String json = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
 		/* execute */
-		MetaData result = importerToTest.importResult(json);
-		List<Vulnerability> vulnerabilities = result.getVulnerabilities();
+		SerecoMetaData result = importerToTest.importResult(json);
+		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
 		/* test */
 		/* @formatter:off */
 		assertVulnerabilities(vulnerabilities).
 			vulnerability().
-				withSeverity(Severity.LOW).
+				withSeverity(SerecoSeverity.LOW).
 				withURL("https://fscan.intranet.example.org/").
 				withType("ApacheVersionDisclosure").
 				classifiedBy().
@@ -76,7 +76,7 @@ public class NetsparkerV1XMLImporterTest {
 				withDescriptionContaining("<p>Netsparker Cloud identified a version disclosure (Apache) in the target").
 				isContained().
 			vulnerability().
-				withSeverity(Severity.MEDIUM).
+				withSeverity(SerecoSeverity.MEDIUM).
 				withURL("https://fscan.intranet.example.org/").
 				withType("ApacheOutOfDate").
 				classifiedBy().

@@ -3,7 +3,6 @@ package com.daimler.sechub.adapter;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -32,7 +31,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private String traceID;
 	private String user;
-	private String apiToken;
 	private String productBaseURL;
 
 	private int timeToWaitForNextCheckOperationInMinutes = DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES;// one minute check default
@@ -42,7 +40,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private int proxyPort;
 
-	private SealedObject password;
+	private SealedObject passwordOrApiToken;
 
 	private String policyID;
 
@@ -67,6 +65,17 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	 */
 	protected URIShrinkSupport createURIShrinker() {
 		return new URIShrinkSupport();
+	}
+
+	/**
+	 * Configure this builder by given strategy
+	 * @param strategy
+	 * @return builder (configured by strategy)
+	 */
+	@SuppressWarnings("unchecked")
+	public final B configure(AdapterConfigurationStrategy strategy) {
+		strategy.configure((B) this);
+		return (B) this;
 	}
 
 	/**
@@ -109,16 +118,19 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		return (B) this;
 	}
 
+	/**
+	 * Set password or API token
+	 * @param password a password or an API token
+	 * @return builder
+	 */
 	@SuppressWarnings("unchecked")
-	public final B setPassword(String password) {
-		this.password=CryptoAccess.CRYPTO_STRING.seal(password);
+	public final B setPasswordOrAPIToken(String password) {
+		this.passwordOrApiToken=encrypt(password);
 		return (B) this;
 	}
 
-	@SuppressWarnings("unchecked")
-	public final B setApiToken(String apiToken) {
-		this.apiToken = apiToken;
-		return (B) this;
+	protected SealedObject encrypt(String password) {
+		return CryptoAccess.CRYPTO_STRING.seal(password);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -222,12 +234,11 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		if (!( config instanceof AbstractAdapterConfig)) {
 			throw new IllegalStateException(getClass().getName()+" does not return a child of AbstractAdapterConfig!");
 		}
-		AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
-		abstractAdapterConfig.productBaseURL = productBaseURL;
+		Set<URI> shrinkedRootURIs = uriShrinker.shrinkToRootURIs(targetURIs);
 
-		String tokenString = user + ":" + apiToken;
-		byte[] tokenBytes = tokenString.getBytes();
-		abstractAdapterConfig.base64Token = Base64.getEncoder().encodeToString(tokenBytes);
+		AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
+
+		abstractAdapterConfig.productBaseURL = productBaseURL;
 
 		abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
 		abstractAdapterConfig.timeOutInMilliseconds = scanResultTimeOutInMinutes * 60 * 1000;
@@ -236,10 +247,10 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		abstractAdapterConfig.proxyPort = proxyPort;
 		abstractAdapterConfig.user = user;
 		abstractAdapterConfig.trustAllCertificatesEnabled=trustAllCertificatesEnabled;
-		abstractAdapterConfig.password = password;
+		abstractAdapterConfig.passwordOrAPIToken = passwordOrApiToken;
 		abstractAdapterConfig.policyId = policyID;
 		abstractAdapterConfig.targetURIs = targetURIs;
-		abstractAdapterConfig.rootTargetUris.addAll(uriShrinker.shrinkToRootURIs(targetURIs));
+		abstractAdapterConfig.rootTargetUris.addAll(shrinkedRootURIs);
 		abstractAdapterConfig.targetIPs = targetIPs;
 
 		abstractAdapterConfig.traceID = traceID;
@@ -251,6 +262,11 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		return config;
 	}
 
+	/**
+	 * Customization method - is package private, so can only be changed inside
+	 * main adapter package
+	 * @param config
+	 */
 	void packageInternalCustomBuild(C config) {
 		/* per default do nothing*/
 	}
@@ -309,7 +325,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	}
 
 	protected void assertPasswordSet() {
-		if (password == null) {
+		if (passwordOrApiToken == null) {
 			throw new IllegalStateException("no password given");
 		}
 	}
@@ -329,12 +345,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 	protected void assertProxyPortSetWhenProxyHostnameDefined() {
 		if (isProxyDefinedButPortMissing()) {
 			throw new IllegalStateException("Proxy set, but no port!");
-		}
-	}
-
-	protected void assertAPITokenSet() {
-		if (apiToken == null) {
-			throw new IllegalStateException("no apiToken given");
 		}
 	}
 

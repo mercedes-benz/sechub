@@ -42,7 +42,7 @@ public class AnonymousSignupRestController {
 	@CrossOrigin /* to allow call from getsechub.detss and maybe other sites using javascript*/
 	@UseCaseUserSignup(@Step(number=1, name="Rest API call",description="Rest api called to register user. Normally done by user itself",needsRestDoc=true))
 	@Validated
-	@RequestMapping(path = AdministrationAPIConstants.API_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = AdministrationAPIConstants.API_SIGNUP, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void registerUser(@RequestBody @Valid SignupJsonInput signupInput) {
 		/* @formatter:on */
 		signupService.register(signupInput);

@@ -2,12 +2,12 @@
 package com.daimler.sechub.domain.schedule;
 
 import static com.daimler.sechub.domain.schedule.job.SecHubJobTraceLogID.*;
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -15,9 +15,12 @@ import org.springframework.validation.annotation.Validated;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobFactory;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
+import com.daimler.sechub.domain.schedule.job.SecHubJobTraceLogID;
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class SchedulerCreateJobService {
@@ -33,11 +36,13 @@ public class SchedulerCreateJobService {
 	@Autowired
 	ScheduleAssertService assertService;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@Validated
 	@UseCaseUserCreatesNewJob(@Step(number = 2, name = "Persistence and result", description = "Persist a new job entry and return Job UUID"))
 	public SchedulerResult createJob(String projectId, @Valid SecHubConfiguration configuration) {
-		notEmpty(projectId, "Project id may not be empty!");
-		notNull(configuration, "configuration may not be null!");
+		assertion.isValidProjectId(projectId);
 
 		/* we set the project id into configuration done by used url! */
 		configuration.setProjectId(projectId);
@@ -48,13 +53,10 @@ public class SchedulerCreateJobService {
 		ScheduleSecHubJob secHubJob = secHubJobFactory.createJob(configuration);
 		jobRepository.save(secHubJob);
 
-		if (LOG.isInfoEnabled()) {
-			LOG.info("New job added:{}", traceLogID(secHubJob));
-		}
+		SecHubJobTraceLogID traceLogId = traceLogID(secHubJob);
+		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, traceLogId.getPlainId());
+		LOG.info("New job added:{}", traceLogId);
 		return new SchedulerResult(secHubJob.getUUID());
 	}
-
-
-
 
 }

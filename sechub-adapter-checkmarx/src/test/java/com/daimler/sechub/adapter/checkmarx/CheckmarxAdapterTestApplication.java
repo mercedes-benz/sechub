@@ -2,6 +2,7 @@
 package com.daimler.sechub.adapter.checkmarx;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 
 /**
@@ -14,7 +15,7 @@ public class CheckmarxAdapterTestApplication {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("log4j.logger.org.apache.http","ERROR");
 		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http","OFF");
-		
+
 		dump("https.proxyHost");
 		dump("https.proxyPort");
 		dump("https.nonProxyHosts");
@@ -23,7 +24,7 @@ public class CheckmarxAdapterTestApplication {
 		dump("http.nonProxyHosts");
 		dump("javax.net.ssl.keyStore");
 		dump("javax.net.ssl.trustStore");
-		
+
 		String user = System.getProperty("test.sechub.adapter.checkmarx.user");
 		if (user==null || user.isEmpty()) {
 			throw new IllegalArgumentException("user not set in system properties!");
@@ -38,25 +39,25 @@ public class CheckmarxAdapterTestApplication {
 		}
 		String projectname = System.getProperty("test.sechub.adapter.checkmarx.projectName");
 		String teamId = System.getProperty("test.sechub.adapter.checkmarx.teamId");
-		
+
 		String pathInOtherProject = "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue
 		pathInOtherProject="zipfile_contains_only_one_simple_java_file.zip"; // should work
 		pathInOtherProject="zipfile_contains_sechub_doc_java.zip"; // should work
-		
+
 		File zipFile = CheckmarxTestFileSupport.getTestfileSupport().createFileFromRoot("sechub-other/testsourcecode/"+pathInOtherProject);
 		/* @formatter:off */
-		CheckmarxAdapterConfig config = 
+		CheckmarxAdapterConfig config =
 				CheckmarxConfig.builder().
 					setUser(user).
 					setProjectId(projectname).
 					setTeamIdForNewProjects(teamId).
-					setPassword(password).
-					setPathToZipFile(zipFile.getAbsolutePath()).
+					setPasswordOrAPIToken(password).
+					setSourceCodeZipFileInputStream(new FileInputStream(zipFile)).
 					setTrustAllCertificates(true).
 					setProductBaseUrl(baseUrl).
 				build();
 		/* @formatter:on */
-				
+
 		CheckmarxAdapterV1 adapter = new CheckmarxAdapterV1();
 		String data = adapter.start(config);
 		File file = File.createTempFile("checkmarx-adaptertest-result", ".xml");
@@ -68,9 +69,9 @@ public class CheckmarxAdapterTestApplication {
 		System.out.println("- RESULT:");
 		System.out.println("-----------------------------------------------------------------------------------------------------------------");
 		System.out.println(file.getAbsolutePath());
-		
+
 	}
-	
+
 
 	private static void dump(String systemPropertyName) {
 		System.out.println(systemPropertyName + "=" + System.getProperty(systemPropertyName));

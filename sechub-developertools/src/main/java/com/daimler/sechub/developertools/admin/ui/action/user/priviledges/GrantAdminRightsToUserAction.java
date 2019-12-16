@@ -21,8 +21,8 @@ public class GrantAdminRightsToUserAction extends AbstractUIAction {
 		if (!userToSignup.isPresent()) {
 			return;
 		}
-		String data = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get());
-		output(data);
+		String infoMessage = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get());
+		outputAsText(infoMessage);
 	}
 
 }

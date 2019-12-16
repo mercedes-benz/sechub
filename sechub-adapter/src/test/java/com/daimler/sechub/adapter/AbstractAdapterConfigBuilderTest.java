@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,10 +33,10 @@ public class AbstractAdapterConfigBuilderTest {
 		TestAdapterConfigBuilder builderToTest = new TestAdapterConfigBuilder();
 
 		/* execute */
-		TestAdapterConfigInterface config = builderToTest.setPassword("my-password").build();
+		TestAdapterConfigInterface config = builderToTest.setPasswordOrAPIToken("my-password").build();
 
 		/* test */
-		assertEquals("my-password",config.getPassword());
+		assertEquals("my-password",config.getPasswordOrAPIToken());
 
 	}
 
@@ -283,8 +284,17 @@ public class AbstractAdapterConfigBuilderTest {
 
 	@Test
 	public void config_userid_password_set_has_correct_Base64_token() {
-		TestAdapterConfigInterface cf1 = validConfigAnd().setUser("developer").setPassword("pwd-developer").build();
-		assertEquals("ZGV2ZWxvcGVyOm51bGw=",cf1.getBase64Token());
+		/* prepare */
+		String pwdOrApiToken = "pwd-developer";
+		String user = "developer";
+
+		/* execute */
+		TestAdapterConfigInterface cf1 = validConfigAnd().setUser(user).setPasswordOrAPIToken(pwdOrApiToken).build();
+
+		/* test */
+		String base64Encoded = cf1.getPasswordOrAPITokenBase64Encoded();
+		String base64Decoded = new String(Base64.getDecoder().decode(base64Encoded));
+		assertEquals(user+":"+pwdOrApiToken,base64Decoded);
 	}
 
 	private TestAdapterConfigBuilder validConfigAnd() {

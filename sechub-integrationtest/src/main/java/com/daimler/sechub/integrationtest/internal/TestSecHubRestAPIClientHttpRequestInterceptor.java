@@ -36,7 +36,7 @@ public class TestSecHubRestAPIClientHttpRequestInterceptor implements ClientHttp
 		List<String> x = headers.get("Content-Type");
 		if (x==null || x.isEmpty()) {
 //			headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
-			headers.add("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE);
+			headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 		}
 		headers.remove("Authorization");
 

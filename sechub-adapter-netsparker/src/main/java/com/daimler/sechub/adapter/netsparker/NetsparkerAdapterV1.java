@@ -20,10 +20,11 @@ import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.AdapterProfiles;
 import com.daimler.sechub.adapter.WaitForStateSupport;
+import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
 /**
  * This component is able to handle Netsparker API V1
- * 
+ *
  * @author Albert Tregnaghi
  *
  */
@@ -44,6 +45,8 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	private static final String APICALL_GET_SCAN_REPORT = "scans/report/";
 
 	private static final Logger LOG = LoggerFactory.getLogger(NetsparkerAdapterV1.class);
+
+	private NetsparkerAdapterWebLoginSupportV1 webLoginSupport = new NetsparkerAdapterWebLoginSupportV1();
 
 	@Override
 	public String start(NetsparkerAdapterConfig config) throws AdapterException {
@@ -78,21 +81,9 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 
 	void createWebsite(NetsparkerContext context) throws AdapterException {
 		NetsparkerAdapterConfig config = context.getConfig();
-		String targetURL = config.getTargetAsString();
-		String name = config.getWebsiteName();
-		String traceID = config.getTraceID();
+		String jsonAsString = buildJsonForCreateWebsite(context.json(), config);
 
-		LOG.debug("{} try to create website with targetURL '{}' and name '{}'", traceID, targetURL, name);
 		MultiValueMap<String, String> headers = createHeader(config);
-
-		Map<String, String> json = new TreeMap<>();
-		json.put("RootUrl", targetURL);
-		json.put("Name", name);
-		json.put("LicenseType", "Subscription");
-		json.put("SubscriptionBasedProductLicenseId", config.getLicenseID());
-
-		String jsonAsString = context.json().toJSON(json);
-
 		HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
 
 		String apiUrl = createAPIURL(APICALL_CREATE_NEW_WEBSITE, config);
@@ -123,20 +114,44 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 		LOG.debug("{} calling fetch report with '{}'", traceID, apiUrl);
 	}
 
+	String buildJsonForCreateWebsite(JSONAdapterSupport jsonAdapterSupport, NetsparkerAdapterConfig config) throws AdapterException {
+		String targetURL = config.getTargetAsString();
+		String name = config.getWebsiteName();
+		String traceID = config.getTraceID();
+
+		LOG.debug("{} try to create website with targetURL '{}' and name '{}'", traceID, targetURL, name);
+
+		Map<String, String> rootMap = new TreeMap<>();
+		rootMap.put("RootUrl", targetURL);
+		rootMap.put("Name", name);
+		rootMap.put("LicenseType", "Subscription");
+		rootMap.put("SubscriptionBasedProductLicenseId", config.getLicenseID());
+
+		String jsonAsString = jsonAdapterSupport.toJSON(rootMap);
+		return jsonAsString;
+	}
+
+	String buildJsonForCreateNewScan(JSONAdapterSupport jsonAdapterSupport, NetsparkerAdapterConfig config) throws AdapterException {
+		Map<String, Object> map = new TreeMap<>();
+		map.put(TARGET_URI, config.getTargetAsString());
+		if (config.hasAgentGroup()) {
+			map.put(AGENT_GROUP_NAME, config.getAgentGroupName());
+		} else {
+			map.put(AGENT_NAME, config.getAgentName());
+		}
+		map.put(POLICY_ID, config.getPolicyId());
+
+		webLoginSupport.addAuthorizationInfo(config, map);
+
+		String jsonAsString = jsonAdapterSupport.toJSON(map);
+		return jsonAsString;
+	}
+
 	private void createNewScanAndFetchId(NetsparkerContext context) throws AdapterException {
 		NetsparkerAdapterConfig config = context.getConfig();
 		String traceID = config.getTraceID();
 
-		Map<String, String> json = new TreeMap<>();
-		json.put(TARGET_URI, config.getTargetAsString());
-		if (config.hasAgentGroup()) {
-			json.put(AGENT_GROUP_NAME, config.getAgentGroupName());
-		} else {
-			json.put(AGENT_NAME, config.getAgentName());
-		}
-		json.put(POLICY_ID, config.getPolicyId());
-
-		String jsonAsString = context.json().toJSON(json);
+		String jsonAsString = buildJsonForCreateNewScan(context.json(), config);
 
 		LOG.debug("{} request body will contain json:'{}'", traceID, jsonAsString);
 		HttpEntity<String> request = new HttpEntity<>(jsonAsString);
@@ -161,7 +176,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 		if (existsWebsiteInNetsparker(context)) {
 			return;
 		}
-		/* create the website */
+		/* create the web site */
 		createWebsite(context);
 
 	}

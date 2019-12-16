@@ -540,36 +540,65 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#options">2.3.3. Options</a></li>
-<li><a href="#configuration-file">2.3.4. Configuration file</a>
+</ul>
+</li>
+<li><a href="#configuration-file">2.4. Configuration file</a>
+<ul class="sectlevel3">
+<li><a href="#variables-inside-configuration-files">2.4.1. Variables inside configuration files</a></li>
+</ul>
+</li>
+<li><a href="#sechub-scan-configuration">2.5. SecHub scan configuration</a>
+<ul class="sectlevel3">
+<li><a href="#api-version">2.5.1. API version</a></li>
+<li><a href="#server">2.5.2. Server</a></li>
+<li><a href="#project">2.5.3. Project</a></li>
+<li><a href="#code-scan">2.5.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#api-version">2.3.4.1. API version</a></li>
-<li><a href="#server">2.3.4.2. Server</a></li>
-<li><a href="#project">2.3.4.3. Project</a></li>
-<li><a href="#code-scan">2.3.4.4. Code scan</a>
+<li><a href="#upload-sources-from-file-system">2.5.4.1. Upload sources from file system</a>
 <ul class="sectlevel5">
-<li><a href="#use-uploaded-sources-from-file-system">2.3.4.4.1. Use uploaded sources from file system</a></li>
-</ul>
-</li>
-<li><a href="#web-scan">2.3.4.5. Web scan</a>
-<ul class="sectlevel5">
-<li><a href="#uris">2.3.4.5.1. URIs</a></li>
-</ul>
-</li>
-<li><a href="#infrastructure-scan">2.3.4.6. Infrastructure scan</a>
-<ul class="sectlevel5">
-<li><a href="#uris-2">2.3.4.6.1. URIs</a></li>
-<li><a href="#ips">2.3.4.6.2. IPs</a></li>
+<li><a href="#example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#examples">2.3.5. Examples</a>
+<li><a href="#web-scan">2.5.5. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#start-a-source-scan">2.3.5.1. Start a source scan</a></li>
-<li><a href="#start-a-web-scan">2.3.5.2. Start a web scan</a></li>
-<li><a href="#start-a-infra-scan">2.3.5.3. Start a infra scan</a></li>
+<li><a href="#uris">2.5.5.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-anonymous">2.5.5.1.1. Example anonymous</a></li>
 </ul>
 </li>
+<li><a href="#login">2.5.5.2. Login</a>
+<ul class="sectlevel5">
+<li><a href="#options-2">2.5.5.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.5.5.2.2. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</a></li>
+<li><a href="#example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#infrastructure-scan">2.5.6. Infrastructure scan</a>
+<ul class="sectlevel4">
+<li><a href="#uris-2">2.5.6.1. URIs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</a></li>
+</ul>
+</li>
+<li><a href="#ips">2.5.6.2. IPs</a>
+<ul class="sectlevel5">
+<li><a href="#example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#examples">2.6. Examples</a>
+<ul class="sectlevel3">
+<li><a href="#start-a-source-scan">2.6.1. Start a source scan</a></li>
+<li><a href="#start-a-web-scan">2.6.2. Start a web scan</a></li>
+<li><a href="#start-a-infra-scan">2.6.3. Start a infra scan</a></li>
 </ul>
 </li>
 </ul>
@@ -659,7 +688,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-4c7bcbc-latest</p>
+0.0.0-bdbd315-dirty-latest</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -897,112 +926,71 @@ wait time in seconds. Will be used for automatic status checks etc. when action=
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="configuration-file">2.3.4. Configuration file</h4>
-<div class="paragraph">
-<p>A <code>SecHub</code> configuration files must be a valid json file.
-In following sub chapters the elements inside JSON format are described</p>
 </div>
-<div class="sect4">
-<h5 id="api-version">2.3.4.1. API version</h5>
+<div class="sect2">
+<h3 id="configuration-file">2.4. Configuration file</h3>
+<div class="paragraph">
+<p>If not defined, secHub client will load <code>sechub.json</code> file from current directory
+and use it as sechub configuration. There must be always a valid configuration
+file - otherwise client will not work.</p>
+</div>
+<div class="sect3">
+<h4 id="variables-inside-configuration-files">2.4.1. Variables inside configuration files</h4>
+<div class="paragraph">
+<p>All environment variables are available inside your configuration file in go
+template syntax:</p>
+</div>
+<div class="paragraph">
+<p><code>{{ .ENV_VARIABLE_NAME }}</code></p>
+</div>
+<div class="paragraph">
+<p>For example: When you have defined <code>USED_API_VERSION</code> with value <code>1.0</code>, you can use
+it in json config like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ .USED_API_VERSION }}</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>SecHub client</code> will automatically fill the variable with content from environment
+variable.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When you have enabled debug log by setting environment entry <code>SECHUB_DEBUG</code> to <code>true</code>
+you will see network traffic and also JSON sent to server. This JSON will only
+contain the origin template but not the replaced parts. This was done to prevent
+accidently logging of variables - e.g. credentials.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sechub-scan-configuration">2.5. SecHub scan configuration</h3>
+<div class="paragraph">
+<p>A <code>SecHub</code> scan configuration  must be valid <code>JSON</code>.</p>
+</div>
+<div class="paragraph">
+<p>This configuration is used by client and also by rest calls to start sechub
+scan jobs and add meta data. Some minor parts are client specific and must
+be handled by direct REST calls in a special way, but this is mentioned in
+following description of JSON syntax.</p>
+</div>
+<div class="sect3">
+<h4 id="api-version">2.5.1. API version</h4>
 <div class="paragraph">
 <p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="server">2.3.4.2. Server</h5>
-<div class="paragraph">
-<p><code>server</code> (optional) defines the location to <code>SecHub</code> server. Normally always <code><a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></code>.
-This option can be set as CLI option as well. CLI option overrides value from configuration script!</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="project">2.3.4.3. Project</h5>
-<div class="paragraph">
-<p><code>project</code> (optional) defines the project to use.
-This option can be set as CLI option as well. CLI option overrides value from configuration script!</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="code-scan">2.3.4.4. Code scan</h5>
-<div class="paragraph">
-<p><code>codeScan</code> (optional) defines the code scan settings.
-(see <a href="#sechub-client-example-sourcescan-config">source scan configuration example</a>)</p>
-</div>
-<div class="sect5">
-<h6 id="use-uploaded-sources-from-file-system">2.3.4.4.1. Use uploaded sources from file system</h6>
-<div class="paragraph">
-<p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
-<code>folders</code> sub entry.<br>
-Those folders will be automatically zipped and uploaded to SecHub server for ongoing source analysis.</p>
-</div>
-<div class="paragraph">
-<p>The folders should be defined relatively from caller location - for example on a Jenkins Build Server
-this is normally the root folder of repository(see
-<a href="#sechub-client-example-sourcescan-config">source scan configuration example</a>)</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="web-scan">2.3.4.5. Web scan</h5>
-<div class="paragraph">
-<p><code>webScan</code> (optional) defines the web scan settings (see <a href="#sechub-client-example-webscan-config">web scan configuration example</a>).</p>
-</div>
-<div class="sect5">
-<h6 id="uris">2.3.4.5.1. URIs</h6>
-<div class="paragraph">
-<p>Use <code>uri</code> element to define a string array containing uris you want to scan.
-(see <a href="#sechub-client-example-webscan-config">web scan configuration example</a>)</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="infrastructure-scan">2.3.4.6. Infrastructure scan</h5>
-<div class="paragraph">
-<p><code>infraScan</code> (optional) defines the infrastructure scan settings (see <a href="#sechub-client-example-infrascan-config">web scan configuration example</a>).</p>
-</div>
-<div class="sect5">
-<h6 id="uris-2">2.3.4.6.1. URIs</h6>
-<div class="paragraph">
-<p>Use <code>uri</code> element to define a string array containing uris you want to scan.
-(see <a href="#sechub-client-example-webscan-config">web scan configuration example</a>)</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="ips">2.3.4.6.2. IPs</h6>
-<div class="paragraph">
-<p>Use <code>ips</code> element to define a string array containing <code>IP</code> s you want to scan.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="examples">2.3.5. Examples</h4>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1010,35 +998,124 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Next following sub chapters contain some <code>SecHub</code> configuration examples.
-      You can use them as templates for your own files.
-      At least replace example credentials <code>7536a8c4aa82407da7e06bdbEXAMPLE</code> and <code>alice</code> with your real ones to
-      get them working.
+<div class="paragraph">
+<p>As long as the SecHub configuration is still strongly developed,
+the API version remains - despite changes - to 1.0.</p>
+</div>
+<div class="paragraph">
+<p>During this time, however, the API always remains backwards compatible!</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="start-a-source-scan">2.3.5.1. Start a source scan</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
 </div>
+<div class="sect3">
+<h4 id="server">2.5.2. Server</h4>
+<div class="paragraph">
+<p><code>server</code> (optional) defines the location to <code>SecHub</code> server.
+Information can be used by client implementations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using REST calls directly you do not need the information inside
+      configuration because you use server URL in every call&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="project">2.5.3. Project</h4>
+<div class="paragraph">
+<p><code>project</code> (optional) defines the project to use. Information can be used by
+client implementations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using REST calls directly you do not need the information inside
+      configuration because you use project id inside URL.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="code-scan">2.5.4. Code scan</h4>
+<div class="paragraph">
+<p><code>codeScan</code> (optional) defines the code scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="upload-sources-from-file-system">2.5.4.1. Upload sources from file system</h5>
+<div class="paragraph">
+<p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
+<code>folders</code> sub entry.</p>
 </div>
 <div class="paragraph">
-<p>with corresponding 'sechub.json' config file:</p>
+<p>Those folders will be automatically zipped and uploaded by <code>SecHub</code> client
+to server side for ongoing source analysis.</p>
 </div>
-<div id="sechub-client-example-sourcescan-config" class="listingblock">
+<div class="paragraph">
+<p>Pathes must be defined relative from caller location - for example
+on a Jenkins Build Server this is normally the root folder of repository.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The configuration parts inside <code>fileSystem</code> entry are interpreted by
+      <code>SecHub</code> client! When you directly use the REST API you do not need
+      to define this data but you have to upload sources as a `zip`file by
+      your own over REST!
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please do <strong>NOT</strong> use <code>\</code> inside pathes <strong>but</strong> always <code>/</code>.</p>
+</div>
+<div class="paragraph">
+<p>Also do <strong>NOT</strong> use absolute pathes <strong>but</strong> always relative pathes! Normally you should
+call SecHub inside root folder of your source repository - this is the standard situation
+on build servers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</h6>
+<div id="sechub-config-example-sourcescan" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
+<pre class="CodeRay highlight"><code data-lang="json">{
 
         <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
         <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
 
         <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
               <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
                           <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
            <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
@@ -1088,30 +1165,47 @@ In example above following files are excluded from upload:<br>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="start-a-web-scan">2.3.5.2. Start a web scan</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="web-scan">2.5.5. Web scan</h4>
 <div class="paragraph">
-<p>with corresponding 'sechub.json' config file:</p>
+<p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
-<div id="sechub-client-example-webscan-config" class="listingblock">
+<div class="sect4">
+<h5 id="uris">2.5.5.1. URIs</h5>
+<div class="paragraph">
+<p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
+         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="example-anonymous">2.5.5.1.1. Example anonymous</h6>
+<div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
-        }
-      }</code></pre>
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1127,30 +1221,292 @@ In example above following files are excluded from upload:<br>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="start-a-infra-scan">2.3.5.3. Start a infra scan</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
 </div>
+<div class="sect4">
+<h5 id="login">2.5.5.2. Login</h5>
+<div class="paragraph">
+<p>A web scan does work very much better if it has got access to all content
+ - so a login is necessary most time. If you do not define a login configuration
+ your web scan will be done only as anonymous user.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Providing login will enable web scanner to execute ALL possible
+actions!</p>
 </div>
 <div class="paragraph">
-<p>with corresponding <code>sechub.json</code> config file:</p>
+<p>An example: Your test application has a Web UI for sending SMS which can
+be triggered by an user than the web scan will trigger those operations as well!</p>
 </div>
-<div id="sechub-client-example-infrascan-config" class="listingblock">
+<div class="paragraph">
+<p>If you do this inside an environment where a real SMS provider is connected,
+this could result into mass SMS and also in a bigger invoice from your
+SMS provider - <strong>so be careful!</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="options-2">2.5.5.2.1. Options</h6>
+<div class="paragraph">
+<p>SecHub provides you with 3 options for login:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>basic authentication</p>
+</li>
+<li>
+<p>form based login</p>
+<div class="ulist">
+<ul>
+<li>
+<p>auto detect</p>
+</li>
+<li>
+<p>script based</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When a web scan product (or its adapter) does not support your wanted options you
+will have a failure at execution time!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-basic-authentication">2.5.5.2.2. Example basic authentication</h6>
+<div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json">      {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">basic</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">realm</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_REALM }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+            }
         }
-      }</code></pre>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Basic authentication start, needs user id/name and password.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><strong>Optional</strong>: You can set the realm used for basic authentication. But normally
+this is not necessary</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">autodetect</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                }
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Start of form based login with auto detection.<br>
+In this example you see variables in <code>go template</code> format. This is SecHub client specific.
+If you use REST API directly, you must you must use real values!</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
+            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
+        ],
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="3"></i><b>(3)</b>
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="6"></i><b>(6)</b>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_other_inputfield</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .OTHER_VALUE }}</span><span class="delimiter">&quot;</span></span>
+                    },
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_login_button</span><span class="delimiter">&quot;</span></span>
+                    }
+                ]
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for web login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Start of form based login</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Script definition parts. Contains step entries which are executed
+in given order</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Type of step. Valid steps are :<br>
+<div class="ulist">
+<ul>
+<li>
+<p><code>username</code><br>
+name of user used for login</p>
+</li>
+<li>
+<p><code>password</code><br>
+password entered at login</p>
+</li>
+<li>
+<p><code>input</code><br>
+setup value for a field on UI</p>
+</li>
+<li>
+<p><code>click</code><br>
+will simulate a mouse click on UI</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Selector (CSS) to identify web element</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Value , used by input steps (<code>username|password|input</code>).<br>
+In this examples you see variables
+in <code>go template</code> format. This is SecHub client specific.
+If you use REST API directly, you must you must use real values!</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<code>username</code> and <code>password</code> are like input but SecHub tries
+         to hide these information in logs or at UI where possible.
+         So do <strong>NOT</strong> use <code>input</code> for credentials!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="infrastructure-scan">2.5.6. Infrastructure scan</h4>
+<div class="paragraph">
+<p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
+</div>
+<div class="sect4">
+<h5 id="uris-2">2.5.6.1. URIs</h5>
+<div class="paragraph">
+<p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</h6>
+<div id="sechub-config-example-infrascan-with-uri" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org/</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1165,6 +1521,110 @@ In example above following files are excluded from upload:<br>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ips">2.5.6.2. IPs</h5>
+<div class="paragraph">
+<p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
+</div>
+<div class="sect5">
+<h6 id="example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</h6>
+<div id="sechub-config-example-infrascan-with-ip" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>     : <span class="string"><span class="delimiter">&quot;</span><span class="content">alice</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>  : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">ips</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">127.0.0.1</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define infrastructure scan</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>IP</code> s to scan. Every <code>IP</code> listed here must be white listed in <code>SecHub</code> project.
+The given example with <code>127.0.0.1</code> represents only an example and will always not work
+because scanners do not scan them self.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples">2.6. Examples</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Next following sub chapters contain some <code>SecHub</code> configuration examples.
+      You can use them as templates for your own files.
+      At least replace example credentials <code>7536a8c4aa82407da7e06bdbEXAMPLE</code> and <code>alice</code> with your real ones to
+      get them working.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="start-a-source-scan">2.6.1. Start a source scan</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with corresponding 'sechub.json' config file: see <a href="#sechub-config-example-sourcescan">source scan example</a> .</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources&#8230;&#8203;
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with corresponding 'sechub.json' config file:
+see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymous)</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="start-a-infra-scan">2.6.3. Start a infra scan</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with corresponding <code>sechub.json</code> config file: <a href="#sechub-config-example-infrascan-with-ip">infrastructure scan example</a> .</p>
 </div>
 </div>
 </div>

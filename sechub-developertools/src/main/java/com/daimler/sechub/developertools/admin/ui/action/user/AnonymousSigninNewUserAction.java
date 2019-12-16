@@ -21,14 +21,14 @@ public class AnonymousSigninNewUserAction extends AbstractUIAction {
 		if (! name.isPresent()) {
 			return;
 		}
-		
+
 		Optional<String>email = getUserInput("Give Email of new user",InputCacheIdentifier.EMAILADRESS);
 		if (!email.isPresent()) {
 			return;
 		}
-		
-		String data = getContext().getAdministration().createNewUserSignup(name.get(),email.get());
-		output(data);
+
+		String infoMessage = getContext().getAdministration().createNewUserSignup(name.get(),email.get());
+		outputAsText(infoMessage);
 	}
 
 }

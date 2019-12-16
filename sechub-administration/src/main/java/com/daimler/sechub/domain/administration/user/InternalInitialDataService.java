@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 /**
  * This is an internal service only. It's used on startup to create an
@@ -36,6 +37,9 @@ public class InternalInitialDataService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	UserInputAssertion assertion;
 
 	/**
 	 * Creates an initial administrator - when not used in integration tests but on normal
@@ -61,6 +65,10 @@ public class InternalInitialDataService {
 	}
 
 	private void internalCreateInitialUser(String userId, String emailAddress, String unencryptedAPItoken, boolean createAsSuperAdmin) {
+
+		assertion.isValidUserId(userId);
+		assertion.isValidEmailAddress(emailAddress);
+
 		User exampleUser = new User();
 		exampleUser.superAdmin = true;
 

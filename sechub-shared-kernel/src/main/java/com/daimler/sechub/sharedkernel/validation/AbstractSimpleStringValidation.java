@@ -18,8 +18,8 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 			}
 		}
 	}
-	final
-	protected void validateWithoutWhitespaces(ValidationContext<String> context) {
+
+	final protected void validateWithoutWhitespaces(ValidationContext<String> context) {
 		String string = context.objectToValidate;
 		if (string == null) {
 			return;
@@ -35,7 +35,7 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 		}
 	}
 
-	protected void validateOnlyAlphabeticDigitOrAllowedParts(ValidationContext<String> context, char ... alsoAllowed) {
+	protected void validateOnlyAlphabeticDigitOrAllowedParts(ValidationContext<String> context, char... alsoAllowed) {
 		String string = context.objectToValidate;
 		if (string == null) {
 			return;
@@ -53,7 +53,7 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 			boolean ok = false;
 			for (char allowed : alsoAllowed) {
 				if (c == allowed) {
-					ok=true;
+					ok = true;
 					continue;
 				}
 			}

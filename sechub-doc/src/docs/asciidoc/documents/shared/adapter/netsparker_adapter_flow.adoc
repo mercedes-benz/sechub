@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: MIT
+. All communication is done by REST API
+. Login
+.. To differ between intranet and internet scans adapter will use agent name or
+   given agent group. If a group is defined the group will be used.
+. Check website already defined in {netsparker}
+.. Website identifier is defined by pattern (see info box below)
+.. If not defined, create new {netsparker} website by given identifier otherwise
+   reuse existing one
+. Start scan
+.. Create new scan for web page identifier and fetch scan ID
+.. Wait for scan being done
+. Fetch report as XML
+
+[NOTE]
+====
+Website identifier is created by uri root part and port number. +
+When no port is defined instead of port number the protocol default will be used.
+
+For example: https://test.example.com/myapp:8080 will be identified by `test.example.com_8080`,
+but https://test.example.com/myapp leads to `test.example.com_default` as identifier.
+
+Using `default` to identify standard ports for https (443) and http (80) combines results - this
+can reduce amount of webscan identifiers. Also it handles situation that {netsparker}
+does internally not differ between http and https scans, but differs between ports when
+not default.
+====

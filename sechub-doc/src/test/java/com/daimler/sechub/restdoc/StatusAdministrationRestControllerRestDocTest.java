@@ -46,7 +46,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @ContextConfiguration(classes = { StatusAdministrationRestController.class,
 		StatusAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles(Profiles.TEST)
+@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 @AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
 public class StatusAdministrationRestControllerRestDocTest {
 
@@ -89,7 +89,7 @@ public class StatusAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminListsStatusEntries()).
-				contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).

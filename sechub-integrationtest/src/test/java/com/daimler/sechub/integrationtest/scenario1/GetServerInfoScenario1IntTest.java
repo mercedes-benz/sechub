@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.scenario1.Scenario1;
 
 public class GetServerInfoScenario1IntTest {
 
@@ -23,9 +25,16 @@ public class GetServerInfoScenario1IntTest {
 	/* +-----------------------------------------------------------------------+ */
 
 	@Test
-	public void get_server_version() {
+	public void get_server_version_anonymous_not_possible_results_in_unauthorized() {
 		/* execute */
-		String version = as(ANONYMOUS).getServerVersion();
+		expectHttpFailure(()->as(ANONYMOUS).getServerVersion(), HttpStatus.UNAUTHORIZED);
+	}
+
+
+	@Test
+	public void get_server_version_as_admin_is_possible() {
+		/* execute */
+		String version = as(SUPER_ADMIN).getServerVersion();
 
 		/* test*/
 		assertNotNull(version);
@@ -36,6 +45,5 @@ public class GetServerInfoScenario1IntTest {
 		/* check format is like regexp */
 		assertTrue(PATTERN_ONLY_MAJOR_MINOR_HOTFIX.matcher(version).matches());
 	}
-
 
 }

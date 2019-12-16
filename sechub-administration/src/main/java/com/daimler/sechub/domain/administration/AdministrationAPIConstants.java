@@ -45,6 +45,7 @@ public class AdministrationAPIConstants{
 
 	public static final String API_SCHEDULER_GET_STATUS = API_ADMINISTRATION + "status";
 
+	public static final String API_ADMIN_CANCELS_JOB = API_ADMINISTRATION+"jobs/cancel/{jobUUID}";
 	/**
 	 * show all users wanting to sign up
 	 */

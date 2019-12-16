@@ -5,10 +5,12 @@ import static com.daimler.sechub.sharedkernel.messaging.DomainDataTraceLogID.*;
 import static com.daimler.sechub.sharedkernel.messaging.MessageDataKeys.*;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +21,20 @@ import com.daimler.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportException;
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.sharedkernel.messaging.DomainDataTraceLogID;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
-import com.daimler.sechub.sharedkernel.storage.JobStorage;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.util.JSONConverterException;
+import com.daimler.sechub.storage.core.JobStorage;
 
 /**
  * Scan service - main entry point for scans. We use a REQUIRES_NEW propagation
@@ -92,9 +96,11 @@ public class ScanService implements SynchronMessageHandler {
 	}
 
 	protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("start scan for {}", traceLogID(request));
-		}
+		DomainDataTraceLogID sechubJobUUID = traceLogID(request);
+		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
+
+		LOG.info("start scan for {}", sechubJobUUID);
+
 		UUID logUUID = scanLogService.logScanStarted(context);
 		try {
 			codeScanProductExecutionService.executeProductsAndStoreResults(context);
@@ -125,7 +131,11 @@ public class ScanService implements SynchronMessageHandler {
 		UUID jobUUID = context.getSechubJobUUID();
 		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-		storage.deleteAll();
+		try {
+			storage.deleteAll();
+		} catch (IOException e) {
+			LOG.error("Was not able to delete storage for job {}",jobUUID,e);
+		}
 
 	}
 

@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: MIT
+:nessus: Nessus
+:netsparker: Netsparker
+:checkmarx: Checkmarx
+== Security Products
+
+=== {checkmarx}
+
+==== What does the adapter do?
+include::../shared/adapter/checkmarx_adapter_flow.adoc[]
+
+===== What must be done on {checkmarx} UI
+. At the moment you have create initial a {checkmarx} team which will be used for {sechub} scans
+. If users shall have access to {checkmarx} UI you must add them to used {checkmarx} team (manual)
+
+
+==== Summary
+. Projects are initially created and reused automatically
+. Old scans are *NOT* automatically deleted
+. Multi tenancy is currently problematic: Same Team ID is always used
+  _(will be changed with https://github.com/Daimler/sechub/issues/58[Issue 58])_
+
+// TODO 2019-10-02, Albert Tregnaghi: change here and text block before when team id handling is improved
+IMPORTANT: Fix team ID will change in future to provide grouping of results in
+           product(for multi tenancy).
+
+=== {netsparker}
+
+==== What does the adapter do?
+
+include::../shared/adapter/netsparker_adapter_flow.adoc[]
+
+
+==== What must be done on {netsparker} UI
+
+===== Users
+- Users must be manual created at {netsparker} UI
+- Users must be added to the {netsparker} team used by {sechub}
+- If you want to have multi tenancy you have to define website groups
+  (see https://github.com/Daimler/sechub/issues/59 for details)
+
+==== Summary
+. Websites are initially created and reused automatically
+. Old scans are *NOT* automatically deleted
+
+IMPORTANT: Currently {netsparker} adapter will always use ONE team user (admin) to
+           create scans. The current logical structure of {netsparker} permissions
+           gives all assigned users access to all scans! Keep this in mind.
+
+=== Nessus
+
+==== What does the adapter do?
+
+include::../shared/adapter/nessus_adapter_flow.adoc[]
+
+==== What must be done on {nessus} UI
+- define the {nessus} policy UUID
+
+==== Summary
+. At the moment only one {nessus} policy UUID is used
+. Every scan has got its own name which starts with sechub job UUID
+. Old scans are *NOT* automatically deleted

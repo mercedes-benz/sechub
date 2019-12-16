@@ -41,8 +41,8 @@ public class CreateProjectAction extends AbstractUIAction {
 		}while(uri.isPresent());
 
 
-		String data = getContext().getAdministration().createProject(projectId.get(),description.orElse(null), owner.get(),whiteListURLs);
-		output(data);
+		String postResult = getContext().getAdministration().createProject(projectId.get(),description.orElse(null), owner.get(),whiteListURLs);
+		outputAsBeautifiedJSON(postResult);
 	}
 
 }

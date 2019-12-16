@@ -33,6 +33,8 @@ public class WebScanProductExecutionServiceImplTest {
 		uri = new URI("https://www.example.org");
 
 		configuration = mock(SecHubConfiguration.class);
+		when(configuration.getProjectId()).thenReturn("projectid1");
+
 		webconfiguration = mock(SecHubWebScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);
@@ -88,10 +90,10 @@ public class WebScanProductExecutionServiceImplTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, ProductIdentifier.FARRADAY, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, ProductIdentifier.NETSPARKER, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NETSPARKER, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
 
 		when(configuration.getWebScan()).thenReturn(Optional.of(webconfiguration));
@@ -110,19 +112,19 @@ public class WebScanProductExecutionServiceImplTest {
 		verify(productResultRepository).save(result2);
 
 	}
-	
+
 	@Test
 	public void webscanservice_persists_3_results_of_2_registered_webscan_product_executors() throws Exception {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, ProductIdentifier.FARRADAY, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, ProductIdentifier.NETSPARKER, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NETSPARKER, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
-		
-		ProductResult result3 = new ProductResult(secHubJobUUID, ProductIdentifier.NETSPARKER, "result3");
+
+		ProductResult result3 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NETSPARKER, "result3");
 		ProductResultTestAccess.setUUID(result3, UUID.randomUUID());
 
 		when(configuration.getWebScan()).thenReturn(Optional.of(webconfiguration));
@@ -133,7 +135,7 @@ public class WebScanProductExecutionServiceImplTest {
 		List<ProductResult> list = new ArrayList<>();
 		list.add(result2);
 		list.add(result3);
-		
+
 		when(webscanner2.execute(context)).thenReturn(list);
 		when(webscanner2.getIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 

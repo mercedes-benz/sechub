@@ -12,11 +12,24 @@
 ext {
 
    libraryVersion= [
-      springBoot:   "2.0.4.RELEASE"
+      springBoot:   "2.2.0.RELEASE"
    ]
 
    library = [
-      /* spring */
+      /* autark parts, with same versions like current used spring boot version (2.1.19*/
+        // https://mvnrepository.com/artifact/junit/junit
+        junit: "junit:junit:4.12",
+
+        // https://mvnrepository.com/artifact/org.mockito/mockito-core
+        mockito: "org.mockito:mockito-core:2.23.4",
+
+        // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library
+        harmcrest: "org.hamcrest:hamcrest-library:1.3",
+
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+        slf4j: "org.slf4j:slf4j-api:1.7.28",
+
+       /* spring */
          springboot_starter_thymeleaf:          "org.springframework.boot:spring-boot-starter-thymeleaf",
 
          springboot_devtoolssf:                 "org.springframework.boot:spring-boot-devtools",
@@ -54,11 +67,13 @@ ext {
 
          flyway:                                "org.flywaydb:flyway-core:5.2.1",
 
-        // JDK 10 build problems handling
-        // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
-        jdk_missing_jaxb_api:						"javax.xml.bind:jaxb-api:2.3.1",
-        jdk_missing_activation:						"javax.activation:activation:1.1.1",
-        jdk_missing_jaxb_impl:						"javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
+         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.2",
+
+         // JDK 10 build problems handling
+         // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
+         jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:2.3.1",
+         jdk_missing_activation:                "javax.activation:activation:1.1.1",
+         jdk_missing_jaxb_impl:                 "javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
    ]
 
 }

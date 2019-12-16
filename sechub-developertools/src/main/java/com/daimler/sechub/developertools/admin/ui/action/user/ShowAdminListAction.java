@@ -16,7 +16,7 @@ public class ShowAdminListAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchAdminList();
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

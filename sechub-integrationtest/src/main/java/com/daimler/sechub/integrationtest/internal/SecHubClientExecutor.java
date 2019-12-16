@@ -80,7 +80,7 @@ public class SecHubClientExecutor {
 		}
 	}
 
-	public ExecutionResult execute(File file, TestUser user, ClientAction action, String... options) {
+	public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String,String> environmentVariables, String... options) {
 		String path = "sechub-cli/build/go/platform/";
 		List<String> commandsAsList = new ArrayList<>();
 		String sechubExeName = null;
@@ -139,6 +139,9 @@ public class SecHubClientExecutor {
 			if (TestUtil.isKeepingTempfiles()) {
 				environment.put("SECHUB_KEEP_TEMPFILES", "true");
 			}
+			if (environmentVariables!=null) {
+				environment.putAll(environmentVariables);
+			}
 			pb.directory(pathToExecutable);
 
 			StringBuilder sb = new StringBuilder();
@@ -177,7 +180,7 @@ public class SecHubClientExecutor {
 	}
 
 	public static void main(String[] args) {
-		new SecHubClientExecutor().execute(null, null, null, "-help");
+		new SecHubClientExecutor().execute(null, null, null,null, "-help");
 	}
 
 	public class SecHubClientNotFoundException extends IllegalStateException {

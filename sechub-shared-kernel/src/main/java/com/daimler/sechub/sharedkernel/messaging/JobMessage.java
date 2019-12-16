@@ -33,11 +33,12 @@ public class JobMessage implements JSONable<JobMessage> {
 
 	private String configuration;
 
-
 	@JsonFormat(pattern = ("yyyy/MM/dd HH:mm:ss"))
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime since;
+
+	private String ownerEmailAddress;
 
 	public String getOwner() {
 		return owner;
@@ -90,6 +91,14 @@ public class JobMessage implements JSONable<JobMessage> {
 
 	public UUID getJobUUID() {
 		return jobUUID;
+	}
+
+	public void setOwnerEmailAddress(String emailAdress) {
+		this.ownerEmailAddress = emailAdress;
+	}
+
+	public String getOwnerEmailAddress() {
+		return ownerEmailAddress;
 	}
 
 }

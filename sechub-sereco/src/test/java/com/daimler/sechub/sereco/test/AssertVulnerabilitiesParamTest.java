@@ -14,8 +14,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.daimler.sechub.sereco.metadata.Classification;
-import com.daimler.sechub.sereco.metadata.Vulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
+import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.AssertVulnerabilities.VulnerabilityFinder;
 
 @RunWith(Parameterized.class)
@@ -42,12 +42,12 @@ public class AssertVulnerabilitiesParamTest {
 	@Test
 	public void healthCheck_full_setup_is_found() {
 		/* prepare - vulnerability data */
-		Vulnerability v = new Vulnerability();
+		SerecoVulnerability v = new SerecoVulnerability();
 		v.setDescription(data.get(DESCRIPTION));
 		v.setSeverity(data.getSeverity());
 		v.setType(data.get(TYPE));
 		v.setUrl(data.get(URL));
-		Classification classification = v.getClassification();
+		SerecoClassification classification = v.getClassification();
 		classification.setOwasp(data.get(OWASP));
 		classification.setCapec(data.get(CAPEC));
 		classification.setCwe(data.get(CWE));

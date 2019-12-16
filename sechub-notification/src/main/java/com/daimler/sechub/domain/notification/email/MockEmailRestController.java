@@ -40,7 +40,7 @@ public class MockEmailRestController {
 	@RequestMapping(
 			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails/to/{emailAdress}", 
 			method = RequestMethod.GET, 
-			produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public List<SimpleMailMessage> getMailsFor(@PathVariable(name="emailAdress") String emailAdress) {
 		/* @formatter:on */
@@ -51,7 +51,7 @@ public class MockEmailRestController {
 	@RequestMapping(
 			path = APIConstants.API_ANONYMOUS+"integrationtest/mock/emails", 
 			method = RequestMethod.DELETE, 
-			produces= {MediaType.APPLICATION_JSON_UTF8_VALUE,MediaType.APPLICATION_JSON_VALUE})
+			produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void resetMockMails() {
 		/* @formatter:on */

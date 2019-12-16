@@ -1,0 +1,213 @@
+// SPDX-License-Identifier: MIT
+=== SecHub scan configuration
+
+A `{sechub}` scan configuration  must be valid `JSON`.
+
+This configuration is used by client and also by rest calls to start sechub
+scan jobs and add meta data. Some minor parts are client specific and must
+be handled by direct REST calls in a special way, but this is mentioned in
+following description of JSON syntax.
+
+==== API version
+`apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
+
+[NOTE]
+====
+As long as the SecHub configuration is still strongly developed,
+the API version remains - despite changes - to 1.0.
+
+During this time, however, the API always remains backwards compatible!
+====
+
+==== Server
+`server` (optional) defines the location to `{sechub}` server.
+Information can be used by client implementations.
+
+NOTE: When using REST calls directly you do not need the information inside
+      configuration because you use server URL in every call...
+
+==== Project
+`project` (optional) defines the project to use. Information can be used by
+client implementations.
+
+NOTE: When using REST calls directly you do not need the information inside
+      configuration because you use project id inside URL.
+
+==== Code scan
+`codeScan` (optional) defines the code scan settings.
+
+===== Upload sources from file system
+Define `fileSystem` child entry and setup folders to use for code scanning by
+`folders` sub entry.
+
+Those folders will be automatically zipped and uploaded by `{sechub}` client
+to server side for ongoing source analysis.
+
+Pathes must be defined relative from caller location - for example
+on a Jenkins Build Server this is normally the root folder of repository.
+
+NOTE: The configuration parts inside `fileSystem` entry are interpreted by
+      `{sechub}` client! When you directly use the REST API you do not need
+      to define this data but you have to upload sources as a `zip`file by
+      your own over REST!
+
+[WARNING]
+====
+Please do *NOT* use `\` inside pathes *but* always `/`.
+
+Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
+call {sechub} inside root folder of your source repository - this is the standard situation
+on build servers.
+
+====
+
+====== Example upload folders with excludes
+
+
+
+[[sechub-config-example-sourcescan]]
+[source, json]
+----
+include::sechub_config_example1_sourcescan_filesystem.json[]
+----
+<1> Define code scan
+<2> Use filesystem - so means upload sources to server
+<3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
+<4> Exclude files (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - `+**/*+` is used to identify any folder +
+    In example above following files are excluded from upload: +
+    * `+**/*.log+` - excludes any log file in any sub directories of given folders
+    * `+README*.md+` excludes all markdown README files in given folders. For example above this means:
+      ** `gamechanger-android/src/main/java/README.md` and
+      ** `gamechanger-server/src/main/java/README.md`
+
+==== Web scan
+`webScan` (optional) defines the web scan settings.
+
+===== URIs
+Use `uri` element to define a string array containing uris you want to scan.
+
+WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
+         So your are not able to start scanning foreign domains and do _accidently_ an DoS attack...
+
+====== Example anonymous
+[[sechub-config-example-webscan-anonymous]]
+[source, json]
+----
+include::sechub_config_example2_webscan_anonyous.json[]
+----
+<1> Define web scan
+<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
+
+
+===== Login
+A web scan does work very much better if it has got access to all content
+ - so a login is necessary most time. If you do not define a login configuration
+ your web scan will be done only as anonymous user.
+
+[CAUTION]
+====
+Providing login will enable web scanner to execute ALL possible
+actions!
+
+An example: Your test application has a Web UI for sending SMS which can
+be triggered by an user than the web scan will trigger those operations as well!
+
+If you do this inside an environment where a real SMS provider is connected,
+this could result into mass SMS and also in a bigger invoice from your
+SMS provider - *so be careful!*
+====
+
+====== Options
+
+SecHub provides you with 3 options for login:
+
+* basic authentication
+* form based login
+** auto detect
+** script based
+
+[NOTE]
+====
+When a web scan product (or its adapter) does not support your wanted options you
+will have a failure at execution time!
+====
+
+
+
+====== Example basic authentication
+[source,json]
+----
+include::sechub_config_example3_webscan_login_basicauth.json[]
+----
+<1> URL for web login
+<2> Basic authentication start, needs user id/name and password.
+<3> *Optional*: You can set the realm used for basic authentication. But normally
+    this is not necessary
+
+====== Example form based login with auto detect
+[source,json]
+----
+include::sechub_config_example4_webscan_login_form_autodetect.json[]
+----
+<1> URL for web login
+<2> Start of form based login with auto detection. +
+    In this example you see variables in `go template` format. This is {sechub} client specific.
+    If you use REST API directly, you must you must use real values!
+
+====== Example form based login by script
+[source,json]
+----
+include::sechub_config_example5_webscan_login_from_sript.json[]
+----
+<1> URL for web login
+<2> Start of form based login
+<3> Script definition parts. Contains step entries which are executed
+    in given order
+<4> Type of step. Valid steps are : +
+    - `username` +
+      name of user used for login
+    - `password` +
+      password entered at login
+    - `input` +
+      setup value for a field on UI
+    - `click` +
+      will simulate a mouse click on UI
+<5> Selector (CSS) to identify web element
+<6> Value , used by input steps (`username|password|input`). +
+    In this examples you see variables
+    in `go template` format. This is {sechub} client specific.
+    If you use REST API directly, you must you must use real values!
+
+WARNING: `username` and `password` are like input but {sechub} tries
+         to hide these information in logs or at UI where possible.
+         So do *NOT* use `input` for credentials!
+
+==== Infrastructure scan
+`infraScan` (optional) defines the infrastructure scan settings.
+
+===== URIs
+Use `uris` element to define a string array containing `URIs` you want to scan.
+
+
+====== Example infrascan one URI
+[[sechub-config-example-infrascan-with-uri]]
+[source, json]
+----
+include::sechub_config_example7_infrascan_uri.json[]
+----
+<1> Define infrastructure scan
+<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
+
+===== IPs
+Use `ips` element to define a string array containing `IPs` you want to scan.
+
+====== Example infrascan one IP
+[[sechub-config-example-infrascan-with-ip]]
+[source, json]
+----
+include::sechub_config_example6_infrascan_ip.json[]
+----
+<1> Define infrastructure scan
+<2> The `IP` s to scan. Every `IP` listed here must be white listed in `{sechub}` project.
+    The given example with `127.0.0.1` represents only an example and will always not work
+    because scanners do not scan them self.

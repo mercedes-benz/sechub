@@ -72,8 +72,8 @@ public class CheckmarxContext extends AbstractSpringRestAdapterContext<Checkmarx
 		return fullScan;
 	}
 
-	public void setFullScan(boolean incremental) {
-		this.fullScan = incremental;
+	public void setFullScan(boolean fullScan) {
+		this.fullScan = fullScan;
 	}
 
 	@Override

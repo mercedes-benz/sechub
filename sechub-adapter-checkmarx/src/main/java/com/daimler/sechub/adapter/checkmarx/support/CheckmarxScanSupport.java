@@ -52,8 +52,8 @@ public class CheckmarxScanSupport {
 	}
 
 	private void waitForQueingDone(CheckmarxContext context) throws AdapterException {
-		WaitForQueueStateSupport support = new WaitForQueueStateSupport(context.getCheckmarxAdapter());
-		support.waitForOK(context);
+		WaitForQueueStateSupport queueSupport = new WaitForQueueStateSupport(context.getCheckmarxAdapter());
+		queueSupport.waitForOK(context);
 
 		QueueDetails queueDetails = context.getQueueDetails();
 		if (queueDetails.hasNeverRun()) {

@@ -24,7 +24,6 @@ public class ProjectIdValidationImpl extends AbstractSimpleStringValidation impl
 		validateNoUpperCaseCharacters(context);
 		validateSameLengthWhenTrimmed(context);
 		validateLength(context);
-		validateNotContainingCharackters(context, '.',',','!','?','\\',':',';','$','%','/');
-
+		validateOnlyAlphabeticDigitOrAllowedParts(context, '-','_');
 	}
 }

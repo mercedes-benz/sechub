@@ -15,11 +15,13 @@ import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorRevokesAdminRightsFromAdmin;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -39,6 +41,12 @@ public class UserRevokeSuperAdminRightsService {
 	@Autowired
 	SecHubEnvironment secHubEnvironment;
 
+	@Autowired
+	LogSanitizer logSanitizer;
+
+	@Autowired
+	UserInputAssertion assertion;
+
 	/* @formatter:off */
 	@Validated
 	@UseCaseAdministratorRevokesAdminRightsFromAdmin(
@@ -49,13 +57,15 @@ public class UserRevokeSuperAdminRightsService {
 					description = "The service will revoke user admin righs and triggers asynchronous events"))
 	/* @formatter:on */
 	public void revokeSuperAdminRightsFrom(String userId) {
-		auditLogService.log("Triggered revoking admin rights from user {}",userId);
+		String sanitizedLogUserId = logSanitizer.sanitize(userId,30);
+		auditLogService.log("Triggered revoking admin rights from user {}",sanitizedLogUserId);
 
+		assertion.isValidUserId(userId);
 
 		User user = userRepository.findOrFailUser(userId);
 
 		if (!user.isSuperAdmin()) {
-			LOG.info("User:{} was already no super administrator, so just ignored",userId);
+			LOG.info("User:{} was already no super administrator, so just ignored",sanitizedLogUserId);
 			return;
 		}
 		assertNotLastSuperAdmin();

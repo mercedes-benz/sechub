@@ -10,23 +10,29 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class ScheduleRevokeUserAccessAtAllService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ScheduleRevokeUserAccessAtAllService.class);
 
-	
+
 	@Autowired
 	ScheduleAccessRepository repository;
-	
+
+	@Autowired
+	UserInputAssertion assertion;
+
 	@Transactional
 	@UseCaseAdministratorDeletesUser(@Step(number=3,name="revoke user from schedule access"))
 	public void revokeUserAccess(String userId) {
+		assertion.isValidUserId(userId);
+
 		repository.deleteAcessForUserAtAll(userId);
-		
+
 		LOG.info("Revoked access at all for user:{}",userId);
 	}
 
-	
+
 }

@@ -15,6 +15,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
@@ -28,11 +29,19 @@ public class DeveloperAdministration {
 	private AdminUserContext userContext;
 	private TestRestHelper restHelper;
 	private TestURLBuilder urlBuilder;
+	private AnonymousTestUser anonymousContext;
+	private TestRestHelper anonyomusRestHelper;
 
 	public DeveloperAdministration(ConfigProvider provider) {
 		this.provider = provider;
 		this.userContext = new AdminUserContext();
-		this.restHelper = new TestRestHelper(userContext) {
+		this.anonymousContext = new AnonymousTestUser(null,null);
+		this.restHelper = createTestRestHelperWithErrorHandling(provider,userContext);
+		this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(provider,anonymousContext);
+	}
+
+	private TestRestHelper createTestRestHelperWithErrorHandling(ConfigProvider provider,UserContext user) {
+		return new TestRestHelper(user) {
 			@Override
 			protected ResponseErrorHandler createErrorHandler() {
 				return new DefaultResponseErrorHandler() {
@@ -70,7 +79,7 @@ public class DeveloperAdministration {
 		if (urlBuilder == null) {
 			int port = provider.getPort();
 			String server = provider.getServer();
-			urlBuilder = new TestURLBuilder("https", port, server);
+			urlBuilder = new TestURLBuilder(provider.getProtocol(), port, server);
 		}
 		return urlBuilder;
 	}
@@ -81,6 +90,10 @@ public class DeveloperAdministration {
 
 	public TestRestHelper getRestHelper() {
 		return restHelper;
+	}
+
+	public TestRestHelper getAnonyomusRestHelper() {
+		return anonyomusRestHelper;
 	}
 
 	public String doSignup(String string) {
@@ -97,11 +110,10 @@ public class DeveloperAdministration {
 		return "SENT";
 	}
 
-
 	public String createNewUserSignup(String name, String email) {
 
 		String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-		return getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+		return getAnonyomusRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
 	}
 
 	public String fetchUserList() {
@@ -223,6 +235,21 @@ public class DeveloperAdministration {
 		return "sent";
 	}
 
+	public String deleteUser(String userId) {
+		getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(userId));
+		return "sent";
+	}
+
+	public String cancelJob(UUID jobUUID) {
+		getRestHelper().post(getUrlBuilder().buildAdminCancelsJob(jobUUID));
+		return "cancel triggered";
+	}
+
+	public String requestNewApiToken(String emailAddress) {
+		getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
+		return "Sent request for new API token for email:"+emailAddress+"- New API token will be delived to this address if user exists!";
+	}
+
 	public String enableSchedulerJobProcessing() {
 		getRestHelper().post(getUrlBuilder().buildAdminEnablesSchedulerJobProcessing());
 		return "triggered enable job processing";
@@ -242,6 +269,15 @@ public class DeveloperAdministration {
 		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
 	}
 
+	public String checkAlive() {
+		return getRestHelper().headStringFromURL(getUrlBuilder().buildCheckIsAliveUrl());
+	}
+
+	public String checkVersion() {
+		return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+	}
+
+
 	public String triggerDownloadFullScan(UUID sechubJobUUID) {
 
 		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
@@ -251,8 +287,10 @@ public class DeveloperAdministration {
 	public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
 		String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
 		return commonTriggerDownloadInBrowser(url);
-
 	}
+
+
+
 
 	private String commonTriggerDownloadInBrowser(String url) {
 		try {
@@ -296,11 +334,5 @@ public class DeveloperAdministration {
 		}
 
 	}
-
-
-
-
-
-
 
 }

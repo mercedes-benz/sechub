@@ -16,7 +16,7 @@ public class ShowProjectListAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchProjectList();
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

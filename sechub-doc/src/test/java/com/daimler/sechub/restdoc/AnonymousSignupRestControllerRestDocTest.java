@@ -33,6 +33,7 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationImpl;
+import com.daimler.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
@@ -42,6 +43,7 @@ import com.daimler.sechub.test.TestPortProvider;
 		SignupJsonInputValidator.class,
 		UserIdValidationImpl.class,
 		ApiVersionValidationImpl.class,
+		EmailValidationImpl.class,
 		AnonymousSignupRestControllerRestDocTest.SimpleTestConfiguration.class})
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
@@ -66,7 +68,7 @@ public class AnonymousSignupRestControllerRestDocTest {
 		/* @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildUserSignUpUrl()).
-        			contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).andDo(

@@ -63,6 +63,8 @@ public class SecHubResultTest {
 		String json = result.toJSON();
 		SecHubResult reloaded = new SecHubResult().fromJSON(json);
 
+		System.out.println(json);
+
 		/* test @formatter:off */
 		assertSecHubResult(reloaded).
 			hasFindingWithId(123).

@@ -66,7 +66,7 @@ public class SecHubResultServiceTest {
 	public void when_product_result_repository_returns_only_netsparker_result__sechub_execution_is_thrown_with_message()
 			throws Exception {
 		/* prepare */
-		ProductResult scanResult = new ProductResult(secHubJobUUID, ProductIdentifier.NETSPARKER, "scan-result");
+		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NETSPARKER, "scan-result");
 
 		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));
@@ -85,7 +85,7 @@ public class SecHubResultServiceTest {
 		SecHubResult secHubResult = new SecHubResult();
 		when(reportTransformer.transform("scan-result")).thenReturn(secHubResult);
 		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
-		ProductResult scanResult = new ProductResult(secHubJobUUID, ProductIdentifier.SERECO, "scan-result");
+		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.SERECO, "scan-result");
 
 		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));

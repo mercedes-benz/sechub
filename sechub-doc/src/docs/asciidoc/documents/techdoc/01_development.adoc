@@ -68,6 +68,19 @@ just call  `./gradlew ensureLocalhostCertificate`
 This will generate a randomized server certificate for localhost, necessary for
 development
 
+==== Go development setup
+
+===== Common
+You should create a soft link inside your go sources to real git repository parts
+So this uses standard go structures and it should work out of the box in any
+go development IDE:
+
+For example:
+[source,bash]
+----
+mkdir ~/go/src/daimler.com/
+ln -s $pathToSecHubRepo/sechub-cli/src/daimler.com/sechub ~/go/src/daimler.com/sechub
+----
 
 === First steps
 Here some first steps to get {sechub} running and being able to develop parts.
@@ -145,7 +158,10 @@ WARNING: The developer administration UI is only a tool for developers and shoul
          It's an extreme simple client for administrative parts. For real administration a frontend for admins
          will be developed in future! It's not purposed to be in a deployment, but only for development.
 
-=== Integration test variant
+==== General launch setup
+include::./../shared/launchconfig/launchconfig_start_general_adminui.adoc[]
+
+==== Integration test variant
 include::./../shared/launchconfig/launchconfig_start_integrationtest_dev_adminui.adoc[]
 
 
@@ -185,7 +201,18 @@ include::../shared/infrastructure/infra_docker.adoc[]
 
 include::../shared/infrastructure/infra_kubernetes.adoc[]
 
-== Test/Use real products
+[[section-develop-use-real-products]]
+== Test / Use real products
+
+=== Mandatory configuration
+
+include::../gen/gen_javalaunchexample.adoc[]
+
+include::../shared/hint_admin_access_profile.adoc[]
+
+==== Storage configuration
+include::../shared/storage_configuration.adoc[]
+
 
 === Start server in DEV mode
 include::./../shared/launchconfig/launchconfig_start_dev_server.adoc[]
@@ -195,3 +222,26 @@ TIP: Please refer also
 
 === Start server in PROD mode
 include::./../shared/launchconfig/launchconfig_start_prod_server.adoc[]
+
+
+== Special setup
+
+=== Terminate SSL and use HTTP only
+Per default {sechub} will always use `HTTPS` for communication.
+
+Its not recommended, but if anybody wants to use SecHub with `HTTP` only
+_(e.g. when running behind a SSL proxy)_ this can be done in this way:
+
+Start your server as described before but add following additional
+system properties:
+
+----
+-Dserver.ssl.enabled=false
+-Dsecurity.require-ssl=false
+----
+
+This will disable ssl encryption and also spring security requiring ssl.
+
+When you want to administrate this by developer admin ui, you should also
+switch to HTTP protocol, as described at
+<<section-developer-adminui-setup,developer admin UI setup>>

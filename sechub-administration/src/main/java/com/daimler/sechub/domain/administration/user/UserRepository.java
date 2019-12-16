@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
-public interface UserRepository extends JpaRepository<User, String>{
+public interface UserRepository extends JpaRepository<User, String>, UserRepositoryCustom{
 
 	Optional<User> findByOneTimeToken(String oneTimeToken);
-	
+
 	public default User findOrFailUser(String userId) {
 		Optional<User> foundUser  = findById(userId);
 		if (! foundUser.isPresent()) {

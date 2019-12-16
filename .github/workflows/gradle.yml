@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: MIT
+name: Java & Go CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Build Server
+      run: ./gradlew clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: '1.12.7'
+    - name: Build CLI
+      run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
+    - name: Integration test
+      run: ./gradlew integrationtest
+    - name: Create combined test report
+      if: always()
+      run: ./gradlew createCombinedTestReport
+    - name: Archive combined test report
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+          name: combined-sechub-testreport
+          path: build/reports/allTests

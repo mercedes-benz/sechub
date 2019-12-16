@@ -26,7 +26,7 @@ public class FetchMockMailsAction extends IntegrationTestAction {
 		}
 		List<MockEmailEntry> data = IntegrationTestContext.get().emailAccess().getMockMailListFor(emailAdress.get());
 		for (MockEmailEntry entry: data) {
-			output(entry.fullToString());
+			outputAsText(entry.fullToString());
 		}
 
 	}

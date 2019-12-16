@@ -16,13 +16,13 @@ public class ShowRunningBatchJobsListAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
 	public ShowRunningBatchJobsListAction(UIContext context) {
-		super("Show running batch jobs", context);
+		super("Show all running batch jobs", context);
 	}
 
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchRunningJobsList();
-		output(data);
+		outputAsBeautifiedJSON(data);
 	}
 
 }

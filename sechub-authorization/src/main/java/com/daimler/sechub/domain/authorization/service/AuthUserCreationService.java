@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 public class AuthUserCreationService {
@@ -30,9 +31,14 @@ public class AuthUserCreationService {
 	@Autowired
 	DomainMessageService eventBus;
 
+	@Autowired
+	UserInputAssertion assertion;
+
 	@UseCaseAdministratorAcceptsSignup(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Give user access", description="Authorization layer is informed about new user and gives access to sechub. But without any project information"))
 	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
 	public void createUser(String userId, String hashedApiToken) {
+		assertion.isValidUserId(userId);
+
 		Optional<AuthUser> found = userRepo.findByUserId(userId);
 		if (found.isPresent()) {
 			LOG.warn("Will skip user create action because user already found with name:{}",userId);

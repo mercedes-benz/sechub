@@ -21,8 +21,8 @@ public class AcceptUserSignupAction extends AbstractUIAction {
 		if (!userToSignup.isPresent()) {
 			return;
 		}
-		String data = getContext().getAdministration().doSignup(userToSignup.get());
-		output(data);
+		String infoMessage = getContext().getAdministration().doSignup(userToSignup.get());
+		outputAsText(infoMessage);
 	}
 
 }

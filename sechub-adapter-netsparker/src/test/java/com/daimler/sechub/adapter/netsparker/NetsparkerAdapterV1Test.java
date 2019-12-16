@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.net.URL;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.BasicLoginConfig;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
 public class NetsparkerAdapterV1Test {
@@ -20,6 +23,7 @@ public class NetsparkerAdapterV1Test {
 	private NetsparkerAdapterContext context;
 	private NetsparkerAdapterConfig config;
 	private RestTemplate template;
+	private JSONAdapterSupport jsonAdapterSupport;
 
 	@Before
 	public void before() {
@@ -30,11 +34,34 @@ public class NetsparkerAdapterV1Test {
 		config = mock(NetsparkerAdapterConfig.class);
 		template = mock(RestTemplate.class);
 
+		jsonAdapterSupport = new JSONAdapterSupport(adapterToTest, context);
+
 		when(context.getConfig()).thenReturn(config);
 		when(context.getRestOperations()).thenReturn(template);
 		when(config.getProductBaseURL()).thenReturn("baseURL");
 		when(context.getProductContextId()).thenReturn("netsparkerId");
-		when(context.json()).thenReturn(new JSONAdapterSupport(adapterToTest, context));
+		when(context.json()).thenReturn(jsonAdapterSupport);
+	}
+
+	@Test
+	public void build_json_for_new_scan_with_basic_auth_contians_basic_login_parts() throws Exception {
+		/*prepare */
+		BasicLoginConfig basicLoginConfig = mock(BasicLoginConfig.class);
+		when(config.getLoginConfig()).thenReturn(basicLoginConfig);
+		when(basicLoginConfig.asBasic()).thenReturn(basicLoginConfig);
+		when(basicLoginConfig.isBasic()).thenReturn(true);
+
+		when(basicLoginConfig.getLoginURL()).thenReturn(new URL("https://www.example.com/"));
+		when(basicLoginConfig.getUser()).thenReturn("weblogin-user");
+		when(basicLoginConfig.getPassword()).thenReturn("weblogin-password");
+		when(basicLoginConfig.getRealm()).thenReturn("www.example.com");
+
+		/* execute */
+		String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
+
+		/* test */
+		String expected= NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("login/basic_weblogin_expected1.json");
+		assertEquals(expected, json);
 	}
 
 	@Test
@@ -50,18 +77,16 @@ public class NetsparkerAdapterV1Test {
 		adapterToTest.fetchReport(context);
 
 		/* test */
-		verify(template).getForEntity("baseURL/api/1.0/scans/report/netsparkerId?Type=Vulnerabilities&Format=Xml",
-				String.class);
+		verify(template).getForEntity("baseURL/api/1.0/scans/report/netsparkerId?Type=Vulnerabilities&Format=Xml", String.class);
 	}
 
 	@Test
 	public void isAbleTo_extract_id_from_netsparker_v1_0_40_109_result_when_create_new_scan_triggered() throws AdapterException {
 		/* prepare */
-		String body = NetsparkerAdapterTestFileSupport.getTestfileSupport()
-				.loadTestFile("netsparker_v1.0.40.109_new_scan_output.json");
+		String body = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("netsparker_v1.0.40.109_new_scan_output.json");
 
 		/* execute */
-		String id = adapterToTest.extractIDFromScanResult(body,context);
+		String id = adapterToTest.extractIDFromScanResult(body, context);
 
 		/* test */
 		assertEquals("a42ab3cf-58e8-455e-6668-a88503af65fe", id);

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.schedule.access.ScheduleDeleteAllProjectAcessService;
 import com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService;
@@ -15,6 +16,7 @@ import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListUpdateServic
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
@@ -45,6 +47,12 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	@Autowired
 	SchedulerStatusService statusService;
 
+	@Autowired
+	ScheduleDeleteAllProjectAcessService deleteAllProjectAccessService;
+
+	@Autowired
+	SchedulerCancelJobService cancelJobService;
+
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
 		MessageID messageId = request.getMessageId();
@@ -63,6 +71,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 		case PROJECT_CREATED:
 			handleProjectCreated(request);
 			break;
+		case PROJECT_DELETED:
+			handleProjectDeleted(request);
+			break;
 		case PROJECT_WHITELIST_UPDATED:
 			handleProjectWhiteListUpdated(request);
 			break;
@@ -75,9 +86,18 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 		case REQUEST_SCHEDULER_STATUS_UPDATE:
 			handleSchedulerStatusRefreshRequest(request);
 			break;
+		case REQUEST_JOB_CANCELATION:
+			handleCancelJobRequested(request);
+			break;
 		default:
 			throw new IllegalStateException("unhandled message id:"+messageId);
 		}
+	}
+
+	@IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+	private void handleCancelJobRequested(DomainMessage request) {
+		JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+		cancelJobService.cancelJob(message.getJobUUID(), message.getOwnerEmailAddress());
 	}
 
 	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
@@ -126,6 +146,12 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler{
 	private void handleUserDeleted(DomainMessage request) {
 		UserMessage data = request.get(MessageDataKeys.USER_DELETE_DATA);
 		revokeUserService.revokeUserAccess(data.getUserId());
+	}
+
+	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
+	private void handleProjectDeleted(DomainMessage request) {
+		ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
+		deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
 	}
 
 	private void updateWhiteList(ProjectMessage data) {

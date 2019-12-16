@@ -15,6 +15,7 @@ import org.mockito.InOrder;
 import com.daimler.sechub.domain.authorization.AuthUser;
 import com.daimler.sechub.domain.authorization.AuthUserRepository;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class AuthUserUpdateRolesServiceTest {
 
@@ -28,6 +29,7 @@ public class AuthUserUpdateRolesServiceTest {
 
 		serviceToTest = new AuthUserUpdateRolesService();
 		serviceToTest.authUserRepository=authUserRepository;
+		serviceToTest.assertion=mock(UserInputAssertion.class);
 	}
 
 

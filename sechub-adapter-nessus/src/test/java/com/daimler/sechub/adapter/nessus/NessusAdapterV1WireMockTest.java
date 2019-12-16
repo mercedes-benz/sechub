@@ -73,7 +73,7 @@ public class NessusAdapterV1WireMockTest {
 		when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
 		when(config.getUser()).thenReturn(USERNAME);
 		when(config.getTargetType()).thenReturn(TARGET_TYPE);
-		when(config.getPassword()).thenReturn(PASSWORD);
+		when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
 		when(config.getTimeOutInMilliseconds()).thenReturn(1000*5);
 
 		when(config.getTargetURIs()).thenReturn(Collections.singleton(URI.create(TARGET_URL)));

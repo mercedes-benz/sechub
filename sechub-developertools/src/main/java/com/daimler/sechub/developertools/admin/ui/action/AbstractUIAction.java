@@ -10,12 +10,15 @@ import javax.swing.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCache;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public abstract class AbstractUIAction extends AbstractAction{
+
+	private JSONDeveloperHelper jsonHelper = JSONDeveloperHelper.INSTANCE;
 
 	private static final long serialVersionUID = 1L;
 	private static InputCache inputCache = new InputCache();
@@ -47,13 +50,13 @@ public abstract class AbstractUIAction extends AbstractAction{
 			context.getCommandUI().startActionProgress(actionName);
 
 
-			output("");
-			output("[EXECUTE] "+actionName);
+			outputAsText("");
+			outputAsText("[EXECUTE] "+actionName);
 
 			safeExecute(event, actionName);
 
 			context.getCommandUI().stopActionProgress(actionName);
-			output("[DONE]");
+			outputAsText("[DONE]");
 			LOG.info("done action {}",actionName);
 
 		},threadName);
@@ -65,7 +68,11 @@ public abstract class AbstractUIAction extends AbstractAction{
 		return (String) this.getValue(Action.NAME);
 	}
 
-	protected void output(String text) {
+	protected void outputAsBeautifiedJSON(String text) {
+		outputAsText(jsonHelper.beatuifyJSON(text));
+	}
+
+	protected void outputAsText(String text) {
 
 		OutputUI outputUI = getContext().getOutputUI();
 		outputUI.output(text);
