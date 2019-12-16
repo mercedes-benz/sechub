@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -50,11 +49,13 @@ public class ProjectDeleteService {
 	@Autowired
 	AuditLogService auditLogService;
 
+	@Autowired
+	ProjectTransactionService transactionService;
+
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectDeleteService.class);
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 2, name = "Service deletes projects.", next = { 3, 4,
 			5, 6, 7}, description = "The service will delete the project with dependencies and triggers asynchronous events"))
-	@Transactional
 	public void deleteProject(String projectId) {
 		auditLogService.log("triggers delete of project {}", logSanitizer.sanitize(projectId, 30));
 
@@ -78,7 +79,7 @@ public class ProjectDeleteService {
 			message.addUserEmailAddress(user.getEmailAdress());
 		}
 
-		projectRepository.deleteProjectWithAssociations(projectId);
+		transactionService.deleteWithAssociationsInOwnTransaction(projectId);
 
 		informProjectDeleted(message);
 		if (owner != null) {
