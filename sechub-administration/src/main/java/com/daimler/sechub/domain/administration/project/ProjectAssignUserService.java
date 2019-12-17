@@ -51,6 +51,9 @@ public class ProjectAssignUserService {
 	@Autowired
 	UserInputAssertion assertion;
 
+	@Autowired
+	ProjectTransactionService transactionService;
+
 	/* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(
 			@Step(
@@ -72,7 +75,7 @@ public class ProjectAssignUserService {
 		user.getProjects().add(project);
 		project.getUsers().add(user);
 
-		projectRepository.save(project);
+		transactionService.saveInOwnTransaction(project,user);
 
 		sendUserAddedToProjectEvent(projectId, user);
 		sendRequestUserRoleRecalculation(user);

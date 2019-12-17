@@ -41,12 +41,15 @@ public class ProjectCreationService {
 	@Autowired
 	UserContextService userContext;
 
+
 	@Autowired
 	ProjectRepository projectRepository;
 
 	@Autowired
 	DomainMessageService eventBus;
 
+	@Autowired
+	ProjectTransactionService persistenceService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -81,6 +84,7 @@ public class ProjectCreationService {
 		if (!foundOwner.isPresent()) {
 			throw new NotFoundException("Owner '" + owner + "' not found");
 		}
+
 		/* setup */
 		Project project = new Project();
 		project.id = projectId;
@@ -92,9 +96,7 @@ public class ProjectCreationService {
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
 		/* store */
-		projectRepository.save(project);
-
-		LOG.debug("Persisted new project:{}", project.getId());
+		persistenceService.saveInOwnTransaction(project);
 
 		sendProjectCreatedEvent(projectId, whitelist);
 		sendRefreshUserAuth(ownerUser);

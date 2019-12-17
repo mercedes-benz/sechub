@@ -30,6 +30,7 @@ public class ProjectDeleteServiceTest {
 	private UserContextService userContext;
 	private DomainMessageService eventBusService;
 	private ProjectRepository projectRepository;
+	private ProjectTransactionService transactionService;
 
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
@@ -41,12 +42,15 @@ public class ProjectDeleteServiceTest {
 		userContext = mock(UserContextService.class);
 		projectRepository=mock(ProjectRepository.class);
 		auditLogService=mock(AuditLogService.class);
+		transactionService=mock(ProjectTransactionService.class);
 
 		serviceToTest= new ProjectDeleteService();
 		serviceToTest.eventBusService=eventBusService;
 		serviceToTest.userContext=userContext;
 		serviceToTest.projectRepository=projectRepository;
 		serviceToTest.auditLogService=auditLogService;
+		serviceToTest.transactionService=transactionService;
+
 		serviceToTest.logSanitizer=mock(LogSanitizer.class);
 		serviceToTest.assertion=mock(UserInputAssertion.class);
 		serviceToTest.sechubEnvironment=mock(SecHubEnvironment.class);
@@ -67,7 +71,7 @@ public class ProjectDeleteServiceTest {
 		serviceToTest.deleteProject("project1");
 
 		/* test */
-		verify(projectRepository).deleteProjectWithAssociations(project1.getId());
+		verify(transactionService).deleteWithAssociationsInOwnTransaction(project1.getId());
 
 	}
 
