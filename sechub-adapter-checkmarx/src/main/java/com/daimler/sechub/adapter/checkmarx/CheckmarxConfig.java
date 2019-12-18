@@ -20,7 +20,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 		return teamIdForNewProjects;
 	}
 
-	public String getPresetIdForNewProjects() {
+	public String getPresetIdForNewProjectsOrNull() {
 		return presetIdForNewProjects;
 	}
 

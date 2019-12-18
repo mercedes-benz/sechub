@@ -17,9 +17,8 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 	@Value("${sechub.adapter.checkmarx.newproject.teamid}")
 	@MustBeDocumented(value = "Initial team ID. When a scan is started a and checkmarx project is still missing, "
 			+ "a new checkmarx project will be automatically created. "
-			+ "For creation a team must be assigned to the project, which cannot be done by API "
-			+ "(and its not clear which users should be included etc.). "
-			+ "\n\nNormally this should not be necessary, because Admins should define a team (with sechubuser inside) alraedy before.")
+			+ "For creation a team must be defined. This value is an fallback if scan config is not set (scan config " +
+			"does this in a dynamic way by inspecting project names)")
 	String teamIdForNewProjects;
 
 	@Value("${sechub.adapter.checkmarx.baseurl}")
