@@ -17,7 +17,7 @@ public interface CheckmarxAdapterConfig extends AdapterConfig {
 	 *
 	 * @return preset id or <code>null</code>
 	 */
-	String getPresetIdForNewProjectsOrNull();
+	Long getPresetIdForNewProjectsOrNull();
 
 	InputStream getSourceCodeZipFileInputStream();
 

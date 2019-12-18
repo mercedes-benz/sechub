@@ -25,6 +25,8 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
+import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -50,6 +52,9 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
 	@Autowired
 	StorageService storageService;
+
+	@Autowired
+	MetaDataInspector scanMetaDataCollector;
 
 	@Autowired
 	CheckmarxResilienceConsultant checkmarxResilienceConsultant;
@@ -93,6 +98,12 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 							setTraceID(context.getTraceLogIdAsString()).
 							build();
 					/* @formatter:on */
+
+					/* inspect*/
+					MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.CHECKMARX.name());
+					inspection.notice(MetaDataInspection.TRACE_ID,checkMarxConfig.getTraceID());
+					inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
+					inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
 
 					/* execute checkmarx by adapter and return product result */
 					String xml = checkmarxAdapter.start(checkMarxConfig);

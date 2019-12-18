@@ -30,7 +30,7 @@ public class CheckmarxAdapterTestApplication {
 		String baseUrl = ensureProperty("test.sechub.adapter.checkmarx.baseurl");
 		String projectname = ensureProperty("test.sechub.adapter.checkmarx.projectName");
 		String teamId = ensureProperty("test.sechub.adapter.checkmarx.teamid");
-		String presetId = ensureProperty("test.sechub.adapter.checkmarx.presetid");
+		Long presetId = Long.valueOf(ensureProperty("test.sechub.adapter.checkmarx.presetid"));
 
 		String pathInOtherProject = ensurePropertyOrDefault("test.sechub.adapter..checkmarx.zipfilename","zipfile_contains_only_one_simple_java_file.zip");
 	    // "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue

@@ -86,7 +86,7 @@ public class CheckmarxProjectSupport {
 	}
 
 	private void updatePresetIdWhenNecessary(CheckmarxContext context, CheckmarxSessionData sessionData) throws AdapterException {
-		String presetId = context.getConfig().getPresetIdForNewProjectsOrNull();
+		Long presetId = context.getConfig().getPresetIdForNewProjectsOrNull();
 		if (presetId == null) {
 			LOG.debug("No presetId defined, so keep default preset.");
 			return;
@@ -101,7 +101,7 @@ public class CheckmarxProjectSupport {
 
 	}
 
-	private void updateSastScanSettings(CheckmarxContext context, String presetId, CheckmarxSastScanSettings currentSettings) throws AdapterException {
+	private void updateSastScanSettings(CheckmarxContext context, Long presetId, CheckmarxSastScanSettings currentSettings) throws AdapterException {
 		MultiValueMap<String, String> headers3 = new LinkedMultiValueMap<>();
 		headers3.set("Content-Type", "application/json;v=1.1");
 		RestOperations restTemplate3 = context.getRestOperations();
@@ -109,7 +109,7 @@ public class CheckmarxProjectSupport {
 		/* write */
 		Map<String, Long> updateJSON = new TreeMap<>();
 		updateJSON.put("projectId", currentSettings.getProjectId());
-		updateJSON.put("presetId", Long.valueOf(presetId));
+		updateJSON.put("presetId", presetId);
 		updateJSON.put("engineConfigurationId", currentSettings.getEngineConfigurationId());
 
 		String updateScanSettingsURL = context.getAPIURL("sast/scanSettings");

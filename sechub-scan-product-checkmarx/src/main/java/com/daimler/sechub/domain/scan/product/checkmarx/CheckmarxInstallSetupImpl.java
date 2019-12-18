@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,9 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 @Component
 public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements CheckmarxInstallSetup {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CheckmarxInstallSetupImpl.class);
+
 
 	@Value("${sechub.adapter.checkmarx.newproject.teamid}")
 	@MustBeDocumented(value = "Initial team ID. When a scan is started a and checkmarx project is still missing, "
@@ -64,8 +69,14 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 	}
 
 	@Override
-	public String getPresetIdForNewProjects(String projectId) {
-		return scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid").getIdForName(projectId);
+	public Long getPresetIdForNewProjects(String projectId) {
+		String id = scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid").getIdForName(projectId);
+		try {
+			return Long.valueOf(id);
+		}catch(NumberFormatException e) {
+			LOG.error("Was not able to handle preset id for project {} will provide null instead",projectId);
+			return null;
+		}
 	}
 
 	@Override

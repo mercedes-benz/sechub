@@ -10,7 +10,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
 	private String teamIdForNewProjects;
 	private InputStream sourceCodeZipFileInputStream;
-	public String presetIdForNewProjects;
+	public Long presetIdForNewProjects;
 
 	private CheckmarxConfig() {
 	}
@@ -20,7 +20,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 		return teamIdForNewProjects;
 	}
 
-	public String getPresetIdForNewProjectsOrNull() {
+	public Long getPresetIdForNewProjectsOrNull() {
 		return presetIdForNewProjects;
 	}
 
@@ -36,7 +36,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 	public static class CheckmarxConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<CheckmarxConfigBuilder, CheckmarxConfig>{
 
 		private String teamIdForNewProjects;
-		private String presetIdForNewProjects;
+		private Long presetIdForNewProjects;
 		private InputStream sourceCodeZipFileInputStream;
 
 		/**
@@ -54,7 +54,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 		 * @param teamId
 		 * @return
 		 */
-		public CheckmarxConfigBuilder setPresetIdForNewProjects(String presetId){
+		public CheckmarxConfigBuilder setPresetIdForNewProjects(Long presetId){
 			this.presetIdForNewProjects=presetId;
 			return this;
 		}

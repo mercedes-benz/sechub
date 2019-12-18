@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.scan.access.ScanAccessCountService;
+import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
@@ -34,6 +36,9 @@ public class IntegrationTestScanRestController {
 	@Autowired
 	private ScanReportCountService scanReportCountService;
 
+	@Autowired
+	private ScanConfigService scanConfigService;
+
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProjectAccess(@PathVariable("projectId") String projectId) {
 		return scanAccessCountService.countProjectAccess(projectId);
@@ -49,6 +54,13 @@ public class IntegrationTestScanRestController {
 	public long countScanResults(@PathVariable("projectId") String projectId) {
 		return productResultCountService.countProjectScanResults(projectId);
 	}
+
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scanconfig", method = RequestMethod.PUT)
+	public void updateScanConfig(@RequestBody String scanConfig) {
+		scanConfigService.updateScanConfiguration(scanConfig);
+	}
+
+
 
 
 }
