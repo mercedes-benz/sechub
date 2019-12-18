@@ -64,4 +64,10 @@ public class NamePatternToIdEntry implements JSONable<NamePatternToIdEntry>{
 		return NamePatternToIdEntry.class;
 	}
 
+	@Override
+	public String toString() {
+		return "NamePatternToIdEntry [namePattern=" + namePattern + ", id=" + id + ", regexp=" + regexp + "]";
+	}
+
+
 }

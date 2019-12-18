@@ -13,11 +13,18 @@ private static final Logger LOG = LoggerFactory.getLogger(NamePatternIdprovider.
 
 	private List<NamePatternToIdEntry> entries = new ArrayList<>();
 
+	private String providerId;
+
+	public NamePatternIdprovider(String providerId){
+		this.providerId=providerId;
+	}
+
 	public void add(NamePatternToIdEntry entry) {
 		if (entry==null) {
 			LOG.warn("Ignoring null entry");
 			return;
 		}
+		LOG.debug("'{}' added {}",getProviderId(),entry);
 		entries.add(entry);
 	}
 
@@ -34,5 +41,16 @@ private static final Logger LOG = LoggerFactory.getLogger(NamePatternIdprovider.
 		}
 		return null;
 	}
+
+	public String getProviderId() {
+		return providerId;
+	}
+
+	@Override
+	public String toString() {
+		return "NamePatternIdprovider [providerId=" + providerId + ", entries=" + entries + "]";
+	}
+
+
 
 }

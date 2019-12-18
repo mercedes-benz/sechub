@@ -28,7 +28,7 @@ public class ScanConfigServiceTest {
 	@Test
 	public void initialized_example1_returns_expected_provider() {
 		/* prepare */
-		serviceToTest.injectedScanConfigJSON=  ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
+		serviceToTest.initialScanConfigJSON=  ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
 		serviceToTest.postConstruct();
 
 		/* execute */

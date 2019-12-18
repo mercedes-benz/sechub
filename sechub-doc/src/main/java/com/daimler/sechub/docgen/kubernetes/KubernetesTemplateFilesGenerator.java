@@ -58,6 +58,9 @@ class KubernetesTemplateFilesGenerator implements Generator {
 		list.add(newSecret("sechub.server.ssl.keystore.password", "ssl", "The password for server ssl certificate"));
 		list.add(newSecret("sechub.server.ssl.keystore.file", "ssl", "The server ssl certificate file","server-certificate.p12"));
 
+		/* config (normally unnecessary because automatical generated, but we want .json as file ending, so here necessary */
+		list.add(newSecret("sechub.scan.config.initial", "config", "The initial scan configuration","sechub_scan_config_initial.json"));
+
 		Collections.sort(list);
 		generateDeploymentFilePart(result, list);
 		/* now secrets etc. are well known */
