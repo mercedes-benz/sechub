@@ -17,6 +17,6 @@ public interface CheckmarxInstallSetup extends AnyTargetOneInstallSetup{
 	 * @param projectId
 	 * @return preset Id or <code>null</code> - in case of null checkmarx will use default preset
 	 */
-	public String getPresetIdForNewProjects(String projectId);
+	public Long getPresetIdForNewProjects(String projectId);
 
 }

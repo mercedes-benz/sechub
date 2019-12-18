@@ -32,6 +32,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
 
+	
 	@Test
 	public void product_failure_results_in_downloadable_fullscan_product_result_is_empty_and_report_contains_vulnerability_1_about_sechub_failure()
 			throws IOException {

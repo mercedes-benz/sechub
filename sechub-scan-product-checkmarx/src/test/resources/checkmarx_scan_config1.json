@@ -1,34 +1,41 @@
 {
     "apiVersion": "1.0",
     "type" : "scanConfig",
+    "comment": "just a test - comment is not recognized, but simply ignored",
 
-    "namePatternIdProviders": {
+    "namePatternMappings": {
         "checkmarx.newproject.presetid": [
             {
                 "namePattern": "my-java-project-.*",
-                "id": "100021"
+                "id": "100021",
+                "teamName": "team 1"
             },
             {
                 "namePattern": "a-go-project-.*",
-                "id": "100031"
+                "id": "100031",
+                "teamName": "team 2"
             },
             {
                 "namePattern": ".*",
-                "id": "100001"
+                "id": "100001",
+                "teamName": "team 3"
             }
         ],
         "checkmarx.newproject.teamid": [
             {
                 "namePattern": "my-java-project-.*",
-                "id": "e2e4e8f4-ba17-453b-b194-c736c605700d"
+                "id": "e2e4e8f4-ba17-453b-b194-c736c605700d",
+                "presetName" : "xxxx"
             },
             {
                 "namePattern": "a-go-project-.*",
-                "id": "e2e4e8f4-ba17-453b-b194-d836c605700d"
+                "id": "e2e4e8f4-ba17-453b-b194-d836c605700d",
+                "presetName" : "yyy"
             },
             {
                 "namePattern": ".*",
-                "id": "f2c4g8f4-ba17-453b-b194-c746c605700d"
+                "id": "f2c4g8f4-ba17-453b-b194-c746c605700d",
+                "presetName" : "zzz"
             }
         ]
     }

@@ -4,6 +4,7 @@ package com.daimler.sechub.server;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +30,9 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
+import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
+import com.daimler.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
+import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -59,6 +63,9 @@ public class IntegrationTestServerRestController {
 	private ProjectIdValidation projectIdValidation;
 
 	@Autowired
+	private MetaDataInspector metaDataInspector;
+
+	@Autowired
 	LogSanitizer logSanitizer;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/alive", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -79,7 +86,23 @@ public class IntegrationTestServerRestController {
 		LOG.info("Integration test server says user '{}' has allowed role '{}' - all authorities: '{}'", userContextService.getUserId(),
 				RoleConstants.ROLE_USER, userContextService.getAuthories());
 	}
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/metadata/inspections", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<MapStorageMetaDataInspection> fetchInspections() {
+		if (! (metaDataInspector instanceof IntegrationTestMetaDataInspector)) {
+			throw new IllegalStateException("Wrong meta data inspector!");
+		}
+		IntegrationTestMetaDataInspector itmd = (IntegrationTestMetaDataInspector) metaDataInspector;
+		return itmd.getInspections();
+	}
 
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/metadata/inspections", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void clearInspections() {
+		if (! (metaDataInspector instanceof IntegrationTestMetaDataInspector)) {
+			throw new IllegalStateException("Wrong meta data inspector!");
+		}
+		IntegrationTestMetaDataInspector itmd = (IntegrationTestMetaDataInspector) metaDataInspector;
+		itmd.clear();
+	}
 	@RolesAllowed(RoleConstants.ROLE_OWNER)
 	@RequestMapping(path = APIConstants.API_OWNER + "integrationtest/check/role/owner", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })

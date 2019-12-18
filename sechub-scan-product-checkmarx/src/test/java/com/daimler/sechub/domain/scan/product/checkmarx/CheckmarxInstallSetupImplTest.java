@@ -54,14 +54,14 @@ public class CheckmarxInstallSetupImplTest {
 	public void presetId_found_name_by_provider_returns_preset_id_from_provider() {
 		/* prepare */
 		NamePatternIdprovider provider = mock(NamePatternIdprovider.class);
-		when(provider.getIdForName("abc")).thenReturn("B1");
+		when(provider.getIdForName("abc")).thenReturn("1234");
 
 		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid")).thenReturn(provider);
 
 		/* execute */
-		String result = setupImplToTest.getPresetIdForNewProjects("abc");
+		Long result = setupImplToTest.getPresetIdForNewProjects("abc");
 		/* test */
-		assertEquals("B1",result);
+		assertEquals(Long.valueOf(1234),result);
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class CheckmarxInstallSetupImplTest {
 		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid")).thenReturn(provider);
 
 		/* execute */
-		String result = setupImplToTest.getPresetIdForNewProjects("abc");
+		Long result = setupImplToTest.getPresetIdForNewProjects("abc");
 		/* test */
 		assertEquals(null,result);
 	}

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
+
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -10,20 +11,29 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
+import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import junit.framework.AssertionFailedError;
+
 
 public class TestAPI {
 
@@ -55,6 +65,7 @@ public class TestAPI {
 		return new AssertUser(user);
 	}
 
+
 	public static AssertSignup assertSignup(TestUser user) {
 		return new AssertSignup(user);
 	}
@@ -62,6 +73,10 @@ public class TestAPI {
 	public static AssertProject assertProject(TestProject project) {
 		return new AssertProject(project);
 	}
+
+	 public static AssertInspections assertInspections() {
+	    	return new AssertInspections();
+	    }
 
 	/**
 	 * Waits for sechub job being done - after 5 seconds time out is reached
@@ -147,7 +162,8 @@ public class TestAPI {
 	public static String getLinkToFetchNewAPITokenAfterSignupAccepted(TestUser user) {
 		LOG.debug("Get link to fetch new api token after signup accepted for for user:{}",user.getUserId());
 		MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(user, "SecHub user account created");
-		String text = mail.text.trim(); // remove last \n if existing...
+		String text =
+				mail.text.trim(); // remove last \n if existing...
 		String[] lines = text.split("\n");
 
 		String linkOfOneApiToken = lines[lines.length - 1];
@@ -316,6 +332,42 @@ public class TestAPI {
 			Thread.sleep(milliSeconds);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		}
+
+	}
+
+	public static void changeScanConfig(String json) {
+		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+		String url = urlBuilder.buildChangeScanConfigURL();
+
+		MultiValueMap<String, String> headers3 = new LinkedMultiValueMap<>();
+		headers3.set("Content-Type", "application/json");
+
+		HttpEntity<String> request2 = new HttpEntity<>(json, headers3);
+		IntegrationTestContext.get().getSuperAdminRestHelper().put(url,request2);
+
+	}
+
+	public static void clearMetaDataInspection() {
+		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+		String url = urlBuilder.buildClearMetaDataInspectionURL();
+
+		IntegrationTestContext.get().getSuperAdminRestHelper().delete(url);
+	}
+
+	public static List<Map<String, Object>> fetchMetaDataInspections() {
+		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+		String url = urlBuilder.buildFetchMetaDataInspectionsURL();
+
+		String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSon(url);
+		TestJSONHelper jsonHelper = TestJSONHelper.get();
+
+		List<Map<String, Object>> data;
+		try {
+			data = jsonHelper.getMapper().readValue(json, new TypeReference<List<Map<String, Object>>>(){});
+			return data;
+		} catch (JsonProcessingException e) {
+			throw new AssertionError("Was not able to read meta data json",e);
 		}
 
 	}
