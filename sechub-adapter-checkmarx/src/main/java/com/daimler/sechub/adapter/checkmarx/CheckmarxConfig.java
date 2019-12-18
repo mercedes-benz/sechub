@@ -10,6 +10,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
 	private String teamIdForNewProjects;
 	private InputStream sourceCodeZipFileInputStream;
+	public String presetIdForNewProjects;
 
 	private CheckmarxConfig() {
 	}
@@ -17,6 +18,10 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 	@Override
 	public String getTeamIdForNewProjects() {
 		return teamIdForNewProjects;
+	}
+
+	public String getPresetIdForNewProjects() {
+		return presetIdForNewProjects;
 	}
 
 	@Override
@@ -31,6 +36,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 	public static class CheckmarxConfigBuilder extends AbstractCodeScanAdapterConfigBuilder<CheckmarxConfigBuilder, CheckmarxConfig>{
 
 		private String teamIdForNewProjects;
+		private String presetIdForNewProjects;
 		private InputStream sourceCodeZipFileInputStream;
 
 		/**
@@ -42,6 +48,17 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 			this.teamIdForNewProjects=teamId;
 			return this;
 		}
+
+		/**
+		 * When we create a new project this is the team ID to use
+		 * @param teamId
+		 * @return
+		 */
+		public CheckmarxConfigBuilder setPresetIdForNewProjects(String presetId){
+			this.presetIdForNewProjects=presetId;
+			return this;
+		}
+
 		public CheckmarxConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream){
 			this.sourceCodeZipFileInputStream=sourceCodeZipFileInputStream;
 			return this;
@@ -50,6 +67,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 		@Override
 		protected void customBuild(CheckmarxConfig config) {
 			config.teamIdForNewProjects=teamIdForNewProjects;
+			config.presetIdForNewProjects=presetIdForNewProjects;
 			config.sourceCodeZipFileInputStream=sourceCodeZipFileInputStream;
 		}
 
@@ -71,6 +89,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 				throw new IllegalStateException("no team id given");
 			}
 		}
+
 	}
 
 
