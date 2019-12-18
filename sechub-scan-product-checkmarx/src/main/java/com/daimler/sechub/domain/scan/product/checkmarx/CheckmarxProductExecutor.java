@@ -87,10 +87,10 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
 							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
 							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-							setTeamIdForNewProjects(setup.getTeamIdForNewProjects()).
+							setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
+							setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
 							setProjectId(projectId).
 							setTraceID(context.getTraceLogIdAsString()).
-							/* TODO Albert Tregnaghi, 2018-10-09:policy id - always default id - what about config.getPoliciyID() ?!?! */
 							build();
 					/* @formatter:on */
 

@@ -1,0 +1,35 @@
+{
+    "apiVersion": "1.0",
+    "type" : "scanConfig",
+
+    "namePatternMappings": {
+        "someproduct.a.b": [
+            {
+                "namePattern": "my-java-project-.*",
+                "id": "1"
+            },
+            {
+                "namePattern": "a-go-project-.*",
+                "id": "2"
+            },
+            {
+                "namePattern": ".*",
+                "id": "3"
+            }
+        ],
+        "someproduct.c.d": [
+            {
+                "namePattern": "my-java-project-.*",
+                "id": "10"
+            },
+            {
+                "namePattern": "a-go-project-.*",
+                "id": "20"
+            },
+            {
+                "namePattern": ".*",
+                "id": "30"
+            }
+        ]
+    }
+}
