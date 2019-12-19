@@ -72,8 +72,12 @@ public class TestRestHelper {
 	}
 
 	public void put(String url) {
+		put(url,null);
+	}
+
+	public void put(String url, Object request) {
 		markLastURL(url);
-		template.put(url, null);
+		template.put(url, request);
 	}
 
 	/**

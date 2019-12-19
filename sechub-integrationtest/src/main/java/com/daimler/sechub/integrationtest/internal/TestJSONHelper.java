@@ -25,6 +25,10 @@ public class TestJSONHelper {
 
 	private ObjectMapper mapper;
 
+	public ObjectMapper getMapper() {
+		return mapper;
+	}
+
 	public TestJSONHelper() {
 		// https://github.com/FasterXML/jackson-core/wiki/JsonParser-Features
 		JsonFactory jsonFactory = new JsonFactory();

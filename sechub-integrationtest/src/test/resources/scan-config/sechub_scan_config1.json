@@ -1,0 +1,42 @@
+{
+    "apiVersion": "1.0",
+    "type" : "scanConfig",
+    "comment" : "Our master setup for production environment update!",
+
+    "namePatternMappings": {
+        "checkmarx.newproject.presetid": [
+            {
+                "namePattern": "scenario3_.*",
+                "id": "200001",
+                "presetName" : "preset 1"
+            },
+            {
+                "namePattern": ".*",
+                "id": "200002",
+                "presetName" : "preset 2"
+            }
+        ],
+        "checkmarx.newproject.teamid": [
+            {
+                "namePattern": "other",
+                "id": "teamid1",
+                "teamName": "team 1"
+            },
+            {
+                "namePattern": "other_.*",
+                "id": "teamid2",
+                "teamName": "team 2"
+            },
+            {
+                "namePattern": ".*proj.*",
+                "id": "teamid3",
+                "teamName": "team 3"
+            },
+            {
+                "namePattern": ".*",
+                "id": "teamid4",
+                "teamName": "team 4"
+            }
+        ]
+    }
+}

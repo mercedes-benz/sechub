@@ -359,6 +359,18 @@ public class TestURLBuilder {
 		return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
 	}
 
+	public String buildChangeScanConfigURL() {
+		return buildUrl(API_ANONYMOUS, "integrationtest/scanconfig");
+	}
+
+	public String buildClearMetaDataInspectionURL() {
+		return buildUrl(API_ANONYMOUS, "integrationtest/metadata/inspections");
+	}
+
+	public String buildFetchMetaDataInspectionsURL() {
+		return buildUrl(API_ANONYMOUS, "integrationtest/metadata/inspections");
+	}
+
 
 
 }
