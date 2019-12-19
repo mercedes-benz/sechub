@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.metadata;
 
 import org.slf4j.Logger;
