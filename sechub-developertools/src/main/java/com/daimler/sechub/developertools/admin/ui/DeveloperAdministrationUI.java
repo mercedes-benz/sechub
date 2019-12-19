@@ -59,7 +59,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	private void start(String[] args) {
 
 		useNimbusLookAndFeel();
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
 
 		JFrame frame = new JFrame(env+" - SecHub");
 		ImageIcon imageIcon = new ImageIcon(DeveloperAdministrationUI.class.getClassLoader().getResource("sechub-logo.png"));

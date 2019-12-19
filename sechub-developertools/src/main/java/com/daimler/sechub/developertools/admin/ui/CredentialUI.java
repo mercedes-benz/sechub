@@ -93,7 +93,7 @@ public class CredentialUI {
 
 	private void useDifferentColorsForWellknownEnvironments() {
 		/* colourize for special environments - if set */
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
 		if ("PROD".equalsIgnoreCase(env) || "PRODUCTION".equalsIgnoreCase(env)) {
 			panel.setBackground(new Color(200, 110, 110));
 			panel.setForeground(Color.WHITE);
