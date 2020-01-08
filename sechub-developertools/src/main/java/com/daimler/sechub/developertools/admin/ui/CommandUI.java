@@ -28,6 +28,7 @@ import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJob
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
@@ -37,6 +38,7 @@ import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDeta
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
@@ -226,8 +228,10 @@ public class CommandUI {
 		JMenu massOperationsMenu = new JMenu("Mass operations");
 		menuBar.add(massOperationsMenu);
 		add(massOperationsMenu, new CreateProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new AssignUserToProjectMassCSVImportAction(context));
 		massOperationsMenu.addSeparator();
 		add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new UnassignUserFromProjectMassCSVImportAction(context));
 	}
 
 

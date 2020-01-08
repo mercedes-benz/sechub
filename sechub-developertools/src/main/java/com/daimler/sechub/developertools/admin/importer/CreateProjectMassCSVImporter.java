@@ -30,16 +30,16 @@ public class CreateProjectMassCSVImporter {
 
 	private void importRow(ImportCSVRow row) {
 		Iterator<ImportCSVColumn> it = row.columns.iterator();
-		String projectId = it.next().cell;
-		String owner = it.next().cell;
-		String users = it.next().cell;
+		String projectId = it.next().cell.trim();
+		String owner = it.next().cell.trim();
+		String users = it.next().cell.trim();
 
 		administration.createProject(projectId, "Project "+projectId, owner, Collections.emptyList());
 		if (users.isEmpty()) {
 			return;
 		}
 		for (String userId: users.split(",")) {
-			administration.assignUserToProject(userId, projectId);
+			administration.assignUserToProject(userId.trim(), projectId);
 		}
 	}
 
