@@ -1,0 +1,102 @@
+=== Scan configuration
+Sometimes it is necessary to provide special scan configuration setup, e.g. when
+initializing scan operations at server side.
+
+This can be done by a special scan configuration which is defined as JSON.
+
+[NOTE]
+====
+This feature was introduced with https://github.com/Daimler/sechub/issues/127[#127].
+At the moment it's only possible to define configuration by system property
+`sechub.scan.config.initial` or environment entry `SECHUB_SCAN_CONFIG_INITIAL`
+
+Do not confuse with `SecHub configuration` which is always on client side. 
+====
+
+
+==== General
+===== Name pattern ID providers
+Currently only `namePatternIdProviders` are provided, which contain an id and mappings from name patterns
+to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups. 
+
+[[scan-config-namepatternidprovider-example1]]
+[source, json]
+----
+include::scan_config_namepattern_provider_example1.json[]
+----
+
+ifdef::techdoc[]
+====== Technical details
+
+A caller can use the `ScanConfigService` to fetch an `NamePatternIdprovider` which is able to provide
+an ID for a given name. This is a very generic approach and callers must only use unique IDs to 
+have dedicated, name based id mappings.
+
+An ID can be any string. Given regular expressions are handled by https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html[JAVA regular expression Pattern] 
+endif::techdoc[]
+
+==== Overview of possible configurations
+[options="header",cols="1,1,1"]
+|===
+|Provider ID   |Provides   |Description   
+//----------------------
+|checkmarx.newproject.presetid   |name pattern   |checkmarx project names being matched by regexp are mapped to preset ID   
+|checkmarx.newproject.teamid   |name pattern   |checkmarx project names being matched by regexp are mapped to team ID   
+|===
+
+
+==== Checkmarx
+===== Project creation with dedicated checkmarx preset and team
+When a user starts a scan and a `checkmarx` project does not already exist, it will be created.
+So far so good.
+
+But maybe it is shall not be created with the default Checkmarx "preset" because in some scenarios this is not very suitable
+- e.g. when creating many projects, we do not want to assign all presetIds manually to the project.
+(A preset is something like a profile in Checkmarx where scope of scan can be defined at project level).
+
+Also there should be an automated assignment to dedicated teams when
+the project is new created.
+ 
+This can be done by name pattern providers `checkmarx.newproject.presetid` and `checkmarx.newproject.teamid`
+as shown in following example:
+
+*An example scan configuration:*
+
+[[scan-config-example1-checkmarx]]
+[source, json]
+----
+include::scan_config_example1_checkmarx.json[]
+----
+
+On lazy project creation time, depending on project name in sechub, after checkmarx project creation the project will automatically be assigned to the pattern specific presetId.
+
+*For example:*
+
+* project named in sechub with `my-java-project-marvelous1` will have preset id `100021` and will have teamId `e2e4e8f4-ba17-453b-b194-c736c605700d`.
+* project named in sechub with `a-go-project-super-cli` will have preset id `100031` and will have teamId `e2e4e8f4-ba17-453b-b194-d836c605700d`.
+* project named in sechub with `something-else`will have preset id `100001` and teamId `f2c4g8f4-ba17-453b-b194-c746c605700d`
+
+[IMPORTANT]
+====
+First matching part will be used! So ordering is important!
+====
+
+ifdef::techdoc[]
+====== Technical details
+Checkmarx install setup does use the `ScanConfigService` to provide `presetId` and `teamId` to adapter.
+Adapter will use `presetId` (if defined) and `teamId` _(mandatory as before)_ when project creation is necessary
+endif::techdoc[]
+
+===== How to obtain preset id
+Unfortunately the preset ID is necessary for REST calls, but not
+visible at Checkmarx UI.
+
+You can either directly access the DB or inspect the web page by
+web tools in you browser (e.g. enable network monitoring and change prest at UI...)  
+
+===== How to obtain team id
+Unfortunately the team ID is necessary for REST calls, but not
+visible at Checkmarx UI.
+
+You can either directly access the DB or inspect the web page by
+web tools in you browser (e.g. enable network monitoring and change team at UI...)  
