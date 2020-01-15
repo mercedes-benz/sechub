@@ -5,8 +5,32 @@
 === Long running transactions
 There could be a problem about long running transactions.
 
+
 === Domain messaging system
-==== Current implementation
+
+==== Authorization
+At the moment the domain `auth` is not 100% correct implemented
+respectively used more as layer that being a domain having a bounded context.
+
+*Explanation:*
+
+Inside project `sechub-authorizhation` spring boot auth handling is
+defined. We got our own database table starting with "AUTH_" and
+communication is done by events. So far so good. It works very well 
+at the moment.
+
+But... this works only because we currently have ONE self contained
+system. Spring boot uses the `UserDetailService` defined inside this project.
+If we decide to separate {sechub} into different deployment
+units, we must either use the project as a library for deployed parts
+(so more a "layer") or we introduce a possiblitiy for other domains
+to get authorization info from this one.
+
+As long as we do not separate and have all contained in ONE application
+this is not a problem. When separation must be done, we need a concept
+to change auth handling in adequate way.
+
+==== Current event bus implementation
 Currently the domain messaging is done by a simple observer pattern. +
 It's working, is easy to maintain, simple but has some caveats:
 
