@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-defines-project-mockdata]]
+When other systems integrate sechub into their live cylce (this means not a build server integration,
+but an integration from another product...) 
+they also want to integrate into their integration tests as well - so a special environment is 
+necessary an `INT environment`. 
+
+
+When using commercial security products it can happen that integration tests will lead to additional
+license costs. To prevent this the `INT environment` can be setup to use mocked adapters. These 
+adapters will not communicate with the real security products but instead return mocked product
+results. All logic, every behaviour inside SecHub is exactly the same except the communication with
+the security product. This technique is used by SecHub for integration testing itself.
+
+[IMPORTANT]
+====
+{sechub} must be started with `mocked_products` profile activated
+to have this enabled! 
+====
+
+Tests/Testers have the possibility to setup wanted `traffic-light` result on their {sechub} 
+projects by REST API.
+ 
+* *green* will contain only green results, 
+* *yellow* shall contain green and yellow results and
+* *red* will contain green, yellow and red ones.

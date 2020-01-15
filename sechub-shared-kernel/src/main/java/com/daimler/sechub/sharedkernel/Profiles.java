@@ -22,6 +22,12 @@ public class Profiles {
 	public static final String POSTGRES="postgres";
 
 	public static final String MOCKED_NOTIFICATIONS="mocked_notifications";
+	
+	/**
+	 * This profile enables mocked product adapters and also the possibility to define mock data
+	 * at project level.
+	 */
+	public static final String MOCKED_PRODUCTS="mocked_products";
 
 	/**
 	 * Special profile for integration tests (see project "sechub-integrationtest")

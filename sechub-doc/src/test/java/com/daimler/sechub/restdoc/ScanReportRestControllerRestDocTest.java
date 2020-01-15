@@ -30,15 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.scan.HTMLScanResultReportModelBuilder;
-import com.daimler.sechub.domain.scan.SecHubResultService;
-import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
-import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
-import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
-import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
@@ -59,26 +54,10 @@ public class ScanReportRestControllerRestDocTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private CreateScanReportService mockedReportService;
-
-	@MockBean
 	private DownloadScanReportService downloadReportService;
 
 	@MockBean
-	SecHubResultService secHubResultService;
-
-	@MockBean
-	ReportProductExecutionService reportProductExecutionService;
-
-	@MockBean
-	ScanReportTrafficLightCalculator trafficLightCalculator;
-
-	@MockBean
-	ScanReportRepository reportRepository;
-
-	@MockBean
 	HTMLScanResultReportModelBuilder modelBuilder;
-
 
 	private UUID randomUUID;
 

@@ -371,6 +371,14 @@ public class TestURLBuilder {
 		return buildUrl(API_ANONYMOUS, "integrationtest/metadata/inspections");
 	}
 
+	public String buildSetProjectMockConfiguration(String projectId) {
+		return buildUrl(API_PROJECT, projectId, "mockdata");
+	}
+
+	public String buildGetProjectMockConfiguration(String projectId) {
+		return buildUrl(API_PROJECT, projectId, "mockdata");
+	}
+
 
 
 }

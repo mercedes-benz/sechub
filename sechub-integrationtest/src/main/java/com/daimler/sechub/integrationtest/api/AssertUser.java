@@ -439,6 +439,15 @@ public class AssertUser extends AbstractAssert {
 		return this;
 	}
 
+	public AssertUser canSetMockConfiguration(TestProject project, String json) {
+		as(user).setProjectMockConfiguration(project,json);
+		return this;
+	}
+
+	public void canNotSetMockConfiguration(TestProject project, String json, HttpStatus expected) {
+		expectHttpFailure(()-> as(user).setProjectMockConfiguration(project,json),expected);
+	}
+
 
 
 

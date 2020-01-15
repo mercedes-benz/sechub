@@ -36,7 +36,7 @@ public class AssignUserToProjectMassCSVImporter {
 			return;
 		}
 		for (String userId: users.split(",")) {
-			administration.assignUserToProject(userId.trim(), projectId);
+			administration.assignUserToProject(userId.trim().toLowerCase(), projectId);
 		}
 	}
 

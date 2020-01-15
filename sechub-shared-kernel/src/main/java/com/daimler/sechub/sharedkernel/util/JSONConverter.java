@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -42,14 +43,20 @@ public class JSONConverter {
 		 */
 		mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
+		/* we accept enums also case insensitive - e.g Traffic light shall be accesible by "GREEN" but
+		 * also "green"...
+		 */
+		mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+		
 		// but we do NOT use SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED !
 		// reason: otherwise jackson does all single ones write as not being an array which comes up to problems agani
 		mapper.disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED);
 		
-		// http://www.baeldung.com/jackson-ignore-null-fields
-		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.setSerializationInclusion(Include.NON_ABSENT);
 		// http://www.baeldung.com/jackson-optional
 		mapper.registerModule(new Jdk8Module());
+		
+		
 	}
 
 	public String toJSON(Object object) throws JSONConverterException {

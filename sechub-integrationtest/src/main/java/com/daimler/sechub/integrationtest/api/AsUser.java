@@ -451,6 +451,18 @@ public class AsUser {
 		return this;
 	}
 
+	public AsUser setProjectMockConfiguration(TestProject project, String json) {
+		String url = getUrlBuilder().buildSetProjectMockConfiguration(project.getProjectId());
+		getRestHelper().putJSon(url,json);
+		return this;
+	}
+
+	public String getProjectMockConfiguration(TestProject project1) {
+		String url = getUrlBuilder().buildGetProjectMockConfiguration(project1.getProjectId());
+		return getRestHelper().getJSon(url);
+	
+	}
+
 
 
 }
