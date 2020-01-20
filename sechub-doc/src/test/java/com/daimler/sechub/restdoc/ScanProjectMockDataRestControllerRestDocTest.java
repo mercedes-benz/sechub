@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,17 +27,21 @@ import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfigurationService;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataRestController;
+import com.daimler.sechub.sharedkernel.Profiles;
+import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanProjectMockDataRestController.class)
 @ContextConfiguration(classes= {ScanProjectMockDataRestController.class, ScanProjectMockDataRestControllerRestDocTest.SimpleTestConfiguration.class})
 @AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({Profiles.MOCKED_PRODUCTS,Profiles.TEST})
 public class ScanProjectMockDataRestControllerRestDocTest {
 
 	private static final String PROJECT1_ID = "project1";
@@ -59,21 +64,18 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 		config.setWebScan(new ScanMockData(TrafficLight.YELLOW));
 		config.setInfraScan(new ScanMockData(TrafficLight.GREEN));
 		
-		/* prepare */
-//		when(configService.defineProjectMockDataConfiguration(eq(PROJECT1_ID),eq(""));
-		
 		/* @formatter:off */
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		put(https(PORT_USED).buildSetProjectMockConfiguration(PROJECT1_ID)).
+	    		put(https(PORT_USED).buildSetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement()),PROJECT1_ID).
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
-	    			contentType(MediaType.APPLICATION_JSON_VALUE).content(config.toJSON())
+	    			contentType(MediaType.APPLICATION_JSON_VALUE).
+	    			content(config.toJSON())
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserDefinesProjectMockdata.class))
 
 	    					);
-
 	    /* @formatter:on */
 	}
 
@@ -92,14 +94,14 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 		/* @formatter:off */
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildGetProjectMockConfiguration(PROJECT1_ID)).
-        			accept(MediaType.APPLICATION_XHTML_XML).
+        		get(https(PORT_USED).buildGetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement()),PROJECT1_ID).
+        			accept(MediaType.APPLICATION_JSON_VALUE).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).  /*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andExpect(content().contentType("text/html;charset=UTF-8")).
-        			andExpect(content().encoding("UTF-8")).
         			andExpect(jsonPath("$.codeScan.result").value("RED")).
+        			andExpect(jsonPath("$.webScan.result").value("YELLOW")).
+        			andExpect(jsonPath("$.infraScan.result").value("GREEN")).
 
         			andDo(document(RestDocPathFactory.createPath(UseCaseUserRetrievesProjectMockdata.class))
 
@@ -110,7 +112,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 
 	@TestConfiguration
 	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration{
+	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
 	}
 

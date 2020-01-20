@@ -24,3 +24,15 @@ projects by REST API.
 * *green* will contain only green results, 
 * *yellow* shall contain green and yellow results and
 * *red* will contain green, yellow and red ones.
+
+[source,json, title="Example mock configuration for web-,infra- and code-scans"]
+----
+include::../../../gen/examples/gen_example_project_mockdata_config1.json[]
+----
+
+Of course you can reduce mock to wanted parts only: 
+
+[source,json, title="Example mock configuration for code scan only"]
+----
+include::../../../gen/examples/gen_example_project_mockdata_config2.json[]
+----

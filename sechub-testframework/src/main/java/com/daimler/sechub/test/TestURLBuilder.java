@@ -5,6 +5,13 @@ import java.util.UUID;
 
 public class TestURLBuilder {
 
+	/**
+	 * This enum represents common used identifiers inside rest documentation. 
+	 * Use this enumeration for building urls inside your RestDoc tests and use parameters
+	 * for data, so documentation is using these parameters - see references for examples.
+	 * @author Albert Tregnaghi
+	 *
+	 */
 	public enum RestDocPathParameter {
 		JOB_UUID("jobUUID"),
 

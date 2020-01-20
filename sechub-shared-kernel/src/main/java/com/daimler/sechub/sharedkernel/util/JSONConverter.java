@@ -56,15 +56,24 @@ public class JSONConverter {
 		// http://www.baeldung.com/jackson-optional
 		mapper.registerModule(new Jdk8Module());
 		
-		
 	}
 
 	public String toJSON(Object object) throws JSONConverterException {
+		return toJSON(object,false);
+	}
+	
+	public String toJSON(Object object, boolean prettyPrinted) throws JSONConverterException {
 		if (object == null) {
 			return "null";
 		}
 		try {
-			byte[] bytes = mapper.writeValueAsBytes(object);
+			byte[] bytes;
+			if (false || prettyPrinted) {
+				bytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(object);
+			}else {
+				bytes = mapper.writeValueAsBytes(object);
+				
+			}
 			return new String(bytes);
 		} catch (JsonProcessingException e) {
 			throw new JSONConverterException("Was not able to convert " + object.getClass().getName() + " to JSON", e);

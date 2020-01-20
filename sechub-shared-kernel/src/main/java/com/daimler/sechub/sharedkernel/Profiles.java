@@ -12,6 +12,11 @@ public class Profiles {
 	public static final String PROD="prod";
 	public static final String TEST="test";
 	/**
+	 * Special profile suitable for development time - will show extreme debug information.
+	 * Should never be used in production 
+	 */
+	public static final String DEBUG="debug";
+	/**
 	 * H2 Database profile
 	 */
 	public static final String H2="h2";

@@ -34,7 +34,7 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProject
 public class ScanProjectMockDataRestController {
 
 	@Autowired
-	private ScanProjectMockDataConfigurationService configurationService;
+	private ScanProjectMockDataConfigurationService projectMockConfigurationService;
 
 
 	/* @formatter:off */
@@ -44,7 +44,7 @@ public class ScanProjectMockDataRestController {
 			@PathVariable("projectId") String projectId
 			) {
 		/* @formatter:on */
-		return configurationService.retrieveProjectMockDataConfiguration(projectId);
+		return projectMockConfigurationService.retrieveProjectMockDataConfiguration(projectId);
 
 	}
 	
@@ -56,7 +56,7 @@ public class ScanProjectMockDataRestController {
 			@RequestBody ScanProjectMockDataConfiguration configuration
 			) {
 		
-		configurationService.defineProjectMockDataConfiguration(projectId,configuration);
+		projectMockConfigurationService.defineProjectMockDataConfiguration(projectId,configuration);
 		/* @formatter:on */
 
 	}
