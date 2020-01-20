@@ -58,6 +58,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 		for (URI targetURI: targetURIs) {
 			/* @formatter:off */
 			NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
+					configure(createAdapterOptionsStrategy(context)).
 				    configure(new WebLoginConfigBuilderStrategy(context)).
 				    configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getScanResultCheckPeriodInMinutes()).

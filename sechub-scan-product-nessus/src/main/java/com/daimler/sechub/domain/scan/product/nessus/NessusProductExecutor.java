@@ -65,6 +65,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 		LOG.debug("Trigger nessus adapter execution for target type {} and setup {} ", targetType ,setup);
 		/* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
+				configure(createAdapterOptionsStrategy(context)).
 				configure(new TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(setup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).

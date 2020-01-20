@@ -18,6 +18,9 @@ import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
 import com.daimler.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.daimler.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
 import com.daimler.sechub.domain.scan.product.WebScanProductExecutionService;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfig;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigID;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportException;
@@ -64,6 +67,10 @@ public class ScanService implements SynchronMessageHandler {
 
 	@Autowired
 	ProjectScanLogService scanLogService;
+	
+	@Autowired
+	ScanProjectConfigService scanProjectConfigService;
+	
 
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName="success")
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName="failure")
@@ -144,7 +151,12 @@ public class ScanService implements SynchronMessageHandler {
 		UUID uuid = message.get(SECHUB_UUID);
 		SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
 		String executedBy = message.get(EXECUTED_BY);
-		return new SecHubExecutionContext(uuid, configuration,executedBy);
+		
+		SecHubExecutionContext executionContext = new SecHubExecutionContext(uuid, configuration,executedBy);
+		ScanProjectConfig projectMockConfig = scanProjectConfigService.get(configuration.getProjectId(), ScanProjectConfigID.MOCK_CONFIGURATION);
+		executionContext.getOptions().put(ScanProjectConfigID.MOCK_CONFIGURATION.getId(),projectMockConfig);
+		
+		return executionContext;
 	}
 
 	@Override
