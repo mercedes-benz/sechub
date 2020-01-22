@@ -39,5 +39,10 @@ public class MockedNetsparkerAdapter extends AbstractMockedAdapter<NetsparkerAda
 			throw new IllegalArgumentException("netsparker agent group name not found but:" + agentGroupName);
 		}
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 }

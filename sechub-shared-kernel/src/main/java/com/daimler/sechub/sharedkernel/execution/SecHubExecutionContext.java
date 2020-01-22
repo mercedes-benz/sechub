@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.sharedkernel.TypedKey;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
@@ -26,7 +27,7 @@ public class SecHubExecutionContext {
 	private SecHubConfiguration configuration;
 	private UUIDTraceLogID traceLogId;
 	private String executedBy;
-	private Map<String, Object> options = new HashMap<>();
+	private Map<String, Object> dataMap = new HashMap<>();
 
 	public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
 		this.sechubJobUUID = sechubJobUUID;
@@ -56,23 +57,37 @@ public class SecHubExecutionContext {
 	}
 
 	/**
-	 * 
-	 * @return a map containing information about options
+	 * Add additional data by typed key
+	 * @param <V>
+	 * @param id
+	 * @param value
 	 */
-	public Map<String, Object> getOptions() {
-		return options;
+	public <V> void putData(TypedKey<V> id, V value) {
+		if (id==null) {
+			return;
+		}
+		dataMap.put(id.getId(), value);
 	}
 
+	/**
+	 * Get additional data by typed key
+	 * @param <V>
+	 * @param id
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	public <V> V getOption(String key, Class<V> valueClass) {
-		Object value = options.get(key);
+	public <V> V getData(TypedKey<V> id) {
+		if (id==null) {
+			return null;
+		}
+		Object value = dataMap.get(id.getId());
 		if (value == null) {
 			return null;
 		}
-		if (valueClass.isAssignableFrom(value.getClass())) {
+		if (id.getValueClass().isAssignableFrom(value.getClass())) {
 			return (V) value;
 		}
-		LOG.error("Wrong usage in code: found entry for key '{}', but type '{}' found instead of wanted '{}'",key,value.getClass(),valueClass);
+		LOG.error("Wrong usage in code: found entry for key '{}', but type '{}' found instead of wanted '{}'",id.getId(),value.getClass(),id.getValueClass());
 		return null;
 	}
 

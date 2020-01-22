@@ -12,7 +12,7 @@ public enum AdapterOptionKey {
 	CLIENT_HTTP_REQUEST_INTERCEPTOR(ClientHttpRequestInterceptor.class),
 	
 	/**
-	 * Option contains mock configuration result (lower cased) - so "green", "yellow", "red" or 
+	 * Option contains mock configuration result (lower cased) - so "green", "yellow", "red" or null... 
 	 */
 	MOCK_CONFIGURATION_RESULT(String.class);
 	

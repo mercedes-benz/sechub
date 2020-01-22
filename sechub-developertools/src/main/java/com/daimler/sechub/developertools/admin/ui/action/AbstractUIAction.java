@@ -87,7 +87,7 @@ public abstract class AbstractUIAction extends AbstractAction{
 	}
 
 	/**
-	 * Shows an input dialog for user. Last entered values for given idenifier will be shown
+	 * Shows an input dialog for user (one liner). Last entered values for given idenifier will be shown
 	 * @param message
 	 * @param identifier
 	 * @return
@@ -95,6 +95,21 @@ public abstract class AbstractUIAction extends AbstractAction{
 	protected Optional<String> getUserInput(String message, InputCacheIdentifier identifier) {
 
 		Optional<String> x = getContext().getDialogUI().getUserInput(message,inputCache.get(identifier));
+		if (x.isPresent() && identifier!=null) {
+			inputCache.set(identifier, x.get());
+		}
+		return x;
+	}
+	
+	/**
+	 * Shows an input dialog for user (multi line). Last entered values for given idenifier will be shown
+	 * @param message
+	 * @param identifier
+	 * @return
+	 */
+	protected Optional<String> getUserInputFromTextArea(String message, InputCacheIdentifier identifier) {
+
+		Optional<String> x = getContext().getDialogUI().getUserInputFromTextArea(message,inputCache.get(identifier));
 		if (x.isPresent() && identifier!=null) {
 			inputCache.set(identifier, x.get());
 		}

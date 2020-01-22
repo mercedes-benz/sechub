@@ -42,12 +42,30 @@ public class ScanProjectConfigServiceTest {
 	}
 	
 	@Test
-	public void ensures_user_has_access() {
+	public void ensures_user_has_access_without_check_access_param() {
 		/* execute */
 		toTest.get("project-id1", ScanProjectConfigID.MOCK_CONFIGURATION);
 		
 		/* test */
 		verify(toTest.scanAssertService).assertUserHasAccessToProject("project-id1");
+	}
+	
+	@Test
+	public void ensures_user_has_access_with_param_true() {
+		/* execute */
+		toTest.get("project-id1", ScanProjectConfigID.MOCK_CONFIGURATION,true);
+		
+		/* test */
+		verify(toTest.scanAssertService).assertUserHasAccessToProject("project-id1");
+	}
+	
+	@Test
+	public void does_NOT_ensures_user_has_access_with_param_false() {
+		/* execute */
+		toTest.get("project-id1", ScanProjectConfigID.MOCK_CONFIGURATION,false);
+		
+		/* test */
+		verify(toTest.scanAssertService,never()).assertUserHasAccessToProject("project-id1");
 	}
 	
 	@Test

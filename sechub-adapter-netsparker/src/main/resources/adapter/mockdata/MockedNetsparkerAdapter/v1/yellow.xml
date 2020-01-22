@@ -1,0 +1,2462 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<netsparker-cloud generated="13/10/2019 02:36 AM">
+	<target>
+		<scan-id>c6f704d5f5b94338efd1aad20275cbbe</scan-id>
+		<url>http://php.testsparker.com/process.php?file=Generics/index.nsp</url>
+		<initiated>24/09/2019 02:27 PM</initiated>
+		<duration>00:09:09.5364751</duration>
+	</target>
+	<vulnerabilities>
+		    
+		    <vulnerability>
+                <LookupId>f311c55d-d195-4e39-c034-aad102fe38fc</LookupId>
+				<url>http://php.testsparker.com/artist.php?id=%3ciframe%20src%3d%22http%3a%2f%2fr87.com%2f%3f%22%3e%3c%2fiframe%3e</url>
+				<type>FrameInjection</type>
+				<name>Frame Injection</name>
+				<severity>Medium</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:56:55 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:32:59 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A10</owasp>
+					<wasc>38</wasc>
+					<cwe>601</cwe>
+					<capec></capec>
+					<pci32>6.5.1</pci32>
+					<hipaa>164.308(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+						<cvss>
+							<vector>CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:N/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss>
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="id" type="Querystring" value="&amp;lt;iframe&amp;#32;src=&amp;quot;http://r87.com/?&amp;quot;&amp;gt;&amp;lt;/iframe&amp;gt;" vulnerable="vulnerable" />
+							</parameters>
+						<content><![CDATA[GET /artist.php?id=%3ciframe%20src%3d%22http%3a%2f%2fr87.com%2f%3f%22%3e%3c%2fiframe%3e HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>1049,8462</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=142
+Content-Length: 2967
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:32:58 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><link type="text/css" href="Generics/style.css" rel="stylesheet"/>
+<body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="artist.php#">Artist Service</a></h2>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+					<p>
+                    
+<h3>Results: <iframe src="http://r87.com/?"></iframe></h3></br>
+
+no rows returned 
+                    </p>
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud detected frame injection, which occurs when a frame on a vulnerable web page displays another web page via a user-controllable input.</p>]]></description>
+				<impact><![CDATA[<div>An attacker might use this vulnerability to redirect users to other malicious websites that are used for phishing and similar attacks.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div><ul><li>Where possible do not use users' input for URLs.</li><li>If you definitely need dynamic URLs, make a list of valid accepted URLs and do not accept other URLs.</li><li>Ensure that you only accept URLs which are located on accepted domains.</li></ul></div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross_Frame_Scripting'><i class='icon-external-link'></i>OWASP - Cross Frame Scripting</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>89292796-921d-4156-baf0-aad102fdc37d</LookupId>
+				<url>http://php.testsparker.com/hello.php?name=%3ciframe%20src%3d%22http%3a%2f%2fr87.com%2f%3f%22%3e%3c%2fiframe%3e</url>
+				<type>FrameInjection</type>
+				<name>Frame Injection</name>
+				<severity>Medium</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:56:25 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:32:27 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A10</owasp>
+					<wasc>38</wasc>
+					<cwe>601</cwe>
+					<capec></capec>
+					<pci32>6.5.1</pci32>
+					<hipaa>164.308(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+						<cvss>
+							<vector>CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:N/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>4.7</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss>
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="name" type="Querystring" value="&amp;lt;iframe&amp;#32;src=&amp;quot;http://r87.com/?&amp;quot;&amp;gt;&amp;lt;/iframe&amp;gt;" vulnerable="vulnerable" />
+							</parameters>
+						<content><![CDATA[GET /hello.php?name=%3ciframe%20src%3d%22http%3a%2f%2fr87.com%2f%3f%22%3e%3c%2fiframe%3e HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>275,0256</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Content-Length: 3017
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:32:27 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+								<h1 class="title"><a href="#">Hello Service </a></h1>
+					<p>
+                    Hello Visitor<br />
+<b>Parse error</b>:  syntax error, unexpected T_STRING in <b>C:\AppServ\www\hello.php(24) : eval()'d code</b> on line <b>1</b><br />
+20$str = 20 <iframe src="http://r87.com/?"></iframe>;20                    </p>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+v
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud detected frame injection, which occurs when a frame on a vulnerable web page displays another web page via a user-controllable input.</p>]]></description>
+				<impact><![CDATA[<div>An attacker might use this vulnerability to redirect users to other malicious websites that are used for phishing and similar attacks.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div><ul><li>Where possible do not use users' input for URLs.</li><li>If you definitely need dynamic URLs, make a list of valid accepted URLs and do not accept other URLs.</li><li>Ensure that you only accept URLs which are located on accepted domains.</li></ul></div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross_Frame_Scripting'><i class='icon-external-link'></i>OWASP - Cross Frame Scripting</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>415368a6-ceaf-4323-c198-aad102fe5790</LookupId>
+				<url>http://php.testsparker.com/artist.php?id=%25%7b%23context%5b%22com.opensymphony.xwork2.dispatcher.HttpServletResponse%22%5d.addHeader(%22a%22%2c268409241-3841)%7d</url>
+				<type>InternalServerError</type>
+				<name>Internal Server Error</name>
+				<severity>Low</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:57:02 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:33:06 +02:00</LastSeenDate>
+				<classification>
+					<owasp></owasp>
+					<wasc></wasc>
+					<cwe></cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.1.2</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="id" type="Querystring" value="%{#context[&amp;quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;quot;].addHeader(&amp;quot;a&amp;quot;,268409241-3841)}" vulnerable="vulnerable" />
+							</parameters>
+						<content><![CDATA[GET /artist.php?id=%25%7b%23context%5b%22com.opensymphony.xwork2.dispatcher.HttpServletResponse%22%5d.addHeader(%22a%22%2c268409241-3841)%7d HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>500</status-code>
+							<duration>246,0698</duration>
+							<content><![CDATA[HTTP/1.0 500 Internal Server Error
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Connection: close
+Content-Length: 1312
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:33:08 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><link type="text/css" href="Generics/style.css" rel="stylesheet"/>
+<body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="artist.php#">Artist Service</a></h2>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+					<p>
+                    
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud identified an internal server error.</p><p>The server responded with an HTTP status 500, indicating there is a server-side error. Reasons may vary, and the behavior should be analyzed carefully. If Netsparker Cloud is able to find a security issue in the same resource, it will report this as a separate vulnerability.</p>]]></description>
+				<impact><![CDATA[<div>The impact may vary depending on the condition. Generally this indicates poor coding practices, not enough error checking, sanitization and whitelisting. However, there might be a bigger issue, such as SQL injection. If that's the case, Netsparker Cloud will check for other possible issues and report them separately.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Analyze this issue and review the application code in order to handle unexpected errors; this should be a generic practice, which does not disclose further information upon an error. All errors should be handled server-side only.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>e9a72fdf-0037-4e2d-9b63-aad102fa2082</LookupId>
+				<url>http://php.testsparker.com/auth/login.php</url>
+				<type>AutoCompleteEnabled</type>
+				<name>Autocomplete Enabled</name>
+				<severity>Low</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:26 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:29 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>15</wasc>
+					<cwe>16</cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.1.2</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET /auth/login.php HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/auth/
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>101,9089</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Set-Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448; path=/
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Pragma: no-cache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Content-Length: 3117
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="../process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="../hello.php?name=Visitor">Hello</a></li>
+			<li><a href="../products.php?pro=url">Products</a></li>
+			<li><a href="../process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="../process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+								<h1 class="title"><a href="#">Login Area</a></h1>
+					<p>
+                    Enter your credentials (admin / admin123456)
+    <br/>
+    <form method="POST" action="control.php">
+      Username: <input type="text" name="username"/>
+      <br/>
+      Password:&nbsp;&nbsp;<input type="password" name="password"/>
+<!-- Test credentials -->
+<!-- Password: admin123456 -->
+      <br/>
+      <br/>
+      <input type="submit" value="SUBMIT">
+    </form>
+                    </p>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="../artist.php">
+							<div>
+								<input type="text" name="s" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="../artist.php?id=test">Artist Search</a></li>
+						<li><a href="../nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+				<li>
+
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+v
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="Identified&amp;#32;Field&amp;#32;Name" value="username" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud detected that autocomplete is enabled in one or more of the form fields which might contain sensitive information like "username", "credit card" or "CVV".</p>]]></description>
+				<impact><![CDATA[<p>If user chooses to save, data entered in these fields will be cached by the browser. An attacker who can access the victim's browser could steal this information. This is especially important if the application is commonly used in shared computers, such as cyber cafes or airport terminals.</p>]]></impact>
+				<remedial-actions><![CDATA[<div><ol><li>Add the attribute <code>autocomplete="off"</code> to the form tag or to individual "input" fields.</li><li>Find all instances of inputs that store private data and disable autocomplete. Fields which contain data such as "Credit Card" or "CCV" type data should not be cached. You can allow the application to cache usernames and remember passwords; however, in most cases this is not recommended.</li><li>Re-scan the application after addressing the identified issues to ensure all of the fixes have been applied properly.</li></ol></div>]]></remedial-actions>
+				<exploitation-skills><![CDATA[<div>First and foremost, attacker needs either physical access or user-level code execution rights for successful exploitation. Dumping all data from a browser can be fairly easy, and a number of automated tools exist to undertake this. Where the attacker cannot dump the data, he/she could still browse the recently visited websites and activate the autocomplete feature to see previously entered values.</div>]]></exploitation-skills>
+				<remedial-procedure></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://msdn.microsoft.com/en-us/library/ms533032(VS.85).aspx'><i class='icon-external-link'></i>Using Autocomplete in HTML Forms</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>d5e038c4-4359-46ff-9c1f-aad102fa21d9</LookupId>
+				<url>http://php.testsparker.com/auth/login.php</url>
+				<type>CookieNotMarkedAsHttpOnly</type>
+				<name>Cookie Not Marked as HttpOnly</name>
+				<severity>Low</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:27 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:30 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>15</wasc>
+					<cwe>16</cwe>
+					<capec>107</capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET /auth/login.php HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/auth/
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>101,9089</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Set-Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448; path=/
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Pragma: no-cache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Content-Length: 3117
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="../process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="../hello.php?name=Visitor">Hello</a></li>
+			<li><a href="../products.php?pro=url">Products</a></li>
+			<li><a href="../process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="../process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+								<h1 class="title"><a href="#">Login Area</a></h1>
+					<p>
+                    Enter your credentials (admin / admin123456)
+    <br/>
+    <form method="POST" action="control.php">
+      Username: <input type="text" name="username"/>
+      <br/>
+      Password:&nbsp;&nbsp;<input type="password" name="password"/>
+<!-- Test credentials -->
+<!-- Password: admin123456 -->
+      <br/>
+      <br/>
+      <input type="submit" value="SUBMIT">
+    </form>
+                    </p>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="../artist.php">
+							<div>
+								<input type="text" name="s" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="../artist.php?id=test">Artist Search</a></li>
+						<li><a href="../nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+				<li>
+
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+v
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="Identified&amp;#32;Cookie(s)" value="PHPSESSID" />
+							<info name="Cookie&amp;#32;Source" value="HTTP&amp;#32;Header" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a cookie not marked as HTTPOnly.</p>
+<p>HTTPOnly cookies cannot be read by client-side scripts, therefore marking a cookie as HTTPOnly can provide an additional layer of protection against cross-site scripting attacks.</p>]]></description>
+				<impact><![CDATA[<div>During a cross-site scripting attack, an attacker might easily access cookies and hijack the victim's session.</div>]]></impact>
+				<remedial-actions><![CDATA[<div>
+<ol>
+<li>See the remedy for solution.</li>
+<li>Consider marking all of the cookies used by the application as HTTPOnly. (<em>After these changes javascript code will not be able to read cookies.</em>)</li>
+</ol>
+</div>]]></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Mark the cookie as HTTPOnly. This will be an extra layer of defense against XSS. However this is not a silver bullet and will not protect the system against cross-site scripting attacks. An attacker can use a tool such as <a href="https://labs.portcullis.co.uk/tools/xss-tunnel/">XSS Tunnel</a> to bypass HTTPOnly protection.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.netsparker.com/security-cookies-whitepaper/#httpOnlyFlag'><i class='icon-external-link'></i>Netsparker - Security Cookies - HTTPOnly Flag</a></li><li><a target='_blank' href='https://www.owasp.org/index.php/HTTPOnly'><i class='icon-external-link'></i>OWASP HTTPOnly Cookies</a></li><li><a target='_blank' href='https://msdn.microsoft.com/en-us/library/system.web.httpcookie.httponly%28VS.80%29.aspx'><i class='icon-external-link'></i>MSDN - ASP.NET HTTPOnly Cookies</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>a8a0b6e1-f283-4f1a-99fe-aad102fa0ba2</LookupId>
+				<url>http://php.testsparker.com/process.php?file=Generics/contact.nsp</url>
+				<type>InsecureFrameExternal</type>
+				<name>Insecure Frame (External)</name>
+				<severity>Low</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:21 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:27 +02:00</LastSeenDate>
+				<classification>
+					<owasp></owasp>
+					<wasc></wasc>
+					<cwe></cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.1.2</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="file" type="Querystring" value="Generics/contact.nsp" />
+							</parameters>
+						<content><![CDATA[GET /process.php?file=Generics/contact.nsp HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>390,611</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Content-Length: 3474
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	    
+                        <div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				
+
+			
+				<div class="entry">
+				<h1 class="title"><a href="/process.php?file=Generics/contact.nsp">Contact </a></h1>
+					<p>
+
+			<iframe width="540" height="350" frameborder="0" scrolling="no" marginheight="0"
+				style="float: left" marginwidth="0" src="http://maps.google.com/maps?q=mavituna+security&output=embed">
+			</iframe>
+
+
+
+
+  <strong><br />Test&Demonstration Site Ltd
+   <br />(reg. no. 123456)</strong><br />
+   <p>
+    Green House,
+    3478 Stone QX
+    Dos Tringulas
+    EK7 AP0<br />
+    USA<br />
+   </p>
+
+   <p>
+    <span>Tel: +44 123 456 7890</span><br />
+    <span>Fax: +44 123 456 7891</span></p>
+   <p>
+
+<p>
+				E-mail: test@testsparker.com</b></a></p>
+					</p>
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>	<!-- process.php load pages from path of the website. -->
+	<!-- FIXME: File / directory permissions -->
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="Frame&amp;#32;Source(s)" value="http://maps.google.com/maps?q=mavituna+security&amp;amp;output=embed" />
+							<info name="Parsing&amp;#32;Source" value="DOM&amp;#32;Parser" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified an external insecure or misconfigured iframe.</p>]]></description>
+				<impact><![CDATA[<div>
+<p><span style="font-weight: 400;">IFrame sandboxing enables a set of additional restrictions for the content within a frame in order to restrict its potentially malicious code from causing harm to the web page that embeds it.</span></p>
+<p><span style="font-weight: 400;"><br /></span><span style="font-weight: 400;">The Same Origin Policy (SOP) will prevent JavaScript code from one origin from accessing   properties and functions - as well as HTTP responses - of different origins. The access is only allowed if the protocol, port and also the domain match exactly.</span></p>
+<p> </p>
+<p><span style="font-weight: 400;">Here is an example, the URLs below all belong to the same origin as </span><em><span style="font-weight: 400;">http://site.com</span></em><span style="font-weight: 400;"> :        </span></p>
+<p style="padding-left: 30px;"><em><span style="font-weight: 400;">http://site.com</span></em><em><span style="font-weight: 400;"><br /></span></em><em><span style="font-weight: 400;">http://site.com/</span></em><em><span style="font-weight: 400;"><br /></span></em><em><span style="font-weight: 400;">http://site.com/my/page.html</span></em><span style="font-weight: 400;"><br /><br /></span></p>
+<p><span style="font-weight: 400;">Whereas the URLs mentioned below aren't from the same origin as </span><em><span style="font-weight: 400;">http://site.com</span></em><span style="font-weight: 400;"> :</span><span style="font-weight: 400;">          </span></p>
+<p style="padding-left: 30px;"><em><span style="font-weight: 400;">http://www.site.com  </span></em> <em><span style="font-weight: 400;">(a sub domain)</span></em><em><span style="font-weight: 400;"><br /></span></em><em><span style="font-weight: 400;">http://site.org      </span></em>      <em><span style="font-weight: 400;">(different top level domain)</span></em><em><span style="font-weight: 400;"><br /></span></em><em><span style="font-weight: 400;">https://site.com  </span></em>       <em><span style="font-weight: 400;">(different protocol)</span></em><em><span style="font-weight: 400;"><br /></span></em><em><span style="font-weight: 400;">http://site.com:8080  </span></em> <em><span style="font-weight: 400;">(different port)</span></em><em><span style="font-weight: 400;"><br /><br /></span></em></p>
+<p><span style="font-weight: 400;">When the </span><code><span style="font-weight: 400;">sandbox</span></code><span style="font-weight: 400;"> attribute is set, the iframe content is treated as being from a unique origin, even if its hostname, port and protocol match exactly. Additionally, sandboxed content is re-hosted in the browser with the following restrictions:</span><span style="font-weight: 400;"><br /></span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Any kind of plugin, such as ActiveX, Flash, or Silverlight will be disabled for the iframe.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Forms are disabled. The hosted content is not allowed to make forms post back to any target.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Scripts are disabled. JavaScript is disabled and will not execute.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Links to other browsing contexts are disabled. An anchor tag targeting different browser levels will not execute.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Unique origin treatment. All content is treated under a unique origin. The content is not able to traverse the DOM or read cookie information.</span></li>
+</ul>
+<p><span style="font-weight: 400;"><br /></span><span style="font-weight: 400;">When the </span><code><span style="font-weight: 400;">sandbox</span></code><span style="font-weight: 400;"> attribute is not set or not configured correctly, your application might be at risk.</span></p>
+<p><span style="font-weight: 400;"><br /></span><span style="font-weight: 400;">A compromised website that is loaded in such an insecure iframe might affect the parent web application. These are just a few examples of how such an insecure frame might affect its parent:</span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">It might trick the user into supplying a username and password to the site loaded inside the iframe.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">It might navigate the parent window to a phishing page.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">It might execute untrusted code.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">It could show a popup, appearing to come from the parent site.</span></li>
+</ul>
+<p><span style="font-weight: 400;"><br /></span><code><span style="font-weight: 400;">Sandbox</span></code><span style="font-weight: 400;"> containing a value of :</span></p>
+<ul>
+<li style="font-weight: 400;"><code><span style="font-weight: 400;">allow-same-origin</span></code><span style="font-weight: 400;"> will not treat it as a unique origin.</span></li>
+<li style="font-weight: 400;"><code><span style="font-weight: 400;">allow-top-navigation</span></code><span style="font-weight: 400;"> will allow code in the iframe to navigate the parent somewhere else, e.g. by changing parent.location.</span></li>
+<li style="font-weight: 400;"><code><span style="font-weight: 400;">allow-forms</span></code><span style="font-weight: 400;"> will allow form submissions from inside the iframe.</span></li>
+<li style="font-weight: 400;"><code><span style="font-weight: 400;">allow-popups</span></code><span style="font-weight: 400;"> will allow popups.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;"><code><span style="font-weight: 400;">allow-scripts</span></code><span style="font-weight: 400;"> will allow malicious script execution however it won't allow to create popups.</span><span style="font-weight: 400;"><br /></span></span></li>
+</ul>
+</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>
+<ul>
+<li>Apply sandboxing in inline frame
+<pre>&lt;iframe sandbox src="framed-page-url"&gt;&lt;/iframe&gt;
+</pre>
+</li>
+<li>For untrusted content, avoid the usage of <code>seamless</code> attribute and <code>allow-top-navigation</code>, <code>allow-popups</code> and <code>allow-scripts</code> in sandbox attribute.</li>
+</ul>
+</div>]]></remedial-procedure>
+				<remedy-references><![CDATA[<div><ul><li><a target='_blank' href='https://msdn.microsoft.com/en-us/hh563496.aspx'><i class='icon-external-link'></i>How to Safeguard your Site with HTML5 Sandbox</a></li><li><a target='_blank' href='https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/'><i class='icon-external-link'></i>Play safely in sandboxed IFrames</a></li></ul></div>]]></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/HTML5_Security_Cheat_Sheet'><i class='icon-external-link'></i>HTML5 Security Cheat Sheet</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>684daee8-6d63-493d-b65d-aad102fd657f</LookupId>
+				<url>http://php.testsparker.com/</url>
+				<type>TraceTrackIdentified</type>
+				<name>TRACE/TRACK Method Detected</name>
+				<severity>Low</severity>
+				<certainty>100</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:56:01 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:32:03 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>14</wasc>
+					<cwe>16</cwe>
+					<capec>107</capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.1.2</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>TRACE</method>
+							<parameters>
+									<parameter name="URI-BASED" type="FullUrl" value="" vulnerable="vulnerable" />
+							</parameters>
+						<content><![CDATA[TRACE / HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+Content-Length: 0
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-NS: N4161680S
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>202,4938</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=150
+Content-Type: message/http
+Transfer-Encoding: chunked
+Date: Tue, 24 Sep 2019 11:32:05 GMT
+
+TRACE / HTTP/1.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-NS: N4161680S
+Cache-Control: no-cache
+Accept-Language: en-us,en;q=0.5
+X-Scanner: Netsparker Cloud
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+Host: php.testsparker.com
+Content-Length: 0
+Accept-Encoding: gzip, deflate
+Connection: Keep-Alive
+
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud detected the TRACE/TRACK method is allowed.</p>]]></description>
+				<impact><![CDATA[<div>It is possible to bypass the HttpOnly cookie limitation and read the cookies in a cross-site scripting attack by using the TRACE/TRACK method within an XmlHttpRequest. This is not possible with modern browsers, so the vulnerability can only be used when targeting users with unpatched and old browsers.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Disable this method in all production systems. Even though the application is not vulnerable to cross-site scripting, a debugging feature such as TRACE/TRACK should not be required in a production system and therefore should be disabled.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='http://www.cgisecurity.com/lib/WH-WhitePaper_XST_ebook.pdf'><i class='icon-external-link'></i>Cross Site Tracing</a></li><li><a target='_blank' href='https://www.kb.cert.org/vuls/id/867593'><i class='icon-external-link'></i>US-CERT VU#867593</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>a18b5723-fbd3-4e16-9a4a-aad102fa1065</LookupId>
+				<url>http://php.testsparker.com/hello.php?name=Visitor</url>
+				<type>ProgrammingErrorMessages</type>
+				<name>Programming Error Message</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:22 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:24 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>13</wasc>
+					<cwe>210</cwe>
+					<capec>118</capec>
+					<pci32>6.5.5</pci32>
+					<hipaa>164.306(a), 164.308(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.18.1.3</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="name" type="Querystring" value="Visitor" />
+							</parameters>
+						<content><![CDATA[GET /hello.php?name=Visitor HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>296,8668</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Content-Length: 2984
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:21 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+								<h1 class="title"><a href="#">Hello Service </a></h1>
+					<p>
+                    Hello Visitor<br />
+<b>Parse error</b>:  syntax error, unexpected T_STRING in <b>C:\AppServ\www\hello.php(24) : eval()'d code</b> on line <b>1</b><br />
+20$str = 20 Visitor;20                    </p>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+v
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="IdentifiedErrorMessage" value="&amp;lt;b&amp;gt;Parse&amp;#32;error&amp;lt;/b&amp;gt;:&amp;#32;&amp;#32;syntax&amp;#32;error,&amp;#32;unexpected&amp;#32;T_STRING&amp;#32;in&amp;#32;&amp;lt;b&amp;gt;C:\AppServ\www\hello.php(24)&amp;#32;:&amp;#32;eval()&amp;apos;d&amp;#32;code&amp;lt;/b&amp;gt;&amp;#32;on&amp;#32;line&amp;#32;&amp;lt;b&amp;gt;1&amp;lt;/b&amp;gt;" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a programming error message.</p>]]></description>
+				<impact><![CDATA[<div>The error message may disclose sensitive information and this information can be used by an attacker to mount new attacks or to enlarge the attack surface. Source code, stack trace, etc. data may be disclosed. Most of these issues will be identified and reported separately by Netsparker Cloud.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Do not provide error messages on production environments. Save error messages with a reference number to a backend storage such as a log, text file or database, then show this number and a static user-friendly error message to the user.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>2f9cebe7-9c75-4a53-98f3-aad102f9f868</LookupId>
+				<url>http://php.testsparker.com/index</url>
+				<type>ApacheMultiViewsEnabled</type>
+				<name>Apache MultiViews Enabled</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:16 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:19 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>14</wasc>
+					<cwe>16</cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.9.4.1</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>HEAD</method>
+						<content><![CDATA[HEAD /index HTTP/1.1
+Host: php.testsparker.com
+Accept: netsparker/check
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>406</status-code>
+							<duration>555,7625</duration>
+							<content><![CDATA[HTTP/1.1 406 Not Acceptable
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+TCN: list
+Alternates: {"index.php" 1 {type application/x-httpd-php} {length 144}}
+Content-Type: text/html; charset=iso-8859-1
+Date: Tue, 24 Sep 2019 11:28:21 GMT
+Vary: negotiate
+
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud detected that Apache MultiViews is enabled.</p><p>This vulnerability can be used for locating and obtaining access to some hidden resources.</p>]]></description>
+				<impact><![CDATA[<div><div>An attacker can use this functionality to aid in finding hidden files in the site and potentially gather further sensitive information.</div></div>]]></impact>
+				<remedial-actions><![CDATA[<div><ol><li><p>Change your server configuration file. A recommended configuration for the requested directory should be in the following format:</p><pre class="xml code">&lt;Directory /{YOUR DIRECTORY}&gt;
+	Options FollowSymLinks 
+&lt;/Directory&gt;
+</pre><p>Remove the <em>MultiViews</em> option from configuration.</p></li></ol></div>]]></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>2d215ef1-05c9-40b0-97b4-aad102f9dffe</LookupId>
+				<url>http://php.testsparker.com/process.php?file=Generics/index.nsp</url>
+				<type>MissingXFrameOptionsHeader</type>
+				<name>Missing X-Frame-Options Header</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:10 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:13 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc></wasc>
+					<cwe>693</cwe>
+					<capec>103</capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="file" type="Querystring" value="Generics/index.nsp" />
+							</parameters>
+						<content><![CDATA[GET /process.php?file=Generics/index.nsp HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>296,8832</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=150
+Content-Length: 3092
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:12 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	    
+<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<div class="entry">
+				<h1 class="title"><a href="/process.php?file=Generics/index.nsp">Netsparker Testing Site </a></h1>
+                    This is a test and demonstration site for Netsparker , Next Generation Web
+            Application Security Scanner.
+            <p>Start Netsparker to scan this web site and let it find the vulnerabilities. </p>
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>	<!-- process.php load pages from path of the website. -->
+	<!-- FIXME: File / directory permissions -->
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Cloud detected a missing <code>X-Frame-Options</code> header which means that this website could be at risk of a clickjacking attack.</p>
+<p>The <code>X-Frame-Options</code> HTTP header field indicates a policy that specifies whether the browser should render the transmitted resource within a <code>frame</code> or an <code>iframe</code>. Servers can declare this policy in the header of their HTTP responses to prevent clickjacking attacks, which ensures that their content is not embedded into other pages or frames.</p>]]></description>
+				<impact><![CDATA[<div>
+<p>Clickjacking is when an attacker uses multiple transparent or opaque layers to trick a user into clicking on a button or link on a framed page when they were intending to click on the top level page. Thus, the attacker is "hijacking" clicks meant for their page and routing them to other another page, most likely owned by another application, domain, or both.</p>
+<p>Using a similar technique, keystrokes can also be hijacked. With a carefully crafted combination of stylesheets, iframes, and text boxes, a user can be led to believe they are typing in the password to their email or bank account, but are instead typing into an invisible frame controlled by the attacker.</p>
+</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>
+<ul>
+<li><span style="font-weight: 400;">Sending the proper X-Frame-Options in HTTP response headers that instruct the browser to not allow framing from other domains.</span>
+<ul>
+<li><span style="font-weight: 400;"><code>X-Frame-Options: DENY</code>  It completely denies to be loaded in frame/iframe.</span></li>
+<li><span style="font-weight: 400;"><code>X-Frame-Options: SAMEORIGIN</code> It allows only if the site which wants to load has a same origin.</span></li>
+<li><span style="font-weight: 400;"><code>X-Frame-Options: ALLOW-FROM <em>URL</em></code> It grants a specific URL to load itself in a iframe. However please pay attention to that, not all browsers support this. </span></li>
+</ul>
+</li>
+<li>Employing defensive code in the UI to ensure that the current frame is the most top level window.</li>
+</ul>
+</div>]]></remedial-procedure>
+				<remedy-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Clickjacking_Defense_Cheat_Sheet'><i class='icon-external-link'></i>Clickjacking Defense Cheat Sheet</a></li></ul></div>]]></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Clickjacking'><i class='icon-external-link'></i>Clickjacking</a></li><li><a target='_blank' href='http://caniuse.com/#search=X-Frame-Options'><i class='icon-external-link'></i>Can I Use X-Frame-Options</a></li><li><a target='_blank' href='https://www.netsparker.com/whitepaper-http-security-headers/#XFrameOptionsHTTPHeader'><i class='icon-external-link'></i>X-Frame-Options HTTP Header</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>e627b5fa-6940-49ff-9769-aad102f9de58</LookupId>
+				<url>http://php.testsparker.com/process.php?file=Generics/index.nsp</url>
+				<type>ApacheVersionDisclosure</type>
+				<name>Version Disclosure (Apache)</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:09 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:12 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>45</wasc>
+					<cwe>205</cwe>
+					<capec>170</capec>
+					<pci32></pci32>
+					<hipaa>164.306(a), 164.308(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.18.1.3</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="file" type="Querystring" value="Generics/index.nsp" />
+							</parameters>
+						<content><![CDATA[GET /process.php?file=Generics/index.nsp HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>296,8832</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=150
+Content-Length: 3092
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:12 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	    
+<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<div class="entry">
+				<h1 class="title"><a href="/process.php?file=Generics/index.nsp">Netsparker Testing Site </a></h1>
+                    This is a test and demonstration site for Netsparker , Next Generation Web
+            Application Security Scanner.
+            <p>Start Netsparker to scan this web site and let it find the vulnerabilities. </p>
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>	<!-- process.php load pages from path of the website. -->
+	<!-- FIXME: File / directory permissions -->
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="ExtractedVersion" value="2.2.8" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a version disclosure (Apache) in the target web server's HTTP response.</p>
+<p>This information might help an attacker gain a greater understanding of the systems in use and potentially develop further attacks targeted at the specific version of Apache.</p>]]></description>
+				<impact><![CDATA[<div>An attacker might use the disclosed information to harvest specific security vulnerabilities for the version identified.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Configure your web server to prevent information leakage from the <code>SERVER</code> header of its HTTP response.</div>]]></remedial-procedure>
+				<remedy-references><![CDATA[<div><ul><li><a target='_blank' href='https://httpd.apache.org/docs/2.2/mod/core.html#servertokens'><i class='icon-external-link'></i>Apache ServerTokens Directive</a></li></ul></div>]]></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>76d358e0-1bed-442d-978e-aad102f9ded5</LookupId>
+				<url>http://php.testsparker.com/process.php?file=Generics/index.nsp</url>
+				<type>PhpVersionDisclosure</type>
+				<name>Version Disclosure (PHP)</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:09 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:13 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>45</wasc>
+					<cwe>205</cwe>
+					<capec>170</capec>
+					<pci32></pci32>
+					<hipaa>164.306(a), 164.308(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.18.1.3</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+							<parameters>
+									<parameter name="file" type="Querystring" value="Generics/index.nsp" />
+							</parameters>
+						<content><![CDATA[GET /process.php?file=Generics/index.nsp HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Connection: Keep-Alive
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>296,8832</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=150
+Content-Length: 3092
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:12 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	    
+<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<div class="entry">
+				<h1 class="title"><a href="/process.php?file=Generics/index.nsp">Netsparker Testing Site </a></h1>
+                    This is a test and demonstration site for Netsparker , Next Generation Web
+            Application Security Scanner.
+            <p>Start Netsparker to scan this web site and let it find the vulnerabilities. </p>
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>	<!-- process.php load pages from path of the website. -->
+	<!-- FIXME: File / directory permissions -->
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="ExtractedVersion" value="5.2.6" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a version disclosure (PHP) in target web server's HTTP response.</p>
+<p>This information can help an attacker gain a greater understanding of the systems in use and potentially develop further attacks targeted at the specific version of PHP.</p>]]></description>
+				<impact><![CDATA[<div>An attacker might use the disclosed information to harvest specific security vulnerabilities for the version identified.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Configure your web server to prevent information leakage from the <code>SERVER</code> header of its HTTP response.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>677c4606-e054-418b-9cfe-aad102fa24c7</LookupId>
+				<url>http://php.testsparker.com/auth/login.php</url>
+				<type>CsrfInLoginFormDetected</type>
+				<name>[Possible] Cross-site Request Forgery in Login Form</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:27 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:30 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A8</owasp>
+					<wasc>9</wasc>
+					<cwe>352</cwe>
+					<capec>62</capec>
+					<pci32>6.5.9</pci32>
+					<hipaa>164.306(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET /auth/login.php HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/auth/
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>101,9089</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Set-Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448; path=/
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Pragma: no-cache
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Content-Length: 3117
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><body>
+<div id="wrapper">
+        
+	<div id="menu">
+		<ul>
+			<li><a href="../process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="../hello.php?name=Visitor">Hello</a></li>
+			<li><a href="../products.php?pro=url">Products</a></li>
+			<li><a href="../process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="../process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+								<h1 class="title"><a href="#">Login Area</a></h1>
+					<p>
+                    Enter your credentials (admin / admin123456)
+    <br/>
+    <form method="POST" action="control.php">
+      Username: <input type="text" name="username"/>
+      <br/>
+      Password:&nbsp;&nbsp;<input type="password" name="password"/>
+<!-- Test credentials -->
+<!-- Password: admin123456 -->
+      <br/>
+      <br/>
+      <input type="submit" value="SUBMIT">
+    </form>
+                    </p>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+
+
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	        
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="../artist.php">
+							<div>
+								<input type="text" name="s" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="../artist.php?id=test">Artist Search</a></li>
+						<li><a href="../nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+				<li>
+
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+v
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="Form&amp;#32;Action(s)" value="control.php" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a possible Cross-Site Request Forgery in login form.</p><p>In a login CSRF attack, the attacker forges a login request to an honest site using the attacker’s user name and password at that site. If the forgery succeeds, the honest server responds with a Set-Cookie header that instructs the browser to mutate its state by storing a session cookie, logging the user into the honest site as the attacker. This session cookie is used to bind subsequent requests to the user’s session and hence to the attacker’s authentication credentials. The attacker can later log into the site with his legitimate credentials and view private information like activity history that has been saved in the account.</p>]]></description>
+				<impact><![CDATA[<div><p>In this particular case CSRF affects the login form in which the impact of this vulnerability is decreased significantly. Unlike normal CSRF vulnerabilities this will only allow an attacker to exploit some complex XSS vulnerabilities otherwise it can't be exploited.</p><p>For example;</p><p>If there is a page that's different for every user (such as "edit my profile") and vulnerable to XSS (Cross-site Scripting) then normally it cannot be exploited. However if the login form is vulnerable, an attacker can prepare a special profile, force victim to login as that user which will trigger the XSS exploit. Again attacker is still quite limited with this XSS as there is no active session. However the attacker can leverage this XSS in many ways such as showing the same login form again but this time capturing and sending the entered username/password to the attacker.</p><p>In this kind of attack, attacker will send a link containing html as simple as the following in which attacker's user name and password is attached.</p><pre>&lt;form method="POST" action="http://honest.site/login"&gt;
+  &lt;input type="text" name="user" value="h4ck3r" /&gt;
+  &lt;input type="password" name="pass" value="passw0rd" /&gt;
+&lt;/form&gt;
+&lt;script&gt;
+    document.forms[0].submit();
+&lt;/script&gt;
+    </pre><p>When the victim clicks the link then form will be submitted automatically to the honest site and exploitation is successful, victim will be logged in as the attacker and consequences will depend on the website behavior.</p><ul><li><strong>Search History</strong><br><p>Many sites allow their users to opt-in to saving their search history and provide an interface for a user to review his or her personal search history. Search queries contain sensitive details about the user’s interests and activities and could be used by the attacker to embarrass the user, to steal the user’s identity, or to spy on the user. Since the victim logs in as the attacker, the victim's search queries are then stored in the attacker’s search history, and the attacker can retrieve the queries by logging into his or her own account.</p></li><li><strong>Shopping</strong><br><p>Merchant sites might save the credit card details in user's profile. In login CSRF attack, when user funds a purchase and enrolls the credit card, the credit card details might be added to the attacker's account.</p></li></ul></div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div><ul><li><p>Send additional information in each HTTP request that can be used to determine whether the request came from an authorized source. This "validation token" should be hard to guess for attacker who does not already have access to the user's account. If a request is missing a validation token or the token does not match the expected value, the server should reject the request.</p></li><li><p>If you are posting form in ajax request, custom HTTP headers can be used to prevent CSRF because the browser prevents sites from sending custom HTTP headers to another site but allows sites to send custom HTTP headers to themselves using XMLHttpRequest.</p><ul><li>For native XMLHttpRequest (XHR) object in JavaScript;<pre>xhr = new XMLHttpRequest();
+xhr.setRequestHeader('custom-header', 'valueNULL);
+</pre>For JQuery, if you want to add a custom header (or set of headers) to<p>a. <strong>individual request</strong></p><pre>$.ajax({
+    url: 'foo/bar',
+    headers: { 'x-my-custom-header': 'some value' }
+});
+</pre><p> <br></p><p>b. <strong>every request</strong></p><pre>$.ajaxSetup({
+    headers: { 'x-my-custom-header': 'some value' }
+});
+OR
+$.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader('x-my-custom-header', 'some value');
+    }
+});
+</pre></li></ul></li></ul></div>]]></remedial-procedure>
+				<remedy-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet'><i class='icon-external-link'></i>OWASP Cross-Site Request Forgery (CSRF) Prevention Cheat Sheet</a></li></ul></div>]]></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)'><i class='icon-external-link'></i>OWASP Cross-Site Request Forgery (CSRF)</a></li><li><a target='_blank' href='https://seclab.stanford.edu/websec/csrf/csrf.pdf'><i class='icon-external-link'></i>Robust Defenses for Cross-Site Request Forgery</a></li><li><a target='_blank' href='https://www.cs.uic.edu/~bprabaka/LoginCSRF.pdf'><i class='icon-external-link'></i>Identifying Robust Defenses for Login CSRF</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>df3fb967-c2aa-4f6a-9ade-aad102fa1844</LookupId>
+				<url>http://php.testsparker.com/nslookup.php</url>
+				<type>CsrfDetected</type>
+				<name>[Possible] Cross-site Request Forgery</name>
+				<severity>Low</severity>
+				<certainty>90</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:24 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:26 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A8</owasp>
+					<wasc>9</wasc>
+					<cwe>352</cwe>
+					<capec>62</capec>
+					<pci32>6.5.9</pci32>
+					<hipaa>164.306(a)</hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.14.2.5</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET /nslookup.php HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Referer: http://php.testsparker.com/process.php?file=Generics/index.nsp
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>390,611</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Content-Length: 3945
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><script type=text/javascript src = "" ></script>
+<body>
+<div id="wrapper">
+
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="#">Products </a></h2>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+					<p>
+                    <form action="/nslookup.php" method="POST">
+                           <table class="databases">
+            <tr>
+                <td colspan="3">
+                </td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px">
+                    <label>IP Adress:</label></td>
+                <td class="style3">
+                    <input type="text" size="40" name="param" id="param" class="input"/>
+                </td>
+                <td class="style1">
+                    <input type="submit" value="GO" class="button" id="submit"
+                        onclick="return submit_onclick()" dir="ltr" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px">
+                    &nbsp;</td>
+                <td class="style1" colspan="2">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px"></td>
+                <td class="style1" colspan="2">
+                </td>
+            </tr>
+        </table>
+                    </form>
+  					</p>
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	    
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="Form&amp;#32;Action(s)" value="/nslookup.php" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a possible Cross-Site Request Forgery.</p>
+<p>CSRF is a very common vulnerability. It's an attack which forces a user to execute unwanted actions on a web application in which the user is currently authenticated.</p>]]></description>
+				<impact><![CDATA[<div>Depending on the application, an attacker can mount any of the actions that can be done by the user such as adding a user, modifying content, deleting data. All the functionality that’s available to the victim can be used by the attacker. Only exception to this rule is a page that requires extra information that only the legitimate user can know (such as user’s password).</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>
+<ul>
+<li>
+<p>Send additional information in each HTTP request that can be used to determine whether the request came from an authorized source. This "validation token" should be hard to guess for attacker who does not already have access to the user's account. If a request is missing a validation token or the token does not match the expected value, the server should reject the request.</p>
+</li>
+<li>
+<p>If you are posting form in ajax request, custom HTTP headers can be used to prevent CSRF because the browser prevents sites from sending custom HTTP headers to another site but allows sites to send custom HTTP headers to themselves using XMLHttpRequest.</p>
+<ul>
+<li>For native XMLHttpRequest (XHR) object in JavaScript;
+<pre>xhr = new XMLHttpRequest();
+xhr.setRequestHeader('custom-header', 'valueNULL');
+</pre>
+For JQuery, if you want to add a custom header (or set of headers) to
+<p>a. <strong>individual request</strong></p>
+<pre>$.ajax({
+    url: 'foo/bar',
+    headers: { 'x-my-custom-header': 'some value' }
+});
+</pre>
+<p> </p>
+<p>b. <strong>every request</strong></p>
+<pre>$.ajaxSetup({
+    headers: { 'x-my-custom-header': 'some value' }
+});
+OR
+$.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader('x-my-custom-header', 'some value');
+    }
+});
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+</div>]]></remedial-procedure>
+				<remedy-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)'><i class='icon-external-link'></i>OWASP Cross-Site Request Forgery (CSRF) Prevention Cheat Sheet</a></li></ul></div>]]></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)'><i class='icon-external-link'></i>OWASP Cross-Site Request Forgery (CSRF)</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+		    <vulnerability>
+                <LookupId>a18532c3-8aad-4f58-9cad-aad102fa2341</LookupId>
+				<url>http://php.testsparker.com/nslookup.php</url>
+				<type>InternalIPLeakage</type>
+				<name>[Possible] Internal IP Address Disclosure</name>
+				<severity>Low</severity>
+				<certainty>50</certainty>
+				<confirmed>False</confirmed>
+                <state>Present</state>
+                <FirstSeenDate>23.09.2019 15:52:27 +02:00</FirstSeenDate>
+                <LastSeenDate>24.09.2019 13:28:31 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A6</owasp>
+					<wasc></wasc>
+					<cwe>200</cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+				    <owasppc></owasppc>
+				    <iso27001>A.18.1.4</iso27001>
+
+
+				</classification>				
+					<http-request>
+						<method>POST</method>
+							<parameters>
+									<parameter name="param" type="Post" value="3" />
+							</parameters>
+						<content><![CDATA[POST /nslookup.php HTTP/1.1
+Host: php.testsparker.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+Content-Length: 7
+Content-Type: application/x-www-form-urlencoded
+Cookie: PHPSESSID=5ed4387e692aabc378818db17d4b2448
+Referer: http://php.testsparker.com/nslookup.php
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+X-Scanner: Netsparker Cloud
+
+param=3]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>293,3991</duration>
+							<content><![CDATA[HTTP/1.1 200 OK
+Server: Apache/2.2.8 (Win32) PHP/5.2.6
+X-Powered-By: PHP/5.2.6
+Content-Length: 3995
+Content-Type: text/html
+Date: Tue, 24 Sep 2019 11:28:22 GMT
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Netsparker Test Web Site -  PHP</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+</head><script type=text/javascript src = "" ></script>
+<body>
+<div id="wrapper">
+
+	<div id="menu">
+		<ul>
+			<li><a href="process.php?file=Generics/index.nsp">Home</a></li>
+			<li><a href="hello.php?name=Visitor">Hello</a></li>
+			<li><a href="products.php?pro=url">Products</a></li>
+			<li><a href="process.php?file=Generics/about.nsp">About</a></li>
+			<li><a href="process.php?file=Generics/contact.nsp">Contact</a></li>
+			<li><a href="auth/">Login</a></li>
+		</ul>
+	</div>
+	<!-- end #menu -->
+	<div id="header">
+
+	</div>
+	<!-- end #header -->	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<div class="post">
+				<h2 class="title"><a href="#">Products </a></h2>
+
+				<div style="clear: both;">&nbsp;</div>
+				<div class="entry">
+					<p>
+                    <form action="/nslookup.php" method="POST">
+                           <table class="databases">
+            <tr>
+                <td colspan="3">
+                </td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px">
+                    <label>IP Adress:</label></td>
+                <td class="style3">
+                    <input type="text" size="40" name="param" id="param" class="input"/>
+                </td>
+                <td class="style1">
+                    <input type="submit" value="GO" class="button" id="submit"
+                        onclick="return submit_onclick()" dir="ltr" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px">
+                    &nbsp;</td>
+                <td class="style1" colspan="2">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 89px"></td>
+                <td class="style1" colspan="2">
+                </td>
+            </tr>
+        </table>
+                    </form>
+  <pre>Server:  UnKnown
+Address:  172.30.0.2
+
+</pre>					</p>
+				</div>
+			</div>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+	    
+	<div id="sidebar">
+			<ul>
+				<li>
+					<div id="search" >
+						<form method="get" action="artist.php">
+							<div>
+								<input type="text" name="id" id="search-text" value="" />
+								<input type="submit" id="search-submit" value="GO" />
+							</div>
+						</form>
+				
+					</div>
+					<div style="clear: both;">&nbsp;</div>
+				</li>
+				<li>
+					<h2>Tags</h2>
+					<p>netsparker xss web-application-security false-positive-free automated-exploitation sql-injection local/remote-file-inclusion</p>
+				</li>
+				<li>
+					<h2>Inner Pages</h2>
+					<ul>
+						<li><a href="artist.php?id=test">Artist Search</a></li>
+						<li><a href="nslookup.php">Lookup Service</a></li>
+					</ul>
+				</li>
+				<li>
+					<h2>Links</h2>
+					<ul>
+						<li><a href="http://aspnet.testsparker.com/">Aspnet Testsparker</a></li>
+						<li><a href="http://aspnet.testsparker.com/administrator/">Aspnet Testsparker Login</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+
+<div id="resetbar">
+	This website is automatically reset at every midnight (00:00 - UTC).
+</div>
+<div id="footer">
+		<p>Copyright (c) 2010 testsparker.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>	<!-- end #footer -->
+</body>
+</html>
+]]></content>
+						</http-response>
+									<extra-information>
+							<info name="ExtractedIPAddresses" value="172.30.0.2" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Cloud identified a possible internal IP address disclosure in the page.</p>
+<p>It was not determined if the IP address was that of the system itself or that of an internal network.</p>]]></description>
+				<impact><![CDATA[<div>There is no direct impact; however, this information can help an attacker identify other vulnerabilities or help during the exploitation of other identified vulnerabilities.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>First, ensure this is not a false positive. Due to the nature of the issue, Netsparker Cloud could not confirm that this IP address was actually the real internal IP address of the target web server or internal network. If it is, consider removing it.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+	</vulnerabilities>
+</netsparker-cloud>

@@ -23,6 +23,8 @@ public interface Adapter<C extends AdapterConfig> {
 
 	public String createAPIURL(String apiPart, C config, Map<String, String> map);
 
+	public int getAdapterVersion();
+	
 	/**
 	 * Starts and returns result 
 	 * 

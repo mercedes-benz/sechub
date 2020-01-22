@@ -31,6 +31,11 @@ public class MockedNessusAdapter extends AbstractMockedAdapter<NessusAdapterCont
 			throw new IllegalArgumentException("Nessus base url not as expected:" + productBaseURL);
 		}
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 
 }

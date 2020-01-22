@@ -15,9 +15,12 @@ import javax.swing.JProgressBar;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
@@ -207,11 +210,16 @@ public class CommandUI {
 		}
 		add(menu, new FetchMockMailsAction(context));
 		menu.addSeparator();
+		add(menu, new SetProjectMockDataConfigurationAction(context));
+		add(menu, new GetProjectMockConfigurationAction(context));
+		menu.addSeparator();
 
 		JMenu testDataMenu = new JMenu("Testdata");
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario2TestDataAction(context));
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
 		testDataMenu.addSeparator();
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));

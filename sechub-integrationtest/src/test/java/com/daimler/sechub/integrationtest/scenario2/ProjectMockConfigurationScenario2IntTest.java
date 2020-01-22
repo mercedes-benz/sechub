@@ -5,6 +5,8 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static org.junit.Assert.*;
 
+import java.util.Collections;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,8 @@ public class ProjectMockConfigurationScenario2IntTest {
 
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
-	private String mockDataCodeScanYellowLowerCased = "{\"codeScan\" : { \"result\" : \"yellow\"}}";
+	private String mockDataCodeScanYellowLowerCased = createMockScanConfig("codeScan",TrafficLight.YELLOW);
+	
 	private String mockDataEmpty = "{}";
 	
 	/* ------------------------------------------------*/
@@ -85,8 +88,89 @@ public class ProjectMockConfigurationScenario2IntTest {
 		expectHttpFailure(()-> as(USER_1).getProjectMockConfiguration(PROJECT_1),HttpStatus.NOT_FOUND);
 	}
 	
+	/* ------------------------------------------------*/
+	/* -----------------Adapter behaviour -------------*/
+	/* ------------------------------------------------*/
+	
+	@Test
+	public void default_setup__as_user_of_project_configure_mocks_trigger_web_scan_and_expect_wished_results() {
+		/* Step1: prepare */
+		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.YELLOW));
+
+		/* execute + test */
+		as(USER_1).createWebScanAndFetchScanData(PROJECT_1).isYellow();
+	
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.RED));
+
+		/* execute + test */
+		as(USER_1).createWebScanAndFetchScanData(PROJECT_1).isRed();
+		
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("webScan", TrafficLight.GREEN));
+
+		/* execute + test */
+		as(USER_1).createWebScanAndFetchScanData(PROJECT_1).isGreen();
+	
+	}
+	
+	@Test
+	public void default_setup__as_user_of_project_configure_mocks_trigger_code_scan_and_expect_wished_results() {
+		/* Step1: prepare */
+		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.YELLOW));
+
+		/* execute + test */
+		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isYellow();
+	
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.RED));
+
+		/* execute + test */
+		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isRed();
+		
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.GREEN));
+
+		/* execute + test */
+		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isGreen();
+	
+	}
+	
+	@Test
+	public void default_setup__as_user_of_project_configure_mocks_trigger_infra_scan_and_expect_wished_results() {
+		/* Step1: prepare */
+		as(SUPER_ADMIN).
+			assignUserToProject(USER_1, PROJECT_1).
+			updateWhiteListForProject(PROJECT_1, Collections.singletonList("https://fscan.intranet.example.org/"));
+		as(USER_1).
+			setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.YELLOW));
+
+		/* execute + test */
+		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isYellow();
+	
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.RED));
+
+		/* execute + test */
+		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isRed();
+		
+		/* Step2: prepare */
+		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.GREEN));
+
+		/* execute + test */
+		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isGreen();
+	
+	}
+	
+	
+	
 	private static String expect(String scanType, TrafficLight trafficLight) {
 		return "{\""+scanType+"\":{\"result\":\""+trafficLight.name()+"\"}}";
 	}
 
+	private static String createMockScanConfig(String scanType, TrafficLight trafficLight) {
+		return "{\""+scanType+"\" : { \"result\" : \""+trafficLight.name().toLowerCase()+"\"}}";
+	}
 }

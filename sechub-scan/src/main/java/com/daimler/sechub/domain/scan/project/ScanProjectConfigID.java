@@ -1,8 +1,8 @@
 package com.daimler.sechub.domain.scan.project;
 
-import com.daimler.sechub.sharedkernel.MustBeKeptStable;
-
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
+import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 
 @MustBeKeptStable("You can rename enums, but do not change id parts, because used inside DB!")
 public enum ScanProjectConfigID {

@@ -46,5 +46,10 @@ public class IntegrationTestAdapter implements Adapter<IntegrationTestAdapterCon
 	public String start(IntegrationTestAdapterConfig config) throws AdapterException {
 		return null;
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 666;
+	}
 
 }

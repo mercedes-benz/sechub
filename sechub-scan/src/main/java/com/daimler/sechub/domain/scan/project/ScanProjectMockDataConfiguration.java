@@ -1,5 +1,6 @@
 package com.daimler.sechub.domain.scan.project;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
@@ -65,5 +66,25 @@ public class ScanProjectMockDataConfiguration implements JSONable<ScanProjectMoc
 	public static ScanProjectMockDataConfiguration fromString(String json) {
 		return CONVERTER.fromJSON(json);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(apiVersion, codeScan, infraScan, webScan);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ScanProjectMockDataConfiguration other = (ScanProjectMockDataConfiguration) obj;
+		return Objects.equals(apiVersion, other.apiVersion) && Objects.equals(codeScan, other.codeScan) && Objects.equals(infraScan, other.infraScan)
+				&& Objects.equals(webScan, other.webScan);
+	}
+	
+	
 
 }

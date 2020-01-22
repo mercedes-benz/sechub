@@ -10,5 +10,7 @@ public enum InputCacheIdentifier{
 
 	WHITELIST_URI,
 
-	JOB_UUID
+	JOB_UUID,
+	
+	PROJECT_MOCK_CONFIG_JSON
 }

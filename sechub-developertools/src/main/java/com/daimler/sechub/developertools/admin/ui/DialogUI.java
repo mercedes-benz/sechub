@@ -68,6 +68,18 @@ public class DialogUI {
 		return Optional.ofNullable(JOptionPane.showInputDialog(frame, message, defaultValue));
 	}
 
+	public  Optional<String> getUserInputFromTextArea(String title,String content){
+		SimpleTextDialog dialog = new SimpleTextDialog(title);
+		dialog.setText(content);
+		dialog.setToolTip("Use this text as multi line editor");
+		dialog.setVisible(true);
+
+		if (! dialog.isOkPresssed()) {
+			return Optional.empty();/*NOSONAR*/
+		}
+		return Optional.ofNullable(dialog.getText());
+	}
+	
 	public List<String> editList(String title, List<String> list){
 		SimpleTextDialog dialog = new SimpleTextDialog(title);
 		StringBuilder sb= new StringBuilder();
