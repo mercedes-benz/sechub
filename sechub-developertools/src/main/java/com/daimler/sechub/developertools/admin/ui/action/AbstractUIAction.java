@@ -23,7 +23,7 @@ public abstract class AbstractUIAction extends AbstractAction{
 	private static final long serialVersionUID = 1L;
 	private static InputCache inputCache = new InputCache();
 	static {
-		inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
+		initializeDefaults();
 	}
 
 
@@ -35,6 +35,25 @@ public abstract class AbstractUIAction extends AbstractAction{
 	public AbstractUIAction(String text, UIContext context) {
 		this.context=context;
 		this.putValue(Action.NAME, text);
+	}
+
+	private static void initializeDefaults() {
+		inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
+		inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON, "{ \n" + 
+				"  \"apiVersion\" : \"1.0\",\n" + 
+				"\n" + 
+				"   \"codeScan\" : {\n" + 
+				"         \"result\" : \"yellow\"   \n" + 
+				"   },\n" + 
+				"   \"webScan\" : {\n" + 
+				"         \"result\" : \"green\"   \n" + 
+				"   },\n" + 
+				"   \"infraScan\" : {\n" + 
+				"         \"result\" : \"red\"   \n" + 
+				"   }\n" + 
+				" \n" + 
+				"}");
+		
 	}
 
 	protected UIContext getContext() {
@@ -126,5 +145,10 @@ public abstract class AbstractUIAction extends AbstractAction{
 		getContext().getDialogUI().warn(message);
 	}
 
+	/**
+	 * Executes a SecHub action and results are shown in developer admin UI
+	 * @param e
+	 * @throws Exception
+	 */
 	protected abstract void execute(ActionEvent e) throws Exception;
 }

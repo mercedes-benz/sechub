@@ -15,8 +15,6 @@ import javax.swing.JProgressBar;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
-import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.GetProjectMockConfigurationAction;
-import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
@@ -37,6 +35,8 @@ import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAc
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
@@ -159,6 +159,14 @@ public class CommandUI {
 		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
+		
+		menu.addSeparator();
+		
+		JMenu projectMockData = new JMenu("Mockdata");
+		menu.add(projectMockData);
+		
+		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
+		add(projectMockData, new GetProjectMockConfigurationAction(context));
 
 	}
 
