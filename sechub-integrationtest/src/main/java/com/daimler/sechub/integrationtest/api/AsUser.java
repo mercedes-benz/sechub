@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
+import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.test.TestURLBuilder;
@@ -48,7 +49,7 @@ public class AsUser {
 	}
 
 	/**
-	 * Accept the user wanting to signup
+	 * Upload given file
 	 *
 	 * @param userWantingToSignup
 	 * @return
@@ -58,6 +59,18 @@ public class AsUser {
 		getRestHelper().upload(getUrlBuilder().
 		    		buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
 		/* @formatter:on */
+		return this;
+	}
+	/**
+	 * Upload given resource, checksum will be automatically calculated
+	 *
+	 * @param userWantingToSignup
+	 * @return
+	 */
+	public AsUser upload(TestProject project, UUID jobUUID, String pathInsideResources) {
+		File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
+		String checkSum = TestAPI.createSHA256Of(uploadFile);
+		upload(project, jobUUID, uploadFile,checkSum);
 		return this;
 	}
 
@@ -291,6 +304,32 @@ public class AsUser {
 		/* okay report is available - so do downooad */
 		return getRestHelper().getJSon(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
 	}
+	
+	/**
+	 * When not changed by project specific mock data setup this will result in a RED traffic light result
+	 * @param project
+	 * @return execution result
+	 */
+	public AssertExecutionResult createWebScanAndFetchScanData(TestProject project) {
+		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.JSON_WEBSCAN_RED);
+		return AssertExecutionResult.assertResult(result);
+	}
+	
+	/**
+	 * When not changed by project specific mock data setup this will result in a RED traffic light result.<br><br>
+	 * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project to scan!
+	 * @param project
+	 * @return execution result
+	 */
+	public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
+		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
+		return AssertExecutionResult.assertResult(result);
+	}
+	
+	public AssertExecutionResult createCodeScanAndFetchScanData(TestProject project) {
+		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
+		return AssertExecutionResult.assertResult(result);
+	}
 
 	/**
 	 * Starts a webscan job for project (but job is not started)
@@ -330,7 +369,6 @@ public class AsUser {
 		}
 
 	}
-
 	/**
 	 *
 	 * @param project
@@ -449,6 +487,18 @@ public class AsUser {
 		String url = getUrlBuilder().buildAdminCancelsJob(jobUUID);
 		getRestHelper().post(url);
 		return this;
+	}
+
+	public AsUser setProjectMockConfiguration(TestProject project, String json) {
+		String url = getUrlBuilder().buildSetProjectMockConfiguration(project.getProjectId());
+		getRestHelper().putJSon(url,json);
+		return this;
+	}
+
+	public String getProjectMockConfiguration(TestProject project1) {
+		String url = getUrlBuilder().buildGetProjectMockConfiguration(project1.getProjectId());
+		return getRestHelper().getJSon(url);
+	
 	}
 
 

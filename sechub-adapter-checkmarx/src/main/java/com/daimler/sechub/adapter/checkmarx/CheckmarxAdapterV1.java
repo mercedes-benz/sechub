@@ -54,7 +54,10 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 		}
 
 	}
-
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 	private void handleUploadSourceCodeAndStartScan(CheckmarxContext context) throws AdapterException {
 		try {

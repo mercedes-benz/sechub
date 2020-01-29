@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.log.ProjectScanLogRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
@@ -35,6 +36,9 @@ public class ProjectDataDeleteService {
 
 	@Autowired
 	ScanReportRepository scanReportRepository;
+	
+	@Autowired
+	ScanProjectConfigRepository scanProjectConfigRepository;
 
 	@Autowired
 	UserInputAssertion assertion;
@@ -50,7 +54,8 @@ public class ProjectDataDeleteService {
 		productResultRepository.deleteAllResultsForProject(projectId);
 		scanReportRepository.deleteAllReportsForProject(projectId);
 		scanLogRepository.deleteAllLogDataForProject(projectId);
-
+		scanProjectConfigRepository.deleteAllConfigurationsForProject(projectId);
+		
 		LOG.info("Deleted all data (results,reports, scanlogs) for project:{}",logSanitizer.sanitize(projectId, 30));
 	}
 

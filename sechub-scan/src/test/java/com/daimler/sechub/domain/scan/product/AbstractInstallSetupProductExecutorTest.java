@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
+import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
@@ -219,6 +220,11 @@ public class AbstractInstallSetupProductExecutorTest {
 		@Override
 		protected InstallSetup getInstallSetup() {
 			return AbstractInstallSetupProductExecutorTest.this.installSetup;
+		}
+
+		@Override
+		protected ScanType getScanType() {
+			return null;
 		}
 		
 	}

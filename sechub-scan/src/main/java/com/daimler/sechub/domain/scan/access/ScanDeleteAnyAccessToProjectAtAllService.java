@@ -20,7 +20,7 @@ public class ScanDeleteAnyAccessToProjectAtAllService {
 
 
 	@Autowired
-	ScanAccessRepository repository;
+	ScanAccessRepository scanAccessRepository;
 
 	@Autowired
 	UserInputAssertion assertion;
@@ -33,7 +33,7 @@ public class ScanDeleteAnyAccessToProjectAtAllService {
 	public void deleteAnyAccessDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);
 
-		repository.deleteAnyAccessForProject(projectId);
+		scanAccessRepository.deleteAnyAccessForProject(projectId);
 
 		LOG.info("Deleted any access at all for project:{}",logSanitizer.sanitize(projectId, 30));
 	}

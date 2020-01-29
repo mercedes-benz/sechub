@@ -46,7 +46,7 @@ product suite and you are not sure if its compatible or the products have bugs.
 But _(at least currently)_ you have to write your own tests then.
 Following could be done:
 
-* Write some simple bash scripts which are using sechub client
+* Write some simple bash scripts which are using {sechub} client
 * Use `sechub-integrationtest` project as dependency and
    write some junit tests using TestAPI.
 

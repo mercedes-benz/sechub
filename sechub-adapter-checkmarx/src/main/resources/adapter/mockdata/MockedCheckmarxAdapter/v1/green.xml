@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CxXMLResults InitiatorName="Tim Herres" Owner="TFS_Test" ScanId="1000471" ProjectId="113" ProjectName="sechub-continous-integration" TeamFullPathOnReportDate="CxServer\SP\Company\sechub" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113" ScanStart="Thursday, October 11, 2018 4:25:39 PM" Preset="Checkmarx Default" ScanTime="00h:01m:33s" LinesOfCodeScanned="3651" FilesScanned="34" ReportCreationTime="Thursday, October 11, 2018 4:45:55 PM" Team="sechub" CheckmarxVersion="8.8.0.72 HF1" ScanComments="Attempt to perform scan on 10/11/2018 4:45:13 PM - No code changes were detected; sechub job:FALLBACK_TRACE_ID#256179899025653" ScanType="Incremental" SourceOrigin="LocalPath" Visibility="Private">
+  <Query id="3877" categories="NIST SP 800-53;AC-3 Access Enforcement (P1)" cweId="495" name="Private_Array_Returned_From_A_Public_Method" group="Java_Low_Visibility" Severity="Low" Language="Java" LanguageHash="0129784306302162" LanguageChangeDate="2018-09-05T00:00:00.0000000" SeverityIndex="1" QueryPath="Java\Cx\Java Low Visibility\Private Array Returned From A Public Method Version:1" QueryVersionCode="96316382">
+    <Result NodeId="10004710068" FileName="java/com/daimler/sechub/docgen/usecase/UseCaseModel.java" Status="Recurrent" Line="48" Column="26" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=68" SeverityIndex="1">
+      <Path ResultId="1000471" PathId="68" SimilarityId="852021487">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseModel.java</FileName>
+          <Line>48</Line>
+          <Column>26</Column>
+          <NodeId>1</NodeId>
+          <Name>groups</Name>
+          <Type></Type>
+          <Length>6</Length>
+          <Snippet>
+            <Line>
+              <Number>48</Number>
+              <Code>		private UseCaseGroup[] groups;/*SECHUB mockdata*/</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseModel.java</FileName>
+          <Line>60</Line>
+          <Column>11</Column>
+          <NodeId>2</NodeId>
+          <Name>groups</Name>
+          <Type></Type>
+          <Length>6</Length>
+          <Snippet>
+            <Line>
+              <Number>60</Number>
+              <Code>			return groups;</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+    <Result NodeId="10004710069" FileName="java/com/daimler/sechub/docgen/usecase/UseCaseModel.java" Status="Recurrent" Line="127" Column="18" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=69" SeverityIndex="1">
+      <Path ResultId="1000471" PathId="69" SimilarityId="515255598">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseModel.java</FileName>
+          <Line>127</Line>
+          <Column>18</Column>
+          <NodeId>1</NodeId>
+          <Name>next</Name>
+          <Type></Type>
+          <Length>4</Length>
+          <Snippet>
+            <Line>
+              <Number>127</Number>
+              <Code>			private int[] next;</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseModel.java</FileName>
+          <Line>193</Line>
+          <Column>12</Column>
+          <NodeId>2</NodeId>
+          <Name>next</Name>
+          <Type></Type>
+          <Length>4</Length>
+          <Snippet>
+            <Line>
+              <Number>193</Number>
+              <Code>				return next;</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+  <Query id="2756" categories="FISMA 2014;System And Information Integrity,NIST SP 800-53;AC-3 Access Enforcement (P1)" cweId="362" name="Race_Condition_Format_Flaw" group="Java_Low_Visibility" Severity="Low" Language="Java" LanguageHash="0129784306302162" LanguageChangeDate="2018-09-05T00:00:00.0000000" SeverityIndex="1" QueryPath="Java\Cx\Java Low Visibility\Race Condition Format Flaw Version:2" QueryVersionCode="81399663">
+    <Result NodeId="10004710055" FileName="java/com/daimler/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java" Status="Recurrent" Line="228" Column="27" FalsePositive="False" Severity="Low" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=55" SeverityIndex="1">
+      <Path ResultId="1000471" PathId="55" SimilarityId="-1470283610">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java</FileName>
+          <Line>228</Line>
+          <Column>27</Column>
+          <NodeId>1</NodeId>
+          <Name>format</Name>
+          <Type></Type>
+          <Length>1</Length>
+          <Snippet>
+            <Line>
+              <Number>228</Number>
+              <Code>		return dateFormat.format(new Date());</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+  <Query id="5274" cweId="778" name="Insufficient_Logging_of_Exceptions" group="Java_Best_Coding_Practice" Severity="Information" Language="Java" LanguageHash="0129784306302162" LanguageChangeDate="2018-09-05T00:00:00.0000000" SeverityIndex="0" QueryPath="Java\Cx\Java Best Coding Practice\Insufficient Logging of Exceptions Version:1" QueryVersionCode="116680451">
+    <Result NodeId="10004710107" FileName="java/com/daimler/sechub/docgen/messaging/DomainMessagingModel.java" Status="Recurrent" Line="125" Column="6" FalsePositive="False" Severity="Information" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=107" SeverityIndex="0">
+      <Path ResultId="1000471" PathId="107" SimilarityId="829926152">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/messaging/DomainMessagingModel.java</FileName>
+          <Line>125</Line>
+          <Column>6</Column>
+          <NodeId>1</NodeId>
+          <Name>catch</Name>
+          <Type></Type>
+          <Length>5</Length>
+          <Snippet>
+            <Line>
+              <Number>125</Number>
+              <Code>			} catch (Exception e) {</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+    <Result NodeId="10004710108" FileName="java/com/daimler/sechub/docgen/usecase/UseCaseModelDataCollector.java" Status="Recurrent" Line="88" Column="7" FalsePositive="False" Severity="Information" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=108" SeverityIndex="0">
+      <Path ResultId="1000471" PathId="108" SimilarityId="1582817454">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseModelDataCollector.java</FileName>
+          <Line>88</Line>
+          <Column>7</Column>
+          <NodeId>1</NodeId>
+          <Name>catch</Name>
+          <Type></Type>
+          <Length>5</Length>
+          <Snippet>
+            <Line>
+              <Number>88</Number>
+              <Code>				} catch (Exception e) {</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+    <Result NodeId="10004710109" FileName="java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java" Status="Recurrent" Line="137" Column="5" FalsePositive="False" Severity="Information" AssignToUser="" state="0" Remark="" DeepLink="https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000471&amp;projectid=113&amp;pathid=109" SeverityIndex="0">
+      <Path ResultId="1000471" PathId="109" SimilarityId="-1977688134">
+        <PathNode>
+          <FileName>java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</FileName>
+          <Line>137</Line>
+          <Column>5</Column>
+          <NodeId>1</NodeId>
+          <Name>catch</Name>
+          <Type></Type>
+          <Length>5</Length>
+          <Snippet>
+            <Line>
+              <Number>137</Number>
+              <Code>		} catch (IOException e) {</Code>
+            </Line>
+          </Snippet>
+        </PathNode>
+      </Path>
+    </Result>
+  </Query>
+</CxXMLResults>

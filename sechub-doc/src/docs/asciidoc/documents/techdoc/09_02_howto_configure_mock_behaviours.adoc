@@ -2,6 +2,7 @@
 [[section-howto-configure-mock-behaviours]]
 === Howto configure mock behaviours
 
+==== Default mock adapter used in sechub integration tests
 The `MockedAdapterSetupService` reads a JSON configfile from file path.
 
 Default file is located at `/sechub-other/mockdata/mockdata_setup.json`
@@ -13,4 +14,10 @@ Example:
 
 include::mockdata_setup_example1.adoc[]
 
+==== Project specific mock adapter behaviour
+Users can define a mock configuration via REST. This is
+convenient for integration tests from foreign systems. But there can
+*not* be any product specific configuration.
 
+For more details see <<sechub-doclink-uc-user-defines-project-mockdata,use case description>>
+or look at GitHub issue https://github.com/Daimler/sechub/issues/141[#141]  

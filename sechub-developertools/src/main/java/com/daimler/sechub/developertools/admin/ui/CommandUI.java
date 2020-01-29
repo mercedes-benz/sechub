@@ -18,6 +18,7 @@ import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.F
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
@@ -34,6 +35,8 @@ import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAc
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
@@ -156,6 +159,14 @@ public class CommandUI {
 		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
+		
+		menu.addSeparator();
+		
+		JMenu projectMockData = new JMenu("Mockdata");
+		menu.add(projectMockData);
+		
+		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
+		add(projectMockData, new GetProjectMockConfigurationAction(context));
 
 	}
 
@@ -207,11 +218,16 @@ public class CommandUI {
 		}
 		add(menu, new FetchMockMailsAction(context));
 		menu.addSeparator();
+		add(menu, new SetProjectMockDataConfigurationAction(context));
+		add(menu, new GetProjectMockConfigurationAction(context));
+		menu.addSeparator();
 
 		JMenu testDataMenu = new JMenu("Testdata");
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario2TestDataAction(context));
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
 		testDataMenu.addSeparator();
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));

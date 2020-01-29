@@ -63,7 +63,6 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 
 				SerecoVulnerability vulnerability = new SerecoVulnerability();
 				vulnerability.setType(type);
-
 				if ("Information".equalsIgnoreCase(severity)) {
 					severity = "info";
 				}

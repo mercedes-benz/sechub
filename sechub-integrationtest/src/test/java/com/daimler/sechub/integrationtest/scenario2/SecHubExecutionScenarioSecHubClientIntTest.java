@@ -41,8 +41,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* prepare */
 		as(SUPER_ADMIN).
-			assignUserToProject(USER_1, PROJECT_1).
-			updateWhiteListForProject(PROJECT_1, asList("https://fscan.intranet.example.org"));
+			assignUserToProject(USER_1, PROJECT_1);
 
 		assertUser(USER_1).
 			doesExist().
@@ -51,7 +50,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute + test */
 		as(USER_1).
 			withSecHubClient().
-				startAsynchronScanFor(PROJECT_1, CLIENT_JSON_INFRASCAN).
+				startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
 				assertJobTriggered();
 
 		/* @formatter:on */
@@ -74,7 +73,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* execute + test */
 		as(USER_1).
 			withSecHubClient().
-			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_INFRASCAN).
 			assertJobTriggered();
 
 		/* @formatter:on */

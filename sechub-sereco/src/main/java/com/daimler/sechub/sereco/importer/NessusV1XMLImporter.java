@@ -52,7 +52,7 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 			}else if (severityLevel==2){
 				severity = SerecoSeverity.MEDIUM;
 			}else {
-				severity = SerecoSeverity.MEDIUM;
+				severity = SerecoSeverity.HIGH;
 			}
 			vulnerability.setSeverity(severity);
 			vulnerability.setType(type);

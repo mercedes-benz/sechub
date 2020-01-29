@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-retrieves-project-mockdata]]
+
+User retrieves project mockdata - see <<sechub-doclink-uc-user-defines-project-mockdata,define project mockdata >> 
+
+[IMPORTANT]
+====
+{sechub} must be started with `mocked_products` profile activated
+to fetch this!
+====

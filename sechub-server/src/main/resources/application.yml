@@ -6,6 +6,15 @@ sechub:
         hostname:
           endswith: intranet.example.org
 spring:
+  jackson:
+    # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper
+    mapper: 
+      # see also JSONConverter class (used by sechub internally), we try have spring setup
+      # and JSONConverter in same way 
+      accept_case_insensitive_enums: true
+    serialization:
+      write_single_elem_arrays_unwrapped: false
+    default-property-inclusion: "non_absent"
   batch:
     job:
       # we do not want to have jobs started automatically (parameters needed etc.)
