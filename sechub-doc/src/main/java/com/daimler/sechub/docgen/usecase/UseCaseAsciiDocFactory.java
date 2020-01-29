@@ -14,7 +14,7 @@ public class UseCaseAsciiDocFactory {
 	}
 	
 	public static String createLinkId(UseCaseRestDocEntry entry) {
-		return "section-ucrestdoc-" + entry.usecaseEntry.getId() + "-" + entry.variant;
+		return "section-ucrestdoc-" + entry.usecaseEntry.getId() + "-" + entry.variantId;
 	}
 
 	public static String createLinkIdToUseCaseRestDoc(UseCaseEntry entry) {

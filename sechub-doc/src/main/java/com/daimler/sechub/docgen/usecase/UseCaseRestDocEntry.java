@@ -9,7 +9,8 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutp
 public class UseCaseRestDocEntry {
 
 	public UseCaseEntry /*NOSONAR */usecaseEntry;
-	public String /*NOSONAR */variant;
+	public String /*NOSONAR */variantOriginValue;
+	public String /*NOSONAR */variantId;
 	public String /*NOSONAR */path;
 	public String /*NOSONAR */identifier;
 	public File /*NOSONAR */ copiedRestDocFolder;

@@ -118,10 +118,10 @@ public class UseCaseRestDocModelAsciiDocGenerator {
 		context.addLine("");
 		context.addLine(UseCaseAsciiDocFactory.createAnker(entry));
 		if (multipleVariants) {
-			if (entry.variant.equals(UseCaseRestDoc.DEFAULT_VARIANT)){
+			if (entry.variantOriginValue.equals(UseCaseRestDoc.DEFAULT_VARIANT)){
 				context.addLine(headline(h+1)+ "Standard");
 			}else {
-				context.addLine(headline(h+1)+ entry.variant);
+				context.addLine(headline(h+1)+ entry.variantOriginValue);
 			}
 
 		}
