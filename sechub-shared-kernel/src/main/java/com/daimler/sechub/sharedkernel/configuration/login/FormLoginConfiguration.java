@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public class FormLoginConfiguration {
 
-	private Optional<AutoDetectUserLoginConfiguration> autodetect = Optional.empty();
-	private Optional<List<ScriptEntry>> script = Optional.empty();
+	Optional<AutoDetectUserLoginConfiguration> autodetect = Optional.empty();
+	Optional<List<ScriptEntry>> script = Optional.empty();
 
 	public Optional<AutoDetectUserLoginConfiguration> getAutodetect() {
 		return autodetect;

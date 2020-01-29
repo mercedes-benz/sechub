@@ -13,7 +13,7 @@ public class SecHubWebScanConfiguration {
 	public static final String PROPERTY_URIS = "uris";
 	public static final String PROPERTY_LOGIN = "login";
 
-	private Optional<WebLoginConfiguration> login = Optional.empty();
+	Optional<WebLoginConfiguration> login = Optional.empty();
 	private List<URI> uris = new ArrayList<>();
 
 

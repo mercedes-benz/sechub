@@ -5,12 +5,15 @@ import java.util.Optional;
 
 public class ScriptEntry {
 
-	private String step;
+	String step;
 
-	private Optional<String> selector = Optional.empty();
+	Optional<String> selector = Optional.empty();
 
-	private Optional<String> value = Optional.empty();
+	Optional<String> value = Optional.empty();
 
+	/**
+	 * @return type of step as string (e.g. "input", "click")
+	 */
 	public String getStep() {
 		return step;
 	}
