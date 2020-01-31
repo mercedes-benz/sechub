@@ -4,7 +4,6 @@ spring.profiles.include:
 - initial_admin_static
 - mocked_notifications
 - admin_access
-
 sechub:
   config:
     trigger:
@@ -16,6 +15,9 @@ sechub:
     userid: int-test_superadmin
     email: int-test_superadmin@sechub.example.org
     apitoken: int-test_superadmin-pwd
+  notification:
+    email:
+      administrators: int-test_superadmins_npm@example.org
   adapter:
     mock:
       sanitycheck:
