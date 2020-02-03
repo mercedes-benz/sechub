@@ -20,7 +20,7 @@ public class AssertMail {
 	 * @param subject subject of mail
 	 */
 	public static void assertMailToAdminsExists(String subject) {
-		assertMailExists("sechub@example.org", subject);
+		assertMailExists("int-test_superadmins_npm@example.org", subject);
 	}
 
 	/**
