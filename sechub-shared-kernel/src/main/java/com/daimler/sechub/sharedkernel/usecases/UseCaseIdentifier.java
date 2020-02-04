@@ -105,6 +105,8 @@ public enum UseCaseIdentifier {
 	
 	UC_ANONYMOUS_CHECK_ALIVE,
 	
+	UC_ADMIN_CHECKS_SERVER_VERSION,
+	
 	;
 
 	/* +-----------------------------------------------------------------------+ */

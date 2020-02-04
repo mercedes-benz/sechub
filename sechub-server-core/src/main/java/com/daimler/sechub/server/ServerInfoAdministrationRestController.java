@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
+import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorChecksServerVersion;
 
 @RestController
 @EnableAutoConfiguration
@@ -25,10 +27,17 @@ public class ServerInfoAdministrationRestController {
 	@Autowired
 	private InfoService serverInfoService;
 
+	/* @formatter:off */
+	@UseCaseAdministratorChecksServerVersion(
+			@Step(
+					number=1,
+					name="REST API Call",
+					description="Administrator wants to get the server version of SecHub",
+					needsRestDoc=true))
 	@RequestMapping(path = APIConstants.API_ADMINISTRATION+ "info/version", method = RequestMethod.GET, produces = { MediaType.TEXT_PLAIN_VALUE })
 	@ResponseBody
 	public String getServerVersion() {
+		/* @formatter:on */
 		return serverInfoService.getVersionAsString();
 	}
-
 }
