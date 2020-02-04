@@ -99,6 +99,8 @@ public enum UseCaseIdentifier {
 	
 	UC_USER_RETRIEVES_PROJECT_MOCKDATA_CONFIGURATION,
 	
+	UC_ANONYMOUS_CHECK_ALIVE,
+	
 	;
 
 	/* +-----------------------------------------------------------------------+ */
