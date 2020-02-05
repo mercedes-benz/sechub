@@ -51,17 +51,12 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 	@MockBean
 	InfoService serverInfoService;
 
-	@Before
-	public void before() {
-		/* there could be more status examples in future - currently only scheduler status info available */
-		when(serverInfoService.getVersionAsString()).thenReturn(SERVER_VERSION);
-	}
-
 	@Test
 	@UseCaseRestDoc(useCase = UseCaseAdministratorChecksServerVersion.class)
 	public void restdoc_admin_get_server_version() throws Exception {
 		/*  prepare */
-
+		when(serverInfoService.getVersionAsString()).thenReturn(SERVER_VERSION);
+		
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildGetServerVersionUrl()).
@@ -69,6 +64,23 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)
+				);
+		/* @formatter:on */
+	}
+	
+	@Test
+	@UseCaseRestDoc(useCase = UseCaseAdministratorChecksServerVersion.class)
+	public void restdoc_admin_get_server_version_default() throws Exception {
+		/* prepare */
+		String defaultVersion = "0.0.0-development";
+		
+		/* execute + test @formatter:off */
+		this.mockMvc.perform(
+				get(https(PORT_USED).buildGetServerVersionUrl()).
+					contentType(MediaType.TEXT_PLAIN_VALUE)
+				).
+					andExpect(status().isOk()).
+					andExpect(content().string(defaultVersion)
 				);
 		/* @formatter:on */
 	}
