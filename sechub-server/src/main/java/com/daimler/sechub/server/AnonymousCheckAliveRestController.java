@@ -22,5 +22,5 @@ public class AnonymousCheckAliveRestController {
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "check/alive", method = RequestMethod.HEAD)
 	public void getServerVersion() {
 	}
-
+	/* @formatter:on */
 }

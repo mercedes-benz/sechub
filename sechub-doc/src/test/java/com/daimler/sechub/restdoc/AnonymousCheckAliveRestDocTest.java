@@ -40,9 +40,7 @@ public class AnonymousCheckAliveRestDocTest {
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseUserSignup.class)
-	public void calling_check_alive_returns_HTTP_200()
-			throws Exception {
-		/* prepare */
+	public void calling_check_alive_returns_HTTP_200() throws Exception {
 
 		/* execute */
 		/* @formatter:off */
