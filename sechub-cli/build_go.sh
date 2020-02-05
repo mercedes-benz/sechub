@@ -16,7 +16,7 @@ if [[ -z "$package" ]]; then
 fi
 
 if [[ -z "$platforms" ]]; then
-    platforms=("linux/386" "windows/amd64" "windows/386" )
+    platforms=("linux/386" "linux/amd64" "linux/arm" "linux/arm64" "darwin/amd64" "windows/amd64" "windows/386")
 fi
 
 
