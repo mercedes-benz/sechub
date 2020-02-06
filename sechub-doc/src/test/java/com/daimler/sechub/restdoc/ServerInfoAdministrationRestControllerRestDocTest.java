@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,23 +63,6 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)
-				);
-		/* @formatter:on */
-	}
-	
-	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorChecksServerVersion.class)
-	public void restdoc_admin_get_server_version_default() throws Exception {
-		/* prepare */
-		String defaultVersion = "0.0.0-development";
-		
-		/* execute + test @formatter:off */
-		this.mockMvc.perform(
-				get(https(PORT_USED).buildGetServerVersionUrl()).
-					contentType(MediaType.TEXT_PLAIN_VALUE)
-				).
-					andExpect(status().isOk()).
-					andExpect(content().string(defaultVersion)
 				);
 		/* @formatter:on */
 	}

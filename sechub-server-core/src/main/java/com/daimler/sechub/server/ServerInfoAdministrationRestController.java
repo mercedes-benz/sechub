@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministrato
 
 @RestController
 @EnableAutoConfiguration
-@Profile(Profiles.ADMIN_ACCESS)
+@Profile({Profiles.ADMIN_ACCESS})
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ServerInfoAdministrationRestController {
 
