@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.scan.access.ScanAccessCountService;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;
+import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
 
 /**
  * Contains additional rest call functionality for integration tests on scan domain
@@ -38,12 +40,14 @@ public class IntegrationTestScanRestController {
 
 	@Autowired
 	private ScanConfigService scanConfigService;
+	
+	@Autowired
+    private UpdateScanMappingService updateScanMappingService;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProjectAccess(@PathVariable("projectId") String projectId) {
 		return scanAccessCountService.countProjectAccess(projectId);
 	}
-
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/report/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProductResults(@PathVariable("projectId") String projectId) {
@@ -55,11 +59,15 @@ public class IntegrationTestScanRestController {
 		return productResultCountService.countProjectScanResults(projectId);
 	}
 
-	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scanconfig", method = RequestMethod.PUT)
-	public void updateScanConfig(@RequestBody String scanConfig) {
-		scanConfigService.updateScanConfiguration(scanConfig);
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/scan/mapping/{mappingId}", method = RequestMethod.PUT)
+	public void updateScanMapping(@PathVariable("mappingId") String mappingId, @RequestBody MappingData mappingData) {
+	    updateScanMappingService.updateScanMapping(mappingId, mappingData);
 	}
 
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/scan/scanconfig/refresh", method = RequestMethod.POST)
+    public void refreshScanConfig() {
+        scanConfigService.refreshScanConfigIfNecessary();
+    }
 
 
 

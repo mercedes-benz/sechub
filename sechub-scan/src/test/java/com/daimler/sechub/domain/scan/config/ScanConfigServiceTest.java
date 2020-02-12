@@ -29,8 +29,7 @@ public class ScanConfigServiceTest {
 	@Test
 	public void initialized_example1_returns_expected_provider() {
 		/* prepare */
-		serviceToTest.scanConfigJSON=  ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json");
-		serviceToTest.postConstruct();
+		serviceToTest.switchConfigurationIfChanged(ScanConfig.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config1.json")));
 
 		/* execute */
 		NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");
@@ -53,8 +52,7 @@ public class ScanConfigServiceTest {
 	@Test
 	public void initialized_example2_contains_unknwon_fields_but_will_also_returns_expected_provider() {
 		/* prepare */
-		serviceToTest.scanConfigJSON=  ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config2.json");
-		serviceToTest.postConstruct();
+		serviceToTest.switchConfigurationIfChanged(ScanConfig.createFromJSON(ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("scan_config/test_scan_config2.json")));
 
 		/* execute */
 		NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("someproduct.a.b");

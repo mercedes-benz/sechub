@@ -10,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This class is used for updating/fetchin mapping data over REST API")
 public class MappingEntry implements JSONable<MappingEntry> {
 
+    public static final String PROPERTY_PATTERN="pattern";
+    public static final String PROPERTY_REPLACEMENT="replacement";
+    public static final String PROPERTY_COMMENT="comment";
+    
     String pattern;
 
     String replacement;

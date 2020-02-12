@@ -14,7 +14,8 @@ public class MappingIdValidationImpl extends AbstractSimpleStringValidation impl
     @Override
     protected void validate(ValidationContext<String> context) {
         validateNotNull(context);
-
+        validateWithoutWhitespaces(context);
+        validateOnlyAlphabeticDigitOrAllowedParts(context, '.','-','_');
         validateLength(context);
         
     }

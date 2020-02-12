@@ -36,7 +36,10 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrato
 public class MappingAdministrationRestController {
 
 	@Autowired
-	MappingService mappingService;
+	FetchMappingService fetchMappingService;
+	
+	@Autowired
+    UpdateMappingService updateMappingService;
 
 	/* @formatter:off */
 	@UseCaseAdministratorFetchesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to fetch a mapping configuration",needsRestDoc=true))
@@ -44,7 +47,7 @@ public class MappingAdministrationRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public MappingData fetchMappingData(@PathVariable(name="mappingId") String mappingId) {
 		/* @formatter:on */
-		return mappingService.fetchMappingData(mappingId);
+		return fetchMappingService.fetchMappingData(mappingId);
 	}
 	
 	/* @formatter:off */
@@ -53,7 +56,7 @@ public class MappingAdministrationRestController {
     @ResponseStatus(HttpStatus.OK)
     public void updateMapping(@PathVariable(name="mappingId") String mappingId, @RequestBody MappingData mappingData) {
         /* @formatter:on */
-        mappingService.updateMapping(mappingId, mappingData);
+        updateMappingService.updateMapping(mappingId, mappingData);
     }
 
 

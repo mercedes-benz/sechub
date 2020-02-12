@@ -102,6 +102,9 @@ public enum MessageID {
 
 	/* Informs about Job being canceled, contains job uuid and owner*/
 	JOB_CANCELED(MessageDataKeys.JOB_CANCEL_DATA),
+	
+	
+    MAPPING_CONFIGURATION_CHANGED(MessageDataKeys.CONFIG_MAPPING_DATA),
 	;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

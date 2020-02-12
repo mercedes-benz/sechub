@@ -35,12 +35,15 @@ private static final Logger LOG = LoggerFactory.getLogger(NamePatternIdprovider.
 	 * @return id or <code>null</code>
 	 */
 	public String getIdForName(String name) {
+	    String id = null;
 		for (NamePatternToIdEntry entry: entries) {
 			if (entry.isMatching(name)) {
-				return entry.getId();
+				id= entry.getId();
+				break;
 			}
 		}
-		return null;
+		LOG.debug("'{}' returns id:{} for name:{}",getProviderId(),id,name);
+		return id;
 	}
 
 	public String getProviderId() {

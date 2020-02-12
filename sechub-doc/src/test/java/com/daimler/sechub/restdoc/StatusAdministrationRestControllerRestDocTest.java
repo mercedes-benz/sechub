@@ -2,15 +2,14 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,22 +28,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
-import com.daimler.sechub.domain.administration.scheduler.SchedulerStatusEntryKeys;
-import com.daimler.sechub.domain.administration.status.ListStatusService;
-import com.daimler.sechub.domain.administration.status.StatusAdministrationRestController;
-import com.daimler.sechub.domain.administration.status.StatusEntry;
+import com.daimler.sechub.domain.administration.mapping.FetchMappingService;
+import com.daimler.sechub.domain.administration.mapping.MappingAdministrationRestController;
+import com.daimler.sechub.domain.administration.mapping.UpdateMappingService;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorListsStatusInformation;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(StatusAdministrationRestController.class)
-@ContextConfiguration(classes = { StatusAdministrationRestController.class,
-		StatusAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest(MappingAdministrationRestController.class)
+@ContextConfiguration(classes = { MappingAdministrationRestController.class,
+        MappingAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
 @AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
@@ -56,54 +59,76 @@ public class StatusAdministrationRestControllerRestDocTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	ListStatusService listStatusService;
+	FetchMappingService fetchMappingService;
+	
+	@MockBean
+	UpdateMappingService updateMappingService;
+
+    private MappingData mappingDataTeam;
 
 	@Before
 	public void before() {
-		List<StatusEntry> list = new ArrayList<StatusEntry>();
-		StatusEntry enabled = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_ENABLED);
-		enabled.setValue("true");
-		list.add(enabled);
-
-		StatusEntry allJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_ALL);
-		allJobs.setValue("200");
-		list.add(allJobs);
-
-		StatusEntry runningJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_RUNNING);
-		runningJobs.setValue("3");
-		list.add(runningJobs);
-
-		StatusEntry waitingJobs = new StatusEntry(SchedulerStatusEntryKeys.SCHEDULER_JOBS_WAITING);
-		waitingJobs.setValue("42");
-		list.add(waitingJobs);
-
-		/* there could be more status examples in future - currently only scheduler status info available */
-		when(listStatusService.fetchAllStatusEntries()).thenReturn(list);
+        mappingDataTeam = new MappingData();
+        mappingDataTeam.getEntries().add(new MappingEntry("testproject_*","8be4e3d4-6b53-4636-b65a-949a9ebdf6b9","testproject-team"));
+        mappingDataTeam.getEntries().add(new MappingEntry(".*","3be4e3d2-2b55-2336-b65a-949b9ebdf6b9","default-team"));
+        /* there could be more status examples in future - currently only scheduler status info available */
+		when(fetchMappingService.fetchMappingData(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId())).thenReturn(mappingDataTeam);
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorListsStatusInformation.class)
-	public void restdoc_admin_lists_status_information() throws Exception {
+	@UseCaseRestDoc(useCase=UseCaseAdministratorFetchesMappingConfiguration.class)
+	public void restdoc_admin_fetches_mapping_configuration() throws Exception {
 		/*  prepare */
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminListsStatusEntries()).
+				get(https(PORT_USED).buildGetMapping(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId())).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsStatusInformation.class),
+		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesMappingConfiguration.class),
 				responseFields(
-							fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
-							fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")
+							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
+							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
+							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
 						)
 					)
 				);
 
 		/* @formatter:on */
 	}
+	
+	@Test
+    @UseCaseRestDoc(useCase=UseCaseAdministratorUpdatesMappingConfiguration.class)
+    public void restdoc_admin_updates_mapping_configuration() throws Exception {
+        /*  prepare */
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                put(https(PORT_USED).buildUpdateMapping(RestDocPathParameter.MAPPING_ID.pathElement()),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                content(mappingDataTeam.toJSON())
+                )./*
+                */
+        andDo(print()).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesMappingConfiguration.class),
+                pathParameters(
+                        parameterWithName(MAPPING_ID.paramName()).description("The mappingID , identifiying which mapping shall be updated")
+                    )
+                ,
+                requestFields(
+                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
+                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
+                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
+                        )
+                    )
+                );
+
+        /* @formatter:on */
+    }
 
 	@Profile(Profiles.TEST)
 	@EnableAutoConfiguration

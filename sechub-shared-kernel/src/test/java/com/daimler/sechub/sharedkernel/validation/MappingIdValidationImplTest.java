@@ -14,6 +14,7 @@ public class MappingIdValidationImplTest {
     public void before() {
         validationToTest = new MappingIdValidationImpl();
     }
+
     @Test
     public void check_5_chars_min_for_id() {
         assertTrue(validationToTest.validate("12345").isValid());
@@ -21,10 +22,27 @@ public class MappingIdValidationImplTest {
         assertFalse(validationToTest.validate("123").isValid());
         assertFalse(validationToTest.validate("").isValid());
     }
+
     @Test
     public void check_80_chars_max_for_id() {
         assertTrue(validationToTest.validate(CONST_80_CHARS).isValid());
         assertFalse(validationToTest.validate(CONST_80_CHARS + "1").isValid());
     }
+    
+    @Test
+    public void check_whitespaces_not_accepted_inside_id() {
+        assertFalse(validationToTest.validate("12345 6").isValid());
+        assertFalse(validationToTest.validate(" 123456").isValid());
+        assertFalse(validationToTest.validate("123456 ").isValid());
+
+        assertFalse(validationToTest.validate("123456\n").isValid());
+        assertFalse(validationToTest.validate("123456\r").isValid());
+    }
+    
+    @Test
+    public void check_percentage_not_accepted_inside_id() {
+        assertFalse(validationToTest.validate("12345%6").isValid());
+    }
+    
 
 }
