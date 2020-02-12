@@ -84,7 +84,7 @@ public class UserInputAssertion {
 	public void isValidEmailAddress(String emailAdress) {
 		assertValid(emailAdress,  emailValidation, "Email address is is not valid");
 	}
-
+	
 	/**
 	 * Asserts target is valid. Otherwise a {@link NotAcceptableException} will be thrown with given error message
 	 * @param target

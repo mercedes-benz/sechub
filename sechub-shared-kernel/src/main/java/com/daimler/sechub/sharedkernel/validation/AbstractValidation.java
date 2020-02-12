@@ -26,13 +26,27 @@ public abstract class AbstractValidation<T> implements Validation<T> {
 		validate(context);
 		return context.result;
 	}
-
+	/**
+	 * Validates object inside context is not <code>null</code>
+	 * @param context
+	 */
 	protected void validateNotNull(ValidationContext<?> context) {
 		if (context.objectToValidate!=null) {
 			return;
 		}
 		context.addError("May not be null");
 	}
+	
+	/**
+     * Validates given object is not <code>null</code>
+     * @param context
+     */
+    protected void validateNotNull(ValidationContext<?> context, String message, Object object) {
+        if (object!=null) {
+            return;
+        }
+        context.addError("May not be null:"+message);
+    }
 
 	/**
 	 * Validation implementation called by abstract implementation.<br>

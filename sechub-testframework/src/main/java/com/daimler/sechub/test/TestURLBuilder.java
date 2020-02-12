@@ -65,6 +65,8 @@ public class TestURLBuilder {
 	private static final String API_ADMIN_SCHEDULER = API_ADMIN + "/scheduler";
 
 	private static final String API_ADMIN_SCAN = API_ADMIN + "/scan";
+	private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
+	private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
 	private static final String API_PROJECT = "/api/project";
 	private String protocol;
 	private String hostname;
@@ -385,6 +387,14 @@ public class TestURLBuilder {
 	public String buildGetProjectMockConfiguration(String projectId) {
 		return buildUrl(API_PROJECT, projectId, "mockdata");
 	}
+
+    public String buildUpdateMapping(String mappingId) {
+        return buildUrl(API_ADMIN_CONFIG_MAPPING, mappingId);
+    }
+
+    public String buildGetMapping(String mappingId) {
+        return buildUrl(API_ADMIN_CONFIG_MAPPING, mappingId);
+    }
 
 
 

@@ -99,6 +99,9 @@ public enum UseCaseIdentifier {
 	
 	UC_USER_RETRIEVES_PROJECT_MOCKDATA_CONFIGURATION,
 	
+	UC_ADMIN_UPDATES_MAPPING_CONFIGURATION,
+	
+	UC_ADMIN_FETCHES_MAPPING_CONFIGURATION,
 	;
 
 	/* +-----------------------------------------------------------------------+ */

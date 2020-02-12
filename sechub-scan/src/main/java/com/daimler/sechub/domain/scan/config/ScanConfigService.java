@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 /**
  * Provides access to scan config parts in a convenient way.
@@ -86,14 +87,22 @@ public class ScanConfigService {
 			}
 		}
 	}
-
+	/**
+     * Get provider to resolve IDs by a given name
+     *
+     * @param namePatternMappingId
+     * @return provider, never <code>null</code>
+     */
+    public NamePatternIdprovider getNamePatternIdProvider(MappingIdentifier identifier) {
+        return getNamePatternIdProvider(identifier.getId());
+    }
 	/**
 	 * Get provider to resolve IDs by a given name
 	 *
 	 * @param namePatternMappingId
 	 * @return provider, never <code>null</code>
 	 */
-	public NamePatternIdprovider getNamePatternIdProvider(String namePatternMappingId) {
+	NamePatternIdprovider getNamePatternIdProvider(String namePatternMappingId) {
 		synchronized (providers) {
 			NamePatternIdprovider provider = providers.get(namePatternMappingId);
 			if (provider != null) {

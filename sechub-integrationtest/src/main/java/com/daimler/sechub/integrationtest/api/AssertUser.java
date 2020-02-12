@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.integrationtest.JSONTestSupport;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -446,6 +447,11 @@ public class AssertUser extends AbstractAssert {
 	public void canNotSetMockConfiguration(TestProject project, String json, HttpStatus expected) {
 		expectHttpFailure(()-> as(user).setProjectMockConfiguration(project,json),expected);
 	}
+
+    public AssertMapping canGetMapping(String mappingId) {
+        MappingData mappingData = as(user).getMappingData(mappingId);
+        return new AssertMapping(mappingData);
+    }
 
 
 
