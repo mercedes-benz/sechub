@@ -23,8 +23,8 @@ public class MappingDataValidationImplTest {
         validationToTest=new MappingDataValidationImpl();
         
         mappingEntryValidation = mock(MappingEntryValidation.class);
-        entry1=new MappingEntry();
-        entry2=new MappingEntry();
+        entry1=new MappingEntry("pattern1","replace1","comment1");
+        entry2=new MappingEntry("pattern2","replace2","comment2");
         
         validationToTest.mappingEntryValidation = mappingEntryValidation;
         
@@ -97,8 +97,11 @@ public class MappingDataValidationImplTest {
         when(mappingEntryValidation.validate(entry1)).thenReturn(result1);
         when(mappingEntryValidation.validate(entry2)).thenReturn(result2);
         
-        /* execute +test */
-        assertFalse(validationToTest.validate(data).isValid());
+        /* execute */
+        boolean valid = validationToTest.validate(data).isValid();
+        
+        /* test */
+        assertFalse(valid);
         
        
     }

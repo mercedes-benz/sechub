@@ -155,7 +155,7 @@ public class UseCaseRestDocModelDataCollector {
 			lastTry=expected;
 		}
 		throw new IllegalStateException("No restdoc found for Usecase:"+entry.usecaseEntry.getAnnotationName()+"\nIt is annotated as @UseCaseRestDoc, but no restdoc files generated!\n"
-				+ "Maybe you \n   -forgot to do the documentation parts for the test, or\n   - you did you used accidently another class when calling UseCaseRestDoc.Factory.createPath(...) ?\n\nDetails:\nNo rest doc gen folder not found for id:" + entry.path+",\nlastTry:"+ ( lastTry!=null?lastTry.getAbsolutePath():"null"));
+				+ "Maybe you \n   - executed not `gradlew sechub-doc:test` before\n   - forgot to do the documentation parts for the test, or\n   - you accidently used another class when calling UseCaseRestDoc.Factory.createPath(...) ?\n\nDetails:\nNo rest doc gen folder not found for id:" + entry.path+",\nlastTry:"+ ( lastTry!=null?lastTry.getAbsolutePath():"null"));
 	}
 
 }
