@@ -81,6 +81,8 @@ public class AdministrationAPIConstants{
 	public static final String API_UPDATE_PROJECT_WHITELIST=API_ADMINISTRATION+"project/{projectId}/whitelist";
 
 	public static final String API_LIST_JOBS_RUNNING = API_ADMINISTRATION+"jobs/running";
+	
+	public static final String API_CONFIG_MAPPING = API_ADMINISTRATION+"config/mapping/{mappingId}";
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Anonymous ................................+ */

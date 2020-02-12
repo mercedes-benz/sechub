@@ -41,4 +41,9 @@ public enum ProductIdentifier {
 
 	;
 
+    
+    private ProductIdentifier() {
+        
+    }
+    
 }
