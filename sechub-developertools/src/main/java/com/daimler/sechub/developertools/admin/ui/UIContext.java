@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui;
 
+import javax.swing.JFrame;
+
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 
 public interface UIContext {
@@ -24,5 +26,7 @@ public interface UIContext {
 	int getPort();
 
 	DeveloperAdministration getAdministration();
+
+    JFrame getFrame();
 
 }
