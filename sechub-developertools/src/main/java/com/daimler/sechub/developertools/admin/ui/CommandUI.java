@@ -6,14 +6,15 @@ import java.awt.Dimension;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
@@ -58,6 +59,7 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CommandUI {
 	private JPanel panel;
@@ -96,6 +98,8 @@ public class CommandUI {
 		createEditMenu();
 		createIntegrationTestServerMenu();
 		createMassOperationsMenu();
+		
+		createAdapterMenu();
 
 	}
 
@@ -105,6 +109,13 @@ public class CommandUI {
 		support.apply(mainMenu, support.createDefaultCutCopyAndPastActions());
 		menuBar.add(mainMenu);
 	}
+	
+	public void createAdapterMenu() {
+        JMenu menu = new JMenu("Adapter");
+        menuBar.add(menu);
+        
+        add(menu, new ShowAdapterDialogAction(context,"Checkmarx",MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+    }
 
 	private void createUserMenu() {
 		JMenu menu = new JMenu("User");
@@ -251,7 +262,7 @@ public class CommandUI {
 	}
 
 
-	private void add(JMenu menu, AbstractUIAction action) {
+	private void add(JMenu menu, AbstractAction action) {
 		JMenuItem menuItem = new JMenuItem(action);
 		menu.add(menuItem);
 
