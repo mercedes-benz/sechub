@@ -31,7 +31,7 @@ public class SimpleCSVImporterTest {
 		File file = DeveloperToolsTestFileSupport.getTestfileSupport().createFileFromResourcePath("csv/example1-developer-admin-ui_mass-import_projects.csv");
 
 		/* execute */
-		List<ImportCSVRow> importedRows = importerToTest.importCSVFile(file, 3, 1);
+		List<CSVRow> importedRows = importerToTest.importCSVFile(file, 3, 1);
 
 		/* test */
 		assertEquals(15, importedRows.size()); // 16 lines- 1 header, so line 2 inside CSV is here 0

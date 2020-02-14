@@ -15,6 +15,12 @@ public class CreateExampleJSONAdapterDialogAction extends AbstractAdapterDialogM
 
     @Override
     protected void execute(ActionEvent e) throws Exception {
+        boolean confirmed = getDialogUI().getContext().getDialogUI().confirm("Do you really want to replace your JSON data in text area with example code?");
+        if (! confirmed) {
+            getDialogUI().getContext().getOutputUI().output("Canceled by user");
+            
+            return;
+        }
         MappingData data = new MappingData();
         data.getEntries().add(new MappingEntry("pattern1", "replacement1", "comment1"));
         data.getEntries().add(new MappingEntry("pattern2", "replacement2", "comment2"));

@@ -26,8 +26,12 @@ public class MappingUI {
         JPanel buttonPanel = new JPanel();
         
         buttonPanel.add(new JButton(new LoadJSONAdapterDialogAction(this)));
-        buttonPanel.add(new JButton(new UpdateJSONAdapterDialogAction(this)));
+        buttonPanel.add(new JButton(new SaveJSONAdapterDialogAction(this)));
         buttonPanel.add(new JSeparator());
+        buttonPanel.add(new JButton(new ImportCSVToJSONAdapterDialogAction(this)));
+        buttonPanel.add(new JButton(new ExportJSONToCSVAdapterDialogAction(this)));
+        buttonPanel.add(new JSeparator());
+        buttonPanel.add(new JButton(new ScanConfigTestJSONasNamePatternDialogAction(this)));
         buttonPanel.add(new JButton(new CreateExampleJSONAdapterDialogAction(this)));
 
         panel.add(buttonPanel,BorderLayout.SOUTH);

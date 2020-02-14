@@ -53,7 +53,7 @@ public class AdapterDialogUI {
         
         dialog.setTitle("Adapter configuration");
         dialog.setModal(true);
-        dialog.setSize(new Dimension(800,600));
+        dialog.setSize(new Dimension(1024,600));
         dialog.setLocationRelativeTo(context.getFrame());
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
