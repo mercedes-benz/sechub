@@ -3,13 +3,14 @@ package com.daimler.sechub.developertools.admin.ui.action.adapter;
 import java.awt.event.ActionEvent;
 
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
 
-public class UpdateJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction{
+public class SaveJSONAdapterDialogAction extends AbstractAdapterDialogMappingAction{
 
     private static final long serialVersionUID = 1L;
 
-    public UpdateJSONAdapterDialogAction(MappingUI ui) {
-        super("Update", ui);
+    public SaveJSONAdapterDialogAction(MappingUI ui) {
+        super("Save", ui);
     }
 
     @Override
@@ -17,6 +18,16 @@ public class UpdateJSONAdapterDialogAction extends AbstractAdapterDialogMappingA
         DeveloperAdministration adm = getDialogUI().getContext().getAdministration();
         String url = adm.getUrlBuilder().buildUpdateMapping(getMappingUI().getMappingId());
         String json= getMappingUI().getJSON();
+        
+        // just check json correct
+        MappingData data = MappingData.fromString(json);
+        int size = data.getEntries().size();
+        boolean confirmed = getDialogUI().getContext().getDialogUI().confirm("Do you really want to upload?\n\n"+size+" entries will be set!");
+        if (!confirmed) {
+            getDialogUI().getContext().getOutputUI().output(getClass().getSimpleName()+":Canceled by user");
+            return;
+        }
+        
         
         adm.getRestHelper().putJSon(url, json);
         

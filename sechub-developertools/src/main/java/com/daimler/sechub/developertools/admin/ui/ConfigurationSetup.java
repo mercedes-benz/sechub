@@ -22,7 +22,7 @@ public enum ConfigurationSetup {
 			"Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors"),
 
 	SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory",true),
-
+	
 	;
 
 	private String systemPropertyid;

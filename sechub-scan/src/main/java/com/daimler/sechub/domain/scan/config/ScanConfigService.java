@@ -28,7 +28,7 @@ public class ScanConfigService {
     @Autowired
     ScanMappingRepository repository;
 
-    private ScanConfig config;
+    ScanConfig config;
 
     @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number=6,name="Service call",description="Checks if current mappings in DB lead to a new scan configuration."))
     public void refreshScanConfigIfNecessary() {
