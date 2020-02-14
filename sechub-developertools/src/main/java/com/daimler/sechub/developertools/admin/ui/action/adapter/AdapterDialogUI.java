@@ -1,7 +1,6 @@
 package com.daimler.sechub.developertools.admin.ui.action.adapter;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JDialog;

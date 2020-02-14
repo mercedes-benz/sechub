@@ -4,6 +4,8 @@ import static com.daimler.sechub.sharedkernel.validation.AssertValidResult.*;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 
 @Service
 public class UpdateScanMappingService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateScanMappingService.class);
+    
     @Autowired
     ScanMappingRepository repository;
 
@@ -51,9 +56,11 @@ public class UpdateScanMappingService {
         } else {
             mappingObj = mapping.get();
         }
-        mappingObj.setData(mappingData.toJSON());
+        String json = mappingData.toJSON();
+        mappingObj.setData(json);
         
         repository.save(mappingObj);
+        LOG.info("Updated scan mapping in database. Id:{} ws updated to:{}", mappingId, json);
         
     }
 
