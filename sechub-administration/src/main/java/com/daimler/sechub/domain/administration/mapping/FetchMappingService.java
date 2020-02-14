@@ -3,7 +3,6 @@ package com.daimler.sechub.domain.administration.mapping;
 
 import static com.daimler.sechub.sharedkernel.validation.AssertValidResult.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
