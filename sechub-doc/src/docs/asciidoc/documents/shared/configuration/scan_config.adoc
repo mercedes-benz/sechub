@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 === Scan configuration
 [[scan-config-about]]
 Sometimes it is necessary to provide special scan configuration setup, e.g. when

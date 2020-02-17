@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.config;
 
 import static com.daimler.sechub.sharedkernel.validation.AssertValidResult.*;

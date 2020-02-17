@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
