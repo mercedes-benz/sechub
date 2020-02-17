@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.mapping;
 
 import static java.util.Objects.*;

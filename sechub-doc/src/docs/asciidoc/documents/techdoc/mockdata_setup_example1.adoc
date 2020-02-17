@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [source,json]
 ----
 include::mockdata_setup_example1.json[]

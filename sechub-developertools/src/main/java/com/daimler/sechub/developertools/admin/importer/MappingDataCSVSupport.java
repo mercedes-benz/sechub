@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.importer;
 
 import java.util.ArrayList;

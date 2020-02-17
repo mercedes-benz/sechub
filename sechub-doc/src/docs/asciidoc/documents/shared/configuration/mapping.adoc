@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 === Mapping
 [[mapping-technical-details]]
 Mapping is used for simple key value configuration, but also for more sophisticated
