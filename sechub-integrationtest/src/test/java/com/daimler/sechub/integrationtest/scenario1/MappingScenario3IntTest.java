@@ -32,7 +32,7 @@ public class MappingScenario3IntTest {
         // cleanup former mapping
         changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId());
         changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId());
-        triggerScanConfigRefresh();
+        waitForScanConfigRefresh();
         
         clearMetaDataInspection();
 
@@ -55,7 +55,7 @@ public class MappingScenario3IntTest {
             updateMapping(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(), mappingData2);
         
         /* test */
-        triggerScanConfigRefresh(); // ensure loaded (is done periodically - we force execution here)
+        waitForScanConfigRefresh(); // ensure loaded (is done periodically - we force execution here)
         
         ExecutionResult result = as(USER_1).withSecHubClient().
                 startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);

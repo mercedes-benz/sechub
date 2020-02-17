@@ -48,7 +48,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
                 new MappingEntry(".*", "teamid4", "")
                 
                 );
-        triggerScanConfigRefresh();
+        waitForScanConfigRefresh();
         
 		clearMetaDataInspection();
 
@@ -87,7 +87,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
                 new MappingEntry(".*", "teamid4", "")
                 
                 );
-        triggerScanConfigRefresh();
+        waitForScanConfigRefresh();
 		clearMetaDataInspection();
 
 		assertInspections().hasAmountOfInspections(0);

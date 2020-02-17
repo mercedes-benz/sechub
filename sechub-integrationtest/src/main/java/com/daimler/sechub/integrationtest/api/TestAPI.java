@@ -352,11 +352,12 @@ public class TestAPI {
 
 	}
 	
-	public static void triggerScanConfigRefresh() {
-        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
-        String url = urlBuilder.buildIntegrationTestRefreshScanConfigURL();
-
-        IntegrationTestContext.get().getRestHelper(ANONYMOUS).post(url);
+	/**
+	 * Will just wait 3 seconds - we have configured 1 second at application-integrationtest.yaml 
+	 * to check scan config every second so this should be enough 
+	 */
+	public static void waitForScanConfigRefresh() {
+	    waitMilliSeconds(3000);
     }
 
 	public static void clearMetaDataInspection() {

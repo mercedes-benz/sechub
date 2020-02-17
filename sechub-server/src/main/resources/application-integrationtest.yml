@@ -4,6 +4,7 @@ spring.profiles.include:
 - initial_admin_static
 - mocked_notifications
 - admin_access
+
 sechub:
   config:
     trigger:
@@ -11,6 +12,10 @@ sechub:
         initialdelay: "100"
         # every second
         delay: "1000"
+  scan:
+    scanconfig:
+      refresh:
+        delay: "1000"       
   initialadmin:
     userid: int-test_superadmin
     email: int-test_superadmin@sechub.example.org

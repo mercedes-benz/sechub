@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.scan.access.ScanAccessCountService;
-import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
@@ -39,9 +38,6 @@ public class IntegrationTestScanRestController {
 	private ScanReportCountService scanReportCountService;
 
 	@Autowired
-	private ScanConfigService scanConfigService;
-	
-	@Autowired
     private UpdateScanMappingService updateScanMappingService;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -63,12 +59,5 @@ public class IntegrationTestScanRestController {
 	public void updateScanMapping(@PathVariable("mappingId") String mappingId, @RequestBody MappingData mappingData) {
 	    updateScanMappingService.updateScanMapping(mappingId, mappingData);
 	}
-
-	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/scan/scanconfig/refresh", method = RequestMethod.POST)
-    public void refreshScanConfig() {
-        scanConfigService.refreshScanConfigIfNecessary();
-    }
-
-
 
 }

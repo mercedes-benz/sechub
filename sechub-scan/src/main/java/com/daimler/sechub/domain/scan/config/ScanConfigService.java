@@ -69,7 +69,7 @@ public class ScanConfigService {
             return;
         }
         if (config.equals(this.config)) {
-            LOG.debug("same scan configuration detected");
+            LOG.trace("same scan configuration detected");
             return;
         }
         switchToNewConfiguration(config);

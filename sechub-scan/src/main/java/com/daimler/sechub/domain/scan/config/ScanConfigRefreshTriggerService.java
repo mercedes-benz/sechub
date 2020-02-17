@@ -3,11 +3,13 @@ package com.daimler.sechub.domain.scan.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
 
+@Service
 public class ScanConfigRefreshTriggerService {
 
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 0;
@@ -20,7 +22,6 @@ public class ScanConfigRefreshTriggerService {
     @MustBeDocumented("Define delay (in milliseconds) for next job execution trigger after last executed.")
     @Value("${sechub.config.scan.scanconfig.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String fixedDelay; // here only for logging - used in scheduler annotation as well!
-    
     
     @Autowired
     ScanConfigService scanConfigService;
