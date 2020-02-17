@@ -6,18 +6,20 @@ import java.awt.Dimension;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
@@ -28,15 +30,19 @@ import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJob
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
@@ -53,6 +59,7 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CommandUI {
 	private JPanel panel;
@@ -91,6 +98,8 @@ public class CommandUI {
 		createEditMenu();
 		createIntegrationTestServerMenu();
 		createMassOperationsMenu();
+		
+		createAdapterMenu();
 
 	}
 
@@ -100,6 +109,13 @@ public class CommandUI {
 		support.apply(mainMenu, support.createDefaultCutCopyAndPastActions());
 		menuBar.add(mainMenu);
 	}
+	
+	public void createAdapterMenu() {
+        JMenu menu = new JMenu("Adapter");
+        menuBar.add(menu);
+        
+        add(menu, new ShowAdapterDialogAction(context,"Checkmarx",MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+    }
 
 	private void createUserMenu() {
 		JMenu menu = new JMenu("User");
@@ -154,6 +170,14 @@ public class CommandUI {
 		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
+		
+		menu.addSeparator();
+		
+		JMenu projectMockData = new JMenu("Mockdata");
+		menu.add(projectMockData);
+		
+		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
+		add(projectMockData, new GetProjectMockConfigurationAction(context));
 
 	}
 
@@ -205,11 +229,16 @@ public class CommandUI {
 		}
 		add(menu, new FetchMockMailsAction(context));
 		menu.addSeparator();
+		add(menu, new SetProjectMockDataConfigurationAction(context));
+		add(menu, new GetProjectMockConfigurationAction(context));
+		menu.addSeparator();
 
 		JMenu testDataMenu = new JMenu("Testdata");
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario2TestDataAction(context));
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
 		testDataMenu.addSeparator();
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
@@ -226,12 +255,14 @@ public class CommandUI {
 		JMenu massOperationsMenu = new JMenu("Mass operations");
 		menuBar.add(massOperationsMenu);
 		add(massOperationsMenu, new CreateProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new AssignUserToProjectMassCSVImportAction(context));
 		massOperationsMenu.addSeparator();
 		add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new UnassignUserFromProjectMassCSVImportAction(context));
 	}
 
 
-	private void add(JMenu menu, AbstractUIAction action) {
+	private void add(JMenu menu, AbstractAction action) {
 		JMenuItem menuItem = new JMenuItem(action);
 		menu.add(menuItem);
 

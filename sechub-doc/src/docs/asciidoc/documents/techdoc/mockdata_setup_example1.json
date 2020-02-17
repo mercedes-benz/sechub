@@ -1,0 +1,25 @@
+{
+    "entries": [
+        { //<1>
+            "adapterId": "MockedNetsparkerAdapter",
+            "combinations": [
+                {//<2>
+                    "target" : "https://vulnerable.demo.example.org", //<3>
+                    "throwsAdapterException": false,//<4>
+                    "filePath": "./../sechub-other/mockdata/netsparker-mockdata-one-important-vulnerability.xml" //<5>
+                },
+                {
+                    "target": "https://safe.demo.example.org",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml"
+                },
+                {
+                    "target": "{any-other-target}",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/netsparker-mockdata-green.xml"
+                }
+            ]
+        }
+
+    ]
+}

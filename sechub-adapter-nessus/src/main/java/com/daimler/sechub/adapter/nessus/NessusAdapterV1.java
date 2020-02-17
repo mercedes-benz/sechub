@@ -77,6 +77,11 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 		}
 
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 	private void updateContextWithNessusPolicyUUID(NessusContext context) throws AdapterException {
 		String nessusPolicyUID = resolvePolicyUID(context);

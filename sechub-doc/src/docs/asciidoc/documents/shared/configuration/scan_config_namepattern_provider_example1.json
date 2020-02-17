@@ -1,0 +1,20 @@
+{
+    "namePatternIdProviders": {
+        "${namePatternId1}": [
+            {
+                "namePattern": "${regExp1}",
+                "id": "${id1}"
+            },
+            {
+                "namePattern": "${regExp2}",
+                "id": "${id2}"
+            }
+        ],
+        "${namePatternId2}": [
+            {
+                "namePattern": "${regExp3}",
+                "id": "${id3}"
+            }
+        ]
+    }
+}

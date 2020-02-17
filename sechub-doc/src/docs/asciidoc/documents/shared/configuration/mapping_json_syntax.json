@@ -1,0 +1,18 @@
+{
+  "entries" : [ {
+    "pattern" : "pattern_1",
+    "replacement" : "replacement_1",
+    "comment" : "comment_1"
+  },
+  { 
+  "pattern" : "pattern_2",
+    "replacement" : "replacement_2",
+    "comment" : "comment_2"
+  },
+  //..
+  {
+    "pattern" : "pattern_n",
+    "replacement" : "replacement_n",
+    "comment" : "comment_n"
+  } ]
+}

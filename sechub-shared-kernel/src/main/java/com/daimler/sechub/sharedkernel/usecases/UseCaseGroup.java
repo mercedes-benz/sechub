@@ -19,6 +19,10 @@ public enum UseCaseGroup {
 
 	TECHNICAL("Technical", "Usecases about technical operations being executed by sechub itself"),
 
+	TESTING("Testing","Some use cases for testing"),
+
+	CONFIGURATION("Configuration","Usecases for configuration parts"),
+	
 	OTHER("Other","All other use cases"),
 
 	;

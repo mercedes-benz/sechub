@@ -68,6 +68,11 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 		}
 
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 	@Override
 	protected String getAPIPrefix() {

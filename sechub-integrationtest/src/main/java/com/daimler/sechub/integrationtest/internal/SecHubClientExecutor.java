@@ -18,176 +18,182 @@ import com.daimler.sechub.test.TestUtil;
 
 public class SecHubClientExecutor {
 
-	public enum ClientAction {
+    public enum ClientAction {
 
-		START_ASYNC("scanAsync"), START_SYNC("scan"), GET_REPORT("getReport"), GET_STATUS("getStatus"),
+        START_ASYNC("scanAsync"), START_SYNC("scan"), GET_REPORT("getReport"), GET_STATUS("getStatus"),
 
-		;
-		private String command;
+        ;
 
-		private ClientAction(String command) {
-			this.command = command;
-		}
+        private String command;
 
-		public String getCommand() {
-			return command;
-		}
-	}
+        private ClientAction(String command) {
+            this.command = command;
+        }
 
-	private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
+        public String getCommand() {
+            return command;
+        }
+    }
 
-	public class ExecutionResult {
-		private int exitCode;
-		private String lastOutputLine;
-		private File outputFolder;
-		public UUID sechubJobUUD;
-		public String[] lines;
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
 
-		public int getExitCode() {
-			return exitCode;
-		}
+    public class ExecutionResult {
+        private int exitCode;
+        private String lastOutputLine;
+        private File outputFolder;
+        public UUID sechubJobUUD;
+        public String[] lines;
 
-		public File getOutputFolder() {
-			return outputFolder;
-		}
+        public int getExitCode() {
+            return exitCode;
+        }
 
-		public String getLastOutputLine() {
-			if (lastOutputLine == null) {
-				lastOutputLine = lines[lines.length - 1];
-			}
-			return lastOutputLine;
-		}
+        public File getOutputFolder() {
+            return outputFolder;
+        }
 
-		public UUID getSechubJobUUD() {
-			if (sechubJobUUD == null) {
-				for (String line : lines) {
-					if (sechubJobUUD != null) {
-						break;
-					}
-					int index = line.indexOf("job ");
-					if (index != -1) {
-						try {
-							String remaining = line.substring(index + 4).split(" ")[0];
-							sechubJobUUD = UUID.fromString(remaining);
-							break;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-			return sechubJobUUD;
-		}
-	}
+        public String getLastOutputLine() {
+            if (lastOutputLine == null) {
+                lastOutputLine = lines[lines.length - 1];
+            }
+            return lastOutputLine;
+        }
 
-	public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String,String> environmentVariables, String... options) {
-		String path = "sechub-cli/build/go/platform/";
-		List<String> commandsAsList = new ArrayList<>();
-		String sechubExeName = null;
-		if (TestUtil.isWindows()) {
-			sechubExeName = "sechub.exe";
-			path += "windows-386";
-			commandsAsList.add("cmd.exe");
-			commandsAsList.add("/C");
-			commandsAsList.add(sechubExeName);
-		} else {
-			sechubExeName = "sechub";
-			commandsAsList.add("./" + sechubExeName);
-			path += "linux-386";
-		}
-		File pathToExecutable = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
-		File executable = new File(pathToExecutable, sechubExeName);
-		if (!executable.exists()) {
-			throw new SecHubClientNotFoundException(executable);
-		}
+        public UUID getSechubJobUUD() {
+            if (sechubJobUUD == null) {
+                for (String line : lines) {
+                    if (sechubJobUUD != null) {
+                        break;
+                    }
+                    int index = line.indexOf("job ");
+                    if (index != -1) {
+                        try {
+                            String remaining = line.substring(index + 4).split(" ")[0];
+                            sechubJobUUD = UUID.fromString(remaining);
+                            break;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return sechubJobUUD;
+        }
+    }
 
-		if (file != null) {
-			commandsAsList.add("-configfile");
-			if (TestUtil.isWindows()) {
-				commandsAsList.add("\"" + file.getAbsolutePath() + "\"");
-			} else {
-				commandsAsList.add(file.getAbsolutePath());
-			}
-		}
-		if (user != null) {
-			commandsAsList.add("-user");
-			commandsAsList.add(user.getUserId());
+    public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String, String> environmentVariables, String... options) {
+        if (user.getApiToken() == null) {
+            throw new IllegalStateException("Test user:" + user.getUserId()
+                    + " has no apiToken. This can happen if you are using users from another scenario... Please check your test!");
+        }
 
-			commandsAsList.add("-apitoken");
-			commandsAsList.add(user.getApiToken());
-		}
+        String path = "sechub-cli/build/go/platform/";
+        List<String> commandsAsList = new ArrayList<>();
+        String sechubExeName = null;
+        if (TestUtil.isWindows()) {
+            sechubExeName = "sechub.exe";
+            path += "windows-386";
+            commandsAsList.add("cmd.exe");
+            commandsAsList.add("/C");
+            commandsAsList.add(sechubExeName);
+        } else {
+            sechubExeName = "sechub";
+            commandsAsList.add("./" + sechubExeName);
+            path += "linux-386";
+        }
+        File pathToExecutable = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
+        File executable = new File(pathToExecutable, sechubExeName);
+        if (!executable.exists()) {
+            throw new SecHubClientNotFoundException(executable);
+        }
 
-		commandsAsList.addAll(Arrays.asList(options));
+        if (file != null) {
+            commandsAsList.add("-configfile");
+            if (TestUtil.isWindows()) {
+                commandsAsList.add("\"" + file.getAbsolutePath() + "\"");
+            } else {
+                commandsAsList.add(file.getAbsolutePath());
+            }
+        }
+        if (user != null) {
+            commandsAsList.add("-user");
+            commandsAsList.add(user.getUserId());
 
-		if (action != null) {
-			commandsAsList.add(action.getCommand());
-		}
+            commandsAsList.add("-apitoken");
+            commandsAsList.add(user.getApiToken());
+        }
 
-		try {
-			/* create temp file for output */
-			File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
-			tmpGoOutputFile.deleteOnExit();
-			LOG.info("Temporary go output at:{}", tmpGoOutputFile);
+        commandsAsList.addAll(Arrays.asList(options));
 
-			/* setup process */
-			ProcessBuilder pb = new ProcessBuilder(commandsAsList);
-			pb.redirectErrorStream(true);
-			pb.redirectOutput(tmpGoOutputFile);
-			Map<String, String> environment = pb.environment();
-			environment.put("SECHUB_TRUSTALL", "true");
-			environment.put("SECHUB_DEBUG", "true");
-			if (TestUtil.isKeepingTempfiles()) {
-				environment.put("SECHUB_KEEP_TEMPFILES", "true");
-			}
-			if (environmentVariables!=null) {
-				environment.putAll(environmentVariables);
-			}
-			pb.directory(pathToExecutable);
+        if (action != null) {
+            commandsAsList.add(action.getCommand());
+        }
 
-			StringBuilder sb = new StringBuilder();
-			Iterator<String> it  = commandsAsList.iterator();
-			while (it.hasNext()) {
-				sb.append(it.next());
-				if (it.hasNext()) {
-					sb.append(" ");
-				}
-			}
-			LOG.info("Execute command '{}'", sb.toString());
+        try {
+            /* create temp file for output */
+            File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
+            tmpGoOutputFile.deleteOnExit();
+            LOG.info("Temporary go output at:{}", tmpGoOutputFile);
 
-			/* start process and wait for execution done */
-			Process process = pb.start();
-			int exitCode = process.waitFor();
+            /* setup process */
+            ProcessBuilder pb = new ProcessBuilder(commandsAsList);
+            pb.redirectErrorStream(true);
+            pb.redirectOutput(tmpGoOutputFile);
+            Map<String, String> environment = pb.environment();
+            environment.put("SECHUB_TRUSTALL", "true");
+            environment.put("SECHUB_DEBUG", "true");
+            if (TestUtil.isKeepingTempfiles()) {
+                environment.put("SECHUB_KEEP_TEMPFILES", "true");
+            }
+            if (environmentVariables != null) {
+                environment.putAll(environmentVariables);
+            }
+            pb.directory(pathToExecutable);
 
-			/* show go output */
-			String output = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(tmpGoOutputFile, "\n");
-			LOG.info("Command output:\n{}", output);
+            StringBuilder sb = new StringBuilder();
+            Iterator<String> it = commandsAsList.iterator();
+            while (it.hasNext()) {
+                sb.append(it.next());
+                if (it.hasNext()) {
+                    sb.append(" ");
+                }
+            }
+            LOG.info("Execute command '{}'", sb.toString());
 
-			/* prepare and return result */
-			ExecutionResult result = new ExecutionResult();
-			result.lines = output.trim().split("\\n");
+            /* start process and wait for execution done */
+            Process process = pb.start();
+            int exitCode = process.waitFor();
 
-			result.exitCode = exitCode;
+            /* show go output */
+            String output = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(tmpGoOutputFile, "\n");
+            LOG.info("Command output:\n{}", output);
 
-			return result;
-		} catch (IOException e) {
-			LOG.error("io failure on command execution", e);
-			throw new IllegalStateException("Execution failed", e);
-		} catch (InterruptedException e) {
-			LOG.error("interrupted command execution", e);
-			Thread.currentThread().interrupt();
-			throw new IllegalStateException("Execution failed", e);
-		}
-	}
+            /* prepare and return result */
+            ExecutionResult result = new ExecutionResult();
+            result.lines = output.trim().split("\\n");
 
-	public static void main(String[] args) {
-		new SecHubClientExecutor().execute(null, null, null,null, "-help");
-	}
+            result.exitCode = exitCode;
 
-	public class SecHubClientNotFoundException extends IllegalStateException {
-		private static final long serialVersionUID = 1L;
+            return result;
+        } catch (IOException e) {
+            LOG.error("io failure on command execution", e);
+            throw new IllegalStateException("Execution failed", e);
+        } catch (InterruptedException e) {
+            LOG.error("interrupted command execution", e);
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Execution failed", e);
+        }
+    }
 
-		public SecHubClientNotFoundException(File executable) {
-			super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:" + executable);
-		}
-	}
+    public static void main(String[] args) {
+        new SecHubClientExecutor().execute(null, null, null, null, "-help");
+    }
+
+    public class SecHubClientNotFoundException extends IllegalStateException {
+        private static final long serialVersionUID = 1L;
+
+        public SecHubClientNotFoundException(File executable) {
+            super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:" + executable);
+        }
+    }
 }

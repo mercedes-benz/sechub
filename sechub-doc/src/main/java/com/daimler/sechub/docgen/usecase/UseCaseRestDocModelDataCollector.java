@@ -109,13 +109,17 @@ public class UseCaseRestDocModelDataCollector {
 
 			/* create and prepare rest doc entry */
 			UseCaseRestDocEntry restDocEntry = new UseCaseRestDocEntry();
-			restDocEntry.variant = restDoc.variant();
+			restDocEntry.variantOriginValue = restDoc.variant();
+			restDocEntry.variantId = RestDocPathFactory.createVariantId(restDocEntry.variantOriginValue);
+			
 			restDocEntry.usecaseEntry = useCaseEntry;
-			String id = RestDocPathFactory.createPath(useCaseClass, restDoc.variant());
+			String path = RestDocPathFactory.createPath(useCaseClass, restDocEntry.variantId);
+			
 			restDocEntry.identifier=RestDocPathFactory.createIdentifier(useCaseClass);
-			restDocEntry.path = id;
+			restDocEntry.path = path;
+			
 			File projectRestDocGenFolder = scanForSpringRestDocGenFolder(restDocEntry);
-			restDocEntry.copiedRestDocFolder = copyToDocumentationProject(projectRestDocGenFolder, id);
+			restDocEntry.copiedRestDocFolder = copyToDocumentationProject(projectRestDocGenFolder, path);
 			restDocEntry.wanted=restDoc.wanted();
 			
 			model.add(restDocEntry);
@@ -126,7 +130,7 @@ public class UseCaseRestDocModelDataCollector {
 		}
 		return model;
 	}
-
+	
 	private File copyToDocumentationProject(File projectRestDocGenFolder, String id) {
 		File targetFolder = new File(sechHubDoc, "src/docs/asciidoc/"+DOCUMENTS_GEN + id);
 		try {
@@ -151,7 +155,7 @@ public class UseCaseRestDocModelDataCollector {
 			lastTry=expected;
 		}
 		throw new IllegalStateException("No restdoc found for Usecase:"+entry.usecaseEntry.getAnnotationName()+"\nIt is annotated as @UseCaseRestDoc, but no restdoc files generated!\n"
-				+ "Maybe you \n   -forgot to do the documentation parts for the test, or\n   - you did you used accidently another class when calling UseCaseRestDoc.Factory.createPath(...) ?\n\nDetails:\nNo rest doc gen folder not found for id:" + entry.path+",\nlastTry:"+ ( lastTry!=null?lastTry.getAbsolutePath():"null"));
+				+ "Maybe you \n   - executed not `gradlew sechub-doc:test` before\n   - forgot to do the documentation parts for the test, or\n   - you accidently used another class when calling UseCaseRestDoc.Factory.createPath(...) ?\n\nDetails:\nNo rest doc gen folder not found for id:" + entry.path+",\nlastTry:"+ ( lastTry!=null?lastTry.getAbsolutePath():"null"));
 	}
 
 }

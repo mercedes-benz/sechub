@@ -51,6 +51,9 @@ public class JSONDeveloperHelper {
 	}
 
 	public String beatuifyJSON(String json) {
+		if (json==null) {
+			return null;
+		}
 		try {
 			Object jsonObj = mapper.readValue(json, Object.class);
 			String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObj);

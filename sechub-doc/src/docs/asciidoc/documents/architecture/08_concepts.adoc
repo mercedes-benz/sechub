@@ -2,7 +2,7 @@
 [[section-concepts]]
 == Cross-cutting Concepts
 
-=== Domain Driven Design (SDDD)
+=== Domain Driven Design
 
 include::../shared/concepts/concept_simple_domain_driven_design.adoc[]
 
@@ -10,5 +10,12 @@ include::../shared/concepts/concept_simple_domain_driven_design.adoc[]
 === Resilience
 
 include::../shared/concepts/concept_simple_resilience.adoc[]
+
+
+=== Mappings
+include::../shared/concepts/concept_mappings.adoc[]
+
+
+
 
 

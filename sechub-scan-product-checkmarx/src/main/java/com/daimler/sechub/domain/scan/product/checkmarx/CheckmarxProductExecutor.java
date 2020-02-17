@@ -87,6 +87,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 					/* @formatter:off */
 
 					CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+							configure(createAdapterOptionsStrategy(context)).
 							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).

@@ -34,16 +34,13 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String traceID;
 	boolean trustAllCertificatesEnabled;
-	private Map<String, Object> options = new HashMap<>();
+	private Map<AdapterOptionKey, String> options = new HashMap<>();
 	LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
 	private String targetType;
 
 
 	protected AbstractAdapterConfig() {
 	}
-
-
-
 
 	@Override
 	public final int getTimeOutInMilliseconds() {
@@ -171,7 +168,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public Map<String, Object> getOptions() {
+	public Map<AdapterOptionKey, String> getOptions() {
 		return options;
 	}
 

@@ -69,7 +69,11 @@ public class MockedAdapterSetupEntry{
 			if (combination==null) {
 				continue;
 			}
-			if (target.startsWith(combination.getTarget())){
+			String combinationTarget = combination.getTarget();
+			if (combinationTarget==null) {
+				continue;
+			}
+			if (target.startsWith(combinationTarget)){
 				return combination;
 			}
 		}

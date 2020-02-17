@@ -21,5 +21,10 @@ public class TestAdapter extends AbstractAdapter<TestAdapterContextInterface, Te
 	public String start(TestAdapterConfigInterface config) throws AdapterException {
 		return null;
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 }

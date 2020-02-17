@@ -108,8 +108,8 @@ sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport
   Username - mandatory, but can also be defined in config file
 - version +
   Shows version info and terminates
-- wait `<int>` + +
-       wait time in seconds. Will be used for automatic status checks etc. when action='scan'. Default is 60 seconds (default 60)
+- wait `<int>` + 
+       wait time in seconds. Will be used for automatic status checks etc. when action=`scan`. Default is 60 seconds (default 60)
 
 === Configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
@@ -127,9 +127,7 @@ it in json config like
 
 [source,json]
 ----
-{
-    "apiVersion" : "{{ .USED_API_VERSION }}"
-}
+include::sechub_config_apiversion_example.json[]
 ----
 
 `{sechub} client` will automatically fill the variable with content from environment

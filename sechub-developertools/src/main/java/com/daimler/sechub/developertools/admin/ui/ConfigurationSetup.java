@@ -16,27 +16,33 @@ public enum ConfigurationSetup {
 	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),
 
 	/**
-	 * Here you can set environment information. Currently supported: "PROD" and "INT"
+	 * Here you can set environment information. See description for details
 	 */
-	SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment",true),
+	SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment",false,
+			"Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors"),
 
 	SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory",true),
-
+	
 	;
 
 	private String systemPropertyid;
 	private String environmentEntryId;
 
 	private boolean optional;
+	private String description;
 
 	private ConfigurationSetup(boolean optional) {
 		this(null,optional);
 	}
-
 	private ConfigurationSetup(String systemPropertyid, boolean optional) {
+		this(systemPropertyid,optional,null);
+	}
+
+	private ConfigurationSetup(String systemPropertyid, boolean optional, String description) {
 		this.optional=optional;
 		this.systemPropertyid = systemPropertyid;
 		this.environmentEntryId = name();
+		this.description=description;
 	}
 
 	public String getEnvironmentEntryId() {
@@ -74,7 +80,9 @@ public enum ConfigurationSetup {
 		}
 		/* then try system property - if not already set*/
 		if (value==null) {
-			value = System.getProperty(getSystemPropertyid(), defaultValue);
+			if (systemPropertyid!=null) {
+				value = System.getProperty(systemPropertyid, defaultValue);
+			}
 		}
 		/* then use default value - if not already set*/
 		if (value==null) {
@@ -109,6 +117,11 @@ public enum ConfigurationSetup {
 			sb.append(val);
 			if (setup.optional) {
 				sb.append(" (optional)");
+			}
+			if (setup.description!=null) {
+				sb.append(" [");
+				sb.append(setup.description);
+				sb.append("]");
 			}
 			sb.append("\n");
 		}

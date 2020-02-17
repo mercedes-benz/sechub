@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
+import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 
@@ -35,5 +36,10 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		return Collections.emptyList();
 	}
 
+
+	@Override
+	protected ScanType getScanType() {
+		return ScanType.WEB_SCAN;
+	}
 
 }

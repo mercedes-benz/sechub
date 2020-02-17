@@ -35,7 +35,7 @@ public class InitialAdminInitializer {
 
 	@Bean
 	@Order(500)
-	@Profile(Profiles.INTEGRATIONTEST)
+	@Profile(Profiles.INITIAL_ADMIN_STATIC) // used in INTEGRATIONTEST profile
 	public CommandLineRunner initialIntegrationTestAdmin(InternalInitialDataService internalService) {
 		return args -> {
 			/* we use {noop} variant for integration tests - why? Because {bcrypt} algorith does slow down integration tests !
@@ -50,7 +50,7 @@ public class InitialAdminInitializer {
 
 	@Bean
 	@Order(500)
-	@Profile({Profiles.DEV})
+	@Profile({Profiles.INITIAL_ADMIN_PREDEFINED}) // used in DEV profile
 	public CommandLineRunner initialSecHubAdmDevelopmentOnly(InternalInitialDataService internalService) {
 		return args -> {
 			internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress,initialAdminApiToken);
@@ -59,10 +59,10 @@ public class InitialAdminInitializer {
 
 	@Bean
 	@Order(500)
-	@Profile({Profiles.PROD}) // so not for test!
+	@Profile({Profiles.INITIAL_ADMIN_CREATED}) // used inside PROD profile 
 	public CommandLineRunner initialSecHubAdm(InternalInitialDataService internalService) {
 		return args -> {
-			internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress,UUID.randomUUID().toString()); // uses SecureRAndom
+			internalService.createInitialAdmin(initialAdminUserid, initialAdminEmailAdress,UUID.randomUUID().toString()); // uses SecureRandom
 		};
 	}
 

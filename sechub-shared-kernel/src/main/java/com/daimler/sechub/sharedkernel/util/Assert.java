@@ -50,4 +50,20 @@ public class Assert {
 			throw new IllegalArgumentException(message);
 		}
 	}
+	
+	/**
+	 * Throws an illegal argument exception when given string has length greater than given max
+	 * @param string
+	 * @param max
+	 */
+	public static void maxLength(String string, int max) {
+		if (string == null || string.isEmpty()) {
+			return;
+		}
+		int length = string.length();
+		if (length>max) {
+			throw new IllegalArgumentException("Maximum of "+max+" chars allowd, but got:"+length);
+		}
+	}
+	
 }

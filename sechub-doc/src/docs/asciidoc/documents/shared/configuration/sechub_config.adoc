@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-=== SecHub scan configuration
+=== SecHub configuration
 
-A `{sechub}` scan configuration  must be valid `JSON`.
+A `{sechub}` configuration  must be valid `JSON` and is defined
+at caller side.
 
-This configuration is used by client and also by rest calls to start sechub
+It is used by client and also by rest calls to start {sechub}
 scan jobs and add meta data. Some minor parts are client specific and must
 be handled by direct REST calls in a special way, but this is mentioned in
 following description of JSON syntax.

@@ -16,7 +16,7 @@ if [[ -z "$package" ]]; then
 fi
 
 if [[ -z "$platforms" ]]; then
-    platforms=("linux/386" "windows/amd64" "windows/386" )
+    platforms=("linux/386" "linux/amd64" "linux/arm" "linux/arm64" "darwin/amd64" "windows/amd64" "windows/386")
 fi
 
 
@@ -40,7 +40,7 @@ do
         output_name+='.exe'
     fi
     echo ">building:$targetSubFolder"
-    env GOOS=$GOOS GOARCH=$GOARCH go build -o $output_name $package
+    env GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o $output_name $package
     if [ $? -ne 0 ]; then
         echo 'Go build failed because of an error'
         exit 1

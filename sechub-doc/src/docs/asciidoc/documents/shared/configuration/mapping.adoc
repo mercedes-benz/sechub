@@ -1,0 +1,23 @@
+=== Mapping
+[[mapping-technical-details]]
+Mapping is used for simple key value configuration, but also for more sophisticated
+behaviour like done in <<scan-config-about,scan configuration>>.
+
+==== REST API
+Configuration is always done by REST API.
+
+- <<section-ucrestdoc-uc-UC_037,REST API for UC_037-Admin updates mapping configuration >>
+- <<section-ucrestdoc-uc-UC_038,REST API for UC_038-Admin fetches mapping configuration >>
+
+==== JSON structure
+given JSON has following structure:
+[source,json]
+----
+include::mapping_json_syntax.json[] 
+----
+here an example for a suitable checkmarx mapping (`checkmarx.newproject.teamid`)
+[source,json]
+----
+include::mapping_example1.json[] 
+----
+

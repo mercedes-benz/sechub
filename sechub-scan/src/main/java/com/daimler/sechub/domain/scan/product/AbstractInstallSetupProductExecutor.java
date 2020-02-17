@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
+import com.daimler.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
+import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
@@ -42,7 +44,16 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 
 	@Autowired
 	protected TargetResolver targetResolver;
+	
+	/**
+	 * @return scan type of this executor - never <code>null</code>
+	 */
+	protected abstract ScanType getScanType();
 
+	protected SecHubAdapterOptionsBuilderStrategy createAdapterOptionsStrategy(SecHubExecutionContext context) {
+		return new SecHubAdapterOptionsBuilderStrategy(context, getScanType());
+	}
+	
 	@Override
 	public final List<ProductResult> execute(SecHubExecutionContext context) throws SecHubExecutionException {
 		UUIDTraceLogID traceLogId = context.getTraceLogId();

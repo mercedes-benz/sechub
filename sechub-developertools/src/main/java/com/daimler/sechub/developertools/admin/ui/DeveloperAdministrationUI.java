@@ -30,6 +30,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	private OutputUI outputPanelUI;
 	private GlassPaneUI glassPaneUI;
 	private DialogUI dialogUI;
+    private JFrame frame;
 
 	public DeveloperAdministration getAdministration() {
 		return administration;
@@ -59,9 +60,9 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	private void start(String[] args) {
 
 		useNimbusLookAndFeel();
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
+		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
 
-		JFrame frame = new JFrame(env+" - SecHub");
+		frame = new JFrame(env+" - SecHub");
 		ImageIcon imageIcon = new ImageIcon(DeveloperAdministrationUI.class.getClassLoader().getResource("sechub-logo.png"));
 		Image image = imageIcon.getImage();
 		frame.setIconImage(image);
@@ -122,6 +123,11 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	@Override
 	public String getProtocol() {
 		return credentialUI.protocolField.getText();
+	}
+	
+	@Override
+	public JFrame getFrame() {
+	    return frame;
 	}
 
 }

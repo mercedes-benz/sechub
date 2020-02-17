@@ -96,6 +96,24 @@ public class TestRestHelper {
 		markLastURL(url,json);
 		return template.postForEntity(url, httpEntity, String.class).getBody();
 	}
+	
+	/**
+	 * PUT json to url
+	 *
+	 * @param url
+	 * @param json
+	 * @return result
+	 * @throws RestClientException
+	 */
+	public String putJSon(String url, String json) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
+
+		markLastURL(url,json);
+		template.put(url, httpEntity);
+		return "";
+	}
 
 	private TrustAllSupport getTrustAllSupport() {
 		if (trustAllSupport == null) {

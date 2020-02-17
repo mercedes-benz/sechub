@@ -37,6 +37,10 @@ public class AssertExecutionResult{
 		return this;
 	}
 	
+	public ExecutionResult getResult() {
+		return result;
+	}
+	
 	protected AssertExecutionResult isTrafficLight(String color) {
 		if (color==null) {
 			throw new IllegalArgumentException("color may not be null - testcase corrupt!");

@@ -30,11 +30,16 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>,C extend
 	protected final String getAPIPrefix() {
 		return "mockAdapterAPICall";
 	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
+	}
 
 	public final String start(C config) throws AdapterException {
 		long timeStarted = System.currentTimeMillis();
-
-		MockedAdapterSetupEntry setup = setupService.getSetupFor(createAdapterId());
+		
+		MockedAdapterSetupEntry setup = setupService.getSetupFor(this, config);
 		if (setup==null) {
 			LOG.info("did not found adapter setup so returning empty string");
 			return "";
@@ -102,5 +107,20 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>,C extend
 	protected String createAdapterId() {
 		/* currently same as in normal adapters but to ensure we got simple names here always - even when changed in adapters - this is overridden*/
 		return getClass().getSimpleName();
+	}
+
+	/**
+	 * Standard implementation will return path like <code>"/adapter/mockdata/v$versionNr/$SimpleNameOfMockedAdapterClass/$TrafficLightName.xml"</code><br>
+	 * <br>
+	 * An example:<code>"/adapter/mockdata/v1/MockedNetspakerAdapter/green.xml</code>
+	 * @param wantedTrafficLight
+	 * @return
+	 */
+	protected String getPathToMockResultFile(String wantedTrafficLight) {
+		return "/adapter/mockdata/"+createAdapterId()+"/v"+getAdapterVersion()+"/"+wantedTrafficLight+"."+getMockDataFileEnding();
+	}
+	
+	protected String getMockDataFileEnding() {
+		return "xml";
 	}
 }

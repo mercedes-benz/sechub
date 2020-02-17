@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.integrationtest.JSONTestSupport;
-import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -346,14 +346,14 @@ public class AssertUser extends AbstractAssert {
 	}
 
 	public AssertUser canUploadSourceZipFile(TestProject project, UUID jobUUID, String pathInsideResources) {
-		File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-		String checkSum = TestAPI.createSHA256Of(uploadFile);
-		as(user).upload(project, jobUUID, uploadFile,checkSum);
+		as(user).upload(project, jobUUID, pathInsideResources);
 		/* check if file is uploaded on server location */
 		File downloadedFile = TestAPI.getFileUploaded(project,jobUUID,"sourcecode.zip");
 		assertNotNull(downloadedFile);
 		return this;
 	}
+
+	
 
 	public AssertJobInformationAdministration<AssertUser> onJobAdministration() {
 		return new AssertJobInformationAdministration<AssertUser>(this,user);
@@ -438,6 +438,20 @@ public class AssertUser extends AbstractAssert {
 		AssertMail.assertMailExists(user.getEmail(),subject);
 		return this;
 	}
+
+	public AssertUser canSetMockConfiguration(TestProject project, String json) {
+		as(user).setProjectMockConfiguration(project,json);
+		return this;
+	}
+
+	public void canNotSetMockConfiguration(TestProject project, String json, HttpStatus expected) {
+		expectHttpFailure(()-> as(user).setProjectMockConfiguration(project,json),expected);
+	}
+
+    public AssertMapping canGetMapping(String mappingId) {
+        MappingData mappingData = as(user).getMappingData(mappingId);
+        return new AssertMapping(mappingData);
+    }
 
 
 

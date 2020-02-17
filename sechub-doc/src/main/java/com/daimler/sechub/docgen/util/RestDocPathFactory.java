@@ -4,6 +4,7 @@ package com.daimler.sechub.docgen.util;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
@@ -17,7 +18,11 @@ public class RestDocPathFactory {
 	public static final String UC_RESTDOC = "uc_restdoc";
 
 	private static Set<String> alreadyCreatedPathes = new HashSet<>();
-
+	private static Pattern P_VARIANT_NAME_TO_ID= Pattern.compile(" ");
+	
+	public static String createVariantId(String variantName) {
+		return P_VARIANT_NAME_TO_ID.matcher(variantName).replaceAll("-").toLowerCase();
+	}
 	private RestDocPathFactory() {
 
 	}
@@ -52,7 +57,7 @@ public class RestDocPathFactory {
 		if (variant == null || variant.isEmpty()) {
 			sb.append(UseCaseRestDoc.DEFAULT_VARIANT);
 		} else {
-			sb.append(variant);
+			sb.append(createVariantId(variant));
 		}
 		String path = sb.toString();
 		if (alreadyCreatedPathes.contains(path)) {
@@ -66,4 +71,6 @@ public class RestDocPathFactory {
 	public static String createIdentifier(Class<? extends Annotation> useCase) {
 		return useCase.getSimpleName().toLowerCase();
 	}
+
+	
 }

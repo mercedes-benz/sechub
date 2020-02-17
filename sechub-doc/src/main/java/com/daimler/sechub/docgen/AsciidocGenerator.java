@@ -34,6 +34,7 @@ public class AsciidocGenerator implements Generator {
 	UseCaseRestDocModelAsciiDocGenerator useCaseRestDocModelAsciiDocGenerator = new UseCaseRestDocModelAsciiDocGenerator();
 	TextFileWriter writer = new TextFileWriter();
 	DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
+	ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -59,7 +60,7 @@ public class AsciidocGenerator implements Generator {
 		File messagingFile = createMessagingTargetFile(documentsGenFolder);
 
 		AsciidocGenerator generator = new AsciidocGenerator();
-
+		generator.generateExampleFiles(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
 		generator.generateSystemPropertiesDescription(systemProperitesFile);
 		generator.generateJavaLaunchExample(javaLaunchExampleFile);
@@ -70,6 +71,19 @@ public class AsciidocGenerator implements Generator {
 		generator.generateProfilesOverview(diagramsGenFolder);
 	}
 
+
+	private void generateExampleFiles(File documentsGenFolder) throws IOException{
+		generateExample("project_mockdata_config1.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration1());
+		generateExample("project_mockdata_config2.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration2());
+		
+	}
+
+	private void generateExample(String endingfileName, File documentsGenFolder, String content) throws IOException {
+		File examplesFolder = new File(documentsGenFolder,"examples");
+		File targetFile = new File(examplesFolder, "gen_example_"+endingfileName);
+		writer.save(targetFile, content);
+	}
+	
 
 	private void generateProfilesOverview(File diagramsGenFolder) throws IOException {
 		SpringProfilesPlantumlGenerator geno = new SpringProfilesPlantumlGenerator();

@@ -50,7 +50,7 @@ based upon your problem statement, the quality goals and key constraints.
                                                                                                                  |
 | {sechub} sserver integration tests shall be possible without available products, PostgreSQL or Kubernetes
                                         | Development                                 | Server software will be always startable as a simple jar as well (done by Spring Boot Jar), we provide
-                                                                                        also different profiles for normal database and in memory db (h2,postgres), we provide a profile for mocked products
+                                                                                        also different profiles for normal database (postgres) and in memory DB (h2), we provide a profile for mocked products
                                                                                                                  |
 | We need a reliable database which is mature, stable and good documented
                                         | Cluster installation, Single installation, Development
@@ -79,5 +79,9 @@ based upon your problem statement, the quality goals and key constraints.
 | We want to have an agile, living  documentation, which is matching to source code and a diff can be easily done by GIT
                                       | Development                                 | We use AsciiDoc and checkin documenteation together inside one GIT repository
                                                                                                                 | see https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+| We want to have a way to provide special scan configurations in a dynamic way
+                                      | Deployment                                 | We provide a JSON based scan configuration where different provider meta information can be defined. Dedicated providers can 
+                                                                                     use this information and handle dynamic configuration - e.g. based on name of sechub project.
+                                                                                                                | see https://github.com/Daimler/sechub/issues/127 ,`ScanConfigService` class or description inside `technical documentation`. 
 
 |===

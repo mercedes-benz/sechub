@@ -96,6 +96,10 @@ public abstract class AbstractSimpleStringValidation extends AbstractValidation<
 		context.addError("Please remove whitespaces at beginning and at the end");
 	}
 
+	/**
+	 * Validates minimum and maximum length
+	 * @param context
+	 */
 	protected void validateLength(ValidationContext<String> context) {
 		validateMinLength(context);
 		validateMaxLength(context);

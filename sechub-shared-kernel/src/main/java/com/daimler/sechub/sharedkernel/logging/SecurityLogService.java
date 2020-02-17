@@ -20,7 +20,7 @@ public class SecurityLogService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityLogService.class);
 
-	private static String SECURITY = "[SECURITY] [{}]";
+	private static String SECURITY = "[SECURITY] [USER:{}]";
 	private static String SECURITY_USERNAME = SECURITY+" ({}) :";
 
 	public void log(SecurityLogType type, String message, Object ...objects ) {
