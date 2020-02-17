@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -23,7 +24,6 @@ public class MappingScenario3IntTest {
     
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario3.class);
-
     @Test
     public void mapping_for_checkmarx_preset_changed_by_administration_is_stored_in_scan_d()
             throws IOException {
@@ -68,6 +68,48 @@ public class MappingScenario3IntTest {
                 hasId("CHECKMARX").
                 hasNotice("presetid","123456").// scenario3_project1 -> replacedPresetId
                 hasNotice("teamid", "replacedTeamId");// scenario3_project1 -> replacedTeamId
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void mapping_for_checkmarx_preset_cannot_be_changed_anoymous()
+            throws IOException {
+
+        /* prepare */
+
+        MappingData mappingData1 = new MappingData();
+        MappingEntry entry = new MappingEntry("scenario3_project1", "123456", "");
+        mappingData1.getEntries().add(entry);
+
+        /* @formatter:off */
+        expectHttpFailure(()->{
+            
+            /* execute */
+            as(ANONYMOUS).
+                updateMapping(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(), mappingData1);
+        }        
+        , HttpStatus.UNAUTHORIZED);
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void mapping_for_checkmarx_preset_cannot_be_changed_by_user1_scenario3()
+            throws IOException {
+
+        /* prepare */
+
+        MappingData mappingData1 = new MappingData();
+        MappingEntry entry = new MappingEntry("scenario3_project1", "123456", "");
+        mappingData1.getEntries().add(entry);
+
+        /* @formatter:off */
+        expectHttpFailure(()->{
+            
+            /* execute */
+            as(USER_1).
+                updateMapping(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(), mappingData1);
+        }        
+        , HttpStatus.FORBIDDEN);
         /* @formatter:on */
     }
 
