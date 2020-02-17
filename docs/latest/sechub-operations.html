@@ -563,11 +563,35 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
+<li><a href="#mapping">2.2. Mapping</a>
+<ul class="sectlevel3">
+<li><a href="#rest-api">2.2.1. REST API</a></li>
+<li><a href="#json-structure">2.2.2. JSON structure</a></li>
+</ul>
+</li>
+<li><a href="#scan-configuration">2.3. Scan configuration</a>
+<ul class="sectlevel3">
+<li><a href="#general">2.3.1. General</a>
+<ul class="sectlevel4">
+<li><a href="#name-pattern-id-providers">2.3.1.1. Name pattern ID providers</a></li>
+</ul>
+</li>
+<li><a href="#mapping-2">2.3.2. Mapping</a></li>
+<li><a href="#overview-of-possible-configurations">2.3.3. Overview of possible configurations</a></li>
+<li><a href="#checkmarx">2.3.4. Checkmarx</a>
+<ul class="sectlevel4">
+<li><a href="#project-creation-with-dedicated-checkmarx-preset-and-team">2.3.4.1. Project creation with dedicated checkmarx preset and team</a></li>
+<li><a href="#how-to-obtain-preset-id">2.3.4.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.3.4.3. How to obtain team id</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#security-products">3. Security Products</a>
 <ul class="sectlevel2">
-<li><a href="#checkmarx">3.1. Checkmarx</a>
+<li><a href="#checkmarx-2">3.1. Checkmarx</a>
 <ul class="sectlevel3">
 <li><a href="#what-does-the-adapter-do">3.1.1. What does the adapter do?</a>
 <ul class="sectlevel4">
@@ -845,6 +869,7 @@ Next lines will show java launcher properties which MUST be set because
 -Dsechub.adapter.netsparker.defaultpolicyid=value
 -Dsechub.adapter.netsparker.licenseid=value
 -Dsechub.adapter.netsparker.userid=value
+-Dsechub.notification.email.administrators=value
 -Dsechub.notification.email.from=value
 -Dsechub.notification.smtp.hostname=value
 -Dsechub.server.baseurl=value</pre>
@@ -878,6 +903,7 @@ export SECHUB_ADAPTER_NETSPARKER_BASEURL=value
 export SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID=value
 export SECHUB_ADAPTER_NETSPARKER_LICENSEID=value
 export SECHUB_ADAPTER_NETSPARKER_USERID=value
+export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
 export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
 export SECHUB_SERVER_BASEURL=value</pre>
@@ -1074,10 +1100,9 @@ your deployment directory you will have following files generated:</p>
 Spring parts annotated with <code>@Value</code> and <code>@MustBeDocumented</code>.
 If <code>@MustBeDocumented</code> has attribute <code>secret</code> set to <code>true</code> the
 generated yaml part contains a reference to a kubernetes secret instead of
-a fixed value.</p>
-</div>
-<div class="paragraph">
-<p>The yaml file can be used when you initally create a deployment file, or
+a fixed value.
+../
+The yaml file can be used when you initally create a deployment file, or
 when new attributes has been added to SecHub, identify missing/new ones
 very fast.</p>
 </div>
@@ -1119,8 +1144,292 @@ accidently add the credentials to your repository.</p>
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
 </div>
-<div style="page-break-after: always;"></div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mapping">2.2. Mapping</h3>
+<div id="mapping-technical-details" class="paragraph">
+<p>Mapping is used for simple key value configuration, but also for more sophisticated
+behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="rest-api">2.2.1. REST API</h4>
+<div class="paragraph">
+<p>Configuration is always done by REST API.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_037">REST API for UC_037-Admin updates mapping configuration </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_038">REST API for UC_038-Admin fetches mapping configuration </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="json-structure">2.2.2. JSON structure</h4>
+<div class="paragraph">
+<p>given JSON has following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span> : [ {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">pattern_1</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">replacement_1</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">comment_1</span><span class="delimiter">&quot;</span></span>
+  },
+  {
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">pattern_2</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">replacement_2</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">comment_2</span><span class="delimiter">&quot;</span></span>
+  },
+  <span class="error">/</span><span class="error">/</span><span class="error">.</span><span class="error">.</span>
+  {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">pattern_n</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">replacement_n</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">comment_n</span><span class="delimiter">&quot;</span></span>
+  } ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>here an example for a suitable checkmarx mapping (<code>checkmarx.newproject.teamid</code>)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span> : [ {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">testproject_*</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">8be4e3d4-6b53-4636-b65a-949a9ebdf6b9</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Maps all projects starting with name testproject_ to dedicated checkmarx team ID</span><span class="delimiter">&quot;</span></span>
+  }, {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">3be4e3d2-2b55-2336-b65a-949b9ebdf6b9</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Default checkmarx team id for all other projects</span><span class="delimiter">&quot;</span></span>
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="scan-configuration">2.3. Scan configuration</h3>
+<div id="scan-config-about" class="paragraph">
+<p>Sometimes it is necessary to provide special scan configuration setup, e.g. when
+initializing scan operations at server side.</p>
+</div>
+<div class="paragraph">
+<p>This can be done by a special scan configuration which is defined as JSON.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Do not confuse with <code>SecHub configuration</code> which is always on client side.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="general">2.3.1. General</h4>
+<div class="sect4">
+<h5 id="name-pattern-id-providers">2.3.1.1. Name pattern ID providers</h5>
+<div class="paragraph">
+<p>Currently only <code>namePatternIdProviders</code> are provided, which contain an id and mappings from name patterns
+to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mapping-2">2.3.2. Mapping</h4>
+<div class="paragraph">
+<p>Scan configuration can be changed by SecHub <code>mapping</code> - look at <a href="#mapping-technical-details">mapping</a> for more information.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Just use the <code>provider</code> ID as mapping ID.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="overview-of-possible-configurations">2.3.3. Overview of possible configurations</h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Provider ID</th>
+<th class="tableblock halign-left valign-top">Provides</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx project names being matched by regexp are mapped to preset ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.teamid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name pattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx project names being matched by regexp are mapped to team ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="checkmarx">2.3.4. Checkmarx</h4>
+<div class="sect4">
+<h5 id="project-creation-with-dedicated-checkmarx-preset-and-team">2.3.4.1. Project creation with dedicated checkmarx preset and team</h5>
+<div class="paragraph">
+<p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.
+So far so good.</p>
+</div>
+<div class="paragraph">
+<p>But maybe it is shall not be created with the default Checkmarx "preset" because in some scenarios this is not very suitable
+- e.g. when creating many projects, we do not want to assign all presetIds manually to the project.
+(A preset is something like a profile in Checkmarx where scope of scan can be defined at project level).</p>
+</div>
+<div class="paragraph">
+<p>Also there should be an automated assignment to dedicated teams when
+the project is new created.</p>
+</div>
+<div class="paragraph">
+<p>This can be done by name pattern providers <code>checkmarx.newproject.presetid</code> and <code>checkmarx.newproject.teamid</code>
+as shown in following example:</p>
+</div>
+<div class="paragraph">
+<p><strong>An example scan configuration:</strong></p>
+</div>
+<div class="paragraph">
+<p>Define mapping with <code>checkmarx.newproject.presetid</code></p>
+</div>
+<div id="scan-config-example1-checkmarx" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-java-project-.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">100021</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">java projects</span><span class="delimiter">&quot;</span></span>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">a-go-project-.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">100031</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">go projects</span><span class="delimiter">&quot;</span></span>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">100001</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">others</span><span class="delimiter">&quot;</span></span>
+            }
+        ]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Define mapping with <code>checkmarx.newproject.teamid</code></p>
+</div>
+<div id="scan-config-example2-checkmarx" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-java-project-.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">e2e4e8f4-ba17-453b-b194-c736c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for java projects</span><span class="delimiter">&quot;</span></span>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">a-go-project-.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">e2e4e8f4-ba17-453b-b194-d836c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for go projects</span><span class="delimiter">&quot;</span></span>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">f2c4g8f4-ba17-453b-b194-c746c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for other projects</span><span class="delimiter">&quot;</span></span>
+            }
+        ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On lazy project creation time, depending on project name in sechub, after checkmarx project creation the project will automatically be assigned to the pattern specific presetId.</p>
+</div>
+<div class="paragraph">
+<p><strong>For example:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>project named in sechub with <code>my-java-project-marvelous1</code> will have preset id <code>100021</code> and will have teamId <code>e2e4e8f4-ba17-453b-b194-c736c605700d</code>.</p>
+</li>
+<li>
+<p>project named in sechub with <code>a-go-project-super-cli</code> will have preset id <code>100031</code> and will have teamId <code>e2e4e8f4-ba17-453b-b194-d836c605700d</code>.</p>
+</li>
+<li>
+<p>project named in sechub with <code>something-else`will have preset id `100001</code> and teamId <code>f2c4g8f4-ba17-453b-b194-c746c605700d</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>First matching part will be used! So ordering is important!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-to-obtain-preset-id">2.3.4.2. How to obtain preset id</h5>
+<div class="paragraph">
+<p>Unfortunately the preset ID is necessary for REST calls, but not
+visible at Checkmarx UI.</p>
+</div>
+<div class="paragraph">
+<p>You can either directly access the DB or inspect the web page by
+web tools in you browser (e.g. enable network monitoring and change prest at UI&#8230;&#8203;)</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="how-to-obtain-team-id">2.3.4.3. How to obtain team id</h5>
+<div class="paragraph">
+<p>Unfortunately the team ID is necessary for REST calls, but not
+visible at Checkmarx UI.</p>
+</div>
+<div class="paragraph">
+<p>You can either directly access the DB or inspect the web page by
+web tools in you browser (e.g. enable network monitoring and change team at UI&#8230;&#8203;)</p>
+</div>
+<div style="page-break-after: always;"></div>
 </div>
 </div>
 </div>
@@ -1130,7 +1439,7 @@ accidently add the credentials to your repository.</p>
 <h2 id="security-products">3. Security Products</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="checkmarx">3.1. Checkmarx</h3>
+<h3 id="checkmarx-2">3.1. Checkmarx</h3>
 <div class="sect3">
 <h4 id="what-does-the-adapter-do">3.1.1. What does the adapter do?</h4>
 <div class="olist arabic">
@@ -1495,7 +1804,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-10-16 17:31:57 CEST
+Last updated 2019-12-16 16:12:35 CET
 </div>
 </div>
 </body>
