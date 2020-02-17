@@ -1,0 +1,20 @@
+{
+        "entries": [
+            {
+                "pattern": "my-java-project-.*",
+                "replacement": "100021", 
+                "comment":"java projects"
+            },
+            {
+                "pattern": "a-go-project-.*",
+                "replacement": "100031",
+                "comment":"go projects"
+            },
+            {
+                "pattern": ".*",
+                "replacement": "100001", 
+                "comment":"others"
+            }
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+[[mapping-concept]]
+{sechub} needed a way to configure simple configuration values and also
+provide a mapping from project names to adapter specific values (see 
+<<scan-config-about,Scan config>> )
+
+==== Structure 
+To provide this in a very generic way {sechub} does use the `mappings` means
+a simple setup of
+ 
+- pattern +
+  _(simple key or a regular expression)_
+- replacement +
+  _(just the value)_
+- comment 
+  _(describes what this mapping is used for - just for information)_
+
+==== Domain handling
+The `Administration` domain will know every mapping and provide the 
+corresponding REST API for administrators.
+
+Changes of mappings will be sent from administration domain to other
+domains via event bus and a message with ID: <<section-gen-messaging-mapping_configuration_changed,MAPPING_CONFIGURATION_CHANGED>>.
+
+Dedicated message handlers inside other domains will recognize wanted parts and store informatino when
+necessary.

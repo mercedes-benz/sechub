@@ -3,4 +3,7 @@
 
 include::server/server_deployment.adoc[]
 
+include::../shared/configuration/mapping.adoc[]
+
 include::../shared/configuration/scan_config.adoc[]
+

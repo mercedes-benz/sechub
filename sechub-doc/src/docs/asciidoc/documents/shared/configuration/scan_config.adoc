@@ -1,4 +1,5 @@
 === Scan configuration
+[[scan-config-about]]
 Sometimes it is necessary to provide special scan configuration setup, e.g. when
 initializing scan operations at server side.
 
@@ -6,33 +7,49 @@ This can be done by a special scan configuration which is defined as JSON.
 
 [NOTE]
 ====
-This feature was introduced with https://github.com/Daimler/sechub/issues/127[#127].
-At the moment it's only possible to define configuration by system property
-`sechub.scan.config.initial` or environment entry `SECHUB_SCAN_CONFIG_INITIAL`
-
 Do not confuse with `SecHub configuration` which is always on client side. 
 ====
-
 
 ==== General
 ===== Name pattern ID providers
 Currently only `namePatternIdProviders` are provided, which contain an id and mappings from name patterns
 to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups. 
 
-[[scan-config-namepatternidprovider-example1]]
-[source, json]
-----
-include::scan_config_namepattern_provider_example1.json[]
-----
+==== Mapping
+Scan configuration can be changed by {sechub} `mapping` - look at <<mapping-technical-details, mapping>> for more information.
+
+NOTE: Just use the `provider` ID as mapping ID.
 
 ifdef::techdoc[]
 ====== Technical details
+
+*Usage*
 
 A caller can use the `ScanConfigService` to fetch an `NamePatternIdprovider` which is able to provide
 an ID for a given name. This is a very generic approach and callers must only use unique IDs to 
 have dedicated, name based id mappings.
 
 An ID can be any string. Given regular expressions are handled by https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html[JAVA regular expression Pattern] 
+
+
+*Cluster handling*
+Synchronization inside cluster is done over database and a special scheduler service:
+`ScanConfigRefreshTriggerService` . This servcie checks periodically if current `scan configuration`
+has been changed by administrators. If so the name pattern provider will be rebuild.
+
+*About old JSON setup*
+
+Before introducing <<mapping-concept,mapping concept>> we had to define scan config by JSON directly
+inside a environment property on startup - but this is no longer necessary.
+
+Here an example of former style:
+[[scan-config-namepatternidprovider-example1]]
+[source, json]
+----
+include::scan_config_namepattern_provider_example1.json[]
+----
+
+
 endif::techdoc[]
 
 ==== Overview of possible configurations
@@ -62,10 +79,17 @@ as shown in following example:
 
 *An example scan configuration:*
 
+Define mapping with `checkmarx.newproject.presetid`
 [[scan-config-example1-checkmarx]]
 [source, json]
 ----
-include::scan_config_example1_checkmarx.json[]
+include::scan_config_example1_checkmarx-preset-id.json[]
+----
+Define mapping with `checkmarx.newproject.teamid`
+[[scan-config-example2-checkmarx]]
+[source, json]
+----
+include::scan_config_example2_checkmarx-team-id.json[]
 ----
 
 On lazy project creation time, depending on project name in sechub, after checkmarx project creation the project will automatically be assigned to the pattern specific presetId.
