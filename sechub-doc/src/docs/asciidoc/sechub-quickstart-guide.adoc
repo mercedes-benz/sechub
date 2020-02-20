@@ -1,0 +1,137 @@
+// SPDX-License-Identifier: MIT
+
+= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+
+// configure EN settings for asciidoc
+include::documents/config.adoc[]
+
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/shared/about_documentation_all.adoc[]
+
+//--
+
+== Guide
+
+This guide describes how to get started with SecHub.
+
+The following topics are covered:
+
+* [x] Getting SecHub
+* [x] Starting SecHub in Integration Test Server mode
+* [x] Getting default passwords
+* [x] Working with the REST API and https://curl.haxx.se/[cURL]
+* [x] Stopping the server
+
+=== Requirements
+
+* Java SDK
+* Git
+* cURL
+
+=== Instructions
+
+Let's start with:
+
+. Cloning the repository
++
+----
+$ cd ~
+$ mkdir develop
+$ cd develop
+$ git clone https://github.com/Daimler/sechub.git
+$ cd sechub
+----
+
+. Generate a self-signed certificate
++
+----
+~/develop/sechub$ ./gradlew ensureLocalhostCertificate
+----
+
+. Build SecHub
++
+----
+~/develop/sechub$ ./gradlew build
+----
++
+TIP: In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy[Accessing the web through a HTTP proxy]
+
+. Start integration test server
++
+----
+~/develop/sechub$ ./gradlew startIntegrationTestServer
+----
++
+WARNING: Do not use the Integration Test Server mode in production.
++
+.Logs
+[NOTE]
+In case of an error message or failure, you can find the server log under: `./sechub-integrationtest/integrationtest-server.log`.
+
+. Test if the server is up and running
++
+[source,bash]
+----
+$ curl --insecure --head https://localhost:8443/api/anonymous/check/alive
+----
++
+NOTE: The `insecure` parameter is needed, because a self-signed certificate is used in this guide.
++
+[source,bash]
+----
+HTTP/1.1 200 # <1>
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Thu, 12 Dec 2019 15:26:19 GMT
+----
+<1> You should get a `HTTP 200` code back from the running integration server.
+
+. Get the initial credentials
++
+Open the log file `./sechub-integrationtest/integrationtest-server.log` and search for:
++
+----
+##################### ATTENTION #####################################################
+# Created initial admin:'int-test_superadmin' with password:'{noop}int-test_superadmin-pwd'
+#                 email:'int-test_superadmin@sechub.example.org'
+# In production: CHANGE this initial API token, when your server has been started.
+# Everybody able to read this log file has access to these admin credentials!
+#####################################################################################
+----
++
+Superadmin username and password:
++
+----
+username: int-test_superadmin
+password: int-test_superadmin-pwd
+----
++
+User account username and password:
++
+----
+username: int-test_onlyuser
+password: int-test_onlyuser-pwd
+----
++
+IMPORTANT: The `{noop}` has to be excluded from the password string `{noop}int-test_superadmin-pwd`, therefor the password is: `int-test_superadmin-pwd`
+
+. List all users as administrator
++
+List all users on the SecHub server using the administrator credentials
++
+----
+curl --insecure --user int-test_superadmin:int-test_superadmin-pwd 'https://localhost:8443/api/admin/users'; echo
+----
+
+. Stop server
++
+----
+~/develop/sechub$ ./gradlew stopIntegrationTestServer
+----
