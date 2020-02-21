@@ -22,7 +22,7 @@ buildscript{
         classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
 		classpath "org.asciidoctor:asciidoctorj-diagram:1.5.4.1"
 		classpath "org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16"
-		classpath "org.ajoberstar:grgit:2.1.0" // necessary for version calculation
+		classpath "org.ajoberstar.grgit:grgit-gradle:4.0.1" // necessary for version calculation
 
 	}
     // FIXME 2019-10-10, Albert Tregnaghi: Remove this workaround when using newer version than spring boot 2.1.9 (see https://github.com/Daimler/sechub/issues/31 for details)
@@ -32,7 +32,7 @@ buildscript{
 }
 
 ext {
-    git = org.ajoberstar.grgit.Grgit.open() // necessary for version calculation
+    git = org.ajoberstar.grgit.Grgit.open(currentDir: project.rootDir) // necessary for version calculation
 }
 
 allprojects {
