@@ -29,6 +29,24 @@ The following topics are covered:
 * Git
 * cURL
 
+Ubuntu 18.04 & 20.04:
+
+----
+sudo apt install git openjdk-8-jdk curl
+----
+
+Debian 10:
+
+----
+sudo apt install git openjdk-11-jdk curl
+----
+
+CentOS 8 & Fedora 31:
+
+----
+sudo dnf install git java-1.8.0-openjdk-devel curl
+----
+
 === Instructions
 
 Let's start with:
@@ -48,14 +66,24 @@ $ cd sechub
 ----
 ~/develop/sechub$ ./gradlew ensureLocalhostCertificate
 ----
++
+.Proxy
+[TIP]
+--
+In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy[Accessing the web through a HTTP proxy]
+
+Example:
+
+----
+./gradlew -Dhttp.proxyHost=locahost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 ensureLocalhostCertificate
+----
+--
 
 . Build SecHub
 +
 ----
 ~/develop/sechub$ ./gradlew build
 ----
-+
-TIP: In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy[Accessing the web through a HTTP proxy]
 
 . Start integration test server
 +

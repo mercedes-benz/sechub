@@ -90,7 +90,8 @@ asciidoctor {
         'sechub-architecture.adoc',
         'sechub-client.adoc',
         'sechub-operations.adoc',
-        'sechub-restapi.adoc'
+        'sechub-restapi.adoc',
+        'sechub-quickstart-guide.adoc'
     }
 
     // workaround to enable missing includes checking. See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/154
