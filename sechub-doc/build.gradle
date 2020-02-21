@@ -2,7 +2,7 @@
 apply plugin: 'org.asciidoctor.convert'
 
 dependencies {
-    compile 'org.reflections:reflections:0.9.11'
+    compile 'org.reflections:reflections:0.9.12'
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
     testCompile project(':sechub-shared-kernel-testframework')
 
