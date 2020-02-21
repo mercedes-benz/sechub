@@ -35,6 +35,7 @@ projectType = [
             /* server projects, all contained inside server */
             springBootSecHubServerProjects: [
                     project(':sechub-server'),
+                    project(':sechub-server-core'),
                     project(':sechub-schedule'),
                     project(':sechub-authorization'),
                     project(':sechub-administration'),
