@@ -20,9 +20,9 @@ public class SimpleCSVImporter {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<ImportCSVRow> importCSVFile(File file, int expectedColumnCount, int headlines) throws IOException {
+	public List<CSVRow> importCSVFile(File file, int expectedColumnCount, int headlines) throws IOException {
 
-		List<ImportCSVRow> list = new ArrayList<>();
+		List<CSVRow> list = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file));) {
 			String line = null;
@@ -30,7 +30,7 @@ public class SimpleCSVImporter {
 			while ((line = br.readLine()) != null) {
 				lineNr++;
 
-				ImportCSVRow row = importRow(line);
+				CSVRow row = CSVRow.importRow(line);
 				int columnCount = row.columns.size();
 				if (columnCount!=expectedColumnCount) {
 					throw new IllegalStateException("Expected "+expectedColumnCount+" but got "+columnCount+" in line:"+lineNr);
@@ -43,13 +43,5 @@ public class SimpleCSVImporter {
 		return list;
 
 	}
-
-	private ImportCSVRow importRow(String line) {
-		ImportCSVRow row = new ImportCSVRow();
-		String[] splitted = line.split(";");
-		for (String splitPart : splitted) {
-			row.add(splitPart);
-		}
-		return row;
-	}
+	
 }

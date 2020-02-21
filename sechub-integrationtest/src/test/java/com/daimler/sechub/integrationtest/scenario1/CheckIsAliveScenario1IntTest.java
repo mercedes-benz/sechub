@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
-public class CheckIsAliveTest {
+public class CheckIsAliveScenario1IntTest {
 
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);

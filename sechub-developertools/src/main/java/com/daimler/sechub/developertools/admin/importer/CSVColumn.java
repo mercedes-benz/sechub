@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.importer;
 
-public class ImportCSVColumn {
+public class CSVColumn {
 
 	String cell;
 }

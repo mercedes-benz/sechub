@@ -15,8 +15,9 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class ScanConfigScenario3SecHubClientIntTest {
 
@@ -32,10 +33,23 @@ public class ScanConfigScenario3SecHubClientIntTest {
 	@Test
 	public void when_scanconfig1_defines_team3_and_preset1_for_project_pattern__project_will_be_scanned_with_this_setup()
 			throws IOException {
+	    /* @formatter:off */
 
 		/* prepare*/
-		String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("scan-config/sechub_scan_config1.json");
-		changeScanConfig(json);
+	    changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
+	            new MappingEntry("scenario3_.*", "200001", ""),
+	            new MappingEntry(".*", "200002", "")
+	            
+	            );
+        changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(),
+                new MappingEntry("other", "teamid1", ""),
+                new MappingEntry("other_.*", "teamid2", ""),
+                new MappingEntry(".*proj.*", "teamid3", ""),
+                new MappingEntry(".*", "teamid4", "")
+                
+                );
+        waitForScanConfigRefresh();
+        
 		clearMetaDataInspection();
 
 		assertInspections().hasAmountOfInspections(0);
@@ -46,7 +60,6 @@ public class ScanConfigScenario3SecHubClientIntTest {
 		UUID sechubJobUUID = result.getSechubJobUUD();
 
 		/* test */
-		/* @formatter:off */
 		assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 		assertInspections().
 			hasAmountOfInspections(1).
@@ -62,8 +75,19 @@ public class ScanConfigScenario3SecHubClientIntTest {
 			throws IOException {
 
 		/* prepare*/
-		String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("scan-config/sechub_scan_config2.json");
-		changeScanConfig(json);
+        changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
+                new MappingEntry("othe.*", "200001", ""),
+                new MappingEntry(".*", "200002", "")
+                
+                );
+        changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(),
+                new MappingEntry("other", "teamid1", ""),
+                new MappingEntry("other_.*", "teamid2", ""),
+                new MappingEntry("xproj.*", "teamid3", ""),
+                new MappingEntry(".*", "teamid4", "")
+                
+                );
+        waitForScanConfigRefresh();
 		clearMetaDataInspection();
 
 		assertInspections().hasAmountOfInspections(0);
@@ -80,8 +104,8 @@ public class ScanConfigScenario3SecHubClientIntTest {
 			hasAmountOfInspections(1).
 			inspectionNr(0).
 				hasId("CHECKMARX").
-				hasNotice("presetid","200002").// scenario3_project1 -> preset 1
-				hasNotice("teamid", "teamid4");// scenario3_project1 -> preset 1
+				hasNotice("presetid","200002").// scenario3_project1 -> preset 2
+				hasNotice("teamid", "teamid4");// scenario3_project1 -> preset 3
 		/* @formatter:on */
 	}
 

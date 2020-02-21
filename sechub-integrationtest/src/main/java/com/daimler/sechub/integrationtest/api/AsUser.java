@@ -30,6 +30,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -500,6 +501,18 @@ public class AsUser {
 		return getRestHelper().getJSon(url);
 	
 	}
+
+    public AsUser updateMapping(String mappingId, MappingData mappingData) {
+        String url = getUrlBuilder().buildUpdateMapping(mappingId);
+        getRestHelper().putJSon(url,mappingData.toJSON());
+        return this;
+    }
+    
+    public MappingData getMappingData(String mappingId) {
+        String url = getUrlBuilder().buildGetMapping(mappingId);
+        return MappingData.fromString(getRestHelper().getJSon(url));
+    
+    }
 
 
 

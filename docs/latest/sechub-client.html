@@ -547,7 +547,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#variables-inside-configuration-files">2.4.1. Variables inside configuration files</a></li>
 </ul>
 </li>
-<li><a href="#sechub-scan-configuration">2.5. SecHub scan configuration</a>
+<li><a href="#sechub-configuration">2.5. SecHub configuration</a>
 <ul class="sectlevel3">
 <li><a href="#api-version">2.5.1. API version</a></li>
 <li><a href="#server">2.5.2. Server</a></li>
@@ -688,7 +688,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-bdbd315-dirty-latest</p>
+0.0.0-5416dcd-dirty-latest</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -920,8 +920,8 @@ Username - mandatory, but can also be defined in config file</p>
 Shows version info and terminates</p>
 </li>
 <li>
-<p>wait <code>&lt;int&gt;</code> +<br>
-wait time in seconds. Will be used for automatic status checks etc. when action='scan'. Default is 60 seconds (default 60)</p>
+<p>wait <code>&lt;int&gt;</code><br>
+wait time in seconds. Will be used for automatic status checks etc. when action=<code>scan</code>. Default is 60 seconds (default 60)</p>
 </li>
 </ul>
 </div>
@@ -976,12 +976,13 @@ accidently logging of variables - e.g. credentials.
 </div>
 </div>
 <div class="sect2">
-<h3 id="sechub-scan-configuration">2.5. SecHub scan configuration</h3>
+<h3 id="sechub-configuration">2.5. SecHub configuration</h3>
 <div class="paragraph">
-<p>A <code>SecHub</code> scan configuration  must be valid <code>JSON</code>.</p>
+<p>A <code>SecHub</code> configuration  must be valid <code>JSON</code> and is defined
+at caller side.</p>
 </div>
 <div class="paragraph">
-<p>This configuration is used by client and also by rest calls to start sechub
+<p>It is used by client and also by rest calls to start SecHub
 scan jobs and add meta data. Some minor parts are client specific and must
 be handled by direct REST calls in a special way, but this is mentioned in
 following description of JSON syntax.</p>

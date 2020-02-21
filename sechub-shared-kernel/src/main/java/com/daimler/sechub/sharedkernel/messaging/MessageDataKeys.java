@@ -118,6 +118,7 @@ public class MessageDataKeys {
 
 	public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
 
+	public static final MessageDataKey<MappingMessage> CONFIG_MAPPING_DATA = createMappingMessageKey("config.mapping.data");
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Helpers ..................................+ */
@@ -137,6 +138,11 @@ public class MessageDataKeys {
 	private static MessageDataKey<JobMessage> createJobMessageKey(String id) {
 		return createKey(id, new JobMessageDataProvider());
 	}
+	
+	private static MessageDataKey<MappingMessage> createMappingMessageKey(String id) {
+        return createKey(id, new MappingMessageDataProvider());
+    }
+	
 
 	private static <T> MessageDataKey<T> createKey(String id, MessageDataProvider<T> provider) {
 		return new MessageDataKey<>(id, provider);

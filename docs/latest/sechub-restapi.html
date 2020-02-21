@@ -526,7 +526,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#about">1. About</a></li>
 <li><a href="#section-sechub-rest-api">2. SecHub REST API</a>
 <ul class="sectlevel2">
-<li><a href="#sechub-scan-configuration">2.1. SecHub scan configuration</a>
+<li><a href="#sechub-configuration">2.1. SecHub configuration</a>
 <ul class="sectlevel3">
 <li><a href="#api-version">2.1.1. API version</a></li>
 <li><a href="#server">2.1.2. Server</a></li>
@@ -583,7 +583,9 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#sechub-execution">2.2.1.4. Sechub execution</a></li>
 <li><a href="#sign-up">2.2.1.5. Sign up</a></li>
 <li><a href="#job-administration">2.2.1.6. Job administration</a></li>
-<li><a href="#other">2.2.1.7. Other</a></li>
+<li><a href="#testing">2.2.1.7. Testing</a></li>
+<li><a href="#configuration">2.2.1.8. Configuration</a></li>
+<li><a href="#other">2.2.1.9. Other</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">2.2.2. Admin lists all users</a></li>
@@ -602,14 +604,23 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#update-project-whitelist">2.2.15. Update project whitelist</a></li>
 <li><a href="#admin-shows-scan-logs-for-project">2.2.16. Admin shows scan logs for project</a></li>
 <li><a href="#user-clicks-link-to-get-new-api-token">2.2.17. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">2.2.18. User creates a new sechub job</a></li>
+<li><a href="#user-creates-a-new-sechub-job">2.2.18. User creates a new sechub job</a>
+<ul class="sectlevel4">
+<li><a href="#section-ucrestdoc-UC_005-code-scan">2.2.18.1. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.18.2. Web Scan login form scripted</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">2.2.18.3. Infrastructure scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">2.2.18.4. Web Scan login form auto dection</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">2.2.18.5. Web Scan anonymous</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">2.2.18.6. Web Scan login basic</a></li>
+</ul>
+</li>
 <li><a href="#user-uploads-source-code">2.2.19. User uploads source code</a></li>
 <li><a href="#user-approves-sechub-job">2.2.20. User approves sechub job</a></li>
 <li><a href="#user-checks-sechub-job-state">2.2.21. User checks sechub job state</a></li>
 <li><a href="#user-downloads-sechub-job-report">2.2.22. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-JSON">2.2.22.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-HTML">2.2.22.2. HTML</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">2.2.22.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">2.2.22.2. HTML</a></li>
 </ul>
 </li>
 <li><a href="#user-self-registration">2.2.23. User self registration</a></li>
@@ -619,10 +630,14 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#user-requests-new-api-token">2.2.27. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">2.2.28. Admin lists all running jobs</a></li>
 <li><a href="#admin-cancels-a-job">2.2.29. Admin cancels a job</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">2.2.30. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">2.2.31. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">2.2.32. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">2.2.33. Admin lists status information</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">2.2.30. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.31. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">2.2.32. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">2.2.33. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.2.34. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.2.35. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.2.36. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.2.37. Admin lists status information</a></li>
 </ul>
 </li>
 </ul>
@@ -712,7 +727,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-bdbd315-dirty-latest</p>
+0.0.0-5416dcd-dirty-latest</p>
 </div>
 <hr>
 </div>
@@ -735,19 +750,20 @@ It makes usage of SecHub much more comfortable!</p>
 <p>Using REST API directly can be a little bit cumbersome&#8230;&#8203;</p>
 </div>
 <div class="paragraph">
-<p>Look at <a href="https://daimler.github.io/sechub">SecHub web page</a>  to get information about SecHub client.</p>
+<p>Look at <a href="https://daimler.github.io/sechub">SecHub web page</a> to get information about SecHub client.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="sect2">
-<h3 id="sechub-scan-configuration">2.1. SecHub scan configuration</h3>
+<h3 id="sechub-configuration">2.1. SecHub configuration</h3>
 <div class="paragraph">
-<p>A <code>SecHub</code> scan configuration  must be valid <code>JSON</code>.</p>
+<p>A <code>SecHub</code> configuration  must be valid <code>JSON</code> and is defined
+at caller side.</p>
 </div>
 <div class="paragraph">
-<p>This configuration is used by client and also by rest calls to start sechub
+<p>It is used by client and also by rest calls to start SecHub
 scan jobs and add meta data. Some minor parts are client specific and must
 be handled by direct REST calls in a special way, but this is mentioned in
 following description of JSON syntax.</p>
@@ -1482,7 +1498,39 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="other">2.2.1.7. Other</h5>
+<h5 id="testing">2.2.1.7. Testing</h5>
+<div class="paragraph">
+<p>Some use cases for testing</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_035">REST API for UC_035-User defines mock data configuration for project </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_036">REST API for UC_036-User retrieves mock data configuration for project </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="configuration">2.2.1.8. Configuration</h5>
+<div class="paragraph">
+<p>Usecases for configuration parts</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_037">REST API for UC_037-Admin updates mapping configuration </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_038">REST API for UC_038-Admin fetches mapping configuration </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="other">2.2.1.9. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -1802,7 +1850,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/56351b2e-442b-4dd4-8e9d-f7c21453406c' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/5687f1a7-4513-470b-887b-31e5ceae17ff' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -2168,11 +2216,106 @@ because scanners do not scan them self.</td>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
-<div id="section-ucrestdoc-UC_005-default" class="paragraph">
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-code-scan">2.2.18.1. Code Scan</h5>
+<div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 11. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.fileSystem.folders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan sources from given file system folders</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">2.2.18.2. Web Scan login form scripted</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 12. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2224,18 +2367,121 @@ because scanners do not scan them self.</td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.fileSystem.folders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan sources from given file system folders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">login field auto detection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script[].step</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type of step</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script[].selector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">css selector</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;script&quot;:[{&quot;step&quot;:&quot;input&quot;,&quot;selector&quot;:&quot;#example_login_userid&quot;,&quot;value&quot;:&quot;username1&quot;},{&quot;step&quot;:&quot;input&quot;,&quot;selector&quot;:&quot;#example_login_pwd&quot;,&quot;value&quot;:&quot;password&quot;},{&quot;step&quot;:&quot;click&quot;,&quot;selector&quot;:&quot;#example_login_button&quot;,&quot;value&quot;:&quot;&quot;}]}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">2.2.18.3. Infrastructure scan</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 13. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan</code></p></td>
@@ -2285,7 +2531,342 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
     -H 'Content-Type: application/json' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:null,&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+    -d '{&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">2.2.18.4. Web Scan login form auto dection</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 14. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">login field auto detection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;autodetect&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">2.2.18.5. Web Scan anonymous</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 15. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp/login&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">2.2.18.6. Web Scan login basic</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 16. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">basic login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2298,7 +2879,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 12. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 17. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2325,7 +2906,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/fba27c17-932a-460d-8ce3-353bd477aac6/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/bbdc6d2b-e74c-47a1-a89b-3ceb2e6de893/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -2344,7 +2925,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 13. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 18. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2371,7 +2952,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/1233c3f8-0358-414e-a697-45e744116735/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/8e460e93-461c-41dd-8f61-b68759c9bd11/approve' -i -X PUT \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -2385,7 +2966,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 14. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 19. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2471,7 +3052,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/2e973bc6-6bb2-4ac8-ba77-326bfd990865' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0d69b936-a6bb-415f-9d99-7e657bf4b2ab' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -2482,26 +3063,26 @@ because scanners do not scan them self.</td>
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-JSON">2.2.22.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-json">2.2.22.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/39c3d238-7e6f-4a9f-83de-47b71ef53694' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b85d24f4-868e-4330-9775-a349adc88f5b' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-HTML">2.2.22.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-html">2.2.22.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/0158e0b2-2f27-4ad2-a195-f6557b37a1ae' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e1dd40b3-b382-4ed1-afdf-036d0ad05825' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -2581,7 +3162,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 15. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 20. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2617,7 +3198,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 16. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 21. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2653,7 +3234,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 17. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 22. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2755,13 +3336,167 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/52dcd87f-0c4b-4c72-a3aa-065befc44381' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/80b4e9b5-98a1-4dd4-b5b3-908ef15a2d7e' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">2.2.30. Admin disables job processing in scheduler</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">2.2.30. User defines mock data configuration for project</h4>
+<div id="section-ucrestdoc-uc-UC_035" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_035-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/mockdata' -i -X PUT \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json' \
+    -d '{&quot;codeScan&quot;:{&quot;result&quot;:&quot;RED&quot;},&quot;webScan&quot;:{&quot;result&quot;:&quot;YELLOW&quot;},&quot;infraScan&quot;:{&quot;result&quot;:&quot;GREEN&quot;}}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.31. User retrieves mock data configuration for project</h4>
+<div id="section-ucrestdoc-uc-UC_036" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_036-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/mockdata' -i -X GET \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-updates-mapping-configuration">2.2.32. Admin updates mapping configuration</h4>
+<div id="section-ucrestdoc-uc-UC_037" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
+</div>
+<div id="section-ucrestdoc-UC_037-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 23. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mappingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The mappingID , identifiying which mapping shall be updated</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pattern</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].replacement</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replacement</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comment</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid' -i -X PUT \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;entries&quot;:[{&quot;pattern&quot;:&quot;testproject_*&quot;,&quot;replacement&quot;:&quot;8be4e3d4-6b53-4636-b65a-949a9ebdf6b9&quot;,&quot;comment&quot;:&quot;testproject-team&quot;},{&quot;pattern&quot;:&quot;.*&quot;,&quot;replacement&quot;:&quot;3be4e3d2-2b55-2336-b65a-949b9ebdf6b9&quot;,&quot;comment&quot;:&quot;default-team&quot;}]}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-mapping-configuration">2.2.33. Admin fetches mapping configuration</h4>
+<div id="section-ucrestdoc-uc-UC_038" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
+</div>
+<div id="section-ucrestdoc-UC_038-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pattern</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].replacement</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replacement</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comment</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">2.2.34. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -2776,7 +3511,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">2.2.31. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">2.2.35. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -2791,7 +3526,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">2.2.32. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">2.2.36. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -2806,7 +3541,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">2.2.33. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">2.2.37. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>

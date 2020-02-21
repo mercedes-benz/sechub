@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 @EnableAutoConfiguration
 @Profile(Profiles.ADMIN_ACCESS)
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class AdministratorInfoRestController {
+public class ServerInfoAdministrationRestController {
 
 	@Autowired
 	private InfoService serverInfoService;

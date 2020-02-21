@@ -17,16 +17,15 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -336,17 +335,30 @@ public class TestAPI {
 
 	}
 
-	public static void changeScanConfig(String json) {
+	/**
+	 * Changes scan config DIRECTLY ! Means without administration domain, but directly in scan 
+	 * domain - interesting for testing only.
+	 * @param json
+	 */
+	public static void changeScanMappingDirectly(String mappingId, MappingEntry ...entries ) {
+	    MappingData data = new MappingData();
+	    for (MappingEntry entry: entries) {
+	        data.getEntries().add(entry);
+	    }
 		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
-		String url = urlBuilder.buildChangeScanConfigURL();
-
-		MultiValueMap<String, String> headers3 = new LinkedMultiValueMap<>();
-		headers3.set("Content-Type", "application/json");
-
-		HttpEntity<String> request2 = new HttpEntity<>(json, headers3);
-		IntegrationTestContext.get().getSuperAdminRestHelper().put(url,request2);
+		String url = urlBuilder.buildIntegrationTestChangeScanConfigMappingURL(mappingId);
+		
+		IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSon(url, data.toJSON());
 
 	}
+	
+	/**
+	 * Will just wait 3 seconds - we have configured 1 second at application-integrationtest.yaml 
+	 * to check scan config every second so this should be enough 
+	 */
+	public static void waitForScanConfigRefresh() {
+	    waitMilliSeconds(3000);
+    }
 
 	public static void clearMetaDataInspection() {
 		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();

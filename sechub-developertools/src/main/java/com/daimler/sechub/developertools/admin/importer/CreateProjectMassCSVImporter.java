@@ -20,16 +20,16 @@ public class CreateProjectMassCSVImporter {
 	}
 
 	public void importProjectsAndRelationsByCSV(File file) throws IOException {
-		List<ImportCSVRow> rows = csvImporter.importCSVFile(file, 3, 1);
+		List<CSVRow> rows = csvImporter.importCSVFile(file, 3, 1);
 
-		for (ImportCSVRow row: rows) {
+		for (CSVRow row: rows) {
 			importRow(row);
 		}
 
 	}
 
-	private void importRow(ImportCSVRow row) {
-		Iterator<ImportCSVColumn> it = row.columns.iterator();
+	private void importRow(CSVRow row) {
+		Iterator<CSVColumn> it = row.columns.iterator();
 		String projectId = it.next().cell.trim();
 		String owner = it.next().cell.trim();
 		String users = it.next().cell.trim();

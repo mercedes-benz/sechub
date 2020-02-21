@@ -18,6 +18,12 @@ public class ValidationResult{
 		valid=false;
 	}
 	
+	public void addErrors(ValidationResult otherResult) {
+	    for (String error: otherResult.errors) {
+	        addError(error);
+	    }
+	}
+	
 	public List<String> getErrors() {
 		return errors;
 	}

@@ -105,7 +105,6 @@ public class JobScenario2IntTest {
 
 		UUID jobUUID = assertUser(USER_1).
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
-
 		assertUser(USER_1).
 			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.INITIALIZING).
 			and().

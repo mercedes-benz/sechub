@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
 == Concepts
 
+include::../shared/configuration/mapping.adoc[]
 include::../shared/configuration/scan_config.adoc[]
+
+=== Domain driven design
+include::./../shared/domain_message_bus.adoc[]
 
 include::./../gen/gen_usecases.adoc[]
 

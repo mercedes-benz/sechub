@@ -75,7 +75,30 @@ We try to create small spring services, in most cases a
 service with annotation `@Service` should have only one public method
 
 So pretty simple and easy to maintain.
-The name should provide information what the service does.
+
+The name should provide information what the service does and has to
+end with `Service`. 
+
+Some examples: 
+
+- `MailService` 
+- `CreateUserService`
+- `InformAdminsThatSchedulerJobProcessingHasBeenDisabledService`
+
+==== Special service variants
+===== Transaction services
+Sometimes it is necessary to divide transactions.
+E.g. When a service triggers a message into event bus and we need
+to ensure that data is stored in transaction before the message has been sent.
+
+In this case we insist service ends with `TransactionService`.
+For an example look into `ProjectTransactionService`.
+
+[IMPORTANT]
+====
+Only add the special transactional parts to the "transactional" service but  
+do all other stuff inside "normal" services!
+====
 
 === RestController
 Rest controller should not do any business logic by themselves, but delegate

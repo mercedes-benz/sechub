@@ -12,6 +12,7 @@ import com.daimler.sechub.domain.scan.AbstractInstallSetup;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 @Component
 public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements CheckmarxInstallSetup {
@@ -61,7 +62,7 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 	}
 
 	public String getTeamIdForNewProjects(String projectId) {
-		String teamId = scanConfigService.getNamePatternIdProvider("checkmarx.newproject.teamid").getIdForName(projectId);
+		String teamId = scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID).getIdForName(projectId);
 		if (teamId!=null) {
 			return teamId;
 		}
@@ -70,7 +71,7 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 
 	@Override
 	public Long getPresetIdForNewProjects(String projectId) {
-		String id = scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid").getIdForName(projectId);
+		String id = scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID).getIdForName(projectId);
 		try {
 			return Long.valueOf(id);
 		}catch(NumberFormatException e) {

@@ -8,6 +8,7 @@ include 'sechub-cli',
 
 /* server POD area */
 'sechub-server',
+'sechub-server-core',
 'sechub-integrationtest',
 'sechub-schedule',
 'sechub-scan',

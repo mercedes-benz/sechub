@@ -39,5 +39,15 @@ public class ScanConfig implements JSONable<ScanConfig> {
 	public Class<ScanConfig> getJSONTargetClass() {
 		return ScanConfig.class;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (! (obj instanceof ScanConfig)) {
+	        return false;
+	    }
+	    ScanConfig other = (ScanConfig) obj;
+	    
+	    return toJSON().equals(other.toJSON());
+	}
 
 }

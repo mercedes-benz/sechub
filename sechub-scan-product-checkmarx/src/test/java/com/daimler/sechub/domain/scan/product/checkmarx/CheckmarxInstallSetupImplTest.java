@@ -9,6 +9,7 @@ import static org.mockito.Mockito.*;
 
 import com.daimler.sechub.domain.scan.config.NamePatternIdprovider;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CheckmarxInstallSetupImplTest {
 
@@ -29,7 +30,7 @@ public class CheckmarxInstallSetupImplTest {
 		NamePatternIdprovider provider = mock(NamePatternIdprovider.class);
 		when(provider.getIdForName("abc")).thenReturn("A1");
 
-		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.teamid")).thenReturn(provider);
+		when(scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID)).thenReturn(provider);
 
 		/* execute */
 		String result = setupImplToTest.getTeamIdForNewProjects("abc");
@@ -43,7 +44,7 @@ public class CheckmarxInstallSetupImplTest {
 		NamePatternIdprovider provider = mock(NamePatternIdprovider.class);
 		when(provider.getIdForName("abc")).thenReturn(null);
 
-		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.teamid")).thenReturn(provider);
+		when(scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID)).thenReturn(provider);
 
 		/* execute */
 		String result = setupImplToTest.getTeamIdForNewProjects("abc");
@@ -57,7 +58,7 @@ public class CheckmarxInstallSetupImplTest {
 		NamePatternIdprovider provider = mock(NamePatternIdprovider.class);
 		when(provider.getIdForName("abc")).thenReturn("1234");
 
-		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid")).thenReturn(provider);
+		when(scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID)).thenReturn(provider);
 
 		/* execute */
 		Long result = setupImplToTest.getPresetIdForNewProjects("abc");
@@ -71,7 +72,7 @@ public class CheckmarxInstallSetupImplTest {
 		NamePatternIdprovider provider = mock(NamePatternIdprovider.class);
 		when(provider.getIdForName("abc")).thenReturn(null);
 
-		when(scanConfigService.getNamePatternIdProvider("checkmarx.newproject.presetid")).thenReturn(provider);
+		when(scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID)).thenReturn(provider);
 
 		/* execute */
 		Long result = setupImplToTest.getPresetIdForNewProjects("abc");
