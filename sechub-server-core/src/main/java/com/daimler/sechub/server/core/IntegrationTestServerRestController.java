@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.server;
+package com.daimler.sechub.server.core;
 
 import java.io.DataInputStream;
 import java.io.IOException;

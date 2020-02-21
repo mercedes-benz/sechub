@@ -21,8 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.server.InfoService;
-import com.daimler.sechub.server.ServerInfoAdministrationRestController;
+import com.daimler.sechub.server.core.InfoService;
+import com.daimler.sechub.server.core.ServerInfoAdministrationRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;

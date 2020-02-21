@@ -1,8 +1,8 @@
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.https;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.daimler.sechub.test.TestURLBuilder.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,11 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.server.AnonymousCheckAliveRestController;
+import com.daimler.sechub.server.core.AnonymousCheckAliveRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
+import com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckAlive;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 
@@ -39,7 +39,7 @@ public class AnonymousCheckAliveRestDocTest {
 	private MockMvc mockMvc;
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseUserSignup.class)
+	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class)
 	public void calling_check_alive_returns_HTTP_200() throws Exception {
 
 		/* execute */

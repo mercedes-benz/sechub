@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.server;
+package com.daimler.sechub.server.core;
 
 import javax.annotation.security.RolesAllowed;
 
