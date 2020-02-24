@@ -4,6 +4,7 @@ package com.daimler.sechub.developertools.admin.ui;
 import javax.swing.JFrame;
 
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
+import com.daimler.sechub.developertools.admin.ErrorHandler;
 
 public interface UIContext {
 
@@ -28,5 +29,7 @@ public interface UIContext {
 	DeveloperAdministration getAdministration();
 
     JFrame getFrame();
+    
+    ErrorHandler getErrorHandler();
 
 }

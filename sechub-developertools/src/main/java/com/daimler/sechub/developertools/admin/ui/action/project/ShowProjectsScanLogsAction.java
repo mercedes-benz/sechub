@@ -23,7 +23,7 @@ public class ShowProjectsScanLogsAction extends AbstractUIAction {
 		}
 
 		String data = getContext().getAdministration().fetchProjectScanLogs(projectId.get());
-		outputAsBeautifiedJSON(data);
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

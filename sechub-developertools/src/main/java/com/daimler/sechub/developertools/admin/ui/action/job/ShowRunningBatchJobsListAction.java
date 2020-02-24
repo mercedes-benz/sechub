@@ -22,7 +22,7 @@ public class ShowRunningBatchJobsListAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().fetchRunningJobsList();
-		outputAsBeautifiedJSON(data);
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

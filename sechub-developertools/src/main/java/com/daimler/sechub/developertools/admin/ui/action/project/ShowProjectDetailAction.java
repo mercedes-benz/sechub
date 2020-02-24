@@ -23,7 +23,7 @@ public class ShowProjectDetailAction extends AbstractUIAction {
 		}
 
 		String data = getContext().getAdministration().fetchProjectInfo(projectId.get());
-		outputAsBeautifiedJSON(data);
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

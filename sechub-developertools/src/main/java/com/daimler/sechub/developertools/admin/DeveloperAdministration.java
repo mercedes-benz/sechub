@@ -31,17 +31,20 @@ public class DeveloperAdministration {
 	private TestURLBuilder urlBuilder;
 	private AnonymousTestUser anonymousContext;
 	private TestRestHelper anonyomusRestHelper;
+    private ErrorHandler errorHandler;
 
-	public DeveloperAdministration(ConfigProvider provider) {
+	public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
 		this.provider = provider;
+		this.errorHandler = errorHandler;
 		this.userContext = new AdminUserContext();
 		this.anonymousContext = new AnonymousTestUser(null,null);
-		this.restHelper = createTestRestHelperWithErrorHandling(provider,userContext);
-		this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(provider,anonymousContext);
+		this.restHelper = createTestRestHelperWithErrorHandling(errorHandler,userContext);
+		this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler,anonymousContext);
 	}
 
-	private TestRestHelper createTestRestHelperWithErrorHandling(ConfigProvider provider,UserContext user) {
+	private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider,UserContext user) {
 		return new TestRestHelper(user) {
+		    
 			@Override
 			protected ResponseErrorHandler createErrorHandler() {
 				return new DefaultResponseErrorHandler() {
@@ -64,9 +67,9 @@ public class DeveloperAdministration {
 								sb.append(line);
 							}
 						} catch (IOException e) {
-							provider.handleClientError("failed to read response body:" + e.getMessage());
+							provider.handleError("failed to read response body:" + e.getMessage());
 						}
-						provider.handleClientError(sb.toString());
+						provider.handleError(sb.toString());
 
 					}
 				};
@@ -74,6 +77,10 @@ public class DeveloperAdministration {
 
 		};
 	}
+	
+	public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 
 	public TestURLBuilder getUrlBuilder() {
 		if (urlBuilder == null) {
@@ -334,5 +341,8 @@ public class DeveloperAdministration {
 		}
 
 	}
+
+
+   
 
 }

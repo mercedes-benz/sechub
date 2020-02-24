@@ -30,7 +30,7 @@ public class DownloadFullscanDataForJobAction extends AbstractUIAction {
 			return;
 		}
 		String infoText = getContext().getAdministration().triggerDownloadFullScan(sechubJobUUID);
-		outputAsText(infoText);
+		outputAsTextOnSuccess(infoText);
 	}
 
 }

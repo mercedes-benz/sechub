@@ -15,8 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.admin.ConfigProvider;
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
+import com.daimler.sechub.developertools.admin.ErrorHandler;
 
-public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
+public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, UIContext {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DeveloperAdministrationUI.class);
 
@@ -31,6 +32,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	private GlassPaneUI glassPaneUI;
 	private DialogUI dialogUI;
     private JFrame frame;
+    private boolean errors;
 
 	public DeveloperAdministration getAdministration() {
 		return administration;
@@ -57,6 +59,11 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 		return dialogUI;
 	}
 
+	@Override
+	public ErrorHandler getErrorHandler() {
+	    return this;
+	}
+	
 	private void start(String[] args) {
 
 		useNimbusLookAndFeel();
@@ -70,7 +77,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 		Container contentPane = frame.getContentPane();
 
 		credentialUI = new CredentialUI();
-		administration = new DeveloperAdministration(this);
+		administration = new DeveloperAdministration(this,this);
 		commandPanelUI = new CommandUI(this);
 		outputPanelUI = new OutputUI();
 		glassPaneUI = new GlassPaneUI(this, frame);
@@ -116,8 +123,19 @@ public class DeveloperAdministrationUI implements ConfigProvider, UIContext {
 	}
 
 	@Override
-	public void handleClientError(String error) {
-		outputPanelUI.output("ERROR:\n" + error);
+	public void resetErrors() {
+	    errors=false;
+	}
+	
+	@Override
+	public void handleError(String error) {
+	    errors=true;
+		outputPanelUI.error(error);
+	}
+	
+	@Override
+	public boolean hasErrors() {
+	    return errors;
 	}
 
 	@Override

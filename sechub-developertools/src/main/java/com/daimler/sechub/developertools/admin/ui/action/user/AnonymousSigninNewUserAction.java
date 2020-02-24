@@ -32,7 +32,7 @@ public class AnonymousSigninNewUserAction extends AbstractUIAction {
 
 		String infoMessage = getContext().getAdministration().createNewUserSignup(userNameLowerCasedAndTimmed,emailLowerCasedAndTrimmed);
 
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

@@ -30,19 +30,19 @@ public class AssignUserToProjectMassCSVImportAction extends AbstractUIAction {
 	public void execute(ActionEvent e) {
 		File file = getContext().getDialogUI().selectFile(ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue("unknown"));
 		if (file==null) {
-			outputAsText("No file selected - canceled");
+			outputAsTextOnSuccess("No file selected - canceled");
 			return;
 		}
 		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
 		if (! confirm("Do you really want to start mass user2project assignment into environment: "+env)) {
-			outputAsText("Canceled mass user2project import");
+			outputAsTextOnSuccess("Canceled mass user2project import");
 			return;
 		}
 		try {
 			csvImport.importUsersToProjectAssignmentsByCSV(file);
-			outputAsText("Mass user2project assignment by file"+file+" successfully done");
+			outputAsTextOnSuccess("Mass user2project assignment by file"+file+" successfully done");
 		} catch (Exception ex) {
-			outputAsText("Was not able to do mass user2project assignment by CSV import:"+ex.getMessage());
+			outputAsTextOnSuccess("Was not able to do mass user2project assignment by CSV import:"+ex.getMessage());
 			LOG.error("Was not able to import",ex);
 		}
 	}
