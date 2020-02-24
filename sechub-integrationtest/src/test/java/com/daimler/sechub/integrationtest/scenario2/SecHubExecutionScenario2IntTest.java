@@ -23,7 +23,7 @@ public class SecHubExecutionScenario2IntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(5);
+	public Timeout timeOut = Timeout.seconds(10);
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Start scan job ...........................+ */
@@ -228,10 +228,11 @@ public class SecHubExecutionScenario2IntTest {
 
 	@Test
 	public void when_user_is_assigned_to_project_job_can_be_created_and_approved_user_1_can_get_report_but_not_user2() {
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
-		as(SUPER_ADMIN).assignUserToProject(USER_2, PROJECT_2);
+	    /* @formatter:off */
+		as(SUPER_ADMIN).
+		    assignUserToProject(USER_1, PROJECT_1).
+		    assignUserToProject(USER_2, PROJECT_2);
 
-		/* @formatter:off */
 		assertUser(USER_2).
 			isAssignedToProject(PROJECT_2).
 			isNotAssignedToProject(PROJECT_1);
