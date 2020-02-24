@@ -288,21 +288,23 @@ public class AsUser {
 	}
 
 	public String getJobReport(String projectId, UUID jobUUID) {
+	    long waitTimeInMillis=1000;
 		int count = 0;
 		boolean jobEnded = false;
+		String jobstatus = null;
 		while (count < 10) {
-			String jobstatus = getJobStatus(projectId, jobUUID);
+			jobstatus = getJobStatus(projectId, jobUUID);
 			if (jobstatus.indexOf("ENDED") != -1) {
 				jobEnded = true;
 				break;
 			}
-			TestUtil.waitMilliseconds(200);
+			TestUtil.waitMilliseconds(waitTimeInMillis);
 			++count;
 		}
 		if (!jobEnded) {
-			throw new IllegalStateException("Even after some retries no job report state was accessible!");
+			throw new IllegalStateException("Even after "+count+" retries, every waiting "+waitTimeInMillis+" ms, no job report state ENDED was accessible!\nLAST fetched jobstatus for "+jobUUID+" in project "+projectId+" was:\n"+jobstatus);
 		}
-		/* okay report is available - so do downooad */
+		/* okay report is available - so do download */
 		return getRestHelper().getJSon(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
 	}
 	
