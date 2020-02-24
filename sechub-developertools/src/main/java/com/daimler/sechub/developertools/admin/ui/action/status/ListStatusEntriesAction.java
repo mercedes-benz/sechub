@@ -16,7 +16,7 @@ public class ListStatusEntriesAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String data = getContext().getAdministration().getStatusList();
-		outputAsBeautifiedJSON(data);
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

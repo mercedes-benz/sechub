@@ -22,9 +22,9 @@ public class TriggerNewWebScanJobScenario3User1Action extends IntegrationTestAct
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
 		UUID uuid = TestAPI.as(Scenario3.USER_1).createWebScan(Scenario3.PROJECT_1,mode);
-		outputAsText("Job created:"+uuid);
+		outputAsTextOnSuccess("Job created:"+uuid);
 		TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
-		outputAsText("Job approved:"+uuid);
+		outputAsTextOnSuccess("Job approved:"+uuid);
 	}
 
 }

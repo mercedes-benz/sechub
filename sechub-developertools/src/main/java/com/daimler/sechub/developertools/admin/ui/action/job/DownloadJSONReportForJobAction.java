@@ -41,7 +41,7 @@ public class DownloadJSONReportForJobAction extends AbstractUIAction {
 			Path tempFile = Files.createTempFile("sechub-report-", "_"+sechubJobUUID+".json");
 			Files.write(tempFile, data.getBytes());
 
-			outputAsText("Report file downloaded to location:"+tempFile.toAbsolutePath().toString());
+			outputAsTextOnSuccess("Report file downloaded to location:"+tempFile.toAbsolutePath().toString());
 		} catch (Exception ex) {
 			getContext().getOutputUI().error("Download of JSON report failed for job:" + jobUUID.get(), ex);
 			return;

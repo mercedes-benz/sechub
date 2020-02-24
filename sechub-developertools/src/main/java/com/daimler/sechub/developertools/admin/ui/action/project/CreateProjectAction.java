@@ -42,7 +42,8 @@ public class CreateProjectAction extends AbstractUIAction {
 
 
 		String postResult = getContext().getAdministration().createProject(projectId.get(),description.orElse(null), owner.get(),whiteListURLs);
-		outputAsBeautifiedJSON(postResult);
+		outputAsBeautifiedJSONOnSuccess(postResult);
+		outputAsTextOnSuccess("project created:"+projectId);
 	}
 
 }

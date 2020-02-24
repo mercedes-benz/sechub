@@ -22,7 +22,7 @@ public class RevokeAdminRightsFromAdminAction extends AbstractUIAction {
 			return;
 		}
 		String infoMessage = getContext().getAdministration().revokeAddminRightsFrom(userToSignup.get());
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

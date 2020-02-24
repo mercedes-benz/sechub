@@ -29,13 +29,13 @@ public class DeleteUserAction extends AbstractUIAction {
 		}
 		String userId=optUserId.get();
 		if (!confirm("Do you really want to\nDELETE\nuser "+userId+"?")) {
-			outputAsText("CANCELED - delete");
+			outputAsTextOnSuccess("CANCELED - delete");
 			LOG.info("canceled delete of user {}",userId);
 			return;
 		}
 		LOG.info("start delete of user {}",userId);
 		String infoMessage = getContext().getAdministration().deleteUser(userId);
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

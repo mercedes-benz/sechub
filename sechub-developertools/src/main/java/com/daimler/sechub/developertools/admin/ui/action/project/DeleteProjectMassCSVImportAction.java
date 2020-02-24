@@ -29,19 +29,19 @@ public class DeleteProjectMassCSVImportAction extends AbstractUIAction {
 	public void execute(ActionEvent e) {
 		File file = getContext().getDialogUI().selectFile(ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue("unknown"));
 		if (file==null) {
-			outputAsText("No file selected - canceled");
+			outputAsTextOnSuccess("No file selected - canceled");
 			return;
 		}
 		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
 		if (! confirm("Do you really want to start mass project deletion from environment: "+env)) {
-			outputAsText("Canceled mass project delete import");
+			outputAsTextOnSuccess("Canceled mass project delete import");
 			return;
 		}
 		try {
 			csvImport.importProjectDeletesByCSV(file);
-			outputAsText("Mass delete by file"+file+" successfully done");
+			outputAsTextOnSuccess("Mass delete by file"+file+" successfully done");
 		} catch (Exception ex) {
-			outputAsText("Was not able to do mass delete:"+ex.getMessage());
+			outputAsTextOnSuccess("Was not able to do mass delete:"+ex.getMessage());
 			LOG.error("Was not able to import",ex);
 		}
 	}

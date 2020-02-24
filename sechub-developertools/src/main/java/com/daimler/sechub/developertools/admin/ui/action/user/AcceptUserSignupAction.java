@@ -22,7 +22,7 @@ public class AcceptUserSignupAction extends AbstractUIAction {
 			return;
 		}
 		String infoMessage = getContext().getAdministration().doSignup(userToSignup.get());
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

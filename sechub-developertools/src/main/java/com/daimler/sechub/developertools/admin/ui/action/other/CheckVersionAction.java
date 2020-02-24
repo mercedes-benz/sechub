@@ -16,7 +16,7 @@ public class CheckVersionAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String infoMessage = getContext().getAdministration().checkVersion();
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

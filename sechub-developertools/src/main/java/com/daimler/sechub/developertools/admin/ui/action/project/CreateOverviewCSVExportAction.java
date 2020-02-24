@@ -42,7 +42,7 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
 
 		int projectsDone = 0;
 		for (String projectId : projectIds) {
-			outputAsText("Loading project :" + projectId + " ->" + projectsDone + "/" + projectIds.size());
+			outputAsTextOnSuccess("Loading project :" + projectId + " ->" + projectsDone + "/" + projectIds.size());
 			String data = getContext().getAdministration().fetchProjectInfo(projectId);
 			TestJSONHelper jsonHelper = TestJSONHelper.get();
 
@@ -78,10 +78,10 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
 			Path tempFile = Files.createTempFile("sechub_devtools_adminui_export", ".csv");
 			try (BufferedWriter buffer = Files.newBufferedWriter(tempFile)) {
 				buffer.write(grid.toCSVString());
-				outputAsText("written CSV data to "+tempFile.toAbsolutePath().toFile().getAbsolutePath());
+				outputAsTextOnSuccess("written CSV data to "+tempFile.toAbsolutePath().toFile().getAbsolutePath());
 			}
 		} catch (IOException e2) {
-			outputAsText("FAILED");
+			outputAsTextOnSuccess("FAILED");
 			e2.printStackTrace();
 
 		}
@@ -101,7 +101,7 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
 			JsonNode dNode = iditerator.next();
 			ids.add(dNode.asText());
 		}
-		outputAsText("Found " + ids.size() + " users in system.");
+		outputAsTextOnSuccess("Found " + ids.size() + " users in system.");
 		return ids;
 	}
 
@@ -119,7 +119,7 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
 			String emailAdress=dNode.get("emailAdress").asText();
 			ids.add(userId+" <"+emailAdress+">");
 		}
-		outputAsText("Found " + ids.size() + " watting signups.");
+		outputAsTextOnSuccess("Found " + ids.size() + " watting signups.");
 		return ids;
 	}
 
@@ -155,7 +155,7 @@ public class CreateOverviewCSVExportAction extends AbstractUIAction {
 			JsonNode projectIdNode = projectIditerator.next();
 			projectIds.add(projectIdNode.asText());
 		}
-		outputAsText("Found " + projectIds.size() + " projects in system.");
+		outputAsTextOnSuccess("Found " + projectIds.size() + " projects in system.");
 		return projectIds;
 	}
 

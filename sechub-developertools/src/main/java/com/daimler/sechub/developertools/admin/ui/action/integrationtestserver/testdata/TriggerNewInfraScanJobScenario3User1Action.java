@@ -20,8 +20,8 @@ public class TriggerNewInfraScanJobScenario3User1Action extends IntegrationTestA
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
 		AssertExecutionResult assertResult = TestAPI.as(Scenario3.USER_1).createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
 		
-		outputAsText("Job executed, data fetched, last output line:"+assertResult.getResult().getLastOutputLine());
-		outputAsText("Job UID was:"+assertResult.getResult().getSechubJobUUD());
+		outputAsTextOnSuccess("Job executed, data fetched, last output line:"+assertResult.getResult().getLastOutputLine());
+		outputAsTextOnSuccess("Job UID was:"+assertResult.getResult().getSechubJobUUD());
 	}
 
 }

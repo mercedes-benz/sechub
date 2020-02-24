@@ -22,7 +22,7 @@ public class GrantAdminRightsToUserAction extends AbstractUIAction {
 			return;
 		}
 		String infoMessage = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get());
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

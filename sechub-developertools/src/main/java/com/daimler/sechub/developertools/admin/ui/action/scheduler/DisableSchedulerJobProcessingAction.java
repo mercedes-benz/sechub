@@ -16,7 +16,7 @@ public class DisableSchedulerJobProcessingAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String infoMessage = getContext().getAdministration().disableSchedulerJobProcessing();
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

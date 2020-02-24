@@ -29,13 +29,13 @@ public class CancelJobAction extends AbstractUIAction {
 		}
 		String jobUUID= optJobUUID.get();
 		if (!confirm("Do you really want to\nCANCEL\njob "+jobUUID+"?")) {
-			outputAsText("CANCELED - delete");
+			outputAsTextOnSuccess("CANCELED - delete");
 			LOG.info("stopped cancelation of job {}",jobUUID);
 			return;
 		}
 		LOG.info("start cancel of job {}",jobUUID);
 		String infoMessage = getContext().getAdministration().cancelJob(UUID.fromString(jobUUID));
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }
