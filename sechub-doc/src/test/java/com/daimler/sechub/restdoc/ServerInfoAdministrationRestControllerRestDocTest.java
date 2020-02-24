@@ -3,6 +3,7 @@ package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -21,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.server.core.InfoService;
 import com.daimler.sechub.server.core.ServerInfoAdministrationRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -42,7 +44,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 	
-	private static final String SERVER_VERSION = "0.12.3-hotfix4";
+	private static final String SERVER_VERSION = "0.12.3";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -62,7 +64,8 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 					contentType(MediaType.TEXT_PLAIN_VALUE)
 				).
 					andExpect(status().isOk()).
-					andExpect(content().string(SERVER_VERSION)
+					andExpect(content().string(SERVER_VERSION)).
+					andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChecksServerVersion.class))
 				);
 		/* @formatter:on */
 	}
