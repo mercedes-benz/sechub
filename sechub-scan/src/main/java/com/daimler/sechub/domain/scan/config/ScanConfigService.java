@@ -30,7 +30,7 @@ public class ScanConfigService {
 
     ScanConfig config;
 
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number=6,name="Service call",description="Checks if current mappings in DB lead to a new scan configuration."))
+    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number = 6, name = "Service call", description = "Checks if current mappings in DB lead to a new scan configuration."))
     public void refreshScanConfigIfNecessary() {
         List<ScanMapping> all = repository.findAll();
         ScanConfig scanConfig = transformer.transform(all);
@@ -49,12 +49,14 @@ public class ScanConfigService {
     }
 
     /**
-     * Get provider to resolve IDs by a given name
+     * Get provider to resolve IDs by a given name. Deprecation: This method should NOT be used
+     * outside this package to avoid usage without mapping identifiers!
      *
      * @param namePatternMappingId
      * @return provider, never <code>null</code>
      */
-    NamePatternIdprovider getNamePatternIdProvider(String namePatternMappingId) {
+    @Deprecated
+    public NamePatternIdprovider getNamePatternIdProvider(String namePatternMappingId) {
         synchronized (providers) {
             NamePatternIdprovider provider = providers.get(namePatternMappingId);
             if (provider != null) {
@@ -65,7 +67,7 @@ public class ScanConfigService {
     }
 
     void switchConfigurationIfChanged(ScanConfig config) {
-        if (config==null) {
+        if (config == null) {
             return;
         }
         if (config.equals(this.config)) {

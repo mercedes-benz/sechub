@@ -24,7 +24,7 @@ public class TestURLBuilder {
         ONE_TIME_TOKEN("oneTimeToken"),
 
         EMAIL_ADDRESS("emailAddress"),
-        
+
         MAPPING_ID("mappingId"),
 
         ;
@@ -372,8 +372,16 @@ public class TestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "report", sechubJobUUID.toString());
     }
 
-    public String buildIntegrationTestChangeScanConfigMappingURL(String mappingId) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/config/scan/mapping/",mappingId);
+    public String buildIntegrationTestChangeMappingDirectlyURL(String mappingId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/scan/mapping/", mappingId);
+    }
+
+    public String buildIntegrationTestFetchMappingDirectlyURL(String mappingId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/scan/mapping/", mappingId);
+    }
+
+    public String buildIntegrationTestGetIdForNameByNamePatternProvider(String namePatternProviderId, String name) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/namepattern", namePatternProviderId, name);
     }
 
     public String buildIntegrationTestRefreshScanConfigURL() {

@@ -36,7 +36,10 @@ import junit.framework.AssertionFailedError;
 
 public class TestAPI {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TestAPI.class);
+	private static final String INTEGRATIONTEST_CHECK_SCANCONFIG_REFRESH_PROVIDERID = "integrationtest.check.scanconfig.refresh.providerid";
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestAPI.class);
 
 
 	/**
@@ -336,8 +339,8 @@ public class TestAPI {
 	}
 
 	/**
-	 * Changes scan config DIRECTLY ! Means without administration domain, but directly in scan 
-	 * domain - interesting for testing only.
+	 * Changes scan mapping DIRECTLY ! Means without administration domain, but directly in scan 
+	 * domain - interesting for testing only, 
 	 * @param json
 	 */
 	public static void changeScanMappingDirectly(String mappingId, MappingEntry ...entries ) {
@@ -346,18 +349,55 @@ public class TestAPI {
 	        data.getEntries().add(entry);
 	    }
 		TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
-		String url = urlBuilder.buildIntegrationTestChangeScanConfigMappingURL(mappingId);
+		String url = urlBuilder.buildIntegrationTestChangeMappingDirectlyURL(mappingId);
 		
 		IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSon(url, data.toJSON());
 
 	}
 	
+	public static MappingData fetchMappingDataDirectlyOrNull(String mappingId) {
+	    
+	    TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+	    String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
+	    
+	    String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+	    if (result==null) {
+	        return null;
+	    }
+	    MappingData data = MappingData.fromString(result);
+	    return data;
+	    
+	    
+	}
+	
+	public static String getIdForNameByNamePatternProvider(String namePatternProviderId,String name) {
+        
+        TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
+        String url = urlBuilder.buildIntegrationTestGetIdForNameByNamePatternProvider(namePatternProviderId,name);
+        
+        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getStringFromURL(url);
+        return result;
+        
+        
+    }
+	
+	
 	/**
-	 * Will just wait 3 seconds - we have configured 1 second at application-integrationtest.yaml 
-	 * to check scan config every second so this should be enough 
+	 * Changes a value inside scan config and wait until this value has been reloaded
 	 */
 	public static void waitForScanConfigRefresh() {
-	    waitMilliSeconds(3000);
+        String newValue = ""+System.nanoTime();
+        MappingEntry entry = new MappingEntry("value",newValue,"just for integrationtest refresh");
+        /* direct change necessary  - to avoid filtering if this special entry */
+        changeScanMappingDirectly(INTEGRATIONTEST_CHECK_SCANCONFIG_REFRESH_PROVIDERID,entry);
+        
+        String id = null;
+        while (id==null || ! (id.equals(newValue))) {
+            LOG.info("Waiting for scan config refresh");
+            waitMilliSeconds(1000);
+            id = getIdForNameByNamePatternProvider(INTEGRATIONTEST_CHECK_SCANCONFIG_REFRESH_PROVIDERID,"value");
+        }
+        
     }
 
 	public static void clearMetaDataInspection() {
