@@ -74,7 +74,7 @@ public class UserInputAssertion {
 	 * @param userId
 	 */
 	public void isValidUserId(String userId) {
-		assertValid(userId,  userIdValidation, "User is is not valid");
+		assertValid(userId,  userIdValidation, "User is not valid");
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class UserInputAssertion {
 	 * @param userId
 	 */
 	public void isValidEmailAddress(String emailAdress) {
-		assertValid(emailAdress,  emailValidation, "Email address is is not valid");
+		assertValid(emailAdress,  emailValidation, "Email address is not valid");
 	}
 	
 	/**
