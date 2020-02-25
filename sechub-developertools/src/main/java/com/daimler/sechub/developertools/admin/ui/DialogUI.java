@@ -73,7 +73,7 @@ public class DialogUI {
     }
 
     /**
-     * Shows an input dialog for user. Last entered values for given idenifier will
+     * Shows an input dialog for user. Last entered values for given identifier will
      * be shown
      *
      * @param message
@@ -179,5 +179,6 @@ public class DialogUI {
             return null;
         }
     }
+
 
 }
