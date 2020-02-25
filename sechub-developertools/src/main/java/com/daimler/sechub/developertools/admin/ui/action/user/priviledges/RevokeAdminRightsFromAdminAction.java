@@ -12,7 +12,7 @@ public class RevokeAdminRightsFromAdminAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
 	public RevokeAdminRightsFromAdminAction(UIContext context) {
-		super("Revoke admin rights from admin",context);
+		super("Revoke admin rights from user",context);
 	}
 
 	@Override
