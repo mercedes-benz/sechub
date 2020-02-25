@@ -4,12 +4,11 @@ package com.daimler.sechub.docgen.util;
 
 import java.util.List;
 
-import org.reflections.Reflections;
-
 import com.daimler.sechub.docgen.DocAnnotationData;
 import com.daimler.sechub.docgen.MustBeDocumentedDataCollector;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModelDataCollector;
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.spring.MockedAdaptersSpringValueDataCollector;
 import com.daimler.sechub.docgen.usecase.UseCaseModel;
 import com.daimler.sechub.docgen.usecase.UseCaseModelDataCollector;

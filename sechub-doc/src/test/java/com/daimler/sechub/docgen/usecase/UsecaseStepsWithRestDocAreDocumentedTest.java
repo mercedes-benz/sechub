@@ -14,11 +14,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;

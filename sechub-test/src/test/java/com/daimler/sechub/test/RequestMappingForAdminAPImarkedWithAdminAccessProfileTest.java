@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.reflections.Reflections;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
