@@ -12,10 +12,10 @@ import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;

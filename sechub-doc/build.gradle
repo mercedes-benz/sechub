@@ -2,8 +2,8 @@
 apply plugin: 'org.asciidoctor.convert'
 
 dependencies {
-    compile 'org.reflections:reflections:0.9.12'
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
+    compile library.apache_commons_io
     testCompile project(':sechub-shared-kernel-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction

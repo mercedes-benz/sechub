@@ -14,11 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.FileSystemUtils;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
