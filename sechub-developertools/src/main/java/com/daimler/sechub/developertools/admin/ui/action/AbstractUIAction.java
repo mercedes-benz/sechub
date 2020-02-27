@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.ErrorHandler;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
+import com.daimler.sechub.developertools.admin.ui.ThreeButtonDialogResult;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCache;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
@@ -128,7 +129,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
-     * idenifier will be shown
+     * identifier will be shown
      * 
      * @param message
      * @param identifier
@@ -145,7 +146,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
     /**
      * Shows an input dialog for user (multi line). Last entered values for given
-     * idenifier will be shown
+     * identifier will be shown
      * 
      * @param message
      * @param identifier
@@ -158,6 +159,10 @@ public abstract class AbstractUIAction extends AbstractAction {
             inputCache.set(identifier, x.get());
         }
         return x;
+    }
+    
+    protected ThreeButtonDialogResult<String> getUserInputFromField(String inputLabelText) {
+    	return getContext().getDialogUI().getUserInputFromField(inputLabelText);
     }
 
     protected boolean confirm(String message) {
