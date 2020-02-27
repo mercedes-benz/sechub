@@ -55,6 +55,10 @@ public class CreateProjectAction extends AbstractUIAction {
 			}
 		} while (!uri.isFinished()); // continue until finished is pressed
 
+		if (!confirm("Do you really want to create project ID/name " + projectId + " with owner " + owner.get())) {
+		    return;
+		}
+		
 		// build and send request to server over HTTP
 		String postResult = getContext().getAdministration().createProject(projectId.get(), description.orElse(null),
 				owner.get(), whiteListURLs);

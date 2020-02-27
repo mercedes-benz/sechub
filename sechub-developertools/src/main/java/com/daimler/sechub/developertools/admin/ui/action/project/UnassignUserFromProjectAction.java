@@ -25,6 +25,10 @@ public class UnassignUserFromProjectAction extends AbstractUIAction {
 		if (! projectId.isPresent()) {
 			return;
 		}
+		
+        if (!confirm("Do you really want to unassign the userId " + userId.get() + " to the project ID/name " + projectId.get() + "?")) {
+            return;
+        }
 
 		String infoMessage = getContext().getAdministration().unassignUserFromProject(userId.get(), projectId.get());
 		outputAsTextOnSuccess(infoMessage);
