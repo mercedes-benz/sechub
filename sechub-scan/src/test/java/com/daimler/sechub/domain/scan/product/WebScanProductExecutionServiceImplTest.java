@@ -27,6 +27,7 @@ public class WebScanProductExecutionServiceImplTest {
 	private ProductResultRepository productResultRepository;
 	private WebScanProductExecutor webscanner1;
 	private WebScanProductExecutor webscanner2;
+    private ProductExecutorContext executorContext;
 
 	@Before
 	public void before() throws Exception {
@@ -35,6 +36,7 @@ public class WebScanProductExecutionServiceImplTest {
 		configuration = mock(SecHubConfiguration.class);
 		when(configuration.getProjectId()).thenReturn("projectid1");
 
+		executorContext= mock(ProductExecutorContext.class);
 		webconfiguration = mock(SecHubWebScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);
@@ -64,8 +66,8 @@ public class WebScanProductExecutionServiceImplTest {
 		serviceToTest.executeProductsAndStoreResults(context);
 
 		/* test */
-		verify(webscanner1, never()).execute(context);
-		verify(webscanner2, never()).execute(context);
+		verify(webscanner1, never()).execute(context,executorContext);
+		verify(webscanner2, never()).execute(context,executorContext);
 
 	}
 
@@ -80,8 +82,8 @@ public class WebScanProductExecutionServiceImplTest {
 		serviceToTest.executeProductsAndStoreResults(context);
 
 		/* test */
-		verify(webscanner1).execute(context);
-		verify(webscanner2).execute(context);
+		verify(webscanner1).execute(context,executorContext);
+		verify(webscanner2).execute(context,executorContext);
 
 	}
 
@@ -98,10 +100,10 @@ public class WebScanProductExecutionServiceImplTest {
 
 		when(configuration.getWebScan()).thenReturn(Optional.of(webconfiguration));
 
-		when(webscanner1.execute(context)).thenReturn(Collections.singletonList(result1));
+		when(webscanner1.execute(context,executorContext)).thenReturn(Collections.singletonList(result1));
 		when(webscanner1.getIdentifier()).thenReturn(ProductIdentifier.FARRADAY);
 
-		when(webscanner2.execute(context)).thenReturn(Collections.singletonList(result2));
+		when(webscanner2.execute(context,executorContext)).thenReturn(Collections.singletonList(result2));
 		when(webscanner2.getIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 
 		/* execute */
@@ -129,14 +131,14 @@ public class WebScanProductExecutionServiceImplTest {
 
 		when(configuration.getWebScan()).thenReturn(Optional.of(webconfiguration));
 
-		when(webscanner1.execute(context)).thenReturn(Collections.singletonList(result1));
+		when(webscanner1.execute(context,executorContext)).thenReturn(Collections.singletonList(result1));
 		when(webscanner1.getIdentifier()).thenReturn(ProductIdentifier.FARRADAY);
 
 		List<ProductResult> list = new ArrayList<>();
 		list.add(result2);
 		list.add(result3);
 
-		when(webscanner2.execute(context)).thenReturn(list);
+		when(webscanner2.execute(context,executorContext)).thenReturn(list);
 		when(webscanner2.getIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 
 		/* execute */

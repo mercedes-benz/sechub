@@ -26,11 +26,20 @@ public interface Adapter<C extends AdapterConfig> {
 	public int getAdapterVersion();
 	
 	/**
-	 * Starts and returns result 
+	 * Starts or restarts and returns result 
 	 * 
 	 * @param config
+	 * @param callback
 	 * @return result
 	 * @throws NessusAdapterException
 	 */
-	String start(C config) throws AdapterException;
+	String start(C config, AdapterMetaDataCallback callback) throws AdapterException;
+	
+	/**
+	 * Try to stop 
+	 * @param config
+	 * @param callback
+	 * @return <code>true</code> when stop was possible
+	 */
+	boolean stop(C config, AdapterMetaDataCallback callback) throws AdapterException;
 }

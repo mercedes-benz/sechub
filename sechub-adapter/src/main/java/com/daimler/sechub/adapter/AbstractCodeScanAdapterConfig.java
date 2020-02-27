@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
-public class AbstractCodeScanAdapterConfig extends AbstractAdapterConfig {
+public abstract class AbstractCodeScanAdapterConfig extends AbstractAdapterConfig {
 
 	String sourceScanTargetString;
 	

@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.http.HttpStatus;
 
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.daimler.sechub.adapter.support.APIURLSupport;
 import com.daimler.sechub.test.TestPortProvider;
@@ -176,8 +177,9 @@ public class NetsparkerAdapterV1WireMockTest {
                     .withBody(xml)));
         /* @formatter:on */
 
+        AdapterMetaDataCallback callBack = mock(AdapterMetaDataCallback.class);
         /* execute */
-        String result = adapterToTest.start(config);
+        String result = adapterToTest.start(config,callBack);
 
 		/* test */
 		verify(getRequestedFor(urlEqualTo("/netsparkertest_1/api/1.0/websites/get?query=" + WEBSITE_ID)));

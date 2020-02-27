@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 
+@SuppressWarnings("deprecation") // we know that we should not use getNamePatternIdProvider(strig) - its just for testing
 public class ScanConfigServiceTest {
 
 	private ScanConfigService serviceToTest;
@@ -20,7 +21,7 @@ public class ScanConfigServiceTest {
 	@Test
 	public void not_initialized_returns_fallback_provider() {
 		/* execute */
-		NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("xyz");
+        NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("xyz");
 		/* test */
 		assertNotNull(provider);
 		assertEquals(null,provider.getIdForName("a-go-project-1"));

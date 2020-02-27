@@ -14,6 +14,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
@@ -42,7 +43,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 	}
 
 	@Override
-	public List<ProductResult> execute(SecHubExecutionContext context) throws SecHubExecutionException {
+	public List<ProductResult> execute(SecHubExecutionContext context,ProductExecutorContext executorContext) throws SecHubExecutionException {
 		return Collections.singletonList(createReport(context));
 	}
 

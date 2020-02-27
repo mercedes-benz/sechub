@@ -14,6 +14,7 @@ import javax.crypto.SealedObject;
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;
+	
 	private SealedObject passwordOrAPITokenBase64encoded;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
@@ -37,8 +38,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	private Map<AdapterOptionKey, String> options = new HashMap<>();
 	LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
 	private String targetType;
-
-
+	
 	protected AbstractAdapterConfig() {
 	}
 
@@ -46,7 +46,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	public final int getTimeOutInMilliseconds() {
 		return timeOutInMilliseconds;
 	}
-
+	
 	@Override
 	public int getTimeToWaitForNextCheckOperationInMilliseconds() {
 		return timeToWaitForNextCheckOperationInMilliseconds;

@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 
+import com.daimler.sechub.adapter.AdapterMetaData;
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
+
 /**
  * This is a simple test application for checkmarx.
  * @author Albert Tregnaghi
@@ -52,7 +55,19 @@ public class CheckmarxAdapterTestApplication {
 		/* @formatter:on */
 
 		CheckmarxAdapterV1 adapter = new CheckmarxAdapterV1();
-		String data = adapter.start(config);
+		String data = adapter.start(config,new AdapterMetaDataCallback() {
+            
+            @Override
+            public void persist(AdapterMetaData metaData) {
+               System.out.println("update metadata:"+metaData);
+                
+            }
+
+            @Override
+            public AdapterMetaData getMetaDataOrNull() {
+                return null;
+            }
+        });
 		File file = File.createTempFile("checkmarx-adaptertest-result", ".xml");
 		FileWriter fileWriter= new FileWriter(file);
 		fileWriter.write(data);

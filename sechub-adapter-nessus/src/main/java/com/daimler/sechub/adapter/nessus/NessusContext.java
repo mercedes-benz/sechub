@@ -4,6 +4,7 @@ package com.daimler.sechub.adapter.nessus;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import com.daimler.sechub.adapter.AbstractSpringRestAdapterContext;
+import com.daimler.sechub.adapter.AdapterRuntimeContext;
 
 /**
  * Context for NESSUS execution.
@@ -20,8 +21,8 @@ public class NessusContext extends AbstractSpringRestAdapterContext<NessusAdapte
 	private String historyId;
 	private String exportFileId;
 
-	public NessusContext(NessusAdapterConfig config, NessusAdapter adapter) {
-		super(config, adapter);
+	public NessusContext(NessusAdapterConfig config, NessusAdapter adapter, AdapterRuntimeContext runtimeContext) {
+		super(config, adapter,runtimeContext);
 	}
 
 	@Override

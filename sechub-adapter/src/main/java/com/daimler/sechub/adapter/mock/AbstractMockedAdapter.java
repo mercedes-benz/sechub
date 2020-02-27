@@ -9,6 +9,7 @@ import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterConfig;
 import com.daimler.sechub.adapter.AdapterContext;
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.AdapterRuntimeContext;
 import com.daimler.sechub.adapter.support.MockSupport;
 /**
  * Abstract base class for mocked adapters. Will rely on {@link MockedAdapterSetupService} to support automated results depending on target urls...
@@ -36,7 +37,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>,C extend
 		return 1;
 	}
 
-	public final String start(C config) throws AdapterException {
+	public final String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException {
 		long timeStarted = System.currentTimeMillis();
 		
 		MockedAdapterSetupEntry setup = setupService.getSetupFor(this, config);

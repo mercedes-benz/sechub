@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.daimler.sechub.adapter.support.APIURLSupport;
 import com.daimler.sechub.test.TestPortProvider;
@@ -265,9 +266,10 @@ public class NessusAdapterV1WireMockTest {
 //                .willSetStateTo(chain.getStateAfter())
         		);
 
+        AdapterMetaDataCallback callBack = mock(AdapterMetaDataCallback.class);
         /* @formatter:on */
 		/* execute */
-		String result = adapterToTest.start(config);
+		String result = adapterToTest.start(config,callBack);
 
 		/* test */
 		verify(postRequestedFor(urlEqualTo("/nessustest_1/session"))); // login

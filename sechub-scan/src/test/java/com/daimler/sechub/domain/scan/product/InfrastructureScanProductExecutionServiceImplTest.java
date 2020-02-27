@@ -27,6 +27,7 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 	private ProductResultRepository productResultRepository;
 	private InfrastructureScanProductExecutor infrascanner1;
 	private InfrastructureScanProductExecutor infrascanner2;
+    private ProductExecutorContext executorContext;
 
 	@Before
 	public void before() throws Exception {
@@ -35,6 +36,8 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		configuration = mock(SecHubConfiguration.class);
 		when(configuration.getProjectId()).thenReturn("projectid1");
 
+		executorContext=mock(ProductExecutorContext.class);
+		
 		infraconfig = mock(SecHubInfrastructureScanConfiguration.class);
 		context = mock(SecHubExecutionContext.class);
 		productResultRepository = mock(ProductResultRepository.class);
@@ -64,8 +67,8 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		serviceToTest.executeProductsAndStoreResults(context);
 
 		/* test */
-		verify(infrascanner1, never()).execute(context);
-		verify(infrascanner2, never()).execute(context);
+		verify(infrascanner1, never()).execute(context,executorContext);
+		verify(infrascanner2, never()).execute(context,executorContext);
 
 	}
 
@@ -80,8 +83,8 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		serviceToTest.executeProductsAndStoreResults(context);
 
 		/* test */
-		verify(infrascanner1).execute(context);
-		verify(infrascanner2).execute(context);
+		verify(infrascanner1).execute(context,executorContext);
+		verify(infrascanner2).execute(context,executorContext);
 
 	}
 
@@ -98,10 +101,10 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));
 
-		when(infrascanner1.execute(context)).thenReturn(Collections.singletonList(result1));
+		when(infrascanner1.execute(context,executorContext)).thenReturn(Collections.singletonList(result1));
 		when(infrascanner1.getIdentifier()).thenReturn(ProductIdentifier.FARRADAY);
 
-		when(infrascanner2.execute(context)).thenReturn(Collections.singletonList(result2));
+		when(infrascanner2.execute(context,executorContext)).thenReturn(Collections.singletonList(result2));
 		when(infrascanner2.getIdentifier()).thenReturn(ProductIdentifier.NESSUS);
 
 		/* execute */
@@ -129,14 +132,14 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));
 
-		when(infrascanner1.execute(context)).thenReturn(Collections.singletonList(result1));
+		when(infrascanner1.execute(context,executorContext)).thenReturn(Collections.singletonList(result1));
 		when(infrascanner1.getIdentifier()).thenReturn(ProductIdentifier.FARRADAY);
 
 		List<ProductResult> list = new ArrayList<>();
 		list.add(result2);
 		list.add(result3);
 
-		when(infrascanner2.execute(context)).thenReturn(list);
+		when(infrascanner2.execute(context,executorContext)).thenReturn(list);
 		when(infrascanner2.getIdentifier()).thenReturn(ProductIdentifier.NESSUS);
 
 		/* execute */

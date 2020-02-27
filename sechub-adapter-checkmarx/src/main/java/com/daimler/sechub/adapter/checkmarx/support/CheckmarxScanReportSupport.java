@@ -4,6 +4,8 @@ package com.daimler.sechub.adapter.checkmarx.support;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,9 +16,13 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestOperations;
 
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterContext;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 
 public class CheckmarxScanReportSupport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxScanReportSupport.class);
 
 
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223379587/Register+Scan+Report+-+POST+reports+sastScan
@@ -81,26 +87,39 @@ public class CheckmarxScanReportSupport {
 
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223379587/Register+Scan+Report+-+POST+reports+sastScan
 	void triggerNewReport(CheckmarxAdapterContext context) throws AdapterException {
-
-		Map<String, Object> json = new TreeMap<>();
-		json.put("reportType", "XML");
-		json.put("scanId", context.getScanId());
-
-		String url = context.getAPIURL("reports/sastScan");
-		String jsonAsString = context.json().toJSON(json);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
-
-		RestOperations restTemplate = context.getRestOperations();
-		ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-		if (!result.getStatusCode().equals(HttpStatus.ACCEPTED)) {
-			throw context.asAdapterException("Response HTTP status not as expected: " + result.getStatusCode(), null);
-		}
-		String body = result.getBody();
-
-		long reportId = context.json().fetch("reportId", body).asLong();
+	    AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
+        Long reportIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_REPORT_ID);
+        long reportId = -1;
+        if (reportIdLong==null) {
+            LOG.info("Trigger new report in queue");
+            Map<String, Object> json = new TreeMap<>();
+            json.put("reportType", "XML");
+            json.put("scanId", context.getScanId());
+            
+            String url = context.getAPIURL("reports/sastScan");
+            String jsonAsString = context.json().toJSON(json);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
+            
+            RestOperations restTemplate = context.getRestOperations();
+            ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            if (!result.getStatusCode().equals(HttpStatus.ACCEPTED)) {
+                throw context.asAdapterException("Response HTTP status not as expected: " + result.getStatusCode(), null);
+            }
+            String body = result.getBody();
+            
+            reportId = context.json().fetch("reportId", body).asLong();
+            metaData.setValue(CheckmarxMetaDataID.KEY_REPORT_ID, reportId);
+            
+            context.getRuntimeContext().getCallback().persist(metaData);
+            
+        }else {
+            /* just reuse existing data */
+            reportId = reportIdLong.longValue();
+            LOG.info("Reuse existing reportId:{}",reportId);
+        }
 		context.setReportId(reportId);
 	}
 

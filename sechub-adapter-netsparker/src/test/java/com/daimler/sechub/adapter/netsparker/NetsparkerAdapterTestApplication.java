@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import com.daimler.sechub.adapter.AdapterMetaData;
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
 
 /**
@@ -44,7 +46,21 @@ public class NetsparkerAdapterTestApplication {
 		}
 		NetsparkerAdapterConfig config = builder.build();
 		NetsparkerAdapter netsparker = new NetsparkerAdapterV1();
-		String result = netsparker.start(config);
+		String result = netsparker.start(config,new AdapterMetaDataCallback() {
+		    
+		    AdapterMetaData metaData;
+            
+            @Override
+            public void persist(AdapterMetaData metaData) {
+                System.out.println("persist:"+metaData);
+                this.metaData = metaData;
+            }
+
+            @Override
+            public AdapterMetaData getMetaDataOrNull() {
+                return metaData;
+            }
+        });
 
 		System.out.println("result:");
 		System.out.println(result);
