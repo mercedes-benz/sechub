@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class DialogUI {
@@ -73,7 +72,7 @@ public class DialogUI {
     }
 
     /**
-     * Shows an input dialog for user. Last entered values for given idenifier will
+     * Shows an input dialog for user. Last entered values for given identifier will
      * be shown
      *
      * @param message
@@ -95,6 +94,16 @@ public class DialogUI {
         }
         return Optional.ofNullable(dialog.getText());
     }
+
+	public ThreeButtonDialogResult<String> getUserInputFromField(String inputLabelText) {
+		ThreeButtonDialogUI dialog = new ThreeButtonDialogUI(frame, "Input", inputLabelText);
+		dialog.setVisible(true);
+		
+		ThreeButtonDialogResult<String> options = new ThreeButtonDialogResult<String>(dialog.isCancelPressed(),
+				dialog.isAddPressed(), dialog.isFinishPresssed(), dialog.getText());
+
+		return options;
+	}
 
     public List<String> editList(String title, List<String> list) {
         SimpleTextDialog dialog = new SimpleTextDialog(title);
@@ -130,7 +139,7 @@ public class DialogUI {
 
         private static final long serialVersionUID = 1L;
         private JTextArea textArea;
-        private JButton okButon;
+        private JButton okButton;
         private boolean okPresssed;
 
         SimpleTextDialog(String title) {
@@ -145,16 +154,15 @@ public class DialogUI {
 
             add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-            this.okButon = new JButton("OK");
-            this.okButon.addActionListener(this::okPressed);
+            this.okButton = new JButton("OK");
+            this.okButton.addActionListener(this::okPressed);
             JPanel lowerPanel = new JPanel();
             lowerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-            lowerPanel.add(okButon);
+            lowerPanel.add(okButton);
             add(lowerPanel, BorderLayout.SOUTH);
 
             pack();
             setLocationRelativeTo(frame);
-
         }
 
         public void setToolTip(String text) {
@@ -179,5 +187,4 @@ public class DialogUI {
             return null;
         }
     }
-
 }
