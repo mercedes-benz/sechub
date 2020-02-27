@@ -25,6 +25,10 @@ public class AssignUserToProjectAction extends AbstractUIAction {
 		if (! projectId.isPresent()) {
 			return;
 		}
+		
+		if (!confirm("Do you really want to assign the userId " + userId.get() + " to the project ID/name " + projectId.get() + "?")) {
+		    return;
+		}
 
 		String infoMessage = getContext().getAdministration().assignUserToProject(userId.get(), projectId.get());
 		outputAsTextOnSuccess(infoMessage);

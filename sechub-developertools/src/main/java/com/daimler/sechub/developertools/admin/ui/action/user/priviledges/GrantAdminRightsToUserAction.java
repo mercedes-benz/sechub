@@ -17,10 +17,15 @@ public class GrantAdminRightsToUserAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		Optional<String> userToSignup = getUserInput("Please enter userid who will  gain admin rights",InputCacheIdentifier.USERNAME);
+		Optional<String> userToSignup = getUserInput("Please enter userid who will gain admin rights",InputCacheIdentifier.USERNAME);
 		if (!userToSignup.isPresent()) {
 			return;
 		}
+		
+		if (!confirm("Do you reall want to grant admin rights to userId " + userToSignup.get() + "?")) {
+		    return;
+		}
+		
 		String infoMessage = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get());
 		outputAsTextOnSuccess(infoMessage);
 	}

@@ -254,7 +254,7 @@ public class DeveloperAdministration {
 
 	public String requestNewApiToken(String emailAddress) {
 		getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
-		return "Sent request for new API token for email:"+emailAddress+"- New API token will be delived to this address if user exists!";
+		return "Sent request for new API token for email: "+emailAddress+" - New API token will be delivered to this address if user exists!";
 	}
 
 	public String enableSchedulerJobProcessing() {
