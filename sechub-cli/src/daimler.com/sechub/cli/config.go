@@ -79,15 +79,19 @@ func init() {
 
 }
 
-// NewConfigByFlags creates a new configuration based on flag settings
+// NewConfigByFlags creates a new configuration based on flag and environment variable settings
 func NewConfigByFlags() *Config {
 	flag.Parse()
 
 	oneSecond := 1 * time.Second
+	env_apitoken := os.Getenv("SECHUB_APITOKEN")
 
 	config := new(Config)
 
 	config.apiToken = *apiTokenPtr
+	if config.apiToken == "" { // read from environment variable if undefined in cmdline
+		config.apiToken = env_apitoken
+	}
 	config.user = *userPtr
 	config.projectId = *projectIdPtr
 	config.configFilePath = *configFilePathPtr
