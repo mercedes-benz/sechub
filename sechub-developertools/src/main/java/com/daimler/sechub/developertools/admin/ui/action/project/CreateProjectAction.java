@@ -55,7 +55,7 @@ public class CreateProjectAction extends AbstractUIAction {
 			}
 		} while (!uri.isFinished()); // continue until finished is pressed
 
-		if (!confirm("Do you really want to create project ID/name " + projectId + " with owner " + owner.get())) {
+		if (!confirm("Do you really want to create project ID/name " + projectId.get() + " with owner " + owner.get())) {
 		    return;
 		}
 		

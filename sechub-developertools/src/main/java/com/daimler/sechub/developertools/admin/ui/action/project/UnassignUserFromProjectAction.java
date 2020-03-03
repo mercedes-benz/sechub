@@ -26,7 +26,7 @@ public class UnassignUserFromProjectAction extends AbstractUIAction {
 			return;
 		}
 		
-        if (!confirm("Do you really want to unassign the userId " + userId.get() + " to the project ID/name " + projectId.get() + "?")) {
+        if (!confirm("Do you really want to unassign the userId " + userId.get() + " from the project ID/name " + projectId.get() + "?")) {
             return;
         }
 
