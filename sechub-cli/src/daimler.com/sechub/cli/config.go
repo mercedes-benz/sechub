@@ -84,13 +84,12 @@ func NewConfigByFlags() *Config {
 	flag.Parse()
 
 	oneSecond := 1 * time.Second
-	env_apitoken := os.Getenv("SECHUB_APITOKEN")
 
 	config := new(Config)
 
 	config.apiToken = *apiTokenPtr
-	if config.apiToken == "" { // read from environment variable if undefined in cmdline
-		config.apiToken = env_apitoken
+	if config.apiToken == "" { // read from environment variable if undefined on cmdline
+		config.apiToken = os.Getenv("SECHUB_APITOKEN")
 	}
 	config.user = *userPtr
 	config.projectId = *projectIdPtr
