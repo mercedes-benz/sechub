@@ -26,7 +26,8 @@ func initHelp() {
 		fmt.Fprintf(w, "Arguments:\n %s", action)
 		fmt.Fprintln(w)
 		fmt.Fprint(w, "Example for starting a scan which will block until results are availabe:\n")
-		fmt.Fprint(w, "   sechub -apitoken 7536a8c4aa82407da7e06bdbf8dd772f scan\n")
+		fmt.Fprint(w, "   SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbf8dd772f\n")
+		fmt.Fprint(w, "   sechub scan\n")
 		fmt.Fprint(w, "\n")
 		fmt.Fprint(w, "Example '"+DefaultSecHubConfigFile+"' config file which will configure a webscan and also source scan:\n\n")
 
