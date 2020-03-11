@@ -27,7 +27,7 @@ public class DeleteUserAction extends AbstractUIAction {
 		if (!optUserId.isPresent()) {
 			return;
 		}
-		String userId=optUserId.get();
+		String userId=optUserId.get().toLowerCase().trim();
 		if (!confirm("Do you really want to\nDELETE\nuser "+userId+"?")) {
 			outputAsTextOnSuccess("CANCELED - delete");
 			LOG.info("canceled delete of user {}",userId);
