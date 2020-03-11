@@ -22,11 +22,7 @@ public class AnonymousRequestNewAPITokenUserAction extends AbstractUIAction {
 			return;
 		}
 
-		if (!confirm("Do you really want to request a new API token for userid: " + email.get() + "?")) {
-		    return;
-		}
-		
-		String infoMessage = getContext().getAdministration().requestNewApiToken(email.get());
+		String infoMessage = getContext().getAdministration().requestNewApiToken(email.get().toLowerCase().trim());
 		outputAsTextOnSuccess(infoMessage);
 	}
 

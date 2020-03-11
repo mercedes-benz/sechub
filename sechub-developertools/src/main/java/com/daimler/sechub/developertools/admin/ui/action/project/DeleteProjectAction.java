@@ -26,7 +26,7 @@ public class DeleteProjectAction extends AbstractUIAction {
 		if (! optProjectId.isPresent()) {
 			return;
 		}
-		String projectId= optProjectId.get();
+		String projectId= optProjectId.get().toLowerCase().trim();
 		if (!confirm("Do you really want to\nDELETE\nproject "+projectId+"?")) {
 			outputAsTextOnSuccess("CANCELED - delete");
 			LOG.info("canceled delete of project {}",projectId);
