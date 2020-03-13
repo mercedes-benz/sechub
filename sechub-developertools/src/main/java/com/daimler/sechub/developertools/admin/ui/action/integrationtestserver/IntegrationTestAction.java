@@ -27,7 +27,7 @@ public abstract class IntegrationTestAction extends AbstractUIAction{
 		if (!checkIntegrationTestServerRunning()) {
 			return;
 		}
-		if (isConfirmNecessary() && !confirm("Do you really want to execute:"+getInfo())) {
+		if (isConfirmNecessary() && !confirm("Do you really want to execute:"+getInfo()+"?")) {
 			return;
 		}
 		executeImplAfterRestHelperSwitched(e);

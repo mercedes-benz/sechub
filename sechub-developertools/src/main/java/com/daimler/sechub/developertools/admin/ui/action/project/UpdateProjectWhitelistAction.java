@@ -29,6 +29,11 @@ public class UpdateProjectWhitelistAction extends AbstractUIAction {
 		if (result==null) {
 			return;
 		}
+		
+		if (!confirm("Do you really want to update the project whitelist for project:"+projectId+" ?")) {
+		    return;
+		}
+		
 		getContext().getAdministration().updateProjectWhiteList(projectId,result);
 
 	}

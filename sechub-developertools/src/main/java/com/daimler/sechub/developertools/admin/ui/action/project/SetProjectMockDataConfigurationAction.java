@@ -22,11 +22,16 @@ public class SetProjectMockDataConfigurationAction extends AbstractUIAction {
 		if (!projectId.isPresent()) {
 			return;
 		}
-		Optional<String> projectMockConfig = getUserInputFromTextArea("Please enter mock configuration for project:" + projectId,
+		Optional<String> projectMockConfig = getUserInputFromTextArea("Please enter mock configuration for project:" + projectId.get(),
 				InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON);
 		if (!projectMockConfig.isPresent()) {
 			return;
 		}
+		
+		if (!confirm("Do you really want to change the mock configuration?")) {
+		    return;
+		}
+		
 		DeveloperAdministration administration = getContext().getAdministration();
 		String url = administration.getUrlBuilder().buildSetProjectMockConfiguration(projectId.get().toLowerCase().trim());
 		administration.getRestHelper().putJSon(url, projectMockConfig.get());
