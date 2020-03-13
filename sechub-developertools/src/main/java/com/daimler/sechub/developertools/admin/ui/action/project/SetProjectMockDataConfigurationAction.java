@@ -28,7 +28,7 @@ public class SetProjectMockDataConfigurationAction extends AbstractUIAction {
 			return;
 		}
 		DeveloperAdministration administration = getContext().getAdministration();
-		String url = administration.getUrlBuilder().buildSetProjectMockConfiguration(projectId.get());
+		String url = administration.getUrlBuilder().buildSetProjectMockConfiguration(projectId.get().toLowerCase().trim());
 		administration.getRestHelper().putJSon(url, projectMockConfig.get());
 
 	}
