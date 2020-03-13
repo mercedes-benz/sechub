@@ -26,7 +26,7 @@ public class GrantAdminRightsToUserAction extends AbstractUIAction {
 		    return;
 		}
 		
-		String infoMessage = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get());
+		String infoMessage = getContext().getAdministration().gGrantAdminRightsTo(userToSignup.get().toLowerCase().trim());
 		outputAsTextOnSuccess(infoMessage);
 	}
 

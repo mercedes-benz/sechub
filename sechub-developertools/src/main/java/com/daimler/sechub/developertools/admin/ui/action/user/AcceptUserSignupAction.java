@@ -26,7 +26,7 @@ public class AcceptUserSignupAction extends AbstractUIAction {
 		    return;
 		}
 		
-		String infoMessage = getContext().getAdministration().doSignup(userToSignup.get());
+		String infoMessage = getContext().getAdministration().doSignup(userToSignup.get().toLowerCase().trim());
 		outputAsTextOnSuccess(infoMessage);
 	}
 
