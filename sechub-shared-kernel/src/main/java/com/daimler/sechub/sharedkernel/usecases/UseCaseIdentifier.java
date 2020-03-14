@@ -107,6 +107,11 @@ public enum UseCaseIdentifier {
 	
 	UC_ADMIN_CHECKS_SERVER_VERSION,
 	
+	UC_ADMIN_RESTARTS_JOB,
+	
+	UC_ADMIN_RESTARTS_JOB_HARD,
+	
+	
 	;
 
 	/* +-----------------------------------------------------------------------+ */

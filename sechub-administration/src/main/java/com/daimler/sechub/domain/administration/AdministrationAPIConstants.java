@@ -45,7 +45,15 @@ public class AdministrationAPIConstants{
 
 	public static final String API_SCHEDULER_GET_STATUS = API_ADMINISTRATION + "status";
 
+	/**
+	 * Admin only parts
+	 */
 	public static final String API_ADMIN_CANCELS_JOB = API_ADMINISTRATION+"jobs/cancel/{jobUUID}";
+	
+    public static final String API_ADMIN_RESTARTS_JOB = API_ADMINISTRATION+"jobs/restart/{jobUUID}";;
+    public static final String API_ADMIN_RESTARTS_JOB_HARD = API_ADMINISTRATION+"jobs/restart-hard/{jobUUID}";;
+
+	
 	/**
 	 * show all users wanting to sign up
 	 */
@@ -89,6 +97,7 @@ public class AdministrationAPIConstants{
 	/* +-----------------------------------------------------------------------+ */
 	public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS+"apitoken";
 	public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS+"refresh/apitoken/{emailAddress}";
+
 
 
 

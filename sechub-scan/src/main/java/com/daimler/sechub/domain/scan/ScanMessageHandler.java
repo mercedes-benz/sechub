@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MappingMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
@@ -47,6 +50,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler {
     @Autowired
     UpdateScanMappingService updateScanMappingService;
 
+    @Autowired
+    CleanProductResultsAndRestartJobService cleanProductResultsAndRestartJobService;
+    
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
         MessageID messageId = request.getMessageId();
@@ -68,9 +74,21 @@ public class ScanMessageHandler implements AsynchronMessageHandler {
         case MAPPING_CONFIGURATION_CHANGED:
             handleMappingConfigurationChanged(request);
             break;
+        case REQUEST_JOB_RESTART_HARD:
+            handleJobRestartHardRequested(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
+    }
+
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART_HARD)
+    private void handleJobRestartHardRequested(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
+        UUID jobUUID = message.getJobUUID();
+
+        cleanProductResultsAndRestartJobService.cleanJobResultsAndRestart(jobUUID, message.getOwnerEmailAddress());
+
     }
 
     @IsReceivingAsyncMessage(MessageID.MAPPING_CONFIGURATION_CHANGED)
@@ -85,7 +103,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler {
             return;
         }
         /* filter only relevant parts - message may contain uninteresting stuff */
-        if (! found.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION,MappingType.GLOBAL_CONFIGURATION)) {
+        if (!found.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION, MappingType.GLOBAL_CONFIGURATION)) {
             LOG.debug("Mapping with id:{} is not relevant and so ignored.", mappingId);
             return;
         }

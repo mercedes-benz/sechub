@@ -23,6 +23,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorListsAllRunningJobs;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
 
 /**
  * The rest api for job administration done by a super admin.
@@ -41,6 +42,9 @@ public class JobAdministrationRestController {
 
 	@Autowired
 	JobCancelService jobCancelService;
+	
+	@Autowired
+	JobRestartRequestService jobRestartRequestService;
 
 	/* @formatter:off */
 	@UseCaseAdministratorListsAllRunningJobs(
@@ -57,12 +61,28 @@ public class JobAdministrationRestController {
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorCancelsJob(@Step(number=1,name="Rest call",description="Json returned containing details about project",needsRestDoc=true))
+	@UseCaseAdministratorCancelsJob(@Step(number=1,name="Rest call",description="Triggers job cancelation request, owners of project will be informed",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_CANCELS_JOB, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void cancelJob(@PathVariable(name="jobUUID") UUID jobUUID) {
 		/* @formatter:on */
 		jobCancelService.cancelJob(jobUUID);
 	}
+	
+	/* @formatter:off */
+    @UseCaseAdministratorRestartsJob(@Step(number=1,name="Rest call",description="Triggeres job restart (soft) ",needsRestDoc=true))
+    @RequestMapping(path = AdministrationAPIConstants.API_ADMIN_RESTARTS_JOB, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public void restartJob(@PathVariable(name="jobUUID") UUID jobUUID) {
+        /* @formatter:on */
+        jobRestartRequestService.restartJob(jobUUID);
+    }
+    
+    /* @formatter:off */
+    @UseCaseAdministratorRestartsJob(@Step(number=1,name="Rest call",description="Triggeres job restart (hard)",needsRestDoc=true))
+    @RequestMapping(path = AdministrationAPIConstants.API_ADMIN_RESTARTS_JOB_HARD, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public void restartJobHard(@PathVariable(name="jobUUID") UUID jobUUID) {
+        /* @formatter:on */
+        jobRestartRequestService.restartJobHard(jobUUID);
+    }
 
 
 }

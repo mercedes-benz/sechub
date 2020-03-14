@@ -114,7 +114,9 @@ public class ScanService implements SynchronMessageHandler {
 			codeScanProductExecutionService.executeProductsAndStoreResults(context);
 			webScanProductExecutionService.executeProductsAndStoreResults(context);
 			infraScanProductExecutionService.executeProductsAndStoreResults(context);
+			
 			scanLogService.logScanEnded(logUUID);
+			
 		} catch (Exception e) {
 			scanLogService.logScanFailed(logUUID);
 			throw new SecHubExecutionException("Execute scan failed", e);

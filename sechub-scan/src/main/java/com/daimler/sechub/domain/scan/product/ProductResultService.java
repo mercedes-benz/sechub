@@ -20,11 +20,23 @@ public class ProductResultService {
 
 	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 	public List<ProductResult> fetchAllResultsForJob(UUID sechubJobUUID) {
-		ProductResult result = new ProductResult();
-		result.secHubJobUUID=sechubJobUUID;
+		ProductResult probe = new ProductResult();
+		probe.secHubJobUUID=sechubJobUUID;
 
-		return repository.findAll(Example.of(result));
+		return repository.findAll(Example.of(probe));
 	}
+	
+	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    public void deleteAllResultsForJob(UUID sechubJobUUID) {
+        ProductResult probe = new ProductResult();
+        probe.secHubJobUUID=sechubJobUUID;
+
+        List<ProductResult> existingResults = repository.findAll(Example.of(probe));
+        for (ProductResult result: existingResults) {
+            repository.delete(result);
+        }
+        
+    }
 
 
 }

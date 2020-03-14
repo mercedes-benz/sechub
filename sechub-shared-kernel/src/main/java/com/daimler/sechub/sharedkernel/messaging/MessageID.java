@@ -93,7 +93,6 @@ public enum MessageID {
 	 */
 	REQUEST_SCHEDULER_STATUS_UPDATE,
 
-
 	/* Scheduler status update message, contains information about status*/
 	SCHEDULER_STATUS_UPDATE,
 
@@ -105,7 +104,17 @@ public enum MessageID {
 	
 	
     MAPPING_CONFIGURATION_CHANGED(MessageDataKeys.CONFIG_MAPPING_DATA),
-	;
+	
+    /* Request job to be restarted (soft)*/
+    REQUEST_JOB_RESTART(MessageDataKeys.JOB_RESTART_DATA),
+
+    /* Request job to be restarted (hard)*/
+    REQUEST_JOB_RESTART_HARD(MessageDataKeys.JOB_RESTART_DATA), 
+    
+    
+    JOB_RESTARTED(MessageDataKeys.JOB_RESTART_DATA),
+
+    ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;
 
