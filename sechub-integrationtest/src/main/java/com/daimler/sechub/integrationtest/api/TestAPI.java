@@ -26,6 +26,8 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
+import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
+import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -423,5 +425,18 @@ public class TestAPI {
 		}
 
 	}
+
+    public static void startUsecaseEventTracing(UseCaseIdentifier usecaseIdentifier) {
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildIntegraionTestStartEventTracing(usecaseIdentifier.name());
+        context.getSuperAdminRestHelper().post(url);
+    }
+    
+    public static IntegrationTestEventHistory fetchEventHistory() {
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildIntegraionTestFetchEventTracing();
+        String json = context.getSuperAdminRestHelper().getJSon(url);
+        return IntegrationTestEventHistory.fromJSONString(json);
+    }
 
 }

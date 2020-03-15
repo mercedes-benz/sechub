@@ -231,6 +231,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 		LOG.info("############################################################################################################");
 		LOG.info("## [CLEAN] remove old test data");
 		LOG.info("############################################################################################################");
+		resetEventTracing();
 		resetEmails();
 		cleanupAllTestProjects();
 		cleanupAllTestUsers();
@@ -246,7 +247,11 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 	}
 
-	protected abstract void initializeTestData();
+	protected void resetEventTracing() {
+	   getRestHelper().post(getContext().getUrlBuilder().buildIntegraionTestResetEventTracing());
+	}
+	
+    protected abstract void initializeTestData();
 
 	protected abstract void waitForTestDataAvailable();
 
