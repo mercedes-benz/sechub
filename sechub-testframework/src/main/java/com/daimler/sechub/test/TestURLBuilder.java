@@ -420,6 +420,10 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/start");
     }
     
+    public String buildIntegrationTestFetchEventInspectionStatus() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/status");
+    }
+    
     public String buildIntegrationTestFetchEventInspectionHistory() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }

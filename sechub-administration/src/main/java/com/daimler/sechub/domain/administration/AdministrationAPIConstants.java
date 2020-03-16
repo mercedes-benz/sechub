@@ -38,6 +38,7 @@ public class AdministrationAPIConstants{
 	public static final String API_SCHEDULER_ENABLE_JOB_PROCESSING = API_ADMINISTRATION + "scheduler/enable/job-processing";
 
 
+	/* TODO Albert Tregnaghi, 2020-03-16: next ones are inside amin layer not scheduler! so we should rename these constants! */
 	/**
 	 * Refresh scheduler status
 	 */

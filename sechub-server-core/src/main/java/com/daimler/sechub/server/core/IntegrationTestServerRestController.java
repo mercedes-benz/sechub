@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -83,6 +85,15 @@ public class IntegrationTestServerRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public void startEventInspection() {
         eventInspectorService.start();
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/status", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public Map<String,String> statusEventInspection() {
+        Map<String,String> map = new TreeMap<>();
+        map.put("started", Boolean.toString(eventInspectorService.isStarted()));
+        map.put("lastInspectionId", Integer.toString(eventInspectorService.getInspectionIdCounter()));
+        return map;
     }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/history", method = RequestMethod.GET, produces = {

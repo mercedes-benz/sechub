@@ -13,7 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import junit.framework.AssertionFailedError;
 
@@ -426,9 +430,27 @@ public class TestAPI {
 	}
 
     public static void startEventInspection() {
+        /* the initial reset will trigger also events (but fast)
+         * we wait until no longer new events are flushed before doing the new inspection start */
+        waitUntilNoLongerNewEventsTriggered(1000);
+        
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildIntegrationTestStartEventInspection();
         context.getSuperAdminRestHelper().post(url);
+    }
+    
+    private static void waitUntilNoLongerNewEventsTriggered(int timeToWaitForNextCheckInMilliseconds) {
+        /* we wait until we got no new events after dedicated time, so */
+        int inspectionIdBefore= -1;
+        int currentInspectionID= EventInspectionAPI.fetchLastInspectionId();
+        while (currentInspectionID!=inspectionIdBefore) {
+            LOG.debug("wait:{} ms, currentInspectionID:{}, inspectionIdBefore:{}",
+                    timeToWaitForNextCheckInMilliseconds,
+                    currentInspectionID, inspectionIdBefore);
+            inspectionIdBefore=currentInspectionID;
+            waitMilliSeconds(timeToWaitForNextCheckInMilliseconds);
+            currentInspectionID = EventInspectionAPI.fetchLastInspectionId();
+        }
     }
     
     public static IntegrationTestEventHistory fetchEventInspectionHistory() {
@@ -436,6 +458,36 @@ public class TestAPI {
         String url = context.getUrlBuilder().buildIntegrationTestFetchEventInspectionHistory();
         String json = context.getSuperAdminRestHelper().getJSon(url);
         return IntegrationTestEventHistory.fromJSONString(json);
+    }
+
+    public static Map<String,String> listStatusEntries() {
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildAdminListsStatusEntries();
+        String json = context.getSuperAdminRestHelper().getJSon(url);
+        JsonNode node;
+        try {
+            node = TestJSONHelper.get().getMapper().readTree(json);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Cannot read json:"+json,e);
+        }
+        if (!node.isArray()) {
+            throw new IllegalStateException("must be an array:"+json);
+        }
+        ArrayNode array = (ArrayNode) node;
+        Map<String,String> map = new TreeMap<>();
+        array.forEach(new Consumer<JsonNode>() {
+            @Override
+            public void accept(JsonNode node) {
+                JsonNode key = node.get("key");
+                JsonNode value = node.get("value");
+                String keyText = key.textValue();
+                String valueText = value.textValue();
+                map.put(keyText, valueText);
+            }
+                
+      
+        });
+        return map;
     }
 
 }

@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 public class AssertJobScheduler<R> extends AbstractAssert {
@@ -23,6 +24,18 @@ public class AssertJobScheduler<R> extends AbstractAssert {
 		this.project=project;
 		this.returnTarget=returnTarget;
 	}
+	
+	public static void assertJobSchedulerEnabled() {
+	   Map<String, String> entries = TestAPI.listStatusEntries();
+	   String value = entries.get("status.scheduler.enabled");
+	   assertEquals("true",value);
+	}
+	
+	public static void assertJobSchedulerDisabled() {
+	       Map<String, String> entries = TestAPI.listStatusEntries();
+	       String value = entries.get("status.scheduler.enabled");
+	       assertEquals("false",value);
+	    }
 
 	public R and() {
 		return returnTarget;

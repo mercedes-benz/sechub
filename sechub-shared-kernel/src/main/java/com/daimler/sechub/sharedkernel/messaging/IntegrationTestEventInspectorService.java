@@ -26,79 +26,108 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     int inspectionIdCounter = 0;
     private IntegrationTestEventHistory history;
 
+    private boolean started;
+    private static Object monitor = new Object();
+
     public void start() {
-        resetAndStop();
-        this.history = new IntegrationTestEventHistory(); // means restart
+        synchronized (monitor) {
+            resetAndStop();
+            this.history = new IntegrationTestEventHistory(); // means restart
+            started = true;
+        }
     }
 
     public void resetAndStop() {
-        this.inspectionIdCounter = 0;
-        this.history = null; // means stop
+        synchronized (monitor) {
+            started = false;
+
+            this.inspectionIdCounter = 0;
+            this.history = null;
+        }
     }
 
     public IntegrationTestEventHistory getHistory() {
-        if (isStopped()) {
-            return EMPTY_HISTORY;
+        synchronized (monitor) {
+            if (isStopped()) {
+                return EMPTY_HISTORY;
+            }
+            return history;
         }
-        return history;
     }
 
     @Override
     public int createInspectionId() {
-        int id = inspectionIdCounter;
-        /*
-         * we simple increment the id counter, so first inspection is 1, next is 2 etc.
-         * its just to identify the group (means sender, and recipients in ONE send) and
-         * nothing more
-         */
-        inspectionIdCounter++;
-        LOG.debug("inspection id:{}", id);
-        return id;
+        synchronized (monitor) {
+            int id = inspectionIdCounter;
+            /*
+             * we simple increment the id counter, so first inspection is 1, next is 2 etc.
+             * its just to identify the group (means sender, and recipients in ONE send) and
+             * nothing more
+             */
+            inspectionIdCounter++;
+            LOG.debug("inspection id:{}", id);
+            return id;
+        }
+    }
+    
+    public int getInspectionIdCounter() {
+        return inspectionIdCounter;
     }
 
     @Override
     public void inspectSendSynchron(DomainMessage request, int inspectId) {
-        if (isStopped()) {
-            /* just not history wanted - ignore */
-            return;
+        synchronized (monitor) {
+            if (isStopped()) {
+                /* just not history wanted - ignore */
+                return;
+            }
+            /* identify sender (this method = 1, caller = 2... */
+            IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
+            StackTraceElement traceElement = grabTraceElement();
+            inspection.setSynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
         }
-        /* identify sender (this method = 1, caller = 2... */
-        IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
-        StackTraceElement traceElement = grabTraceElement();
-        inspection.setSynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
 
     }
 
     private boolean isStopped() {
-        return history == null;
+        return !isStarted();
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     @Override
     public void inspectSendAsynchron(DomainMessage request, int inspectId) {
-        if (isStopped()) {
-            /* just not history wanted - ignore */
-            return;
-        }
-        /* identify sender (this method = 1, caller = 2... */
-        IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
+        synchronized (monitor) {
+            if (isStopped()) {
+                /* just not history wanted - ignore */
+                return;
+            }
+            /* identify sender (this method = 1, caller = 2... */
+            IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
 
-        StackTraceElement traceElement = grabTraceElement();
-        inspection.setAsynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
+            StackTraceElement traceElement = grabTraceElement();
+            inspection.setAsynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
+        }
     }
 
     private String extractRealClassNameFromStacktrace(StackTraceElement traceElement) {
-        /* here we solve a little problem: spring uses proxies and these are at runtime in stacktrace named. But we want 
-         * to return the real class behind. Unfortunately we cannot use org.springframework.util.ClassUtils here, because we have
-         * not the class nor the instance. But CGLib which is used by spring does provide classnames always with realService%$...
-         * so we can just shrink the class name to get the real one.
+        /*
+         * here we solve a little problem: spring uses proxies and these are at runtime
+         * in stacktrace named. But we want to return the real class behind.
+         * Unfortunately we cannot use org.springframework.util.ClassUtils here, because
+         * we have not the class nor the instance. But CGLib which is used by spring
+         * does provide classnames always with realService%$... so we can just shrink
+         * the class name to get the real one.
          */
         String className = traceElement.getClassName();
         int index = className.indexOf("$$");
-        if (index==-1) {
+        if (index == -1) {
             return className;
         }
-        /* CGLIb enhanced so return only parts before to get real name*/
-        return className.substring(0,index);
+        /* CGLIb enhanced so return only parts before to get real name */
+        return className.substring(0, index);
     }
 
     private StackTraceElement grabTraceElement() {
@@ -112,28 +141,33 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     @Override
     public void inspectReceiveSynchronMessage(DomainMessage request, int inspectId, SynchronMessageHandler handler) {
-        if (isStopped()) {
-            /* just not history wanted - ignore */
-            return;
+        synchronized (monitor) {
+
+            if (isStopped()) {
+                /* just not history wanted - ignore */
+                return;
+            }
+            /* identify receiver == handler */
+            IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
+            Class<? extends SynchronMessageHandler> handlerClazz = handler.getClass();
+            inspection.getReceiverClassNames().add(handlerClazz.getName());
         }
-        /* identify receiver == handler */
-        IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
-        Class<? extends SynchronMessageHandler> handlerClazz = handler.getClass();
-        inspection.getReceiverClassNames().add(handlerClazz.getName());
 
     }
 
     @Override
     public void inspectReceiveAsynchronMessage(DomainMessage request, int inspectId, AsynchronMessageHandler handler) {
-        if (isStopped()) {
-            /* just not history wanted - ignore */
-            return;
+        synchronized(monitor) {
+            if (isStopped()) {
+                /* just not history wanted - ignore */
+                return;
+            }
+            
+            /* identify receiver == handler */
+            IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
+            Class<? extends AsynchronMessageHandler> handlerClazz = handler.getClass();
+            inspection.getReceiverClassNames().add(handlerClazz.getName());
         }
-
-        /* identify receiver == handler */
-        IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
-        Class<? extends AsynchronMessageHandler> handlerClazz = handler.getClass();
-        inspection.getReceiverClassNames().add(handlerClazz.getName());
 
     }
 
