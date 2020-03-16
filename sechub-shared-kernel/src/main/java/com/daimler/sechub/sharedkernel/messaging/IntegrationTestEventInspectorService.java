@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Profiles;
-import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 /**
  * Integrationtest variant - will inspect eventhandling for dedicated usecases
@@ -27,22 +26,18 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     int inspectionIdCounter = 0;
     private IntegrationTestEventHistory history;
 
-    public void startTraceFor(UseCaseIdentifier identifier) {
-        if (identifier == null) {
-            throw new IllegalArgumentException("identifier may not be null!");
-        }
-        reset();
-        this.history = new IntegrationTestEventHistory();
-        this.history.setUsecaseIdentifier(identifier);
+    public void start() {
+        resetAndStop();
+        this.history = new IntegrationTestEventHistory(); // means restart
     }
 
-    public void reset() {
+    public void resetAndStop() {
         this.inspectionIdCounter = 0;
-        this.history = null;
+        this.history = null; // means stop
     }
 
     public IntegrationTestEventHistory getHistory() {
-        if (history == null) {
+        if (isStopped()) {
             return EMPTY_HISTORY;
         }
         return history;
@@ -63,7 +58,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     @Override
     public void inspectSendSynchron(DomainMessage request, int inspectId) {
-        if (history == null) {
+        if (isStopped()) {
             /* just not history wanted - ignore */
             return;
         }
@@ -74,9 +69,13 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     }
 
+    private boolean isStopped() {
+        return history == null;
+    }
+
     @Override
     public void inspectSendAsynchron(DomainMessage request, int inspectId) {
-        if (history == null) {
+        if (isStopped()) {
             /* just not history wanted - ignore */
             return;
         }
@@ -113,7 +112,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     @Override
     public void inspectReceiveSynchronMessage(DomainMessage request, int inspectId, SynchronMessageHandler handler) {
-        if (history == null) {
+        if (isStopped()) {
             /* just not history wanted - ignore */
             return;
         }
@@ -126,7 +125,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
     @Override
     public void inspectReceiveAsynchronMessage(DomainMessage request, int inspectId, AsynchronMessageHandler handler) {
-        if (history == null) {
+        if (isStopped()) {
             /* just not history wanted - ignore */
             return;
         }

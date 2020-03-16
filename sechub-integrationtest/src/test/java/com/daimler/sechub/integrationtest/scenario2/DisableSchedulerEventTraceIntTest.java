@@ -40,8 +40,7 @@ public class DisableSchedulerEventTraceIntTest {
 		/* @formatter:off */
 	    
 	    /* prepare */
-	    UseCaseIdentifier usecaseIdentifier = UseCaseIdentifier.UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING;
-        TestAPI.startUsecaseEventTracing(usecaseIdentifier);
+        TestAPI.startEventInspection();
 	    
 		/* execute */
 		as(SUPER_ADMIN).
@@ -52,14 +51,12 @@ public class DisableSchedulerEventTraceIntTest {
 		IntegrationTestEventHistory history  = null;
 		int expectedHistgoryEntries = 2;
 		do {
-		    history = TestAPI.fetchEventHistory();
+		    history = TestAPI.fetchEventInspectionHistory();
 		    
 		    waitMilliSeconds(300);
 		}while(history.getIdToInspectionMap().size()<expectedHistgoryEntries);
 
 		Map<Integer, IntegrationTestEventHistoryInspection> map = history.getIdToInspectionMap();
-		assertEquals(usecaseIdentifier.name(), history.getUsecaseName());
-		/* TODO Albert Tregnaghi, 2020-03-15: currently: not checked if usecase is the right one!! so does usecase makes sense in api at all?!*/
 		IntegrationTestEventHistoryInspection inspection1 = map.get(0);
 		assertNotNull(inspection1);
 		assertEquals(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING.getId(), inspection1.getEventId());
@@ -82,7 +79,7 @@ public class DisableSchedulerEventTraceIntTest {
 		/* @formatter:on */
         
         /* write to build folder, so we can use it in documentation generation */
-        File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(),"sechub-integrationtest/build/json/usecases/"+usecaseIdentifier.name().toLowerCase()+".json");
+        File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(),"sechub-integrationtest/build/json/usecases/"+UseCaseIdentifier.UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING.name().toLowerCase()+".json");
         IntegrationTestFileSupport.getTestfileSupport().writeTextFile(file,history.toJSON());
 
 	}

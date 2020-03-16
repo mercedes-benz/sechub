@@ -36,7 +36,6 @@ import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector
 import com.daimler.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -74,22 +73,21 @@ public class IntegrationTestServerRestController {
     @Autowired
     LogSanitizer logSanitizer;
 
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspections/reset", method = RequestMethod.POST, produces = {
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public void resetUsecaseEventInspections() {
-        eventInspectorService.reset();
+    public void resetAndStopEventInspection() {
+        eventInspectorService.resetAndStop();
     }
 
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspections/usecase/{usecaseIdentifier}", method = RequestMethod.POST, produces = {
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/start", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public void starttUsecaseEventInspections(@PathVariable("usecaseIdentifier") String usecaseIdentifier) {
-        UseCaseIdentifier identifier = UseCaseIdentifier.valueOf(usecaseIdentifier);
-        eventInspectorService.startTraceFor(identifier);
+    public void startEventInspection() {
+        eventInspectorService.start();
     }
     
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspections", method = RequestMethod.GET, produces = {
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/history", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public String fetchtUsecaseEventInspections() {
+    public String fetchEventInspectionHistory() {
         IntegrationTestEventHistory history = eventInspectorService.getHistory();
         return history.toJSON();
     }

@@ -10,8 +10,6 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
-
 public class IntegrationTestEventInspectorServiceTest {
 
     private IntegrationTestEventInspectorService serviceToTest;
@@ -41,20 +39,18 @@ public class IntegrationTestEventInspectorServiceTest {
         /* test */
         IntegrationTestEventHistory history = serviceToTest.getHistory();
         assertNotNull(history);
-        assertNull(history.getUsecaseName());
         assertEquals(0, history.getIdToInspectionMap().keySet().size());
     }
     
     @Test
     public void reset_done_returns_history_without_usecasename_and_no_entries() {
         /* execute */
-        serviceToTest.reset();
+        serviceToTest.resetAndStop();
         serviceToTest.inspectSendAsynchron(request, 1);
         
         /* test */
         IntegrationTestEventHistory history = serviceToTest.getHistory();
         assertNotNull(history);
-        assertNull(history.getUsecaseName());
         assertEquals(0, history.getIdToInspectionMap().keySet().size());
         assertEquals(0, serviceToTest.inspectionIdCounter); // count not initialized until history enabled
     }
@@ -62,14 +58,13 @@ public class IntegrationTestEventInspectorServiceTest {
     @Test
     public void async_when_initialized_with_usecase_UC_aDMIN_CREATE_PROJECT_returns_history_without_usecasename() {
         /* execute */
-        serviceToTest.startTraceFor(UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT);
+        serviceToTest.start();
         simulatedCaller.simulateCallerSendAsync(123);
         serviceToTest.inspectReceiveAsynchronMessage(request, 123, asynchronousMessagerHandler);
         
         /* test */
         IntegrationTestEventHistory history = serviceToTest.getHistory();
         assertNotNull(history);
-        assertEquals(UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT.name(), history.getUsecaseName());
         Map<Integer, IntegrationTestEventHistoryInspection> idToInspectionMap = history.getIdToInspectionMap();
         assertEquals(1, idToInspectionMap.keySet().size());
         
@@ -94,14 +89,12 @@ public class IntegrationTestEventInspectorServiceTest {
     @Test
     public void sync_when_initialized_with_usecase_UC_aDMIN_CREATE_PROJECT_returns_history_without_usecasename() {
         /* execute */
-        serviceToTest.startTraceFor(UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT);
         simulatedCaller.simulateCallereSendSync(123);
         serviceToTest.inspectReceiveSynchronMessage(request, 123, synchronousMessagerHandler);
         
         /* test */
         IntegrationTestEventHistory history = serviceToTest.getHistory();
         assertNotNull(history);
-        assertEquals(UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT.name(), history.getUsecaseName());
         Map<Integer, IntegrationTestEventHistoryInspection> idToInspectionMap = history.getIdToInspectionMap();
         assertEquals(1, idToInspectionMap.keySet().size());
         

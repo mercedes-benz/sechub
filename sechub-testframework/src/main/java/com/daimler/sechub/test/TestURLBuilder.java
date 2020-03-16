@@ -412,16 +412,16 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG_MAPPING, mappingId);
     }
 
-    public String buildIntegraionTestResetEventTracing() {
-        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspections/reset");
+    public String buildIntegrationTestResetAndStopEventInspection() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/reset-and-stop");
     }
     
-    public String buildIntegraionTestStartEventTracing(String usecaseIdentifierName) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspections/usecase",usecaseIdentifierName);
+    public String buildIntegrationTestStartEventInspection() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/start");
     }
     
-    public String buildIntegraionTestFetchEventTracing() {
-        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspections");
+    public String buildIntegrationTestFetchEventInspectionHistory() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }
 
 }
