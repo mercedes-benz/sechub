@@ -181,7 +181,7 @@ public class AssertEventInspection {
         StringBuilder sb = new StringBuilder();
         sb.append("\nBut if this is not a failure but correct and you are just writing your test/fixing changinges, you can just paste following test code:\n\n");
         if (history==null) {
-            sb.append("Impossible - history = null");
+            sb.append("Impossible - history == null");
             return sb.toString();
         }
         int lasltIdentifierId = history.getIdToInspectionMap().size()-1;
@@ -189,6 +189,10 @@ public class AssertEventInspection {
         /* last inspection */
         sb.append("     assertLastInspection("+lasltIdentifierId+",\n");
         IntegrationTestEventHistoryInspection lastInspection = history.getIdToInspectionMap().get(lasltIdentifierId);
+        if (lastInspection==null) {
+            sb.append("Impossible - history = null");
+            return sb.toString();
+        }
         sb.append("           MessageID."+lastInspection.getEventId()+",\n");
         for (Iterator<String> it =lastInspection.getReceiverClassNames().iterator() ; it.hasNext(); ) {
             String receiverClassName = it.next();
