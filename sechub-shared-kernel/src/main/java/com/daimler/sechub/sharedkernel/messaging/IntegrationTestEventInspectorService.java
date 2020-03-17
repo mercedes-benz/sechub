@@ -83,7 +83,7 @@ public class IntegrationTestEventInspectorService implements EventInspector {
             }
             /* identify sender (this method = 1, caller = 2... */
             IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
-            StackTraceElement traceElement = grabTraceElement();
+            StackTraceElement traceElement = grabTracElementWithoutProxies(4);
             inspection.setSynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
         }
 
@@ -107,37 +107,16 @@ public class IntegrationTestEventInspectorService implements EventInspector {
             /* identify sender (this method = 1, caller = 2... */
             IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
 
-            StackTraceElement traceElement = grabTraceElement();
+            StackTraceElement traceElement = grabTracElementWithoutProxies(4);
             inspection.setAsynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
         }
     }
 
     private String extractRealClassNameFromStacktrace(StackTraceElement traceElement) {
-        /*
-         * here we solve a little problem: spring uses proxies and these are at runtime
-         * in stacktrace named. But we want to return the real class behind.
-         * Unfortunately we cannot use org.springframework.util.ClassUtils here, because
-         * we have not the class nor the instance. But CGLib which is used by spring
-         * does provide classnames always with realService%$... so we can just shrink
-         * the class name to get the real one.
-         */
         String className = traceElement.getClassName();
-        int index = className.indexOf("$$");
-        if (index == -1) {
-            return className;
-        }
-        /* CGLIb enhanced so return only parts before to get real name */
-        return className.substring(0, index);
+        return className;
     }
 
-    private StackTraceElement grabTraceElement() {
-        StackTraceElement traceElement = grabTracElementOrNull(5); // 5 because:
-                                                                   // caller->service->inspectormethod->grabTraceElement->grabTracElementOrNull->getStackTrace
-        if (traceElement == null) {
-            throw new IllegalStateException("Trace element may not be null!");
-        }
-        return traceElement;
-    }
 
     @Override
     public void inspectReceiveSynchronMessage(DomainMessage request, int inspectId, SynchronMessageHandler handler) {
@@ -172,22 +151,51 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     }
 
     /**
-     * Grabs trace element
+     * Grabs trace element - will ignore spring proxy stuff automatically
      * 
-     * @param pos position in stack trace, starts with 0, where 0 is this method!
+     * @param pos position in stack trace, starts with 0, where 0 is get trace element, and 1 is this method!
      * @return trace element for given position or <code>null</code>
      */
-    private StackTraceElement grabTracElementOrNull(int pos) {
+    private StackTraceElement grabTracElementWithoutProxies(int pos) {
+        
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        int i=0;
+        LOG.trace("Grab tracelements:{}",pos);
+        for (StackTraceElement element: elements) {
+            LOG.trace("{}: {}",i++,element);
+        }
 
-        int c = 0;
+        int c = -1;
+        i= 0;
         for (StackTraceElement element : elements) {
+            String className = element.getClassName();
+    //       Grab tracelements:4
+    //       0:java.lang.Thread.getStackTrace(Thread.java:1559)
+    //       1:com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.grabTracElement(IntegrationTestEventInspectorService.java:173)
+    //       2:com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.inspectSendAsynchron(IntegrationTestEventInspectorService.java:110)
+    //       3:com.daimler.sechub.sharedkernel.messaging.DomainMessageService.sendAsynchron(DomainMessageService.java:153)
+    //       4:com.daimler.sechub.sharedkernel.messaging.DomainMessageService$$FastClassBySpringCGLIB$$c7de0c21.invoke(<generated>)
+    //       5:org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+    //       6:org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:685)
+    //       7:com.daimler.sechub.sharedkernel.messaging.DomainMessageService$$EnhancerBySpringCGLIB$$83df6b4.sendAsynchron(<generated>)
+    //       8:com.daimler.sechub.domain.schedule.config.SchedulerConfigService.setJobProcessingEnabled(SchedulerConfigService.java:70)
+    //       9:com.daimler.sechub.domain.schedule.config.SchedulerConfigService.enableJobProcessing(SchedulerConfigService.java:38)
+            i++;
+            boolean proxied = false;
+            proxied = proxied || className.indexOf("EnhancerBySpringCGLIB")!=-1;
+            proxied = proxied || className.indexOf("org.springframework.cglib")!=-1;
+            proxied = proxied || className.indexOf("org.springframework.aop")!=-1;
+            if (proxied){
+                LOG.trace("Skip proxy stuff {}:{}",i,className);
+                continue;
+            }
             if (c == pos) {
+                LOG.trace("return: {}:{}",i,element);
                 return element;
             }
             c++;
         }
-        return null;
+        throw new IllegalStateException("Trace element may not be null!");
     }
 
 }

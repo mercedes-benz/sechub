@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
+import com.daimler.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
 import com.daimler.sechub.docgen.spring.ScheduleDescriptionGenerator;
 import com.daimler.sechub.docgen.spring.SpringProfilesPlantumlGenerator;
 import com.daimler.sechub.docgen.spring.SpringProfilesPlantumlGenerator.SpringProfileGenoConfig;
 import com.daimler.sechub.docgen.spring.SystemPropertiesDescriptionGenerator;
 import com.daimler.sechub.docgen.spring.SystemPropertiesJavaLaunchExampleGenerator;
 import com.daimler.sechub.docgen.usecase.UseCaseModel;
-import com.daimler.sechub.docgen.usecase.UseCaseModelAsciiDocGenerator;
+import com.daimler.sechub.docgen.usecase.UseCaseAsciiDocGenerator;
 import com.daimler.sechub.docgen.usecase.UseCaseRestDocModel;
 import com.daimler.sechub.docgen.usecase.UseCaseRestDocModelAsciiDocGenerator;
 import com.daimler.sechub.docgen.util.ClasspathDataCollector;
@@ -30,7 +31,7 @@ public class AsciidocGenerator implements Generator {
 	SystemPropertiesDescriptionGenerator propertiesGenerator = new SystemPropertiesDescriptionGenerator();
 	SystemPropertiesJavaLaunchExampleGenerator javaLaunchExampleGenerator = new SystemPropertiesJavaLaunchExampleGenerator();
 	ScheduleDescriptionGenerator scheduleDescriptionGenerator = new ScheduleDescriptionGenerator();
-	UseCaseModelAsciiDocGenerator useCaseModelAsciiDocGenerator = new UseCaseModelAsciiDocGenerator();
+	UseCaseAsciiDocGenerator useCaseModelAsciiDocGenerator = new UseCaseAsciiDocGenerator();
 	UseCaseRestDocModelAsciiDocGenerator useCaseRestDocModelAsciiDocGenerator = new UseCaseRestDocModelAsciiDocGenerator();
 	TextFileWriter writer = new TextFileWriter();
 	DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
@@ -58,8 +59,19 @@ public class AsciidocGenerator implements Generator {
 		File scheduleDescriptionFile = createScheduleDescriptionTargetFile(documentsGenFolder);
 		File specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(documentsGenFolder);
 		File messagingFile = createMessagingTargetFile(documentsGenFolder);
-
+		
+        /* ---------------------- */
+		/* --- Pre-generation --- */
+		/* ---------------------- */
+		File jsonEventDataFolder = new File("./../sechub-integrationtest/build/test-results/event-trace");
+		UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator = new UseCaseEventOverviewPlantUmlGenerator(jsonEventDataFolder, diagramsGenFolder);
+		usecaseEventOverviewGenerator.generate();
+		
+		/* ----------------------- */
+        /* --- Main-generation --- */
+        /* ----------------------- */
 		AsciidocGenerator generator = new AsciidocGenerator();
+		
 		generator.generateExampleFiles(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
 		generator.generateSystemPropertiesDescription(systemProperitesFile);
@@ -67,7 +79,7 @@ public class AsciidocGenerator implements Generator {
 		generator.generateScheduleDescription(scheduleDescriptionFile);
 		generator.generateMockPropertiesDescription(specialMockValuePropertiesFile);
 		generator.generateMessagingFiles(messagingFile, diagramsGenFolder);
-		generator.generateUseCaseFiles(documentsGenFolder);
+		generator.generateUseCaseFiles(documentsGenFolder,diagramsGenFolder);
 		generator.generateProfilesOverview(diagramsGenFolder);
 	}
 
@@ -115,11 +127,11 @@ public class AsciidocGenerator implements Generator {
 		domainMessagingFilesGenerator.generateMessagingFiles(messagingFile, diagramsGenFolder, model);
 	}
 
-	private void generateUseCaseFiles(File documentsGenFolder) throws IOException {
+	private void generateUseCaseFiles(File documentsGenFolder, File diagramsGenFolder) throws IOException {
 		UseCaseModel model = getCollector().fetchUseCaseModel();
 		UseCaseRestDocModel restDocModel = getCollector().fetchUseCaseRestDocModel(model);
 
-		String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model);
+		String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model,diagramsGenFolder);
 
 		File targetFile = new File(documentsGenFolder, "gen_usecases.adoc");
 		writer.save(targetFile, useCaseAsciidoc);

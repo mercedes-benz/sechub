@@ -32,11 +32,6 @@ public class DomainMessageService {
 
     Map<MessageID, SynchronMessageHandler> synchronHandlers = new EnumMap<>(MessageID.class);
     Map<MessageID, List<AsynchronMessageHandler>> asynchronHandlers = new EnumMap<>(MessageID.class);
-    /*
-     * TODO Albert Tregnaghi, 2018-01-29: in future this could be at least an
-     * internal REST call instead of direct usage of spring boot services... when
-     * scan is own spring boot application .. But this must be also secured...
-     */
 
     @Autowired // does auto registration of synchron message handlers by spring
     public DomainMessageService(List<SynchronMessageHandler> injectedSynchronousHandlers, List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
