@@ -39,14 +39,20 @@ public class DomainMessageService {
         notNull(injectedAsynchronousHandlers, "Async. Handlers may not be null!");
 
         for (SynchronMessageHandler handler : injectedSynchronousHandlers) {
+            if (handler == null) {
+                continue;
+            }
             Set<MessageID> messageIds = getSupportedMessageIdsFor(handler);
             for (MessageID messageId : messageIds) {
                 synchronHandlers.put(messageId, handler);
-                LOG.info("Registered synchron message handler:{} for message ID:{}", handler, messageId);
+                LOG.info("Registered synchron message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
 
         for (AsynchronMessageHandler handler : injectedAsynchronousHandlers) {
+            if (handler == null) {
+                continue;
+            }
             Set<MessageID> messageIds = getSupportedMessageIdsFor(handler);
             for (MessageID messageId : messageIds) {
                 List<AsynchronMessageHandler> foundAsynchronousHandlersForID = this.asynchronHandlers.get(messageId);
@@ -55,7 +61,7 @@ public class DomainMessageService {
                     this.asynchronHandlers.put(messageId, foundAsynchronousHandlersForID);
                 }
                 foundAsynchronousHandlersForID.add(handler);
-                LOG.info("Registered asynchronus message handler:{} for message ID:{}", handler, messageId);
+                LOG.info("Registered asynchronus message handler:{} for message ID:{}", handler.getClass(), messageId);
             }
         }
     }

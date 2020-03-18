@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class AssertJobScheduler<R> extends AbstractAssert {
 
-    private static final int DEFAULT_TIMEOUT_MS = 6000;
+    private static final int DEFAULT_TIMEOUT_MS = 120000; // 2 minutes max
     private TestUser user;
     private TestProject project;
     private R returnTarget;

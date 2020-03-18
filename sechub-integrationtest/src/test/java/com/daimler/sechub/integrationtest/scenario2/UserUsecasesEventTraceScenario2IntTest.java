@@ -15,13 +15,13 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 public class UserUsecasesEventTraceScenario2IntTest {
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(120);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(600);
 
-	@Test // use scenario2 because USER_1 not already assigned to PROJECT_1
+    @Test // use scenario2 because USER_1 not already assigned to PROJECT_1
     public void UC_ADMIN_ASSIGNS_USER_TO_PROJECT() {
         /* @formatter:off */
         /* prepare */
@@ -33,29 +33,23 @@ public class UserUsecasesEventTraceScenario2IntTest {
             assignUserToProject(Scenario2.USER_1,Scenario2.PROJECT_1); 
         
         /* test */
-        AssertEventInspection.
-            assertLastInspection(2,
-                MessageID.USER_ROLES_CHANGED,
-                "com.daimler.sechub.domain.authorization.AuthMessageHandler"
-                ).
-            assertSender(2, 
-                    MessageID.USER_ROLES_CHANGED, 
-                    "com.daimler.sechub.domain.administration.user.UserRoleCalculationService").
-            assertReceivers(1, 
-                    MessageID.REQUEST_USER_ROLE_RECALCULATION, 
-                    "com.daimler.sechub.domain.administration.user.UserRoleAdministrationMessageHandler").
-            assertSender(1, 
-                    MessageID.REQUEST_USER_ROLE_RECALCULATION, 
-                    "com.daimler.sechub.domain.administration.project.ProjectAssignUserService").
-            assertReceivers(0, 
-                    MessageID.USER_ADDED_TO_PROJECT, 
-                    "com.daimler.sechub.domain.schedule.ScheduleMessageHandler", 
+        AssertEventInspection.assertEventInspection().
+        expect().
+           /* 0 */
+           asyncEvent(MessageID.USER_ADDED_TO_PROJECT).
+                 from("com.daimler.sechub.domain.administration.project.ProjectAssignUserService").
+                 to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler",
                     "com.daimler.sechub.domain.scan.ScanMessageHandler").
-            assertSender(0, 
-                    MessageID.USER_ADDED_TO_PROJECT, 
-                    "com.daimler.sechub.domain.administration.project.ProjectAssignUserService").
-            /* write */
-            writeHistoryToFile(UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT.name());
+           /* 1 */
+           asyncEvent(MessageID.REQUEST_USER_ROLE_RECALCULATION).
+                 from("com.daimler.sechub.domain.administration.project.ProjectAssignUserService").
+                 to("com.daimler.sechub.domain.administration.user.UserRoleAdministrationMessageHandler").
+           /* 2 */
+           asyncEvent(MessageID.USER_ROLES_CHANGED).
+                 from("com.daimler.sechub.domain.administration.user.UserRoleCalculationService").
+                 to("com.daimler.sechub.domain.authorization.AuthMessageHandler").
+        /* assert + write */
+        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT.name());
         /* @formatter:on */
     }
 

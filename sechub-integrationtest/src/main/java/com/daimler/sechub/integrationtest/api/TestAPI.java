@@ -62,6 +62,8 @@ public class TestAPI {
      */
     public static final TestUser ONLY_USER = new TestUser("int-test_onlyuser", "int-test_onlyuser-pwd", "onlyuser@" + ExampleConstants.URI_TARGET_SERVER);
 
+    private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;
+
     public static final AsUser as(TestUser user) {
         return new AsUser(user);
     }
@@ -391,6 +393,7 @@ public class TestAPI {
      * reloaded
      */
     public static void waitForScanConfigRefresh() {
+        LOG.debug("start wait for scan config refresh");
         String newValue = "" + System.nanoTime();
         MappingEntry entry = new MappingEntry("value", newValue, "just for integrationtest refresh");
         /* direct change necessary - to avoid filtering if this special entry */
@@ -430,28 +433,90 @@ public class TestAPI {
 
     }
 
+    /**
+     * Waits until no longer running jobs are detected. will wait #MAXIMUM_WAIT_FOR_RUNNING_JOBS milliseconds
+     * until time out
+     */
+    public static void waitUntilNoLongerRunningJobs() {
+        LOG.debug("Start wait for no longer running jobs");
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildAdminFetchAllRunningJobsUrl();
+
+        long timeOutInMilliseconds = MAXIMUM_WAIT_FOR_RUNNING_JOBS;
+
+        long startTime = System.currentTimeMillis();
+        int jobsFound = 1;
+        while (jobsFound != 0) {
+            try {
+                long timeElapsed = System.currentTimeMillis() - startTime;
+                if (timeElapsed > timeOutInMilliseconds) {
+                    throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
+                }
+                String json = context.getSuperAdminRestHelper().getJSon(url);
+                JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
+                if (obj instanceof ArrayNode) {
+                    ArrayNode an = (ArrayNode) obj;
+                    jobsFound = an.size();
+                    if (jobsFound == 0) {
+                        return;
+                    }
+                }
+                LOG.debug("- Jobs still running - so will wait and retry. Jobs found: {} {}", jobsFound, json);
+                waitMilliSeconds(2000);
+            } catch (JsonProcessingException e) {
+                throw new IllegalStateException("JSON parsing failed!");
+            }
+        }
+    }
+
+    /**
+     * Will do:
+     * <ul>
+     * <li>wait until no longer jobs are running</li>
+     * <li>wait until no longer events are running</li>
+     * <li>start event inspection</li>
+     * </ul>
+     * In some cases it can be necessary to start
+     * TestAPI#waitUntilNoLongerRunningJobs() manual in tests - but only if before
+     * calling this method the scheduling has been disabled...
+     */
     public static void startEventInspection() {
+        waitUntilNoLongerRunningJobs();
         /*
          * the initial reset will trigger also events (but fast) we wait until no longer
          * new events are flushed before doing the new inspection start
          */
-        waitUntilNoLongerNewEventsTriggered(1000);
+        waitUntilNoLongerNewEventsTriggered(5, 300);
 
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildIntegrationTestStartEventInspection();
         context.getSuperAdminRestHelper().post(url);
     }
 
-    private static void waitUntilNoLongerNewEventsTriggered(int timeToWaitForNextCheckInMilliseconds) {
+    private static void waitUntilNoLongerNewEventsTriggered(int minLoopCount, int timeToWaitForNextCheckInMilliseconds) {
         /* we wait until we got no new events after dedicated time, so */
         int inspectionIdBefore = -1;
         int currentInspectionID = EventInspectionAPI.fetchLastInspectionId();
-        while (currentInspectionID != inspectionIdBefore) {
+
+        long startTime = System.currentTimeMillis();
+
+        int loop = 0;
+        while (currentInspectionID != inspectionIdBefore && loop < minLoopCount) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime > 120.000) { // 120 seconds = two minutes max
+                throw new IllegalStateException("Wait unttil no events failed - timeout reached:" + elapsedTime + " ms.");
+            }
+            loop++;
             LOG.debug("wait:{} ms, currentInspectionID:{}, inspectionIdBefore:{}", timeToWaitForNextCheckInMilliseconds, currentInspectionID,
                     inspectionIdBefore);
             inspectionIdBefore = currentInspectionID;
+
             waitMilliSeconds(timeToWaitForNextCheckInMilliseconds);
             currentInspectionID = EventInspectionAPI.fetchLastInspectionId();
+
+            if (currentInspectionID != inspectionIdBefore) {
+                loop = 0;// reset, so start mulitple time checks again
+            }
         }
     }
 

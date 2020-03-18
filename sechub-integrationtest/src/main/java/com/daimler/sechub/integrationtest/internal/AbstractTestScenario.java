@@ -217,7 +217,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 		LOG.info("############################################################################################################");
 		LOG.info("###");
-		LOG.info("### [DONE ]  Ppreparing scenario: '" + scenarioName+"'");
+		LOG.info("### [DONE ]  Preparing scenario: '" + scenarioName+"'");
 		LOG.info("### [START]  Test itself");
 		LOG.info("###");
 		LOG.info("############################################################################################################");
