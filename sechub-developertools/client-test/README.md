@@ -14,6 +14,8 @@ If not installed or you want a newer client version just call `./gradlew install
 ### Execute sechub client with script
 go to the folder where the scripts are located and execute sechub:
 ```
+SECHUB_USERID=$yourUser
 SECHUB_APITOKEN=$yourApiToken
-sechub -configfile sechub-prod-codescan1.json -user $yourUser scan
+SECHUB_SERVER=https://$yourServer
+sechub -configfile sechub-prod-codescan1.json scan
 ```
