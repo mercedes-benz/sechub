@@ -428,4 +428,8 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }
 
+    public String buildintegrationTestDeleteAllWaitingJobsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
+    }
+
 }

@@ -110,7 +110,7 @@ public class JobScenario2IntTest {
 			and().
 			canApproveJob(PROJECT_1, jobUUID).
 			afterThis().
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED);// either ready or already started
+			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED, TestExecutionState.ENDED);// either ready or already started, ended
 
 		assertUser(SUPER_ADMIN).
 			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED).// either ready or already started

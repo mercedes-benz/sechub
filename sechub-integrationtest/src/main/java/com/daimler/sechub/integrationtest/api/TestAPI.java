@@ -433,11 +433,29 @@ public class TestAPI {
 
     }
 
+   
+    /**
+     * Will remove all waiting jobs in database + wait for all running jobs to be done
+     * 
+     */
+    public static void ensureNoLongerJobExecution() {
+        removeAllJobsNotRunning();
+        waitUntilNoLongerJobsRunning();
+    }
+    
+    private static void removeAllJobsNotRunning() {
+        LOG.debug("Start removing jobs not already running");
+        
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildintegrationTestDeleteAllWaitingJobsUrl();
+        context.getSuperAdminRestHelper().delete(url);
+    }
+
     /**
      * Waits until no longer running jobs are detected. will wait #MAXIMUM_WAIT_FOR_RUNNING_JOBS milliseconds
      * until time out
      */
-    public static void waitUntilNoLongerRunningJobs() {
+    public static void waitUntilNoLongerJobsRunning() {
         LOG.debug("Start wait for no longer running jobs");
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildAdminFetchAllRunningJobsUrl();
@@ -481,7 +499,7 @@ public class TestAPI {
      * calling this method the scheduling has been disabled...
      */
     public static void startEventInspection() {
-        waitUntilNoLongerRunningJobs();
+        ensureNoLongerJobExecution();
         /*
          * the initial reset will trigger also events (but fast) we wait until no longer
          * new events are flushed before doing the new inspection start
