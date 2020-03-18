@@ -28,7 +28,7 @@ public class DomainMessageService {
     protected TaskExecutor taskExecutor;
 
     @Autowired
-    EventInspector eventInspector;
+    protected EventInspector eventInspector;
 
     Map<MessageID, SynchronMessageHandler> synchronHandlers = new EnumMap<>(MessageID.class);
     Map<MessageID, List<AsynchronMessageHandler>> asynchronHandlers = new EnumMap<>(MessageID.class);

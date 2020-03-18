@@ -16,6 +16,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
+
 /**
  * A very simple replacement for `org.reflections` library. But fullfils
  * requirements for sechub documentation generation... and works with JDK11
@@ -96,7 +98,10 @@ public class Reflections {
                 @Override
                 public void visit(Class<?> clazz) {
                     for (Method method : clazz.getDeclaredMethods()) {
-                        if (method.getAnnotation(annotation) != null) {
+                        if (method.getDeclaredAnnotation(annotation) != null) {
+                            if (annotation.equals(UseCaseRestDoc.class)){
+                                System.out.println("hit:"+clazz);
+                            }
                             newResult.add(method);
                         }
                     }
@@ -262,6 +267,7 @@ public class Reflections {
             LOG.info("Add source directory:{}", deepSubDir);
             this.sourceDirectories.add(deepSubDir);
         }
+        this.sourceDirectories.add(new File(sechHubDoc,"src/test/java")); // we need this to be able to execute restdoc gen tests + ReflectionsTest.java
     }
 
     private class JavaContentFilter implements FileFilter {

@@ -17,6 +17,7 @@ import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectServ
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.messaging.DummyEventInspector;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
@@ -96,6 +97,7 @@ public class ScanMessageHandlerTest {
 				List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
 			super(injectedSynchronousHandlers, injectedAsynchronousHandlers);
 			this.taskExecutor=new TestTaskExecutor();
+			this.eventInspector=new DummyEventInspector();
 		}
 
 	}

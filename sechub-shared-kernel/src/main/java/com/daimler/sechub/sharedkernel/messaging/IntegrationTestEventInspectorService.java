@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestEventInspectorService implements EventInspector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestEventInspectorService.class);
+    static final Logger LOG = LoggerFactory.getLogger(IntegrationTestEventInspectorService.class);
 
     private static final IntegrationTestEventHistory EMPTY_HISTORY = new IntegrationTestEventHistory();// but without identifier and empty;
 
@@ -159,19 +159,21 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     private StackTraceElement grabTracElementWithoutProxies(int pos) {
         
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        int i=0;
-        LOG.trace("Grab tracelements:{}",pos);
-        for (StackTraceElement element: elements) {
-            LOG.trace("{}: {}",i++,element);
+        int elementIndex=0;
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Grab tracelements:{}",pos);
+            for (StackTraceElement element: elements) {
+                LOG.trace("{}: {}",elementIndex++,element);
+            }
         }
 
-        int c = -1;
-        i= 0;
+        int currentPosWithoutProxyParts = 0;
+        elementIndex= 0;
         for (StackTraceElement element : elements) {
             String className = element.getClassName();
     //       Grab tracelements:4
     //       0:java.lang.Thread.getStackTrace(Thread.java:1559)
-    //       1:com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.grabTracElement(IntegrationTestEventInspectorService.java:173)
+    //       1:com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.grabTracElementWithoutProxies(IntegrationTestEventInspectorService.java:173)
     //       2:com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService.inspectSendAsynchron(IntegrationTestEventInspectorService.java:110)
     //       3:com.daimler.sechub.sharedkernel.messaging.DomainMessageService.sendAsynchron(DomainMessageService.java:153)
     //       4:com.daimler.sechub.sharedkernel.messaging.DomainMessageService$$FastClassBySpringCGLIB$$c7de0c21.invoke(<generated>)
@@ -180,20 +182,22 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     //       7:com.daimler.sechub.sharedkernel.messaging.DomainMessageService$$EnhancerBySpringCGLIB$$83df6b4.sendAsynchron(<generated>)
     //       8:com.daimler.sechub.domain.schedule.config.SchedulerConfigService.setJobProcessingEnabled(SchedulerConfigService.java:70)
     //       9:com.daimler.sechub.domain.schedule.config.SchedulerConfigService.enableJobProcessing(SchedulerConfigService.java:38)
-            i++;
+            elementIndex++;
+            
+            /* check if proxied */
             boolean proxied = false;
-            proxied = proxied || className.indexOf("EnhancerBySpringCGLIB")!=-1;
+            proxied = proxied || className.indexOf("SpringCGLIB")!=-1;
             proxied = proxied || className.indexOf("org.springframework.cglib")!=-1;
             proxied = proxied || className.indexOf("org.springframework.aop")!=-1;
             if (proxied){
-                LOG.trace("Skip proxy stuff {}:{}",i,className);
+                LOG.trace("Skip proxy stuff {}:{}",elementIndex,className);
                 continue;
             }
-            if (c == pos) {
-                LOG.trace("return: {}:{}",i,element);
+            if (currentPosWithoutProxyParts == pos) {
+                LOG.trace("return: {}:{}",elementIndex,element);
                 return element;
             }
-            c++;
+            currentPosWithoutProxyParts++;
         }
         throw new IllegalStateException("Trace element may not be null!");
     }
