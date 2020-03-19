@@ -490,6 +490,7 @@ public class TestAPI {
     /**
      * Will do:
      * <ul>
+     * <li>remove all not already running jobs in scheduler</li>
      * <li>wait until no longer jobs are running</li>
      * <li>wait until no longer events are running</li>
      * <li>start event inspection</li>
