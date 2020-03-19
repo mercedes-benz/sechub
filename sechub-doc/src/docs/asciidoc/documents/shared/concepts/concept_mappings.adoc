@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-[[mapping-concept]]
+[[concept-mapping]]
 {sechub} needed a way to configure simple configuration values and also
 provide a mapping from project names to adapter specific values (see 
 <<scan-config-about,Scan config>> )

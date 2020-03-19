@@ -1,0 +1,177 @@
+// SPDX-License-Identifier: MIT
+
+// It is included from /sechub-doc/src/docs/asciidoc/documents/architecture/08_concepts.adoc
+// so we use h3 here
+
+
+[[concept-false-positive-handling]]
+
+{sechub} must be able to handle false positives of used products.
+
+=== General
+
+Normally every commercial security product is able to mark false positives, but maybe not every tool
+has got a RESTS API for this issue, or some command line tools do not have an API for this. 
+
+Also a change of the underlying product would lead to mass API calls to update false positive-handling
+
+So instead to configure  products to know false positives (e.g. calling a REST API),
+we do the filtering of false positives always at sechub side only!
+
+=== Different kinds of false-positive filtering
+Some people prefer code/API-centric way to define false positives, some prefer WebUI.
+
+We will provide all of them, but begin with code/API-centric way.
+
+==== Code scan
+
+===== Code centric
+
+Inside source code the developers will be able to mark their code, marked as vulnerable, as 
+being a false positive by using comments. After the push to repository it's inside history who
+was defining the vulnerability as a false positive.
+
+We use following tags:
+
+`NOSECHUB`
+
+and
+
+`NOSECHUB-END`
+
+[NOTE]
+====
+In future we could provide additional identifiers for `NOSECHUB` to define which kind of
+false positive is ignored/will not be fixed.
+
+E.g. something like `NOSECHUB:PATH_TRAVERSAL,PWD_UNSECURE` etc. But if we implement this,
+SecHub Sereco must map product names of vulnerability to common identifiers!
+
+====
+
+
+====== Java
+
+We will provide single comments (`//`) 
+[source,java]
+----
+include::FalsePositiveJavaApplication.java[]
+----
+<1> marks start
+<2> marks end
+
+All between those tags will be ignored by  
+
+===== API centric
+
+Define false positive handling in JSON by referencing a former {sechub} job UUID and the
+corresponding finding entry (by id) and post it to REST API. 
+
+WARNING: What about code changes e.g. a simple new line? Same failure type but other entry? We must have always
+         relevant code snippet to identify...
+ 
+===== Web UI
+
+Just the same as for REST API, but with a UI... 
+
+
+
+==== Web scan
+
+===== API centric
+
+Define false positive handling in JSON by referencing a former {sechub} job UUID and the
+corresponding finding entry (by id or CVE?) and post it to REST API. 
+
+===== Web UI
+
+Just the same as for REST API, but with a UI... 
+
+==== Infra scan
+
+===== API centric
+
+Define false positive handling in JSON by referencing a former {sechub} job UUID and the
+corresponding finding entry (by id or CVE?) and post it to REST API. 
+
+===== Web UI
+
+Just the same as for REST API, but with a UI... 
+
+=== Analyzing
+
+==== Command line tool
+With https://github.com/Daimler/sechub/issues/206 we will implement an (java?) based CLI tool, which
+will inspect code to fetch duplicates etc.
+
+
+==== Integration inside SecHub Server
+
+We reuse the adapter concept already introduced for security products and report products.
+
+[TIP]
+====
+So we are able to mock the analyzer as any other product - interesting for fast integration tests of
+sechub server without dependencies. 
+
+====
+
+We need to call the analyzer product adapter twice. First to receive the adapter id. at the
+end to fetch the meta data - see next picture. 
+
+
+plantuml::diagrams/diagram_false_positive_concept_server_integration.puml[]
+
+===== Reuse of ProductDelegationServer
+
+Because we handle the analyzing like a product call (we just call it twice to "simulate" asynchronous
+product execution calls [adapters do synchronous calls...]) - we need another
+server application: `SechubAnalyzerServer` with REST API, queuing, execution etc. etc.
+
+But... this is something we already want to develop for other CLI commands! So we are able to
+use/reuse the server designed inside the `ProductDelegationServer` concept.
+
+
+[TIP]
+====
+AS long as there is no final concept, please refer to issue https://github.com/Daimler/sechub/issues/204
+====
+
+====== Necessary configuration parts
+If not already defined in `ProductDelegationServer` concept, this must be handled:
+
+We need 
+
+* a technical administrator account
+* TLS encryption 
+* A REST API
+** create a analyzer job UUID
+** upload zip content to analyzer by job UUID
+** start analyzer job
+** fetch analyzer job status
+** fetch analyzer job result
+* Queuing (like done in SechubScheduler)
+* Batch job execution
+** batch job must call the CLi tool with parameters +
+   Those parameters must be defined in adapter call
+
+===== Sereco
+We need to enhance Sereco to understand analyzer data and filter
+
+[NOTE]
+====
+TODO: either we do filtering outside of serecto or inside. 
+
+When inside we should store the analyzer result like a normal product result and sereco would
+also read it andd handle it.
+
+When not we do not need to store result.
+
+( I think the "handle analyzer like a product" approach - stor the result and let Serco handle it -
+would be best. But should be reconsidered before we start implementation.
+====
+
+
+
+
+
