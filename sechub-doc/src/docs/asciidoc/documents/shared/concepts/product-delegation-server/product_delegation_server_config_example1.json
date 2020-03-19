@@ -1,0 +1,20 @@
+{
+    "apiVersion" : "1.0",
+    
+    "exec-types": [
+        { 
+            "id" : "analyze-false-positives", // <1>
+            "command" : "/opt/analyzer/secub-analyzer-cli-1.0.jar -analyze ${PATH_TO_ZIPFILE}" // <2>
+        },
+        { 
+            "id" : "cleanup", // <1>
+            "command" : "/opt/analyzer/cleanup-helper.sh --clean-all" // <2>
+        }
+     ],
+     "admin-accounts" : [
+        { 
+            "user-id" : "my-tech-admin", // <3>
+            "encryptedPassword" : "{bcrypt}your-token-encrypted" // <2>
+        }
+     ] 
+}
