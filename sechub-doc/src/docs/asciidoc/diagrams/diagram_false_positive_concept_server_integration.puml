@@ -1,0 +1,114 @@
+@startuml 
+
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+actor user 
+
+note over of user
+    PE means product executor
+end note
+
+box "SecHub Server "
+    queue Scheduler as "Scheduler" #orange
+    participant ProductExecution  as "Product execution"
+    participant ProductExecutor as "XYZ PE" #lightblue
+    participant AnalyzerProductExecutor as "Analyzer PE" #lightgreen
+    participant SerecoProductExecutor as "Sereco PE" #cyan
+    participant ProductAdapter as "XYZ adapter" #lightblue
+    participant AnalyzerProductAdapter as "Analyzer adapter" #lightgreen
+end box
+
+box "Security product XYZ"
+    participant SecurityProductXYZ as "XYZ" #lightblue
+end box
+
+box "Analyzer Server"
+    participant Analyzer as "SecHub Analyzer" #lightgreen
+    entity FileSystem as "Filesystem" #lightgreen
+end box
+database SchedulerDB as "Scheduler DB" #orange
+database Storage as "File storage"
+database AnalyzerDB as "Analyzer DB" #lightgreen
+
+
+autoactivate on
+== Job creation + preparation == 
+'create job 
+user->Scheduler: creates job with UUID
+Scheduler -> SchedulerDB: stores SecHub job
+return
+return job UUID
+
+'upload zip file 
+user->Scheduler: uploads zip file 
+Scheduler -> Storage
+return 
+return HTTP 200 
+
+user -> Scheduler:request status
+Scheduler -> SchedulerDB: reads SecHub job report satus
+return
+return
+
+== Trigger analyzer asynchronous == 
+'mark job as ready to launch 
+user->Scheduler: marks job ready to start
+
+Scheduler --> ProductExecution: triggers batch job ...leads to
+ProductExecution -> AnalyzerProductExecutor 
+AnalyzerProductExecutor ->AnalyzerProductAdapter
+AnalyzerProductAdapter -> Analyzer: trigger REST call to fetch analyzer queue ID
+return
+return
+return 
+activate Analyzer
+Analyzer -> Storage: fetch zip data
+return "zip stream" 
+Analyzer -> FileSystem : store file
+return
+Analyzer ->AnalyzerDB : store result in db
+return
+deactivate Analyzer
+== Job execution == 
+
+ProductExecution -> ProductExecutor: calls
+ProductExecutor -> ProductAdapter: uses
+ProductAdapter -> SecurityProductXYZ 
+return "String result"
+return "product result"
+return "list"
+
+== Wait for analyzer false-positives == 
+deactivate Analyzer
+ProductExecution -> Analyzer
+activate Analyzer
+Analyzer -> AnalyzerDB : fetch
+return 
+return "false positive meta data as JSON"
+deactivate Analyzer #ffccaa
+
+== Report collecting ==
+ProductExecution -> SerecoProductExecutor: collect one report
+return
+ProductExecution -> ProductExecution : Sereco result
+
+== Filter false-positives ==  
+ProductExecution -> ProductExecution : filter report result by given meta data
+return "filtered report"
+ProductExecution -> Scheduler
+deactivate ProductExecution 
+
+Scheduler -> SchedulerDB: stores SecHub job report
+return 
+deactivate Scheduler
+ 
+== Fetch data == 
+
+user -> Scheduler:request status
+Scheduler -> SchedulerDB: reads SecHub job report status
+return
+
+user -> Scheduler:fetch SecHub report
+return filtered SechUb report
+@enduml 

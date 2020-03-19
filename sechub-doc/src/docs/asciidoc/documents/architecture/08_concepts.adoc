@@ -16,6 +16,11 @@ include::../shared/concepts/concept_simple_resilience.adoc[]
 include::../shared/concepts/concept_mappings.adoc[]
 
 
+=== False-positive handling
+include::../shared/concepts/false-positive-handling/false-positive-handling.adoc[]
+
+
+
 
 
 

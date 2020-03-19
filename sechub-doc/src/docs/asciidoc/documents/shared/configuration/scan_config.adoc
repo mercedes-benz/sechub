@@ -40,7 +40,7 @@ has been changed by administrators. If so the name pattern provider will be rebu
 
 *About old JSON setup*
 
-Before introducing <<mapping-concept,mapping concept>> we had to define scan config by JSON directly
+Before introducing <<concept-mapping,mapping concept>> we had to define scan config by JSON directly
 inside a environment property on startup - but this is no longer necessary.
 
 Here an example of former style:
