@@ -45,5 +45,8 @@ include 'sechub-cli',
 'sechub-storage-s3-aws',
 'sechub-storage-s3-aws-test',
 
-'sechub-developertools'
+'sechub-developertools',
+
+// Analyzer CLI
+'sechub-analyzer-cli'
 

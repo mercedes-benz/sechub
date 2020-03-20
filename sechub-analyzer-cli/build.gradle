@@ -6,6 +6,22 @@
  * ============================================================================
  */
 dependencies {
-	// https://mvnrepository.com/artifact/commons-cli/commons-cli
-	compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+	compile library.apache_commons_cli
+	compile library.apache_commons_compress
+}
+
+task buildAnalyzerCLI(type: Jar) {
+    group 'sechub'
+    description 'Builds the SecHub Analyzer CLI tool.'
+    baseName = 'analyzer'
+    
+	manifest {
+        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.Application'
+    }
+
+    from { 
+    	configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    }
+
+    with jar
 }
