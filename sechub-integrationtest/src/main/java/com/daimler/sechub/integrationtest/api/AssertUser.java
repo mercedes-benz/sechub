@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.integrationtest.JSONTestSupport;
+import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionState;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -482,6 +483,34 @@ public class AssertUser extends AbstractAssert {
     public AssertMapping canGetMapping(String mappingId) {
         MappingData mappingData = as(user).getMappingData(mappingId);
         return new AssertMapping(mappingData);
+    }
+
+    /**
+     * Waits for job being done {@link TestExecutionState#ENDED}
+     * @param project
+     * @param jobUUID
+     * @return
+     */
+    public AssertUser waitForJobDone(TestProject project, UUID jobUUID) {
+        long start = System.currentTimeMillis();
+        int failed = 0;
+        boolean atLeastOneTimeOkay=false;
+        while (!atLeastOneTimeOkay && failed<10) {
+            try {
+                onJobScheduling(project).
+                canFindJob(jobUUID).
+                havingExecutionState(TestExecutionState.ENDED);
+                
+                atLeastOneTimeOkay=true;
+            }catch(RuntimeException e) {
+                failed++;
+                waitMilliSeconds(500);
+            }
+        }
+        if (!atLeastOneTimeOkay) {
+            fail("wait for job "+jobUUID+" for project "+project+" timed out:"+(System.currentTimeMillis()-start)+" ms elapsed");
+        }
+        return this;
     }
 
 }
