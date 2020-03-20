@@ -157,10 +157,14 @@ public class AssertJobScheduler<R> extends AbstractAssert {
         }
 
         public AssertSchedulerJob havingExecutionState(TestExecutionState state) {
-            if (!json.contains(state.name())) {
+            if (! hasExecutionState(state)) {
                 fail("Job data contains not " + state.name() + " but:\n" + json);
             }
             return this;
+        }
+        
+        boolean hasExecutionState(TestExecutionState state) {
+            return json.contains(state.name());
         }
 
         public AssertSchedulerJob havingExecutionResult(TestExecutionResult result) {

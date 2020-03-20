@@ -486,23 +486,23 @@ public class AssertUser extends AbstractAssert {
     }
 
     /**
-     * Waits for job being done {@link TestExecutionState#ENDED}
+     * Waits maximum 5 seconds for job being done {@link TestExecutionState#ENDED}.
+     * A precondition is that the job must exist before calling this method. 
+     * 
      * @param project
      * @param jobUUID
-     * @return
+     * @return assert object
      */
     public AssertUser waitForJobDone(TestProject project, UUID jobUUID) {
         long start = System.currentTimeMillis();
         int failed = 0;
         boolean atLeastOneTimeOkay=false;
         while (!atLeastOneTimeOkay && failed<10) {
-            try {
-                onJobScheduling(project).
+            if(onJobScheduling(project).
                 canFindJob(jobUUID).
-                havingExecutionState(TestExecutionState.ENDED);
-                
+                    hasExecutionState(TestExecutionState.ENDED)) {
                 atLeastOneTimeOkay=true;
-            }catch(RuntimeException e) {
+            }else {
                 failed++;
                 waitMilliSeconds(500);
             }

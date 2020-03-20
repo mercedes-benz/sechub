@@ -431,5 +431,9 @@ public class TestURLBuilder {
     public String buildintegrationTestDeleteAllWaitingJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
     }
+    
+    public String buildintegrationTestCancelAllScanJobsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
+    }
 
 }

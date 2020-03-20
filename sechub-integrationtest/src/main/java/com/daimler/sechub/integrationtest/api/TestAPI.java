@@ -433,27 +433,27 @@ public class TestAPI {
 
     }
 
-   
     /**
-     * Will remove all waiting jobs in database + wait for all running jobs to be done
+     * Will remove all waiting jobs in database + wait for all running jobs to be
+     * done
      * 
      */
     public static void ensureNoLongerJobExecution() {
         removeAllJobsNotRunning();
         waitUntilNoLongerJobsRunning();
     }
-    
+
     private static void removeAllJobsNotRunning() {
         LOG.debug("Start removing jobs not already running");
-        
+
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildintegrationTestDeleteAllWaitingJobsUrl();
         context.getSuperAdminRestHelper().delete(url);
     }
 
     /**
-     * Waits until no longer running jobs are detected. will wait #MAXIMUM_WAIT_FOR_RUNNING_JOBS milliseconds
-     * until time out
+     * Waits until no longer running jobs are detected. will wait
+     * #MAXIMUM_WAIT_FOR_RUNNING_JOBS milliseconds until time out
      */
     public static void waitUntilNoLongerJobsRunning() {
         LOG.debug("Start wait for no longer running jobs");
@@ -488,8 +488,13 @@ public class TestAPI {
     }
 
     /**
-     * Will do:
+     * Starts event inspection<br>
+     * <br>
+     * 
+     * To provide an empty event bus, without noise from other tests or still
+     * running jobs, this method does following
      * <ul>
+     * <li>cancel all scan jobs</li>
      * <li>remove all not already running jobs in scheduler</li>
      * <li>wait until no longer jobs are running</li>
      * <li>wait until no longer events are running</li>
@@ -500,6 +505,8 @@ public class TestAPI {
      * calling this method the scheduling has been disabled...
      */
     public static void startEventInspection() {
+        cancelAllScanJobs();
+
         ensureNoLongerJobExecution();
         /*
          * the initial reset will trigger also events (but fast) we wait until no longer
@@ -510,6 +517,17 @@ public class TestAPI {
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildIntegrationTestStartEventInspection();
         context.getSuperAdminRestHelper().post(url);
+    }
+
+    /**
+     * Cancels all running scan jobs - not only at scheduler!
+     * 
+     * @return amount scan jobs
+     */
+    public static long cancelAllScanJobs() {
+        IntegrationTestContext context = IntegrationTestContext.get();
+        String url = context.getUrlBuilder().buildintegrationTestCancelAllScanJobsUrl();
+        return context.getSuperAdminRestHelper().getLongFromURL(url);
     }
 
     private static void waitUntilNoLongerNewEventsTriggered(int minLoopCount, int timeToWaitForNextCheckInMilliseconds) {

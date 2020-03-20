@@ -6,7 +6,6 @@ import java.util.Objects;
 
 public class IntegrationTestEventHistoryInspection {
 
-
     private List<String> receiverClassNames = new ArrayList<>();
     private String senderClassName;
     private boolean synchron;
