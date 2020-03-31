@@ -22,7 +22,7 @@ jobs:
         go-version: 1.12.9
         stable: true
     - name: Show environmant entries
-      run: sh -c env
+      run: sh -c "env ; go version"
     - name: Build CLI
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
     - name: Integration test
