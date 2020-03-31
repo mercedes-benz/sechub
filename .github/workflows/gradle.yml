@@ -19,10 +19,12 @@ jobs:
       with:
         go-version: 1.12.9
         stable: true
+    - name: Gradle clean
+      run: ./gradlew clean
     - name: Build CLI
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
     - name: Build Server
-      run: ./gradlew clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
+      run: ./gradlew ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
     - name: Integration test
       run: ./gradlew integrationtest
     - name: Create combined test report
