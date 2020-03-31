@@ -21,8 +21,9 @@ jobs:
       with:
         go-version: 1.12.9
         stable: true
-    - name: Show environmant entries
-      run: sh -c "env ; go version"
+#    - name: Show environmant entries
+#      run: sh -c "env ; go version"
+    # clean and reuild to avoid compile error: version "go1.12.9" does not match go tool version "go1.14.1"
     - name: Run go clean -r -cache -testcache ...
       run: go clean -r -cache -testcache ...
     - name: Rebuild Go packages
