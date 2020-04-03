@@ -24,7 +24,7 @@ public class InformUserThatUserNoLongerAdminNotificationService {
 			4 }, name = "Inform user about loosing administrator rights"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("Sechub administrator priviledges revoked");
+		SimpleMailMessage message = factory.createMessage("Sechub administrator privileges revoked");
 
 		message.setTo(userMessage.getEmailAdress());
 		message.setText(createEmailContent(userMessage, baseUrl));
@@ -35,9 +35,9 @@ public class InformUserThatUserNoLongerAdminNotificationService {
 
 	private String createEmailContent(UserMessage userMessage, String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Dear ").append(userMessage.getUserId()).append("\n\n");
-		emailContent.append("Your administrator rights for sechub where revoked.\n");
-		emailContent.append("For environment: "+baseUrl);
+		emailContent.append("Dear " + userMessage.getUserId() + "\n\n");
+		emailContent.append("Your administrator rights for SecHub where revoked\n");
+		emailContent.append("for environment: " + baseUrl + "\n");
 		String text = emailContent.toString();
 		return text;
 	}

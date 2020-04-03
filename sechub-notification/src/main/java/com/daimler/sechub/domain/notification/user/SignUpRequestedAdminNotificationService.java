@@ -31,14 +31,11 @@ public class SignUpRequestedAdminNotificationService {
 		StringBuilder emailContent = new StringBuilder();
 
 		emailContent.append("A user requested access to SecHub:\n");
-		emailContent.append("- Requested user id:'");
-		emailContent.append(userMessage.getUserId());
-		emailContent.append("''\n- Mail adress:'");
-		emailContent.append(userMessage.getEmailAdress());
-		emailContent.append("'\n");
+		emailContent.append("- Requested user id: " + userMessage.getUserId() + "\n");
+		emailContent.append("- Email address: " + userMessage.getEmailAdress() + "\n");
 
 		/* send mail */
-		SimpleMailMessage message1 =factory.createMessage("SecHub signup requested");
+		SimpleMailMessage message1 =factory.createMessage("SecHub signup requested: " + userMessage.getUserId());
 		message1.setTo(notificationConfiguration.getEmailAdministrators());
 		message1.setText(emailContent.toString());
 

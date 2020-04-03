@@ -59,7 +59,7 @@ public class MockEmailAccess {
 		return findMailOrFail(toUser.getEmail(), subject, maxSecondsToWait);
 	}
 
-	public MockEmailEntry findMailOrFail(String email, String subject, int maxSecondsToWait) {
+	public MockEmailEntry findMailOrFail(String email, String subjectRegexp, int maxSecondsToWait) {
 		MockEmailEntry found = null;
 		List<MockEmailEntry> list = null;
 		for (int i = 0; i < maxSecondsToWait; i++) {
@@ -67,7 +67,7 @@ public class MockEmailAccess {
 			list = convertToMockMailList(listAsMap);
 
 			for (MockEmailEntry message : list) {
-				if (subject == null || subject.isEmpty() || subject.equals(message.subject)) {
+				if (subjectRegexp == null || subjectRegexp.isEmpty() || message.subject.matches(subjectRegexp)) {
 					found = message;
 					break;
 				}
@@ -86,7 +86,7 @@ public class MockEmailAccess {
 			sb.append("Did not found mail containing:\n-emailadress (TO/CC/BCC): ");
 			sb.append(email);
 			sb.append("\n-subject: '");
-			sb.append(subject);
+			sb.append(subjectRegexp);
 			sb.append("'\n\nFound mails for this email adress:");
 			for (MockEmailEntry message : list) {
 				sb.append("\n").append(message.toString());

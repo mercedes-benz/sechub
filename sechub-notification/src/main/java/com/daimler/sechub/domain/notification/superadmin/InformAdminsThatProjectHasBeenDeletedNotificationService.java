@@ -41,13 +41,9 @@ public class InformAdminsThatProjectHasBeenDeletedNotificationService {
 
 	private String createEmailContent(ProjectMessage projectMessage, String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("SecHub Project ");
-		emailContent.append(projectMessage.getProjectId());
-		emailContent.append(" at ").append(baseUrl);
-		emailContent.append(" has been deleted.\n\n");
-
-		emailContent.append("This was triggered by:");
-		emailContent.append(projectMessage.getProjectActionTriggeredBy());
+		emailContent.append("SecHub Project " + projectMessage.getProjectId());
+		emailContent.append(" at " + baseUrl + " has been deleted.\n\n");
+		emailContent.append("This was triggered by: " + projectMessage.getProjectActionTriggeredBy() + "\n");
 		String text = emailContent.toString();
 		return text;
 	}

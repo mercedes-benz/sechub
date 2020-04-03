@@ -30,8 +30,8 @@ public class UserAdministrationScenario2IntTest {
 			isSuperAdmin().
 			isInSuperAdminList();
 		/* test notifications */
-		assertUser(adminUser).hasReceivedEmail("Sechub administrator priviledges granted");
-		assertMailExists("int-test_superadmins_npm@example.org", "A user gained sechub administrator rights");
+		assertUser(adminUser).hasReceivedEmail("Sechub administrator privileges granted");
+		assertMailExists("int-test_superadmins_npm@example.org", "SecHub: Granted administrator rights to.*");
 	}
 	/* @formatter:on */
 
@@ -84,8 +84,8 @@ public class UserAdministrationScenario2IntTest {
 			isNotInSuperAdminList();
 
 		/* test notifications */
-		assertUser(adminUser).hasReceivedEmail("Sechub administrator priviledges revoked");
-		assertMailExists("int-test_superadmins_npm@example.org", "An admin lost sechub administrator rights");
+		assertUser(adminUser).hasReceivedEmail("Sechub administrator privileges revoked");
+		assertMailExists("int-test_superadmins_npm@example.org", "SecHub: Revoked administrator rights from.*");
 	}
 	/* @formatter:on */
 

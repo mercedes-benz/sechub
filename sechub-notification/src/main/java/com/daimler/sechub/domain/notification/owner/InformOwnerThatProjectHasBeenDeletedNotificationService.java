@@ -27,7 +27,7 @@ public class InformOwnerThatProjectHasBeenDeletedNotificationService {
 	private static final Logger LOG = LoggerFactory.getLogger(InformOwnerThatProjectHasBeenDeletedNotificationService.class);
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 4, name = "Inform project owner that the project has been deleted"))
-	public void notify(ProjectMessage projectMessage) {
+	public void notify(ProjectMessage projectMessage, String baseUrl) {
 		requireNonNull(projectMessage);
 
 		String projectOwnerEmailAddress = projectMessage.getProjectOwnerEmailAddress();
@@ -35,12 +35,12 @@ public class InformOwnerThatProjectHasBeenDeletedNotificationService {
 			LOG.warn("No project owner email message set - can not inform owner about delete of project {}",projectMessage.getProjectId());
 			return;
 		}
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Project ").append(projectMessage.getProjectId()).append(" has been deleted.\n");
-		emailContent.append("This means that all report data has been deleted, and no longer access for sechub scans for this project is possible.\n\n");
-		emailContent.append("The project owner has been already informed.\n");
+		SimpleMailMessage message = factory.createMessage("A SecHub project you were the owner was deleted: " + projectMessage.getProjectId());
 
-		SimpleMailMessage message = factory.createMessage("A SecHub project you were the owner was deleted");
+		StringBuilder emailContent = new StringBuilder();
+		emailContent.append("Your project '" + projectMessage.getProjectId() + "' in environment " + baseUrl + "\n");
+		emailContent.append("has been deleted.\n\n");
+		emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
 
 		message.setTo(projectOwnerEmailAddress);
 		message.setText(emailContent.toString());

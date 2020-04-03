@@ -24,10 +24,10 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
 	private EmailService emailService;
 
 	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform sechub admins that scheduler job processing has been disabled"))
+			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been disabled"))
 	public void notify(String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("Scheduler job processing disabled");
+		SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing disabled");
 
 		message.setTo(notificationConfiguration.getEmailAdministrators());
 		message.setText(createEmailContent(baseUrl));
@@ -38,8 +38,8 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
 
 	private String createEmailContent(String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Scheduler job processing has been disabled at sechub for environment (base url):").append(baseUrl).append("\n");
-		emailContent.append("WARNING: Users can still add new Jobs, but will wait for execution until scheduler job processing will be enabled again!");
+		emailContent.append("Scheduler job processing has been disabled at SecHub for environment (base url): " + baseUrl + "\n\n");
+		emailContent.append("WARNING: Users can still add new Jobs, but will wait for execution until scheduler job processing will be enabled again!\n");
 
 		String text = emailContent.toString();
 		return text;
