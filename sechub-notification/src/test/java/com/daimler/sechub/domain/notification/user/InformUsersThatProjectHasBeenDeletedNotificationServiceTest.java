@@ -49,7 +49,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
 		when(message.getUserEmailAdresses()).thenReturn(emptyUserList);
 
 		/* execute */
-		serviceToTest.notify(message);
+		serviceToTest.notify(message,"base1");
 
 		/* test */
 		// check mocked mail message was sent
@@ -74,7 +74,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationServiceTest {
 		when(message.getUserEmailAdresses()).thenReturn(userList);
 
 		/* execute */
-		serviceToTest.notify(message);
+		serviceToTest.notify(message,"base1");
 
 		/* test */
 		// check mocked mail message was sent
