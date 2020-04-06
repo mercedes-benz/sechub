@@ -24,7 +24,7 @@ public class InformUserThatUserNoLongerAdminNotificationService {
 			4 }, name = "Inform user about loosing administrator rights"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("Sechub administrator privileges revoked");
+		SimpleMailMessage message = factory.createMessage("SecHub administrator privileges revoked");
 
 		message.setTo(userMessage.getEmailAdress());
 		message.setText(createEmailContent(userMessage, baseUrl));

@@ -16,6 +16,8 @@ import com.daimler.sechub.test.TestURLBuilder;
 
 public class MockEmailAccess {
 
+	public static final int DEFAULT_TIMEOUT = 3;
+
 	static MockEmailAccess mailAccess() {
 		return new MockEmailAccess();
 	}
@@ -48,18 +50,22 @@ public class MockEmailAccess {
 	}
 
 	public MockEmailEntry findMailOrFail(TestUser toUser, String subject) {
-		return findMailOrFail(toUser, subject, 3);
+		return findMailOrFail(toUser, subject, DEFAULT_TIMEOUT);
 	}
 
 	public MockEmailEntry findMailOrFail(String email, String subject) {
-		return findMailOrFail(email, subject, 3);
+		return findMailOrFail(email, subject, DEFAULT_TIMEOUT);
 	}
 
 	public MockEmailEntry findMailOrFail(TestUser toUser, String subject, int maxSecondsToWait) {
 		return findMailOrFail(toUser.getEmail(), subject, maxSecondsToWait);
 	}
 
-	public MockEmailEntry findMailOrFail(String email, String subjectRegexp, int maxSecondsToWait) {
+	public MockEmailEntry findMailOrFail(String email, String subject, int maxSecondsToWait) {
+		return findMailOrFail(email, subject, false, maxSecondsToWait);
+	}
+
+	public MockEmailEntry findMailOrFail(String email, String subjectRegexp, boolean regularExpression, int maxSecondsToWait) {
 		MockEmailEntry found = null;
 		List<MockEmailEntry> list = null;
 		for (int i = 0; i < maxSecondsToWait; i++) {
@@ -67,7 +73,16 @@ public class MockEmailAccess {
 			list = convertToMockMailList(listAsMap);
 
 			for (MockEmailEntry message : list) {
-				if (subjectRegexp == null || subjectRegexp.isEmpty() || message.subject.matches(subjectRegexp)) {
+				if (subjectRegexp == null || subjectRegexp.isEmpty()) {
+					/* Always found when no subject given */
+					found = message;
+					break;					
+				}
+				if (message.subject == null) {
+					/* cannot be checked */
+					continue;
+				}
+				if (regularExpression ? message.subject.matches(subjectRegexp) : message.subject.equals(subjectRegexp)) {
 					found = message;
 					break;
 				}
