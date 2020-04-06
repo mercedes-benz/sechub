@@ -79,7 +79,7 @@ func init() {
 
 }
 
-// NewConfigByFlags creates a new configuration based on flag settings
+// NewConfigByFlags creates a new configuration based on flag and environment variable settings
 func NewConfigByFlags() *Config {
 	flag.Parse()
 
@@ -88,10 +88,21 @@ func NewConfigByFlags() *Config {
 	config := new(Config)
 
 	config.apiToken = *apiTokenPtr
+	if config.apiToken == "" { // read from environment variable if undefined on cmdline
+		config.apiToken = os.Getenv("SECHUB_APITOKEN")
+	} else {
+		fmt.Println("WARNING: Avoid '-apitoken' parameter for security reasons. Please use environment variable $SECHUB_APITOKEN instead!")
+	}
 	config.user = *userPtr
+	if config.user == "" { // read from environment variable if undefined on cmdline
+		config.user = os.Getenv("SECHUB_USERID")
+	}
+	config.server = *serverPtr
+	if config.server == "" { // read from environment variable if undefined on cmdline
+		config.server = os.Getenv("SECHUB_SERVER")
+	}
 	config.projectId = *projectIdPtr
 	config.configFilePath = *configFilePathPtr
-	config.server = *serverPtr
 	config.secHubJobUUID = *secHubJobUUIDPtr
 	config.waitNanoseconds = int64(*waitSecondsPtr) * oneSecond.Nanoseconds()
 	config.timeOutNanoseconds = int64(*timeOutSecondsPtr) * oneSecond.Nanoseconds()
