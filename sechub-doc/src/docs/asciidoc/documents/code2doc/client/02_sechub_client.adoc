@@ -41,12 +41,18 @@ Does scan synchronous which means
  - fetch automatically result report to output folder (html or json)
  - break your build when not `green`
 
+TIP: For security reasons always pass your api token via the environment variable `SECHUB_APITOKEN`.
+
 TIP: The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
 
 **Minimum call syntax**
+
+Prerequisite is a configuration file `sechub.json` in current directory. +
+See here for details: <<Configuration file>>
 ----
-sechub -apitoken ${apitoken} scan
+SECHUB_APITOKEN=${apitoken}
+sechub scan
 ----
 
 ===== scanAsync
@@ -67,7 +73,8 @@ TIP: This can be interesting if you have long running scans and you want have a 
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} scanAsync
+SECHUB_APITOKEN=${apitoken}
+sechub scanAsync
 ----
 
 
@@ -76,7 +83,8 @@ Will fetch current job status and return result as json or html
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getStatus
+SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID §{jobUUID} getStatus
 ----
 
 ===== getReport
@@ -84,32 +92,45 @@ Will fetch report as json (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport
+SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID §{jobUUID} getReport
 ----
 ==== Options
 
-- apitoken `<string>` +
-  The api token. This is a mandatory option for every action. Can *NOT* be defined in config file
-- configfile `<string>` +
+- `-apitoken <string>` +
+  The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable `SECHUB_APITOKEN` (see: <<Environment variables>>) and not to use this option.
+  Can *NOT* be defined in config file
+- `-configfile <string>` +
   Path to `{sechub}` config file, if not defined `sechub.json` will be used in current directory
-- help +
+- `-help` +
   Shows help and terminates
-- jobUUID `<string>` +
+- `-jobUUID <string>` +
   `{sechub}` job uuid (mandatory when using 'getStatus' or 'getReport')
-- output `<string>` +
+- `-output <string>` +
   Output folder for reports etc. per default current dir
-- project `<string>` +
+- `-project <string>` +
   Unique project id - mandatory, but can also be defined in config file
-- reportformat `<string>` +
+- `-reportformat <string>` +
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
-- server `<string>` +
-  Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file
-- user `<string>` +
-  Username - mandatory, but can also be defined in config file
-- version +
+- `-server <string>` +
+  Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
+- `-user <string>` +
+  Username - mandatory, but can also be defined in config file or via environment variable.
+- `-version` +
   Shows version info and terminates
-- wait `<int>` + 
-       wait time in seconds. Will be used for automatic status checks etc. when action=`scan`. Default is 60 seconds (default 60)
+- `-wait <integer>` + 
+       wait time in seconds (default 60). 
+       Will be used for automatic status checks etc. when action=`scan`.
+
+==== Environment variables
+Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
+
+- `SECHUB_USERID` +
+  The SecHub username. (same as `-user` option)
+- `SECHUB_APITOKEN` +
+  The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_SERVER` +
+  The SecHub server url. (same as `-server` option)
 
 === Configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
@@ -152,7 +173,8 @@ NOTE: Next following sub chapters contain some `{sechub}` configuration examples
 
 [source, bash]
 ----
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
 
@@ -163,7 +185,8 @@ WARNING: Currently wrong defined folder setup will be not checked by client. So 
 
 [source, bash]
 ----
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding 'sechub.json' config file:
 see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
@@ -172,7 +195,7 @@ see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
 
 [source, bash]
 ----
-
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .

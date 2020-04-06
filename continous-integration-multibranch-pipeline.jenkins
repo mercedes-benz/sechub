@@ -178,7 +178,7 @@ void executeSecHubScan() {
      if (isUnix()) {
          sh "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      } else {
-         bat "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         bat "sechub.exe -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      }
 }
 
