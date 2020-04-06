@@ -56,6 +56,7 @@ public class ScanServiceTest {
 	private JobStorage jobStorage;
 	private ProjectScanLogService scanLogService;
 	private ScanProjectConfigService scanProjectConfigService;
+    private ScanJobService scanJobService;
 	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Before
@@ -63,6 +64,7 @@ public class ScanServiceTest {
 		storageService = mock(StorageService.class);
 		jobStorage = mock(JobStorage.class);
 		scanProjectConfigService = mock(ScanProjectConfigService.class);
+		scanJobService = mock(ScanJobService.class);
 
 		when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
 
@@ -84,6 +86,7 @@ public class ScanServiceTest {
 		serviceToTest.storageService = storageService;
 		serviceToTest.scanLogService = scanLogService;
 		serviceToTest.scanProjectConfigService = scanProjectConfigService;
+		serviceToTest.scanJobService=scanJobService;
 	}
 
 	@Test
