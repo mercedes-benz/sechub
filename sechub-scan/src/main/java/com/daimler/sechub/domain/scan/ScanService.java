@@ -50,142 +50,145 @@ import com.daimler.sechub.storage.core.JobStorage;
 @Service
 public class ScanService implements SynchronMessageHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScanService.class);
-	@Autowired
-	StorageService storageService;
+    private static final Logger LOG = LoggerFactory.getLogger(ScanService.class);
+    @Autowired
+    StorageService storageService;
 
-	@Autowired
-	CodeScanProductExecutionService codeScanProductExecutionService;
+    @Autowired
+    CodeScanProductExecutionService codeScanProductExecutionService;
 
-	@Autowired
-	WebScanProductExecutionService webScanProductExecutionService;
+    @Autowired
+    WebScanProductExecutionService webScanProductExecutionService;
 
-	@Autowired
-	InfrastructureScanProductExecutionService infraScanProductExecutionService;
+    @Autowired
+    InfrastructureScanProductExecutionService infraScanProductExecutionService;
 
-	@Autowired
-	CreateScanReportService reportService;
+    @Autowired
+    CreateScanReportService reportService;
 
-	@Autowired
-	ProjectScanLogService scanLogService;
+    @Autowired
+    ProjectScanLogService scanLogService;
 
-	@Autowired
-	ScanProjectConfigService scanProjectConfigService;
+    @Autowired
+    ScanProjectConfigService scanProjectConfigService;
 
-	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
-	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
-	DomainMessageSynchronousResult startScan(DomainMessage request) {
+    @Autowired
+    ScanJobService scanJobService;
 
-		SecHubExecutionContext context = null;
-		try {
-			context = createExecutionContext(request);
+    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
+    @IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
+    DomainMessageSynchronousResult startScan(DomainMessage request) {
 
-			executeScan(context, request);
+        SecHubExecutionContext context = null;
+        try {
+            context = createExecutionContext(request);
 
-			ScanReport report = reportService.createReport(context);
+            executeScan(context, request);
 
-			DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
-			response.set(REPORT_TRAFFIC_LIGHT, report.getTrafficLightAsString());
-			return response;
+            ScanReport report = reportService.createReport(context);
 
-		} catch (ScanReportException e) {
-			LOG.error("Execution was possible, but report failed." + traceLogID(request), e);
-			return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
+            DomainMessageSynchronousResult response = new DomainMessageSynchronousResult(MessageID.SCAN_DONE);
+            response.set(REPORT_TRAFFIC_LIGHT, report.getTrafficLightAsString());
+            return response;
 
-		} catch (SecHubExecutionException e) {
-			LOG.error("Execution problems on scan." + traceLogID(request), e);
-			return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
-		} catch (Exception e) {
-			LOG.error("Was not able to start scan." + traceLogID(request), e);
-			return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
-		} finally {
-			cleanupStorage(context);
-		}
-	}
+        } catch (ScanReportException e) {
+            LOG.error("Execution was possible, but report failed." + traceLogID(request), e);
+            return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
 
-	protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
-		DomainDataTraceLogID sechubJobUUID = traceLogID(request);
-		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
+        } catch (SecHubExecutionException e) {
+            LOG.error("Execution problems on scan." + traceLogID(request), e);
+            return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
+        } catch (Exception e) {
+            LOG.error("Was not able to start scan." + traceLogID(request), e);
+            return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
+        } finally {
+            cleanupStorage(context);
+        }
+    }
 
-		LOG.info("start scan for {}", sechubJobUUID);
+    protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
+        DomainDataTraceLogID sechubJobUUID = traceLogID(request);
+        MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
 
-		UUID logUUID = scanLogService.logScanStarted(context);
-		try {
-			codeScanProductExecutionService.executeProductsAndStoreResults(context);
-			webScanProductExecutionService.executeProductsAndStoreResults(context);
-			infraScanProductExecutionService.executeProductsAndStoreResults(context);
-			scanLogService.logScanEnded(logUUID);
-		} catch (Exception e) {
-			scanLogService.logScanFailed(logUUID);
-			throw new SecHubExecutionException("Execute scan failed", e);
-		}
+        LOG.info("start scan for {}", sechubJobUUID);
 
-	}
+        UUID logUUID = scanLogService.logScanStarted(context);
+        try {
+            
+            new ScanJobExecutor(this, context).execute();
+            
+            scanLogService.logScanEnded(logUUID);
+        } catch (Exception e) {
+            scanLogService.logScanFailed(logUUID);
+            throw new SecHubExecutionException("Execute scan failed", e);
+        }
 
-	/*
-	 * Cleans storage for current job
-	 */
-	private void cleanupStorage(SecHubExecutionContext context) {
-		if (context == null) {
-			LOG.warn("No context available so no cleanup possible");
-			return;
-		}
-		SecHubConfiguration configuration = context.getConfiguration();
-		if (configuration == null) {
-			LOG.warn("No configuration available so no cleanup possible");
-			return;
-		}
-		String projectId = configuration.getProjectId();
-		UUID jobUUID = context.getSechubJobUUID();
-		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
+    }
 
-		try {
-			storage.deleteAll();
-		} catch (IOException e) {
-			LOG.error("Was not able to delete storage for job {}", jobUUID, e);
-		}
+    /*
+     * Cleans storage for current job
+     */
+    private void cleanupStorage(SecHubExecutionContext context) {
+        if (context == null) {
+            LOG.warn("No context available so no cleanup possible");
+            return;
+        }
+        SecHubConfiguration configuration = context.getConfiguration();
+        if (configuration == null) {
+            LOG.warn("No configuration available so no cleanup possible");
+            return;
+        }
+        String projectId = configuration.getProjectId();
+        UUID jobUUID = context.getSechubJobUUID();
+        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-	}
+        try {
+            storage.deleteAll();
+        } catch (IOException e) {
+            LOG.error("Was not able to delete storage for job {}", jobUUID, e);
+        }
 
-	private SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
-		UUID uuid = message.get(SECHUB_UUID);
-		String executedBy = message.get(EXECUTED_BY);
+    }
 
-		SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
-		if (configuration == null) {
-			throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
-		}
-		SecHubExecutionContext executionContext = new SecHubExecutionContext(uuid, configuration, executedBy);
+    private SecHubExecutionContext createExecutionContext(DomainMessage message) throws JSONConverterException {
+        UUID uuid = message.get(SECHUB_UUID);
+        String executedBy = message.get(EXECUTED_BY);
 
-		buildOptions(executionContext);
+        SecHubConfiguration configuration = message.get(SECHUB_CONFIG);
+        if (configuration == null) {
+            throw new IllegalStateException("SecHubConfiguration not found in message - so cannot execute!");
+        }
+        SecHubExecutionContext executionContext = new SecHubExecutionContext(uuid, configuration, executedBy);
 
-		return executionContext;
-	}
+        buildOptions(executionContext);
 
-	private void buildOptions(SecHubExecutionContext executionContext) {
-		/* project specific setup */
-		String projectId = executionContext.getConfiguration().getProjectId();
-		if (projectId == null) {
-			throw new IllegalStateException("projectId not found in configuration - so cannot prepare context options!");
-		}
-		ScanProjectConfig scanProjectConfig = scanProjectConfigService.get(projectId, ScanProjectConfigID.MOCK_CONFIGURATION, false);
-		if (scanProjectConfig != null) {
-			String data = scanProjectConfig.getData();
-			ScanProjectMockDataConfiguration mockDataConfig = ScanProjectMockDataConfiguration.fromString(data);
-			executionContext.putData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION, mockDataConfig);
-		}
-	}
+        return executionContext;
+    }
 
-	@Override
-	@IsRecevingSyncMessage(MessageID.START_SCAN)
-	public DomainMessageSynchronousResult receiveSynchronMessage(DomainMessage request) {
-		notNull(request, "Request may not be null!");
+    private void buildOptions(SecHubExecutionContext executionContext) {
+        /* project specific setup */
+        String projectId = executionContext.getConfiguration().getProjectId();
+        if (projectId == null) {
+            throw new IllegalStateException("projectId not found in configuration - so cannot prepare context options!");
+        }
+        ScanProjectConfig scanProjectConfig = scanProjectConfigService.get(projectId, ScanProjectConfigID.MOCK_CONFIGURATION, false);
+        if (scanProjectConfig != null) {
+            String data = scanProjectConfig.getData();
+            ScanProjectMockDataConfiguration mockDataConfig = ScanProjectMockDataConfiguration.fromString(data);
+            executionContext.putData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION, mockDataConfig);
+        }
+    }
 
-		if (!request.hasID(MessageID.START_SCAN)) {
-			return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
-					new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
-		}
-		return startScan(request);
-	}
+    @Override
+    @IsRecevingSyncMessage(MessageID.START_SCAN)
+    public DomainMessageSynchronousResult receiveSynchronMessage(DomainMessage request) {
+        notNull(request, "Request may not be null!");
+
+        if (!request.hasID(MessageID.START_SCAN)) {
+            return new DomainMessageSynchronousResult(MessageID.UNSUPPORTED_OPERATION,
+                    new UnsupportedOperationException("Can only handle " + MessageID.START_SCAN));
+        }
+        return startScan(request);
+    }
 
 }

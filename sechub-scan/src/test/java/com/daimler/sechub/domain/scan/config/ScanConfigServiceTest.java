@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 
+@SuppressWarnings("deprecation") // we explicit use the deprecated method, because it is only for tests..
 public class ScanConfigServiceTest {
 
 	private ScanConfigService serviceToTest;
@@ -20,7 +21,7 @@ public class ScanConfigServiceTest {
 	@Test
 	public void not_initialized_returns_fallback_provider() {
 		/* execute */
-		NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("xyz");
+        NamePatternIdprovider provider = serviceToTest.getNamePatternIdProvider("xyz");
 		/* test */
 		assertNotNull(provider);
 		assertEquals(null,provider.getIdForName("a-go-project-1"));

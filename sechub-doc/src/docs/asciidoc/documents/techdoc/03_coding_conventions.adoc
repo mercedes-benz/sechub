@@ -194,15 +194,23 @@ For more details about those tests read the `README.md` file inside
 projects root folder.
 
 ====== Integration tests using RestAPI
-These tests will be called `${name}IntTest.java`
+These tests will be called `${name}Scenario${n}IntTest.java`
 
 ====== Integration tests using SecHubClient
 Some integration tests do need a build SecHub client and execute the client.
-These tests will be called `${name}SecHubClientIntTest.java`
+These tests will be called `${name}Scenario${n}SecHubClientIntTest.java`
 
 TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
      otherwise no sechub client is available for test...
 
+[[section-coding-convention-event-trace]]
+====== Integration tests generating event trace information
+We wanted to have an overview about events happening when a usecase is executed and do 
+this by special integration tests where event tracing is enabled. At the end of the test
+we write JSON files containing event trace information .
+
+We use `${name}EventTraceScenario${n}IntTest.java` as naming convention for those tests.
+See also <<section-documentation-usecase-event-overview,Usecase event overview>> for more information.
 
 [[section-coding-convention-restdoc]]
 ===== RestDOC tests

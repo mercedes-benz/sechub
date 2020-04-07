@@ -412,4 +412,28 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG_MAPPING, mappingId);
     }
 
+    public String buildIntegrationTestResetAndStopEventInspection() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/reset-and-stop");
+    }
+    
+    public String buildIntegrationTestStartEventInspection() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/start");
+    }
+    
+    public String buildIntegrationTestFetchEventInspectionStatus() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/status");
+    }
+    
+    public String buildIntegrationTestFetchEventInspectionHistory() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
+    }
+
+    public String buildintegrationTestDeleteAllWaitingJobsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
+    }
+    
+    public String buildintegrationTestCancelAllScanJobsUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
+    }
+
 }

@@ -25,10 +25,18 @@ public class IntegrationTestSchedulerRestController {
 
 	@Autowired
 	private ScheduleAccessCountService scheduleAccessCountService;
+	
+	@Autowired
+    private IntegrationTestSchedulerService integrationTestSchedulerService;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/schedule/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProjectAccess(@PathVariable("projectId") String projectId) {
 		return scheduleAccessCountService.countProjectAccess(projectId);
+	}
+	
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/jobs/waiting", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE })
+    public void deleteWaitingJobs() {
+	    integrationTestSchedulerService.deleteWaitingJobs();
 	}
 
 

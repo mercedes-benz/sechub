@@ -217,7 +217,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 		LOG.info("############################################################################################################");
 		LOG.info("###");
-		LOG.info("### [DONE ]  Ppreparing scenario: '" + scenarioName+"'");
+		LOG.info("### [DONE ]  Preparing scenario: '" + scenarioName+"'");
 		LOG.info("### [START]  Test itself");
 		LOG.info("###");
 		LOG.info("############################################################################################################");
@@ -231,6 +231,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 		LOG.info("############################################################################################################");
 		LOG.info("## [CLEAN] remove old test data");
 		LOG.info("############################################################################################################");
+		resetAndStopEventInspection();
 		resetEmails();
 		cleanupAllTestProjects();
 		cleanupAllTestUsers();
@@ -246,7 +247,11 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 	}
 
-	protected abstract void initializeTestData();
+	protected void resetAndStopEventInspection() {
+	   getRestHelper().post(getContext().getUrlBuilder().buildIntegrationTestResetAndStopEventInspection());
+	}
+	
+    protected abstract void initializeTestData();
 
 	protected abstract void waitForTestDataAvailable();
 
