@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 
-@SuppressWarnings("deprecation") // we know that we should not use getNamePatternIdProvider(strig) - its just for testing
+@SuppressWarnings("deprecation") // we explicit use the deprecated method, because it is only for tests..
 public class ScanConfigServiceTest {
 
 	private ScanConfigService serviceToTest;

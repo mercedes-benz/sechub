@@ -72,6 +72,9 @@ public class ScanService implements SynchronMessageHandler {
 	@Autowired
 	ScanProjectConfigService scanProjectConfigService;
 
+    @Autowired
+    ScanJobService scanJobService;
+
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
 	DomainMessageSynchronousResult startScan(DomainMessage request) {
@@ -111,9 +114,9 @@ public class ScanService implements SynchronMessageHandler {
 
 		UUID logUUID = scanLogService.logScanStarted(context);
 		try {
-			codeScanProductExecutionService.executeProductsAndStoreResults(context);
-			webScanProductExecutionService.executeProductsAndStoreResults(context);
-			infraScanProductExecutionService.executeProductsAndStoreResults(context);
+            
+            new ScanJobExecutor(this, context).execute();
+            
 			
 			scanLogService.logScanEnded(logUUID);
 			

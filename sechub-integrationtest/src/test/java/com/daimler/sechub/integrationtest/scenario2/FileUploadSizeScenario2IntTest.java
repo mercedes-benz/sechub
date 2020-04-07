@@ -20,6 +20,7 @@ import org.junit.rules.Timeout;
 import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 
 public class FileUploadSizeScenario2IntTest {
@@ -95,8 +96,9 @@ public class FileUploadSizeScenario2IntTest {
 		} else {
 		    tmpPath += "-accepted";
 		}
-		String tmpZipFilePath = tmpPath+ ".zip";
-
+		File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(),"sechub-integrationtest/"+tmpPath+".zip");
+		file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of parent missing
+		
 		int maximumUploadSizeInMB = 5;
 		int maximumUploadSizeInBytes = 1024 * 1024 * maximumUploadSizeInMB;
 		int bytesToOrder = maximumUploadSizeInBytes;
@@ -105,7 +107,7 @@ public class FileUploadSizeScenario2IntTest {
 														// checksum on upload)
 		}
 		byte[] content = new byte[bytesToOrder];
-		try (FileOutputStream fileOutputStream = new FileOutputStream(tmpZipFilePath);
+		try (FileOutputStream fileOutputStream = new FileOutputStream(file);
 				ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(fileOutputStream));) {
 
 			ZipEntry zipEntry = new ZipEntry("test.bin");
@@ -115,7 +117,6 @@ public class FileUploadSizeScenario2IntTest {
 			zipOutputStream.write(content);
 			zipOutputStream.flush();
 		}
-		File file = new File(tmpZipFilePath);
 		if (uploadShallBeTooLarge && file.length() < maximumUploadSizeInBytes) {
 			throw new IllegalStateException("Wanted at least file size: " + maximumUploadSizeInBytes + " but was:" + file.length());
 		}

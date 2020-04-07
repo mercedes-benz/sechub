@@ -15,7 +15,7 @@ import com.daimler.sechub.docgen.messaging.DomainMessagingModel.Domain;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel.DomainPart;
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessaging;
-
+import static com.daimler.sechub.docgen.messaging.DomainUtil.*;
 /**
  * Collector - inspired by
  * https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/TechInfoLinkAnnotationDataCollector.java
@@ -23,8 +23,6 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessaging;
  * @author Albert Tregnaghi
  */
 public class DomainMessagingModelDataCollector {
-
-	private static final String COM_DAIMLER_SECHUB_DOMAIN = "com.daimler.sechub.domain";
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomainMessagingModelDataCollector.class);
 
@@ -69,28 +67,4 @@ public class DomainMessagingModelDataCollector {
 			}
 		}
 	}
-
-	static String createDomainPartName(Method method) {
-		return method.getDeclaringClass().getSimpleName();
-	}
-
-	/* something like com.daimler.sechub.domain.xyz.abc is represented as xyz only*/
-	static String createDomainName(Method method) {
-		String fullName = method.getDeclaringClass().getPackage().getName();
-		String name = fullName;
-		int index = name.indexOf(COM_DAIMLER_SECHUB_DOMAIN);
-		int amountOfcharsToSkip = COM_DAIMLER_SECHUB_DOMAIN.length()+1;
-		if (index!=-1 && name.length()>amountOfcharsToSkip) {
-			name = name.substring(amountOfcharsToSkip);
-		}
-		index = name.indexOf('.');
-		if (index!=-1) {
-			name=name.substring(0, index);
-		}
-		if (name.trim().isEmpty()) {
-			name=fullName;
-		}
-		return name;
-	}
-
 }

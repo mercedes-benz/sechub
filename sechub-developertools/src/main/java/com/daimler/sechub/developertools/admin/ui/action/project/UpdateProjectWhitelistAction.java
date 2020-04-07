@@ -30,7 +30,7 @@ public class UpdateProjectWhitelistAction extends AbstractUIAction {
 			return;
 		}
 		
-		if (!confirm("Do you really want to update the project whitelist?")) {
+		if (!confirm("Do you really want to update the project whitelist for project:"+projectId+" ?")) {
 		    return;
 		}
 		

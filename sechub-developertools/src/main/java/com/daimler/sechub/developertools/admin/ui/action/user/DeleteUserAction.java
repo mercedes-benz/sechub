@@ -12,6 +12,7 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class DeleteUserAction extends AbstractUIAction {
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOG = LoggerFactory.getLogger(DeleteUserAction.class);
@@ -26,7 +27,7 @@ public class DeleteUserAction extends AbstractUIAction {
         if (!optUserId.isPresent()) {
             return;
         }
-		String userId=optUserId.get().toLowerCase().trim();
+        String userId=optUserId.get().toLowerCase().trim();
         if (!confirm("Do you really want to\nDELETE\nuser " + userId + "?")) {
             outputAsTextOnSuccess("CANCELED - delete");
             LOG.info("canceled delete of user {}", userId);

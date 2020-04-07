@@ -52,6 +52,9 @@ public class IntegrationTestScanRestController {
     
     @Autowired
     private ScanConfigService scanConfigService;
+    
+    @Autowired
+    private ScanJobService scanJobCancelService;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -69,6 +72,13 @@ public class IntegrationTestScanRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public long countScanResults(@PathVariable("projectId") String projectId) {
         return productResultCountService.countProjectScanResults(projectId);
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scan/cancel/jobs", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public long cancelAllJobs() {
+        /* return amount of canceled jobs */
+        return scanJobCancelService.cancelAll();
     }
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/scan/mapping/{mappingId}", method = RequestMethod.PUT)
