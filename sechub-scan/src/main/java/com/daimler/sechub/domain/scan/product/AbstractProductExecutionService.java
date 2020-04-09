@@ -32,8 +32,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	@Autowired
 	ProductResultRepository productResultRepository;
 	
+	
 	@Autowired
-	ProductResultTransactionService transactionService;
+	ProductExecutorContextFactory productExecutorContextFactory;
 
 	/**
 	 * Registers given product executors which shall be executed
@@ -108,8 +109,8 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		for (ProductExecutor productExecutor : executors) {
 		    /* find former results - necessary for restart, contains necessary meta data for restart*/
 		    List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
-		    
-		    ProductExecutorContext executorContext = new ProductExecutorContext(formerResults,new ProductExecutorCallbackImpl(context, productExecutor.getIdentifier(), transactionService));
+
+		    ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults,context, productExecutor);
 		            
 			List<ProductResult> productResults = null;
 			try {

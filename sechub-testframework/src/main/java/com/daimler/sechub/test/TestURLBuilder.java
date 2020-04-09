@@ -270,6 +270,14 @@ public class TestURLBuilder {
     public String buildAdminCancelsJob(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
     }
+    
+    public String buildAdminRestartsJob(UUID jobUUID) {
+        return buildUrl(API_ADMIN_JOBS, "restart", jobUUID);
+    }
+    
+    public String buildAdminRestartsJobHard(UUID jobUUID) {
+        return buildUrl(API_ADMIN_JOBS, "restart-hard", jobUUID);
+    }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/scheduler/..........................+ */
@@ -435,5 +443,7 @@ public class TestURLBuilder {
     public String buildintegrationTestCancelAllScanJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
     }
+
+  
 
 }

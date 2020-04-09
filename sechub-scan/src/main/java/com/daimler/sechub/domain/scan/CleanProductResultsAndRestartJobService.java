@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.scan;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.product.ProductResultService;
@@ -20,6 +21,7 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestarts
 public class CleanProductResultsAndRestartJobService {
 
     @Autowired
+    @Lazy
     DomainMessageService eventBus;
     
     @Autowired

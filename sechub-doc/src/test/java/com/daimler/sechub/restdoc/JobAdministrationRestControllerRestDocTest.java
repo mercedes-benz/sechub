@@ -33,6 +33,7 @@ import com.daimler.sechub.domain.administration.job.JobAdministrationRestControl
 import com.daimler.sechub.domain.administration.job.JobCancelService;
 import com.daimler.sechub.domain.administration.job.JobInformation;
 import com.daimler.sechub.domain.administration.job.JobInformationListService;
+import com.daimler.sechub.domain.administration.job.JobRestartRequestService;
 import com.daimler.sechub.domain.administration.job.JobStatus;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -40,6 +41,8 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorListsAllRunningJobs;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 
@@ -62,6 +65,9 @@ public class JobAdministrationRestControllerRestDocTest {
 
 	@MockBean
 	JobCancelService jobCancelService;
+	
+	@MockBean
+	JobRestartRequestService jobRestartRequestService;
 
 	@Before
 	public void before() {
@@ -133,6 +139,50 @@ public class JobAdministrationRestControllerRestDocTest {
 
 		/* @formatter:on */
 	}
+	
+	@Test
+    @UseCaseRestDoc(useCase=UseCaseAdministratorRestartsJob.class)
+    public void restdoc_restart_job() throws Exception {
+
+        /* execute + test @formatter:off */
+        UUID jobUUID = UUID.randomUUID();
+
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminRestartsJob(jobUUID)).
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                )./*
+        andDo(print()).
+                */
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJob.class))
+
+                );
+
+        /* @formatter:on */
+    }
+	
+	@Test
+    @UseCaseRestDoc(useCase=UseCaseAdministratorRestartsJobHard.class)
+    public void restdoc_restart_job_jard() throws Exception {
+
+        /* execute + test @formatter:off */
+        UUID jobUUID = UUID.randomUUID();
+
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminCancelsJob(jobUUID)).
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                )./*
+        andDo(print()).
+                */
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJobHard.class))
+
+                );
+
+        /* @formatter:on */
+    }
+	
+	
 
 	// see https://docs.spring.io/spring-restdocs/docs/current/reference/html5/#documenting-your-api-request-response-payloads-fields-json
 	private static String inArray(String field) {

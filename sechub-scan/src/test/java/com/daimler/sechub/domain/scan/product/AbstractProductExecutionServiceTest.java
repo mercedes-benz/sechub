@@ -24,6 +24,9 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 public class AbstractProductExecutionServiceTest {
 
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
+
 	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.FARRADAY;
 	private AbstractProductExecutionService serviceToTest;
 	private UUIDTraceLogID traceLogID;
@@ -34,11 +37,8 @@ public class AbstractProductExecutionServiceTest {
 	private Logger logger;
 	private UUID sechubJobUUID;
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
-    private ProductExecutorContext executorContext;
-    private ProductResultTransactionService transactionService;
-    private ProductResult result1;
+    private ProductExecutorContextFactory productExecutorContextFactory;
+    private ProductExecutorContext productExecutorContext;
 
 	@Before
 	public void before() throws Exception {
@@ -47,7 +47,6 @@ public class AbstractProductExecutionServiceTest {
 
 		sechubJobUUID = UUID.randomUUID();
 		logger=mock(Logger.class);
-		executorContext = mock(ProductExecutorContext.class);
 		traceLogID=mock(UUIDTraceLogID.class);
 
 		serviceToTest = new TestImplAbstractProductExecutionService();
@@ -63,15 +62,17 @@ public class AbstractProductExecutionServiceTest {
 		productResultRepository=mock(ProductResultRepository.class);
 		serviceToTest.productResultRepository=productResultRepository;
 		
-		transactionService=mock(ProductResultTransactionService.class);
-		serviceToTest.transactionService=transactionService;
-
+		productExecutorContextFactory=mock(ProductExecutorContextFactory.class);
+		serviceToTest.productExecutorContextFactory=productExecutorContextFactory;
+		
+		productExecutorContext= mock(ProductExecutorContext.class);
+		when(productExecutorContextFactory.create(any(), any(), any())).thenReturn(productExecutorContext);
 	}
 
 	@Test
 	public void executeAndPersistResults_a_null_result_throws_no_error_but_does_error_logging() throws Exception{
 		/* prepare */
-		when(executor.execute(context,executorContext)).thenReturn(null);
+		when(executor.execute(context,any())).thenReturn(null);
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
@@ -84,15 +85,17 @@ public class AbstractProductExecutionServiceTest {
 	@Test
 	public void executeAndPersistResults_a_non_null_result_saves_the_result_no_error_logging() throws Exception{
 		ProductResult result = mock(ProductResult.class);
+		ArgumentCaptor<ProductExecutorContext> executorContext = ArgumentCaptor.forClass(ProductExecutorContext.class); 
+		
 		/* prepare */
-		when(executor.execute(context,executorContext)).thenReturn(Collections.singletonList(result));
+		when(executor.execute(eq(context),executorContext.capture())).thenReturn(Collections.singletonList(result));
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
-		verify(executorContext).persist(result);
+		verify(productExecutorContext).persist(result);
 		verify(logger,never()).error(any(), eq(USED_PRODUCT_IDENTIFIER), eq(traceLogID));
 
 	}
@@ -102,14 +105,14 @@ public class AbstractProductExecutionServiceTest {
 		ArgumentCaptor<ProductResult> productResultCaptor = ArgumentCaptor.forClass(ProductResult.class);
 		/* prepare */
 		SecHubExecutionException exception = new SecHubExecutionException("an-error occurred on execution, but this should not break at all!");
-		when(executor.execute(context,executorContext)).thenThrow(exception);
+		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
-		verify(executorContext).persist(productResultCaptor.capture());
+		verify(productExecutorContext).persist(productResultCaptor.capture());
 
 		ProductResult captured = productResultCaptor.getValue();
 		assertEquals(USED_PRODUCT_IDENTIFIER, captured.getProductIdentifier());
@@ -126,13 +129,13 @@ public class AbstractProductExecutionServiceTest {
 		ArgumentCaptor<ProductResult> productResultCaptor = ArgumentCaptor.forClass(ProductResult.class);
 		/* prepare */
 		RuntimeException exception = new RuntimeException("an-error occurred on execution, but this should not break at all!");
-		when(executor.execute(context,executorContext)).thenThrow(exception);
+		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
 
 		/* test */
-		verify(executorContext).persist(productResultCaptor.capture());
+		verify(productExecutorContext).persist(productResultCaptor.capture());
 
 		ProductResult captured = productResultCaptor.getValue();
 		assertEquals(USED_PRODUCT_IDENTIFIER, captured.getProductIdentifier());
@@ -151,8 +154,8 @@ public class AbstractProductExecutionServiceTest {
 
 		ProductResult result = mock(ProductResult.class);
 		/* prepare */
-		when(executor.execute(context,executorContext)).thenReturn(Collections.singletonList(result));
-		doThrow(new RuntimeException("save-failed")).when(executorContext).persist(result);
+		when(executor.execute(context,productExecutorContext)).thenReturn(Collections.singletonList(result));
+		doThrow(new RuntimeException("save-failed")).when(productExecutorContext).persist(result);
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
