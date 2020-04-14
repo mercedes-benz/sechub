@@ -72,7 +72,7 @@ public class AbstractProductExecutionServiceTest {
 	@Test
 	public void executeAndPersistResults_a_null_result_throws_no_error_but_does_error_logging() throws Exception{
 		/* prepare */
-		when(executor.execute(context,any())).thenReturn(null);
+		when(executor.execute(eq(context),any())).thenReturn(null);
 
 		/* execute */
 		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
@@ -119,8 +119,8 @@ public class AbstractProductExecutionServiceTest {
 		assertEquals("", captured.getResult());
 
 		ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
-		verify(logger).error(stringCaptor.capture(), eq(exception));
-		assertTrue(stringCaptor.getValue().startsWith("Product executor failed:"+USED_PRODUCT_IDENTIFIER));
+		verify(logger).error(stringCaptor.capture(), eq(USED_PRODUCT_IDENTIFIER), eq(traceLogID), eq(exception));
+		assertTrue(stringCaptor.getValue().startsWith("Product executor failed"));
 
 	}
 
@@ -142,8 +142,8 @@ public class AbstractProductExecutionServiceTest {
 		assertEquals("", captured.getResult());
 
 		ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
-		verify(logger).error(stringCaptor.capture(), eq(exception));
-		assertTrue(stringCaptor.getValue().startsWith("Product executor failed:"+USED_PRODUCT_IDENTIFIER));
+		verify(logger).error(stringCaptor.capture(),eq(USED_PRODUCT_IDENTIFIER),eq(traceLogID), eq(exception));
+		assertTrue(stringCaptor.getValue().startsWith("Product executor failed:"));
 
 	}
 

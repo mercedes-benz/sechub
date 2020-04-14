@@ -17,6 +17,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.batch.AsyncJobLauncher;
@@ -42,6 +43,7 @@ public class ScheduleJobLauncherService {
 	private static final Logger LOG = LoggerFactory.getLogger(ScheduleJobLauncherService.class);
 
 	@Autowired
+	@Lazy
 	DomainMessageService eventBus;
 
 	@Autowired
