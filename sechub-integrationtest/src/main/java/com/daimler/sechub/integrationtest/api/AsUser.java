@@ -335,7 +335,7 @@ public class AsUser {
 	}
 
 	/**
-	 * Starts a webscan job for project (but job is not started)
+	 * Creates a webscan job for project (but job is not approved, so will not be started)
 	 *
 	 * @param project
 	 * @return uuid for created job
@@ -345,7 +345,7 @@ public class AsUser {
 	}
 
 	/**
-	 *
+	 * Creates a webscan job for project (but job is not approved, so will not be started)
 	 * @param project
 	 * @param useLongRunningButGreen
 	 * @return

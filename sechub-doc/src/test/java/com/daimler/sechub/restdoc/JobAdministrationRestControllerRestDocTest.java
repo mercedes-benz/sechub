@@ -169,7 +169,7 @@ public class JobAdministrationRestControllerRestDocTest {
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminCancelsJob(jobUUID)).
+                post(https(PORT_USED).buildAdminRestartsJobHard(jobUUID)).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
         andDo(print()).

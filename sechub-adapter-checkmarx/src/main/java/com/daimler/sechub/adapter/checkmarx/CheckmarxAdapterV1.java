@@ -66,7 +66,7 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         try {
             uploadSourceCodeAndStartScan(context);
         } catch (CheckmarxFullScanNecessaryException e) {
-            LOG.info("Full scan necessarye bcause of checkmarx message: {}", e.getCheckmarxMessage());
+            LOG.info("Full scan necessary bcause of checkmarx message: {}", e.getCheckmarxMessage());
             context.setFullScan(true);
             uploadSourceCodeAndStartScan(context);
 
