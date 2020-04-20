@@ -107,6 +107,10 @@ public class AssertEventInspection {
             public AssertEventInspectionExpectionEntry asyncEvent(MessageID messageId) {
                 return back().asyncEvent(messageId);
             }
+            
+            public AssertEventInspectionExpectionEntry syncEvent(MessageID messageId) {
+                return back().syncEvent(messageId);
+            }
 
             public AssertEventInspectionExpectionEntry from(String senderClassname) {
                 this.senderClassname = senderClassname;

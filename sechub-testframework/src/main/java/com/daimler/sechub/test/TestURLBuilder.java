@@ -135,7 +135,7 @@ public class TestURLBuilder {
     public String buildUploadSourceCodeUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
     }
-
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -447,6 +447,12 @@ public class TestURLBuilder {
     public String buildintegrationTestCancelAllScanJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
     }
+    
+    public String buildintegrationTestRevertJobAsStillRunning(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-running");
+    }
+
+    
 
   
 

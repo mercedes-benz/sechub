@@ -333,7 +333,14 @@ public class AsUser {
 		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
 		return AssertExecutionResult.assertResult(result);
 	}
+	
+	public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+	    restartJob(sechubJobUUID);
+	    waitForJobDone(project, sechubJobUUID);
+	    return getJobStatus(project.getProjectId(), sechubJobUUID);
+    }
 
+	
 	/**
 	 * Creates a webscan job for project (but job is not approved, so will not be started)
 	 *
@@ -514,6 +521,20 @@ public class AsUser {
         String url = getUrlBuilder().buildGetMapping(mappingId);
         return MappingData.fromString(getRestHelper().getJSon(url));
     
+    }
+
+    public AsUser restartJob(UUID jobUUID) {
+        String url = getUrlBuilder().buildAdminRestartsJob(jobUUID);
+        getRestHelper().post(url);
+        return this;
+        
+    }
+    
+    public AsUser restartJobHard(UUID jobUUID) {
+        String url = getUrlBuilder().buildAdminRestartsJobHard(jobUUID);
+        getRestHelper().post(url);
+        return this;
+        
     }
 
 

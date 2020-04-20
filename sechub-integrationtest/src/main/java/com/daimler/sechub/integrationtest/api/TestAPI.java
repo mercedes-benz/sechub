@@ -26,6 +26,7 @@ import org.springframework.web.client.RestClientException;
 
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
+import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
@@ -446,9 +447,8 @@ public class TestAPI {
     private static void removeAllJobsNotRunning() {
         LOG.debug("Start removing jobs not already running");
 
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildintegrationTestDeleteAllWaitingJobsUrl();
-        context.getSuperAdminRestHelper().delete(url);
+        String url = getURLBuilder().buildintegrationTestDeleteAllWaitingJobsUrl();
+        getSuperAdminRestHelper().delete(url);
     }
 
     /**
@@ -457,8 +457,7 @@ public class TestAPI {
      */
     public static void waitUntilNoLongerJobsRunning() {
         LOG.debug("Start wait for no longer running jobs");
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildAdminFetchAllRunningJobsUrl();
+        String url = getURLBuilder().buildAdminFetchAllRunningJobsUrl();
 
         long timeOutInMilliseconds = MAXIMUM_WAIT_FOR_RUNNING_JOBS;
 
@@ -470,7 +469,7 @@ public class TestAPI {
                 if (timeElapsed > timeOutInMilliseconds) {
                     throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
                 }
-                String json = context.getSuperAdminRestHelper().getJSon(url);
+                String json = getSuperAdminRestHelper().getJSon(url);
                 JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
                 if (obj instanceof ArrayNode) {
                     ArrayNode an = (ArrayNode) obj;
@@ -514,9 +513,8 @@ public class TestAPI {
          */
         waitUntilNoLongerNewEventsTriggered(5, 300);
 
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildIntegrationTestStartEventInspection();
-        context.getSuperAdminRestHelper().post(url);
+        String url = getURLBuilder().buildIntegrationTestStartEventInspection();
+        getSuperAdminRestHelper().post(url);
     }
 
     /**
@@ -525,9 +523,8 @@ public class TestAPI {
      * @return amount scan jobs
      */
     public static long cancelAllScanJobs() {
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildintegrationTestCancelAllScanJobsUrl();
-        return context.getSuperAdminRestHelper().getLongFromURL(url);
+        String url = getURLBuilder().buildintegrationTestCancelAllScanJobsUrl();
+        return getSuperAdminRestHelper().getLongFromURL(url);
     }
 
     private static void waitUntilNoLongerNewEventsTriggered(int minLoopCount, int timeToWaitForNextCheckInMilliseconds) {
@@ -558,16 +555,14 @@ public class TestAPI {
     }
 
     public static IntegrationTestEventHistory fetchEventInspectionHistory() {
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildIntegrationTestFetchEventInspectionHistory();
-        String json = context.getSuperAdminRestHelper().getJSon(url);
+        String url = getURLBuilder().buildIntegrationTestFetchEventInspectionHistory();
+        String json = getSuperAdminRestHelper().getJSon(url);
         return IntegrationTestEventHistory.fromJSONString(json);
     }
 
     public static Map<String, String> listStatusEntries() {
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildAdminListsStatusEntries();
-        String json = context.getSuperAdminRestHelper().getJSon(url);
+        String url = getURLBuilder().buildAdminListsStatusEntries();
+        String json = getSuperAdminRestHelper().getJSon(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -593,15 +588,18 @@ public class TestAPI {
     }
 
     public static void refreshStatusEntries() {
+        String url = getURLBuilder().buildAdminTriggersRefreshOfSchedulerStatus();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    private static IntegrationTestContext getContext() {
         IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildAdminTriggersRefreshOfSchedulerStatus();
-        context.getSuperAdminRestHelper().post(url);
+        return context;
     }
 
     public static SortedMap<String, String> listSignups() {
-        IntegrationTestContext context = IntegrationTestContext.get();
-        String url = context.getUrlBuilder().buildAdminListsUserSignupsUrl();
-        String json = context.getSuperAdminRestHelper().getJSon(url);
+        String url = getURLBuilder().buildAdminListsUserSignupsUrl();
+        String json = getSuperAdminRestHelper().getJSon(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -624,6 +622,19 @@ public class TestAPI {
             }
         });
         return map;
+    }
+
+    private static TestRestHelper getSuperAdminRestHelper() {
+        return getContext().getSuperAdminRestHelper();
+    }
+
+    private static TestURLBuilder getURLBuilder() {
+        return getContext().getUrlBuilder();
+    }
+
+    public static void revertJobToStillRunning(UUID sechubJobUUID) {
+       String url = getURLBuilder().buildintegrationTestRevertJobAsStillRunning(sechubJobUUID);
+       getSuperAdminRestHelper().put(url); 
     }
 
 }
