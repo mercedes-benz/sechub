@@ -18,7 +18,7 @@ public class WireMockUtil {
      * @return url encoded variant (e.g. key1=value1&key2=value2)
      */
     public static String toFormUrlEncoded(LinkedHashMap<String, String> map) {
-        return toFormUrlEncoded(map, true);
+        return toFormUrlEncoded(map, false);
     }
     /**
      * Converts given map to form url encoded variant - unfortunately not directly
@@ -31,6 +31,7 @@ public class WireMockUtil {
      * 
      * @param map contains key values - we use a linked hash map to define expected
      *            ordering
+     *            @param withNull when <code>true</code> string "null" will be appended
      * @return url encoded variant (e.g. key1=value1&key2=value2)
      */
     public static String toFormUrlEncoded(LinkedHashMap<String, String> map,boolean withNull) {

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.domain.scan.config.ScanMapping;
 import com.daimler.sechub.domain.scan.config.ScanMappingRepository;
 import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
+import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
+import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -55,6 +59,9 @@ public class IntegrationTestScanRestController {
     
     @Autowired
     private ScanJobService scanJobCancelService;
+    
+    @Autowired
+    private ProductResultService productResultService;
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
@@ -72,6 +79,25 @@ public class IntegrationTestScanRestController {
             MediaType.APPLICATION_JSON_VALUE })
     public long countScanResults(@PathVariable("projectId") String projectId) {
         return productResultCountService.countProjectScanResults(projectId);
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/productresult/all-shrinked/{maxLength}", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public List<ProductResult>fetchScanResults(@PathVariable("projectId") String projectId,@PathVariable("maxLength") int maxLength) {
+        if (maxLength<10) {
+            maxLength=10;
+        }
+        List<ProductResult> originResults = productResultService.fetchAllResultsInProject(projectId);
+        List<ProductResult> shrinkedResults = new ArrayList<ProductResult>();
+        for (ProductResult originProductResult: originResults) {
+            String result = originProductResult.getResult();
+            if (result.length()>maxLength) {
+                result = result.substring(0,maxLength-3)+"...";
+            }
+            ProductResult shrinked = new ProductResult(originProductResult.getSecHubJobUUID(),originProductResult.getProjectId(),originProductResult.getProductIdentifier(),result);
+            shrinkedResults.add(shrinked);
+        }
+        return shrinkedResults;
     }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scan/cancel/jobs", method = RequestMethod.GET, produces = {

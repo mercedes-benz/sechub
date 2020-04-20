@@ -37,6 +37,14 @@ public class ProductResultService {
         }
         
     }
+	
+	@RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
+    public  List<ProductResult> fetchAllResultsInProject(String projectiD) {
+        ProductResult probe = new ProductResult();
+        probe.projectId=projectiD;
+
+        return repository.findAll(Example.of(probe));
+    }
 
 
 }

@@ -326,6 +326,10 @@ public class TestURLBuilder {
     public String buildCountProjectProductResults(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/count");
     }
+    
+    public String buildFetchAllProjectProductResultsButShrinked(String projectId, int maxLength) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/all-shrinked/"+maxLength);
+    }
 
     public String buildCountProjectScanReports(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/report/count");
