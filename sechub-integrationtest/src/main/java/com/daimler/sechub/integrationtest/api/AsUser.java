@@ -379,11 +379,12 @@ public class AsUser {
 		}
 
 	}
+
 	/**
-	 *
+	 * Creates a code scan job and returns corresponding job UUID. But job is NOT approved and so not started! 
 	 * @param project
-	 * @param useLongRunningButGreen
-	 * @return
+	 * @param runMode
+	 * @return job UUID
 	 */
 	public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
 		assertProject(project).doesExist();

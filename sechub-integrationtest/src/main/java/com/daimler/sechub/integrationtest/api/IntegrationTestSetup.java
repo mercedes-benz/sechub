@@ -155,15 +155,21 @@ public class IntegrationTestSetup implements TestRule {
 				LOG.error("#########################################################################");
 				LOG.error("Last url :"+TestRestHelper.getLastUrl());
 				LOG.error("Last data:"+TestRestHelper.getLastData());
+
+				TestAPI.logInfoOnServer("\n\n\nEnd of integration test (scenario failure):\n - Test class: "+description.getClassName()+"\n - Method:"+description.getMethodName()+"\n\n");
+				
 				throw e;
 			}
 			try {
 				next.evaluate();
 			} catch (HttpStatusCodeException e) {
 				HttpStatus code = e.getStatusCode();
-				String description = TestRestHelper.getLastUrl();
+				
+				String lastURL = TestRestHelper.getLastUrl();
 				throw new IntegrationTestException(
-						"HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + description, e);
+						"HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + lastURL, e);
+			}finally {
+			    TestAPI.logInfoOnServer("\n\n\nEnd of integration test:\n - Test class: "+description.getClassName()+"\n - Method:"+description.getMethodName()+"\n\n");
 			}
 		}
 

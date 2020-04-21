@@ -15,9 +15,9 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 
 import com.daimler.sechub.domain.schedule.batch.AsyncJobLauncher;
+import com.daimler.sechub.domain.schedule.batch.SecHubBatchJobParameterBuilder;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -26,7 +26,9 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 
 public class ScheduleJobLauncherServiceTest {
 
-	private ScheduleJobLauncherService serviceToTest;
+	private static final String MOCKED_PARAM_BUILDER_SECHUB_UUID = "PARAM_UUID";
+
+    private ScheduleJobLauncherService serviceToTest;
 
 	private SecHubJobRepository jobRepository;
 	private AsyncJobLauncher asyncJobLauncher;
@@ -40,12 +42,15 @@ public class ScheduleJobLauncherServiceTest {
 
 	private DomainMessageService eventBus;
 
+    private SecHubBatchJobParameterBuilder parametersbuilder;
+
 	@Before
 	public void before() throws Exception {
 		serviceToTest = new ScheduleJobLauncherService();
 
 		uuid = UUID.randomUUID();
 
+		parametersbuilder=mock(SecHubBatchJobParameterBuilder.class);
 		jobRepository = mock(SecHubJobRepository.class);
 		asyncJobLauncher = mock(AsyncJobLauncher.class);
 		execution = mock(JobExecution.class);
@@ -55,11 +60,15 @@ public class ScheduleJobLauncherServiceTest {
 		serviceToTest.jobLauncher = asyncJobLauncher;
 		serviceToTest.job=job;
 		serviceToTest.eventBus= eventBus;
+		serviceToTest.parameterBuilder= parametersbuilder;
 
 		secHubJob = mock(ScheduleSecHubJob.class);
 
 		when(secHubJob.getUUID()).thenReturn(uuid);
 		when(asyncJobLauncher.run(any(Job.class), any(JobParameters.class))).thenReturn(execution);
+		JobParameters fakeJobParams = mock(JobParameters.class);
+		when(fakeJobParams.getString(BATCHPARAM_SECHUB_UUID)).thenReturn(MOCKED_PARAM_BUILDER_SECHUB_UUID);
+		when(parametersbuilder.buildParams(any())).thenReturn(fakeJobParams);
 	}
 
 	@Test
@@ -77,10 +86,11 @@ public class ScheduleJobLauncherServiceTest {
 		serviceToTest.executeJob(secHubJob);
 
 		/* test */
-		JobParametersBuilder builder = new JobParametersBuilder();
-		builder.addString(BATCHPARAM_SECHUB_UUID, jobUUID.toString());
-
-		verify(asyncJobLauncher).run(any(Job.class), eq(builder.toJobParameters()));
+		ArgumentCaptor<JobParameters> captor = ArgumentCaptor.forClass(JobParameters.class);
+		verify(asyncJobLauncher).run(any(Job.class), captor.capture());
+		
+		String sechubUUID = captor.getValue().getString(BATCHPARAM_SECHUB_UUID);
+		assertEquals(MOCKED_PARAM_BUILDER_SECHUB_UUID,sechubUUID);
 	}
 
 	@Test

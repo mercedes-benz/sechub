@@ -23,7 +23,9 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 // https://docs.spring.io/spring-batch/trunk/reference/html/configureJob.html
 public class BatchConfiguration {
 
-	@Autowired
+	public static final String JOB_NAME_EXECUTE_SCAN = "executeScan";
+
+    @Autowired
 	public JobBuilderFactory jobBuilderFactory;
 
 	@Autowired
@@ -55,7 +57,7 @@ public class BatchConfiguration {
 
 		/* @formatter:off */
 
-    	return jobBuilderFactory.get("executeScan").
+    	return jobBuilderFactory.get(JOB_NAME_EXECUTE_SCAN).
     			incrementer(new RunIdIncrementer()).
                 listener(scope).
                 repository(jobRepository).

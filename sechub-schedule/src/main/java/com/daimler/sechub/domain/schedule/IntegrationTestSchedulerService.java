@@ -26,10 +26,10 @@ public class IntegrationTestSchedulerService {
     }
 
     /**
-     * Marks given job as still running - will reset result, state, end timestamp and traffic light
+     * Reverts/Marks given job as still running - will reset result, state, end timestamp and traffic light
      * @param sechubJobUUID
      */
-    public void revertJobAsStillRunning(UUID sechubJobUUID) {
+      void revertJobAsStillRunning(UUID sechubJobUUID) {
         Optional<ScheduleSecHubJob> found = repository.findById(sechubJobUUID);
         if (! found.isPresent()) {
             throw new NotFoundException("Job not found!");

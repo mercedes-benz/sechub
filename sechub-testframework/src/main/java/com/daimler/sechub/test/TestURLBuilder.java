@@ -372,6 +372,10 @@ public class TestURLBuilder {
     /* +............................ integration test special (from user) .....+ */
     /* +-----------------------------------------------------------------------+ */
 
+    public String buildIntegrationTestLogInfoUrl() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/log/info");
+    }
+    
     public String buildCheckRoleUser() {
         return buildUrl(API_USER, "integrationtest/check/role/user");
     }

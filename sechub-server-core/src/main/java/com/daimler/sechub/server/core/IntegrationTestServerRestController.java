@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -140,6 +141,12 @@ public class IntegrationTestServerRestController {
         }
         IntegrationTestMetaDataInspector itmd = (IntegrationTestMetaDataInspector) metaDataInspector;
         itmd.clear();
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/log/info", method = RequestMethod.POST, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void logInfo(@RequestBody String text) {
+        LOG.info("FROM INTEGRATION-TEST:{}", text);
     }
 
     @RolesAllowed(RoleConstants.ROLE_OWNER)

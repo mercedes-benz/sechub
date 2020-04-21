@@ -15,6 +15,7 @@ import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistoryInspection;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.util.FilenameVariantConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class AssertEventInspection {
@@ -23,7 +24,8 @@ public class AssertEventInspection {
 
     private IntegrationTestEventHistory history;
     private int timeoutInSeconds;
-
+    private FilenameVariantConverter filenameVariantConverter = new FilenameVariantConverter();
+    
     public static AssertEventInspection assertEventInspection() {
         return assertEventInspection(DEFAULT_TIMEOUT_IN_SECONDS);
     }
@@ -132,16 +134,21 @@ public class AssertEventInspection {
             public void assertAsExpectedAndCreateHistoryFile(String id) {
                 back().assertAndGenerateHistoryFile(id);
             }
+            public void assertAsExpectedAndCreateHistoryFile(String id, String variant) {
+                back().assertAndGenerateHistoryFile(id);
+            }
 
         }
-
         private void assertAndGenerateHistoryFile(String id) {
+            assertAndGenerateHistoryFile(id,null);
+        }
+        private void assertAndGenerateHistoryFile(String id, String variant) {
 
             waitForExpectedAmountOfSendersAndReceivers(timeoutInSeconds);
 
             assertHistoryIsAsExpected();
 
-            writeHistoryToFile(id);
+            writeHistoryToFile(id,variant);
 
         }
 
@@ -151,10 +158,15 @@ public class AssertEventInspection {
          * 
          * @param id
          */
-        private void writeHistoryToFile(String id) {
+        private void writeHistoryToFile(String id, String variant) {
             /* write to build folder, so we can use it in documentation generation */
+            String lowerCase = id.toLowerCase();
+            String subFolderName = lowerCase;
+            String filename = lowerCase + ".json";
+            filename =filenameVariantConverter.toVariantFileName(filename, variant);
+            
             IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
-            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + id.toLowerCase() + ".json");
+            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + subFolderName+"/"+filename);
             testfileSupport.writeTextFile(file, history.toJSON());
 
         }

@@ -85,6 +85,11 @@ public class TestAPI {
         return new AssertInspections();
     }
 
+    public static void logInfoOnServer(String text) {
+        String url = getURLBuilder().buildIntegrationTestLogInfoUrl();
+        getSuperAdminRestHelper().postPlainText(url,text);
+    }
+    
     /**
      * Waits for sechub job being done - after 5 seconds time out is reached
      * 

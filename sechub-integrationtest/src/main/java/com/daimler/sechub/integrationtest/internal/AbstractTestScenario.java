@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.test.ExampleConstants;
@@ -224,10 +225,16 @@ public abstract class AbstractTestScenario implements TestScenario {
 		LOG.info("###   Class ="+testClass);
 		LOG.info("###   Method="+testMethod);
 		LOG.info("############################################################################################################");
-
+		
+		TestAPI.logInfoOnServer("\n\n\n"
+		        + "  Start of integration test\n\n"
+		        + "  - Test class:"+testClass+"\n"
+		        + "  - Method:"+testMethod+"\n\n"
+		        + "\n");
 	}
 
 	protected final void prepareImpl() {
+
 		LOG.info("############################################################################################################");
 		LOG.info("## [CLEAN] remove old test data");
 		LOG.info("############################################################################################################");
@@ -246,7 +253,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 		waitForTestDataAvailable();
 
 	}
-
+	
 	protected void resetAndStopEventInspection() {
 	   getRestHelper().post(getContext().getUrlBuilder().buildIntegrationTestResetAndStopEventInspection());
 	}
