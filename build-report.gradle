@@ -27,6 +27,16 @@ subprojects{
         /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
 
     }
+    
+    /* when not at github actions, we can use this to get same zip file */
+    task createCombinedTestReportZipfile(type: Zip, dependsOn: createCombinedTestReport) {
+        /* zip file */
+        archiveFileName = "combined-sechub-testreport.zip"
+        destinationDirectory = file("${rootProject.projectDir}/build/archive")
+
+        from "${rootProject.projectDir}/build/reports/allTests"
+
+    }
 
 }
 
