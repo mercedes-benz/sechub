@@ -542,8 +542,8 @@ public class TestAPI {
         int loop = 0;
         while (currentInspectionID != inspectionIdBefore && loop < minLoopCount) {
             long elapsedTime = System.currentTimeMillis() - startTime;
-            if (elapsedTime > 120.000) { // 120 seconds = two minutes max
-                throw new IllegalStateException("Wait unttil no events failed - timeout reached:" + elapsedTime + " ms.");
+            if (elapsedTime > 120000) { // 120 seconds = two minutes max
+                throw new IllegalStateException("Wait until no events failed - timeout reached:" + elapsedTime + " ms.");
             }
             loop++;
             LOG.debug("wait:{} ms, currentInspectionID:{}, inspectionIdBefore:{}", timeToWaitForNextCheckInMilliseconds, currentInspectionID,
