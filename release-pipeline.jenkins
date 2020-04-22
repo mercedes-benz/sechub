@@ -199,10 +199,11 @@ pipeline {
               }
         }
         always {
-            archive '**/integrationtest-server.log'
-
             junit '**/build/test-results/*/TEST-*.xml'
-
+            script{
+                  callGradleWrapper('createCombinedTestReportZipfile')
+            }
+            archive 'build/archive/combined-sechub-testreport.zip'
         }
     }
 }

@@ -89,16 +89,7 @@ pipeline {
                }
             }
         }
-        stage('Create archives') {
-            failFast false
-            steps {
-              script{
-                  callGradleWrapper('createCombinedTestReportZipfile')
-               }
-            }
-        }
-
-       stage('Security scan') {
+        stage('Security scan') {
             when{
                 not {
                     environment name: 'SECHUB_SCAN_ENABLED', value: 'undefined'
@@ -150,6 +141,9 @@ pipeline {
         }
         always {
             junit '**/build/test-results/*/TEST-*.xml'
+            script{
+                  callGradleWrapper('createCombinedTestReportZipfile')
+            }
             archive 'build/archive/combined-sechub-testreport.zip'
         }
     }
@@ -334,4 +328,3 @@ class SecHubBuildContext{
 
 
 }
-
