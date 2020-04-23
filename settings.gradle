@@ -2,9 +2,6 @@
 include 'sechub-cli',
 /* documentation */
 'sechub-doc',
-'sechub-doc:architecture',
-'sechub-doc:techdoc',
-'sechub-doc:user-handbook',
 
 /* server POD area */
 'sechub-server',
