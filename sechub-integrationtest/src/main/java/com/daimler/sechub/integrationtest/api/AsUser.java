@@ -339,6 +339,12 @@ public class AsUser {
 	    waitForJobDone(project, sechubJobUUID);
 	    return getJobStatus(project.getProjectId(), sechubJobUUID);
     }
+	
+	public String restartCodeScanHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+	    restartJobHard(sechubJobUUID);
+        waitForJobDone(project, sechubJobUUID);
+        return getJobStatus(project.getProjectId(), sechubJobUUID);
+    }
 
 	
 	/**
@@ -537,6 +543,8 @@ public class AsUser {
         return this;
         
     }
+
+    
 
 
 

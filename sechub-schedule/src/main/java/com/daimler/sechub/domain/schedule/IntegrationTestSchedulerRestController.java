@@ -45,5 +45,10 @@ public class IntegrationTestSchedulerRestController {
 	public void revertJobAsStillRunning(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {;
 	    integrationTestSchedulerService.revertJobAsStillRunning(sechubJobUUID);
 	}
+	
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/schedule/revert/job/{sechubJobUUID}/still-not-approved", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
+    public void revertJobAsStillNotApproved(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {;
+        integrationTestSchedulerService.revertJobAsStillNotApproved(sechubJobUUID);
+    }
 
 }

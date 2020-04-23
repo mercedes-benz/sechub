@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
 import com.daimler.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.daimler.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
+import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.domain.scan.product.WebScanProductExecutionService;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfig;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigID;
@@ -41,8 +42,7 @@ import com.daimler.sechub.sharedkernel.util.JSONConverterException;
 import com.daimler.sechub.storage.core.JobStorage;
 
 /**
- * Scan service - main entry point for scans. We use a REQUIRES_NEW propagation
- * to abtain a new transaction
+ * Scan service - main entry point for scans
  *
  * @author Albert Tregnaghi
  *
@@ -74,6 +74,9 @@ public class ScanService implements SynchronMessageHandler {
 
     @Autowired
     ScanJobService scanJobService;
+    
+    @Autowired
+    ProductResultService productResultService;
 
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_DONE, answeringTo = MessageID.START_SCAN, branchName = "success")
 	@IsSendingSyncMessageAnswer(value = MessageID.SCAN_FAILED, answeringTo = MessageID.START_SCAN, branchName = "failure")
@@ -82,7 +85,6 @@ public class ScanService implements SynchronMessageHandler {
 		SecHubExecutionContext context = null;
 		try {
 			context = createExecutionContext(request);
-
 			executeScan(context, request);
 
 			ScanReport report = reportService.createReport(context);
@@ -106,7 +108,7 @@ public class ScanService implements SynchronMessageHandler {
 		}
 	}
 
-	protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
+    protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
 		DomainDataTraceLogID sechubJobUUID = traceLogID(request);
 		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
 
@@ -173,9 +175,9 @@ public class ScanService implements SynchronMessageHandler {
 		if (projectId == null) {
 			throw new IllegalStateException("projectId not found in configuration - so cannot prepare context options!");
 		}
-		ScanProjectConfig scanProjectConfig = scanProjectConfigService.get(projectId, ScanProjectConfigID.MOCK_CONFIGURATION, false);
-		if (scanProjectConfig != null) {
-			String data = scanProjectConfig.getData();
+		ScanProjectConfig scanProjectMockConfig = scanProjectConfigService.get(projectId, ScanProjectConfigID.MOCK_CONFIGURATION, false);
+		if (scanProjectMockConfig != null) {
+			String data = scanProjectMockConfig.getData();
 			ScanProjectMockDataConfiguration mockDataConfig = ScanProjectMockDataConfiguration.fromString(data);
 			executionContext.putData(ScanKey.PROJECT_MOCKDATA_CONFIGURATION, mockDataConfig);
 		}

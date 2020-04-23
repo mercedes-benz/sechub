@@ -29,7 +29,7 @@ public class IntegrationTestSchedulerService {
      * Reverts/Marks given job as still running - will reset result, state, end timestamp and traffic light
      * @param sechubJobUUID
      */
-      void revertJobAsStillRunning(UUID sechubJobUUID) {
+    public void revertJobAsStillRunning(UUID sechubJobUUID) {
         Optional<ScheduleSecHubJob> found = repository.findById(sechubJobUUID);
         if (! found.isPresent()) {
             throw new NotFoundException("Job not found!");
@@ -41,5 +41,20 @@ public class IntegrationTestSchedulerService {
         job.setTrafficLight(null);
         
         repository.save(job);
+    }
+
+    public void revertJobAsStillNotApproved(UUID sechubJobUUID) {
+        Optional<ScheduleSecHubJob> found = repository.findById(sechubJobUUID);
+        if (! found.isPresent()) {
+            throw new NotFoundException("Job not found!");
+        }
+        ScheduleSecHubJob job = found.get();
+        job.setExecutionResult(ExecutionResult.NONE);
+        job.setExecutionState(ExecutionState.INITIALIZING);
+        job.setEnded(null);
+        job.setTrafficLight(null);
+        
+        repository.save(job);
+        
     }
 }

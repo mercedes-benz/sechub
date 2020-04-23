@@ -1,0 +1,40 @@
+[[section-uc-description-admin_restarts_job_hard]]
+Administrator restarts job the hard way. 
+
+[NOTE]
+====
+It is very similar to related use case 
+<<section-uc-description-admin_restarts_job_soft,admin restarts job>>, but with some 
+differences.  
+====
+
+As an administrator it is possible to restart a running or even an already finished job
+again.
+
+One reason for this can be
+
+- product problems on a build
+- testing
+- soft restart did not work/made problems 
+
+[WARNING]
+====
+*Administrators should not do this lightly*, but only when it is really necessary 
+or just a test case. The reason is, that existing data may change - and when a customer 
+has already read a report the next time the report could be slightly differ because
+product scans were started again!
+====
+
+The restart will
+
+- first of all write an audit log enry
+- be canceled, when job does not exist in scheduler 
+- also run when execution already finished before
+- delete all former product results and also adapter meta data
+- check for running batch jobs with {sechub} job UUID. +
+  If there are existing batch operations, those will be stopped and abandoned 
+- new scan will be restarted immediately without scheduling
+
+
+
+ 

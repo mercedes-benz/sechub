@@ -6,7 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum MessageID {
-	START_SCAN,
+	START_SCAN( /* @formatter:off */
+	            MessageDataKeys.SECHUB_UUID,
+	            MessageDataKeys.EXECUTED_BY,
+	            MessageDataKeys.SECHUB_CONFIG),
+	/* @formatter:on */
 
 	SCAN_DONE,
 
@@ -111,9 +115,17 @@ public enum MessageID {
     /* Request job to be restarted (hard)*/
     REQUEST_JOB_RESTART_HARD(MessageDataKeys.JOB_RESTART_DATA), 
     
+    TRIGGER_JOB_RESTART(MessageDataKeys.JOB_RESTART_DATA,MessageDataKeys.ENVIRONMENT_BASE_URL), 
     
-    JOB_RESTARTED(MessageDataKeys.JOB_RESTART_DATA),
+    JOB_RESTART_CANCELED(MessageDataKeys.JOB_RESTART_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
 
+    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    
+    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    
+    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_UUID),
+    
+    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

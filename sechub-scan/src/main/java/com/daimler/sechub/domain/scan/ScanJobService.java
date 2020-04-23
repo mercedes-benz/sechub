@@ -17,46 +17,48 @@ public class ScanJobService {
     private static final Object MONITOR = new Object();
 
     public void register(UUID jobUUID, CanceableScanJob scan) {
-        synchronized(MONITOR) {
+        synchronized (MONITOR) {
             map.put(jobUUID, scan);
-            LOG.debug("registered job:{}",jobUUID);
+            LOG.debug("registered job:{}", jobUUID);
         }
     }
 
     public void unregister(UUID jobUUID) {
-        synchronized(MONITOR) {
+        synchronized (MONITOR) {
             map.remove(jobUUID);
-            LOG.debug("unregistered job:{}",jobUUID);
+            LOG.debug("unregistered job:{}", jobUUID);
         }
     }
 
     public void cancel(UUID jobUUID) {
-        LOG.debug("try to cancel job:{}",jobUUID);
-        synchronized(MONITOR) {
+        /* TODO Albert Tregnaghi, 2020-04-23: we should use spring batch job operations here - see restart job mechanism for details - instead of handling this way, or maybe in addition */
+        LOG.debug("try to cancel job:{}", jobUUID);
+        synchronized (MONITOR) {
             CanceableScanJob canceableScan = map.get(jobUUID);
             if (canceableScan == null) {
-                LOG.warn("Was not able to cancel job:{}",jobUUID);
+                LOG.warn("Was not able to cancel job:{}", jobUUID);
                 return;
             }
             canceableScan.cancelScanJob();
         }
     }
-    
+
     /**
      * Count all registered jobs (so means running jobs)
+     * 
      * @return
      */
     public long countAll() {
-        synchronized(MONITOR) {
+        synchronized (MONITOR) {
             return map.keySet().size();
         }
     }
-    
+
     public long cancelAll() {
         LOG.debug("try to cancel all jobs");
-        long count=0;
-        synchronized(MONITOR) {
-            for (UUID jobUUID: map.keySet()) {
+        long count = 0;
+        synchronized (MONITOR) {
+            for (UUID jobUUID : map.keySet()) {
                 cancel(jobUUID);
                 count++;
             }

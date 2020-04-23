@@ -452,7 +452,7 @@ public class TestAPI {
     private static void removeAllJobsNotRunning() {
         LOG.debug("Start removing jobs not already running");
 
-        String url = getURLBuilder().buildintegrationTestDeleteAllWaitingJobsUrl();
+        String url = getURLBuilder().buildIntegrationTestDeleteAllWaitingJobsUrl();
         getSuperAdminRestHelper().delete(url);
     }
 
@@ -528,7 +528,7 @@ public class TestAPI {
      * @return amount scan jobs
      */
     public static long cancelAllScanJobs() {
-        String url = getURLBuilder().buildintegrationTestCancelAllScanJobsUrl();
+        String url = getURLBuilder().buildIntegrationTestCancelAllScanJobsUrl();
         return getSuperAdminRestHelper().getLongFromURL(url);
     }
 
@@ -638,8 +638,23 @@ public class TestAPI {
     }
 
     public static void revertJobToStillRunning(UUID sechubJobUUID) {
-       String url = getURLBuilder().buildintegrationTestRevertJobAsStillRunning(sechubJobUUID);
+       String url = getURLBuilder().buildIntegrationTestRevertJobAsStillRunning(sechubJobUUID);
        getSuperAdminRestHelper().put(url); 
+    }
+    
+    public static void revertJobToStillNotApproved(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildIntegrationTestRevertJobAsStillNotApproved(sechubJobUUID);
+        getSuperAdminRestHelper().put(url); 
+    }
+    
+    public static void fakeProductResult(String projectId, UUID sechubJobUUID, String productId,String result) {
+        String url = getURLBuilder().buildIntegrationTestFakeProductResult(projectId, sechubJobUUID, productId);
+        getSuperAdminRestHelper().putPlainText(url,result); 
+    }
+    
+    public static void destroyProductResults(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildintegrationTestDeleteProductResults(sechubJobUUID);
+        getSuperAdminRestHelper().delete(url); 
     }
 
 }

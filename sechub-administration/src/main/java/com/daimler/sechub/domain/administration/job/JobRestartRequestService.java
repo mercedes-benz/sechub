@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.domain.administration.user.UserRepository;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -45,6 +46,9 @@ public class JobRestartRequestService {
 
     @Autowired
     UserRepository userRepository;
+    
+    @Autowired
+    SecHubEnvironment sechubEnvironment;
 
     @Validated
     @UseCaseAdministratorRestartsJob(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (soft) requested"))
@@ -106,6 +110,7 @@ public class JobRestartRequestService {
 
         DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_RESTART);
         infoRequest.set(MessageDataKeys.JOB_RESTART_DATA, message);
+        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
 
         eventBusService.sendAsynchron(infoRequest);
     }
@@ -115,6 +120,7 @@ public class JobRestartRequestService {
 
         DomainMessage infoRequest = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_JOB_RESTART_HARD);
         infoRequest.set(MessageDataKeys.JOB_RESTART_DATA, message);
+        infoRequest.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
 
         eventBusService.sendAsynchron(infoRequest);
     }

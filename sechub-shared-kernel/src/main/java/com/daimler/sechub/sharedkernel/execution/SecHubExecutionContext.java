@@ -91,4 +91,8 @@ public class SecHubExecutionContext {
 		return null;
 	}
 
+    public boolean isDeleteFormerResultsWanted() {
+        return false;
+    }
+
 }

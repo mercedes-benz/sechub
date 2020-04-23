@@ -25,11 +25,27 @@ public class AssertEventInspection {
     private IntegrationTestEventHistory history;
     private int timeoutInSeconds;
     private FilenameVariantConverter filenameVariantConverter = new FilenameVariantConverter();
-    
+
+    /**
+     *
+     * Assert given events are as expected. If you have failures because of
+     * implementation changes then you can generate new test case parts - see
+     * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}.
+     * <br><br>
+     * Will automatically wait {@link #DEFAULT_TIMEOUT_IN_SECONDS} for events being available
+     * 
+     */
     public static AssertEventInspection assertEventInspection() {
         return assertEventInspection(DEFAULT_TIMEOUT_IN_SECONDS);
     }
 
+    /**
+    *
+    * Assert given events are as expected. If you have failures because of
+    * implementation changes then you can generate new test case parts - see
+    * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}
+    * @param timeOutInSeconds will automatically wait given time for events being available
+    */
     public static AssertEventInspection assertEventInspection(int timeOutInSeconds) {
         if (!EventInspectionAPI.fetchIsStarted()) {
             fail("Event inspection is not started. Maybe you forget to invoke TestAPI.startEventInspection() before ?");
@@ -109,7 +125,7 @@ public class AssertEventInspection {
             public AssertEventInspectionExpectionEntry asyncEvent(MessageID messageId) {
                 return back().asyncEvent(messageId);
             }
-            
+
             public AssertEventInspectionExpectionEntry syncEvent(MessageID messageId) {
                 return back().syncEvent(messageId);
             }
@@ -134,21 +150,24 @@ public class AssertEventInspection {
             public void assertAsExpectedAndCreateHistoryFile(String id) {
                 back().assertAndGenerateHistoryFile(id);
             }
+
             public void assertAsExpectedAndCreateHistoryFile(String id, String variant) {
                 back().assertAndGenerateHistoryFile(id);
             }
 
         }
+
         private void assertAndGenerateHistoryFile(String id) {
-            assertAndGenerateHistoryFile(id,null);
+            assertAndGenerateHistoryFile(id, null);
         }
+
         private void assertAndGenerateHistoryFile(String id, String variant) {
 
             waitForExpectedAmountOfSendersAndReceivers(timeoutInSeconds);
 
             assertHistoryIsAsExpected();
 
-            writeHistoryToFile(id,variant);
+            writeHistoryToFile(id, variant);
 
         }
 
@@ -163,10 +182,10 @@ public class AssertEventInspection {
             String lowerCase = id.toLowerCase();
             String subFolderName = lowerCase;
             String filename = lowerCase + ".json";
-            filename =filenameVariantConverter.toVariantFileName(filename, variant);
-            
+            filename = filenameVariantConverter.toVariantFileName(filename, variant);
+
             IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
-            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + subFolderName+"/"+filename);
+            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + subFolderName + "/" + filename);
             testfileSupport.writeTextFile(file, history.toJSON());
 
         }
@@ -321,7 +340,7 @@ public class AssertEventInspection {
 
         StringBuilder sb = new StringBuilder();
         sb.append(
-                "\nBut if this is not a failure but correct and you are just writing your test/fixing changinges, you can just paste following test code:\n\n");
+                "\nBut if this is not a failure but correct and you are just writing your test or just fixing implementation changes, you can just paste following test code:\n\n");
         if (history == null) {
             sb.append("Impossible - history == null");
             return sb.toString();

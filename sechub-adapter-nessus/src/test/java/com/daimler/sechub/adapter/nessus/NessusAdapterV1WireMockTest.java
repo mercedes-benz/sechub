@@ -2,7 +2,6 @@
 package com.daimler.sechub.adapter.nessus;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

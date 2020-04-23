@@ -95,6 +95,9 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         case REQUEST_JOB_RESTART:
             handleJobRestartRequested(request);
             break;
+        case REQUEST_JOB_RESTART_HARD:
+            handleJobRestartHardRequested(request);
+            break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
@@ -106,6 +109,14 @@ public class ScheduleMessageHandler implements AsynchronMessageHandler {
         UUID jobUUID = message.getJobUUID();
         
         restartJobService.restartJob(jobUUID, message.getOwnerEmailAddress());
+    }
+    
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART_HARD)
+    private void handleJobRestartHardRequested(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
+        UUID jobUUID = message.getJobUUID();
+        
+        restartJobService.restartJobHard(jobUUID, message.getOwnerEmailAddress());
     }
 
     @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)

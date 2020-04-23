@@ -444,16 +444,28 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }
 
-    public String buildintegrationTestDeleteAllWaitingJobsUrl() {
+    public String buildIntegrationTestDeleteAllWaitingJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
     }
     
-    public String buildintegrationTestCancelAllScanJobsUrl() {
+    public String buildIntegrationTestCancelAllScanJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
     }
     
-    public String buildintegrationTestRevertJobAsStillRunning(UUID sechubJobUUID) {
+    public String buildIntegrationTestRevertJobAsStillRunning(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-running");
+    }
+    
+    public String buildIntegrationTestRevertJobAsStillNotApproved(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-not-approved");
+    }
+    
+    public String buildIntegrationTestFakeProductResult(String projectId, UUID sechubJobUUID, String productIdentifier) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/"+projectId+"/job/"+sechubJobUUID+"/scan/productresult/"+productIdentifier);
+    }
+
+    public String buildintegrationTestDeleteProductResults(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults");
     }
 
     

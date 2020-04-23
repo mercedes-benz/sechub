@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
-import static com.daimler.sechub.domain.schedule.SchedulingConstants.*;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -12,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobExecutionNotRunningException;
 import org.springframework.batch.core.launch.JobOperator;
@@ -27,15 +23,20 @@ import com.daimler.sechub.domain.schedule.batch.BatchConfiguration;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.LogConstants;
+import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -60,10 +61,28 @@ public class SchedulerRestartJobService {
     ScheduleJobLauncherService launcherService;
 
     @Autowired
+    AuditLogService auditLogService;
+
+    @Autowired
     JobExplorer explorer;
 
     @Autowired
     JobOperator operator;
+
+    @Autowired 
+    SecHubEnvironment sechubEnvironment;
+    /**
+     * This service will restart given JOB. There is NO check if current user has
+     * access - this must be done before.
+     * 
+     * @param jobUUID
+     * @param ownerEmailAddress
+     */
+    @UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Try to rstart job (hard)", 
+            description = "When job is found, a restart will be triggered. Existing batch jobs will be terminated"))
+    public void restartJobHard(UUID jobUUID, String ownerEmailAddress) {
+        restartJob(jobUUID, ownerEmailAddress, true);
+    }
 
     /**
      * This service will restart given JOB. There is NO check if current user has
@@ -72,62 +91,81 @@ public class SchedulerRestartJobService {
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
+    @UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Try to restart job", 
+            description = "When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated"))
     public void restartJob(UUID jobUUID, String ownerEmailAddress) {
+        restartJob(jobUUID, ownerEmailAddress, false);
+    }
+
+    private void restartJob(UUID jobUUID, String ownerEmailAddress, boolean hard) {
         assertion.isValidJobUUID(jobUUID);
+
+        auditLogService.log("triggered restart of job:{}, variant:[hard={}]", jobUUID, hard);
 
         Optional<ScheduleSecHubJob> optJob = jobRepository.findById(jobUUID);
         if (!optJob.isPresent()) {
             LOG.warn("SecHub job {} not found, so not able to restart!", jobUUID);
+
+            JobDataContext context = new JobDataContext();
+            context.sechubJobUUID = jobUUID;
+            context.ownerEmailAddress = ownerEmailAddress;
+            context.info = "Restart canceled, because job not found!";
+
+            sendJobRestartCanceled(context);
             return;
         }
-
-        JobParametersBuilder builder = new JobParametersBuilder();
-        builder.addString(BATCHPARAM_SECHUB_UUID, jobUUID.toString());
-
-        /* prepare batch job */
-        JobParameters jobParameters = builder.toJobParameters();
-        Set<JobExecution> found = explorer.findRunningJobExecutions(BatchConfiguration.JOB_NAME_EXECUTE_SCAN);
-        JobExecution foundRunningExecution = null;
-        for (JobExecution exec : found) {
-            if (jobParameters.equals(exec.getJobParameters())) {
-                /* found */
-                foundRunningExecution = exec;
-                break;
-            }
-        }
-        if (foundRunningExecution != null) {
-            LOG.info("Found running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-            try {
-                operator.stop(foundRunningExecution.getId());
-                try {
-                    operator.abandon(foundRunningExecution.getId());
-                    LOG.info("Stopped and abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-                } catch (JobExecutionAlreadyRunningException e) {
-                    LOG.warn("Stopped but not abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID,e);
-                }
-                
-            } catch (NoSuchJobExecutionException | JobExecutionNotRunningException e) {
-                LOG.info("Was not able to stop running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-            }
+        /* job exists, so can be restarted - hard or soft */
+        ScheduleSecHubJob job = optJob.get();
+        if (hard) {
+            sendPurgeJobResultsRequest(job);
         } else {
-            LOG.info("Did not find any running batch-job for {}", jobUUID);
-
-            /*
-             * when we restart here it can happen that there was a job, but has been done
-             * already! If so, spring-batch will not accept another job with same parameters!
-             */
+            if (job.getExecutionResult().hasFinished()) {
+                /* already done so just ignore */
+                sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
+                return;
+            }
         }
+
+        stopAllRunningBatchJobsForSechubJobUUID(jobUUID);
 
         MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
 
         ScheduleSecHubJob secHubJob = optJob.get();
         markJobAsNewExecutedNow(secHubJob);
 
+        sendJobRestartTriggered(secHubJob, ownerEmailAddress);
         launcherService.executeJob(secHubJob);
         LOG.info("job {} has been hard restarted", jobUUID);
 
-        sendJobRestarted(secHubJob, ownerEmailAddress);
+    }
+
+    private void stopAllRunningBatchJobsForSechubJobUUID(UUID jobUUID) {
+        /* prepare batch job */
+        String jobUUIDasString = jobUUID.toString();
+        Set<JobExecution> found = explorer.findRunningJobExecutions(BatchConfiguration.JOB_NAME_EXECUTE_SCAN);
+        for (JobExecution exec : found) {
+            String sechubUUIDfound = exec.getJobParameters().getString(SchedulingConstants.BATCHPARAM_SECHUB_UUID);
+            if (jobUUIDasString.equals(sechubUUIDfound)) {
+                /* found one */
+                stopAndAbandonBatchJobExecution(exec,jobUUID);
+            }
+        }
+    }
+
+    private void stopAndAbandonBatchJobExecution(JobExecution foundRunningExecution, UUID jobUUID) {
+        LOG.info("Found running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
+        try {
+            operator.stop(foundRunningExecution.getId());
+            try {
+                operator.abandon(foundRunningExecution.getId());
+                LOG.info("Stopped and abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
+            } catch (JobExecutionAlreadyRunningException e) {
+                LOG.warn("Stopped but not abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID, e);
+            }
+
+        } catch (NoSuchJobExecutionException | JobExecutionNotRunningException e) {
+            LOG.info("Was not able to stop running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
+        }
     }
 
     private void markJobAsNewExecutedNow(ScheduleSecHubJob secHubJob) {
@@ -139,21 +177,68 @@ public class SchedulerRestartJobService {
         jobRepository.save(secHubJob);
     }
 
-    @IsSendingAsyncMessage(MessageID.JOB_RESTARTED)
-    private void sendJobRestarted(ScheduleSecHubJob secHubJob, String ownerEmailAddress) {
-        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_RESTARTED);
+    @IsSendingAsyncMessage(MessageID.TRIGGER_JOB_RESTART)
+    private void sendJobRestartTriggered(ScheduleSecHubJob secHubJob, String ownerEmailAddress) {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.TRIGGER_JOB_RESTART);
 
         JobMessage message = new JobMessage();
         message.setJobUUID(secHubJob.getUUID());
-        ;
         message.setProjectId(secHubJob.getProjectId());
         message.setOwner(secHubJob.getOwner());
         message.setOwnerEmailAddress(ownerEmailAddress);
 
         request.set(MessageDataKeys.JOB_RESTART_DATA, message);
-
+        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
         eventBus.sendAsynchron(request);
 
+    }
+    
+    @IsSendingSyncMessage(MessageID.REQUEST_PURGE_JOB_RESULTS)
+    private void sendPurgeJobResultsRequest(ScheduleSecHubJob secHubJob) {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_PURGE_JOB_RESULTS);
+        
+        request.set(MessageDataKeys.SECHUB_UUID, secHubJob.getUUID());
+        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL, sechubEnvironment.getServerBaseUrl());
+        DomainMessageSynchronousResult result = eventBus.sendSynchron(request);
+        if (result.hasFailed()) {
+            throw new SecHubRuntimeException("Purge failed!");
+        }
+        
+        
+    }
+
+    private void sendJobRestartCanceled(ScheduleSecHubJob secHubJob, String ownerEmailAddress, String cancelReason) {
+        JobDataContext context = new JobDataContext();
+        context.sechubJobUUID = secHubJob.getUUID();
+        context.projectId = secHubJob.getProjectId();
+        context.owner = secHubJob.getOwner();
+
+        sendJobRestartCanceled(context);
+
+    }
+
+    @IsSendingAsyncMessage(MessageID.JOB_RESTART_CANCELED)
+    private void sendJobRestartCanceled(JobDataContext context) {
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_RESTART_CANCELED);
+
+        JobMessage message = new JobMessage();
+        message.setJobUUID(context.sechubJobUUID);
+        message.setProjectId(context.projectId);
+        message.setOwner(context.owner);
+        message.setOwnerEmailAddress(context.ownerEmailAddress);
+        message.setInfo(context.info);
+
+        request.set(MessageDataKeys.JOB_RESTART_DATA, message);
+        request.set(MessageDataKeys.ENVIRONMENT_BASE_URL,sechubEnvironment.getServerBaseUrl());
+        eventBus.sendAsynchron(request);
+    }
+
+    private class JobDataContext {
+        private UUID sechubJobUUID;
+        private String projectId;
+        private String owner;
+        private String info;
+        private String ownerEmailAddress;
     }
 
 }

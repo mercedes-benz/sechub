@@ -132,6 +132,24 @@ public class TestRestHelper {
 		template.put(url, httpEntity);
 		return "";
 	}
+	
+	/**
+	 * PUT plain text to url
+	 *
+	 * @param url
+	 * @param json
+	 * @return result
+	 * @throws RestClientException
+	 */
+	public String putPlainText(String url, String json) {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.TEXT_PLAIN);
+	    HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
+	    
+	    markLastURL(url,json);
+	    template.put(url, httpEntity);
+	    return "";
+	}
 
 	private TrustAllSupport getTrustAllSupport() {
 		if (trustAllSupport == null) {

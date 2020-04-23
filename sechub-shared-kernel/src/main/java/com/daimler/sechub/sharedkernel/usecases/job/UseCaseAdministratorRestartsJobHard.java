@@ -17,7 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD,
 		group=UseCaseGroup.JOB_ADMINISTRATION,
 		title="Admin restarts a job (hard)",
-		description="Administrator restarts job. Existing product results will be dropped and products restarted. Job UUID will be same")
+		description="job/admin_restarts_job_hard.adoc")
 public @interface UseCaseAdministratorRestartsJobHard {
 
 	Step value();

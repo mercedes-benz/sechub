@@ -4,7 +4,10 @@ package com.daimler.sechub.domain.scan;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
@@ -20,8 +23,10 @@ import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.domain.scan.config.ScanMapping;
 import com.daimler.sechub.domain.scan.config.ScanMappingRepository;
 import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
+import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
+import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
@@ -38,6 +43,10 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 @RestController
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestScanRestController {
+    
+
+    private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestScanRestController.class);
+
 
     @Autowired
     private ScanAccessCountService scanAccessCountService;
@@ -63,6 +72,9 @@ public class IntegrationTestScanRestController {
     @Autowired
     private ProductResultService productResultService;
 
+    @Autowired
+    ProductResultRepository productResultRepository;
+    
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long countProjectAccess(@PathVariable("projectId") String projectId) {
@@ -100,9 +112,38 @@ public class IntegrationTestScanRestController {
         return shrinkedResults;
     }
     
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/job/{sechubJobUUID}/scan/productresult/{productIdentifier}", method = RequestMethod.PUT, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void changeScanResults(@RequestBody String body, @PathVariable("projectId")String projectId, @PathVariable("sechubJobUUID") UUID sechubJobUUID ,@PathVariable("productIdentifier") ProductIdentifier productIdentifier) {
+        List<ProductResult> originResults = productResultService.fetchAllResultsForJob(sechubJobUUID);
+        ProductResult result = null;
+        for (ProductResult originProductResult: originResults) {
+            if (productIdentifier.equals(originProductResult.getProductIdentifier())){
+                result = originProductResult;
+                break;
+            }
+        }
+        ProductResult r = null;
+        if (result!=null) {
+            r = result;
+        }else {
+            r = new ProductResult(sechubJobUUID,projectId,productIdentifier,body);
+            
+        }
+        r.setResult(body);
+        productResultRepository.save(r);
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{sechubJobUUID}/productresults", method = RequestMethod.DELETE, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void deleteAllJobResults(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
+        productResultService.deleteAllResultsForJob(sechubJobUUID);
+    }
+    
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scan/cancel/jobs", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long cancelAllJobs() {
+        LOG.info("Integration test request a cancel for all Jobs");
         /* return amount of canceled jobs */
         return scanJobCancelService.cancelAll();
     }
