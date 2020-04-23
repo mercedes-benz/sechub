@@ -26,7 +26,7 @@ buildscript{
 
 	}
     // FIXME 2019-10-10, Albert Tregnaghi: Remove this workaround when using newer version than spring boot 2.1.9 (see https://github.com/Daimler/sechub/issues/31 for details)
-	ext['tomcat.version'] = '9.0.27'
+//	ext['tomcat.version'] = '9.0.27'
 }
 
 ext {
