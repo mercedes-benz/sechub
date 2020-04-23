@@ -27,12 +27,15 @@ buildscript{
 	}
     // FIXME 2019-10-10, Albert Tregnaghi: Remove this workaround when using newer version than spring boot 2.1.9 (see https://github.com/Daimler/sechub/issues/31 for details)
 	ext['tomcat.version'] = '9.0.27'
-
-
 }
 
 ext {
     git = org.ajoberstar.grgit.Grgit.open(currentDir: project.rootDir) // necessary for version calculation
+}
+
+/* own clean task - we need this because root project has not included a module providing the task */
+task clean(type: Delete){
+    delete file("${project.projectDir}/build").listFiles() // we do NOT clear buildSrc/build here
 }
 
 allprojects {

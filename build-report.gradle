@@ -10,59 +10,49 @@
 
 subprojects{
 
-    task copyJunitResults(type: Copy) {
+    task copyTestResults(type: Copy) {
         with{
             from "${project.projectDir}/build/test-results/test"
             into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
             include "*.xml"
         }
-        with{
-            from "${project.projectDir}/build/test-results/integrationtest"
-            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
-            include "*.xml"
-        }
     }
-    
-    task createCombinedTestReport(dependsOn: copyJunitResults) {
-    }
-    
-    
+
+}
+
+task createCombinedTestReport(dependsOn: subprojects.copyTestResults) {
+}
    
-    task internalCreateCombinedTestReportZipfile(type: Zip, dependsOn: createCombinedTestReport) {
+task internalCreateCombinedTestReportZipfile(type: Zip, dependsOn: createCombinedTestReport) {
         /* zip file */
         archiveFileName = "combined-sechub-testreport.zip"
         destinationDirectory = file("${rootProject.projectDir}/build/archive")
 
         from "${rootProject.projectDir}/build/reports/allTests"
+}
 
-    }
+task cleanUpAfterTestReportZipfileCreated(type: Delete, dependsOn: internalCreateCombinedTestReportZipfile) {
+    delete "${rootProject.projectDir}/build/reports/allTests-tmp","${rootProject.projectDir}/build/reports/allTests" 
+}
 
-    task cleanUpAfterTestReportZipfileCreated(type: Delete, dependsOn: internalCreateCombinedTestReportZipfile) {
-        delete "${rootProject.projectDir}/build/reports/allTests-tmp","${rootProject.projectDir}/build/reports/allTests" 
-    }
-    
-     /* when not at github actions, we can use this to get same zip file */
-    task createCombinedTestReportZipfile( dependsOn: cleanUpAfterTestReportZipfileCreated) {
-        group 'sechub'
-        description = 'creates a zip file containing integration test logs and one test results'
-
-    }
-    
-
+ /* when not at github actions, we can use this to get same zip file */
+task createCombinedTestReportZipfile( dependsOn: cleanUpAfterTestReportZipfileCreated) {
+    group 'sechub'
+    description = 'creates a zip file containing integration test logs and one test results'
 }
 
 project('sechub-test'){
     createCombinedTestReport {
         /* TODO: de-jcup, 2019-11-08: change go tests so output to file and stdout  +add test outputs as well */
-
+        
         doLast {
+            File tmpFolder = new File("${rootProject.projectDir}/build/reports/allTests-tmp/junit");
+            if (! tmpFolder.exists()){
+                return;
+            }
             new JunitFilesToOneFileConverter().combineFiles("${rootProject.projectDir}/build/reports/allTests-tmp/junit", "${rootProject.projectDir}/build/reports/allTests/junit-results-exported.xml");
         }
 
     }
 }
-
-
-
-
 
