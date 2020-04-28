@@ -25,6 +25,8 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.SecHubEnvironment;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.error.AlreadyExistsException;
+import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
@@ -71,6 +73,9 @@ public class SchedulerRestartJobService {
 
     @Autowired 
     SecHubEnvironment sechubEnvironment;
+    
+    @Autowired
+    ScheduleAssertService scheduleAssertService;
     /**
      * This service will restart given JOB. There is NO check if current user has
      * access - this must be done before.
@@ -112,18 +117,18 @@ public class SchedulerRestartJobService {
             context.info = "Restart canceled, because job not found!";
 
             sendJobRestartCanceled(context);
-            return;
+            throw new NotFoundException("Job not found or you have no access");
         }
         /* job exists, so can be restarted - hard or soft */
         ScheduleSecHubJob job = optJob.get();
+        if (job.getExecutionResult().hasFinished()) {
+            /* already done so just ignore */
+            LOG.warn("SecHub job {} has already finished, so not able to restart!", jobUUID);
+            sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
+            throw new AlreadyExistsException("Job has already finished - restart not necessary");
+        }
         if (hard) {
-            sendPurgeJobResultsRequest(job);
-        } else {
-            if (job.getExecutionResult().hasFinished()) {
-                /* already done so just ignore */
-                sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
-                return;
-            }
+            sendPurgeJobResultsSynchronousRequest(job);
         }
 
         stopAllRunningBatchJobsForSechubJobUUID(jobUUID);
@@ -194,7 +199,7 @@ public class SchedulerRestartJobService {
     }
     
     @IsSendingSyncMessage(MessageID.REQUEST_PURGE_JOB_RESULTS)
-    private void sendPurgeJobResultsRequest(ScheduleSecHubJob secHubJob) {
+    private void sendPurgeJobResultsSynchronousRequest(ScheduleSecHubJob secHubJob) {
         DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.REQUEST_PURGE_JOB_RESULTS);
         
         request.set(MessageDataKeys.SECHUB_UUID, secHubJob.getUUID());

@@ -32,7 +32,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
     @Test
     /**
      * We simulate a JVM crash where a product result was already written to
-     * database. Shall trigger JOB_RESTARTED
+     * database. 
      */
     public void UC_ADMIN_RESTARTS_JOB_HARD__simulate_accidently_job_restarted_where_already_done() {
         /* @formatter:off */
@@ -42,16 +42,15 @@ public class JobUsecasesEventTraceScenario3IntTest {
         UUID sechubJobUUD = result.getResult().getSechubJobUUD();
         
         assertJobHasEnded(project,sechubJobUUD);
-        startEventInspection();
 
+        startEventInspection();
+        
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
         /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUD);
         assertNotNull(report);
         if (!report.contains("GREEN")) {
-            /* FIXME Albert Tregnaghi, 2020-04-23: i am not sure if this is really correct 
-             * - does it really make sense? when accidently restarted the uploaded zip files are no longer available so make a hard restar sense?!?!*/
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
         
