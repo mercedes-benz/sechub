@@ -468,8 +468,9 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults");
     }
 
-    
+    public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults-count");
+    }
 
-  
 
 }

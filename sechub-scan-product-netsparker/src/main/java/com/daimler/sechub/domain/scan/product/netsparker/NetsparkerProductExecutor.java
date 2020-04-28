@@ -60,7 +60,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 		for (URI targetURI: targetURIs) {
 			/* @formatter:off */
 		    
-		    /* special behaviour, because having multiple results here, we must find former result corresponding to 
+		    /* special behavior, because having multiple results here, we must find former result corresponding to 
 		     * target URI.
 		     */
 		    executorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);

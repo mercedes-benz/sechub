@@ -15,6 +15,7 @@ import org.junit.rules.Timeout;
 import com.daimler.sechub.integrationtest.api.AssertEventInspection;
 import com.daimler.sechub.integrationtest.api.AssertExecutionResult;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
@@ -77,6 +78,8 @@ public class JobUsecasesEventTraceScenario3IntTest {
     public void UC_ADMIN_RESTARTS_JOB_HARD__simulate_jvm_crash_but_product_results_in_db() {
         /* @formatter:off */
         /* prepare */
+        clearMetaDataInspection();
+        
         AssertExecutionResult result = as(USER_1).createCodeScanAndFetchScanData(project);
         assertNotNull(result);
         UUID sechubJobUUD = result.getResult().getSechubJobUUD();
@@ -89,7 +92,9 @@ public class JobUsecasesEventTraceScenario3IntTest {
         as(USER_1).upload(project, sechubJobUUD, "zipfile_contains_only_test1.txt.zip");
         revertJobToStillRunning(sechubJobUUD);  // fake it's running
         assertJobIsRunning(project,sechubJobUUD);
+        
         startEventInspection();
+        assertInspections().hasAmountOfInspections(1).inspectionNr(0).hasId("CHECKMARX");
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanHardAndFetchJobStatus(project,sechubJobUUD);
@@ -101,6 +106,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
         assertJobHasEnded(project,sechubJobUUD);
+        
         AssertEventInspection.assertEventInspection().
         expect().
            /* 0 */
@@ -133,6 +139,12 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  to("com.daimler.sechub.domain.administration.job.JobAdministrationMessageHandler").
         /* assert + write */
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
+        /* adapter was called, because product results for purged */
+        assertInspections().
+            hasAmountOfInspections(2). // why 2? because behavior of product executor is: always call the adapter!
+                                       // only adapter is able to know exactly, if the product result is correct, needs a restart
+                                       // etc. We try to restart and currently do ignore product result state
+            inspectionNr(1).hasId("CHECKMARX");
         /* @formatter:on */
     }
 
@@ -219,7 +231,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
         
         assertJobHasEnded(project,sechubJobUUD);
         startEventInspection();
-
+        
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
         
@@ -243,6 +255,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
         /* assert + write */
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"accidently_restart_because_job_has_already_finished");
+        
         /* @formatter:on */
     }
 
@@ -259,19 +272,39 @@ public class JobUsecasesEventTraceScenario3IntTest {
         UUID sechubJobUUD = result.getResult().getSechubJobUUD();
         
         assertJobHasEnded(project,sechubJobUUD);
-        revertJobToStillRunning(sechubJobUUD);
-        assertJobIsRunning(project,sechubJobUUD);
-        startEventInspection();
-
-        /* execute */
-        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
         
-        /* test */
         String report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUD);
         assertNotNull(report);
         if (!report.contains("GREEN")) {
             assertEquals("GREEN was not found, but expected...","GREEN",report);
         }
+        assertEquals(2,TestAPI.countJobResults(sechubJobUUD)); // checkmarx + sereco
+        
+        /* in our test the zipfile has been destroyed before, because job has
+         * finished - so we must upload again...
+         */
+        revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
+        as(USER_1).upload(project, sechubJobUUD, "zipfile_contains_only_test1.txt.zip");
+        
+        revertJobToStillRunning(sechubJobUUD);
+        assertJobIsRunning(project,sechubJobUUD);
+        clearMetaDataInspection();
+        
+        startEventInspection();
+
+        /* precondition check - there was no interaction at this point */
+        assertInspections().hasAmountOfInspections(0);
+        
+        /* execute */
+        as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
+        
+        /* test */
+        report = as(USER_1).getJobReport(project.getProjectId(),sechubJobUUD);
+        assertNotNull(report);
+        if (!report.contains("GREEN")) {
+            assertEquals("GREEN was not found, but expected...","GREEN",report);
+        }
+        
         assertJobHasEnded(project,sechubJobUUD);
         AssertEventInspection.assertEventInspection().
         expect().
@@ -298,6 +331,9 @@ public class JobUsecasesEventTraceScenario3IntTest {
         /* assert + write */
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
+        
+        assertInspections().hasAmountOfInspections(1); // adapter is called, even when product available - resilient reuse of former results is provided by adapters only
+        assertEquals(2,TestAPI.countJobResults(sechubJobUUD)); // checkmarx + sereco - still only 2 results (old ones must be overriden)
     }
 
     @Test

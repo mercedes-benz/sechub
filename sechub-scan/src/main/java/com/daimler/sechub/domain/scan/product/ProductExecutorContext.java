@@ -59,7 +59,7 @@ public class ProductExecutorContext {
                 return;
             }
         }
-        /* not fond - ensure null*/
+        /* not found - ensure null*/
         callback.setCurrentProductResult(null);
     }
     

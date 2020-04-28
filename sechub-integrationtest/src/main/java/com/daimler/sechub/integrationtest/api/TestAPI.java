@@ -81,6 +81,10 @@ public class TestAPI {
         return new AssertProject(project);
     }
 
+    /**
+     * Creates an assert object to inspect meta data
+     * @return
+     */
     public static AssertInspections assertInspections() {
         return new AssertInspections();
     }
@@ -652,9 +656,15 @@ public class TestAPI {
         getSuperAdminRestHelper().putPlainText(url,result); 
     }
     
+    public static long countJobResults(UUID sechubJobUUID) {
+        String url = getURLBuilder().buildIntegrationTestCountProductResults(sechubJobUUID);
+        return getSuperAdminRestHelper().getLongFromURL(url); 
+    }
+    
     public static void destroyProductResults(UUID sechubJobUUID) {
         String url = getURLBuilder().buildintegrationTestDeleteProductResults(sechubJobUUID);
         getSuperAdminRestHelper().delete(url); 
     }
+
 
 }

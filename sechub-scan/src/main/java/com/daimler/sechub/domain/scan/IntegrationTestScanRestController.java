@@ -140,6 +140,13 @@ public class IntegrationTestScanRestController {
         productResultService.deleteAllResultsForJob(sechubJobUUID);
     }
     
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{sechubJobUUID}/productresults-count", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public String countProductresults(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
+        long result = productResultService.fetchAllResultsForJob(sechubJobUUID).size();
+        return ""+result;
+    }
+    
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scan/cancel/jobs", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long cancelAllJobs() {

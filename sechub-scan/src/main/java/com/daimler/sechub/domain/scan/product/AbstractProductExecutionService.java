@@ -127,10 +127,19 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				productResults.add(fallbackResult);
 			}
 
-			/* execution was successful */
+			/* execution was successful - so persist new results */
 			for (ProductResult productResult : productResults) {
 			    executorContext.persist(productResult);
 			}
+			
+			/* we drop former results which are duplicates */
+            for(ProductResult oldResult: formerResults) {
+                if (productResults.contains(oldResult)) {
+                    /* reused - so ignore */
+                    continue;
+                }
+                productResultRepository.delete(oldResult);
+            }
 		}
 	}
 

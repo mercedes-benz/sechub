@@ -6,6 +6,20 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.Map;
 
+import com.daimler.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
+import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
+import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
+
+/**
+ * SecHub server provides a {@link MetaDataInspector} which can remember
+ * be used to remember calls and paramters. When we started sechub server in integration test mode, 
+ * it uses {@link IntegrationTestMetaDataInspector} otherwise a {@link DefaultMetaDataInspector} 
+ * will be used, which does only log call at debug level.<br><br>
+ * 
+ * This inspections can be very interesting e.g. for adapter calls 
+ * @author Albert Tregnaghi
+ *
+ */
 public class AssertInspections{
 
 	private List<Map<String, Object>> inspections;
@@ -21,7 +35,7 @@ public class AssertInspections{
 	}
 
 	public AssertInspection inspectionNr(int pos) {
-		assertTrue(pos<inspections.size());
+		assertTrue("Position is too big! pos:"+pos+", but size:"+inspections.size(),pos <inspections.size());
 		return new AssertInspection(inspections.get(pos));
 	}
 
