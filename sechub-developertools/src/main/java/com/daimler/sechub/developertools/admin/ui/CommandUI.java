@@ -26,6 +26,8 @@ import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDat
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
@@ -194,6 +196,8 @@ public class CommandUI {
 		menuBar.add(menu);
 		add(menu, new GetJobStatusAction(context));
 		add(menu, new CancelJobAction(context));
+		add(menu, new RestartJobAction(context));
+		add(menu, new RestartJobHardAction(context));
 		menu.addSeparator();
 		add(menu, new ShowRunningBatchJobsListAction(context));
 		menu.addSeparator();
