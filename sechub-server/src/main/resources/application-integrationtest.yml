@@ -10,8 +10,8 @@ sechub:
     trigger:
       nextjob:
         initialdelay: "100"
-        # every second
-        delay: "1000"
+        # every 100 milliseconds, so we got faster test results
+        delay: "100"
   scan:
     scanconfig:
       refresh:

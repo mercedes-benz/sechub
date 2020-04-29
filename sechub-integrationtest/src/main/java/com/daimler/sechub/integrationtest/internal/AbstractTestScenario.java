@@ -235,23 +235,54 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 	protected final void prepareImpl() {
 
-		LOG.info("############################################################################################################");
-		LOG.info("## [CLEAN] remove old test data");
-		LOG.info("############################################################################################################");
-		resetAndStopEventInspection();
-		resetEmails();
-		cleanupAllTestProjects();
-		cleanupAllTestUsers();
+	    boolean resetEventInspection=true;
+	    boolean resetMails = true;
+	    boolean initializeNecessary=true;
+	    
+	    if (this instanceof StaticTestScenario) {
+	        StaticTestScenario sts = (StaticTestScenario) this;
+	        initializeNecessary = sts.isInitializationNecessary();
+	        resetEventInspection= sts.isEventResetNecessary();
+	        resetMails=sts.isEmailResetNecessary();
+	    }
+	    
+	    if (resetEventInspection) {
+	        resetAndStopEventInspection();
+	    }
+	    if (resetMails) {
+	        resetEmails();
+	    }
+		if (initializeNecessary) {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [CLEAN] remove old test data");
+		    LOG.info("############################################################################################################");
+		    cleanupTestdataAfterTest();
+		}else {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [CLEAN] skipped");
+		    LOG.info("############################################################################################################");
+		}
+		
+		if (initializeNecessary) {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [INIT] trigger test data initialization on server side");
+		    LOG.info("############################################################################################################");
+		    initializeTestData();
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [WAIT] for all test data availale");
+		    LOG.info("############################################################################################################");
+		    waitForTestDataAvailable();
+		}else {
+		    LOG.info("############################################################################################################");
+            LOG.info("## [INIT] skipped");
+            LOG.info("############################################################################################################");
+		}
 
-		LOG.info("############################################################################################################");
-		LOG.info("## [INIT] trigger test data initialization on server side");
-		LOG.info("############################################################################################################");
-		initializeTestData();
-		LOG.info("############################################################################################################");
-		LOG.info("## [WAIT] for all test data availale");
-		LOG.info("############################################################################################################");
-		waitForTestDataAvailable();
-
+	}
+	
+	private void cleanupTestdataAfterTest() {
+	    cleanupAllTestProjects();
+        cleanupAllTestUsers();
 	}
 	
 	protected void resetAndStopEventInspection() {

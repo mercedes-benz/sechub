@@ -318,22 +318,6 @@ public class AsUser {
 		return AssertExecutionResult.assertResult(result);
 	}
 	
-	/**
-	 * When not changed by project specific mock data setup this will result in a RED traffic light result.<br><br>
-	 * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project to scan!
-	 * @param project
-	 * @return execution result
-	 */
-	public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
-		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
-		return AssertExecutionResult.assertResult(result);
-	}
-	
-	public AssertExecutionResult createCodeScanAndFetchScanData(TestProject project) {
-		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
-		return AssertExecutionResult.assertResult(result);
-	}
-	
 	public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
 	    restartJob(sechubJobUUID);
 	    waitForJobDone(project, sechubJobUUID);
@@ -542,6 +526,27 @@ public class AsUser {
         getRestHelper().post(url);
         return this;
         
+    }
+    public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,"zipfile_contains_only_test1.txt.zip");
+    }
+    
+    public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project,IntegrationTestMockMode mode) {
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,mode,"zipfile_contains_only_test1.txt.zip");
+    }
+    
+    public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project,IntegrationTestMockMode mode, String pathInsideResources) {
+        UUID uuid = triggerAsyncScanAndGetJobUUID(project, mode);
+        upload(project, uuid, pathInsideResources);
+        
+        approveJob(project, uuid);
+        return uuid;
+    }
+    
+    public UUID triggerAsyncScanAndGetJobUUID(TestProject project,IntegrationTestMockMode runMode) {
+        UUID uuid = createCodeScan(project, runMode);
+        assertNotNull(uuid);
+        return uuid;
     }
 
     

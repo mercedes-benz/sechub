@@ -122,19 +122,20 @@ public class ProjectMockConfigurationScenario2IntTest {
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.YELLOW));
 
 		/* execute + test */
-		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isYellow();
+		
+		as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1).isYellow();
 	
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.RED));
 
 		/* execute + test */
-		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isRed();
+		as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1).isRed();
 		
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("codeScan", TrafficLight.GREEN));
 
 		/* execute + test */
-		as(USER_1).createCodeScanAndFetchScanData(PROJECT_1).isGreen();
+		as(USER_1).withSecHubClient().startAndWaitForCodeScan(PROJECT_1).isGreen();
 	
 	}
 	
@@ -148,19 +149,19 @@ public class ProjectMockConfigurationScenario2IntTest {
 			setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.YELLOW));
 
 		/* execute + test */
-		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isYellow();
+		as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1).isYellow();
 	
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.RED));
 
 		/* execute + test */
-		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isRed();
+		as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1).isRed();
 		
 		/* Step2: prepare */
 		as(USER_1).setProjectMockConfiguration(PROJECT_1, createMockScanConfig("infraScan", TrafficLight.GREEN));
 
 		/* execute + test */
-		as(USER_1).createInfraScanAndFetchScanData(PROJECT_1).isGreen();
+		as(USER_1).withSecHubClient().createInfraScanAndFetchScanData(PROJECT_1).isGreen();
 	
 	}
 	
