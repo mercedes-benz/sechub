@@ -12,6 +12,9 @@ sechub:
         initialdelay: "100"
         # every 100 milliseconds, so we got faster test results
         delay: "100"
+  check:
+    canceljob:
+      delay: "300" # every 300 milliseconds
   scan:
     scanconfig:
       refresh:

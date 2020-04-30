@@ -56,6 +56,7 @@ public class ProjectScanLog {
 	public static final String STATUS_STARTED = "STARTED";
 	public static final String STATUS_OK = "OK";
 	public static final String STATUS_FAILED = "FAILED";
+    public static final String STATUS_ABANDONED = "ABANDONDED";
 
 	@Id
 	@GeneratedValue(generator = "UUID")

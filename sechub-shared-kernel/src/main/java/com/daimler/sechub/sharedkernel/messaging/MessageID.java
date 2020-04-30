@@ -8,6 +8,7 @@ import java.util.Set;
 public enum MessageID {
 	START_SCAN( /* @formatter:off */
 	            MessageDataKeys.SECHUB_UUID,
+	            MessageDataKeys.BATCH_JOB_ID,
 	            MessageDataKeys.EXECUTED_BY,
 	            MessageDataKeys.SECHUB_CONFIG),
 	/* @formatter:on */
@@ -15,6 +16,11 @@ public enum MessageID {
 	SCAN_DONE,
 
 	SCAN_FAILED,
+	
+	/**
+	 * Will happen because of scan has been restarted
+	 */
+	SCAN_ABANDONDED,
 
 	/**
 	 * This message will contain full data of an created user.
@@ -125,7 +131,11 @@ public enum MessageID {
     
     JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_UUID),
     
-    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID),
+    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID), 
+    
+    REQUEST_BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    
+    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

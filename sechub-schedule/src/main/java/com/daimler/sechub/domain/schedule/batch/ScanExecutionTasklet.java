@@ -17,6 +17,7 @@ import com.daimler.sechub.domain.schedule.SchedulingConstants;
 import com.daimler.sechub.domain.schedule.batch.BatchConfiguration.BatchJobExecutionScope;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -31,6 +32,8 @@ class ScanExecutionTasklet implements Tasklet {
 
 	private final BatchJobExecutionScope scope;
 
+    private Long batchJobId;
+
 	private static final Logger LOG = LoggerFactory.getLogger(ScanExecutionTasklet.class);
 
 	ScanExecutionTasklet(BatchJobExecutionScope batchExecutionScope) {
@@ -40,13 +43,14 @@ class ScanExecutionTasklet implements Tasklet {
 	@Override
 	@UseCaseSchedulerStartsJob(@Step(number = 3, next = 5, name = "Batch Job", description = "usecases/job/scheduler_starts_job_tasklet.adoc"))
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+	    this.batchJobId=contribution.getStepExecution().getJobExecution().getJobId();
 		executeSafe();
 		return RepeatStatus.FINISHED;
 	}
 
 	@IsSendingSyncMessage(MessageID.START_SCAN)
 	private void executeSafe() {
-
+	    
 		JobParameters jobParameters = this.scope.getJobExecution().getJobParameters();
 		LOG.debug("executing with parameters:{}", jobParameters);
 
@@ -62,17 +66,18 @@ class ScanExecutionTasklet implements Tasklet {
 			request.set(MessageDataKeys.EXECUTED_BY, sechubJob.getOwner());
 			request.set(MessageDataKeys.SECHUB_UUID, secHubJobUUID);
 			request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
+			
+			BatchJobMessage batchJobIdMessage = new BatchJobMessage();
+			batchJobIdMessage.setBatchJobId(batchJobId);
+			batchJobIdMessage.setSechubJobUUID(secHubJobUUID);
+            request.set(MessageDataKeys.BATCH_JOB_ID , batchJobIdMessage);
 
 			/* wait for scan event result - synchron */
 			DomainMessageSynchronousResult response = scope.getEventBusService().sendSynchron(request);
 
-			/* result fetched, update scheduler data */
 			updateSecHubJob(secHubJobUUID, response);
 
-			LOG.info("executing done: {}", secHubJobUUIDAsString);
-
-			/* send domain event */
-			sendJobDone(secHubJobUUID);
+			sendJobDoneMessageWhenNotAbandonded(secHubJobUUID, response);
 
 		} catch (Exception e) {
 			LOG.error("Error happend at spring batch task execution:" + e.getMessage(), e);
@@ -83,6 +88,15 @@ class ScanExecutionTasklet implements Tasklet {
 		}
 	}
 
+    private void sendJobDoneMessageWhenNotAbandonded(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
+        if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
+            LOG.info("Will not send sechub job done message, because scan was abandoned");
+            return;
+        }
+        LOG.info("executing done: {}", secHubJobUUID);
+        sendJobDone(secHubJobUUID);
+    }
+
 	private void markSechHubJobFailed(UUID secHubJobUUID) {
 		updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null);
 
@@ -91,6 +105,14 @@ class ScanExecutionTasklet implements Tasklet {
 
 	private void updateSecHubJob(UUID secHubUUID, DomainMessageSynchronousResult response) {
 		ExecutionResult result;
+		if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
+		    /* Abandon happens normally only, when doing a restart or an hard internal cancel.
+		     * In both situations the sechub job execution result inside scheduler is already set before,
+		     * and state will also be changed to CANCELED, or on restart to RUNNING 
+		     */
+		    LOG.info("Ignore sechub job update, because scan was abandoned");
+		    return;
+		}
 		if (response.hasFailed()) {
 			result = ExecutionResult.FAILED;
 		} else {

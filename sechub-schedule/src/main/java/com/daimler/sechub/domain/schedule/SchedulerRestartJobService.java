@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.batch.BatchConfiguration;
+import com.daimler.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.LogConstants;
@@ -65,17 +66,15 @@ public class SchedulerRestartJobService {
     @Autowired
     AuditLogService auditLogService;
 
-    @Autowired
-    JobExplorer explorer;
-
-    @Autowired
-    JobOperator operator;
-
     @Autowired 
     SecHubEnvironment sechubEnvironment;
     
     @Autowired
     ScheduleAssertService scheduleAssertService;
+    
+    @Autowired
+    SchedulerCancelBatchJobService schedulerCancelJobService;
+    
     /**
      * This service will restart given JOB. There is NO check if current user has
      * access - this must be done before.
@@ -127,11 +126,14 @@ public class SchedulerRestartJobService {
             sendJobRestartCanceled(job, ownerEmailAddress, "Restart canceled, because job already finished");
             throw new AlreadyExistsException("Job has already finished - restart not necessary");
         }
+        
+        /* when we have still running batch jobs we must terminate them as well + abandon */
+        schedulerCancelJobService.stopAndAbandonAllRunningBatchJobsForSechubJobUUID(jobUUID);
+
         if (hard) {
             sendPurgeJobResultsSynchronousRequest(job);
         }
 
-        stopAllRunningBatchJobsForSechubJobUUID(jobUUID);
 
         MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
 
@@ -142,35 +144,6 @@ public class SchedulerRestartJobService {
         launcherService.executeJob(secHubJob);
         LOG.info("job {} has been hard restarted", jobUUID);
 
-    }
-
-    private void stopAllRunningBatchJobsForSechubJobUUID(UUID jobUUID) {
-        /* prepare batch job */
-        String jobUUIDasString = jobUUID.toString();
-        Set<JobExecution> found = explorer.findRunningJobExecutions(BatchConfiguration.JOB_NAME_EXECUTE_SCAN);
-        for (JobExecution exec : found) {
-            String sechubUUIDfound = exec.getJobParameters().getString(SchedulingConstants.BATCHPARAM_SECHUB_UUID);
-            if (jobUUIDasString.equals(sechubUUIDfound)) {
-                /* found one */
-                stopAndAbandonBatchJobExecution(exec,jobUUID);
-            }
-        }
-    }
-
-    private void stopAndAbandonBatchJobExecution(JobExecution foundRunningExecution, UUID jobUUID) {
-        LOG.info("Found running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-        try {
-            operator.stop(foundRunningExecution.getId());
-            try {
-                operator.abandon(foundRunningExecution.getId());
-                LOG.info("Stopped and abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-            } catch (JobExecutionAlreadyRunningException e) {
-                LOG.warn("Stopped but not abandoned former running batch-job {} for {}", foundRunningExecution.getId(), jobUUID, e);
-            }
-
-        } catch (NoSuchJobExecutionException | JobExecutionNotRunningException e) {
-            LOG.info("Was not able to stop running batch-job {} for {}", foundRunningExecution.getId(), jobUUID);
-        }
     }
 
     private void markJobAsNewExecutedNow(ScheduleSecHubJob secHubJob) {
@@ -208,7 +181,6 @@ public class SchedulerRestartJobService {
         if (result.hasFailed()) {
             throw new SecHubRuntimeException("Purge failed!");
         }
-        
         
     }
 

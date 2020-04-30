@@ -531,7 +531,7 @@ public class AsUser {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,"zipfile_contains_only_test1.txt.zip");
     }
     
-    public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project,IntegrationTestMockMode mode) {
+    public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project,IntegrationTestMockMode mode) {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,mode,"zipfile_contains_only_test1.txt.zip");
     }
     

@@ -29,17 +29,17 @@ public enum IntegrationTestMockMode {
 
 	CODE_SCAN__CHECKMARX__YELLOW__FAST("../sechub-doc/src/main/java"),
 
-	/*
+	/**
      * runs 1 second - results in green
      */
 	CODE_SCAN__CHECKMARX__GREEN__FAST("../../../../src"),
 
-	/*
+	/**
      * runs 10 milliseconds - results in green
      */
 	CODE_SCAN__CHECKMARX__GREEN__SUPERFAST("../sechub-integrationtest/src/main/java"),
 	
-	/*
+	/**
 	 * runs 4 seconds - results in green
 	 */
 	CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING("../sechub-test/src/main/java"),

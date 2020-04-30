@@ -108,7 +108,7 @@ public class TestAPI {
             @Override
             public boolean runImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                System.out.println(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("OK");
             }
         });
@@ -127,7 +127,7 @@ public class TestAPI {
             @Override
             public boolean runImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
-                System.out.println(">>>>>>>>>JOB:STATUS:" + status);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("STARTED");
             }
         });

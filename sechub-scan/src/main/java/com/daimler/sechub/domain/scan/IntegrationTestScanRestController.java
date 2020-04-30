@@ -67,7 +67,7 @@ public class IntegrationTestScanRestController {
     private ScanConfigService scanConfigService;
     
     @Autowired
-    private ScanJobService scanJobCancelService;
+    private IntegrationTestScanJobListener scanJobCancelService;
     
     @Autowired
     private ProductResultService productResultService;

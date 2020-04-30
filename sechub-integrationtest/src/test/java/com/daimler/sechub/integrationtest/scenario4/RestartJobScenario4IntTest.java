@@ -12,11 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.daimler.sechub.integrationtest.api.AsUser;
-import com.daimler.sechub.integrationtest.api.AssertFullScanData;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
 /**
@@ -158,14 +155,14 @@ public class RestartJobScenario4IntTest {
     @Test
     /**
      * We simulate a JVM crash where a product result was already written to
-     * database.
+     * database. 
      */
     public void restart__simulate_jvm_crash_long_running_job() {
         /* @formatter:off */
         /* prepare */
         clearMetaDataInspection();
 
-        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         waitForJobRunning(project, sechubJobUUD);
 
         /* execute */
@@ -181,11 +178,15 @@ public class RestartJobScenario4IntTest {
         /* @formatter:on */
 
         assertInspections().hasAmountOfInspections(2);
-        assertEquals(2, countJobResults(sechubJobUUD)); // checkmarx + sereco - still only 2 results (old ones must be overriden)
         
         as(SUPER_ADMIN).
             downloadFullScanDataFor(sechubJobUUD).
-            containsFiles(4);
+            dumpDownloadFilePath().
+            containsFile("CHECKMARX.xml").
+            containsFile("metadata_CHECKMARX.json").
+            containsFile("SERECO.json").
+            containsFile("metadata_SERECO.json").
+            containsFiles(6); // 4 + 2 log files
     }
 
     @Test
