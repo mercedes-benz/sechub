@@ -44,3 +44,14 @@ include 'sechub-cli',
 
 'sechub-developertools'
 
+buildCache {
+    def useTempCache = System.getenv('SECHUB_BUILD_US_TMP_CACHE')
+    
+    if (useTempCache!=null){
+        local {
+            /* Set local build cache directory. using build/temp-cache let clean destroy the former cache..*/
+            directory = "${settingsDir}/build/temp-cache"
+        }
+    }
+     
+}
