@@ -9,6 +9,7 @@ import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterConfig;
 import com.daimler.sechub.adapter.AdapterContext;
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterRuntimeContext;
 import com.daimler.sechub.adapter.support.MockSupport;
 
@@ -26,6 +27,11 @@ import com.daimler.sechub.adapter.support.MockSupport;
  */
 public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C extends AdapterConfig> extends AbstractAdapter<A, C> implements MockedAdapter<C> {
 
+    private static final String KEY_METADATA_INITIAL = "initial";
+    private static final String KEY_METADATA_COMBINED = "combined";
+    private static final String KEY_METADATA_BEFORE_WAIT = "before_wait";
+    private static final String DEFAULT_METADATA_MOCK_BEFORE_WAIT = "before-wait";
+    private static final String DEFAULT_METADATA_MOCK_INITIAL_VALUE = "initial-value";
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMockedAdapter.class);
     final MockSupport mockSupport = new MockSupport();
 
@@ -52,16 +58,63 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         }
         String target = config.getTargetAsString();
 
+        simulateMetaDataPerstenceInitial(config, runtimeContext);
+        
         throwExceptionIfConfigured(config, setup, target);
         String result = loadResultAsConfigured(setup, target);
 
+        simulateMetaDataPerstenceBeforeWait(config, runtimeContext);
         waitIfConfigured(timeStarted, setup, target);
+        simulateMetaDataPerstenceAfterWait(config, runtimeContext);
 
         LOG.trace("Returning content:{}", result);
 
         return result;
     }
 
+    protected void simulateMetaDataPerstenceInitial(C config, AdapterRuntimeContext runtimeContext) {
+        AdapterMetaData metaData = assertMetaData(runtimeContext);
+        metaData.setValue(KEY_METADATA_INITIAL, DEFAULT_METADATA_MOCK_INITIAL_VALUE);
+        metaData.setValue(KEY_METADATA_COMBINED, "1");
+    }
+    
+
+
+    protected void simulateMetaDataPerstenceBeforeWait(C config, AdapterRuntimeContext runtimeContext) {
+        AdapterMetaData metaData = assertMetaData(runtimeContext);
+        metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
+        
+        String value = metaData.getValue(KEY_METADATA_COMBINED);
+        metaData.setValue(KEY_METADATA_COMBINED, value+"+2");
+    }
+    
+    protected void simulateMetaDataPerstenceAfterWait(C config, AdapterRuntimeContext runtimeContext) {
+        AdapterMetaData metaData = assertMetaData(runtimeContext);
+        metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
+        
+        String combined = metaData.getValue(KEY_METADATA_COMBINED);
+        String initial = metaData.getValue(KEY_METADATA_INITIAL);
+        String before = metaData.getValue(KEY_METADATA_BEFORE_WAIT);
+        
+        if (!"1+2".equals(combined)) {
+            throw new IllegalStateException("meta data for combined value was not as expected ,but:"+combined);
+        }
+        if (!DEFAULT_METADATA_MOCK_INITIAL_VALUE.equals(initial)) {
+            throw new IllegalStateException("meta data for initial value was not as expected ,but:"+initial);
+        }
+        if (!DEFAULT_METADATA_MOCK_BEFORE_WAIT.equals(before)) {
+            throw new IllegalStateException("meta data for before value was not as expected ,but:"+before);
+        }
+    }
+
+
+    private AdapterMetaData assertMetaData(AdapterRuntimeContext runtimeContext) {
+        AdapterMetaData metaData = runtimeContext.getMetaData();
+        if (metaData==null) {
+            throw new IllegalStateException("Meta data may not be null inside adapter!");
+        }
+        return metaData;
+    }
     private String loadResultAsConfigured(MockedAdapterSetupEntry setup, String target) {
         String resultFilePath = setup.getResultFilePathFor(target);
         LOG.info("adapter instance {} will use result file path :{} for targeturl:{}", hashCode(), resultFilePath, target);
