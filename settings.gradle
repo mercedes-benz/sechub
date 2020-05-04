@@ -45,7 +45,7 @@ include 'sechub-cli',
 'sechub-developertools'
 
 buildCache {
-    def useTempCache = System.getenv('SECHUB_BUILD_US_TMP_CACHE')
+    def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
     
     if (useTempCache!=null){
         local {

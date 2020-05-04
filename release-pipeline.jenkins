@@ -15,6 +15,7 @@ pipeline {
 
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
+        SECHUB_BUILD_USE_TMP_CACHE ="true" // we use temporary cache, so always clean and timestamps in tests are always correct
     }
 
     stages {
