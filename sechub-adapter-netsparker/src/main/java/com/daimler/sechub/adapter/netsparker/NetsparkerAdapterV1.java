@@ -158,7 +158,6 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 		NetsparkerAdapterConfig config = context.getConfig();
 		String traceID = config.getTraceID();
 		AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        metaData.getValue(NetsparkerMetaDataID.KEY_TARGET_URI);
         metaData.setValue(NetsparkerMetaDataID.KEY_TARGET_URI, ""+context.getConfig().getTargetURI());
 
 		String jsonAsString = buildJsonForCreateNewScan(context.json(), config);

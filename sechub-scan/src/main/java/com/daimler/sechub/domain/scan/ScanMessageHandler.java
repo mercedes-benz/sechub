@@ -22,7 +22,6 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
-import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MappingMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;

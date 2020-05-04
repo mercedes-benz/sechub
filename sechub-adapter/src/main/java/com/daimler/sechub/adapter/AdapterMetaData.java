@@ -74,7 +74,7 @@ public class AdapterMetaData {
      * @return value or <code>null</code>
      */
     public Long getValueLong(String key) {
-        String value = metaData.get(failSafeKey(key));
+        String value = getValue(key);
         if (value==null) {
             return null;
         }
@@ -87,7 +87,7 @@ public class AdapterMetaData {
      * @return value or <code>null</code>
      */
     public Boolean getValueBoolean(String key) {
-        String value = metaData.get(failSafeKey(key));
+        String value = getValue(key);
         if (value==null) {
             return null;
         }
@@ -100,7 +100,7 @@ public class AdapterMetaData {
      * @return value or <code>null</code>
      */
     public URI getValueURI(String key) {
-        String value = metaData.get(failSafeKey(key));
+        String value = getValue(key);
         if (value==null) {
             return null;
         }

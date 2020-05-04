@@ -4,14 +4,16 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
 public class JSONTestUtilTest {
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void null_returns_empty_json() {
-        assertEquals("{}", JSONTestUtil.toJSONContainingNullValues(null));
+        assertEquals("{}", JSONTestUtil.toJSONContainingNullValues((Map)null));
     }
 
     @Test

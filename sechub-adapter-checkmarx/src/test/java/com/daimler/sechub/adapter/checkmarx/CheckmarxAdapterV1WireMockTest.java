@@ -7,9 +7,11 @@ import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.daimler.sechub.adapter.support.APIURLSupport;
@@ -96,19 +99,134 @@ public class CheckmarxAdapterV1WireMockTest {
     }
     
     @Test
-    public void create_new_project_and_scan() throws Exception {
+    public void simulate_restart_upload_done_but_no_scan() throws Exception {
+        /* prepare */
+        
+        AdapterMetaData metadata = new AdapterMetaData();
+        metadata.setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true);
+        when(callback.getMetaDataOrNull()).thenReturn(metadata);
+      
+       
+       LinkedHashMap<String, String> loginResponse = login();
+       simulateCheckProjectExistsReturnsTrue(loginResponse);
+       /* no project creation*/
+       /* no upload */
+
+       /* scan start */
+       simulateStartScanAccepted();
+       
+       simulateWaitForQueingDoneReturns("New");
+       simulateWaitForQueingDoneReturns("Finished");
+       
+       simulateCheckScanAvailableReturns("Running");
+       simulateCheckScanAvailableReturns("Finished");
+
+       /* report start */
+       simulateStartReportCreationWasSuccesful();
+       
+       simulateWaitForReportResultsReturns("Something");
+       simulateWaitForReportResultsReturns("Something");
+       simulateWaitForReportResultsReturns("Created");
+       
+       /* download report */
+       simulateDownloadReportSuccesful();
+       
+    }
+    
+    @Test
+    public void simulate_restart_scan_already_exists_and_has_finished_but_no_report() throws Exception {
+       /* prepare */
+        
+        AdapterMetaData metadata = new AdapterMetaData();
+        metadata.setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true);
+        metadata.setValue(CheckmarxMetaDataID.KEY_SCAN_ID, CHECKMARX_SCAN_ID);
+        when(callback.getMetaDataOrNull()).thenReturn(metadata);
+      
+       
+       LinkedHashMap<String, String> loginResponse = login();
+       simulateCheckProjectExistsReturnsTrue(loginResponse);
+       /* no project creation*/
+       /* no upload */
+       
+       /* no scan start - because reused*/
+       simulateWaitForQueingDoneReturns("Finished");
+       simulateCheckScanAvailableReturns("Finished");
+
+       /* report start */
+       /* report start */
+       simulateStartReportCreationWasSuccesful();
+       
+       simulateWaitForReportResultsReturns("Something");
+       simulateWaitForReportResultsReturns("Created");
+       
+       /* download report */
+       simulateDownloadReportSuccesful();
+
+       
+       
+       /* execute */
+       String result = adapterToTest.start(config, callback);
+       
+       /* @formatter:on */
+       /* test */
+       assertEquals(CONTENT_FROM_CHECKMARX,result);
+       history.assertAllRememberedUrlsWereRequested();
+       
+    }
+    
+    @Test
+    public void simulate_restart_and_scan_already_exists_and_also_report_exists_and_both_have_finished() throws Exception {
+       /* prepare */
+        
+        AdapterMetaData metadata = new AdapterMetaData();
+        metadata.setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true);
+        metadata.setValue(CheckmarxMetaDataID.KEY_SCAN_ID, CHECKMARX_SCAN_ID);
+        metadata.setValue(CheckmarxMetaDataID.KEY_REPORT_ID, CHECKMARX_REPORT_ID);
+        when(callback.getMetaDataOrNull()).thenReturn(metadata);
+      
+       
+       LinkedHashMap<String, String> loginResponse = login();
+       simulateCheckProjectExistsReturnsTrue(loginResponse);
+       /* no project creation*/
+       /* no upload */
+       /* no scan start */
+       simulateWaitForQueingDoneReturns("Finished");
+       simulateCheckScanAvailableReturns("Finished");
+
+       /* no report start */
+       simulateWaitForReportResultsReturns("Created");
+       
+       /* download report */
+       simulateDownloadReportSuccesful();
+
+       
+       
+       /* execute */
+       String result = adapterToTest.start(config, callback);
+       
+       /* @formatter:on */
+       /* test */
+       assertEquals(CONTENT_FROM_CHECKMARX,result);
+       history.assertAllRememberedUrlsWereRequested();
+       
+    }
+    
+    @Test
+    public void simulate_start__create_new_project_and_scan() throws Exception {
        /* prepare */
       
        
        LinkedHashMap<String, String> loginResponse = login();
-
+       /* project creation*/
        simulateCheckProjectExistsReturnsFalse(loginResponse);
        simulateCreateProjectWasSuccessful();
        
        LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
        simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap);
+       /* upload */
        simulateUploadZipFileWasSuccesful();
        
+       /* scan start */
        simulateStartScanAccepted();
        
        simulateWaitForQueingDoneReturns("New");
@@ -119,12 +237,14 @@ public class CheckmarxAdapterV1WireMockTest {
        simulateCheckScanAvailableReturns("Running");
        simulateCheckScanAvailableReturns("Finished");
 
+       /* report start */
        simulateStartReportCreationWasSuccesful();
        
        simulateWaitForReportResultsReturns("Something");
        simulateWaitForReportResultsReturns("Something");
        simulateWaitForReportResultsReturns("Created");
        
+       /* download report */
        simulateDownloadReportSuccesful();
 
        
@@ -274,7 +394,28 @@ public class CheckmarxAdapterV1WireMockTest {
                    )
            );
     }
-
+    
+    private void simulateCheckProjectExistsReturnsTrue(LinkedHashMap<String, String> checkProjectExistingMap) {
+        /* @formatter:off */
+        LinkedHashMap<String,Object> createProjectResult = new LinkedHashMap<>();
+        createProjectResult.put("id", CHECKMARX_PROJECT_ID);
+        createProjectResult.put("name", PROJECT_NAME);
+        createProjectResult.put("owningTeam", null);
+        
+        ArrayList<Map<String,Object>> results = new  ArrayList<Map<String,Object>>();
+        results.add(createProjectResult);
+        
+        stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/projects?"+WireMockUtil.toFormUrlEncoded(checkProjectExistingMap,true))))).
+                willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(JSONTestUtil.toJSONContainingNullValues(results))
+                    )
+        );
+        /* @formatter:on */
+        
+    }
+    
     private LinkedHashMap<String, String> login() throws JSONException {
         String sessionToken = "token-returned-by-checkmarx"; 
            

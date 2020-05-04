@@ -127,8 +127,12 @@ public class ScanService implements SynchronMessageHandler {
             LOG.error("Was not able to start scan." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
         } finally {
-            if (! context.isAbandonded()) {
-                cleanupStorage(context);
+            if (context == null) {
+                LOG.warn("No sechub execution context available, so cannot check state or cleanup storage");
+            }else {
+                if (!context.isAbandonded()) {
+                    cleanupStorage(context);
+                }
             }
         }
     }
