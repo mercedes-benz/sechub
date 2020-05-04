@@ -35,7 +35,7 @@ ext {
 
 /* own clean task - we need this because root project has not included a module providing the task */
 task clean(type: Delete){
-    delete file("${project.projectDir}/build").listFiles() // we do NOT clear buildSrc/build here
+    delete file("${project.projectDir}/build").listFiles() // so we do NOT clear buildSrc/build here!
 }
 
 allprojects {
@@ -51,6 +51,11 @@ allprojects {
              jcenter()
         }
     }
+    
+    /* workaround to disable test caching - see https://github.com/gradle/gradle/issues/9151 */
+    tasks.withType(Test).configureEach {
+        outputs.upToDateWhen { false }
+    }
 
 
 }
@@ -60,5 +65,3 @@ apply from: "${rootProject.projectDir}/build-spring.gradle"
 apply from: "${rootProject.projectDir}/build-maven.gradle"
 apply from: "${rootProject.projectDir}/build-eclipse.gradle"
 apply from: "${rootProject.projectDir}/build-report.gradle"
-
-
