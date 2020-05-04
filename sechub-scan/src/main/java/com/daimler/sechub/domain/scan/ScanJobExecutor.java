@@ -42,6 +42,7 @@ class ScanJobExecutor {
         CanceableScanJobRunnable canceableJobRunner = new CanceableScanJobRunnable();
         Thread t = new Thread(canceableJobRunner, "SecHub-exec-" + context.getTraceLogId().getPlainId()+"-"+progress.getId());
         canceableJobRunner.executorThread = t;
+        
 
         UUID sechubJobUUID = context.getSechubJobUUID();
         try {
@@ -49,6 +50,7 @@ class ScanJobExecutor {
 
             this.scanService.scanJobListener.started(sechubJobUUID, canceableJobRunner);
 
+            LOG.debug("will wait {} milliseconds before cancel checks",millisecondsToWaitBeforeCancelCheck);
             /* wait for job runnable - except when canceled */
             while (t.isAlive()) {
                 try {

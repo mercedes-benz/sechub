@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.AssertEventInspection;
-import com.daimler.sechub.integrationtest.api.AssertExecutionResult;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
@@ -115,6 +114,10 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.scan.ScanService").
            /* 6 */
+           syncEvent(MessageID.REQUEST_BATCH_JOB_STATUS).
+                 from("com.daimler.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.daimler.sechub.domain.schedule.batch.SchedulerBatchJobStatusRequestHandler").
+           /* 7 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.administration.job.JobAdministrationMessageHandler").
@@ -122,7 +125,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
     }
-
+    
     @Test
     /**
      * We simulate a JVM crash where NO product result was written to database.
@@ -168,6 +171,10 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.scan.ScanService").
            /* 5 */
+           syncEvent(MessageID.REQUEST_BATCH_JOB_STATUS).
+                 from("com.daimler.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.daimler.sechub.domain.schedule.batch.SchedulerBatchJobStatusRequestHandler").
+           /* 6 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.administration.job.JobAdministrationMessageHandler").
@@ -256,6 +263,10 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.scan.ScanService").
            /* 4 */
+           syncEvent(MessageID.REQUEST_BATCH_JOB_STATUS).
+                 from("com.daimler.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.daimler.sechub.domain.schedule.batch.SchedulerBatchJobStatusRequestHandler").
+           /* 5 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.administration.job.JobAdministrationMessageHandler").
@@ -264,7 +275,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
         /* @formatter:on */
         
     }
-
+    
     @Test
     /**
      * We simulate a JVM crash where NO product result was written to database.
@@ -306,6 +317,10 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.scan.ScanService").
            /* 4 */
+           syncEvent(MessageID.REQUEST_BATCH_JOB_STATUS).
+                 from("com.daimler.sechub.domain.scan.ScanProgressMonitor").
+                 to("com.daimler.sechub.domain.schedule.batch.SchedulerBatchJobStatusRequestHandler").
+           /* 5 */
            asyncEvent(MessageID.JOB_DONE).
                  from("com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet").
                  to("com.daimler.sechub.domain.administration.job.JobAdministrationMessageHandler").

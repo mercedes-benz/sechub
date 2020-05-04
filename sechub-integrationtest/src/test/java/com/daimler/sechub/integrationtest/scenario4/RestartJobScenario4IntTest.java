@@ -164,6 +164,7 @@ public class RestartJobScenario4IntTest {
 
         UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         waitForJobRunning(project, sechubJobUUD);
+        waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
         as(SUPER_ADMIN).restartCodeScanAndFetchJobStatus(project,sechubJobUUD);
@@ -186,7 +187,7 @@ public class RestartJobScenario4IntTest {
             containsFile("metadata_CHECKMARX.json").
             containsFile("SERECO.json").
             containsFile("metadata_SERECO.json").
-            containsFiles(6); // 4 + 2 log files
+            containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
     }
 
     @Test

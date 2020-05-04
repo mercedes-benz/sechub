@@ -107,6 +107,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		requireNonNull(projectId, "Project id must be set");
 
 		for (ProductExecutor productExecutor : executors) {
+		    if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
 		    /* find former results - necessary for restart, contains necessary meta data for restart*/
 		    List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
 
@@ -126,7 +129,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
 				productResults.add(fallbackResult);
 			}
-
+			if (Thread.currentThread().isInterrupted()) {
+			    return;
+			}
 			/* execution was successful - so persist new results */
 			for (ProductResult productResult : productResults) {
 			    executorContext.persist(productResult);

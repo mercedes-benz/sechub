@@ -119,7 +119,7 @@ public class ScanService implements SynchronMessageHandler {
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
 
         } catch (SecHubExecutionAbandonedException e) {
-            cleanupStorage=false; // when abandonded we keep the storage
+            cleanupStorage = false; // when abandonded we keep the storage
             LOG.info("Execution abandoned on scan {} - message: {}", traceLogID(request), e.getMessage());
             return new DomainMessageSynchronousResult(MessageID.SCAN_ABANDONDED, e);
         } catch (SecHubExecutionException e) {
@@ -144,6 +144,9 @@ public class ScanService implements SynchronMessageHandler {
         UUID logUUID = scanLogService.logScanStarted(context);
         try {
             BatchJobMessage jobIdMessage = request.get(MessageDataKeys.BATCH_JOB_ID);
+            if (jobIdMessage == null) {
+                throw new IllegalStateException("no batch job id set for sechub job:" + sechubJobUUID);
+            }
             long batchJobId = jobIdMessage.getBatchJobId();
 
             ProgressMonitor progressMonitor = monitorFactory.createProgressMonitor(batchJobId);
