@@ -68,8 +68,29 @@ class ScanJobExecutor {
         } finally {
             this.scanService.scanJobListener.ended(sechubJobUUID);
         }
-        if (canceableJobRunner.exception != null) {
-            throw canceableJobRunner.exception;
+        handlErrors(canceableJobRunner);
+    }
+
+    private void handlErrors(CanceableScanJobRunnable canceableJobRunner) throws SecHubExecutionException {
+
+        SecHubExecutionException exception = canceableJobRunner.exception;
+        if (exception == null) {
+            /* no failure - so just return */
+            return;
+        }
+        /* abdoned exception are treated special: executor will NOT persist result in this case! */
+        if (exception instanceof SecHubExecutionAbandonedException) {
+            throw exception; // just rethrow abandoned
+        }
+        if (progress instanceof Abandonable) {
+            Abandonable abandonable = (Abandonable) progress;
+            if (abandonable.isAbandoned()) {
+                throw new SecHubExecutionAbandonedException("A failure happend, but already abandoned job",exception);
+            }
+        }
+        /* not abandonded, so return failure by exception - will result in stored product result failure*/
+        if (exception != null) {
+            throw exception;
         }
     }
 
@@ -83,7 +104,7 @@ class ScanJobExecutor {
         LOG.info("Check if job {} shall be abandoned", sechubJobUUID);
         if (abandoble.isAbandoned()) {
             LOG.info("Must abandon {}", sechubJobUUID);
-            throw new SecHubExecutionAbandonedException("Abandonded job " + sechubJobUUID + " because canceled");
+            throw new SecHubExecutionAbandonedException("Abandonded job " + sechubJobUUID + " because canceled",null);
         }
     }
 
