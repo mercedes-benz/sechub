@@ -21,78 +21,105 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
  */
 public class SecHubExecutionContext {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SecHubExecutionContext.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubExecutionContext.class);
 
-	private UUID sechubJobUUID;
-	private SecHubConfiguration configuration;
-	private UUIDTraceLogID traceLogId;
-	private String executedBy;
-	private Map<String, Object> dataMap = new HashMap<>();
+    private UUID sechubJobUUID;
+    private SecHubConfiguration configuration;
+    private UUIDTraceLogID traceLogId;
+    private String executedBy;
+    private Map<String, Object> dataMap = new HashMap<>();
 
-	public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
-		this.sechubJobUUID = sechubJobUUID;
-		this.configuration = configuration;
-		this.executedBy = executedBy;
-		this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
-	}
+    private boolean abandonded;
 
-	public String getExecutedBy() {
-		return executedBy;
-	}
+    private boolean canceled;
 
-	public UUID getSechubJobUUID() {
-		return sechubJobUUID;
-	}
+    public SecHubExecutionContext(UUID sechubJobUUID, SecHubConfiguration configuration, String executedBy) {
+        this.sechubJobUUID = sechubJobUUID;
+        this.configuration = configuration;
+        this.executedBy = executedBy;
+        this.traceLogId = UUIDTraceLogID.traceLogID(sechubJobUUID);
+    }
+    
+    public void markAbandonded() {
+        abandonded=true;
+    }
+    
+    public void markCanceled() {
+        canceled=true;
+    }
+    
+    public boolean isCanceled() {
+        return canceled;
+    }
+    
+    public boolean isCanceledOrAbandonded() {
+        return canceled || abandonded;
+    }
 
-	public SecHubConfiguration getConfiguration() {
-		return configuration;
-	}
+    public String getExecutedBy() {
+        return executedBy;
+    }
 
-	public UUIDTraceLogID getTraceLogId() {
-		return traceLogId;
-	}
+    public UUID getSechubJobUUID() {
+        return sechubJobUUID;
+    }
 
-	public String getTraceLogIdAsString() {
-		return traceLogId.toString();
-	}
+    public SecHubConfiguration getConfiguration() {
+        return configuration;
+    }
 
-	/**
-	 * Add additional data by typed key
-	 * @param <V>
-	 * @param id
-	 * @param value
-	 */
-	public <V> void putData(TypedKey<V> id, V value) {
-		if (id==null) {
-			return;
-		}
-		dataMap.put(id.getId(), value);
-	}
+    public UUIDTraceLogID getTraceLogId() {
+        return traceLogId;
+    }
 
-	/**
-	 * Get additional data by typed key
-	 * @param <V>
-	 * @param id
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public <V> V getData(TypedKey<V> id) {
-		if (id==null) {
-			return null;
-		}
-		Object value = dataMap.get(id.getId());
-		if (value == null) {
-			return null;
-		}
-		if (id.getValueClass().isAssignableFrom(value.getClass())) {
-			return (V) value;
-		}
-		LOG.error("Wrong usage in code: found entry for key '{}', but type '{}' found instead of wanted '{}'",id.getId(),value.getClass(),id.getValueClass());
-		return null;
-	}
+    public String getTraceLogIdAsString() {
+        return traceLogId.toString();
+    }
+
+    /**
+     * Add additional data by typed key
+     * 
+     * @param <V>
+     * @param id
+     * @param value
+     */
+    public <V> void putData(TypedKey<V> id, V value) {
+        if (id == null) {
+            return;
+        }
+        dataMap.put(id.getId(), value);
+    }
+
+    /**
+     * Get additional data by typed key
+     * 
+     * @param <V>
+     * @param id
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <V> V getData(TypedKey<V> id) {
+        if (id == null) {
+            return null;
+        }
+        Object value = dataMap.get(id.getId());
+        if (value == null) {
+            return null;
+        }
+        if (id.getValueClass().isAssignableFrom(value.getClass())) {
+            return (V) value;
+        }
+        LOG.error("Wrong usage in code: found entry for key '{}', but type '{}' found instead of wanted '{}'", id.getId(), value.getClass(),
+                id.getValueClass());
+        return null;
+    }
 
     public boolean isDeleteFormerResultsWanted() {
         return false;
+    }
+
+    public boolean isAbandonded() {
+        return abandonded;
     }
 
 }

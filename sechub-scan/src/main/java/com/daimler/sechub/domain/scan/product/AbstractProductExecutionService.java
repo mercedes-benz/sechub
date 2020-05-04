@@ -5,6 +5,7 @@ import static com.daimler.sechub.sharedkernel.UUIDTraceLogID.*;
 import static java.util.Objects.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,6 +59,10 @@ public abstract class AbstractProductExecutionService implements ProductExection
 			UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
 			SecHubConfiguration configuration = context.getConfiguration();
+			if (context.isCanceledOrAbandonded()) {
+			    LOG.debug("Canceled or abandoned, so ignored by {}", getClass().getSimpleName());
+			    return;
+			}
 			if (!isExecutionNecessary(context, traceLogID, configuration)) {
 				LOG.debug("NO execution necessary by {}", getClass().getSimpleName());
 				return;
@@ -76,6 +81,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		LOG.info("Start executor {} and wait for result. {}", executor.getIdentifier(), traceLogID);
 
 		List<ProductResult> productResults = executor.execute(context,executorContext);
+		if (context.isCanceledOrAbandonded()) {
+		    return Collections.emptyList();
+		}
 		int amount = 0;
 		if (productResults != null) {
 			amount = productResults.size();
@@ -107,17 +115,19 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		requireNonNull(projectId, "Project id must be set");
 
 		for (ProductExecutor productExecutor : executors) {
-		    if (Thread.currentThread().isInterrupted()) {
+		    if (context.isCanceledOrAbandonded()) {
                 return;
             }
 		    /* find former results - necessary for restart, contains necessary meta data for restart*/
 		    List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
-
 		    ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults,context, productExecutor);
 		            
 			List<ProductResult> productResults = null;
 			try {
 				productResults = execute(productExecutor, executorContext, context, traceLogID);
+				if (context.isCanceledOrAbandonded()) {
+	                return;
+	            }
 				if (productResults == null) {
 					getMockableLog().error("Product executor {} returned null as results {}", productExecutor.getIdentifier(), traceLogID);
 					continue;
@@ -129,9 +139,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
 				productResults.add(fallbackResult);
 			}
-			if (Thread.currentThread().isInterrupted()) {
-			    return;
-			}
+			if (context.isCanceledOrAbandonded()) {
+                return;
+            }
 			/* execution was successful - so persist new results */
 			for (ProductResult productResult : productResults) {
 			    executorContext.persist(productResult);

@@ -36,7 +36,7 @@ public class ProductResultTransactionService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ProductResult persistResult(UUIDTraceLogID traceLogID, ProductResult productResult) {
-        LOG.debug("persisting result - traceLogId:{}",traceLogID);
+        LOG.debug("persisting result of product {} - traceLogId:{}",productResult.getProductIdentifier(), traceLogID);
         return productResultRepository.save(productResult);
     }
     

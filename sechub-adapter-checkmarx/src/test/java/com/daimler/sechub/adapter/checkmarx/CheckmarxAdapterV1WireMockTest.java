@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
@@ -99,198 +100,32 @@ public class CheckmarxAdapterV1WireMockTest {
        /* prepare */
       
        
-       String sessionToken = "token-returned-by-checkmarx"; 
-       
-       LinkedHashMap<String,String> map = new LinkedHashMap<>();
-       map.put("username", USERNAME);
-       map.put("password", PASSWORD);
-       map.put("grant_type", "password");
-       map.put("scope", "sast_rest_api");
-       map.put("client_id", "resource_owner_client");
-       map.put("client_secret", "014DF517-39D1-4453-B7B3-9930C563627C"); // TODO maybe this must be customizable
+       LinkedHashMap<String, String> loginResponse = login();
 
+       simulateCheckProjectExistsReturnsFalse(loginResponse);
+       simulateCreateProjectWasSuccessful();
        
+       LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
+       simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap);
+       simulateUploadZipFileWasSuccesful();
+       
+       simulateStartScanAccepted();
+       
+       simulateWaitForQueingDoneReturns("New");
+       simulateWaitForQueingDoneReturns("New");
+       simulateWaitForQueingDoneReturns("Finished");
+       
+       simulateCheckScanAvailableReturns("Running");
+       simulateCheckScanAvailableReturns("Running");
+       simulateCheckScanAvailableReturns("Finished");
 
+       simulateStartReportCreationWasSuccesful();
        
-       /* @formatter:off */
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ login ....................................+ */
-       /* +-----------------------------------------------------------------------+ */
-       JSONObject expectedLoginResult = new JSONObject();
-       expectedLoginResult.put("access_token", sessionToken);
-       expectedLoginResult.put("token_type", "json");
-       expectedLoginResult.put("expires_in", new Date().toString());
-
-       stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/auth/identity/connect/token")))).
-               //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-               withHeader("content-type", equalTo(APPLICATION_FORM_URL_ENCODED_UTF_8)).
-               withRequestBody(equalTo(WireMockUtil.toFormUrlEncoded(map))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.OK.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(expectedLoginResult.toString()))
-               );
-
-       LinkedHashMap<String,String> checkProjectExistingMap = new LinkedHashMap<>();
-       checkProjectExistingMap.put("projectName", PROJECT_NAME);
-       checkProjectExistingMap.put("teamId", null);
-
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ check for project.........................+ */
-       /* +-----------------------------------------------------------------------+ */
-       /* we send 404, because project not found */
-       stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/projects?"+WireMockUtil.toFormUrlEncoded(checkProjectExistingMap,true))))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.NOT_FOUND.value())
-               )
-       );
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ create new project........................+ */
-       /* +-----------------------------------------------------------------------+ */
-       LinkedHashMap<String,Object> createProjectParam = new LinkedHashMap<>();
-       createProjectParam.put("isPublic", "false");
-       createProjectParam.put("name", PROJECT_NAME);
-       createProjectParam.put("owningTeam", null);
+       simulateWaitForReportResultsReturns("Something");
+       simulateWaitForReportResultsReturns("Something");
+       simulateWaitForReportResultsReturns("Created");
        
-       LinkedHashMap<String,Object> createProjectResult = new LinkedHashMap<>();
-       createProjectResult.put("id", CHECKMARX_PROJECT_ID);
-       createProjectResult.put("name", PROJECT_NAME);
-       createProjectResult.put("owningTeam", null);
-    
-       stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects")))).
-               //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-               withHeader("content-type", equalTo(APPLICATION_JSON+";v=2.0")).
-               withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(createProjectParam))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.OK.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(JSONTestUtil.toJSONContainingNullValues(createProjectResult)))
-               );
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ fetch scan settings for project...........+ */
-       /* +-----------------------------------------------------------------------+ */
-       LinkedHashMap<String,Object> fetchScanSettingsResultMap = new LinkedHashMap<>();
-       LinkedHashMap<String,Object> projectMap = new LinkedHashMap<>();
-       LinkedHashMap<String,Object> presetMap = new LinkedHashMap<>();
-       LinkedHashMap<String,Object> engineConfigurationMap = new LinkedHashMap<>();
-       fetchScanSettingsResultMap.put("project", projectMap);
-       fetchScanSettingsResultMap.put("preset", presetMap);
-       fetchScanSettingsResultMap.put("engineConfiguration",engineConfigurationMap);
-       projectMap.put("id", CHECKMARX_PROJECT_ID);
-       presetMap.put("id", CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
-       engineConfigurationMap.put("id", CHECKMARX_CONFIGURATION_ID);
-
-       stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/scanSettings/"+CHECKMARX_PROJECT_ID)))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.OK.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(JSONTestUtil.toJSONContainingNullValues(fetchScanSettingsResultMap)))
-               );
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ update scan settings for project..........+ */
-       /* +-----------------------------------------------------------------------+ */
-       LinkedHashMap<String,Object> updateScanSettingsParamMap = new LinkedHashMap<>();
-       updateScanSettingsParamMap.put("engineConfigurationId",CHECKMARX_CONFIGURATION_ID);
-       updateScanSettingsParamMap.put("presetId",CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
-       updateScanSettingsParamMap.put("projectId",CHECKMARX_PROJECT_ID);
-       
-       stubFor(put(urlEqualTo(history.rememberPUT(apiURLSupport.nextURL("/cxrestapi/sast/scanSettings")))).
-               withHeader("content-type", equalTo(APPLICATION_JSON+";v=1.1")).
-               withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(updateScanSettingsParamMap))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.OK.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(JSONTestUtil.toJSONContainingNullValues(fetchScanSettingsResultMap)))
-               );
-       
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ upload content zip........................+ */
-       /* +-----------------------------------------------------------------------+ */
-       stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects/"+CHECKMARX_PROJECT_ID+"/sourceCode/attachments")))).
-               withHeader("content-type", containing("multipart/form-data;charset=UTF-8")).
-               withMultipartRequestBody(
-                       aMultipart().
-                           withBody(equalTo("pseudo-zip-content")).
-                           withName("zippedSource")
-                       ).
-//               withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(updateScanSettingsParamMap))).
-               willReturn(aResponse()
-                       .withStatus(HttpStatus.NO_CONTENT.value()))
-               );
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ start scan ...............................+ */
-       /* +-----------------------------------------------------------------------+ */
-       LinkedHashMap<String,Object> startScanMap = new LinkedHashMap<>();
-       startScanMap.put("comment", "sechub job:sechub-trace-id");
-       startScanMap.put("forceScan", false);
-       startScanMap.put("isIncremental", true);
-       startScanMap.put("isPublic", false);
-       startScanMap.put("projectId", CHECKMARX_PROJECT_ID);
-       
-       LinkedHashMap<String,Object> startScanResult = new LinkedHashMap<>();
-       startScanResult.put("id", CHECKMARX_SCAN_ID);
-       
-       stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/sast/scans")))).
-               //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-               withHeader("content-type", equalTo(APPLICATION_JSON+";v=1.0")).
-               withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(startScanMap))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.CREATED.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(JSONTestUtil.toJSONContainingNullValues(startScanResult)))
-               );
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ wait for queing done......................+ */
-       /* +-----------------------------------------------------------------------+ */
-       simulateWaitForQueingDoneResults("New");
-       simulateWaitForQueingDoneResults("New");
-       simulateWaitForQueingDoneResults("Finished");
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ check scan available......................+ */
-       /* +-----------------------------------------------------------------------+ */
-       simulateCheckScanAvailable("Running");
-       simulateCheckScanAvailable("Running");
-       simulateCheckScanAvailable("Finished");
-
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ trigger report creation...................+ */
-       /* +-----------------------------------------------------------------------+ */
-       LinkedHashMap<String,Object> scanReportCreation = new LinkedHashMap<>();
-       scanReportCreation.put("reportType","XML");
-       scanReportCreation.put("scanId",CHECKMARX_SCAN_ID);
-       
-       LinkedHashMap<String,Object> scanReportAnswert= new LinkedHashMap<>();
-       scanReportAnswert.put("reportId",CHECKMARX_REPORT_ID);
-       
-       stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/reports/sastScan")))).
-               //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
-               withHeader("content-type", equalTo(APPLICATION_JSON)).
-               withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(scanReportCreation))).
-               willReturn(aResponse()
-                   .withStatus(HttpStatus.ACCEPTED.value())
-                   .withHeader("Content-Type", APPLICATION_JSON)
-                   .withBody(JSONTestUtil.toJSONContainingNullValues(scanReportAnswert)))
-               );
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ get report status ........................+ */
-       /* +-----------------------------------------------------------------------+ */
-       simulateWaitForReportResults("Something");
-       simulateWaitForReportResults("Something");
-       simulateWaitForReportResults("Created");
-       
-       /* +-----------------------------------------------------------------------+ */
-       /* +............................ provide report ...........................+ */
-       /* +-----------------------------------------------------------------------+ */
-       stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/reports/sastScan/"+CHECKMARX_REPORT_ID)))).
-               willReturn(aResponse()
-                       .withStatus(HttpStatus.OK.value())
-                       .withHeader("Content-Type", APPLICATION_JSON)
-                       .withBody(CONTENT_FROM_CHECKMARX)));
+       simulateDownloadReportSuccesful();
 
        
        
@@ -303,8 +138,183 @@ public class CheckmarxAdapterV1WireMockTest {
        history.assertAllRememberedUrlsWereRequested();
        
     }
+
+    private void simulateDownloadReportSuccesful() {
+        stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/reports/sastScan/"+CHECKMARX_REPORT_ID)))).
+                   willReturn(aResponse()
+                           .withStatus(HttpStatus.OK.value())
+                           .withHeader("Content-Type", APPLICATION_JSON)
+                           .withBody(CONTENT_FROM_CHECKMARX)));
+    }
+
+    private void simulateStartReportCreationWasSuccesful() {
+        LinkedHashMap<String,Object> scanReportCreation = new LinkedHashMap<>();
+           scanReportCreation.put("reportType","XML");
+           scanReportCreation.put("scanId",CHECKMARX_SCAN_ID);
+           
+           LinkedHashMap<String,Object> scanReportAnswert= new LinkedHashMap<>();
+           scanReportAnswert.put("reportId",CHECKMARX_REPORT_ID);
+           
+           stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/reports/sastScan")))).
+                   //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                   withHeader("content-type", equalTo(APPLICATION_JSON)).
+                   withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(scanReportCreation))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.ACCEPTED.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(JSONTestUtil.toJSONContainingNullValues(scanReportAnswert)))
+                   );
+    }
+
+    private void simulateStartScanAccepted() {
+        LinkedHashMap<String,Object> startScanMap = new LinkedHashMap<>();
+           startScanMap.put("comment", "sechub job:sechub-trace-id");
+           startScanMap.put("forceScan", false);
+           startScanMap.put("isIncremental", true);
+           startScanMap.put("isPublic", false);
+           startScanMap.put("projectId", CHECKMARX_PROJECT_ID);
+           
+           LinkedHashMap<String,Object> startScanResult = new LinkedHashMap<>();
+           startScanResult.put("id", CHECKMARX_SCAN_ID);
+           
+           stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/sast/scans")))).
+                   //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                   withHeader("content-type", equalTo(APPLICATION_JSON+";v=1.0")).
+                   withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(startScanMap))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.CREATED.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(JSONTestUtil.toJSONContainingNullValues(startScanResult)))
+                   );
+    }
+
+    private void simulateUploadZipFileWasSuccesful() {
+        stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects/"+CHECKMARX_PROJECT_ID+"/sourceCode/attachments")))).
+                   withHeader("content-type", containing("multipart/form-data;charset=UTF-8")).
+                   withMultipartRequestBody(
+                           aMultipart().
+                               withBody(equalTo("pseudo-zip-content")).
+                               withName("zippedSource")
+                           ).
+                   willReturn(aResponse()
+                           .withStatus(HttpStatus.NO_CONTENT.value()))
+                   );
+    }
+
+    private void simulateUpdateScanSettingsForProjectWereSuccessful(LinkedHashMap<String, Object> fetchScanSettingsResultMap) {
+        LinkedHashMap<String,Object> updateScanSettingsParamMap = new LinkedHashMap<>();
+           updateScanSettingsParamMap.put("engineConfigurationId",CHECKMARX_CONFIGURATION_ID);
+           updateScanSettingsParamMap.put("presetId",CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
+           updateScanSettingsParamMap.put("projectId",CHECKMARX_PROJECT_ID);
+           
+           stubFor(put(urlEqualTo(history.rememberPUT(apiURLSupport.nextURL("/cxrestapi/sast/scanSettings")))).
+                   withHeader("content-type", equalTo(APPLICATION_JSON+";v=1.1")).
+                   withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(updateScanSettingsParamMap))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.OK.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(JSONTestUtil.toJSONContainingNullValues(fetchScanSettingsResultMap)))
+                   );
+    }
+
+    private LinkedHashMap<String, Object> simulateFetchScanSettingsForProject() {
+        LinkedHashMap<String,Object> fetchScanSettingsResultMap = new LinkedHashMap<>();
+           LinkedHashMap<String,Object> projectMap = new LinkedHashMap<>();
+           LinkedHashMap<String,Object> presetMap = new LinkedHashMap<>();
+           LinkedHashMap<String,Object> engineConfigurationMap = new LinkedHashMap<>();
+           fetchScanSettingsResultMap.put("project", projectMap);
+           fetchScanSettingsResultMap.put("preset", presetMap);
+           fetchScanSettingsResultMap.put("engineConfiguration",engineConfigurationMap);
+           projectMap.put("id", CHECKMARX_PROJECT_ID);
+           presetMap.put("id", CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
+           engineConfigurationMap.put("id", CHECKMARX_CONFIGURATION_ID);
+
+           stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/scanSettings/"+CHECKMARX_PROJECT_ID)))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.OK.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(JSONTestUtil.toJSONContainingNullValues(fetchScanSettingsResultMap)))
+                   );
+        return fetchScanSettingsResultMap;
+    }
+
+    private void simulateCreateProjectWasSuccessful() {
+        /* +-----------------------------------------------------------------------+ */
+           /* +............................ create new project........................+ */
+           /* +-----------------------------------------------------------------------+ */
+           LinkedHashMap<String,Object> createProjectParam = new LinkedHashMap<>();
+           createProjectParam.put("isPublic", "false");
+           createProjectParam.put("name", PROJECT_NAME);
+           createProjectParam.put("owningTeam", null);
+           
+           LinkedHashMap<String,Object> createProjectResult = new LinkedHashMap<>();
+           createProjectResult.put("id", CHECKMARX_PROJECT_ID);
+           createProjectResult.put("name", PROJECT_NAME);
+           createProjectResult.put("owningTeam", null);
+        
+           stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects")))).
+                   //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                   withHeader("content-type", equalTo(APPLICATION_JSON+";v=2.0")).
+                   withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(createProjectParam))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.OK.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(JSONTestUtil.toJSONContainingNullValues(createProjectResult)))
+                   );
+    }
+
+    private void simulateCheckProjectExistsReturnsFalse(LinkedHashMap<String, String> checkProjectExistingMap) {
+        /* +-----------------------------------------------------------------------+ */
+           /* +............................ check for project.........................+ */
+           /* +-----------------------------------------------------------------------+ */
+           /* we send 404, because project not found */
+           stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/projects?"+WireMockUtil.toFormUrlEncoded(checkProjectExistingMap,true))))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.NOT_FOUND.value())
+                   )
+           );
+    }
+
+    private LinkedHashMap<String, String> login() throws JSONException {
+        String sessionToken = "token-returned-by-checkmarx"; 
+           
+           LinkedHashMap<String,String> map = new LinkedHashMap<>();
+           map.put("username", USERNAME);
+           map.put("password", PASSWORD);
+           map.put("grant_type", "password");
+           map.put("scope", "sast_rest_api");
+           map.put("client_id", "resource_owner_client");
+           map.put("client_secret", "014DF517-39D1-4453-B7B3-9930C563627C"); // TODO maybe this must be customizable
+
+           
+
+           
+           /* @formatter:off */
+           /* +-----------------------------------------------------------------------+ */
+           /* +............................ login ....................................+ */
+           /* +-----------------------------------------------------------------------+ */
+           JSONObject expectedLoginResult = new JSONObject();
+           expectedLoginResult.put("access_token", sessionToken);
+           expectedLoginResult.put("token_type", "json");
+           expectedLoginResult.put("expires_in", new Date().toString());
+
+           stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/auth/identity/connect/token")))).
+                   //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
+                   withHeader("content-type", equalTo(APPLICATION_FORM_URL_ENCODED_UTF_8)).
+                   withRequestBody(equalTo(WireMockUtil.toFormUrlEncoded(map))).
+                   willReturn(aResponse()
+                       .withStatus(HttpStatus.OK.value())
+                       .withHeader("Content-Type", APPLICATION_JSON)
+                       .withBody(expectedLoginResult.toString()))
+                   );
+
+           LinkedHashMap<String,String> checkProjectExistingMap = new LinkedHashMap<>();
+           checkProjectExistingMap.put("projectName", PROJECT_NAME);
+           checkProjectExistingMap.put("teamId", null);
+        return checkProjectExistingMap;
+    }
     
-    private void simulateWaitForReportResults(String value) {
+    private void simulateWaitForReportResultsReturns(String value) {
         LinkedHashMap<String,Object> reportStatus = new LinkedHashMap<>();
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         reportStatus.put("status",stageMap);
@@ -317,7 +327,7 @@ public class CheckmarxAdapterV1WireMockTest {
     
     }
 
-    private void simulateWaitForQueingDoneResults(String value) {
+    private void simulateWaitForQueingDoneReturns(String value) {
         LinkedHashMap<String,Object> queueStatus = new LinkedHashMap<>();
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         queueStatus.put("stage",stageMap);
@@ -331,7 +341,7 @@ public class CheckmarxAdapterV1WireMockTest {
                 );
     }
     
-    private void simulateCheckScanAvailable(String statusName) {
+    private void simulateCheckScanAvailableReturns(String statusName) {
         LinkedHashMap<String,Object> scanStatus = new LinkedHashMap<>();
         LinkedHashMap<String,Object> stageMap = new LinkedHashMap<>();
         scanStatus.put("status",stageMap);

@@ -102,7 +102,6 @@ public class ScanService implements SynchronMessageHandler {
     DomainMessageSynchronousResult startScan(DomainMessage request) {
 
         SecHubExecutionContext context = null;
-        boolean cleanupStorage = true;
         try {
             context = createExecutionContext(request);
 
@@ -119,7 +118,6 @@ public class ScanService implements SynchronMessageHandler {
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
 
         } catch (SecHubExecutionAbandonedException e) {
-            cleanupStorage = false; // when abandonded we keep the storage
             LOG.info("Execution abandoned on scan {} - message: {}", traceLogID(request), e.getMessage());
             return new DomainMessageSynchronousResult(MessageID.SCAN_ABANDONDED, e);
         } catch (SecHubExecutionException e) {
@@ -129,7 +127,7 @@ public class ScanService implements SynchronMessageHandler {
             LOG.error("Was not able to start scan." + traceLogID(request), e);
             return new DomainMessageSynchronousResult(MessageID.SCAN_FAILED, e);
         } finally {
-            if (cleanupStorage) {
+            if (! context.isAbandonded()) {
                 cleanupStorage(context);
             }
         }
@@ -158,8 +156,7 @@ public class ScanService implements SynchronMessageHandler {
             scanLogService.logScanEnded(logUUID);
 
         } catch (Exception e) {
-            boolean abandonded = e instanceof SecHubExecutionAbandonedException;
-            if (abandonded) {
+            if (context.isAbandonded()) {
                 scanLogService.logScanAbandoned(logUUID);
             } else {
                 scanLogService.logScanFailed(logUUID);
