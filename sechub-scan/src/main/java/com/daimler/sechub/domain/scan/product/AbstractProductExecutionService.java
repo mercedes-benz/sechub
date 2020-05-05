@@ -54,17 +54,17 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @throws SecHubExecutionException
 	 */
 	public void executeProductsAndStoreResults(SecHubExecutionContext context) throws SecHubExecutionException {
-		try {
+	    try {
 
 			UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
 			SecHubConfiguration configuration = context.getConfiguration();
 			if (context.isCanceledOrAbandonded()) {
-			    LOG.debug("Canceled or abandoned, so ignored by {}", getClass().getSimpleName());
+			    LOG.debug("{} canceled or abandoned, so ignored by {}", traceLogID, getClass().getSimpleName());
 			    return;
 			}
 			if (!isExecutionNecessary(context, traceLogID, configuration)) {
-				LOG.debug("NO execution necessary by {}", getClass().getSimpleName());
+				LOG.debug("{} NO execution necessary by {}", traceLogID, getClass().getSimpleName());
 				return;
 			}
 			executeAndPersistResults(productExecutors, context, traceLogID);

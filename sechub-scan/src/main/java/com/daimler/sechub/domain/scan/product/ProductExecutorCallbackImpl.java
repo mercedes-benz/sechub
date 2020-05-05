@@ -53,8 +53,9 @@ public class ProductExecutorCallbackImpl implements ProductExecutorCallback {
     @Override
     public void persist(AdapterMetaData metaData) {
         ProductResult result = getProductResult();
-        result.setMetaData(getMetaDataConverter().convertToMetaDataStringOrNull(metaData));
+        result.setMetaData(getMetaDataConverter().convertToJSONOrNull(metaData));
         result = save(currentProductResult);
+        setCurrentProductResult(result);
     }
 
     public AdapterMetaDataConverter getMetaDataConverter() {
@@ -68,6 +69,7 @@ public class ProductExecutorCallbackImpl implements ProductExecutorCallback {
             return null;
         }
         ProductResult newPProductResult = transactionService.persistResult(context.getTraceLogId(), result);
+        setCurrentProductResult(newPProductResult);
         return newPProductResult;
     }
     

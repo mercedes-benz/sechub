@@ -33,7 +33,7 @@ public class RestartJobAction extends AbstractUIAction {
             LOG.info("stopped restart of job {}", jobUUID);
             return;
         }
-        outputAsTextOnSuccess("triggered restart (hard) of job:"+jobUUID);
+        outputAsTextOnSuccess("triggered restart of job:"+jobUUID);
         LOG.info("trigger restart of job {}", jobUUID);
         String infoMessage = getContext().getAdministration().restartJob(UUID.fromString(jobUUID));
         outputAsTextOnSuccess(infoMessage);

@@ -134,7 +134,8 @@ public class SchedulerRestartJobService {
 
         sendJobRestartTriggered(secHubJob, ownerEmailAddress);
         launcherService.executeJob(secHubJob);
-        LOG.info("job {} has been hard restarted", jobUUID);
+        String type = (hard ? "hard" : "normal");
+        LOG.info("job {} has been {} restarted", jobUUID,type);
 
     }
 

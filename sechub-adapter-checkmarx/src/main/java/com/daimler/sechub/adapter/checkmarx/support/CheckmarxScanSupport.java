@@ -80,7 +80,7 @@ public class CheckmarxScanSupport {
         Long scanIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_SCAN_ID);
         long scanId = -1;
         if (scanIdLong == null) {
-            LOG.info("Trigger new scan entry in queue");
+            LOG.info("Trigger new scan entry in checkmarx queue");
             CheckmarxAdapterConfig config = context.getConfig();
             long projectId = context.getSessionData().getProjectId();
 
@@ -112,7 +112,7 @@ public class CheckmarxScanSupport {
         } else {
             /* just reuse existing data */
             scanId = scanIdLong.longValue();
-            LOG.info("Reuse existing scanId:{}",scanId);
+            LOG.info("Reuse existing scanId:{}, for :{}",scanId,context.getTraceID());
         }
 
         context.getSessionData().setScanId(scanId);

@@ -93,7 +93,7 @@ class ScanExecutionTasklet implements Tasklet {
             LOG.info("Will not send sechub job done message, because scan was abandoned");
             return;
         }
-        LOG.info("executing done: {}", secHubJobUUID);
+        LOG.debug("Will send job done message for: {}", secHubJobUUID);
         sendJobDone(secHubJobUUID);
     }
 

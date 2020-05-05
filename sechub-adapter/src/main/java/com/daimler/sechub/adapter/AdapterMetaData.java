@@ -7,6 +7,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Represents meta data for an adapter - e.g. for restarts of a former adapter
  * exection after a JVM crash.
@@ -14,20 +18,18 @@ import java.util.TreeSet;
  * @author Albert Tregnaghi
  *
  */
+@JsonAutoDetect(fieldVisibility = Visibility.NON_PRIVATE)
 public class AdapterMetaData {
 
-    private int adapterVersion;
+    int adapterVersion;
     
-    private Map<String, String> metaData = new TreeMap<>();
+    Map<String, String> metaData = new TreeMap<>();
 
     public int getAdapterVersion() {
         return adapterVersion;
     }
-
-    public void setAdapterVersion(int adapterVersion) {
-        this.adapterVersion = adapterVersion;
-    }
     
+    @JsonIgnore
     public Set<String> getKeys() {
         return new TreeSet<>(metaData.keySet());
     }

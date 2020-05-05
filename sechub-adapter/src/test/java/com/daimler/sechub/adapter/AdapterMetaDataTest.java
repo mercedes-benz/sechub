@@ -21,7 +21,7 @@ public class AdapterMetaDataTest {
 
     @Test
     public void adapter_version_set_get_22() {
-        metaDataToTest.setAdapterVersion(22);
+        metaDataToTest.adapterVersion=22;
         assertEquals(22, metaDataToTest.getAdapterVersion());
     }
 

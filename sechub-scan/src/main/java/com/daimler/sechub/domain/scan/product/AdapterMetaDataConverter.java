@@ -22,7 +22,10 @@ public class AdapterMetaDataConverter {
         }
     }
     
-    public String convertToMetaDataStringOrNull(AdapterMetaData metaData) {
+    public String convertToJSONOrNull(AdapterMetaData metaData) {
+        if (metaData==null) {
+            return null;
+        }
         try {
             return JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.toJSON(metaData);
         } catch (AdapterException e) {

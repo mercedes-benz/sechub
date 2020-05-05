@@ -77,9 +77,9 @@ public class ProductExecutorContextTest {
         metaData1.setValue("test.key", "xyz");
         AdapterMetaData metaData2 = new AdapterMetaData();
         metaData2.setValue("test.key", "abc");
-        result1.setMetaData(converter.convertToMetaDataStringOrNull(metaData1));
+        result1.setMetaData(converter.convertToJSONOrNull(metaData1));
         result2.setMetaData(null);
-        result3.setMetaData(converter.convertToMetaDataStringOrNull(metaData2));
+        result3.setMetaData(converter.convertToJSONOrNull(metaData2));
         
         contextToTest = new ProductExecutorContext(formerResults, callback);
         

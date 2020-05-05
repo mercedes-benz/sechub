@@ -31,7 +31,18 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
     public AdapterException asAdapterException(String message, Throwable t, TraceIdProvider provider) {
         return AdapterException.asAdapterException(getAdapterLogId(provider), message, t);
     }
-
+    
+    /**
+     * Assert current thread is not interrupted - this can be done by a cancel or restart operation.
+     * If current thread is interrupted, a new adapter exception will be thrown
+     * @throws AdapterException
+     */
+    protected void assertNotInterrupted() throws AdapterException{
+        if (Thread.currentThread().isInterrupted()) {
+            throw new AdapterException(getAdapterLogId(null),"Execution thread was interrupted");
+        }
+    }
+    
     @Override
     public final AdapterLogId getAdapterLogId(TraceIdProvider traceIdProvider) {
         if (adapterId == null) {
@@ -52,7 +63,7 @@ public abstract class AbstractAdapter<A extends AdapterContext<C>, C extends Ada
         r.metaData=callback.getMetaDataOrNull();
         if (r.metaData==null) {
             r.metaData = new AdapterMetaData();
-            r.metaData.setAdapterVersion(getAdapterVersion());
+            r.metaData.adapterVersion= getAdapterVersion();
             r.type=ExecutionType.INITIAL;
         }else {
             r.type=ExecutionType.RESTART;

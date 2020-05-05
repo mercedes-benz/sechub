@@ -1,5 +1,7 @@
 package com.daimler.sechub.sharedkernel.messaging;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -91,8 +93,13 @@ public class IntegrationTestEventInspectorService implements EventInspector {
     }
 
     private void appendAdditionalDebugData(DomainMessage request, IntegrationTestEventHistoryInspection inspection) {
-        inspection.getDebug().setSenderThread(Thread.currentThread().getName());
-        inspection.getDebug().getMessageData().putAll(request.parameters);
+        IntegrationTestEventHistoryDebugData debug = inspection.getDebug();
+        debug.setSenderThread(Thread.currentThread().getName());
+        
+        Map<String, String> messageData = debug.getMessageData();
+        if (messageData!=null){
+            messageData.putAll(request.parameters);
+        }
     }
 
     private boolean isStopped() {

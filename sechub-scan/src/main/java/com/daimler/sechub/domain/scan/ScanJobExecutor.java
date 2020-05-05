@@ -142,8 +142,9 @@ class ScanJobExecutor {
         }
 
         public void cancelScanJob() {
-            context.markCanceled();
-            LOG.info("Cancel scon job in thread:{}", executorThread.getName());
+            context.markCanceled(); // we mark the context as canceled, so can be checked in multiple threads
+            executorThread.interrupt();
+            LOG.info("Marked scan job thread canceled :{}", executorThread.getName());
         }
 
     }

@@ -118,7 +118,7 @@ public class CheckmarxScanReportSupport {
         }else {
             /* just reuse existing data */
             reportId = reportIdLong.longValue();
-            LOG.info("Reuse existing reportId:{}",reportId);
+            LOG.info("Reuse existing reportId:{} for {}",reportId, context.getTraceID());
         }
 		context.setReportId(reportId);
 	}

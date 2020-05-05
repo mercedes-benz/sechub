@@ -40,12 +40,4 @@ public class ProductResultTransactionService {
         return productResultRepository.save(productResult);
     }
     
-    /**
-     * Normally unnecessary, but we want the ability to check log usage in tests
-     *
-     * @return log
-     */
-    Logger getMockableLog() {
-        return LOG;
-    }
 }
