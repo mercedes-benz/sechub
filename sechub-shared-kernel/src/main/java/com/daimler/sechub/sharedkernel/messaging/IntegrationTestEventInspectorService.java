@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.Profiles;
 
 /**
- * Integrationtest variant - will inspect eventhandling for dedicated usecases
+ * Integration test variant - will inspect event handling for dedicated use cases
  * and can be fetched by special EventTraceIntTest variants to get information
- * about event history for usecases - leads to automated documentation.
+ * about event history for use cases - leads to automated documentation.
  * 
  * @author Albert Tregnaghi
  *
@@ -85,8 +85,14 @@ public class IntegrationTestEventInspectorService implements EventInspector {
             IntegrationTestEventHistoryInspection inspection = history.ensureInspection(inspectId);
             StackTraceElement traceElement = grabTracElementWithoutProxies(4);
             inspection.setSynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
+            appendAdditionalDebugData(request, inspection);
         }
 
+    }
+
+    private void appendAdditionalDebugData(DomainMessage request, IntegrationTestEventHistoryInspection inspection) {
+        inspection.getDebug().setSenderThread(Thread.currentThread().getName());
+        inspection.getDebug().getMessageData().putAll(request.parameters);
     }
 
     private boolean isStopped() {
@@ -109,9 +115,11 @@ public class IntegrationTestEventInspectorService implements EventInspector {
 
             StackTraceElement traceElement = grabTracElementWithoutProxies(4);
             inspection.setAsynchronousSender(extractRealClassNameFromStacktrace(traceElement), request.getMessageId());
+            appendAdditionalDebugData(request, inspection);
         }
     }
 
+    
     private String extractRealClassNameFromStacktrace(StackTraceElement traceElement) {
         String className = traceElement.getClassName();
         return className;

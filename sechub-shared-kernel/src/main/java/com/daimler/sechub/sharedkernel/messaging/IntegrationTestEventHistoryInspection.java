@@ -10,7 +10,12 @@ public class IntegrationTestEventHistoryInspection {
     private String senderClassName;
     private boolean synchron;
     private String eventId;
-
+    private IntegrationTestEventHistoryDebugData debug = new IntegrationTestEventHistoryDebugData();
+    
+    public IntegrationTestEventHistoryDebugData getDebug() {
+        return debug;
+    }
+    
     public boolean isSynchron() {
         return synchron;
     }

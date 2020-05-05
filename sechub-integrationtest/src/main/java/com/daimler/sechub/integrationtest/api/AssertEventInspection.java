@@ -79,7 +79,12 @@ public class AssertEventInspection {
         /* we weait for events handled */
         waitSeconds(waitSeconds);
         IntegrationTestEventHistory history2 = TestAPI.fetchEventInspectionHistory();
-        fail("Unimplemented testcase. Please use next generated test snippet inside your test:\n\n" + createAssertTestExampleCodeSnippet(history2));
+        
+        String historyJSON = prettyPrintHistory(history2);
+        String codeSnippet = createAssertTestExampleCodeSnippet(history2);
+        
+        System.out.println("History:\n"+historyJSON+"\n\nGenerated test code:\n\n"+codeSnippet);
+        fail("Unimplemented testcase. Please use next generated test snippet inside your test:\n\n" + codeSnippet);
     }
 
     private AssertEventInspection(int timeOutInSeconds) {
@@ -298,19 +303,22 @@ public class AssertEventInspection {
         details.append("\n - senders:").append(context.foundSenders);
         details.append("\n - receivers:").append(context.foundReceivers);
         details.append("\nLatest fetched event history was:\n");
-        if (history == null) {
-            details.append("null");
-        } else {
-            String historyJSONprettyPrinted = null;
-            try {
-                historyJSONprettyPrinted = TestJSONHelper.get().getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(history);
-            } catch (JsonProcessingException e) {
-                throw new IllegalStateException("json pretty print failed", e);
-            }
-            details.append(historyJSONprettyPrinted);
-        }
+        details.append(prettyPrintHistory(history));
         details.append("\n");
         throw new EventInspectionStateException(message, details.toString());
+    }
+
+    private static String prettyPrintHistory(IntegrationTestEventHistory historyToPrint) {
+        if (historyToPrint==null) {
+            return "null";
+        }
+        String historyJSONprettyPrinted = null;
+        try {
+            historyJSONprettyPrinted = TestJSONHelper.get().getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(historyToPrint);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("json pretty print failed", e);
+        }
+        return historyJSONprettyPrinted;
     }
 
     private class EventInspectionStateException extends RuntimeException {
