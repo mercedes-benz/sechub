@@ -107,7 +107,7 @@ public class SchedulerCancelJobService {
 
         JobMessage message = new JobMessage();
         message.setJobUUID(secHubJob.getUUID());
-        ;
+        
         message.setProjectId(secHubJob.getProjectId());
         message.setOwner(secHubJob.getOwner());
         message.setOwnerEmailAddress(ownerEmailAddress);

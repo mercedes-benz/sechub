@@ -22,7 +22,7 @@ import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario4 extends AbstractTestScenario /*implements StaticTestScenario*/{
+public class Scenario4 extends AbstractTestScenario implements StaticTestScenario {
 
 	/**
 	 * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

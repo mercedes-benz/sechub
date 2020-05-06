@@ -37,17 +37,10 @@ public class IntegrationTestScanJobListener implements ScanJobListener {
     }
 
     public void cancel(UUID jobUUID) {
-        /* @formatter:off */
-        /* TODO Albert Tregnaghi, handle cancel operation better and cluster proof
-         * 2020-04-23: we should use spring batch job operations here - see restart job mechanism for details - instead of handling this way, or maybe in addition */
-        /* 2020-04-29: spring boot batch is ... not as expected... see
-         * https://stackoverflow.com/questions/48652785/nosuchjobexception-when-trying-to-restart-a-spring-batch-job
-         * SimpleJobOperator stop works not expected - an exception is thrown/catch and logged. But at least "STOPPED" is set. Also abondon does setup JobRepository entries.
-         * 
-         * So correct way is to find job by JobExplorer, triger stop + abandon and let ScanJobExecutor check BatchStatus inside 
-         * 
+        /* could be unnecessary - because now the normal cancel operation does also cancel job state
+         * but this is faster and no batch job check at scheduler domain is necessary (so reduce events).
+         * So we still keep this method / class for integration tests.
          */
-        /* @formatter:on */
         LOG.debug("try to cancel job:{}", jobUUID);
         synchronized (MONITOR) {
             CanceableScanJob canceableScan = map.get(jobUUID);

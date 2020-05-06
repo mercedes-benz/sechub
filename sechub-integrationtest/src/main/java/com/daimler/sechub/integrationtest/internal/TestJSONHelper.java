@@ -89,7 +89,7 @@ public class TestJSONHelper {
             String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObj);
             return indented;
         } catch (IOException e) {
-            LOG.error("Was not able to beautify json, will return unbeatified as fallback");
+            LOG.error("Was not able to beautify json, will return origin text as fallback");
             return json;
         }
     }

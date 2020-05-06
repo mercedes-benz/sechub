@@ -7,15 +7,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 public class UseCaseEventMessageLinkAsciidocGeneratorTestMain {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UseCaseEventMessageLinkAsciidocGeneratorTestMain.class);
 
     public static void main(String[] args) throws IOException {
         System.setProperty("com.daimler.sechub.docgen.debug", "true");
