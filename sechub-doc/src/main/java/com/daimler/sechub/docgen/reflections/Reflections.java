@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.docgen.GeneratorConstants;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
@@ -100,7 +101,9 @@ public class Reflections {
                     for (Method method : clazz.getDeclaredMethods()) {
                         if (method.getDeclaredAnnotation(annotation) != null) {
                             if (annotation.equals(UseCaseRestDoc.class)){
-                                System.out.println("hit:"+clazz);
+                                if (GeneratorConstants.DEBUG) {
+                                    LOG.info("UsecaseRestDoc found:{}",clazz);
+                                }
                             }
                             newResult.add(method);
                         }

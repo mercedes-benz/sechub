@@ -121,7 +121,7 @@ public enum MessageID {
     /* Request job to be restarted (hard)*/
     REQUEST_JOB_RESTART_HARD(MessageDataKeys.JOB_RESTART_DATA), 
     
-    TRIGGER_JOB_RESTART(MessageDataKeys.JOB_RESTART_DATA,MessageDataKeys.ENVIRONMENT_BASE_URL), 
+    JOB_RESTART_TRIGGERED(MessageDataKeys.JOB_RESTART_DATA,MessageDataKeys.ENVIRONMENT_BASE_URL), 
     
     JOB_RESTART_CANCELED(MessageDataKeys.JOB_RESTART_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
 

@@ -139,7 +139,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case JOB_RESTART_CANCELED:
 		    handleRestartJobCanceled(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 		    break;
-		case TRIGGER_JOB_RESTART:
+		case JOB_RESTART_TRIGGERED:
 		    handleRestartJobTriggered(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 		    break;
 		case JOB_RESULTS_PURGED:
@@ -156,7 +156,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
         
     }
 
-    @IsReceivingAsyncMessage(MessageID.TRIGGER_JOB_RESTART)
+    @IsReceivingAsyncMessage(MessageID.JOB_RESTART_TRIGGERED)
 	private void handleRestartJobTriggered(JobMessage jobMessage, String baseUrl) {
 	    informAdminsThatJobRestartHasBeenTriggeredService.notify(jobMessage, baseUrl);
     }

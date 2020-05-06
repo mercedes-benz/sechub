@@ -14,7 +14,7 @@ import com.daimler.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.daimler.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
-import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessage;
+import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
@@ -37,7 +37,7 @@ public class SchedulerBatchJobStatusRequestHandler implements SynchronMessageHan
         return returnStatus(request);
     }
 
-    @IsSendingSyncMessage(MessageID.BATCH_JOB_STATUS)
+    @IsSendingSyncMessageAnswer(value = MessageID.BATCH_JOB_STATUS, answeringTo = MessageID.REQUEST_BATCH_JOB_STATUS, branchName = "success")
     private DomainMessageSynchronousResult returnStatus(DomainMessage request) {
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.BATCH_JOB_STATUS);
         BatchJobMessage batchJobMessage = request.get(MessageDataKeys.BATCH_JOB_STATUS);

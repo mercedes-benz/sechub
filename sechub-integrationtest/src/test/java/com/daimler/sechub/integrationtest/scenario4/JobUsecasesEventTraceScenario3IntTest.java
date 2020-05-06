@@ -102,7 +102,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.scan.product.ProductResultService").
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
            /* 3 */
-           asyncEvent(MessageID.TRIGGER_JOB_RESTART).
+           asyncEvent(MessageID.JOB_RESTART_TRIGGERED).
                  from("com.daimler.sechub.domain.schedule.SchedulerRestartJobService").
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
            /* 4 */
@@ -159,7 +159,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.schedule.SchedulerRestartJobService").
                  to("com.daimler.sechub.domain.scan.ScanMessageHandler").
            /* 2 */
-           asyncEvent(MessageID.TRIGGER_JOB_RESTART).
+           asyncEvent(MessageID.JOB_RESTART_TRIGGERED).
                  from("com.daimler.sechub.domain.schedule.SchedulerRestartJobService").
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
            /* 3 */
@@ -251,7 +251,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.administration.job.JobRestartRequestService").
                  to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler").
            /* 1 */
-           asyncEvent(MessageID.TRIGGER_JOB_RESTART).
+           asyncEvent(MessageID.JOB_RESTART_TRIGGERED).
                  from("com.daimler.sechub.domain.schedule.SchedulerRestartJobService").
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
            /* 2 */
@@ -305,7 +305,7 @@ public class JobUsecasesEventTraceScenario3IntTest {
                  from("com.daimler.sechub.domain.administration.job.JobRestartRequestService").
                  to("com.daimler.sechub.domain.schedule.ScheduleMessageHandler").
            /* 1 */
-           asyncEvent(MessageID.TRIGGER_JOB_RESTART).
+           asyncEvent(MessageID.JOB_RESTART_TRIGGERED).
                  from("com.daimler.sechub.domain.schedule.SchedulerRestartJobService").
                  to("com.daimler.sechub.domain.notification.NotificationMessageHandler").
            /* 2 */

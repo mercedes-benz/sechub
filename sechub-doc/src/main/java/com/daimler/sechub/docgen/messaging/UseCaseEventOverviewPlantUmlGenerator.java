@@ -4,8 +4,10 @@ import static com.daimler.sechub.docgen.GeneratorConstants.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -32,6 +34,7 @@ public class UseCaseEventOverviewPlantUmlGenerator {
     private TextFileReader reader;
     private TextFileWriter writer;
     private File outputFolder;
+    private Map<UseCaseIdentifier, Set<String>> usecaseNameToMessageIdsMap=new TreeMap<>();
 
     public UseCaseEventOverviewPlantUmlGenerator(File jsonEventDataFolder, File outputFolder) {
         this.folderToStartFrom = jsonEventDataFolder;
@@ -39,27 +42,59 @@ public class UseCaseEventOverviewPlantUmlGenerator {
         this.reader = new TextFileReader();
         this.writer = new TextFileWriter();
     }
+    
+    /**
+     * After generation this will return a filled map containing information about which usecase
+     * has a relation to which messages. Can be used for further generation
+     * @return filled map
+     */
+    public Map<UseCaseIdentifier, Set<String>> getUsecaseNameToMessageIdsMap() {
+        return usecaseNameToMessageIdsMap;
+    }
 
     public void generate() {
-        if (DEBUG) {
-            LOG.info("start collecting by event-data from:" + folderToStartFrom);
+        LOG.info("start collecting event trace data from:" + folderToStartFrom.getAbsolutePath());
+        
+        File[] files = folderToStartFrom.listFiles();
+        if (files==null|| files.length==0) {
+            /* health check - we fail when no event trace information available. Reason: Otherwise somebody could generate a documentation where no overviews would be contained!*/ 
+            throw new IllegalStateException("Health check failure!!! Event trace data missing!\n\n"
+                    + "Explanation: Event trace data is missing. Seems you have not run integration tests before. These tests generate the missing data, which can only be done at server runtime.\n"
+                    + "So please execute integration tests (e.g. by doing a `./gradlew integrationtest`) and restart documentation generation\n");
+        }
+        for (File folder : files) {
+            generateFolder(folder);
         }
 
-        File[] files = folderToStartFrom.listFiles();
-        for (File file : files) {
+    }
+    
+    private void generateFolder(File folder) {
+        if (!folder.isDirectory()) {
+            if (DEBUG) {
+                LOG.info("not a folder:{}",folder);
+            }
+            return;
+        }
+        for (File file: folder.listFiles()) {
             generateFile(file);
         }
-
     }
 
     private void generateFile(File jsonSourceFile) {
         String fileName = jsonSourceFile.getName();
         if (!fileName.endsWith(".json")) {
+            if (DEBUG) {
+                LOG.info("ignoring filename:{}",fileName);
+            }
             return;
+        }else {
+            if (DEBUG) {
+                LOG.info("inspect filename:{}",fileName);
+            }
         }
         String variant = filenameVariantconverter.getVariantFromFilename(fileName);
         String originFileName = filenameVariantconverter.getFilenameWithoutVariant(fileName);
-        String usecaseId = originFileName.substring(0, fileName.length() - 5); /* .json = 5 chars */
+        String usecaseId = originFileName.substring(0, originFileName.length() - 5); /* .json = 5 chars */
         UseCaseIdentifier usecaseIdentifier;
         try {
             usecaseIdentifier = UseCaseIdentifier.valueOf(usecaseId.toUpperCase());
@@ -84,11 +119,14 @@ public class UseCaseEventOverviewPlantUmlGenerator {
     }
 
     private void generate(IntegrationTestEventHistory history, UseCaseIdentifier usecaseIdentifier, String variant) throws ClassNotFoundException, IOException {
+        Set<String> messages = ensuredMessages(usecaseIdentifier);
+        
         SortedMap<Integer, IntegrationTestEventHistoryInspection> map = history.getIdToInspectionMap();
         Set<Integer> keySet = map.keySet();
 
         PumlBuilder pb = new PumlBuilder();
         pb.add("@startuml");
+        pb.add("skinparam style strictuml");
         /* define actors etc. */
         pb.add("actor " + usecaseIdentifier.name());
 
@@ -97,6 +135,8 @@ public class UseCaseEventOverviewPlantUmlGenerator {
         /* define actors etc. */
         for (Integer inspectionId : keySet) {
             IntegrationTestEventHistoryInspection inspection = map.get(inspectionId);
+            messages.add(inspection.getEventId());
+            
             Class<?> sender = Class.forName(inspection.getSenderClassName());
             domains.add(DomainUtil.createDomainName(sender));
 
@@ -120,12 +160,23 @@ public class UseCaseEventOverviewPlantUmlGenerator {
                 /* first one , so show usecase starts */
                 pb.add(usecaseIdentifier.name() + " -> " + senderDomain + ": executed");
             }
+            if (inspection.isSynchron()) {
 
-            for (String receiverClass : inspection.getReceiverClassNames()) {
-                Class<?> receiver = Class.forName(receiverClass);
-                String receiverDomain = DomainUtil.createDomainName(receiver);
-                pb.add(senderDomain + " --> " + receiverDomain + " : " + inspection.getEventId());
+                for (String receiverClass : inspection.getReceiverClassNames()) {
+                    Class<?> receiver = Class.forName(receiverClass);
+                    String receiverDomain = DomainUtil.createDomainName(receiver);
+                    pb.add(senderDomain + " -> " + receiverDomain + " : " + inspection.getEventId());
+                }
+                
+            }else {
+                
+                for (String receiverClass : inspection.getReceiverClassNames()) {
+                    Class<?> receiver = Class.forName(receiverClass);
+                    String receiverDomain = DomainUtil.createDomainName(receiver);
+                    pb.add(senderDomain + " ->> " + receiverDomain + " : " + inspection.getEventId());
+                }
             }
+
         }
         pb.add("@enduml");
 
@@ -135,11 +186,32 @@ public class UseCaseEventOverviewPlantUmlGenerator {
 
     }
 
+    private  Set<String> ensuredMessages(UseCaseIdentifier usecaseIdentifier) {
+        Set<String> messages = usecaseNameToMessageIdsMap.get(usecaseIdentifier);
+        if (messages==null) {
+            messages = new TreeSet<>();
+            usecaseNameToMessageIdsMap.put(usecaseIdentifier, messages);
+        }
+        return messages;
+    }
+
     public static String createPlantumlFileSubPathByUsecase(String usecaseIdentifierEnumName, String variant) {
-        String lowerCase = usecaseIdentifierEnumName.toLowerCase();
-        String fileName = "/event_overview_" + lowerCase + ".puml";
+        String fileName = "/event_overview_" + createUsecaseId(usecaseIdentifierEnumName) + ".puml";
         fileName = filenameVariantconverter.toVariantFileName(fileName, variant);
-        return "usecase-event-overview/" + lowerCase +"/"+ fileName;
+        return createPlantumlFolderSubPathByUsecase(usecaseIdentifierEnumName) +"/"+ fileName;
+    }
+    
+    public static String createPlantumlFolderSubPathByUsecase(String usecaseIdentifierEnumName) {
+        return  "usecase-event-overview/" + createUsecaseId(usecaseIdentifierEnumName);
+    }
+    
+    public static String createUsecaseId(String usecaseIdentifierEnumName) {
+        String lowerCase = usecaseIdentifierEnumName.toLowerCase();
+        return lowerCase;
+    }
+    
+    public static String createUsecaseId(UseCaseIdentifier identifier) {
+        return createUsecaseId(identifier.name());
     }
 
     private class PumlBuilder {
@@ -154,5 +226,7 @@ public class UseCaseEventOverviewPlantUmlGenerator {
             return sb.toString();
         }
     }
+
+    
 
 }

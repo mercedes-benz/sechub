@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.docgen.GeneratorConstants;
 import com.daimler.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry.UseCaseEntryStep;
@@ -22,7 +23,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 public class UseCaseAsciiDocGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(UseCaseAsciiDocGenerator.class);
-    private static final Pattern PATTERN_MATCH_UNDERSCORE= Pattern.compile(".*_.*");
+    private static final Pattern PATTERN_MATCH_UNDERSCORE= Pattern.compile("_");
     // [options="header",cols="1,1,1"]
     // |===
     // |HeadA |HeadB |HeadC
@@ -84,6 +85,8 @@ public class UseCaseAsciiDocGenerator {
         context.addLine("endif::techdoc[]");
 
         generateEventTraceOverviewIfPreGenerated(context, entry);
+        
+        context.addLine("include::usecase2messages_"+entry.getIdentifierEnumName().toLowerCase()+".adoc[]");
 
         context.addLine("*Steps*");
         generateUseCaseStepsTable(context, entry);
@@ -100,29 +103,48 @@ public class UseCaseAsciiDocGenerator {
         // At least currently, not every usecase has got such an overview
         // so we need to check if pre-generated files are existing
 
-        String subFolderPath = UseCaseEventOverviewPlantUmlGenerator.createPlantumlFileSubPathByUsecase(entry.getIdentifierEnumName(),null);
+        String subFolderPath = UseCaseEventOverviewPlantUmlGenerator.createPlantumlFolderSubPathByUsecase(entry.getIdentifierEnumName());
         File usecaseOverViewFolder = new File(context.diagramsGenFolder, subFolderPath);
         if (! usecaseOverViewFolder.exists()) {
-            LOG.warn("Event-Trace MISSING:{} - No event-trace overview folder found at:{}",entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+            if (GeneratorConstants.DEBUG) {
+                LOG.warn("Event-Trace MISSING:{} - No event-trace overview folder found at:{}",entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+            }
             return;
         }
-        LOG.info("Event-Trace FOUND  :{} - Event-trace overview folder found  at:{}", entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+        
+        if (GeneratorConstants.DEBUG) {
+            LOG.info("Event-Trace FOUND  :{} - Event-trace overview folder found  at:{}", entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+        }
+        
         File[] overviewFiles = usecaseOverViewFolder.listFiles();
+        if (overviewFiles==null) {
+            if (GeneratorConstants.DEBUG) {
+                LOG.warn("Event-Trace MISSING(2):{} - No event-trace overview folder found at:{}",entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+            }
+            return;
+        }
+        
         Arrays.sort(overviewFiles); 
         
         for (File overViewFile: overviewFiles) {
             String variant = UseCaseEventOverviewPlantUmlGenerator.filenameVariantconverter.getVariantFromFilename(overViewFile.getName());
-            String variantText = "";
-            if (! variant.isEmpty()) {
-                variantText = " - variant: "+PATTERN_MATCH_UNDERSCORE.matcher(variant).replaceAll(" ");
-            }
-            context.addLine("*Event overview"+variantText+"*");
+            String targetFilePath = UseCaseEventOverviewPlantUmlGenerator.createPlantumlFileSubPathByUsecase(entry.getIdentifierEnumName(), variant);
+            String variantDescription = createDescriptionForVariant(variant);
+            context.addLine("*Event overview"+variantDescription+"*");
             context.addLine("");
-            context.addLine("plantuml::diagrams/gen/"+subFolderPath+"[format=svg, alt=\"Overview of events happening at usecase "+entry.getIdentifierEnumName()+variantText+"]\n");
+            context.addLine("plantuml::diagrams/gen/"+targetFilePath+"[format=svg, alt=\"Overview of events happening at usecase "+entry.getIdentifierEnumName()+variantDescription+"]\n");
             context.addLine("");
         }
     }
 
+    protected String createDescriptionForVariant(String variant) {
+        String description = "";
+        if (variant!=null && ! variant.isEmpty()) {
+            description = " - variant: "+PATTERN_MATCH_UNDERSCORE.matcher(variant).replaceAll(" ").trim();
+        }
+        return description;
+    }
+    
     private void generateLinkToRestAPIDoc(Context context, UseCaseEntry entry) {
         if (entry.getRestDocEntries().isEmpty()) {
             return;

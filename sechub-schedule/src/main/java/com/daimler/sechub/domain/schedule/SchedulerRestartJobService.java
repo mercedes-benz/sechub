@@ -148,9 +148,9 @@ public class SchedulerRestartJobService {
         jobRepository.save(secHubJob);
     }
 
-    @IsSendingAsyncMessage(MessageID.TRIGGER_JOB_RESTART)
+    @IsSendingAsyncMessage(MessageID.JOB_RESTART_TRIGGERED)
     private void sendJobRestartTriggered(ScheduleSecHubJob secHubJob, String ownerEmailAddress) {
-        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.TRIGGER_JOB_RESTART);
+        DomainMessage request = DomainMessageFactory.createEmptyRequest(MessageID.JOB_RESTART_TRIGGERED);
 
         JobMessage message = new JobMessage();
         message.setJobUUID(secHubJob.getUUID());

@@ -157,7 +157,7 @@ public class AssertEventInspection {
             }
 
             public void assertAsExpectedAndCreateHistoryFile(String id, String variant) {
-                back().assertAndGenerateHistoryFile(id);
+                back().assertAndGenerateHistoryFile(id,variant);
             }
 
         }
