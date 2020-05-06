@@ -19,6 +19,11 @@ public class ProductExecutorContext {
     List<ProductResult> results = new ArrayList<>();
     ProductExecutorCallback callback;
 
+    /**
+     * Creates executor context. Does also setup first former result as current result
+     * @param formerResults
+     * @param callback
+     */
     public ProductExecutorContext(List<ProductResult> formerResults, ProductExecutorCallback callback) {
         this.callback=callback;
         this.formerResults=formerResults;
@@ -48,12 +53,15 @@ public class ProductExecutorContext {
     public void useFirstFormerResultHavingMetaData(String key, String value) {
         LOG.debug("use first former result with key:{},value:{}",key,value);
         
+        AdapterMetaDataConverter metaDataConverter = callback.getMetaDataConverter();
+
         for (ProductResult result: formerResults) {
             if (result==null) {
                 continue;
             }
             String metaDataString = result.getMetaData();
-            AdapterMetaData metaDataOrNull = callback.getMetaDataConverter().convertToMetaDataOrNull(metaDataString);
+            AdapterMetaData metaDataOrNull = metaDataConverter.convertToMetaDataOrNull(metaDataString);
+        
             if (metaDataOrNull != null && metaDataOrNull.hasValue(key, value)) {
                 callback.setCurrentProductResult(result);
                 return;

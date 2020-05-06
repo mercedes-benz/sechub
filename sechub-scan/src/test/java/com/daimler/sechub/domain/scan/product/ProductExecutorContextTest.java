@@ -82,12 +82,13 @@ public class ProductExecutorContextTest {
         result3.setMetaData(converter.convertToJSONOrNull(metaData2));
         
         contextToTest = new ProductExecutorContext(formerResults, callback);
+        verify(callback,times(1)).setCurrentProductResult(result3); // by constructor...
         
         /* execute */
         contextToTest.useFirstFormerResultHavingMetaData("test.key", "abc");
 
         /* test */
-        verify(callback).setCurrentProductResult(result3);
+        verify(callback,times(2)).setCurrentProductResult(result3); // by last call
     }
     
 
