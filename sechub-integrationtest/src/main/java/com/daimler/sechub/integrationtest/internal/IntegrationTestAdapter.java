@@ -7,6 +7,7 @@ import com.daimler.sechub.adapter.Adapter;
 import com.daimler.sechub.adapter.AdapterCanceledByUserException;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.AdapterLogId;
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.TraceIdProvider;
 
 public class IntegrationTestAdapter implements Adapter<IntegrationTestAdapterConfig>{
@@ -42,14 +43,20 @@ public class IntegrationTestAdapter implements Adapter<IntegrationTestAdapterCon
 		return "http://testadapter/"+apiPart+"?"+map;
 	}
 
-	@Override
-	public String start(IntegrationTestAdapterConfig config) throws AdapterException {
-		return null;
-	}
 	
 	@Override
 	public int getAdapterVersion() {
 		return 666;
 	}
+
+    @Override
+    public String start(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
+        return null;
+    }
+
+    @Override
+    public boolean stop(IntegrationTestAdapterConfig config, AdapterMetaDataCallback callback) throws AdapterException {
+        return false;
+    }
 
 }

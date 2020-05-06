@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.daimler.sechub.adapter.nessus.NessusAdapter;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
@@ -40,6 +41,7 @@ public class NessusProductExecutorTest {
 	private Target target2;
 	private Target target3;
 	private NessusInstallSetup installSetup;
+    private ProductExecutorContext executorContext;
 
 	@Before
 	public void before() throws Exception {
@@ -56,6 +58,7 @@ public class NessusProductExecutorTest {
 		when(targetResolver.resolveTarget(URI_3)).thenReturn(target3);
 
 		nessusAdapter = mock(NessusAdapter.class);
+		executorContext=mock(ProductExecutorContext.class);
 		
 		installSetup= mock(NessusInstallSetup.class);
 		when(installSetup.getBaseURL(any())).thenReturn("baseURL");
@@ -84,10 +87,10 @@ public class NessusProductExecutorTest {
 		prepareInfraScanWithThreeURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(nessusAdapter, times(1)).start(any());
+		verify(nessusAdapter, times(1)).start(any(),any());
 	}
 
 	@Test
@@ -103,10 +106,10 @@ public class NessusProductExecutorTest {
 		prepareInfraScanWithThreeURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(nessusAdapter, times(2)).start(any());
+		verify(nessusAdapter, times(2)).start(any(),any());
 	}
 
 	@Test
@@ -122,10 +125,10 @@ public class NessusProductExecutorTest {
 		prepareInfraScanWithThreeURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(nessusAdapter, times(1)).start(any());
+		verify(nessusAdapter, times(1)).start(any(),any());
 	}
 	@Test
 	public void nessus_resolves_ip_from_infrascan() throws Exception{
@@ -154,10 +157,10 @@ public class NessusProductExecutorTest {
 		prepareInfraScanWithThreeURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(nessusAdapter, never()).start(any());
+		verify(nessusAdapter, never()).start(any(),any());
 	}
 
 	private void prepareInfraScanWithThreeURIs() throws URISyntaxException, SecHubExecutionException {

@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.test.ExampleConstants;
@@ -224,29 +225,66 @@ public abstract class AbstractTestScenario implements TestScenario {
 		LOG.info("###   Class ="+testClass);
 		LOG.info("###   Method="+testMethod);
 		LOG.info("############################################################################################################");
-
+		
+		TestAPI.logInfoOnServer("\n\n\n"
+		        + "  Start of integration test\n\n"
+		        + "  - Test class:"+testClass+"\n"
+		        + "  - Method:"+testMethod+"\n\n"
+		        + "\n");
 	}
 
 	protected final void prepareImpl() {
-		LOG.info("############################################################################################################");
-		LOG.info("## [CLEAN] remove old test data");
-		LOG.info("############################################################################################################");
-		resetAndStopEventInspection();
-		resetEmails();
-		cleanupAllTestProjects();
-		cleanupAllTestUsers();
 
-		LOG.info("############################################################################################################");
-		LOG.info("## [INIT] trigger test data initialization on server side");
-		LOG.info("############################################################################################################");
-		initializeTestData();
-		LOG.info("############################################################################################################");
-		LOG.info("## [WAIT] for all test data availale");
-		LOG.info("############################################################################################################");
-		waitForTestDataAvailable();
+	    boolean resetEventInspection=true;
+	    boolean resetMails = true;
+	    boolean initializeNecessary=true;
+	    
+	    if (this instanceof StaticTestScenario) {
+	        StaticTestScenario sts = (StaticTestScenario) this;
+	        initializeNecessary = sts.isInitializationNecessary();
+	        resetEventInspection= sts.isEventResetNecessary();
+	        resetMails=sts.isEmailResetNecessary();
+	    }
+	    
+	    if (resetEventInspection) {
+	        resetAndStopEventInspection();
+	    }
+	    if (resetMails) {
+	        resetEmails();
+	    }
+		if (initializeNecessary) {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [CLEAN] remove old test data");
+		    LOG.info("############################################################################################################");
+		    cleanupTestdataAfterTest();
+		}else {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [CLEAN] skipped");
+		    LOG.info("############################################################################################################");
+		}
+		
+		if (initializeNecessary) {
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [INIT] trigger test data initialization on server side");
+		    LOG.info("############################################################################################################");
+		    initializeTestData();
+		    LOG.info("############################################################################################################");
+		    LOG.info("## [WAIT] for all test data availale");
+		    LOG.info("############################################################################################################");
+		    waitForTestDataAvailable();
+		}else {
+		    LOG.info("############################################################################################################");
+            LOG.info("## [INIT] skipped");
+            LOG.info("############################################################################################################");
+		}
 
 	}
-
+	
+	private void cleanupTestdataAfterTest() {
+	    cleanupAllTestProjects();
+        cleanupAllTestUsers();
+	}
+	
 	protected void resetAndStopEventInspection() {
 	   getRestHelper().post(getContext().getUrlBuilder().buildIntegrationTestResetAndStopEventInspection());
 	}

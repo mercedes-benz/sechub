@@ -15,6 +15,7 @@ import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistoryInspection;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.util.FilenameVariantConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class AssertEventInspection {
@@ -23,11 +24,28 @@ public class AssertEventInspection {
 
     private IntegrationTestEventHistory history;
     private int timeoutInSeconds;
+    private FilenameVariantConverter filenameVariantConverter = new FilenameVariantConverter();
 
+    /**
+     *
+     * Assert given events are as expected. If you have failures because of
+     * implementation changes then you can generate new test case parts - see
+     * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}.
+     * <br><br>
+     * Will automatically wait {@link #DEFAULT_TIMEOUT_IN_SECONDS} for events being available
+     * 
+     */
     public static AssertEventInspection assertEventInspection() {
         return assertEventInspection(DEFAULT_TIMEOUT_IN_SECONDS);
     }
 
+    /**
+    *
+    * Assert given events are as expected. If you have failures because of
+    * implementation changes then you can generate new test case parts - see
+    * {@link #assertEventInspectionFailsButGeneratesTestCaseProposal()}
+    * @param timeOutInSeconds will automatically wait given time for events being available
+    */
     public static AssertEventInspection assertEventInspection(int timeOutInSeconds) {
         if (!EventInspectionAPI.fetchIsStarted()) {
             fail("Event inspection is not started. Maybe you forget to invoke TestAPI.startEventInspection() before ?");
@@ -61,7 +79,12 @@ public class AssertEventInspection {
         /* we weait for events handled */
         waitSeconds(waitSeconds);
         IntegrationTestEventHistory history2 = TestAPI.fetchEventInspectionHistory();
-        fail("Unimplemented testcase. Please use next generated test snippet inside your test:\n\n" + createAssertTestExampleCodeSnippet(history2));
+        
+        String historyJSON = prettyPrintHistory(history2);
+        String codeSnippet = createAssertTestExampleCodeSnippet(history2);
+        
+        System.out.println("History:\n"+historyJSON+"\n\nGenerated test code:\n\n"+codeSnippet);
+        fail("Unimplemented testcase. Please use next generated test snippet inside your test:\n\n" + codeSnippet);
     }
 
     private AssertEventInspection(int timeOutInSeconds) {
@@ -108,6 +131,10 @@ public class AssertEventInspection {
                 return back().asyncEvent(messageId);
             }
 
+            public AssertEventInspectionExpectionEntry syncEvent(MessageID messageId) {
+                return back().syncEvent(messageId);
+            }
+
             public AssertEventInspectionExpectionEntry from(String senderClassname) {
                 this.senderClassname = senderClassname;
                 return this;
@@ -129,15 +156,23 @@ public class AssertEventInspection {
                 back().assertAndGenerateHistoryFile(id);
             }
 
+            public void assertAsExpectedAndCreateHistoryFile(String id, String variant) {
+                back().assertAndGenerateHistoryFile(id,variant);
+            }
+
         }
 
         private void assertAndGenerateHistoryFile(String id) {
+            assertAndGenerateHistoryFile(id, null);
+        }
+
+        private void assertAndGenerateHistoryFile(String id, String variant) {
 
             waitForExpectedAmountOfSendersAndReceivers(timeoutInSeconds);
 
             assertHistoryIsAsExpected();
 
-            writeHistoryToFile(id);
+            writeHistoryToFile(id, variant);
 
         }
 
@@ -147,10 +182,15 @@ public class AssertEventInspection {
          * 
          * @param id
          */
-        private void writeHistoryToFile(String id) {
+        private void writeHistoryToFile(String id, String variant) {
             /* write to build folder, so we can use it in documentation generation */
+            String lowerCase = id.toLowerCase();
+            String subFolderName = lowerCase;
+            String filename = lowerCase + ".json";
+            filename = filenameVariantConverter.toVariantFileName(filename, variant);
+
             IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
-            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + id.toLowerCase() + ".json");
+            File file = new File(testfileSupport.getRootFolder(), "sechub-integrationtest/build/test-results/event-trace/" + subFolderName + "/" + filename);
             testfileSupport.writeTextFile(file, history.toJSON());
 
         }
@@ -263,19 +303,22 @@ public class AssertEventInspection {
         details.append("\n - senders:").append(context.foundSenders);
         details.append("\n - receivers:").append(context.foundReceivers);
         details.append("\nLatest fetched event history was:\n");
-        if (history == null) {
-            details.append("null");
-        } else {
-            String historyJSONprettyPrinted = null;
-            try {
-                historyJSONprettyPrinted = TestJSONHelper.get().getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(history);
-            } catch (JsonProcessingException e) {
-                throw new IllegalStateException("json pretty print failed", e);
-            }
-            details.append(historyJSONprettyPrinted);
-        }
+        details.append(prettyPrintHistory(history));
         details.append("\n");
         throw new EventInspectionStateException(message, details.toString());
+    }
+
+    private static String prettyPrintHistory(IntegrationTestEventHistory historyToPrint) {
+        if (historyToPrint==null) {
+            return "null";
+        }
+        String historyJSONprettyPrinted = null;
+        try {
+            historyJSONprettyPrinted = TestJSONHelper.get().getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(historyToPrint);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("json pretty print failed", e);
+        }
+        return historyJSONprettyPrinted;
     }
 
     private class EventInspectionStateException extends RuntimeException {
@@ -305,7 +348,7 @@ public class AssertEventInspection {
 
         StringBuilder sb = new StringBuilder();
         sb.append(
-                "\nBut if this is not a failure but correct and you are just writing your test/fixing changinges, you can just paste following test code:\n\n");
+                "\nBut if this is not a failure but correct and you are just writing your test or just fixing implementation changes, you can just paste following test code:\n\n");
         if (history == null) {
             sb.append("Impossible - history == null");
             return sb.toString();

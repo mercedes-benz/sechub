@@ -3,11 +3,14 @@ package com.daimler.sechub.docgen;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.docgen.messaging.DomainMessagingFilesGenerator;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
+import com.daimler.sechub.docgen.messaging.UseCaseEventMessageLinkAsciidocGenerator;
 import com.daimler.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
 import com.daimler.sechub.docgen.spring.ScheduleDescriptionGenerator;
 import com.daimler.sechub.docgen.spring.SpringProfilesPlantumlGenerator;
@@ -59,13 +62,17 @@ public class AsciidocGenerator implements Generator {
 		File scheduleDescriptionFile = createScheduleDescriptionTargetFile(documentsGenFolder);
 		File specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(documentsGenFolder);
 		File messagingFile = createMessagingTargetFile(documentsGenFolder);
-		
-        /* ---------------------- */
-		/* --- Pre-generation --- */
+
+		/* ---------------------- */
+		/* --- PRE-generation --- */
 		/* ---------------------- */
 		File jsonEventDataFolder = new File("./../sechub-integrationtest/build/test-results/event-trace");
 		UseCaseEventOverviewPlantUmlGenerator usecaseEventOverviewGenerator = new UseCaseEventOverviewPlantUmlGenerator(jsonEventDataFolder, diagramsGenFolder);
 		usecaseEventOverviewGenerator.generate();
+		Map<UseCaseIdentifier, Set<String>> useCasetoMessageIdsMap = usecaseEventOverviewGenerator.getUsecaseNameToMessageIdsMap();
+		
+		UseCaseEventMessageLinkAsciidocGenerator useCaseEventMessageLinkAsciidocGenerator = new UseCaseEventMessageLinkAsciidocGenerator(useCasetoMessageIdsMap,documentsGenFolder);
+		useCaseEventMessageLinkAsciidocGenerator.generate();
 		
 		/* ----------------------- */
         /* --- Main-generation --- */

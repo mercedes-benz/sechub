@@ -3,6 +3,8 @@ package com.daimler.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
+import java.util.UUID;
+
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 
 public class AssertExecutionResult{
@@ -14,6 +16,10 @@ public class AssertExecutionResult{
 			fail("result is null!");
 		}
 		return new AssertExecutionResult(result);
+	}
+	
+	public UUID getSechubJobUUD() {
+	    return getResult().getSechubJobUUD();
 	}
 	
 	private AssertExecutionResult(ExecutionResult result) {

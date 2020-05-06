@@ -28,7 +28,7 @@ public class IntegrationTestSetup implements TestRule {
 	private static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
 	private static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
 
-	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 100;
+	private static final int DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION = 300;
 	private static final String SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "sechub.integrationtest.prepare.wait.ms";
 	private static final String ENV_SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS = "SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS";
 
@@ -138,6 +138,8 @@ public class IntegrationTestSetup implements TestRule {
 			}
 			assertTestServerRunning();
 			try {
+			    TestAPI.ensureNoLongerJobExecution();
+			    
 				scenario.prepare(description.getClassName(),description.getMethodName());
 
 				waitForPreparationEventsDone();
@@ -153,22 +155,28 @@ public class IntegrationTestSetup implements TestRule {
 				LOG.error("#########################################################################");
 				LOG.error("Last url :"+TestRestHelper.getLastUrl());
 				LOG.error("Last data:"+TestRestHelper.getLastData());
+
+				TestAPI.logInfoOnServer("\n\n\nEnd of integration test (scenario failure):\n - Test class: "+description.getClassName()+"\n - Method:"+description.getMethodName()+"\n\n");
+				
 				throw e;
 			}
 			try {
 				next.evaluate();
 			} catch (HttpStatusCodeException e) {
 				HttpStatus code = e.getStatusCode();
-				String description = TestRestHelper.getLastUrl();
+				
+				String lastURL = TestRestHelper.getLastUrl();
 				throw new IntegrationTestException(
-						"HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + description, e);
+						"HTTP ERROR " + e.getRawStatusCode() + " '" + (code != null ? code.getReasonPhrase() : "?") + "', " + lastURL, e);
+			}finally {
+			    TestAPI.logInfoOnServer("\n\n\nEnd of integration test:\n - Test class: "+description.getClassName()+"\n - Method:"+description.getMethodName()+"\n\n");
 			}
 		}
 
 		private void waitForPreparationEventsDone() throws InterruptedException {
 			// Callers can override this by environment entry or setting system property.
 
-			int timeToWaitMilliseconds=DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION;
+            int timeToWaitMilliseconds = DEFAULT_MILLISECONDS_TO_WAIT_FOR_PREPARATION;
 			/* system property variant:*/
 			String timeToWait = System.getProperty(SECHUB_INTEGRATIONTEST_WAIT_PREPARE_MILLISECONDS);
 			if (timeToWait!=null) {

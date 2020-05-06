@@ -52,8 +52,10 @@ public class FullScanDataService {
 			ScanData d = new ScanData();
 			d.productId=result.getProductIdentifier().toString();
 			d.result=result.getResult();
-
+			d.metaData=result.getMetaData();
+			
 			data.allScanData.add(d);
+			
 		}
 		return data;
 	}

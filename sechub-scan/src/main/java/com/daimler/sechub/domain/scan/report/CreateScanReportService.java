@@ -50,7 +50,11 @@ public class CreateScanReportService {
 		if (sechubJobUUID == null) {
 			throw new ScanReportException("Cannot create a report for Job UUID:null");
 		}
-		LOG.info("Creating report for {}", traceLogID(sechubJobUUID));
+		LOG.info("Creating report for {}, will delete former reports if existing", traceLogID(sechubJobUUID));
+		
+		/* we allow only one report for one job */
+		reportRepository.deleteAllReportsForSecHubJobUUID(sechubJobUUID);
+		
 		/* create report - project id in configuration was set on job creation time and is always correct/valid and
 		 * will differ between api parameter and config..!*/
 		ScanReport report = new ScanReport(sechubJobUUID,context.getConfiguration().getProjectId());

@@ -25,117 +25,119 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class DeveloperAdministration {
 
-	private ConfigProvider provider;
-	private AdminUserContext userContext;
-	private TestRestHelper restHelper;
-	private TestURLBuilder urlBuilder;
-	private AnonymousTestUser anonymousContext;
-	private TestRestHelper anonyomusRestHelper;
+    private ConfigProvider provider;
+    private AdminUserContext userContext;
+    private TestRestHelper restHelper;
+    private TestURLBuilder urlBuilder;
+    private AnonymousTestUser anonymousContext;
+    private TestRestHelper anonyomusRestHelper;
     private ErrorHandler errorHandler;
 
-	public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
-		this.provider = provider;
-		this.errorHandler = errorHandler;
-		this.userContext = new AdminUserContext();
-		this.anonymousContext = new AnonymousTestUser(null,null);
-		this.restHelper = createTestRestHelperWithErrorHandling(errorHandler,userContext);
-		this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler,anonymousContext);
-	}
+    public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
+        this.provider = provider;
+        this.errorHandler = errorHandler;
+        this.userContext = new AdminUserContext();
+        this.anonymousContext = new AnonymousTestUser(null, null);
+        this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
+        this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler, anonymousContext);
+    }
 
-	private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider,UserContext user) {
-		return new TestRestHelper(user) {
-		    
-			@Override
-			protected ResponseErrorHandler createErrorHandler() {
-				return new DefaultResponseErrorHandler() {
+    private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
+        return new TestRestHelper(user) {
 
-					@Override
-					public void handleError(ClientHttpResponse response) throws IOException {
-						StringBuilder sb = new StringBuilder();
-						String statusText = response.getStatusText();
-						sb.append("status code::");
-						sb.append(response.getStatusCode());
-						if (statusText != null) {
-							sb.append(", text:");
-							sb.append(statusText);
-						}
-						try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))) {
-							String line = null;
-							sb.append(",body:");
-							while ((line = br.readLine()) != null) {
-								sb.append("\n");
-								sb.append(line);
-							}
-						} catch (IOException e) {
-							provider.handleError("failed to read response body:" + e.getMessage());
-						}
-						provider.handleError(sb.toString());
+            @Override
+            protected ResponseErrorHandler createErrorHandler() {
+                return new DefaultResponseErrorHandler() {
 
-					}
-				};
-			}
+                    @Override
+                    public void handleError(ClientHttpResponse response) throws IOException {
+                        StringBuilder sb = new StringBuilder();
+                        String statusText = response.getStatusText();
+                        sb.append("status code::");
+                        sb.append(response.getStatusCode());
+                        if (statusText != null) {
+                            sb.append(", text:");
+                            sb.append(statusText);
+                        }
+                        try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))) {
+                            String line = null;
+                            sb.append(",body:");
+                            while ((line = br.readLine()) != null) {
+                                sb.append("\n");
+                                sb.append(line);
+                            }
+                        } catch (IOException e) {
+                            provider.handleError("failed to read response body:" + e.getMessage());
+                        }
+                        provider.handleError(sb.toString());
 
-		};
-	}
-	
-	public ErrorHandler getErrorHandler() {
+                    }
+                };
+            }
+
+        };
+    }
+
+    public ErrorHandler getErrorHandler() {
         return errorHandler;
     }
 
-	public TestURLBuilder getUrlBuilder() {
-		if (urlBuilder == null) {
-			int port = provider.getPort();
-			String server = provider.getServer();
-			urlBuilder = new TestURLBuilder(provider.getProtocol(), port, server);
-		}
-		return urlBuilder;
-	}
+    public TestURLBuilder getUrlBuilder() {
+        if (urlBuilder == null) {
+            int port = provider.getPort();
+            String server = provider.getServer();
+            urlBuilder = new TestURLBuilder(provider.getProtocol(), port, server);
+        }
+        return urlBuilder;
+    }
 
-	public String fetchSignups() {
-		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsUserSignupsUrl());
-	}
+    public String fetchSignups() {
+        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsUserSignupsUrl());
+    }
 
-	public TestRestHelper getRestHelper() {
-		return restHelper;
-	}
+    public TestRestHelper getRestHelper() {
+        return restHelper;
+    }
 
-	public TestRestHelper getAnonyomusRestHelper() {
-		return anonyomusRestHelper;
-	}
+    public TestRestHelper getAnonyomusRestHelper() {
+        return anonyomusRestHelper;
+    }
 
-	public String doSignup(String string) {
-		getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(string));
-		return "SENT";
-	}
+    public String doSignup(String string) {
+        getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(string));
+        return "SENT";
+    }
 
-	public String gGrantAdminRightsTo(String targetUser) {
-		getRestHelper().post(getUrlBuilder().buildAdminGrantsSuperAdminRightsTo(targetUser));
-		return "SENT";
-	}
-	public String revokeAddminRightsFrom(String targetUser) {
-		getRestHelper().post(getUrlBuilder().buildAdminRevokesSuperAdminRightsFrom(targetUser));
-		return "SENT";
-	}
+    public String gGrantAdminRightsTo(String targetUser) {
+        getRestHelper().post(getUrlBuilder().buildAdminGrantsSuperAdminRightsTo(targetUser));
+        return "SENT";
+    }
 
-	public String createNewUserSignup(String name, String email) {
+    public String revokeAddminRightsFrom(String targetUser) {
+        getRestHelper().post(getUrlBuilder().buildAdminRevokesSuperAdminRightsFrom(targetUser));
+        return "SENT";
+    }
 
-		String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-		return getAnonyomusRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
-	}
+    public String createNewUserSignup(String name, String email) {
 
-	public String fetchUserList() {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsUsersUrl());
-	}
-	public String fetchAdminList() {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsAdminsUrl());
-	}
+        String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
+        return getAnonyomusRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+    }
 
-	public String fetchRunningJobsList() {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
-	}
+    public String fetchUserList() {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsUsersUrl());
+    }
 
-	public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
-		/* @formatter:off */
+    public String fetchAdminList() {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsAdminsUrl());
+    }
+
+    public String fetchRunningJobsList() {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
+    }
+
+    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
+        /* @formatter:off */
 		StringBuilder json = new StringBuilder();
 		if (description==null || description.isEmpty()) {
 			description = "description for project "+projectId;
@@ -163,186 +165,188 @@ public class DeveloperAdministration {
 		json.append("}\n");
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
-		return getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
-	}
+        return getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
+    }
 
-	public String fetchProjectList() {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsProjectsUrl());
-	}
+    public String fetchProjectList() {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsProjectsUrl());
+    }
 
-	public String fetchProjectInfo(String projectId) {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsProjectDetailsUrl(projectId));
-	}
+    public String fetchProjectInfo(String projectId) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsProjectDetailsUrl(projectId));
+    }
 
-	public String fetchUserInfo(String userId) {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
-	}
+    public String fetchUserInfo(String userId) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
+    }
 
-	public List<String> fetchProjectWhiteList(String projectId) {
-		List<String> result = new ArrayList<>();
-		String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
-		TestJSONHelper jsonHelper = TestJSONHelper.get();
-		JsonNode jsonNode = jsonHelper.readTree(json);
-		JsonNode whitelist = jsonNode.get("whiteList");
-		if (whitelist instanceof ArrayNode) {
-			ArrayNode arrayNode = (ArrayNode) whitelist;
-			for (JsonNode node : arrayNode) {
-				String uriText = node.textValue();
-				result.add(uriText);
-			}
+    public List<String> fetchProjectWhiteList(String projectId) {
+        List<String> result = new ArrayList<>();
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(json);
+        JsonNode whitelist = jsonNode.get("whiteList");
+        if (whitelist instanceof ArrayNode) {
+            ArrayNode arrayNode = (ArrayNode) whitelist;
+            for (JsonNode node : arrayNode) {
+                String uriText = node.textValue();
+                result.add(uriText);
+            }
 
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public String fetchProjectScanLogs(String projectId) {
-		String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
-		return json;
-	}
+    public String fetchProjectScanLogs(String projectId) {
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
+        return json;
+    }
 
-	public String fetchJSONReport(String projectId, UUID sechubJobUUID) {
-		String json = getRestHelper().getJSon(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
-		return json;
-	}
+    public String fetchJSONReport(String projectId, UUID sechubJobUUID) {
+        String json = getRestHelper().getJSon(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
+        return json;
+    }
 
-	public String fetchJobStatus(String projectId, String jobUUID) {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildFetchJobStatus(projectId, jobUUID));
-	}
+    public String fetchJobStatus(String projectId, String jobUUID) {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildFetchJobStatus(projectId, jobUUID));
+    }
 
-	public void updateProjectWhiteList(String projectId, List<String> result) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
-		for (Iterator<String> it = result.iterator(); it.hasNext();) {
-			sb.append("\"");
-			sb.append(it.next());
-			sb.append("\"");
-			if (it.hasNext()) {
-				sb.append(",");
-			}
+    public void updateProjectWhiteList(String projectId, List<String> result) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
+        for (Iterator<String> it = result.iterator(); it.hasNext();) {
+            sb.append("\"");
+            sb.append(it.next());
+            sb.append("\"");
+            if (it.hasNext()) {
+                sb.append(",");
+            }
 
-		}
-		sb.append("]}}");
+        }
+        sb.append("]}}");
 
-		getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
-	}
+        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+    }
 
-	public String assignUserToProject(String userId, String projectId) {
-		getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(userId, projectId));
-		return "assigned " + userId + " to project " + projectId;
-	}
+    public String assignUserToProject(String userId, String projectId) {
+        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(userId, projectId));
+        return "assigned " + userId + " to project " + projectId;
+    }
 
-	public String unassignUserFromProject(String userId, String projectId) {
-		getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(userId, projectId));
-		return "unassigned " + userId + " to project " + projectId;
-	}
+    public String unassignUserFromProject(String userId, String projectId) {
+        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(userId, projectId));
+        return "unassigned " + userId + " to project " + projectId;
+    }
 
-	public String deleteProject(String projectId) {
-		getRestHelper().delete(getUrlBuilder().buildAdminDeletesProject(projectId));
-		return "sent";
-	}
+    public String deleteProject(String projectId) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesProject(projectId));
+        return "sent";
+    }
 
-	public String deleteUser(String userId) {
-		getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(userId));
-		return "sent";
-	}
+    public String deleteUser(String userId) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(userId));
+        return "sent";
+    }
 
-	public String cancelJob(UUID jobUUID) {
-		getRestHelper().post(getUrlBuilder().buildAdminCancelsJob(jobUUID));
-		return "cancel triggered";
-	}
+    public String cancelJob(UUID jobUUID) {
+        getRestHelper().post(getUrlBuilder().buildAdminCancelsJob(jobUUID));
+        return "cancel triggered";
+    }
 
-	public String requestNewApiToken(String emailAddress) {
-		getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
-		return "Sent request for new API token for email: "+emailAddress+" - New API token will be delivered to this address if user exists!";
-	}
+    public String requestNewApiToken(String emailAddress) {
+        getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
+        return "Sent request for new API token for email: " + emailAddress + " - New API token will be delivered to this address if user exists!";
+    }
 
-	public String enableSchedulerJobProcessing() {
-		getRestHelper().post(getUrlBuilder().buildAdminEnablesSchedulerJobProcessing());
-		return "triggered enable job processing";
-	}
+    public String enableSchedulerJobProcessing() {
+        getRestHelper().post(getUrlBuilder().buildAdminEnablesSchedulerJobProcessing());
+        return "triggered enable job processing";
+    }
 
-	public String disableSchedulerJobProcessing() {
-		getRestHelper().post(getUrlBuilder().buildAdminDisablesSchedulerJobProcessing());
-		return "triggered disable job processing";
-	}
+    public String disableSchedulerJobProcessing() {
+        getRestHelper().post(getUrlBuilder().buildAdminDisablesSchedulerJobProcessing());
+        return "triggered disable job processing";
+    }
 
-	public String refreshSchedulerStatus() {
-		getRestHelper().post(getUrlBuilder().buildAdminTriggersRefreshOfSchedulerStatus());
-		return "triggered refresh for scheduler status";
-	}
+    public String refreshSchedulerStatus() {
+        getRestHelper().post(getUrlBuilder().buildAdminTriggersRefreshOfSchedulerStatus());
+        return "triggered refresh for scheduler status";
+    }
 
-	public String getStatusList() {
-		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
-	}
+    public String getStatusList() {
+        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
+    }
 
-	public String checkAlive() {
-		return getRestHelper().headStringFromURL(getUrlBuilder().buildCheckIsAliveUrl());
-	}
+    public String checkAlive() {
+        return getRestHelper().headStringFromURL(getUrlBuilder().buildCheckIsAliveUrl());
+    }
 
-	public String checkVersion() {
-		return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
-	}
+    public String checkVersion() {
+        return getRestHelper().getStringFromURL(getUrlBuilder().buildGetServerVersionUrl());
+    }
 
+    public String triggerDownloadFullScan(UUID sechubJobUUID) {
 
-	public String triggerDownloadFullScan(UUID sechubJobUUID) {
+        String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
+        return commonTriggerDownloadInBrowser(url);
+    }
 
-		String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
-		return commonTriggerDownloadInBrowser(url);
-	}
+    public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
+        String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
+        return commonTriggerDownloadInBrowser(url);
+    }
 
-	public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
-		String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
-		return commonTriggerDownloadInBrowser(url);
-	}
+    public String restartJob(UUID jobUUID) {
+        getRestHelper().post(getUrlBuilder().buildAdminRestartsJob(jobUUID));
+        return "restart job triggered";
+    }
+    
+    public String restartJobHard(UUID jobUUID) {
+        getRestHelper().post(getUrlBuilder().buildAdminRestartsJobHard(jobUUID));
+        return "restart job (hard) triggered";
+    }
 
+    private String commonTriggerDownloadInBrowser(String url) {
+        try {
+            java.awt.Desktop.getDesktop().browse(new URI(url));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+            return "Cannot open your system browser for url:" + url + ", please copy url and download in your browser manually.";
+        }
+        return "Triggered download of " + url + " inside your system browser.";
+    }
 
+    private class AdminUserContext implements UserContext {
 
+        @Override
+        public String getUserId() {
+            return provider.getUser();
+        }
 
-	private String commonTriggerDownloadInBrowser(String url) {
-		try {
-			java.awt.Desktop.getDesktop().browse(new URI(url));
-		} catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
-			return "Cannot open your system browser for url:" + url + ", please copy url and download in your browser manually.";
-		}
-		return "Triggered download of " + url + " inside your system browser.";
-	}
+        @Override
+        public String getApiToken() {
+            return provider.getApiToken();
+        }
 
+        @Override
+        public boolean isAnonymous() {
+            return false;
+        }
 
-	private class AdminUserContext implements UserContext {
+        @Override
+        public void updateToken(String newToken) {
+            /*
+             * ignore - we do not need this here, because we just use the edited parts
+             * inside text fields
+             */
+        }
 
-		@Override
-		public String getUserId() {
-			return provider.getUser();
-		}
+        @Override
+        public String getEmail() {
+            return "superadmin@example.org";
+        }
 
-		@Override
-		public String getApiToken() {
-			return provider.getApiToken();
-		}
-
-		@Override
-		public boolean isAnonymous() {
-			return false;
-		}
-
-		@Override
-		public void updateToken(String newToken) {
-			/*
-			 * ignore - we do not need this here, because we just use the edited parts
-			 * inside text fields
-			 */
-		}
-
-		@Override
-		public String getEmail() {
-			return "superadmin@example.org";
-		}
-
-	}
-
-
-   
+    }
 
 }

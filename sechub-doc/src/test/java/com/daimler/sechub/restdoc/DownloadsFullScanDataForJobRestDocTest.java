@@ -70,6 +70,7 @@ public class DownloadsFullScanDataForJobRestDocTest {
 		ScanData d = new ScanData();
 		d.productId="productX";
 		d.result="{ 'result':'OK'}";
+		d.metaData="{}";
 		data.allScanData.add(d);
 
 		String config="{}";

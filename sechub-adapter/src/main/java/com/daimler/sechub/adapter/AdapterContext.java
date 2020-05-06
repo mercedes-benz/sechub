@@ -60,5 +60,7 @@ public interface AdapterContext<C extends AdapterConfig> extends TraceIdProvider
 	 * @return full API URL - e.g. "https://localhost/prefix/$apiPath?key1=value1&key2=value2"
 	 */
 	String getAPIURL(String apiPart, Map<String,String> map);
+	
+	public AdapterRuntimeContext getRuntimeContext();
 
 }

@@ -292,7 +292,7 @@ public class AssertUser extends AbstractAssert {
         expectHttpFailure(() -> canCreateWebScan(project), expectedError);
         return this;
     }
-
+    
     public AssertUser canGetStatusForJob(TestProject project, UUID jobUUID) {
         as(user).getJobStatus(project.getProjectId(), jobUUID);
         return this;
@@ -512,5 +512,7 @@ public class AssertUser extends AbstractAssert {
         }
         return this;
     }
+
+   
 
 }

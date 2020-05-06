@@ -22,7 +22,7 @@ public class JobScenario2IntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(10);
+	public Timeout timeOut = Timeout.seconds(30);
 
 	@Test
 	public void a_triggered_job_being_running_is_NOT_found_anymore_when_canceled_by_admin() {

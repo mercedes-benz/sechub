@@ -6,11 +6,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum MessageID {
-	START_SCAN,
+	START_SCAN( /* @formatter:off */
+	            MessageDataKeys.SECHUB_UUID,
+	            MessageDataKeys.BATCH_JOB_ID,
+	            MessageDataKeys.EXECUTED_BY,
+	            MessageDataKeys.SECHUB_CONFIG),
+	/* @formatter:on */
 
 	SCAN_DONE,
 
 	SCAN_FAILED,
+	
+	/**
+	 * Will happen because of scan has been restarted
+	 */
+	SCAN_ABANDONDED,
 
 	/**
 	 * This message will contain full data of an created user.
@@ -93,7 +103,6 @@ public enum MessageID {
 	 */
 	REQUEST_SCHEDULER_STATUS_UPDATE,
 
-
 	/* Scheduler status update message, contains information about status*/
 	SCHEDULER_STATUS_UPDATE,
 
@@ -105,7 +114,29 @@ public enum MessageID {
 	
 	
     MAPPING_CONFIGURATION_CHANGED(MessageDataKeys.CONFIG_MAPPING_DATA),
-	;
+	
+    /* Request job to be restarted (soft)*/
+    REQUEST_JOB_RESTART(MessageDataKeys.JOB_RESTART_DATA),
+
+    /* Request job to be restarted (hard)*/
+    REQUEST_JOB_RESTART_HARD(MessageDataKeys.JOB_RESTART_DATA), 
+    
+    JOB_RESTART_TRIGGERED(MessageDataKeys.JOB_RESTART_DATA,MessageDataKeys.ENVIRONMENT_BASE_URL), 
+    
+    JOB_RESTART_CANCELED(MessageDataKeys.JOB_RESTART_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
+
+    JOB_RESULTS_PURGED(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    
+    REQUEST_PURGE_JOB_RESULTS(MessageDataKeys.SECHUB_UUID, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    
+    JOB_RESULT_PURGE_DONE(MessageDataKeys.SECHUB_UUID),
+    
+    JOB_RESULT_PURGE_FAILED(MessageDataKeys.SECHUB_UUID), 
+    
+    REQUEST_BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    
+    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;
 

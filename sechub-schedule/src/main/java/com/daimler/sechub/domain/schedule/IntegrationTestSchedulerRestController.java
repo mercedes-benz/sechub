@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
@@ -39,5 +41,14 @@ public class IntegrationTestSchedulerRestController {
 	    integrationTestSchedulerService.deleteWaitingJobs();
 	}
 
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/schedule/revert/job/{sechubJobUUID}/still-running", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void revertJobAsStillRunning(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {;
+	    integrationTestSchedulerService.revertJobAsStillRunning(sechubJobUUID);
+	}
+	
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/schedule/revert/job/{sechubJobUUID}/still-not-approved", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
+    public void revertJobAsStillNotApproved(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {;
+        integrationTestSchedulerService.revertJobAsStillNotApproved(sechubJobUUID);
+    }
 
 }
