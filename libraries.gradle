@@ -12,7 +12,7 @@
 ext {
 
    libraryVersion= [
-      springBoot:   "2.2.0.RELEASE"
+      springBoot:   "2.2.6.RELEASE"
    ]
 
    library = [
