@@ -135,7 +135,12 @@ public enum MessageID {
     
     REQUEST_BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
     
-    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS),
+    BATCH_JOB_STATUS(MessageDataKeys.BATCH_JOB_STATUS), 
+    
+    /**
+     * Informs that a scheduler has been started
+     */
+    SCHEDULER_STARTED(MessageDataKeys.ENVIRONMENT_BASE_URL, MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS),
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

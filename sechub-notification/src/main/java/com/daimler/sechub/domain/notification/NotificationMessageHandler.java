@@ -13,6 +13,7 @@ import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatProject
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStarted;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
@@ -26,6 +27,7 @@ import com.daimler.sechub.domain.notification.user.NewApiTokenRequestedUserNotif
 import com.daimler.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.UserDeletedNotificationService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
+import com.daimler.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
@@ -98,6 +100,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
 	@Autowired
 	InformUsersThatProjectHasBeenDeletedNotificationService informUsersThatProjectHasBeenDeletedService;
+	
+	@Autowired
+    InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -145,12 +150,20 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case JOB_RESULTS_PURGED:
 		    handleJobResultsPurged(request.get(MessageDataKeys.SECHUB_UUID), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
 		    break;
+		case SCHEDULER_STARTED:
+            handleSchedulerStarted(request.get(MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+            break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
 	}
 
-	@IsReceivingAsyncMessage(MessageID.JOB_RESULTS_PURGED)
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_STARTED)
+	private void handleSchedulerStarted(ClusterMemberMessage clusterMemberMessage, String baseUrl) {
+	    informAdminsThatNewSchedulerInstanceHasBeenStarted.notify(baseUrl, clusterMemberMessage);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_RESULTS_PURGED)
 	private void handleJobResultsPurged(UUID uuid, String baseUrl) {
         informAdminsThatJobResultsHaveBeenPurgedService.notify(uuid, baseUrl);
         

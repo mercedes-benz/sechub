@@ -35,7 +35,8 @@ public class MessageDataKeys {
 			new SecHubConfigurationMessageDataProvider());
 	public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID= createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());
 	public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS= createKey("sechub.batchjob.status", new BatchJobMessageDataProvider());
-    
+	public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
+            new ClusterMemberMessageDataProvider());
 	/**
 	 * Must contain userid, mail adress
 	 */
