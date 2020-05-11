@@ -55,7 +55,7 @@ public class InformAdminsThatNewSchedulerInstanceHasBeenStarted {
     private String createEmailContent(String baseUrl, ClusterMemberMessage memberMessage) {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("A new scheduler job instance has been started.\n\n");
-        emailContent.append("Environment (base url):").append(baseUrl).append("\n");
+        emailContent.append("Environment: base url:").append(baseUrl).append(", ");
         emailContent.append("Hostname:").append(memberMessage.getHostName()).append("\n\n");
         emailContent.append(memberMessage.getInformation());
 

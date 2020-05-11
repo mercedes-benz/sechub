@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.boot.CommandLineRunner;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
@@ -50,7 +49,7 @@ public class SchedulerStartHandlerTest {
     }
 
     @Test
-    public void noZombiesFound_remark_about_all_okay() {
+    public void buildZombieInformation_noZombiesFound_remark_about_all_okay() {
         /* prepare */
         List<ScheduleSecHubJob> jobsRunningButStartedBefore = new ArrayList<>();
         
@@ -62,7 +61,7 @@ public class SchedulerStartHandlerTest {
     }
     
     @Test
-    public void zombiesFound_infomrmation_with_job_UUID_is_contained() {
+    public void buildZombieInformation_zombiesFound_infomrmation_with_job_UUID_is_contained() {
         /* prepare */
         List<ScheduleSecHubJob> jobsRunningButStartedBefore = new ArrayList<>();
         ScheduleSecHubJob job1 = mock(ScheduleSecHubJob.class);
@@ -85,7 +84,7 @@ public class SchedulerStartHandlerTest {
     }
     
     @Test
-    public void xx() {
+    public void schedulerHasBeenStarted() throws Exception {
         /* prepare */
         List<ScheduleSecHubJob> jobsRunningButStartedBefore = new ArrayList<>();
         ScheduleSecHubJob job1 = mock(ScheduleSecHubJob.class);
@@ -97,10 +96,9 @@ public class SchedulerStartHandlerTest {
         when(repository.findAllRunningJobsStartedBefore(any())).thenReturn(jobsRunningButStartedBefore);
         
         /* execute */
-        CommandLineRunner result = handlerToTest.schedulerHasBeenStarted();
+        handlerToTest.schedulerHasBeenStarted().run();
         
         /* test */
-        assertNotNull(result);
         ArgumentCaptor<DomainMessage> argument = ArgumentCaptor.forClass(DomainMessage.class); 
         verify(eventBus).sendAsynchron(argument.capture());
         DomainMessage domainMessage = argument.getValue();

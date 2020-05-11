@@ -1,6 +1,7 @@
 package com.daimler.sechub.sharedkernel.util;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,10 @@ import org.springframework.stereotype.Component;
 public class HostnameBuilder {
 
     public String buildHostname() {
-        return InetAddress.getLoopbackAddress().getHostName();
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            return "localhost";
+        }
     }
 }
