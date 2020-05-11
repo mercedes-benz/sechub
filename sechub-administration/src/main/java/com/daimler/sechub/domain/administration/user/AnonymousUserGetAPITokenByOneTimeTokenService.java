@@ -14,6 +14,8 @@ import com.daimler.sechub.domain.administration.APITokenGenerator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.SecurityLogService;
+import com.daimler.sechub.sharedkernel.logging.SecurityLogType;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
@@ -26,74 +28,87 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class AnonymousUserGetAPITokenByOneTimeTokenService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AnonymousUserGetAPITokenByOneTimeTokenService.class);
+    static final String ANSWER_WHEN_TOKEN_CANNOT_BE_CHANGED = "Your API token change request has either timed out or never existed. Please request another API token change.";
 
-	private static final long DEFAULT_OUTDATED_TIME_MILLIS = 86400000;// 1d * 24h * 60m * 60s * 1000ms = one day = 86400000
+    /**
+     * Default timeout is one day
+     */
+    static final long DEFAULT_OUTDATED_TIME_MILLIS = 86400000;// 1d * 24h * 60m * 60s * 1000ms = one day = 86400000
 
-	@Value("${sechub.user.onetimetoken.outdated.millis:86400000}")
-	@MustBeDocumented(value="One time token time when outdating")
-	long oneTimeOutDatedMillis = DEFAULT_OUTDATED_TIME_MILLIS;
+    private static final Logger LOG = LoggerFactory.getLogger(AnonymousUserGetAPITokenByOneTimeTokenService.class);
 
-	@Autowired
-	DomainMessageService eventBusService;
+    @Value("${sechub.user.onetimetoken.outdated.millis:86400000}")
+    @MustBeDocumented(value = "One time token time when outdating")
+    long oneTimeOutDatedMillis = DEFAULT_OUTDATED_TIME_MILLIS;
 
-	@Autowired
-	UserRepository sechubUserRepository;
+    @Autowired
+    DomainMessageService eventBusService;
 
-	@Autowired
-	APITokenGenerator apiTokenGenerator;
+    @Autowired
+    UserRepository sechubUserRepository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    APITokenGenerator apiTokenGenerator;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@UseCaseUserClicksLinkToGetNewAPIToken(@Step(number=2,next={3,4}, name="Validation and update",description="When its a valid one time token a new api token is generated and persisted hashed to user. The token itself is returned. When not valid an emtpy string is the result ..."))
-	@IsSendingAsyncMessage(MessageID.USER_API_TOKEN_CHANGED)
-	public String createNewAPITokenForUserByOneTimeToken(String oneTimeToken) {
-		assertion.isValidOneTimeToken(oneTimeToken);
+    @Autowired
+    SecurityLogService securityLogService;
 
-		Optional<User> found = sechubUserRepository.findByOneTimeToken(oneTimeToken);
-		if (! found.isPresent()) {
-			LOG.warn(
-					"Did not found a user having one time token :{}. Maybe an attack, so will just return empty string...",
-					logSanitizer.sanitize(oneTimeToken,50));
-			return "";
-		}
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-		User user = found.get();
-		/* check not outdated onetime token*/
-		if (user.isOneTimeTokenOutDated(oneTimeOutDatedMillis)) {
-			LOG.warn(
-					"Did found a user having one time token :{}, but token is outdated! Maybe an attack, so will just return empty string... and keep the old entry as is",
-					logSanitizer.sanitize(oneTimeToken,50));
-			return "";
-		}
+    @UseCaseUserClicksLinkToGetNewAPIToken(@Step(number = 2, next = { 3,
+            4 }, name = "Validation and update", description = "When its a valid one time token a new api token is generated and persisted hashed to user. The token itself is returned. When not valid an emtpy string is the result ..."))
+    public String createNewAPITokenForUserByOneTimeToken(String oneTimeToken) {
+        assertion.isValidOneTimeToken(oneTimeToken);
 
-		user.oneTimeToken=null;
-		user.oneTimeTokenDate=null;
-		String rawToken = apiTokenGenerator.generateNewAPIToken();
-		user.hashedApiToken=passwordEncoder.encode(rawToken);
+        Optional<User> found = sechubUserRepository.findByOneTimeToken(oneTimeToken);
+        if (!found.isPresent()) {
+            securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION,
+                    "Did not found a user having one time token :{}. Maybe an attack, so will just return info string.",
+                    logSanitizer.sanitize(oneTimeToken, 50));
+            return ANSWER_WHEN_TOKEN_CANNOT_BE_CHANGED;
+        }
 
-		sechubUserRepository.save(user);
+        User user = found.get();
+        /* check not outdated onetime token */
+        if (user.isOneTimeTokenOutDated(oneTimeOutDatedMillis)) {
+            securityLogService.log(SecurityLogType.POTENTIAL_USERDATA_LEAK,
+                    "Did found a user having one time token :{}, but token is outdated! Maybe an attack (or user just waited too long...). Will just return info string.",
+                    logSanitizer.sanitize(oneTimeToken, 50));
+            return ANSWER_WHEN_TOKEN_CANNOT_BE_CHANGED;
+        }
 
+        user.oneTimeToken = null;
+        user.oneTimeTokenDate = null;
+        String rawToken = apiTokenGenerator.generateNewAPIToken();
+        user.hashedApiToken = passwordEncoder.encode(rawToken);
 
-		DomainMessage request = new DomainMessage(MessageID.USER_API_TOKEN_CHANGED);
-		UserMessage message = new UserMessage();
-		message.setEmailAdress(user.getEmailAdress());
-		message.setUserId(user.getName());
-		message.setHashedApiToken(user.getHashedApiToken());
+        sechubUserRepository.save(user);
 
-		request.set(MessageDataKeys.USER_API_TOKEN_DATA, message);
-		eventBusService.sendAsynchron(request);
+        LOG.info("Updated API token for user {}", user.getName());
 
-		/* we return the raw token to user - but do NOT save it but hashed variant */
-		return rawToken;
-	}
+        sendUserAPITokenChanged(user);
 
+        /* we return the raw token to user - but do NOT save it but hashed variant */
+        return rawToken;
+    }
+
+    @IsSendingAsyncMessage(MessageID.USER_API_TOKEN_CHANGED)
+    private void sendUserAPITokenChanged(User user) {
+        DomainMessage request = new DomainMessage(MessageID.USER_API_TOKEN_CHANGED);
+        UserMessage message = new UserMessage();
+        message.setEmailAdress(user.getEmailAdress());
+        message.setUserId(user.getName());
+        message.setHashedApiToken(user.getHashedApiToken());
+
+        request.set(MessageDataKeys.USER_API_TOKEN_DATA, message);
+        eventBusService.sendAsynchron(request);
+    }
 
 }
