@@ -18,6 +18,7 @@ import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.cluster.ClusterEnvironmentService;
+import com.daimler.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
 
 @Service
@@ -30,6 +31,8 @@ public class SchedulerJobBatchTriggerService {
     private static final int DEFAULT_RETRIY_MAX_MILLIS = 300;
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 5000;
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 10000;
+
+    private static final boolean DEFAULT_HEALTHCHECK_ENABLED = true;
 
     @MustBeDocumented("Inside a cluster the next job fetching can lead to concurrent access. " + "When this happens a retry can be done for the 'looser'. "
             + "This value defines the amount of *tries*"
@@ -53,6 +56,10 @@ public class SchedulerJobBatchTriggerService {
     @MustBeDocumented("Define delay for next job execution trigger after last executed.")
     @Value("${sechub.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
+    
+    @MustBeDocumented("When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!")
+    @Value("${sechub.config.trigger.healthcheck.enabled:" + DEFAULT_HEALTHCHECK_ENABLED + "}")
+    private boolean healthCheckEnabled = DEFAULT_HEALTHCHECK_ENABLED; 
 
     @Autowired
     ScheduleJobMarkerService markerService;
@@ -65,6 +72,9 @@ public class SchedulerJobBatchTriggerService {
 
     @Autowired
     SchedulerConfigService configService;
+    
+    @Autowired
+    SystemMonitorService monitorService;
 
     @PostConstruct
     protected void postConstruct() {
@@ -86,6 +96,17 @@ public class SchedulerJobBatchTriggerService {
         if (!configService.isJobProcessingEnabled()) {
             LOG.warn("Job processing is disabled, so cancel scheduling. Environment: {}", environmentService.getEnvironment());
             return;
+        }
+        
+        if (healthCheckEnabled) {
+            if (monitorService.isCPULoadAverageMaxReached() || monitorService.isCPULoadAverageMaxReached()) {
+                LOG.warn("Job processing is skipped. Reason: Too much CPU load. Environment: {}, CPU load :{}", environmentService.getEnvironment(),monitorService.getCPULoadAverage());
+                return;
+            }
+            if (monitorService.isMemoryAverageMaxReached()) {
+                LOG.warn("Job processing is skipped. Reason: Not enough memory. Environment: {}, Memory usage:{}", environmentService.getEnvironment(), monitorService.getMemoryUsageInPercent());
+                return;
+            }
         }
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
