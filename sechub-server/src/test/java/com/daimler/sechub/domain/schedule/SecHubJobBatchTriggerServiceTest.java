@@ -10,6 +10,7 @@ import org.junit.Test;
 import com.daimler.sechub.domain.schedule.config.SchedulerConfigService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.cluster.ClusterEnvironmentService;
+import com.daimler.sechub.sharedkernel.monitoring.SystemMonitorService;
 
 public class SecHubJobBatchTriggerServiceTest {
 
@@ -21,6 +22,8 @@ public class SecHubJobBatchTriggerServiceTest {
 
 	private SchedulerConfigService configService;
 
+    private SystemMonitorService monitoringService;
+
 	@Before
 	public void before() throws Exception {
 		serviceToTest = new SchedulerJobBatchTriggerService();
@@ -29,11 +32,13 @@ public class SecHubJobBatchTriggerServiceTest {
 		markerService = mock(ScheduleJobMarkerService.class);
 		environmentService = mock(ClusterEnvironmentService.class);
 		configService=mock(SchedulerConfigService.class);
-
+		monitoringService=mock(SystemMonitorService.class);
+		
 		serviceToTest.launcherService=launcherService;
 		serviceToTest.markerService=markerService;
 		serviceToTest.environmentService=environmentService;
 		serviceToTest.configService=configService;
+		serviceToTest.monitorService=monitoringService;
 
 
 	}
