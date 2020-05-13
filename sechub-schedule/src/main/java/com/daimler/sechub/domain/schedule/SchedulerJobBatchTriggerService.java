@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
+import static com.daimler.sechub.sharedkernel.logging.AlertLogReason.*;
+import static com.daimler.sechub.sharedkernel.logging.AlertLogType.*;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.annotation.PostConstruct;
@@ -18,9 +21,9 @@ import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.cluster.ClusterEnvironmentService;
+import com.daimler.sechub.sharedkernel.logging.AlertLogService;
 import com.daimler.sechub.sharedkernel.monitoring.SystemMonitorService;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
-
 @Service
 public class SchedulerJobBatchTriggerService {
 
@@ -75,6 +78,9 @@ public class SchedulerJobBatchTriggerService {
     
     @Autowired
     SystemMonitorService monitorService;
+    
+    @Autowired
+    AlertLogService alertLogService;
 
     @PostConstruct
     protected void postConstruct() {
@@ -100,11 +106,11 @@ public class SchedulerJobBatchTriggerService {
         
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached() || monitorService.isCPULoadAverageMaxReached()) {
-                LOG.warn("Job processing is skipped. Reason: Too much CPU load. Environment: {}, CPU load :{}", environmentService.getEnvironment(),monitorService.getCPULoadAverage());
+                alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPULoadAverageDescription(), environmentService.getEnvironment());
                 return;
             }
-            if (monitorService.isMemoryAverageMaxReached()) {
-                LOG.warn("Job processing is skipped. Reason: Not enough memory. Environment: {}, Memory usage:{}", environmentService.getEnvironment(), monitorService.getMemoryUsageInPercent());
+            if (monitorService.isMemoryUsageMaxReached()) {
+                alertLogService.log(SCHEDULER_PROBLEM, MEMORY_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createMemoryUsageDescription(),environmentService.getEnvironment());
                 return;
             }
         }

@@ -5,18 +5,18 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.sharedkernel.util.SimpleByteUtil;
 
-public class MemoryUsagePercentMonitor {
+public class MemoryUsageMonitor {
     
 
-    private static final Logger LOG = LoggerFactory.getLogger(MemoryUsagePercentMonitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MemoryUsageMonitor.class);
 
     private Runtime runtime;
-    private CacheableMonitoringPercentage memoryData;
+    private CacheableMonitoringValue memoryData;
     private Object monitor = new Object();
     
-    MemoryUsagePercentMonitor(Runtime runtime, long cacheTimeInMillis) {
+    MemoryUsageMonitor(Runtime runtime, long cacheTimeInMillis) {
         this.runtime=runtime;
-        this.memoryData=new CacheableMonitoringPercentage(cacheTimeInMillis);
+        this.memoryData=new CacheableMonitoringValue(cacheTimeInMillis);
     }
 
     public double getMemoryUsageInPercent() {
@@ -25,7 +25,7 @@ public class MemoryUsagePercentMonitor {
         }
         synchronized (monitor) {
             if (memoryData.isCacheValid()) {
-                return memoryData.getPercentage();
+                return memoryData.getValue();
             }
             
             long maxMemory = runtime.maxMemory();
@@ -49,14 +49,29 @@ public class MemoryUsagePercentMonitor {
             double memoryUsageInPercent = usedMemoryPercentage/100;// we use 0.1 for 10% etc. so 1 = 100%
             
             if (memoryUsageInPercent < 0) {
-                memoryData.setPercentage(memoryUsageInPercent);
+                memoryData.setValue(memoryUsageInPercent);
             } else {
-                memoryData.setPercentage(memoryUsageInPercent);
+                memoryData.setValue(memoryUsageInPercent);
             }
-            double result = memoryData.getPercentage();
+            double result = memoryData.getValue();
             LOG.trace("Checked memory usage, value now:{}", result);
             return result;
         }
 
+    }
+
+    public String describeMemorySizesReadable() {
+        long maxMemory = runtime.maxMemory();
+        long allocatedMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("max:");
+        sb.append(SimpleByteUtil.humanReadableBytesLength(maxMemory));
+        sb.append(",allocated:");
+        sb.append(SimpleByteUtil.humanReadableBytesLength(allocatedMemory));
+        sb.append(",free:");
+        sb.append(SimpleByteUtil.humanReadableBytesLength(freeMemory));
+        return sb.toString();
     }
 }

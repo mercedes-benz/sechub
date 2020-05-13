@@ -10,12 +10,12 @@ class CPUMonitor {
     private static final Logger LOG = LoggerFactory.getLogger(CPUMonitor.class);
     
     private OperatingSystemMXBean osMBean;
-    private CacheableMonitoringPercentage cpuData;
+    private CacheableMonitoringValue cpuData;
     private Object monitor = new Object();
 
     CPUMonitor(OperatingSystemMXBean osMBean, long cacheTimeInMilliseconds) {
         this.osMBean=osMBean;
-        this.cpuData = new CacheableMonitoringPercentage(cacheTimeInMilliseconds);
+        this.cpuData = new CacheableMonitoringValue(cacheTimeInMilliseconds);
     }
     
     /**
@@ -24,7 +24,7 @@ class CPUMonitor {
      * CPU/processor and also in a cached way, to reduce additional CPU usage by
      * measuring time.
      * 
-     * @return CPU load average will return positive value when available ((0.0-1.0) but negative (e.g.-1) if not available
+     * @return CPU load average will return positive value when available ((0.0->1.0-...) but negative (e.g.-1) if not available
      */
     public double getCPULoadAverage() {
         if (osMBean == null) {
@@ -32,24 +32,25 @@ class CPUMonitor {
         }
         synchronized (monitor) {
             if (cpuData.isCacheValid()) {
-                return cpuData.getPercentage();
+                return cpuData.getValue();
             }
             double systemLoadAverage = osMBean.getSystemLoadAverage();
             
             if (systemLoadAverage < 0) {
-                cpuData.setPercentage(systemLoadAverage);
+                cpuData.setValue(systemLoadAverage);
             } else {
                 int availableProcessors = osMBean.getAvailableProcessors();
                 if (availableProcessors == 0) {
                     /* should never happen, but ... */
-                    cpuData.setPercentage(-2);
+                    cpuData.setValue(-2);
                 } else {
-                    cpuData.setPercentage(systemLoadAverage / availableProcessors);
+                    cpuData.setValue(systemLoadAverage / availableProcessors);
                 }
             }
-            double result = cpuData.getPercentage();
+            double result = cpuData.getValue();
             LOG.trace("Checked cpu usage, value now:{}", result);
             return result;
         }
     }
+
 }

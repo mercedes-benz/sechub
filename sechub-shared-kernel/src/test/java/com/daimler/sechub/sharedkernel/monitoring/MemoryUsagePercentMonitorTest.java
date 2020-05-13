@@ -8,13 +8,13 @@ import org.junit.Test;
 
 public class MemoryUsagePercentMonitorTest {
 
-    private MemoryUsagePercentMonitor monitorToTest;
+    private MemoryUsageMonitor monitorToTest;
     private Runtime runtime;
 
     @Before
     public void before() throws Exception {
         runtime = mock(Runtime.class);
-        monitorToTest = new MemoryUsagePercentMonitor(runtime, 200);
+        monitorToTest = new MemoryUsageMonitor(runtime, 200);
     }
 
     @Test

@@ -22,19 +22,19 @@ public class SystemMonitorService {
     private static final Logger LOG = LoggerFactory.getLogger(SystemMonitorService.class);
     private OperatingSystemMXBean osMBean;
 
-    @Value("${sechub.monitoring.max.cpu.percentage:"+DEFAULT_MAX_ACCEPTED_LOAD_AVERAGE+"}")
-    @MustBeDocumented(value="Maximum CPU percentage accepted by sechub system")
-    private double maxCPULoadAverage = DEFAULT_MAX_ACCEPTED_LOAD_AVERAGE;
+    @Value("${sechub.monitoring.max.cpu.load:"+DEFAULT_MAX_ACCEPTED_LOAD_AVERAGE+"}")
+    @MustBeDocumented(value="Maximum CPU load accepted by sechub system")
+    private double maximumAcceptedCPULoadAverage = DEFAULT_MAX_ACCEPTED_LOAD_AVERAGE;
     
     @Value("${sechub.monitoring.max.memory.percentage:"+DEFAULT_MAX_ACCEPTED_MEM_AVERAGE+"}")
-    @MustBeDocumented(value="Maximum CPU percentage accepted by sechub system")
-    private double maxSystemMemoryAverage = DEFAULT_MAX_ACCEPTED_MEM_AVERAGE;
+    @MustBeDocumented(value="Maximum memory usage percentage accepted by sechub system")
+    private double maximumAcceptedMemoryUsage = DEFAULT_MAX_ACCEPTED_MEM_AVERAGE;
 
     @Value("${sechub.monitoring.cache.time.millis:"+DEFAULT_CACHE_TIME+"}")
     @MustBeDocumented(value="Time in milliseconds monitoring fetch results are cached before fetching again")
     private long cacheTimeInMilliseconds = DEFAULT_CACHE_TIME;
     
-    private MemoryUsagePercentMonitor memoryUsagePercentageMonitor;
+    private MemoryUsageMonitor memoryUsageMonitor;
     private CPUMonitor cpuMonitor;
 
     public SystemMonitorService() {
@@ -46,24 +46,46 @@ public class SystemMonitorService {
         } catch (IOException e) {
             LOG.error("Will not be able to check OS!", e);
         }
-        memoryUsagePercentageMonitor = new MemoryUsagePercentMonitor(Runtime.getRuntime(),cacheTimeInMilliseconds);
+        memoryUsageMonitor = new MemoryUsageMonitor(Runtime.getRuntime(),cacheTimeInMilliseconds);
         cpuMonitor = new CPUMonitor(osMBean,cacheTimeInMilliseconds);
     }
 
     public boolean isCPULoadAverageMaxReached() {
-        return getCPULoadAverage() > maxCPULoadAverage;
+        return getCPULoadAverage() > maximumAcceptedCPULoadAverage;
     }
-
+    
     public double getCPULoadAverage() {
         return cpuMonitor.getCPULoadAverage();
     }
 
-    public boolean isMemoryAverageMaxReached() {
-        return getMemoryUsageInPercent() > maxSystemMemoryAverage;
+    public boolean isMemoryUsageMaxReached() {
+        return getMemoryUsageInPercent() > maximumAcceptedMemoryUsage;
     }
 
     public double getMemoryUsageInPercent() {
-        return memoryUsagePercentageMonitor.getMemoryUsageInPercent();
+        return memoryUsageMonitor.getMemoryUsageInPercent();
+    }
+
+    public String createCPULoadAverageDescription() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CPU load average:");
+        sb.append(cpuMonitor.getCPULoadAverage());
+        sb.append("/");
+        sb.append(maximumAcceptedCPULoadAverage);
+        sb.append(";");
+        return sb.toString();
+    }
+
+    public String createMemoryUsageDescription() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Memory usage:");
+        sb.append(memoryUsageMonitor.getMemoryUsageInPercent());
+        sb.append("/");
+        sb.append(maximumAcceptedMemoryUsage);
+        sb.append(";status=");
+        sb.append(memoryUsageMonitor.describeMemorySizesReadable());
+        sb.append(";");
+        return sb.toString();
     }
 
 }

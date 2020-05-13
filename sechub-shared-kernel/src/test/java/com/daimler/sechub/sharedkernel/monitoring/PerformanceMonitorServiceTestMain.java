@@ -18,7 +18,7 @@ public class PerformanceMonitorServiceTestMain {
         
         enableTraceLogging(SystemMonitorService.class);
         enableTraceLogging(CPUMonitor.class);
-        enableTraceLogging(MemoryUsagePercentMonitor.class);
+        enableTraceLogging(MemoryUsageMonitor.class);
         
         SystemMonitorService monitor = new SystemMonitorService();
         int maxThreads = 3000;
@@ -32,7 +32,7 @@ public class PerformanceMonitorServiceTestMain {
                 }
             }
             System.out.println("performance testmain: CPU load average:" + monitor.getCPULoadAverage() + ", cpu-max:" + monitor.isCPULoadAverageMaxReached()
-                    + ", mem-usage:" + monitor.getMemoryUsageInPercent() + ", mem-max:" + monitor.isMemoryAverageMaxReached());
+                    + ", mem-usage:" + monitor.getMemoryUsageInPercent() + ", mem-max:" + monitor.isMemoryUsageMaxReached());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -52,12 +52,12 @@ public class PerformanceMonitorServiceTestMain {
     }
 
     private static boolean isMaxReached(SystemMonitorService monitor) {
-        return monitor.isMemoryAverageMaxReached();
+        return monitor.isMemoryUsageMaxReached();
 //        return monitor.isCPULoadAverageMaxReached() || 
     }
     
     private static void addMemoryAndCPUUsageByThread(SystemMonitorService monitor, final Logger logger, int maxThreads, int threadNr) {
-        if (!monitor.isMemoryAverageMaxReached()) {
+        if (!monitor.isMemoryUsageMaxReached()) {
             /* each thread consumes 1 MB */
             Thread t = new Thread(() -> {
                 try {
