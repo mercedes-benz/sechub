@@ -106,11 +106,11 @@ public class SchedulerJobBatchTriggerService {
         
         if (healthCheckEnabled) {
             if (monitorService.isCPULoadAverageMaxReached() || monitorService.isCPULoadAverageMaxReached()) {
-                alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPULoadAverageDescription(), environmentService.getEnvironment());
+                alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(), environmentService.getEnvironment());
                 return;
             }
             if (monitorService.isMemoryUsageMaxReached()) {
-                alertLogService.log(SCHEDULER_PROBLEM, MEMORY_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createMemoryUsageDescription(),environmentService.getEnvironment());
+                alertLogService.log(SCHEDULER_PROBLEM, MEMORY_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createMemoryDescription(),environmentService.getEnvironment());
                 return;
             }
         }
