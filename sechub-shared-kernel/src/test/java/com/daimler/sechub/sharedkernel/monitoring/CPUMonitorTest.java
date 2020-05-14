@@ -22,7 +22,7 @@ public void before() throws Exception {
 }
 
     @Test
-    public void one_processor_system_load_average_0_dot_5_results_in_50_percent() {
+    public void one_processor_system_load_average_0_dot_5_results_cpu_load_0_5() {
         when(bean.getAvailableProcessors()).thenReturn(1);
         when(bean.getSystemLoadAverage()).thenReturn(0.5);
         
@@ -31,7 +31,7 @@ public void before() throws Exception {
     }
     
     @Test
-    public void two_processors_system_load_average_2_percent_results_in_100_percent() {
+    public void two_processors_system_load_average_2_percent_results_cpu_load_1() {
         when(bean.getAvailableProcessors()).thenReturn(2);
         when(bean.getSystemLoadAverage()).thenReturn(2.0);
         
@@ -40,7 +40,7 @@ public void before() throws Exception {
     }
     
     @Test
-    public void two_processors_system_load_average_1_percent_results_in_50_percent() {
+    public void two_processors_system_load_average_1_percent_results_cpu_load_0_5() {
         when(bean.getAvailableProcessors()).thenReturn(2);
         when(bean.getSystemLoadAverage()).thenReturn(1.0);
         
@@ -49,7 +49,7 @@ public void before() throws Exception {
     }
     
     @Test
-    public void four_processors_system_load_average_1_percent_results_in_25_percent() {
+    public void four_processors_system_load_average_1_percent_results_cpu_load_0_25() {
         when(bean.getAvailableProcessors()).thenReturn(4);
         when(bean.getSystemLoadAverage()).thenReturn(1.0);
         

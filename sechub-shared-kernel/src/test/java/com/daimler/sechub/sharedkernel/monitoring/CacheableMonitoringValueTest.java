@@ -37,8 +37,17 @@ public class CacheableMonitoringValueTest {
         assertEquals("value2",valueToTest.getAdditionalData("key1"));
     }
 
+    
+    @Test
+    public void newValue_has_not_valid_cache_after_initialized() throws InterruptedException {
+        /* test */
+        assertFalse(valueToTest.isCacheValid());
+        
+    }
+    
     @Test
     public void isCacheValid_changed_by_time() throws InterruptedException {
+        valueToTest.setValue(0.1); // do this to set cache value + mark timestamp
         /* check precondition */
         assertTrue(valueToTest.isCacheValid());
         

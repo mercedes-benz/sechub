@@ -12,7 +12,6 @@ class CacheableMonitoringValue {
 
     public CacheableMonitoringValue(long cacheTimeInMillis) {
         this.cacheTimeInMillis = cacheTimeInMillis;
-        updateCacheTimeStamp();// set initial timestamp
     }
 
     public void setValue(double value) {

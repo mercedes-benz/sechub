@@ -21,6 +21,10 @@ public class MemoryUsageMonitor {
         setCacheTimeInMillis(cacheTimeInMillis);
     }
 
+    /**
+     * Resolves percentage of memory usage (results can be from 0 to 100)
+     * @return percentage of memory usage
+     */
     public double getMemoryUsageInPercent() {
         if (runtime == null) {
             return -1;

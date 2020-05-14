@@ -28,7 +28,7 @@ public class MemoryUsagePercentMonitorTest {
         double result = monitorToTest.getMemoryUsageInPercent();
         
         /* test */
-        assertEquals("Expected 50%",0.5,result,0.01);
+        assertEquals("Expected 50%",50,result,0.01);
         
     }
     
@@ -45,7 +45,7 @@ public class MemoryUsagePercentMonitorTest {
         double result = monitorToTest.getMemoryUsageInPercent();
         
         /* test */
-        assertEquals("Expected 50%",0.5,result,0.01);
+        assertEquals("Expected 50%",50.0,result,0.01);
         
     }
     
