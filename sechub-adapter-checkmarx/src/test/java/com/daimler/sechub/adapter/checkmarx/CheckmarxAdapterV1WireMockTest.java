@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.checkmarx;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;

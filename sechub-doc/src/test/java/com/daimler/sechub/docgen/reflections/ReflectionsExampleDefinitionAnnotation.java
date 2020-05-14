@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen.reflections;
 
 import java.lang.annotation.ElementType;

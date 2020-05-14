@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 [[section-uc-description-admin_restarts_job_hard]]
 Administrator restarts job the hard way , means  
 it is possible to restart a running (not finished) job and destroy all former results.
