@@ -5,7 +5,7 @@ import java.text.StringCharacterIterator;
 
 public class SimpleByteUtil {
 
-    public static String humanReadableBytesLength(long bytes) {
+    public static String createHumanReadableBytesLengthDescription(long bytes) {
         long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
         if (absB < 1024) {
             return bytes + " B";

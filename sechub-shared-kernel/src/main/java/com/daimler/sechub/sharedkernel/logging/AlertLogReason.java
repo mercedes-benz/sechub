@@ -11,20 +11,19 @@ package com.daimler.sechub.sharedkernel.logging;
  */
 public enum AlertLogReason {
 
-	UNKNOWN("UNKNOWN"),
+    UNKNOWN("UNKNOWN"),
 
-	
-	CPU_OVERLOAD("CPU OVERLOAD"),
-	MEMORY_OVERLOAD("MEMORY OVERLOAD"),
-	;
+    CPU_OVERLOAD("CPU OVERLOAD"),
 
-	private String typeId;
+    MEMORY_OVERLOAD("MEMORY OVERLOAD"),;
 
-	private AlertLogReason(String typeId) {
-		this.typeId = typeId;
-	}
+    private String typeId;
 
-	public String getTypeId() {
-		return typeId;
-	}
+    private AlertLogReason(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
 }

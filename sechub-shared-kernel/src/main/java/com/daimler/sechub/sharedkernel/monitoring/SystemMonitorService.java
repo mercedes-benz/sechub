@@ -14,6 +14,23 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
+/**
+ * A service where callers can check current CPU and memory state of the running
+ * machine. Service will provide metrics, descriptions and has got an check
+ * methods if CPU and memory state is accepted or not.<br>
+ * <br>
+ * The configuration which CPU load average and memory usage is allowed is made
+ * over spring values resolved inside this service. But the reactions to the
+ * situation / metrics remains on caller side.<br>
+ * <br>
+ * For example: Scheduler batch trigger service is responsible for triggering
+ * new batch actions. Before doing such an operation it is useful to check if
+ * memory and CPU are available enough to execute next batch job - if not the
+ * scheduler will just not trigger any new batch jobs and will retry later
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 @Service
 public class SystemMonitorService {
 
@@ -56,6 +73,12 @@ public class SystemMonitorService {
 
     }
 
+    /**
+     * After spring dependency injection has been done we check that given spring
+     * values are correct. If a user made some odd settings which would make SecHub
+     * unusable there will be automatically fallbacks. Changes or detected odd setup
+     * will be logged as warnings.
+     */
     @PostConstruct
     public void init() {
 
@@ -68,8 +91,8 @@ public class SystemMonitorService {
     }
 
     /**
-     * Check if maximum of allowed CPU usage has been reached. Callers should
-     * stop CPU intensive actions when this returns <code>true</code>
+     * Check if maximum of allowed CPU usage has been reached. Callers should stop
+     * CPU intensive actions when this returns <code>true</code>
      * 
      * @return <code>true</code> when maximum has been reached
      */

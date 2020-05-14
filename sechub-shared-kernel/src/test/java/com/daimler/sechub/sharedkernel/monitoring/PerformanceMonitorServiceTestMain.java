@@ -6,6 +6,12 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 
+/**
+ * This is just a simple test application to play around with the performance monitor service.
+ * It was used to determine default values of accepted default average load.
+ * @author Albert Tregnaghi
+ *
+ */
 public class PerformanceMonitorServiceTestMain {
 
     private TestMode mode;

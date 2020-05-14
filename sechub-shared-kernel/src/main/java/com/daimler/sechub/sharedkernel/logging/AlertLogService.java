@@ -33,7 +33,7 @@ public class AlertLogService {
     private static String ALERT = "[ALERT] [{}] [{}] ";
 
     /**
-     * Log special alert - format is {@link ALERT}
+     * Log special alert - format is [ALERT] [${type}] [${reason}] ${message}, objects are integrated into message in slf4j format
      * 
      * @param type
      * @param reason

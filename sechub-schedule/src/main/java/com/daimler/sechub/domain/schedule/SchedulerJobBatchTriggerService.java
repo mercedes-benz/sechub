@@ -105,7 +105,7 @@ public class SchedulerJobBatchTriggerService {
         }
         
         if (healthCheckEnabled) {
-            if (monitorService.isCPULoadAverageMaxReached() || monitorService.isCPULoadAverageMaxReached()) {
+            if (monitorService.isCPULoadAverageMaxReached()) {
                 alertLogService.log(SCHEDULER_PROBLEM, CPU_OVERLOAD, "Job processing is skipped. {}, {}", monitorService.createCPUDescription(), environmentService.getEnvironment());
                 return;
             }

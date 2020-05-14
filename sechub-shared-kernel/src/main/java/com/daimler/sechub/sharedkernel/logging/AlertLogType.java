@@ -11,19 +11,19 @@ package com.daimler.sechub.sharedkernel.logging;
  */
 public enum AlertLogType {
 
-	UNKNOWN("UNKNOWN"),
+    UNKNOWN("UNKNOWN"),
 
-	
-	SCHEDULER_PROBLEM("SCHEDULER PROBLEM"),
-	;
+    SCHEDULER_PROBLEM("SCHEDULER PROBLEM"),
 
-	private String typeId;
+    ;
 
-	private AlertLogType(String typeId) {
-		this.typeId = typeId;
-	}
+    private String typeId;
 
-	public String getTypeId() {
-		return typeId;
-	}
+    private AlertLogType(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getTypeId() {
+        return typeId;
+    }
 }

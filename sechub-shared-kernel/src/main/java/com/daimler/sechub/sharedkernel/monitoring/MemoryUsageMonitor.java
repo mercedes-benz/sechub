@@ -42,9 +42,9 @@ public class MemoryUsageMonitor {
             long usedMemory = allocatedMemory-freeMemory;
             
             
-            String maxMemoryString = SimpleByteUtil.humanReadableBytesLength(maxMemory);
-            String allocatedMemoryString = SimpleByteUtil.humanReadableBytesLength(allocatedMemory);
-            String freeMemoryString = SimpleByteUtil.humanReadableBytesLength(freeMemory);
+            String maxMemoryString = SimpleByteUtil.createHumanReadableBytesLengthDescription(maxMemory);
+            String allocatedMemoryString = SimpleByteUtil.createHumanReadableBytesLengthDescription(allocatedMemory);
+            String freeMemoryString = SimpleByteUtil.createHumanReadableBytesLengthDescription(freeMemory);
 
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Checked memory data, maxMemory:{}, allocatedMemory:{}, freeMemory:{}", maxMemoryString, allocatedMemoryString, freeMemoryString);
