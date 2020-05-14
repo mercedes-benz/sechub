@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 ==== Domain Message Bus
 The domain message bus represents an abstraction layer for communication between different domains.
 It shall be the ONLY way to communicate between the different domains.

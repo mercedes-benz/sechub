@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.messaging;
 
 import org.springframework.context.annotation.Profile;

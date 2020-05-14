@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.batch;
 
 import static com.daimler.sechub.domain.schedule.SchedulingConstants.*;

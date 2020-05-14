@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.execution;
 
 public class SecHubExecutionAbandonedException extends SecHubExecutionException{

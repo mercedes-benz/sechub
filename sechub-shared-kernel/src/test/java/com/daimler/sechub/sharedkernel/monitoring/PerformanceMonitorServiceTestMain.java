@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.monitoring;
 
 import org.assertj.core.util.Arrays;
