@@ -2,12 +2,10 @@
 include 'sechub-cli',
 /* documentation */
 'sechub-doc',
-'sechub-doc:architecture',
-'sechub-doc:techdoc',
-'sechub-doc:user-handbook',
 
 /* server POD area */
 'sechub-server',
+'sechub-server-core',
 'sechub-integrationtest',
 'sechub-schedule',
 'sechub-scan',
@@ -46,3 +44,14 @@ include 'sechub-cli',
 
 'sechub-developertools'
 
+buildCache {
+    def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')
+    
+    if (useTempCache!=null){
+        local {
+            /* Set local build cache directory. using build/temp-cache let clean destroy the former cache..*/
+            directory = "${settingsDir}/build/temp-cache"
+        }
+    }
+     
+}

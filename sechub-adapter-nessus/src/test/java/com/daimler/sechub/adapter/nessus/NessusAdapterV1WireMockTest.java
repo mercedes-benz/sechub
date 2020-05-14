@@ -2,7 +2,6 @@
 package com.daimler.sechub.adapter.nessus;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -17,9 +16,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.IcrementalAdditionalPrefixAPIURLSupport;
 import com.daimler.sechub.adapter.support.APIURLSupport;
 import com.daimler.sechub.test.TestPortProvider;
+import com.daimler.sechub.test.WiremockUrlHistory;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class NessusAdapterV1WireMockTest {
@@ -53,6 +54,7 @@ public class NessusAdapterV1WireMockTest {
 
 	private NessusAdapterConfig config;
 	private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
+	private WiremockUrlHistory history;
 
 
 
@@ -61,7 +63,8 @@ public class NessusAdapterV1WireMockTest {
 		// System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
 
 		apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("nessustest");
-
+		history = new WiremockUrlHistory();
+		 
 		adapterToTest = new NessusAdapterV1() {
 			@Override
 			protected APIURLSupport createAPIURLSupport() {
@@ -96,7 +99,7 @@ public class NessusAdapterV1WireMockTest {
     	/* +-----------------------------------------------------------------------+ */
     	/* +............................ login ....................................+ */
     	/* +-----------------------------------------------------------------------+ */
-    	stubFor(post(urlEqualTo(apiURLSupport.nextURL("/session")))
+    	stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/session"))))
     			//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
     			.withHeader("X-Cookie", equalTo("token="))
         		.withHeader("content-type", equalTo(APPLICATION_JSON))
@@ -134,7 +137,7 @@ public class NessusAdapterV1WireMockTest {
     	/* +-----------------------------------------------------------------------+ */
     	/* +............................ fetch templates ..........................+ */
     	/* +-----------------------------------------------------------------------+ */
-    	stubFor(get(urlEqualTo(apiURLSupport.nextURL("/editor/policy/templates")))
+    	stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/editor/policy/templates"))))
     			.withHeader("X-Cookie", equalTo("token="+sessionToken))
         		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
         		//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
@@ -147,10 +150,10 @@ public class NessusAdapterV1WireMockTest {
                 );
 
     	/* +-----------------------------------------------------------------------+ */
-    	/* +............................ fetch scan id..........................+ */
+    	/* +............................ fetch scan id.............................+ */
     	/* +-----------------------------------------------------------------------+ */
     	int scanId = 3281;
-		stubFor(post(urlEqualTo(apiURLSupport.nextURL("/scans")))
+		stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/scans"))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
     			 .withHeader("X-Cookie", equalTo("token="+sessionToken))
          		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -172,7 +175,7 @@ public class NessusAdapterV1WireMockTest {
     	/* +............................ launch scan...............................+ */
     	/* +-----------------------------------------------------------------------+ */
 		String scanUUID="6048780b-ff64-db35-5f96-dfc9a2a371b9c0c1bf76077ee30e";
-		stubFor(post(urlEqualTo(apiURLSupport.nextURL("/scans/"+scanId+"/launch")))
+		stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/scans/"+scanId+"/launch"))))
 				 //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
     			 .withHeader("X-Cookie", equalTo("token="+sessionToken))
          		 .withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -188,7 +191,7 @@ public class NessusAdapterV1WireMockTest {
     	/* +............................ get history id for scan id ...............+ */
     	/* +-----------------------------------------------------------------------+ */
     	int historyId = 3282;
-		stubFor(get(urlEqualTo(apiURLSupport.assertCheck(5).nextURL("/scans/"+scanId)))
+		stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(5).nextURL("/scans/"+scanId))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
     			.withHeader("X-Cookie", equalTo("token="+sessionToken))
          		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -213,7 +216,7 @@ public class NessusAdapterV1WireMockTest {
 		int fileId=1455461011;
         String resultExport = "{\"token\":\"bd92bd4a297fcae1f9e3a7a18d9fec9269d9ab997c5e58d9fe00ade4ecf5ecb0\",\"file\":"+fileId+"}";
 
-        stubFor(post(urlEqualTo(apiURLSupport.assertCheck(9).nextURL("/scans/"+scanId+"/export")))
+        stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.assertCheck(9).nextURL("/scans/"+scanId+"/export"))))
         		//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
         		.withHeader("X-Cookie", equalTo("token="+sessionToken))
           		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -239,7 +242,7 @@ public class NessusAdapterV1WireMockTest {
     	/* +-----------------------------------------------------------------------+ */
         String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 				+ "<NessusClientData_v2/>";
-        stubFor(get(urlEqualTo(apiURLSupport.assertCheck(13).nextURL("/scans/"+scanId+"/export/"+fileId+"/download")))
+        stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(13).nextURL("/scans/"+scanId+"/export/"+fileId+"/download"))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
     			.withHeader("X-Cookie", equalTo("token="+sessionToken))
          		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -254,7 +257,7 @@ public class NessusAdapterV1WireMockTest {
         /* +-----------------------------------------------------------------------+ */
     	/* +............................ DELETE session ...........................+ */
     	/* +-----------------------------------------------------------------------+ */
-        stubFor(delete(urlEqualTo(apiURLSupport.assertCheck(14).nextURL("/session")))
+        stubFor(delete(urlEqualTo(history.rememberDELETE(apiURLSupport.assertCheck(14).nextURL("/session"))))
         		//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
         		.withHeader("X-Cookie", equalTo("token="+sessionToken))
           		.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -265,26 +268,17 @@ public class NessusAdapterV1WireMockTest {
 //                .willSetStateTo(chain.getStateAfter())
         		);
 
+        AdapterMetaDataCallback callBack = mock(AdapterMetaDataCallback.class);
         /* @formatter:on */
+        
+        
+        
+        
 		/* execute */
-		String result = adapterToTest.start(config);
+		String result = adapterToTest.start(config,callBack);
 
 		/* test */
-		verify(postRequestedFor(urlEqualTo("/nessustest_1/session"))); // login
-		verify(getRequestedFor(urlEqualTo("/nessustest_2/editor/policy/templates"))); // fetch templates
-		verify(postRequestedFor(urlEqualTo("/nessustest_3/scans"))); // fetch scan id
-		verify(postRequestedFor(urlEqualTo("/nessustest_4/scans/3281/launch")));// launch scan
-		verify(getRequestedFor(urlEqualTo("/nessustest_5/scans/3281"))); // get history id
-		verify(getRequestedFor(urlEqualTo("/nessustest_6/scans/3281"))); // get information
-		verify(getRequestedFor(urlEqualTo("/nessustest_7/scans/3281"))); // ..
-		verify(getRequestedFor(urlEqualTo("/nessustest_8/scans/3281"))); // ..
-		verify(postRequestedFor(urlEqualTo("/nessustest_9/scans/3281/export"))); // start export report
-		verify(getRequestedFor(urlEqualTo("/nessustest_10/scans/3281/export/1455461011/status"))); // get status (running)
-		verify(getRequestedFor(urlEqualTo("/nessustest_11/scans/3281/export/1455461011/status"))); // get status (running)
-		verify(getRequestedFor(urlEqualTo("/nessustest_12/scans/3281/export/1455461011/status"))); // get status (completed)
-		verify(getRequestedFor(urlEqualTo("/nessustest_13/scans/3281/export/1455461011/download"))); // download content
-		verify(deleteRequestedFor(urlEqualTo("/nessustest_14/session"))); // logout by delete session
-
+		history.assertAllRememberedUrlsWereRequested();
 
 		assertEquals(xml, result);
 	}
@@ -293,7 +287,7 @@ public class NessusAdapterV1WireMockTest {
 	private void simulateCheckScanState(String sessionToken, int scanId, int historyId,String state, int expectedCheckNr) {
 		/* @formatter:off */
 //		String jsonBody = "{\"history_id\":\""+historyId+"\"}";
-		stubFor(get(urlEqualTo(apiURLSupport.assertCheck(expectedCheckNr).nextURL("/scans/"+scanId)))
+		stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckNr).nextURL("/scans/"+scanId))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
 				.withHeader("X-Cookie", equalTo("token="+sessionToken))
 				.withHeader("Content-Type", equalTo(APPLICATION_JSON))
@@ -313,7 +307,7 @@ public class NessusAdapterV1WireMockTest {
 
 	private void simulateServerRepsonseForFileExportStatus(String sessionToken, int scanId, int fileId,String status, int expectedCheckIndex) {
 		String resultExport = "{\"status\":\""+status+"\"}";;
-		stubFor(get(urlEqualTo(apiURLSupport.assertCheck(expectedCheckIndex).nextURL("/scans/"+scanId+"/export/"+fileId+"/status")))
+		stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.assertCheck(expectedCheckIndex).nextURL("/scans/"+scanId+"/export/"+fileId+"/status"))))
 				//.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
         		.withHeader("X-Cookie", equalTo("token="+sessionToken))
           		.withHeader("Content-Type", equalTo(APPLICATION_JSON))

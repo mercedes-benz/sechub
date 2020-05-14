@@ -26,7 +26,7 @@ public class GetJobStatusAction extends AbstractUIAction {
 			return;
 		}
 		String data = getContext().getAdministration().fetchJobStatus(projectId.get(), jobUUID.get());
-		outputAsBeautifiedJSON(data);
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

@@ -12,6 +12,5 @@ public interface ConfigProvider {
 	public String getProtocol();
 
 	public int getPort();
-
-	public void handleClientError(String statusText);
+	
 }

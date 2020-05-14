@@ -14,8 +14,8 @@ import javax.persistence.Version;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reflections.Reflections;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 
 public class PersistenceImplementationHealthTest {

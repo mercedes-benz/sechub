@@ -30,8 +30,8 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 
 	private RestTemplate restTemplate;
 
-	public AbstractSpringRestAdapterContext(C config, A adapter) {
-		super(config,adapter);
+	public AbstractSpringRestAdapterContext(C config, A adapter, AdapterRuntimeContext runtimeContext) {
+		super(config,adapter,runtimeContext);
 		/* setup dedicated rest template */
 
 		ClientHttpRequestFactory requestFactory = createRequestFactory(config);

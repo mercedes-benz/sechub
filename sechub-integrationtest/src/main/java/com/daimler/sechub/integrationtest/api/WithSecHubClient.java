@@ -260,4 +260,27 @@ public class WithSecHubClient {
 		}
 		return list;
 	}
+	/**
+	 * Starts a code scan - result will be green and not long running
+	 * @param project
+	 * @return
+	 */
+	public AssertExecutionResult startAndWaitForCodeScan(TestProject project) {
+        return startAndWaitForCodeScan(project,IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
+    }
+    public AssertExecutionResult startAndWaitForCodeScan(TestProject project,IntegrationTestJSONLocation location) {
+        ExecutionResult result = startSynchronScanFor(project, location);
+        return AssertExecutionResult.assertResult(result);
+    }
+
+    /**
+     * When not changed by project specific mock data setup this will result in a RED traffic light result.<br><br>
+     * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project to scan!
+     * @param project
+     * @return execution result
+     */
+    public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
+        ExecutionResult result = startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
+        return AssertExecutionResult.assertResult(result);
+    }
 }

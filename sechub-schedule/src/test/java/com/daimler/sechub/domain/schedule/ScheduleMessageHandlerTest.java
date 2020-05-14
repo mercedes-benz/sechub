@@ -16,6 +16,7 @@ import com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromPro
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
+import com.daimler.sechub.sharedkernel.messaging.DummyEventInspector;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
@@ -127,6 +128,7 @@ public class ScheduleMessageHandlerTest {
 				List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
 			super(injectedSynchronousHandlers, injectedAsynchronousHandlers);
 			this.taskExecutor=new TestTaskExecutor();
+			this.eventInspector=new DummyEventInspector();
 		}
 
 	}

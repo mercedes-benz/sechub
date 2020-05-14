@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
-import static com.daimler.sechub.domain.schedule.SchedulingConstants.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,15 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.batch.AsyncJobLauncher;
+import com.daimler.sechub.domain.schedule.batch.SecHubBatchJobParameterBuilder;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -42,6 +41,7 @@ public class ScheduleJobLauncherService {
 	private static final Logger LOG = LoggerFactory.getLogger(ScheduleJobLauncherService.class);
 
 	@Autowired
+	@Lazy
 	DomainMessageService eventBus;
 
 	@Autowired
@@ -49,21 +49,22 @@ public class ScheduleJobLauncherService {
 
 	@Autowired
 	Job job;
+	
+	@Autowired
+    SecHubBatchJobParameterBuilder parameterBuilder;
 
 	@UseCaseSchedulerStartsJob(@Step(number = 2, next = { 3,
 			4 },
 			name = "Execution",
 			description = "Starts a spring boot batch job which does execute the scan asynchronous. If spring boot batch job cannot be started the next steps will not be executed."))
 	public void executeJob(ScheduleSecHubJob secHubJob) {
-		String secHubJobUUID = secHubJob.getUUID().toString();
-		LOG.debug("Execute job:{}", secHubJobUUID);
-
-		JobParametersBuilder builder = new JobParametersBuilder();
-		builder.addString(BATCHPARAM_SECHUB_UUID, secHubJobUUID);
+		UUID secHubJobUUID = secHubJob.getUUID();
+		
+        LOG.debug("Execute job:{}", secHubJobUUID);
 
 		try {
 			/* prepare batch job */
-			JobParameters jobParameters = builder.toJobParameters();
+			JobParameters jobParameters = parameterBuilder.buildParams(secHubJobUUID);
 
 			/* launch batch job */
 			LOG.debug("Trigger batch job launch :{}", secHubJobUUID);
@@ -74,7 +75,7 @@ public class ScheduleJobLauncherService {
 			LOG.debug("Execution triggered: {} has batch-ID:{}", secHubJobUUID, batchJobId);
 
 			/* send domain event */
-			sendJobStarted(secHubJob.getProjectId(), secHubJob.getUUID(), secHubJob.getJsonConfiguration(), secHubJob.getOwner());
+			sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getJsonConfiguration(), secHubJob.getOwner());
 
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
 			/*

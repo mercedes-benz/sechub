@@ -288,21 +288,23 @@ public class AsUser {
 	}
 
 	public String getJobReport(String projectId, UUID jobUUID) {
+	    long waitTimeInMillis=1000;
 		int count = 0;
 		boolean jobEnded = false;
+		String jobstatus = null;
 		while (count < 10) {
-			String jobstatus = getJobStatus(projectId, jobUUID);
+			jobstatus = getJobStatus(projectId, jobUUID);
 			if (jobstatus.indexOf("ENDED") != -1) {
 				jobEnded = true;
 				break;
 			}
-			TestUtil.waitMilliseconds(200);
+			TestUtil.waitMilliseconds(waitTimeInMillis);
 			++count;
 		}
 		if (!jobEnded) {
-			throw new IllegalStateException("Even after some retries no job report state was accessible!");
+			throw new IllegalStateException("Even after "+count+" retries, every waiting "+waitTimeInMillis+" ms, no job report state ENDED was accessible!\nLAST fetched jobstatus for "+jobUUID+" in project "+projectId+" was:\n"+jobstatus);
 		}
-		/* okay report is available - so do downooad */
+		/* okay report is available - so do download */
 		return getRestHelper().getJSon(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
 	}
 	
@@ -316,24 +318,21 @@ public class AsUser {
 		return AssertExecutionResult.assertResult(result);
 	}
 	
-	/**
-	 * When not changed by project specific mock data setup this will result in a RED traffic light result.<br><br>
-	 * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project to scan!
-	 * @param project
-	 * @return execution result
-	 */
-	public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
-		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
-		return AssertExecutionResult.assertResult(result);
-	}
+	public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+	    restartJob(sechubJobUUID);
+	    waitForJobDone(project, sechubJobUUID);
+	    return getJobStatus(project.getProjectId(), sechubJobUUID);
+    }
 	
-	public AssertExecutionResult createCodeScanAndFetchScanData(TestProject project) {
-		ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
-		return AssertExecutionResult.assertResult(result);
-	}
+	public String restartCodeScanHardAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
+	    restartJobHard(sechubJobUUID);
+        waitForJobDone(project, sechubJobUUID);
+        return getJobStatus(project.getProjectId(), sechubJobUUID);
+    }
 
+	
 	/**
-	 * Starts a webscan job for project (but job is not started)
+	 * Creates a webscan job for project (but job is not approved, so will not be started)
 	 *
 	 * @param project
 	 * @return uuid for created job
@@ -343,7 +342,7 @@ public class AsUser {
 	}
 
 	/**
-	 *
+	 * Creates a webscan job for project (but job is not approved, so will not be started)
 	 * @param project
 	 * @param useLongRunningButGreen
 	 * @return
@@ -370,11 +369,12 @@ public class AsUser {
 		}
 
 	}
+
 	/**
-	 *
+	 * Creates a code scan job and returns corresponding job UUID. But job is NOT approved and so not started! 
 	 * @param project
-	 * @param useLongRunningButGreen
-	 * @return
+	 * @param runMode
+	 * @return job UUID
 	 */
 	public UUID createCodeScan(TestProject project, IntegrationTestMockMode runMode) {
 		assertProject(project).doesExist();
@@ -513,6 +513,43 @@ public class AsUser {
         return MappingData.fromString(getRestHelper().getJSon(url));
     
     }
+
+    public AsUser restartJob(UUID jobUUID) {
+        String url = getUrlBuilder().buildAdminRestartsJob(jobUUID);
+        getRestHelper().post(url);
+        return this;
+        
+    }
+    
+    public AsUser restartJobHard(UUID jobUUID) {
+        String url = getUrlBuilder().buildAdminRestartsJobHard(jobUUID);
+        getRestHelper().post(url);
+        return this;
+        
+    }
+    public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,"zipfile_contains_only_test1.txt.zip");
+    }
+    
+    public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project,IntegrationTestMockMode mode) {
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project,mode,"zipfile_contains_only_test1.txt.zip");
+    }
+    
+    public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project,IntegrationTestMockMode mode, String pathInsideResources) {
+        UUID uuid = triggerAsyncScanAndGetJobUUID(project, mode);
+        upload(project, uuid, pathInsideResources);
+        
+        approveJob(project, uuid);
+        return uuid;
+    }
+    
+    public UUID triggerAsyncScanAndGetJobUUID(TestProject project,IntegrationTestMockMode runMode) {
+        UUID uuid = createCodeScan(project, runMode);
+        assertNotNull(uuid);
+        return uuid;
+    }
+
+    
 
 
 

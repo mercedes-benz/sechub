@@ -26,6 +26,8 @@ import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDat
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
@@ -90,12 +92,12 @@ public class CommandUI {
 		panel.add(progressBar, BorderLayout.EAST);
 
 		menuBar = new JMenuBar();
-		createGlobalMenu();
+		createStatusMenu();
 		createJobMenu();
 		createProjectMenu();
 		createUserMenu();
-
 		createEditMenu();
+		createSchedulerMenu();
 		createIntegrationTestServerMenu();
 		createMassOperationsMenu();
 		
@@ -121,39 +123,26 @@ public class CommandUI {
 		JMenu menu = new JMenu("User");
 		menuBar.add(menu);
 
-		JMenu signupMenu = new JMenu("Signup");
-		menu.add(signupMenu);
-		add(signupMenu, new ListSignupsAction(context));
-		add(signupMenu, new AcceptUserSignupAction(context));
-
+		add(menu,new AnonymousSigninNewUserAction(context));
+		add(menu, new AcceptUserSignupAction(context));
+		add(menu, new DeleteUserAction(context));
 		menu.addSeparator();
-
-		add(menu, new ShowUserListAction(context));
 		add(menu, new ShowUserDetailAction(context));
-		add(menu, new ShowAdminListAction(context));
+		add(menu,new AnonymousRequestNewAPITokenUserAction(context));
 		menu.addSeparator();
-
+		add(menu, new ListSignupsAction(context));
+		add(menu, new ShowUserListAction(context));
+		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
 		menu.addSeparator();
 
-		add(menu, new DeleteUserAction(context));
-		menu.addSeparator();
-
-		JMenu anonymous = new JMenu("Anonymous");
-		menu.add(anonymous);
-		add(anonymous,new AnonymousRequestNewAPITokenUserAction(context));
-		add(anonymous,new AnonymousSigninNewUserAction(context));
-
-		JMenu grantMenu = new JMenu("Grant");
-		add(grantMenu,new GrantAdminRightsToUserAction(context));
-		menu.add(grantMenu);
-
-		JMenu revokeMenu = new JMenu("Revoke");
-		add(revokeMenu,new RevokeAdminRightsFromAdminAction(context));
-		menu.add(revokeMenu);
-
-
+		JMenu adminMenu = new JMenu("Admin rights");
+		add(adminMenu,new GrantAdminRightsToUserAction(context));
+		add(adminMenu,new RevokeAdminRightsFromAdminAction(context));
+		adminMenu.addSeparator();
+		add(adminMenu, new ShowAdminListAction(context));
+		menu.add(adminMenu);
 	}
 
 	private void createProjectMenu() {
@@ -162,62 +151,60 @@ public class CommandUI {
 
 		add(menu, new CreateProjectAction(context));
 		add(menu, new DeleteProjectAction(context));
-		menu.addSeparator();
-		add(menu, new ShowProjectListAction(context));
 		add(menu, new ShowProjectDetailAction(context));
 		add(menu, new ShowProjectsScanLogsAction(context));
-		add(menu, new UpdateProjectWhitelistAction(context));
 		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
-		
 		menu.addSeparator();
+		add(menu, new ShowProjectListAction(context));
+		menu.addSeparator();
+		add(menu, new UpdateProjectWhitelistAction(context));
 		
 		JMenu projectMockData = new JMenu("Mockdata");
 		menu.add(projectMockData);
 		
 		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
 		add(projectMockData, new GetProjectMockConfigurationAction(context));
-
 	}
 
-	private void createGlobalMenu() {
-		JMenu menu = new JMenu("Global");
+	private void createStatusMenu() {
+		JMenu menu = new JMenu("Status");
 		menuBar.add(menu);
 
-		JMenu schedulerMenu = new JMenu("Scheduler");
-		add(schedulerMenu, new DisableSchedulerJobProcessingAction(context));
-		add(schedulerMenu, new EnableSchedulerJobProcessingAction(context));
-		add(schedulerMenu, new RefreshSchedulerStatusAction(context));
-		menu.add(schedulerMenu);
-
-		JMenu statusMenu = new JMenu("Status");
-		menu.add(statusMenu);
-
-		add(statusMenu, new ShowRunningBatchJobsListAction(context));
-		statusMenu.addSeparator();
-		add(statusMenu, new CheckAliveAction(context));
-		add(statusMenu, new CheckVersionAction(context));
-		statusMenu.addSeparator();
-		add(statusMenu, new ListStatusEntriesAction(context));
-		add(statusMenu, new CreateOverviewCSVExportAction(context));
-		add(statusMenu, new ShowAdminListAction(context));
-
+		add(menu, new ShowRunningBatchJobsListAction(context));
+		menu.addSeparator();
+		add(menu, new CheckAliveAction(context));
+		add(menu, new CheckVersionAction(context));
+		add(menu, new ListStatusEntriesAction(context));
+		menu.addSeparator();
+		add(menu, new ShowAdminListAction(context));
+		add(menu, new CreateOverviewCSVExportAction(context));
 	}
+
+	private void createSchedulerMenu() {
+		JMenu menu = new JMenu("Scheduler");
+		menuBar.add(menu);
+
+		add(menu, new DisableSchedulerJobProcessingAction(context));
+		add(menu, new EnableSchedulerJobProcessingAction(context));
+		add(menu, new RefreshSchedulerStatusAction(context));
+	}
+
 	private void createJobMenu() {
 		JMenu menu = new JMenu("Job");
 		menuBar.add(menu);
 		add(menu, new GetJobStatusAction(context));
-		add(menu, new ShowRunningBatchJobsListAction(context));
 		add(menu, new CancelJobAction(context));
+		add(menu, new RestartJobAction(context));
+		add(menu, new RestartJobHardAction(context));
+		menu.addSeparator();
+		add(menu, new ShowRunningBatchJobsListAction(context));
 		menu.addSeparator();
 		add(menu, new DownloadJSONReportForJobAction(context));
 		add(menu, new DownloadHTMLReportForJobAction(context));
 		menu.addSeparator();
 		add(menu, new DownloadFullscanDataForJobAction(context));
-		add(menu, new ShowRunningBatchJobsListAction(context));
-
-
 	}
 
 	private void createIntegrationTestServerMenu() {

@@ -22,8 +22,8 @@ public class ShowUserDetailAction extends AbstractUIAction {
 			return;
 		}
 
-		String data = getContext().getAdministration().fetchUserInfo(userId.get());
-		outputAsBeautifiedJSON(data);
+		String data = getContext().getAdministration().fetchUserInfo(userId.get().toLowerCase().trim());
+		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
 }

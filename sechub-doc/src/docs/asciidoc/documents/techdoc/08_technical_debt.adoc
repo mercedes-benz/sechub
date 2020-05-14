@@ -5,7 +5,6 @@
 === Long running transactions
 There could be a problem about long running transactions.
 
-
 === Domain messaging system
 
 ==== Authorization

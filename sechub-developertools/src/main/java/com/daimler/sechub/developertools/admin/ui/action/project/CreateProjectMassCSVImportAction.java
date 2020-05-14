@@ -29,19 +29,19 @@ public class CreateProjectMassCSVImportAction extends AbstractUIAction {
 	public void execute(ActionEvent e) {
 		File file = getContext().getDialogUI().selectFile(ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue("unknown"));
 		if (file==null) {
-			outputAsText("No file selected - canceled");
+			outputAsTextOnSuccess("No file selected - canceled");
 			return;
 		}
 		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValue("UNKNOWN");
 		if (! confirm("Do you really want to start mass project creation into environment: "+env)) {
-			outputAsText("Canceled mass project import");
+			outputAsTextOnSuccess("Canceled mass project import");
 			return;
 		}
 		try {
 			csvImport.importProjectsAndRelationsByCSV(file);
-			outputAsText("Mass project creation by file"+file+" successfully done");
+			outputAsTextOnSuccess("Mass project creation by file"+file+" successfully done");
 		} catch (Exception ex) {
-			outputAsText("Was not able to do mass project creation by CSV import:"+ex.getMessage());
+			outputAsTextOnSuccess("Was not able to do mass project creation by CSV import:"+ex.getMessage());
 			LOG.error("Was not able to import",ex);
 		}
 	}

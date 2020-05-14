@@ -12,7 +12,7 @@ public class RevokeAdminRightsFromAdminAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
 	public RevokeAdminRightsFromAdminAction(UIContext context) {
-		super("Revoke admin rights from admin",context);
+		super("Revoke admin rights from user",context);
 	}
 
 	@Override
@@ -21,8 +21,13 @@ public class RevokeAdminRightsFromAdminAction extends AbstractUIAction {
 		if (!userToSignup.isPresent()) {
 			return;
 		}
-		String infoMessage = getContext().getAdministration().revokeAddminRightsFrom(userToSignup.get());
-		outputAsText(infoMessage);
+		
+		if (!confirm("Do you really want to revoke admin rights for user " + userToSignup.get() + "?")) {
+		    return;
+		}
+		
+		String infoMessage = getContext().getAdministration().revokeAddminRightsFrom(userToSignup.get().toLowerCase().trim());
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

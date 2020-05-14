@@ -7,21 +7,25 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.adapter.AdapterRuntimeContext;
+
 public class NetsparkerContextTest {
 	private NetsparkerContext contextToTest;
 	private NetsparkerAdapterConfig config;
 	private NetsparkerAdapter adapter;
+    private AdapterRuntimeContext runtimeContext;
 
 	@Before
 	public void before() throws Exception{
 		config = mock(NetsparkerAdapterConfig.class);
 		adapter = mock(NetsparkerAdapter.class);
+		runtimeContext = mock(AdapterRuntimeContext.class);
 		
 		when(config.getProductBaseURL()).thenReturn("http://localhost");
 		when(config.getTargetAsString()).thenReturn("https://my.scan.target");
 		when(config.getRootTargetURIasString()).thenReturn("https://my.scan.target");
 		
-		contextToTest = new NetsparkerContext(config,adapter);
+		contextToTest = new NetsparkerContext(config,adapter,runtimeContext);
 	}
 
 	@Test

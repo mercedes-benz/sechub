@@ -24,13 +24,16 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
+import com.daimler.sechub.sharedkernel.ProgressMonitor;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
+import com.daimler.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
+import com.daimler.sechub.sharedkernel.messaging.DummyEventInspector;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
@@ -55,6 +58,8 @@ public class ScanServiceTest {
 	private JobStorage jobStorage;
 	private ProjectScanLogService scanLogService;
 	private ScanProjectConfigService scanProjectConfigService;
+    private ScanJobListener scanJobRegistry;
+    private ScanProgressMonitorFactory monitorFactory;
 	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Before
@@ -62,9 +67,14 @@ public class ScanServiceTest {
 		storageService = mock(StorageService.class);
 		jobStorage = mock(JobStorage.class);
 		scanProjectConfigService = mock(ScanProjectConfigService.class);
+		scanJobRegistry = mock(ScanJobListener.class);
+		monitorFactory=mock(ScanProgressMonitorFactory.class);
+		ProgressMonitor monitor = mock(ProgressMonitor.class);
+		when(monitor.getId()).thenReturn("monitor-test-id");
 
 		when(storageService.getJobStorage(any(), any())).thenReturn(jobStorage);
-
+		when(monitorFactory.createProgressMonitor(any())).thenReturn(monitor);
+		
 		webScanProductExecutionService = mock(WebScanProductExecutionService.class);
 		codeScanProductExecutionService = mock(CodeScanProductExecutionService.class);
 		infrastructureScanProductExecutionService = mock(InfrastructureScanProductExecutionService.class);
@@ -83,6 +93,8 @@ public class ScanServiceTest {
 		serviceToTest.storageService = storageService;
 		serviceToTest.scanLogService = scanLogService;
 		serviceToTest.scanProjectConfigService = scanProjectConfigService;
+		serviceToTest.scanJobListener=scanJobRegistry;
+		serviceToTest.monitorFactory=monitorFactory;
 	}
 
 	@Test
@@ -287,6 +299,10 @@ public class ScanServiceTest {
 		DomainMessage request = new DomainMessage(MessageID.START_SCAN);
 		request.set(MessageDataKeys.SECHUB_UUID, UUID);
 		request.set(MessageDataKeys.SECHUB_CONFIG, configMin);
+		BatchJobMessage batchJobMessage = new BatchJobMessage();
+		batchJobMessage.setSechubJobUUID(UUID);
+		batchJobMessage.setBatchJobId(42);
+        request.set(MessageDataKeys.BATCH_JOB_ID, batchJobMessage);
 
 		return request;
 	}
@@ -315,6 +331,7 @@ public class ScanServiceTest {
 		public FakeDomainMessageService(List<SynchronMessageHandler> injectedSynchronousHandlers, List<AsynchronMessageHandler> injectedAsynchronousHandlers) {
 			super(injectedSynchronousHandlers, injectedAsynchronousHandlers);
 			this.taskExecutor = new TestTaskExecutor();
+			this.eventInspector=new DummyEventInspector();
 		}
 
 	}

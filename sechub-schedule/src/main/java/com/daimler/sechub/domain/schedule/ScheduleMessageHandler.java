@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,140 +25,161 @@ import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 
 @Component
-public class ScheduleMessageHandler implements AsynchronMessageHandler{
+public class ScheduleMessageHandler implements AsynchronMessageHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ScheduleMessageHandler.class);
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScheduleMessageHandler.class);
+    @Autowired
+    ScheduleGrantUserAccessToProjectService grantService;
 
+    @Autowired
+    ScheduleRevokeUserAccessFromProjectService revokeUserFromProjectService;
 
-	@Autowired
-	ScheduleGrantUserAccessToProjectService grantService;
+    @Autowired
+    ScheduleRevokeUserAccessAtAllService revokeUserService;
 
-	@Autowired
-	ScheduleRevokeUserAccessFromProjectService revokeUserFromProjectService;
+    @Autowired
+    ProjectWhiteListUpdateService projectWhiteListUpdateService;
 
-	@Autowired
-	ScheduleRevokeUserAccessAtAllService revokeUserService;
+    @Autowired
+    SchedulerConfigService configService;
 
-	@Autowired
-	ProjectWhiteListUpdateService projectWhiteListUpdateService;
+    @Autowired
+    SchedulerStatusService statusService;
 
-	@Autowired
-	SchedulerConfigService configService;
+    @Autowired
+    ScheduleDeleteAllProjectAcessService deleteAllProjectAccessService;
 
-	@Autowired
-	SchedulerStatusService statusService;
+    @Autowired
+    SchedulerCancelJobService cancelJobService;
+    
+    @Autowired
+    SchedulerRestartJobService restartJobService;
 
-	@Autowired
-	ScheduleDeleteAllProjectAcessService deleteAllProjectAccessService;
+    @Override
+    public void receiveAsyncMessage(DomainMessage request) {
+        MessageID messageId = request.getMessageId();
+        LOG.debug("received domain request: {}", request);
 
-	@Autowired
-	SchedulerCancelJobService cancelJobService;
+        switch (messageId) {
+        case USER_ADDED_TO_PROJECT:
+            handleUserAddedToProject(request);
+            break;
+        case USER_REMOVED_FROM_PROJECT:
+            handleUserRemovedFromProject(request);
+            break;
+        case USER_DELETED:
+            handleUserDeleted(request);
+            break;
+        case PROJECT_CREATED:
+            handleProjectCreated(request);
+            break;
+        case PROJECT_DELETED:
+            handleProjectDeleted(request);
+            break;
+        case PROJECT_WHITELIST_UPDATED:
+            handleProjectWhiteListUpdated(request);
+            break;
+        case REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING:
+            handleDisableSchedulerJobProcessingRequest(request);
+            break;
+        case REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING:
+            handleEnableSchedulerJobProcessingRequest(request);
+            break;
+        case REQUEST_SCHEDULER_STATUS_UPDATE:
+            handleSchedulerStatusRefreshRequest(request);
+            break;
+        case REQUEST_JOB_CANCELATION:
+            handleCancelJobRequested(request);
+            break;
+        case REQUEST_JOB_RESTART:
+            handleJobRestartRequested(request);
+            break;
+        case REQUEST_JOB_RESTART_HARD:
+            handleJobRestartHardRequested(request);
+            break;
+        default:
+            throw new IllegalStateException("unhandled message id:" + messageId);
+        }
+    }
 
-	@Override
-	public void receiveAsyncMessage(DomainMessage request) {
-		MessageID messageId = request.getMessageId();
-		LOG.debug("received domain request: {}", request);
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART)
+    private void handleJobRestartRequested(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
+        UUID jobUUID = message.getJobUUID();
+        
+        restartJobService.restartJob(jobUUID, message.getOwnerEmailAddress());
+    }
+    
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_RESTART_HARD)
+    private void handleJobRestartHardRequested(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_RESTART_DATA);
+        UUID jobUUID = message.getJobUUID();
+        
+        restartJobService.restartJobHard(jobUUID, message.getOwnerEmailAddress());
+    }
 
-		switch (messageId) {
-		case USER_ADDED_TO_PROJECT:
-			handleUserAddedToProject(request);
-			break;
-		case USER_REMOVED_FROM_PROJECT:
-			handleUserRemovedFromProject(request);
-			break;
-		case USER_DELETED:
-			handleUserDeleted(request);
-			break;
-		case PROJECT_CREATED:
-			handleProjectCreated(request);
-			break;
-		case PROJECT_DELETED:
-			handleProjectDeleted(request);
-			break;
-		case PROJECT_WHITELIST_UPDATED:
-			handleProjectWhiteListUpdated(request);
-			break;
-		case REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING:
-			handleDisableSchedulerJobProcessingRequest(request);
-			break;
-		case REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING:
-			handleEnableSchedulerJobProcessingRequest(request);
-			break;
-		case REQUEST_SCHEDULER_STATUS_UPDATE:
-			handleSchedulerStatusRefreshRequest(request);
-			break;
-		case REQUEST_JOB_CANCELATION:
-			handleCancelJobRequested(request);
-			break;
-		default:
-			throw new IllegalStateException("unhandled message id:"+messageId);
-		}
-	}
+    @IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
+    private void handleCancelJobRequested(DomainMessage request) {
+        JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
+        cancelJobService.cancelJob(message.getJobUUID(), message.getOwnerEmailAddress());
+    }
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_JOB_CANCELATION)
-	private void handleCancelJobRequested(DomainMessage request) {
-		JobMessage message = request.get(MessageDataKeys.JOB_CANCEL_DATA);
-		cancelJobService.cancelJob(message.getJobUUID(), message.getOwnerEmailAddress());
-	}
+    @IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
+    private void handleSchedulerStatusRefreshRequest(DomainMessage request) {
+        statusService.buildStatus();
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_STATUS_UPDATE)
-	private void handleSchedulerStatusRefreshRequest(DomainMessage request) {
-		statusService.buildStatus();
+    }
 
-	}
+    @IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
+    private void handleEnableSchedulerJobProcessingRequest(DomainMessage request) {
+        configService.enableJobProcessing();
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING)
-	private void handleEnableSchedulerJobProcessingRequest(DomainMessage request) {
-		configService.enableJobProcessing();
+    }
 
-	}
+    @IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING)
+    private void handleDisableSchedulerJobProcessingRequest(DomainMessage request) {
+        configService.disableJobProcessing();
+    }
 
-	@IsReceivingAsyncMessage(MessageID.REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING)
-	private void handleDisableSchedulerJobProcessingRequest(DomainMessage request) {
-		configService.disableJobProcessing();
-	}
+    @IsReceivingAsyncMessage(MessageID.PROJECT_CREATED)
+    private void handleProjectCreated(DomainMessage request) {
+        ProjectMessage data = request.get(MessageDataKeys.PROJECT_CREATION_DATA);
+        updateWhiteList(data);
+    }
 
+    @IsReceivingAsyncMessage(MessageID.PROJECT_WHITELIST_UPDATED)
+    private void handleProjectWhiteListUpdated(DomainMessage request) {
+        ProjectMessage data = request.get(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA);
+        updateWhiteList(data);
+    }
 
-	@IsReceivingAsyncMessage(MessageID.PROJECT_CREATED)
-	private void handleProjectCreated(DomainMessage request) {
-		ProjectMessage data = request.get(MessageDataKeys.PROJECT_CREATION_DATA);
-		updateWhiteList(data);
-	}
+    @IsReceivingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
+    private void handleUserAddedToProject(DomainMessage request) {
+        UserMessage data = request.get(MessageDataKeys.PROJECT_TO_USER_DATA);
+        grantService.grantUserAccessToProject(data.getUserId(), data.getProjectId());
+    }
 
-	@IsReceivingAsyncMessage(MessageID.PROJECT_WHITELIST_UPDATED)
-	private void handleProjectWhiteListUpdated(DomainMessage request) {
-		ProjectMessage data = request.get(MessageDataKeys.PROJECT_WHITELIST_UPDATE_DATA);
-		updateWhiteList(data);
-	}
+    @IsReceivingAsyncMessage(MessageID.USER_REMOVED_FROM_PROJECT)
+    private void handleUserRemovedFromProject(DomainMessage request) {
+        UserMessage data = request.get(MessageDataKeys.PROJECT_TO_USER_DATA);
+        revokeUserFromProjectService.revokeUserAccessFromProject(data.getUserId(), data.getProjectId());
+    }
 
-	@IsReceivingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
-	private void handleUserAddedToProject(DomainMessage request) {
-		UserMessage data = request.get(MessageDataKeys.PROJECT_TO_USER_DATA);
-		grantService.grantUserAccessToProject(data.getUserId(),data.getProjectId());
-	}
+    @IsReceivingAsyncMessage(MessageID.USER_DELETED)
+    private void handleUserDeleted(DomainMessage request) {
+        UserMessage data = request.get(MessageDataKeys.USER_DELETE_DATA);
+        revokeUserService.revokeUserAccess(data.getUserId());
+    }
 
-	@IsReceivingAsyncMessage(MessageID.USER_REMOVED_FROM_PROJECT)
-	private void handleUserRemovedFromProject(DomainMessage request) {
-		UserMessage data = request.get(MessageDataKeys.PROJECT_TO_USER_DATA);
-		revokeUserFromProjectService.revokeUserAccessFromProject(data.getUserId(), data.getProjectId());
-	}
+    @IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
+    private void handleProjectDeleted(DomainMessage request) {
+        ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
+        deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
+    }
 
-	@IsReceivingAsyncMessage(MessageID.USER_DELETED)
-	private void handleUserDeleted(DomainMessage request) {
-		UserMessage data = request.get(MessageDataKeys.USER_DELETE_DATA);
-		revokeUserService.revokeUserAccess(data.getUserId());
-	}
-
-	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
-	private void handleProjectDeleted(DomainMessage request) {
-		ProjectMessage data = request.get(MessageDataKeys.PROJECT_DELETE_DATA);
-		deleteAllProjectAccessService.deleteAnyAccessDataForProject(data.getProjectId());
-	}
-
-	private void updateWhiteList(ProjectMessage data) {
-		projectWhiteListUpdateService.update(data.getProjectId(),data.getWhitelist());
-	}
-
+    private void updateWhiteList(ProjectMessage data) {
+        projectWhiteListUpdateService.update(data.getProjectId(), data.getWhitelist());
+    }
 
 }

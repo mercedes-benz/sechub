@@ -20,7 +20,7 @@ public enum ProductIdentifier {
 	NETSPARKER,
 
 	/**
-	 * Report collector, replaced by {@link ProductIdentifier#SERECO}
+	 * Report collector, replaced by {@link ProductIdentifier#SERECO}. Is only used for tests
 	 */
 	FARRADAY,
 

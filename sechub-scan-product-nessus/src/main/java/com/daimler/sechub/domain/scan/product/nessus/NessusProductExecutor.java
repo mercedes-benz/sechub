@@ -20,6 +20,7 @@ import com.daimler.sechub.domain.scan.TargetIdentifyingMultiInstallSetupConfigBu
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.AbstractInfrastructureScanProductExecutor;
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
@@ -56,7 +57,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 	NessusInstallSetup installSetup;
 
 	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, NessusInstallSetup setup, TargetRegistryInfo data)
+	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NessusInstallSetup setup, TargetRegistryInfo data)
 			throws Exception {
 		if (data.getURIs().isEmpty() && data.getIPs().isEmpty()) {
 			return Collections.emptyList();
@@ -80,7 +81,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 		String projectId = context.getConfiguration().getProjectId();
 
 		/* execute nessus by adapter and return product result */
-		String xml = nessusAdapter.start(nessusConfig);
+		String xml = nessusAdapter.start(nessusConfig,executorContext.getCallBack());
 		ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
 		return Collections.singletonList(result);
 	}

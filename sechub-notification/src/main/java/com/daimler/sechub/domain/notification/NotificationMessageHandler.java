@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.notification;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,10 @@ import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatProjectHasBeenDeletedNotificationService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService;
+import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStarted;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenDisabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatSchedulerJobProcessingHasBeenEnabledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatUserBecomesAdminNotificationService;
@@ -21,6 +27,7 @@ import com.daimler.sechub.domain.notification.user.NewApiTokenRequestedUserNotif
 import com.daimler.sechub.domain.notification.user.SignUpRequestedAdminNotificationService;
 import com.daimler.sechub.domain.notification.user.UserDeletedNotificationService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
+import com.daimler.sechub.sharedkernel.messaging.ClusterMemberMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
@@ -64,11 +71,23 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	@Autowired
 	InformAdminsThatSchedulerJobProcessingHasBeenEnabledService informAdminSchedulerEnabledService;
 
+	@Autowired
+	InformAdminsThatJobResultsHaveBeenPurgedService informAdminsThatJobResultsHaveBeenPurgedService;
+	
 	/* +++++++++++++++++++++++++++++++++ */
-	/* ++++++ job canceled +++++++++++ */
+	/* ++++++ job canceled +++++++++++++ */
 	/* +++++++++++++++++++++++++++++++++ */
 	@Autowired
 	InformUserThatJobHasBeenCanceledService informUserThatJobHasBeenCanceledService;
+
+	/* ++++++++++++++++++++++++++++++++ */
+	/* ++++++ job restart +++++++++++++ */
+	/* ++++++++++++++++++++++++++++++++ */
+	@Autowired
+	InformAdminsThatJobRestartWasCanceledService informAdminsThatRestartWasCanceledService;
+	
+	@Autowired
+	InformAdminsThatJobRestartHasBeenTriggeredService informAdminsThatJobRestartHasBeenTriggeredService;
 
 	/* +++++++++++++++++++++++++++++++++ */
 	/* ++++++ project delete +++++++++++ */
@@ -81,6 +100,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 
 	@Autowired
 	InformUsersThatProjectHasBeenDeletedNotificationService informUsersThatProjectHasBeenDeletedService;
+	
+	@Autowired
+    InformAdminsThatNewSchedulerInstanceHasBeenStarted informAdminsThatNewSchedulerInstanceHasBeenStarted;
 
 	@Override
 	public void receiveAsyncMessage(DomainMessage request) {
@@ -119,12 +141,46 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case JOB_CANCELED:
 			handleJobCanceled(request.get(MessageDataKeys.JOB_CANCEL_DATA));
 			break;
+		case JOB_RESTART_CANCELED:
+		    handleRestartJobCanceled(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+		    break;
+		case JOB_RESTART_TRIGGERED:
+		    handleRestartJobTriggered(request.get(MessageDataKeys.JOB_RESTART_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+		    break;
+		case JOB_RESULTS_PURGED:
+		    handleJobResultsPurged(request.get(MessageDataKeys.SECHUB_UUID), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+		    break;
+		case SCHEDULER_STARTED:
+            handleSchedulerStarted(request.get(MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+            break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
 	}
 
-	@IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
+	@IsReceivingAsyncMessage(MessageID.SCHEDULER_STARTED)
+	private void handleSchedulerStarted(ClusterMemberMessage clusterMemberMessage, String baseUrl) {
+	    informAdminsThatNewSchedulerInstanceHasBeenStarted.notify(baseUrl, clusterMemberMessage);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_RESULTS_PURGED)
+	private void handleJobResultsPurged(UUID uuid, String baseUrl) {
+        informAdminsThatJobResultsHaveBeenPurgedService.notify(uuid, baseUrl);
+        
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_RESTART_TRIGGERED)
+	private void handleRestartJobTriggered(JobMessage jobMessage, String baseUrl) {
+	    informAdminsThatJobRestartHasBeenTriggeredService.notify(jobMessage, baseUrl);
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_RESTART_CANCELED)
+	private void handleRestartJobCanceled(JobMessage jobMessage,String baseURL) {
+	    informAdminsThatRestartWasCanceledService.notify(jobMessage, baseURL);
+        
+    }
+
+    @IsReceivingAsyncMessage(MessageID.JOB_CANCELED)
 	private void handleJobCanceled(JobMessage jobMessage) {
 		informUserThatJobHasBeenCanceledService.notify(jobMessage);
 	}

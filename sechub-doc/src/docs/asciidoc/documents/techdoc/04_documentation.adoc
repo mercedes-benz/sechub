@@ -51,9 +51,9 @@ automatically.
 [[section-documentation-usecases]]
 ==== Automated description of use cases
 With usage of special usecase annotations which itself are marked with `@UseCaseDefintion` it's possible
-to create an automated use case description. See also
-<<section-coding-convention-usecases,Usecase coding conventions>>
-for more technical details.
+to create an automated use case description. It contains also generated
+<<section-documentation-usecase-event-overview, Usecase event trace overview>> diagrams.
+
 
 ==== Automated Kubernetes files
 The `@MustBeDocumented` annotation is also used for automatic generation of `Kubernetes` deployment parts. See <<section-infrastructure-kubernetes-files-generator,Kubernetes Files Generator>> .
@@ -71,11 +71,27 @@ plantuml::diagrams/gen/gen_domain_messaging_overview.plantuml[format=svg, alt="S
 TIP: For an example look into `@IsReceivingAsyncMessage` and look also for its
      references.
 
+[[section-documentation-usecase-event-overview]]
+===== Usecase event overview diagrams
+For some usecases we got event trace information (from special integration tests). With those information
+additional diagrams are generated and included at Usecase description level. They show the events happening
+after a usecase has been triggered. See <<section-coding-convention-event-trace, Coding conventions for event trace integration tests>>
+.
+
+But not every usecase has got such a diagram: Either there are no events (can happen) or just no integration test for this case has been created.
+
 [[section-documentation-generation]]
 === Documentation generation
 By calling `gradlew documentation` the `AsciidocGenerator` is build and used. This generator will automatically
 generate documentation areas like <<link-gen-systemproperties,System properties>> or <<link-gen-scheduling,Scheduling>> which will
 be rendered by Asciidoctor afterwards.
+
+=== Prerequisites
+To have <<section-documentation-usecase-event-overview,Usecase event overview>> generated, the integrationtests must have called before!
+Otherwise this information will not be shown inside asciidoc output! This was optional to seperate documentation and integration tests.
+But even tracing can only be done at runtime - so it's necessary to execute integration tests and then documentation. 
+
+Build server and GitHub action do this automatically.
 
 === Generation of sechub pages
 just call `gradlew documentation-with-pages` or if documentation is already generated just call

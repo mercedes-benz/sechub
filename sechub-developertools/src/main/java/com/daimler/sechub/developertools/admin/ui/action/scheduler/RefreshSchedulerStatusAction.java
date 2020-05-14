@@ -16,7 +16,7 @@ public class RefreshSchedulerStatusAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String infoMessage = getContext().getAdministration().refreshSchedulerStatus();
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

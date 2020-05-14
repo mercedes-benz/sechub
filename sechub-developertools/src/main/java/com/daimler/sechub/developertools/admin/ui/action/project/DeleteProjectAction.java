@@ -26,15 +26,15 @@ public class DeleteProjectAction extends AbstractUIAction {
 		if (! optProjectId.isPresent()) {
 			return;
 		}
-		String projectId= optProjectId.get();
+		String projectId= optProjectId.get().toLowerCase().trim();
 		if (!confirm("Do you really want to\nDELETE\nproject "+projectId+"?")) {
-			outputAsText("CANCELED - delete");
+			outputAsTextOnSuccess("CANCELED - delete");
 			LOG.info("canceled delete of project {}",projectId);
 			return;
 		}
 		LOG.info("start delete of project {}",projectId);
 		String infoMessage = getContext().getAdministration().deleteProject(projectId);
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

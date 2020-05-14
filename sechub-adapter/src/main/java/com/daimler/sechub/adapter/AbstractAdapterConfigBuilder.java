@@ -81,7 +81,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		strategy.configure((B) this);
 		return (B) this;
 	}
-
+	
 	/**
 	 * Set result check interval in milliseconds.
 	 *
@@ -305,7 +305,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 			traceID = "FALLBACK_TRACE_ID#" + System.nanoTime();
 		}
 	}
-
+	
 	private void ensureTimeSetup() {
 		if (timeToWaitForNextCheckOperationInMinutes > MAX_1_HOUR_IN_MINUTES) {
 			LOG.warn(

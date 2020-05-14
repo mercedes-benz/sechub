@@ -14,14 +14,17 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build Server
-      run: ./gradlew clean ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
     - name: Set up Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
-        go-version: '1.12.7'
+        go-version: 1.12.9
+        stable: true
+    - name: Gradle clean
+      run: ./gradlew clean
     - name: Build CLI
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
+    - name: Build Server
+      run: ./gradlew ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
     - name: Integration test
       run: ./gradlew integrationtest
     - name: Create combined test report

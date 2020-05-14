@@ -34,7 +34,7 @@ public class DownloadHTMLReportForJobAction extends AbstractUIAction {
 			return;
 		}
 		String infoMessage = getContext().getAdministration().triggerDownloadReport(projectId.get(), sechubJobUUID);
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

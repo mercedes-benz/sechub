@@ -4,6 +4,8 @@ package com.daimler.sechub.domain.schedule.job;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
+
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.daimler.sechub.domain.schedule.ExecutionResult;
@@ -44,6 +46,11 @@ public class JobCreator {
 	public JobCreator result(ExecutionResult result) {
 		job.executionResult = result;
 		return this;
+	}
+	
+	public JobCreator started(LocalDateTime dateTime) {
+	    job.started=dateTime;
+	    return this;
 	}
 
 	/**
