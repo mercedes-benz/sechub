@@ -5,24 +5,6 @@
 === Long running transactions
 There could be a problem about long running transactions.
 
-== Cancelation of jobs
-We have established a way to cancel jobs but not completely:
-
-When cancel request is triggered, we do currently only mark the job as canceled inside scheduler,
-but we do NOT really cancel the Job in scan domain.
-
-With `ScanJobCancelService` a service was established where execution inside a JVM will register
-and unregister a canceable job. But currently we do only use this inside (simple) integration tests, 
-where we have only ONE instance and we use a dedicated integration test REST controller.
-
-When we want to adopt the cancel operation to a cluster approach and provide canceling also in 
-PROD profile, we must do
-
-- listen to cancel message request and trigger cancelation
-- find a way to let all JVM instance try to cancel a job. this is the main problem why currently
-  only for integration tests!
-
-
 === Domain messaging system
 
 ==== Authorization
