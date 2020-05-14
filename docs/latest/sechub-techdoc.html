@@ -739,6 +739,7 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel5">
 <li><a href="#integration-tests-using-restapi">7.7.4.6.1. Integration tests using RestAPI</a></li>
 <li><a href="#integration-tests-using-sechubclient">7.7.4.6.2. Integration tests using SecHubClient</a></li>
+<li><a href="#section-coding-convention-event-trace">7.7.4.6.3. Integration tests generating event trace information</a></li>
 </ul>
 </li>
 <li><a href="#section-coding-convention-restdoc">7.7.4.7. RestDOC tests</a>
@@ -771,12 +772,14 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#automated-diagrams">8.2.5. Automated Diagrams</a>
 <ul class="sectlevel4">
 <li><a href="#section-documentation-messaging-overview">8.2.5.1. Domain messaging overview</a></li>
+<li><a href="#section-documentation-usecase-event-overview">8.2.5.2. Usecase event overview diagrams</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a href="#section-documentation-generation">8.3. Documentation generation</a></li>
-<li><a href="#generation-of-sechub-pages">8.4. Generation of sechub pages</a></li>
+<li><a href="#prerequisites">8.4. Prerequisites</a></li>
+<li><a href="#generation-of-sechub-pages">8.5. Generation of sechub pages</a></li>
 </ul>
 </li>
 <li><a href="#build">9. Build</a>
@@ -846,36 +849,48 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-gen-messaging-overview-linklist">10.3.2.1.2. List of all messages</a></li>
 </ul>
 </li>
-<li><a href="#section-gen-messaging-job_canceled">10.3.2.2. Message JOB_CANCELED</a></li>
-<li><a href="#section-gen-messaging-job_done">10.3.2.3. Message JOB_DONE</a></li>
-<li><a href="#section-gen-messaging-job_failed">10.3.2.4. Message JOB_FAILED</a></li>
-<li><a href="#section-gen-messaging-job_started">10.3.2.5. Message JOB_STARTED</a></li>
-<li><a href="#section-gen-messaging-mapping_configuration_changed">10.3.2.6. Message MAPPING_CONFIGURATION_CHANGED</a></li>
-<li><a href="#section-gen-messaging-project_created">10.3.2.7. Message PROJECT_CREATED</a></li>
-<li><a href="#section-gen-messaging-project_deleted">10.3.2.8. Message PROJECT_DELETED</a></li>
-<li><a href="#section-gen-messaging-project_whitelist_updated">10.3.2.9. Message PROJECT_WHITELIST_UPDATED</a></li>
-<li><a href="#section-gen-messaging-request_job_cancelation">10.3.2.10. Message REQUEST_JOB_CANCELATION</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.3.2.11. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.3.2.12. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
-<li><a href="#section-gen-messaging-request_scheduler_status_update">10.3.2.13. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-request_user_role_recalculation">10.3.2.14. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
-<li><a href="#section-gen-messaging-scan_done">10.3.2.15. Message SCAN_DONE</a></li>
-<li><a href="#section-gen-messaging-scan_failed">10.3.2.16. Message SCAN_FAILED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.3.2.17. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.3.2.18. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
-<li><a href="#section-gen-messaging-scheduler_status_update">10.3.2.19. Message SCHEDULER_STATUS_UPDATE</a></li>
-<li><a href="#section-gen-messaging-start_scan">10.3.2.20. Message START_SCAN</a></li>
-<li><a href="#section-gen-messaging-unsupported_operation">10.3.2.21. Message UNSUPPORTED_OPERATION</a></li>
-<li><a href="#section-gen-messaging-user_added_to_project">10.3.2.22. Message USER_ADDED_TO_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_api_token_changed">10.3.2.23. Message USER_API_TOKEN_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_becomes_superadmin">10.3.2.24. Message USER_BECOMES_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_created">10.3.2.25. Message USER_CREATED</a></li>
-<li><a href="#section-gen-messaging-user_deleted">10.3.2.26. Message USER_DELETED</a></li>
-<li><a href="#section-gen-messaging-user_new_api_token_requested">10.3.2.27. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
-<li><a href="#section-gen-messaging-user_no_longer_superadmin">10.3.2.28. Message USER_NO_LONGER_SUPERADMIN</a></li>
-<li><a href="#section-gen-messaging-user_removed_from_project">10.3.2.29. Message USER_REMOVED_FROM_PROJECT</a></li>
-<li><a href="#section-gen-messaging-user_roles_changed">10.3.2.30. Message USER_ROLES_CHANGED</a></li>
-<li><a href="#section-gen-messaging-user_signup_requested">10.3.2.31. Message USER_SIGNUP_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-batch_job_status">10.3.2.2. Message BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-job_canceled">10.3.2.3. Message JOB_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_done">10.3.2.4. Message JOB_DONE</a></li>
+<li><a href="#section-gen-messaging-job_failed">10.3.2.5. Message JOB_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_restart_canceled">10.3.2.6. Message JOB_RESTART_CANCELED</a></li>
+<li><a href="#section-gen-messaging-job_restart_triggered">10.3.2.7. Message JOB_RESTART_TRIGGERED</a></li>
+<li><a href="#section-gen-messaging-job_results_purged">10.3.2.8. Message JOB_RESULTS_PURGED</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_done">10.3.2.9. Message JOB_RESULT_PURGE_DONE</a></li>
+<li><a href="#section-gen-messaging-job_result_purge_failed">10.3.2.10. Message JOB_RESULT_PURGE_FAILED</a></li>
+<li><a href="#section-gen-messaging-job_started">10.3.2.11. Message JOB_STARTED</a></li>
+<li><a href="#section-gen-messaging-mapping_configuration_changed">10.3.2.12. Message MAPPING_CONFIGURATION_CHANGED</a></li>
+<li><a href="#section-gen-messaging-project_created">10.3.2.13. Message PROJECT_CREATED</a></li>
+<li><a href="#section-gen-messaging-project_deleted">10.3.2.14. Message PROJECT_DELETED</a></li>
+<li><a href="#section-gen-messaging-project_whitelist_updated">10.3.2.15. Message PROJECT_WHITELIST_UPDATED</a></li>
+<li><a href="#section-gen-messaging-request_batch_job_status">10.3.2.16. Message REQUEST_BATCH_JOB_STATUS</a></li>
+<li><a href="#section-gen-messaging-request_job_cancelation">10.3.2.17. Message REQUEST_JOB_CANCELATION</a></li>
+<li><a href="#section-gen-messaging-request_job_restart">10.3.2.18. Message REQUEST_JOB_RESTART</a></li>
+<li><a href="#section-gen-messaging-request_job_restart_hard">10.3.2.19. Message REQUEST_JOB_RESTART_HARD</a></li>
+<li><a href="#section-gen-messaging-request_purge_job_results">10.3.2.20. Message REQUEST_PURGE_JOB_RESULTS</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_disable_job_processing">10.3.2.21. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_enable_job_processing">10.3.2.22. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></li>
+<li><a href="#section-gen-messaging-request_scheduler_status_update">10.3.2.23. Message REQUEST_SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-request_user_role_recalculation">10.3.2.24. Message REQUEST_USER_ROLE_RECALCULATION</a></li>
+<li><a href="#section-gen-messaging-scan_abandonded">10.3.2.25. Message SCAN_ABANDONDED</a></li>
+<li><a href="#section-gen-messaging-scan_done">10.3.2.26. Message SCAN_DONE</a></li>
+<li><a href="#section-gen-messaging-scan_failed">10.3.2.27. Message SCAN_FAILED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_disabled">10.3.2.28. Message SCHEDULER_JOB_PROCESSING_DISABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_job_processing_enabled">10.3.2.29. Message SCHEDULER_JOB_PROCESSING_ENABLED</a></li>
+<li><a href="#section-gen-messaging-scheduler_started">10.3.2.30. Message SCHEDULER_STARTED</a></li>
+<li><a href="#section-gen-messaging-scheduler_status_update">10.3.2.31. Message SCHEDULER_STATUS_UPDATE</a></li>
+<li><a href="#section-gen-messaging-start_scan">10.3.2.32. Message START_SCAN</a></li>
+<li><a href="#section-gen-messaging-unsupported_operation">10.3.2.33. Message UNSUPPORTED_OPERATION</a></li>
+<li><a href="#section-gen-messaging-user_added_to_project">10.3.2.34. Message USER_ADDED_TO_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_api_token_changed">10.3.2.35. Message USER_API_TOKEN_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_becomes_superadmin">10.3.2.36. Message USER_BECOMES_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_created">10.3.2.37. Message USER_CREATED</a></li>
+<li><a href="#section-gen-messaging-user_deleted">10.3.2.38. Message USER_DELETED</a></li>
+<li><a href="#section-gen-messaging-user_new_api_token_requested">10.3.2.39. Message USER_NEW_API_TOKEN_REQUESTED</a></li>
+<li><a href="#section-gen-messaging-user_no_longer_superadmin">10.3.2.40. Message USER_NO_LONGER_SUPERADMIN</a></li>
+<li><a href="#section-gen-messaging-user_removed_from_project">10.3.2.41. Message USER_REMOVED_FROM_PROJECT</a></li>
+<li><a href="#section-gen-messaging-user_roles_changed">10.3.2.42. Message USER_ROLES_CHANGED</a></li>
+<li><a href="#section-gen-messaging-user_signup_requested">10.3.2.43. Message USER_SIGNUP_REQUESTED</a></li>
 </ul>
 </li>
 </ul>
@@ -935,6 +950,11 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-usecase-UC_036">10.4.37. UC_036-User retrieves mock data configuration for project</a></li>
 <li><a href="#section-usecase-UC_037">10.4.38. UC_037-Admin updates mapping configuration</a></li>
 <li><a href="#section-usecase-UC_038">10.4.39. UC_038-Admin fetches mapping configuration</a></li>
+<li><a href="#section-usecase-UC_039">10.4.40. UC_039-Check if the server is alive and running.</a></li>
+<li><a href="#section-usecase-UC_040">10.4.41. UC_040-Admin checks server version</a></li>
+<li><a href="#section-usecase-UC_041">10.4.42. UC_041-Admin restarts a job</a></li>
+<li><a href="#section-usecase-UC_042">10.4.43. UC_042-Admin restarts a job (hard)</a></li>
+<li><a href="#section-usecase-UC_043">10.4.44. UC_043-Admin receives notification about start of a new scheduler instance</a></li>
 </ul>
 </li>
 </ul>
@@ -945,67 +965,72 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel3">
 <li><a href="#overview-2">11.1.1. Overview</a>
 <ul class="sectlevel4">
-<li><a href="#user-administration-2">11.1.1.1. User administration</a></li>
-<li><a href="#project-administration-2">11.1.1.2. Project administration</a></li>
-<li><a href="#user-profile-2">11.1.1.3. User profile</a></li>
-<li><a href="#sechub-execution-2">11.1.1.4. Sechub execution</a></li>
-<li><a href="#sign-up-2">11.1.1.5. Sign up</a></li>
-<li><a href="#job-administration-2">11.1.1.6. Job administration</a></li>
-<li><a href="#testing-2">11.1.1.7. Testing</a></li>
-<li><a href="#configuration-2">11.1.1.8. Configuration</a></li>
-<li><a href="#other-2">11.1.1.9. Other</a></li>
+<li><a href="#anonymous-2">11.1.1.1. Anonymous</a></li>
+<li><a href="#user-administration-2">11.1.1.2. User administration</a></li>
+<li><a href="#project-administration-2">11.1.1.3. Project administration</a></li>
+<li><a href="#user-profile-2">11.1.1.4. User profile</a></li>
+<li><a href="#sechub-execution-2">11.1.1.5. Sechub execution</a></li>
+<li><a href="#sign-up-2">11.1.1.6. Sign up</a></li>
+<li><a href="#job-administration-2">11.1.1.7. Job administration</a></li>
+<li><a href="#testing-2">11.1.1.8. Testing</a></li>
+<li><a href="#configuration-2">11.1.1.9. Configuration</a></li>
+<li><a href="#other-2">11.1.1.10. Other</a></li>
 </ul>
 </li>
-<li><a href="#admin-lists-all-users">11.1.2. Admin lists all users</a></li>
-<li><a href="#admin-assigns-user-to-project">11.1.3. Admin assigns user to project</a></li>
-<li><a href="#admin-unassigns-user-from-project">11.1.4. Admin unassigns user from project</a></li>
-<li><a href="#admin-shows-user-details">11.1.5. Admin shows user details</a></li>
-<li><a href="#admin-deletes-a-user">11.1.6. Admin deletes a user</a></li>
-<li><a href="#admin-shows-project-details">11.1.7. Admin shows project details</a></li>
-<li><a href="#admin-downloads-all-details-about-a-scan-job">11.1.8. Admin downloads all details about a scan job</a></li>
-<li><a href="#admin-grants-admin-rights-to-user">11.1.9. Admin grants admin rights to user</a></li>
-<li><a href="#admin-revokes-admin-rights-from-an-admin">11.1.10. Admin revokes admin rights from an admin</a></li>
-<li><a href="#admin-lists-all-admins">11.1.11. Admin lists all admins</a></li>
-<li><a href="#admin-creates-a-project">11.1.12. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">11.1.13. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">11.1.14. Admin deletes a project</a></li>
-<li><a href="#update-project-whitelist">11.1.15. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">11.1.16. Admin shows scan logs for project</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">11.1.17. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">11.1.18. User creates a new sechub job</a>
+<li><a href="#check-if-the-server-is-alive-and-running">11.1.2. Check if the server is alive and running.</a></li>
+<li><a href="#admin-lists-all-users">11.1.3. Admin lists all users</a></li>
+<li><a href="#admin-assigns-user-to-project">11.1.4. Admin assigns user to project</a></li>
+<li><a href="#admin-unassigns-user-from-project">11.1.5. Admin unassigns user from project</a></li>
+<li><a href="#admin-shows-user-details">11.1.6. Admin shows user details</a></li>
+<li><a href="#admin-deletes-a-user">11.1.7. Admin deletes a user</a></li>
+<li><a href="#admin-shows-project-details">11.1.8. Admin shows project details</a></li>
+<li><a href="#admin-downloads-all-details-about-a-scan-job">11.1.9. Admin downloads all details about a scan job</a></li>
+<li><a href="#admin-grants-admin-rights-to-user">11.1.10. Admin grants admin rights to user</a></li>
+<li><a href="#admin-revokes-admin-rights-from-an-admin">11.1.11. Admin revokes admin rights from an admin</a></li>
+<li><a href="#admin-lists-all-admins">11.1.12. Admin lists all admins</a></li>
+<li><a href="#admin-creates-a-project">11.1.13. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">11.1.14. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">11.1.15. Admin deletes a project</a></li>
+<li><a href="#update-project-whitelist">11.1.16. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">11.1.17. Admin shows scan logs for project</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">11.1.18. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">11.1.19. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-code-scan">11.1.18.1. Code Scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.18.2. Web Scan login form scripted</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">11.1.18.3. Infrastructure scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">11.1.18.4. Web Scan login form auto dection</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">11.1.18.5. Web Scan anonymous</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">11.1.18.6. Web Scan login basic</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">11.1.19.1. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">11.1.19.2. Infrastructure scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">11.1.19.3. Web Scan anonymous</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">11.1.19.4. Web Scan login basic</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">11.1.19.5. Web Scan login form auto dection</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.19.6. Web Scan login form scripted</a></li>
 </ul>
 </li>
-<li><a href="#user-uploads-source-code">11.1.19. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">11.1.20. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">11.1.21. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">11.1.22. User downloads sechub job report</a>
+<li><a href="#user-uploads-source-code">11.1.20. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">11.1.21. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">11.1.22. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">11.1.23. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-json">11.1.22.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-html">11.1.22.2. HTML</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">11.1.23.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">11.1.23.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-self-registration">11.1.23. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">11.1.24. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">11.1.25. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">11.1.26. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">11.1.27. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">11.1.28. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">11.1.29. Admin cancels a job</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">11.1.30. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.31. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">11.1.32. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">11.1.33. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.34. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.35. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.36. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.37. Admin lists status information</a></li>
+<li><a href="#user-self-registration">11.1.24. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">11.1.25. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">11.1.26. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">11.1.27. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">11.1.28. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">11.1.29. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">11.1.30. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">11.1.31. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">11.1.32. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">11.1.33. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.34. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">11.1.35. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">11.1.36. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.37. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.38. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.39. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.40. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">11.1.41. Admin checks server version</a></li>
 </ul>
 </li>
 </ul>
@@ -1828,6 +1853,12 @@ The system properties described here are <strong>automatically</strong>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrators can turn on this mode to allow product links in json and HTML output</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
+<p class="tableblock"> When disabled, incoming events wille be ignored and no notification sent.</p></td>
+</tr>
 </tbody>
 </table>
 <table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all spread">
@@ -2239,6 +2270,11 @@ The system properties described here are <strong>automatically</strong>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancelation check will be executed.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Define delay (in milliseconds) for next job execution trigger after last executed.</p></td>
@@ -2265,6 +2301,11 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.healthcheck.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
@@ -2309,8 +2350,30 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-server" class="tableblock frame-all grid-all spread">
+<caption class="title">Table 14. Scope 'server'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contains stacktraces.</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 14. Scope 'storage'</caption>
+<caption class="title">Table 15. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2351,8 +2414,40 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-system" class="tableblock frame-all grid-all spread">
+<caption class="title">Table 16. Scope 'system'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.cpu.average.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.memory.usage.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.cache.time.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds monitoring fetch results are cached before fetching again</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 15. Scope 'target'</caption>
+<caption class="title">Table 17. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2398,7 +2493,7 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 </table>
 </div>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 16. Scope 'scheduler'</caption>
+<caption class="title">Table 18. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -2434,7 +2529,7 @@ The system properties described here are <strong>automatically</strong>
 </table>
 </div>
 <table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all spread">
-<caption class="title">Table 17. Scope 'mocked'</caption>
+<caption class="title">Table 19. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3722,14 +3817,14 @@ projects root folder.</p>
 <div class="sect5">
 <h6 id="integration-tests-using-restapi">7.7.4.6.1. Integration tests using RestAPI</h6>
 <div class="paragraph">
-<p>These tests will be called <code>${name}IntTest.java</code></p>
+<p>These tests will be called <code>${name}Scenario${n}IntTest.java</code></p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="integration-tests-using-sechubclient">7.7.4.6.2. Integration tests using SecHubClient</h6>
 <div class="paragraph">
 <p>Some integration tests do need a build SecHub client and execute the client.
-These tests will be called <code>${name}SecHubClientIntTest.java</code></p>
+These tests will be called <code>${name}Scenario${n}SecHubClientIntTest.java</code></p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3743,6 +3838,18 @@ If these tests are failing, please check you have called <code>gradlew buildGo</
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="section-coding-convention-event-trace">7.7.4.6.3. Integration tests generating event trace information</h6>
+<div class="paragraph">
+<p>We wanted to have an overview about events happening when a usecase is executed and do
+this by special integration tests where event tracing is enabled. At the end of the test
+we write JSON files containing event trace information .</p>
+</div>
+<div class="paragraph">
+<p>We use <code>${name}EventTraceScenario${n}IntTest.java</code> as naming convention for those tests.
+See also <a href="#section-documentation-usecase-event-overview">Usecase event overview</a> for more information.</p>
 </div>
 </div>
 </div>
@@ -3916,9 +4023,8 @@ automatically.</p>
 <h4 id="section-documentation-usecases">8.2.3. Automated description of use cases</h4>
 <div class="paragraph">
 <p>With usage of special usecase annotations which itself are marked with <code>@UseCaseDefintion</code> it&#8217;s possible
-to create an automated use case description. See also
-<a href="#section-coding-convention-usecases">Usecase coding conventions</a>
-for more technical details.</p>
+to create an automated use case description. It contains also generated
+<a href="#section-documentation-usecase-event-overview">Usecase event trace overview</a> diagrams.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3938,7 +4044,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="2450">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3052">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -3955,6 +4061,18 @@ For an example look into <code>@IsReceivingAsyncMessage</code> and look also for
 </table>
 </div>
 </div>
+<div class="sect4">
+<h5 id="section-documentation-usecase-event-overview">8.2.5.2. Usecase event overview diagrams</h5>
+<div class="paragraph">
+<p>For some usecases we got event trace information (from special integration tests). With those information
+additional diagrams are generated and included at Usecase description level. They show the events happening
+after a usecase has been triggered. See <a href="#section-coding-convention-event-trace">Coding conventions for event trace integration tests</a>
+.</p>
+</div>
+<div class="paragraph">
+<p>But not every usecase has got such a diagram: Either there are no events (can happen) or just no integration test for this case has been created.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -3966,7 +4084,18 @@ be rendered by Asciidoctor afterwards.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="generation-of-sechub-pages">8.4. Generation of sechub pages</h3>
+<h3 id="prerequisites">8.4. Prerequisites</h3>
+<div class="paragraph">
+<p>To have <a href="#section-documentation-usecase-event-overview">Usecase event overview</a> generated, the integrationtests must have called before!
+Otherwise this information will not be shown inside asciidoc output! This was optional to seperate documentation and integration tests.
+But even tracing can only be done at runtime - so it&#8217;s necessary to execute integration tests and then documentation.</p>
+</div>
+<div class="paragraph">
+<p>Build server and GitHub action do this automatically.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="generation-of-sechub-pages">8.5. Generation of sechub pages</h3>
 <div class="paragraph">
 <p>just call <code>gradlew documentation-with-pages</code> or if documentation is already generated just call
 <code>gradlew docToPages</code>, so documentation parts will copied into <code>docs</code> folder.</p>
@@ -4698,7 +4827,7 @@ one domain calls another one.</p>
 <h6 id="diagram">10.3.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="877" height="2450">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="802" height="3052">
 </div>
 </div>
 </div>
@@ -4707,6 +4836,9 @@ one domain calls another one.</p>
 <div class="ulist">
 <ul>
 <li>
+<p><a href="#section-gen-messaging-batch_job_status">BATCH_JOB_STATUS</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-job_canceled">JOB_CANCELED</a></p>
 </li>
 <li>
@@ -4714,6 +4846,21 @@ one domain calls another one.</p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_failed">JOB_FAILED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_canceled">JOB_RESTART_CANCELED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_triggered">JOB_RESTART_TRIGGERED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_results_purged">JOB_RESULTS_PURGED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_result_purge_done">JOB_RESULT_PURGE_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_result_purge_failed">JOB_RESULT_PURGE_FAILED</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-job_started">JOB_STARTED</a></p>
@@ -4731,7 +4878,19 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-project_whitelist_updated">PROJECT_WHITELIST_UPDATED</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-request_batch_job_status">REQUEST_BATCH_JOB_STATUS</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-request_job_cancelation">REQUEST_JOB_CANCELATION</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_job_restart">REQUEST_JOB_RESTART</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_job_restart_hard">REQUEST_JOB_RESTART_HARD</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_purge_job_results">REQUEST_PURGE_JOB_RESULTS</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-request_scheduler_disable_job_processing">REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></p>
@@ -4746,6 +4905,9 @@ one domain calls another one.</p>
 <p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
 </li>
 <li>
+<p><a href="#section-gen-messaging-scan_abandonded">SCAN_ABANDONDED</a></p>
+</li>
+<li>
 <p><a href="#section-gen-messaging-scan_done">SCAN_DONE</a></p>
 </li>
 <li>
@@ -4756,6 +4918,9 @@ one domain calls another one.</p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scheduler_job_processing_enabled">SCHEDULER_JOB_PROCESSING_ENABLED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_started">SCHEDULER_STARTED</a></p>
 </li>
 <li>
 <p><a href="#section-gen-messaging-scheduler_status_update">SCHEDULER_STATUS_UPDATE</a></p>
@@ -4801,243 +4966,789 @@ one domain calls another one.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_canceled">10.3.2.2. Message JOB_CANCELED</h5>
+<h5 id="section-gen-messaging-batch_job_status">10.3.2.2. Message BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="784" height="248">
+<img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="453" height="105">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_done">10.3.2.3. Message JOB_DONE</h5>
+<h5 id="section-gen-messaging-job_canceled">10.3.2.3. Message JOB_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="528" height="219">
+<img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="772" height="193">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_failed">10.3.2.4. Message JOB_FAILED</h5>
+<h5 id="section-gen-messaging-job_done">10.3.2.4. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="528" height="219">
+<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="520" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_failed">10.3.2.5. Message JOB_FAILED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="520" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-job_started">10.3.2.5. Message JOB_STARTED</h5>
+<h5 id="section-gen-messaging-job_restart_canceled">10.3.2.6. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="576" height="219">
+<img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="566" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_restart_triggered">10.3.2.7. Message JOB_RESTART_TRIGGERED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="568" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-job_results_purged">10.3.2.8. Message JOB_RESULTS_PURGED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="531" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-mapping_configuration_changed">10.3.2.6. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<h5 id="section-gen-messaging-job_result_purge_done">10.3.2.9. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="602" height="219">
+<img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="499" height="105">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_created">10.3.2.7. Message PROJECT_CREATED</h5>
+<h5 id="section-gen-messaging-job_result_purge_failed">10.3.2.10. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="488" height="219">
+<img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="509" height="105">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_deleted">10.3.2.8. Message PROJECT_DELETED</h5>
+<h5 id="section-gen-messaging-job_started">10.3.2.11. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="873" height="277">
+<img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="568" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-mapping_configuration_changed">10.3.2.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="596" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-project_whitelist_updated">10.3.2.9. Message PROJECT_WHITELIST_UPDATED</h5>
+<h5 id="section-gen-messaging-project_created">10.3.2.13. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="613" height="219">
+<img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="482" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_job_cancelation">10.3.2.10. Message REQUEST_JOB_CANCELATION</h5>
+<h5 id="section-gen-messaging-project_deleted">10.3.2.14. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="522" height="219">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="875" height="222">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.3.2.11. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-project_whitelist_updated">10.3.2.15. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="804" height="219">
+<img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="607" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.3.2.12. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<h5 id="section-gen-messaging-request_batch_job_status">10.3.2.16. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="800" height="219">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="676" height="222">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_job_cancelation">10.3.2.17. Message REQUEST_JOB_CANCELATION</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="519" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_scheduler_status_update">10.3.2.13. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-request_job_restart">10.3.2.18. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="743" height="219">
+<img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="539" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_job_restart_hard">10.3.2.19. Message REQUEST_JOB_RESTART_HARD</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="583" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_purge_job_results">10.3.2.20. Message REQUEST_PURGE_JOB_RESULTS</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="603" height="297">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.3.2.21. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="798" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_030">UC_030 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.3.2.22. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="794" height="163">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_031">UC_031 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-request_scheduler_status_update">10.3.2.23. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="737" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-request_user_role_recalculation">10.3.2.14. Message REQUEST_USER_ROLE_RECALCULATION</h5>
+<h5 id="section-gen-messaging-request_user_role_recalculation">10.3.2.24. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2036" height="394">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2059" height="338">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_003">UC_003 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_015">UC_015 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_016">UC_016 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-scan_abandonded">10.3.2.25. Message SCAN_ABANDONDED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="456" height="102">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_done">10.3.2.15. Message SCAN_DONE</h5>
+<h5 id="section-gen-messaging-scan_done">10.3.2.26. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="391" height="161">
+<img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="391" height="105">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scan_failed">10.3.2.16. Message SCAN_FAILED</h5>
+<h5 id="section-gen-messaging-scan_failed">10.3.2.27. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="401" height="161">
+<img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="401" height="105">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.3.2.17. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
+<h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.3.2.28. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="980" height="248">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="970" height="193">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_030">UC_030 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.3.2.29. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="966" height="193">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_031">UC_031 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-scheduler_started">10.3.2.30. Message SCHEDULER_STARTED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="530" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.3.2.18. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
+<h5 id="section-gen-messaging-scheduler_status_update">10.3.2.31. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="976" height="248">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="679" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-scheduler_status_update">10.3.2.19. Message SCHEDULER_STATUS_UPDATE</h5>
+<h5 id="section-gen-messaging-start_scan">10.3.2.32. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="685" height="219">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="414" height="297">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-unsupported_operation">10.3.2.33. Message UNSUPPORTED_OPERATION</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="509" height="102">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-start_scan">10.3.2.20. Message START_SCAN</h5>
+<h5 id="section-gen-messaging-user_added_to_project">10.3.2.34. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="406" height="352">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="746" height="193">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_015">UC_015 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-user_api_token_changed">10.3.2.35. Message USER_API_TOKEN_CHANGED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1161" height="222">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-unsupported_operation">10.3.2.21. Message UNSUPPORTED_OPERATION</h5>
+<h5 id="section-gen-messaging-user_becomes_superadmin">10.3.2.36. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="509" height="153">
+<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="660" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_added_to_project">10.3.2.22. Message USER_ADDED_TO_PROJECT</h5>
+<h5 id="section-gen-messaging-user_created">10.3.2.37. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="740" height="248">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="623" height="193">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_003">UC_003 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-user_deleted">10.3.2.38. Message USER_DELETED</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1013" height="251">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_api_token_changed">10.3.2.23. Message USER_API_TOKEN_CHANGED</h5>
+<h5 id="section-gen-messaging-user_new_api_token_requested">10.3.2.39. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1165" height="277">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="936" height="193">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_003">UC_003 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-gen-messaging-user_no_longer_superadmin">10.3.2.40. Message USER_NO_LONGER_SUPERADMIN</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="690" height="163">
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_becomes_superadmin">10.3.2.24. Message USER_BECOMES_SUPERADMIN</h5>
+<h5 id="section-gen-messaging-user_removed_from_project">10.3.2.41. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="638" height="219">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="800" height="193">
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_016">UC_016 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_created">10.3.2.25. Message USER_CREATED</h5>
+<h5 id="section-gen-messaging-user_roles_changed">10.3.2.42. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="624" height="248">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="536" height="163">
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_003">UC_003 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_015">UC_015 </a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_016">UC_016 </a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-gen-messaging-user_deleted">10.3.2.26. Message USER_DELETED</h5>
+<h5 id="section-gen-messaging-user_signup_requested">10.3.2.43. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1024" height="306">
+<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="616" height="163">
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Use cases related to this message</p>
 </div>
-<div class="sect4">
-<h5 id="section-gen-messaging-user_new_api_token_requested">10.3.2.27. Message USER_NEW_API_TOKEN_REQUESTED</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="972" height="248">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_001">UC_001 </a></p>
+</li>
+</ul>
 </div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-user_no_longer_superadmin">10.3.2.28. Message USER_NO_LONGER_SUPERADMIN</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="661" height="219">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-user_removed_from_project">10.3.2.29. Message USER_REMOVED_FROM_PROJECT</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="794" height="248">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-user_roles_changed">10.3.2.30. Message USER_ROLES_CHANGED</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="522" height="219">
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-gen-messaging-user_signup_requested">10.3.2.31. Message USER_SIGNUP_REQUESTED</h5>
-<div class="imageblock">
-<div class="content">
-<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="605" height="219">
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -5063,6 +5774,13 @@ The complete documentation about use cases is generated. If you want to change c
 <h5 id="anonymous">10.4.1.1. Anonymous</h5>
 <div class="paragraph">
 <p>All these usecases handling anonymous access.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running.</a></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect4">
@@ -5212,6 +5930,12 @@ The complete documentation about use cases is generated. If you want to change c
 <li>
 <p><a href="#section-usecase-UC_034">UC_034-Admin cancels a job</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-UC_041">UC_041-Admin restarts a job</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard)</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -5224,6 +5948,9 @@ The complete documentation about use cases is generated. If you want to change c
 <ul>
 <li>
 <p><a href="#section-usecase-UC_008">UC_008-Sechub scheduler starts job</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_043">UC_043-Admin receives notification about start of a new scheduler instance</a></p>
 </li>
 </ul>
 </div>
@@ -5279,6 +6006,9 @@ The complete documentation about use cases is generated. If you want to change c
 <li>
 <p><a href="#section-usecase-UC_033">UC_033-Admin lists status information</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-UC_040">UC_040-Admin checks server version</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -5297,6 +6027,35 @@ is persisted.</p>
 </div>
 <div class="paragraph">
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_signup.svg" alt="&quot;Overview of events happening at usecase UC_SIGNUP" width="414" height="204">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-user_signup_requested">USER_SIGNUP_REQUESTED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -5405,6 +6164,44 @@ is persisted.</p>
 </div>
 <div class="paragraph">
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_accepts_signup.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ACCEPTS_SIGNUP" width="726" height="421">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_created">USER_CREATED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_new_api_token_requested">USER_NEW_API_TOKEN_REQUESTED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_roles_changed">USER_ROLES_CHANGED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -5556,6 +6353,14 @@ After this the user is able to</p>
 </div>
 <div class="paragraph">
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_user_creates_job.svg" alt="&quot;Overview of events happening at usecase UC_USER_CREATES_JOB" width="509" height="436">
+</div>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -6199,6 +7004,41 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject</code></p>
 </div>
 <div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_assigns_user_to_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ASSIGNS_USER_TO_PROJECT" width="842" height="391">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_added_to_project">USER_ADDED_TO_PROJECT</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_roles_changed">USER_ROLES_CHANGED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p><strong>Steps</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
@@ -6275,6 +7115,41 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject</code></p>
 </div>
 <div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_unassigns_user_from_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT" width="883" height="391">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-request_user_role_recalculation">REQUEST_USER_ROLE_RECALCULATION</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_removed_from_project">USER_REMOVED_FROM_PROJECT</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-user_roles_changed">USER_ROLES_CHANGED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p><strong>Steps</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
@@ -6312,18 +7187,18 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
+<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
-<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -6462,14 +7337,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7221,6 +8096,38 @@ user signup is accepted by admin.</p>
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing</code></p>
 </div>
 <div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_disables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING" width="904" height="306">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-request_scheduler_disable_job_processing">REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_job_processing_disabled">SCHEDULER_JOB_PROCESSING_DISABLED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p><strong>Steps</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
@@ -7254,16 +8161,16 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
-<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
-<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -7296,6 +8203,38 @@ user signup is accepted by admin.</p>
 </div>
 <div class="paragraph">
 <p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_enables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING" width="896" height="306">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-request_scheduler_enable_job_processing">REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-scheduler_job_processing_enabled">SCHEDULER_JOB_PROCESSING_ENABLED</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -7484,7 +8423,7 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Json returned containing details about project</p>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers job cancelation request, owners of project will be informed</p>
 <p class="tableblock"><em>This step is defined at method <code>cancelJob</code> in class `com.daimler.sechub.domain.administration.job.JobAdministrationRestController`</em></p></td>
 </tr>
 <tr>
@@ -7845,6 +8784,547 @@ projects by REST API.</p>
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_038">REST API documentation for usecase UC_038-Admin fetches mapping configuration </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_039">10.4.40. UC_039-Check if the server is alive and running.</h4>
+<div class="paragraph">
+<p>An anonymous user or system wants to know if the server is alive and running.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckAlive</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API call</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An anonymous user checks if the server is alive and running using the REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>checkAlive</code> in class `com.daimler.sechub.server.core.AnonymousCheckAliveRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_039">REST API documentation for usecase UC_039-Check if the server is alive and running. </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_040">10.4.41. UC_040-Admin checks server version</h4>
+<div class="paragraph">
+<p>An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorChecksServerVersion</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API Call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator wants to get the server version of SecHub</p>
+<p class="tableblock"><em>This step is defined at method <code>getServerVersion</code> in class `com.daimler.sechub.server.core.ServerInfoAdministrationRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_040">REST API documentation for usecase UC_040-Admin checks server version </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_041">10.4.42. UC_041-Admin restarts a job</h4>
+<div id="section-uc-description-admin_restarts_job_soft" class="paragraph">
+<p>Administrator restarts job</p>
+</div>
+<div class="paragraph">
+<p>When a <code>JVM</code> (or <code>POD</code>) crashes with running SecHub job, the job process execution has been
+terminated without resetting the scheduler state.</p>
+</div>
+<div class="paragraph">
+<p>If this has happened, somebody or a build server who/which is waiting for sechub job
+result will wait infinite and without hope of having a status refresh.</p>
+</div>
+<div class="paragraph">
+<p>So the admin must be able to restart a job.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The restart will be intransparent for end user
+so they will just keep on waiting but get the result as soon as possible.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The restart will</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>first of all write an audit log enry</p>
+</li>
+<li>
+<p>be canceled, when job does not exist in scheduler</p>
+</li>
+<li>
+<p>be canceled, when execution already finished</p>
+</li>
+<li>
+<p>check for running batch jobs with SecHub job UUID.<br>
+If there are existing batch operations, those will be stopped and abandoned</p>
+</li>
+<li>
+<p>new scan will be restarted immediately without scheduling, will try to reuse existing
+results<br>
+<em>E.g. when a static code scan job is triggered to a product and
+scan ID is wellknown, no new scan will be started, but state of this scan is refetched
+by the ID, etc. etc. But exact resilience behaviour depends on adapter implementation</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview - variant: accidently restart because job has already finished</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_restarts_job-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: accidently restart because job has already finished" width="612" height="276">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Event overview - variant: crashed jvm with product result</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="730" height="566">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-job_done">JOB_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_canceled">JOB_RESTART_CANCELED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_triggered">JOB_RESTART_TRIGGERED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_started">JOB_STARTED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_batch_job_status">REQUEST_BATCH_JOB_STATUS</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_job_restart">REQUEST_JOB_RESTART</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-start_scan">START_SCAN</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggeres job restart (soft)</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJob</code> in class `com.daimler.sechub.domain.administration.job.JobAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restart job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will trigger event that job restart (soft) requested</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJob</code> in class `com.daimler.sechub.domain.administration.job.JobRestartRequestService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job has been restarted</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job results have been purged</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_041">REST API documentation for usecase UC_041-Admin restarts a job </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_042">10.4.43. UC_042-Admin restarts a job (hard)</h4>
+<div id="section-uc-description-admin_restarts_job_hard" class="paragraph">
+<p>Administrator restarts job the hard way , means
+it is possible to restart a running (not finished) job and destroy all former results.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is very similar to related use case
+<a href="#section-uc-description-admin_restarts_job_soft">admin restarts job</a>, but with difference
+that all former product results and also adapter meta data is removed.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We do NOT allow restarts of former finished jobs because finalization does destroy interim data
+- e.g. uploaded source code etc. - and is no longer restartable. Also we cannot ensure that a
+client has not already downloaded the existing results, so we we keep them as is!</p>
+</div>
+<div class="paragraph">
+<p>The term "hard" is only because we destroy former meta data and product results! So the restart
+is like from "scratch".</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The restart will</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>first of all write an audit log enry</p>
+</li>
+<li>
+<p>be canceled, when job does not exist in scheduler</p>
+</li>
+<li>
+<p>be canceled, when execution already finished</p>
+</li>
+<li>
+<p>delete all former product results and also adapter meta data</p>
+</li>
+<li>
+<p>check for running batch jobs with SecHub job UUID.<br>
+If there are existing batch operations, those will be stopped and abandoned</p>
+</li>
+<li>
+<p>new scan will be restarted immediately without scheduling, will not try to reuse existing
+results because such information was formerly deleted</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Event overview - variant: accidently restart because job has already finished</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: accidently restart because job has already finished" width="659" height="276">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Event overview - variant: crashed jvm with product result</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="784" height="638">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Involved messages</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-gen-messaging-job_done">JOB_DONE</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_canceled">JOB_RESTART_CANCELED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_restart_triggered">JOB_RESTART_TRIGGERED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-job_started">JOB_STARTED</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_batch_job_status">REQUEST_BATCH_JOB_STATUS</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_job_restart_hard">REQUEST_JOB_RESTART_HARD</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-request_purge_job_results">REQUEST_PURGE_JOB_RESULTS</a></p>
+</li>
+<li>
+<p><a href="#section-gen-messaging-start_scan">START_SCAN</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggeres job restart (hard)</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.administration.job.JobAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restart job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will trigger event that job restart (hard) requested</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.administration.job.JobRestartRequestService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJob</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job has been restarted</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job results have been purged</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_042">REST API documentation for usecase UC_042-Admin restarts a job (hard) </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_043">10.4.44. UC_043-Admin receives notification about start of a new scheduler instance</h4>
+<div class="paragraph">
+<p>Administrators receive notification about start of a new scheduler instance.</p>
+</div>
+<div class="paragraph">
+<p>The notification will contain also information about potential zombie jobs - just show all started
+but not finished jobs before scheduler start.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send domain message that new scheduler instance has been started and information about potential zombie jobs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>schedulerHasBeenStarted</code> in class `com.daimler.sechub.domain.schedule.SchedulerStartHandler`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins that new scheduler job has been started</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatNewSchedulerInstanceHasBeenStarted`</em></p></td>
+</tr>
+</tbody>
+</table>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -7871,7 +9351,20 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="sect3">
 <h4 id="overview-2">11.1.1. Overview</h4>
 <div class="sect4">
-<h5 id="user-administration-2">11.1.1.1. User administration</h5>
+<h5 id="anonymous-2">11.1.1.1. Anonymous</h5>
+<div class="paragraph">
+<p>All these usecases handling anonymous access.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_039">REST API for UC_039-Check if the server is alive and running. </a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="user-administration-2">11.1.1.2. User administration</h5>
 <div class="paragraph">
 <p>Usecases handling administration of users</p>
 </div>
@@ -7911,7 +9404,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="project-administration-2">11.1.1.2. Project administration</h5>
+<h5 id="project-administration-2">11.1.1.3. Project administration</h5>
 <div class="paragraph">
 <p>Usecases for project administration</p>
 </div>
@@ -7939,7 +9432,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="user-profile-2">11.1.1.3. User profile</h5>
+<h5 id="user-profile-2">11.1.1.4. User profile</h5>
 <div class="paragraph">
 <p>User actions belonging to their profiles</p>
 </div>
@@ -7952,7 +9445,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="sechub-execution-2">11.1.1.4. Sechub execution</h5>
+<h5 id="sechub-execution-2">11.1.1.5. Sechub execution</h5>
 <div class="paragraph">
 <p>Execution of sechub -either by CLI or direct with REST api call</p>
 </div>
@@ -7977,7 +9470,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="sign-up-2">11.1.1.5. Sign up</h5>
+<h5 id="sign-up-2">11.1.1.6. Sign up</h5>
 <div class="paragraph">
 <p>All these usecases are handling user sign up (part of user self registration process)</p>
 </div>
@@ -8002,7 +9495,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="job-administration-2">11.1.1.6. Job administration</h5>
+<h5 id="job-administration-2">11.1.1.7. Job administration</h5>
 <div class="paragraph">
 <p>Usecases about job administration</p>
 </div>
@@ -8014,11 +9507,17 @@ The complete documentation about REST API is generated. If you want to change co
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_034">REST API for UC_034-Admin cancels a job </a></p>
 </li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_041">REST API for UC_041-Admin restarts a job </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_042">REST API for UC_042-Admin restarts a job (hard) </a></p>
+</li>
 </ul>
 </div>
 </div>
 <div class="sect4">
-<h5 id="testing-2">11.1.1.7. Testing</h5>
+<h5 id="testing-2">11.1.1.8. Testing</h5>
 <div class="paragraph">
 <p>Some use cases for testing</p>
 </div>
@@ -8034,7 +9533,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="configuration-2">11.1.1.8. Configuration</h5>
+<h5 id="configuration-2">11.1.1.9. Configuration</h5>
 <div class="paragraph">
 <p>Usecases for configuration parts</p>
 </div>
@@ -8050,7 +9549,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="other-2">11.1.1.9. Other</h5>
+<h5 id="other-2">11.1.1.10. Other</h5>
 <div class="paragraph">
 <p>All other use cases</p>
 </div>
@@ -8068,12 +9567,29 @@ The complete documentation about REST API is generated. If you want to change co
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_033">REST API for UC_033-Admin lists status information </a></p>
 </li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_040">REST API for UC_040-Admin checks server version </a></p>
+</li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-users">11.1.2. Admin lists all users</h4>
+<h4 id="check-if-the-server-is-alive-and-running">11.1.2. Check if the server is alive and running.</h4>
+<div id="section-ucrestdoc-uc-UC_039" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running. </a></p>
+</div>
+<div id="section-ucrestdoc-UC_039-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-all-users">11.1.3. Admin lists all users</h4>
 <div id="section-ucrestdoc-uc-UC_004" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_004">UC_004-Admin lists all users </a></p>
 </div>
@@ -8087,7 +9603,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-user-to-project">11.1.3. Admin assigns user to project</h4>
+<h4 id="admin-assigns-user-to-project">11.1.4. Admin assigns user to project</h4>
 <div id="section-ucrestdoc-uc-UC_015" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_015">UC_015-Admin assigns user to project </a></p>
 </div>
@@ -8095,7 +9611,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 18. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 20. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8128,7 +9644,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-unassigns-user-from-project">11.1.4. Admin unassigns user from project</h4>
+<h4 id="admin-unassigns-user-from-project">11.1.5. Admin unassigns user from project</h4>
 <div id="section-ucrestdoc-uc-UC_016" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_016">UC_016-Admin unassigns user from project </a></p>
 </div>
@@ -8136,7 +9652,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 19. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 21. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8169,7 +9685,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-user-details">11.1.5. Admin shows user details</h4>
+<h4 id="admin-shows-user-details">11.1.6. Admin shows user details</h4>
 <div id="section-ucrestdoc-uc-UC_017" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_017">UC_017-Admin shows user details </a></p>
 </div>
@@ -8177,7 +9693,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 20. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 22. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8249,7 +9765,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-user">11.1.6. Admin deletes a user</h4>
+<h4 id="admin-deletes-a-user">11.1.7. Admin deletes a user</h4>
 <div id="section-ucrestdoc-uc-UC_018" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_018">UC_018-Admin deletes a user </a></p>
 </div>
@@ -8257,7 +9773,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 21. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 23. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8285,7 +9801,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-project-details">11.1.7. Admin shows project details</h4>
+<h4 id="admin-shows-project-details">11.1.8. Admin shows project details</h4>
 <div id="section-ucrestdoc-uc-UC_021" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
 </div>
@@ -8293,7 +9809,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 22. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 24. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8361,7 +9877,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-all-details-about-a-scan-job">11.1.8. Admin downloads all details about a scan job</h4>
+<h4 id="admin-downloads-all-details-about-a-scan-job">11.1.9. Admin downloads all details about a scan job</h4>
 <div id="section-ucrestdoc-uc-UC_026" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
 </div>
@@ -8370,13 +9886,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/5687f1a7-4513-470b-887b-31e5ceae17ff' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/8e81ce8a-fb88-47c5-8311-921bb2abd7f4' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-grants-admin-rights-to-user">11.1.9. Admin grants admin rights to user</h4>
+<h4 id="admin-grants-admin-rights-to-user">11.1.10. Admin grants admin rights to user</h4>
 <div id="section-ucrestdoc-uc-UC_027" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
 </div>
@@ -8384,7 +9900,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 23. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
+<caption class="title">Table 25. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8412,7 +9928,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-revokes-admin-rights-from-an-admin">11.1.10. Admin revokes admin rights from an admin</h4>
+<h4 id="admin-revokes-admin-rights-from-an-admin">11.1.11. Admin revokes admin rights from an admin</h4>
 <div id="section-ucrestdoc-uc-UC_028" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
 </div>
@@ -8420,7 +9936,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 24. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
+<caption class="title">Table 26. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8448,7 +9964,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-admins">11.1.11. Admin lists all admins</h4>
+<h4 id="admin-lists-all-admins">11.1.12. Admin lists all admins</h4>
 <div id="section-ucrestdoc-uc-UC_029" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
 </div>
@@ -8462,7 +9978,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-a-project">11.1.12. Admin creates a project</h4>
+<h4 id="admin-creates-a-project">11.1.13. Admin creates a project</h4>
 <div id="section-ucrestdoc-uc-UC_013" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
 </div>
@@ -8512,7 +10028,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-projects">11.1.13. Admin lists all projects</h4>
+<h4 id="admin-lists-all-projects">11.1.14. Admin lists all projects</h4>
 <div id="section-ucrestdoc-uc-UC_014" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
 </div>
@@ -8527,7 +10043,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-project">11.1.14. Admin deletes a project</h4>
+<h4 id="admin-deletes-a-project">11.1.15. Admin deletes a project</h4>
 <div id="section-ucrestdoc-uc-UC_020" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
 </div>
@@ -8535,7 +10051,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 25. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 27. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8564,7 +10080,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">11.1.15. Update project whitelist</h4>
+<h4 id="update-project-whitelist">11.1.16. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
@@ -8572,7 +10088,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 26. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
+<caption class="title">Table 28. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8631,7 +10147,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">11.1.16. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">11.1.17. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
@@ -8695,7 +10211,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">11.1.17. User clicks link to get new api token</h4>
+<h4 id="user-clicks-link-to-get-new-api-token">11.1.18. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
@@ -8703,7 +10219,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 27. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
+<caption class="title">Table 29. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8732,17 +10248,17 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">11.1.18. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">11.1.19. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">11.1.18.1. Code Scan</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan">11.1.19.1. Code Scan</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 28. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 30. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8830,12 +10346,444 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.18.2. Web Scan login form scripted</h5>
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">11.1.19.2. Infrastructure scan</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 29. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 31. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.ips</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure IPs to scan for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">11.1.19.3. Web Scan anonymous</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 32. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp/login&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">11.1.19.4. Web Scan login basic</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 33. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">basic login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">11.1.19.5. Web Scan login form auto dection</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 34. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">login field auto detection</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;autodetect&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">11.1.19.6. Web Scan login form scripted</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8957,441 +10905,9 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">11.1.18.3. Infrastructure scan</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 30. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.ips</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure IPs to scan for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{&quot;infraScan&quot;:{&quot;uris&quot;:[&quot;https://localhost&quot;],&quot;ips&quot;:[&quot;127.0.0.1&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">11.1.18.4. Web Scan login form auto dection</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 31. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">login field auto detection</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;form&quot;:{&quot;autodetect&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">11.1.18.5. Web Scan anonymous</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 32. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{&quot;webScan&quot;:{&quot;uris&quot;:[&quot;https://localhost/mywebapp/login&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">11.1.18.6. Web Scan login basic</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 33. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">basic login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{&quot;webScan&quot;:{&quot;login&quot;:{&quot;url&quot;:&quot;https://localhost/mywebapp/login&quot;,&quot;basic&quot;:{&quot;user&quot;:&quot;username1&quot;,&quot;password&quot;:&quot;password1&quot;}},&quot;uris&quot;:[&quot;https://localhost/mywebapp&quot;]},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">11.1.19. User uploads source code</h4>
+<h4 id="user-uploads-source-code">11.1.20. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
@@ -9399,7 +10915,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 34. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9426,7 +10942,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/bbdc6d2b-e74c-47a1-a89b-3ceb2e6de893/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/947e2a2d-49c0-497b-a92b-edf386bc3532/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -9437,7 +10953,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">11.1.20. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">11.1.21. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
@@ -9445,7 +10961,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 37. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9472,13 +10988,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/8e460e93-461c-41dd-8f61-b68759c9bd11/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7726ef50-e84d-4812-9209-5a7e9117ee34/approve' -i -X PUT \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">11.1.21. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">11.1.22. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
@@ -9486,7 +11002,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 38. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9572,37 +11088,37 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/0d69b936-a6bb-415f-9d99-7e657bf4b2ab' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/df174001-c134-4648-a96a-a92315770e20' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">11.1.22. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">11.1.23. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-json">11.1.22.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-json">11.1.23.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b85d24f4-868e-4330-9775-a349adc88f5b' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/374aa432-08e6-46b3-9a2a-86ff9dbbfff0' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-html">11.1.22.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-html">11.1.23.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e1dd40b3-b382-4ed1-afdf-036d0ad05825' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/759bdcb6-e6f4-470a-a76a-e89132a7d0e9' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -9610,7 +11126,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">11.1.23. User self registration</h4>
+<h4 id="user-self-registration">11.1.24. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -9660,7 +11176,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">11.1.24. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">11.1.25. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -9674,7 +11190,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">11.1.25. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">11.1.26. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -9682,7 +11198,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 37. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 39. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9710,7 +11226,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">11.1.26. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">11.1.27. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -9718,7 +11234,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 38. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 40. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9746,7 +11262,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">11.1.27. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">11.1.28. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -9754,7 +11270,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 39. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 41. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9783,7 +11299,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">11.1.28. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">11.1.29. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -9847,7 +11363,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">11.1.29. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">11.1.30. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -9856,13 +11372,43 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/80b4e9b5-98a1-4dd4-b5b3-908ef15a2d7e' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/5ab1a8ee-db16-49a0-b0e0-9fff0a2de728' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">11.1.30. User defines mock data configuration for project</h4>
+<h4 id="admin-restarts-a-job">11.1.31. Admin restarts a job</h4>
+<div id="section-ucrestdoc-uc-UC_041" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_041-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a09448ae-7bff-40fb-8635-80f944e58f34' -i -X POST \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-restarts-a-job-hard">11.1.32. Admin restarts a job (hard)</h4>
+<div id="section-ucrestdoc-uc-UC_042" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
+</div>
+<div id="section-ucrestdoc-UC_042-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/70f01ee8-f499-4364-aae6-e0286511cef2' -i -X POST \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-defines-mock-data-configuration-for-project">11.1.33. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -9879,7 +11425,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.31. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.34. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -9895,7 +11441,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">11.1.32. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">11.1.35. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -9903,7 +11449,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 40. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 42. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9967,7 +11513,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">11.1.33. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">11.1.36. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -10016,7 +11562,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.34. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.37. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -10031,7 +11577,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.35. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.38. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -10046,7 +11592,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.36. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.39. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -10061,7 +11607,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.37. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.40. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -10101,6 +11647,21 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/status' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-checks-server-version">11.1.41. Admin checks server version</h4>
+<div id="section-ucrestdoc-uc-UC_040" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
+</div>
+<div id="section-ucrestdoc-UC_040-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/info/version' -i -X GET \
+    -H 'Content-Type: text/plain'</code></pre>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
@@ -10517,7 +12078,7 @@ using a S3 bucket for storage there you should define this as well!</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-10-30 17:13:05 CET
+Last updated 2020-03-17 18:33:25 CET
 </div>
 </div>
 </body>

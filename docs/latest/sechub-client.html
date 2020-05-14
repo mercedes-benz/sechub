@@ -540,6 +540,7 @@ table.CodeRay td.code>pre{padding:0}
 </ul>
 </li>
 <li><a href="#options">2.3.3. Options</a></li>
+<li><a href="#environment-variables">2.3.4. Environment variables</a></li>
 </ul>
 </li>
 <li><a href="#configuration-file">2.4. Configuration file</a>
@@ -688,7 +689,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-5416dcd-dirty-latest</p>
+0.0.0-1be7fd2-latest</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -783,6 +784,18 @@ Please change to correct values.</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
+For security reasons always pass your api token via the environment variable <code>SECHUB_APITOKEN</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
 </td>
@@ -792,9 +805,14 @@ The is the most preferred scan action for builds - you only have to make one
 <div class="paragraph">
 <p><strong>Minimum call syntax</strong></p>
 </div>
+<div class="paragraph">
+<p>Prerequisite is a configuration file <code>sechub.json</code> in current directory.<br>
+See here for details: <a href="#configuration-file">Configuration file</a></p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} scan</pre>
+<pre>SECHUB_APITOKEN=${apitoken}
+sechub scan</pre>
 </div>
 </div>
 </div>
@@ -842,7 +860,8 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} scanAsync</pre>
+<pre>SECHUB_APITOKEN=${apitoken}
+sechub scanAsync</pre>
 </div>
 </div>
 </div>
@@ -856,7 +875,8 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getStatus</pre>
+<pre>SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID §{jobUUID} getStatus</pre>
 </div>
 </div>
 </div>
@@ -870,7 +890,8 @@ This can be interesting if you have long running scans and you want have a fast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport</pre>
+<pre>SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID §{jobUUID} getReport</pre>
 </div>
 </div>
 </div>
@@ -880,48 +901,72 @@ This can be interesting if you have long running scans and you want have a fast
 <div class="ulist">
 <ul>
 <li>
-<p>apitoken <code>&lt;string&gt;</code><br>
-The api token. This is a mandatory option for every action. Can <strong>NOT</strong> be defined in config file</p>
+<p><code>-apitoken &lt;string&gt;</code><br>
+The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable <code>SECHUB_APITOKEN</code> (see: <a href="#environment-variables">Environment variables</a>) and not to use this option.
+Can <strong>NOT</strong> be defined in config file</p>
 </li>
 <li>
-<p>configfile <code>&lt;string&gt;</code><br>
+<p><code>-configfile &lt;string&gt;</code><br>
 Path to <code>SecHub</code> config file, if not defined <code>sechub.json</code> will be used in current directory</p>
 </li>
 <li>
-<p>help<br>
+<p><code>-help</code><br>
 Shows help and terminates</p>
 </li>
 <li>
-<p>jobUUID <code>&lt;string&gt;</code><br>
+<p><code>-jobUUID &lt;string&gt;</code><br>
 <code>SecHub</code> job uuid (mandatory when using 'getStatus' or 'getReport')</p>
 </li>
 <li>
-<p>output <code>&lt;string&gt;</code><br>
+<p><code>-output &lt;string&gt;</code><br>
 Output folder for reports etc. per default current dir</p>
 </li>
 <li>
-<p>project <code>&lt;string&gt;</code><br>
+<p><code>-project &lt;string&gt;</code><br>
 Unique project id - mandatory, but can also be defined in config file</p>
 </li>
 <li>
-<p>reportformat <code>&lt;string&gt;</code><br>
+<p><code>-reportformat &lt;string&gt;</code><br>
 Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")</p>
 </li>
 <li>
-<p>server <code>&lt;string&gt;</code><br>
-Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file</p>
+<p><code>-server &lt;string&gt;</code><br>
+Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
-<p>user <code>&lt;string&gt;</code><br>
-Username - mandatory, but can also be defined in config file</p>
+<p><code>-user &lt;string&gt;</code><br>
+Username - mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
-<p>version<br>
+<p><code>-version</code><br>
 Shows version info and terminates</p>
 </li>
 <li>
-<p>wait <code>&lt;int&gt;</code><br>
-wait time in seconds. Will be used for automatic status checks etc. when action=<code>scan</code>. Default is 60 seconds (default 60)</p>
+<p><code>-wait &lt;integer&gt;</code><br>
+wait time in seconds (default 60).
+Will be used for automatic status checks etc. when action=<code>scan</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="environment-variables">2.3.4. Environment variables</h4>
+<div class="paragraph">
+<p>Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SECHUB_USERID</code><br>
+The SecHub username. (same as <code>-user</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_APITOKEN</code><br>
+The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_SERVER</code><br>
+The SecHub server url. (same as <code>-server</code> option)</p>
 </li>
 </ul>
 </div>
@@ -1586,7 +1631,8 @@ Next following sub chapters contain some <code>SecHub</code> configuration examp
 <h4 id="start-a-source-scan">2.6.1. Start a source scan</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1609,7 +1655,8 @@ Currently wrong defined folder setup will be not checked by client. So when wron
 <h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1621,7 +1668,8 @@ see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymo
 <h4 id="start-a-infra-scan">2.6.3. Start a infra scan</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1634,7 +1682,7 @@ see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-06-26 14:39:32 CEST
+Last updated 2020-02-26 17:23:48 CET
 </div>
 </div>
 </body>
