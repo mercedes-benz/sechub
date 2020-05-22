@@ -6,10 +6,14 @@
  * ============================================================================
  */
 dependencies {
-
-    compile project(':sechub-server-core')
-
-    testCompile project(':sechub-testframework')
+    compile(library.springboot_starter_batch)
+    compile(library.springboot_starter_web)
+    compile(library.springboot_starter_data_jpa)
+    compile(library.springboot_starter_security)
+    compile(library.flyway)
+    compile library.logstashLogbackEncoder
+    compile library.database_h2
+    
 }
 
 task assembleArtifact(type: Zip, group: 'sechub') {
@@ -18,9 +22,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
     destinationDir file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
-    exclude '**/sechub-product-delegation-server.*'
-    exclude '**/sechub-client.*'
-    exclude '**/.asciidoctor/**'
+    include '**/sechub-product-delegation-server.*'
     description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
 }
 
@@ -52,7 +54,7 @@ tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
  */
 apply plugin: 'maven-publish'
 
-version =   VersionData.getServerVersion()
+version =   VersionData.getProductDelgationServerVersion()
 
 publishing {
     publications {
@@ -61,8 +63,8 @@ publishing {
             from components.java
 
             pom {
-                name = 'SecHub Server'
-                description = 'SecHub Server as a sprint boot jar. Ready to use.'
+                name = 'SecHub Product Delegation Server'
+                description = 'SecHub Product Delegatoin Server as a sprint boot jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/daimler/sechub'
@@ -81,8 +83,8 @@ publishing {
             artifact source: assembleArtifact, extension: 'zip'
 
             pom {
-                name = 'SecHub Server documentation'
-                description = 'SecHub Server documentation as single zip file.'
+                name = 'SecHub Product Delegation Server documentation'
+                description = 'SecHub Product Delegation Server documentation as single zip file.'
 
                 scm {
                     url = 'https://github.com/daimler/sechub'
