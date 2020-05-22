@@ -111,6 +111,8 @@ public enum UseCaseIdentifier {
 	
 	UC_ADMIN_RECEIVES_NOTIFICATOIN_ABOUT_CLUSTER_MEMBER_START,
 	
+	UC_USER_MARKS_FALSE_POSITIVES_FOR_FINISHED_JOB,
+	
 	;
 
     /* +-----------------------------------------------------------------------+ */
