@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.project;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -11,8 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
-
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 /**
  * Configuration entry for project configuration inside database (domain scan).

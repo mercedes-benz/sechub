@@ -12,11 +12,21 @@ public class ValidationContext<T>{
 	}
 
 	public void addError(String error) {
+	    if (error==null) {
+	        return;
+	    }
 		result.addError(error);
 	}
 
 	public boolean isInValid() {
 		return ! result.valid;
 	}
+
+    public void addErrors(ValidationResult otherResult) {
+        if (otherResult==null) {
+            return;
+        }
+        result.addErrors(otherResult);
+    }
 
 }

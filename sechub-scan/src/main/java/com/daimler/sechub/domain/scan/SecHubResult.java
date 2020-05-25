@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @JsonInclude(Include.NON_NULL)
 public class SecHubResult implements JSONable<SecHubResult> {
+    
+    private static final SecHubResult IMPORTER = new SecHubResult();
 
 	public static final String PROPERTY_FINDINGS="findings";
 
@@ -42,5 +44,9 @@ public class SecHubResult implements JSONable<SecHubResult> {
 	@Override
 	public Class<SecHubResult> getJSONTargetClass() {
 		return SecHubResult.class;
+	}
+	
+	public static final SecHubResult fromJSONString(String json) {
+	    return IMPORTER.fromJSON(json);
 	}
 }
