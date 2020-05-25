@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
 
 /**
  * This component is convenient point to handle assertions on simple user input data.
@@ -84,20 +85,5 @@ public class UserInputAssertion {
 	public void isValidEmailAddress(String emailAdress) {
 		assertValid(emailAdress,  emailValidation, "Email address is not valid");
 	}
-	
-	/**
-	 * Asserts target is valid. Otherwise a {@link NotAcceptableException} will be thrown with given error message
-	 * @param target
-	 * @param errorMessage
-	 */
-	<T> void assertValid(T target, Validation<T> validation, String errorMessage) {
-		ValidationResult result = validation.validate(target);
-		if (result.isValid()) {
-			return;
-		}
-		throw new NotAcceptableException(errorMessage+". "+result.getErrorDescription());
-	}
-
-
 
 }

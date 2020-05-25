@@ -38,8 +38,8 @@ public class SecHubResultService {
 	List<ScanReportToSecHubResultTransformer> transformers;
 
 	/**
-	 * Will fetch output from report products for wanted sechub job and returns
-	 * result
+	 * Will fetch output from report products for wanted sechub job and returns a new created
+	 * result.
 	 * 
 	 * @param context
 	 * @return result never <code>null</code>
@@ -48,7 +48,12 @@ public class SecHubResultService {
 		notNull(context, "Context may not be null!");
 
 		UUID secHubJobUUID = context.getSechubJobUUID();
-		List<ProductResult> productResults = productResultRepository.findProductResults(secHubJobUUID, FARRADAY,
+		return createResult(secHubJobUUID);
+	}
+
+    public SecHubResult createResult(UUID secHubJobUUID) throws SecHubExecutionException {
+        notNull(secHubJobUUID, "secHubJobUUID may not be null!");
+        List<ProductResult> productResults = productResultRepository.findProductResults(secHubJobUUID, FARRADAY,
 				SERECO);
 
 		if (productResults.isEmpty()) {
@@ -68,5 +73,5 @@ public class SecHubResultService {
 		}
 
 		throw new SecHubExecutionException("No transformable report result format found for:" + secHubJobUUID);
-	}
+    }
 }
