@@ -14,6 +14,8 @@ import com.daimler.sechub.domain.scan.ScanAssertService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -32,15 +34,18 @@ public class FalsePositiveJobDataService {
 
     @Autowired
     FalsePositiveJobDataListValidation falsePositiveJobDataListValidation;
+    
+    @Autowired
+    FalsePositiveJobDataConfigMerger merger;
+    
+    @Autowired
+    UserContextService userContextService;
 
     @Autowired
     ScanAssertService scanAssertService;
 
     public void addFalsePositives(String projectId, FalsePositiveJobDataList data) {
-        /* check */
-        userInputAssertion.isValidProjectId(projectId);
-        scanAssertService.assertUserHasAccessToProject(projectId);
-        assertValid(data, falsePositiveJobDataListValidation);
+        validateUserInput(projectId, data);
 
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
 
@@ -51,30 +56,32 @@ public class FalsePositiveJobDataService {
 
     }
 
+    private void validateUserInput(String projectId, FalsePositiveJobDataList data) {
+        userInputAssertion.isValidProjectId(projectId);
+        scanAssertService.assertUserHasAccessToProject(projectId);
+        assertValid(data, falsePositiveJobDataListValidation);
+    }
+
     private void addJobDataListToConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveJobDataList jobDataList) {
         List<FalsePositiveJobData> list = jobDataList.getJobData();
 
-        /* qw want to load reports only one time, so sort by report job UUID... */
+        /* we want to load reports only one time, so sort by report job UUID... */
         list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
         ScanReportResult scanReportResult = null;
-        ScanReport report = null;
         for (FalsePositiveJobData data : list) {
             UUID jobUUID = data.getJobUUID();
 
-            if (report == null || !jobUUID.equals(report.getSecHubJobUUID())) {
-                report = scanReportRepository.findBySecHubJobUUID(jobUUID);
+            if (scanReportResult == null || !jobUUID.equals(scanReportResult.getJobUUID())) {
+                ScanReport report = scanReportRepository.findBySecHubJobUUID(jobUUID);
+                if (report==null) {
+                    throw new NotFoundException("No report found for job "+jobUUID);
+                }
                 scanReportResult = new ScanReportResult(report);
             }
-            addJobDataWithMetaDataToConfig(scanReportResult, config, data);
-
+            merger.addJobDataWithMetaDataToConfig(scanReportResult, config, data, userContextService.getUserId());
         }
 
-    }
-
-    private void addJobDataWithMetaDataToConfig(ScanReportResult scanReportResult, FalsePositiveProjectConfiguration config, FalsePositiveJobData data) {
-        /* FIXME Albert Tregnaghi, 2020-05-26: implement this */
-        throw new RuntimeException("implement me");
     }
 
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {

@@ -49,6 +49,7 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
 				finding.setProductResultLink(v.getProductResultLink());
 			}
 			finding.setCode(convert(v.getCode()));
+			finding.setType(v.getScanType());
 
 			findings.add(finding);
 		}

@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.Severity;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class FalsePositiveProjectConfigurationTest {
 

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.scan;
+package com.daimler.sechub.sharedkernel.type;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ScanType {
 
@@ -17,6 +19,7 @@ public enum ScanType {
 		this.id = id;
 	}
 
+	@JsonValue
 	public String getId() {
 		return id;
 	}

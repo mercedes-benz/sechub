@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
@@ -45,6 +46,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 			vulnerability.setUrl(vulnerabilityElement.elementText("url"));
 			vulnerability.setType(vulnerabilityElement.elementText("type"));
 			vulnerability.setDescription(vulnerabilityElement.elementText("description"));
+			vulnerability.setScanType(ScanType.WEB_SCAN);
 
 			Element classificationElement = vulnerabilityElement.element("classification");
 			if (classificationElement==null) {

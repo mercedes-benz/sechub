@@ -2,8 +2,8 @@ package com.daimler.sechub.domain.scan.project;
 
 import java.util.Objects;
 
-import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.Severity;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class FalsePositiveMetaData {
 

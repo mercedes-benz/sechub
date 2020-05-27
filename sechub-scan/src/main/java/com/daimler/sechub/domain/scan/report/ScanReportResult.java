@@ -30,6 +30,8 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public static final String PROPERTY_INFO="info";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ScanReportResult.class);
+	
+	private static final ScanReportResult IMPORTER = new ScanReportResult();
 
 	UUID jobUUID;
 
@@ -56,6 +58,10 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 		return trafficLight;
 	}
 	
+	private ScanReportResult() {
+	    /* only internal for IMPORTER */
+	}
+	
 	public ScanReportResult(ScanReport report) {
 		notNull(report, "Report may not be null!");
 		jobUUID = report.getSecHubJobUUID();
@@ -75,6 +81,10 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	@Override
 	public Class<ScanReportResult> getJSONTargetClass() {
 		return ScanReportResult.class;
+	}
+	
+	public static ScanReportResult fromJSONString(String json) {
+	    return IMPORTER.fromJSON(json);
 	}
 	
 }
