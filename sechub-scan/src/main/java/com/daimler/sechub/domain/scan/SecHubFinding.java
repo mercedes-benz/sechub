@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.daimler.sechub.sharedkernel.type.ScanType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -47,6 +48,16 @@ public class SecHubFinding {
 	SecHubCodeCallStack code;
 
 	String productResultLink;
+	
+	ScanType type;
+	
+	public void setType(ScanType scanType) {
+        this.type = scanType;
+    }
+	
+	public ScanType getType() {
+        return type;
+    }
 
 	public void setProductResultLink(String productResultLink) {
 		this.productResultLink = productResultLink;

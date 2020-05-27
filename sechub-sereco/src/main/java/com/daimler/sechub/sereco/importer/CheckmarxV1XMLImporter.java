@@ -17,6 +17,7 @@ import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
@@ -74,6 +75,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 				vulnerability.setProductResultLink(deeplink);
 				vulnerability.setDescription(""); // at least at the moment we set no description any more
 				vulnerability.getClassification().setCwe(cweId);
+				vulnerability.setScanType(ScanType.CODE_SCAN);
 
 				categoryConverter.convert(categories, vulnerability.getClassification());
 

@@ -17,6 +17,7 @@ import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 public class SerecoReportToSecHubResultTransformerTest {
@@ -49,6 +50,10 @@ public class SerecoReportToSecHubResultTransformerTest {
 		SecHubResult result = transformerToTest.transform(converted);
 
 		/* test */
+		for (SecHubFinding f: result.getFindings()) {
+            assertEquals(ScanType.CODE_SCAN,f.getType());
+        }
+		
 		AssertSecHubResult.assertSecHubResult(result).hasFindings(1);
 		SecHubFinding finding1 = result.getFindings().get(0);
 
@@ -81,6 +86,9 @@ public class SerecoReportToSecHubResultTransformerTest {
 
 		/* test */
 		/* @formatter:off */
+		for (SecHubFinding f: result.getFindings()) {
+            assertEquals(ScanType.WEB_SCAN,f.getType());
+        }
 		AssertSecHubResult.assertSecHubResult(result).
 			hasFindingWithId(1).
 				hasDescription("desc1").
@@ -98,6 +106,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 		v1.setSeverity(SerecoSeverity.MEDIUM);
 		v1.setType("type1");
 		v1.setUrl("url1");
+		v1.setScanType(ScanType.WEB_SCAN);
 
 		SerecoClassification cl = v1.getClassification();
 		cl.setCapec("capec1");
@@ -116,6 +125,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 		v1.setSeverity(SerecoSeverity.MEDIUM);
 		v1.setType("type1");
 		v1.setUrl("url1");
+		v1.setScanType(ScanType.CODE_SCAN);
 
 		SerecoCodeCallStackElement serecoCode1 = new SerecoCodeCallStackElement();
 		serecoCode1.setLine(1);

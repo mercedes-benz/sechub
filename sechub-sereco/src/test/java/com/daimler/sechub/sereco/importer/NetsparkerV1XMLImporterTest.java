@@ -14,6 +14,7 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 public class NetsparkerV1XMLImporterTest {
 
 	private SerecoTestFileSupport support = SerecoTestFileSupport.INSTANCE;
@@ -61,6 +62,10 @@ public class NetsparkerV1XMLImporterTest {
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
 		/* test */
+		for (SerecoVulnerability v: vulnerabilities) {
+		    assertEquals(ScanType.WEB_SCAN,v.getScanType());
+		}
+		
 		/* @formatter:off */
 		assertVulnerabilities(vulnerabilities).
 			vulnerability().

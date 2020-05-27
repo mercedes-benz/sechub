@@ -17,6 +17,7 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class CheckmarxV1XMLImporterTest {
 
@@ -55,6 +56,7 @@ public class CheckmarxV1XMLImporterTest {
 		SerecoVulnerability v1 = vulnerabilities.get(0);
 		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 		assertEquals("", v1.getDescription());
+		assertEquals(ScanType.CODE_SCAN,v1.getScanType());
 
 		SerecoCodeCallStackElement codeInfo = v1.getCode();
 		assertNotNull(codeInfo);
