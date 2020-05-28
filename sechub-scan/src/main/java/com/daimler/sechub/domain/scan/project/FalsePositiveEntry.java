@@ -1,6 +1,9 @@
 package com.daimler.sechub.domain.scan.project;
 
+import java.util.Date;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class FalsePositiveEntry {
 
@@ -10,6 +13,17 @@ public class FalsePositiveEntry {
 
     private FalsePositiveMetaData metaData;
 
+    private Date created = new Date(); // we use initial now
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+    
+    public Date getCreated() {
+        return created;
+    }
+    
     public void setJobData(FalsePositiveJobData jobData) {
         this.jobData = jobData;
     }
