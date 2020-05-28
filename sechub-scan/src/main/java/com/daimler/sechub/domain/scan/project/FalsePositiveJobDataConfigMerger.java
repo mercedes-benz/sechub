@@ -12,6 +12,11 @@ import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.type.ScanType;
 
+/**
+ * Merges job based false positive data, meta data from origin report into project false positive configuration 
+ * @author Albert Tregnaghi
+ *
+ */
 @Component
 public class FalsePositiveJobDataConfigMerger {
 
@@ -64,7 +69,7 @@ public class FalsePositiveJobDataConfigMerger {
     private FalsePositiveMetaData createCodeScan(SecHubFinding finding) {
         FalsePositiveMetaData metaData = new FalsePositiveMetaData();
         metaData.setName(finding.getName());
-        metaData.setScanType(finding.getType());
+        metaData.setScanType(ScanType.CODE_SCAN);
         metaData.setSeverity(finding.getSeverity());
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
         

@@ -2,12 +2,16 @@ package com.daimler.sechub.domain.scan.project;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 import com.daimler.sechub.domain.scan.Severity;
 import com.daimler.sechub.sharedkernel.type.ScanType;
 
@@ -20,6 +24,68 @@ public class FalsePositiveProjectConfigurationTest {
         configToTest = new FalsePositiveProjectConfiguration(); 
     }
 
+    @Test
+    public void example1_unmarshalled_contains_expected_data() throws Exception {
+        /* prepare */
+        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positive_config_example1.json");
+        
+        /* execute */
+        configToTest = FalsePositiveProjectConfiguration.fromJSONString(json);
+        
+        /* test */
+        List<FalsePositiveEntry> falsePositives = configToTest.getFalsePositives();
+        assertEquals(3,falsePositives.size());
+        Iterator<FalsePositiveEntry> it = falsePositives.iterator();
+        FalsePositiveEntry entry1 = it.next();
+        FalsePositiveEntry entry2 = it.next();
+        FalsePositiveEntry entry3 = it.next();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        
+        // 1
+        assertEquals("2019-01-02 21:22:23",format.format(entry1.getCreated()));
+        assertEquals("testuser1", entry1.getAuthor());
+
+        FalsePositiveJobData jobData1 = entry1.getJobData();
+        assertEquals("comment1", jobData1.getComment());
+        assertEquals(42, jobData1.getFindingId());
+        assertEquals("eb227545-8f37-47d1-ab60-c17dd1576e19", jobData1.getJobUUID().toString());
+
+        FalsePositiveMetaData metaData1 = entry1.getMetaData();
+        assertEquals(ScanType.CODE_SCAN,metaData1.getScanType());
+        assertEquals(Severity.MEDIUM, metaData1.getSeverity());
+
+        
+        // 2
+        assertEquals("2019-02-02 21:22:23",format.format(entry2.getCreated()));
+        assertEquals("testuser2", entry2.getAuthor());
+
+        FalsePositiveJobData jobData2 = entry2.getJobData();
+        assertEquals("comment2", jobData2.getComment());
+        assertEquals(815, jobData2.getFindingId());
+        assertEquals("eb227545-8f37-47d1-ab60-c17dd1576e19", jobData2.getJobUUID().toString());
+        
+        FalsePositiveMetaData metaData2 = entry2.getMetaData();
+        assertEquals(ScanType.WEB_SCAN,metaData2.getScanType());
+        assertEquals(Severity.LOW, metaData2.getSeverity());
+        
+        // 3
+        assertEquals("2019-03-02 21:22:23",format.format(entry3.getCreated()));
+        assertEquals("testuser3", entry3.getAuthor());
+
+        FalsePositiveJobData jobData3 = entry3.getJobData();
+        assertEquals(null, jobData3.getComment());
+        assertEquals(815, jobData3.getFindingId());
+        assertEquals("ec227545-8f37-47d1-ab60-c17dd1576e19", jobData3.getJobUUID().toString());
+        
+        FalsePositiveMetaData metaData3 = entry3.getMetaData();
+        assertEquals(ScanType.INFRA_SCAN,metaData3.getScanType());
+        assertEquals(Severity.LOW, metaData3.getSeverity());
+        
+        
+    }
+    
     @Test
     public void marshal_and_unmarshal_contains_same_content() {
         /* prepare */
@@ -38,11 +104,12 @@ public class FalsePositiveProjectConfigurationTest {
         FalsePositiveCodePartMetaData start = new FalsePositiveCodePartMetaData();
         start.setLocation("location1");
         start.setRelevantPart("relevant1");
-        start.setSourceCode("source2");
+        start.setSourceCode("source1");
+        code.setStart(start);
         
         FalsePositiveCodePartMetaData end = new FalsePositiveCodePartMetaData();
-        end.setLocation("location1");
-        end.setRelevantPart("relevant1");
+        end.setLocation("location2");
+        end.setRelevantPart("relevant2");
         end.setSourceCode("source2");
         code.setEnd(end);
         
@@ -59,6 +126,7 @@ public class FalsePositiveProjectConfigurationTest {
         
         /* execute */
         String json = configToTest.toJSON();
+        System.out.println(json);
         
         
         /* test */
