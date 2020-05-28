@@ -26,5 +26,12 @@ public enum ExecutionResult {
 
 
 	;
+    
+    /**
+     * @return <code>true</code> when execution has been done and a result must be available
+     */
+    public boolean hasFinished() {
+        return ! this.equals(NONE);
+    }
 
 }

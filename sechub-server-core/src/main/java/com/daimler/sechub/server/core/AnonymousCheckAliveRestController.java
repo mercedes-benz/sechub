@@ -20,7 +20,8 @@ public class AnonymousCheckAliveRestController {
 				needsRestDoc=true,
 				description="An anonymous user checks if the server is alive and running using the REST API"))
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "check/alive", method = RequestMethod.HEAD)
-	public void getServerVersion() {
+	public void checkAlive() {
+	    /* do nothing here - its just a HEAD request */
 	}
 	/* @formatter:on */
 }

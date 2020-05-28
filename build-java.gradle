@@ -17,6 +17,10 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
   }
 }
+
+ext.buildContainsFailedTests=false
+
+
 subprojects{
 
     if (! projectType.javaProjects.contains(project)){
@@ -51,6 +55,31 @@ subprojects{
         environment 'SECHUB_TEST_WIREMOCK_HTTP_PORT', "$wireMockHttpPortValue"
         environment 'SECHUB_TEST_WIREMOCK_HTTPS_PORT', "$wireMockHttpsPortValue"
 
+
+        // add a collection to track failedTests
+        ext.failedTests = []
+        
+        // add a testlistener to all tasks of type Test
+        tasks.withType(Test) {
+            afterTest { TestDescriptor descriptor, TestResult result ->
+                if(result.resultType == org.gradle.api.tasks.testing.TestResult.ResultType.FAILURE){
+                    buildContainsFailedTests=true
+                    failedTests << ["${descriptor.className}::${descriptor.name}"]
+                }
+            }
+        }
+        
+        // print out tracked failed tests when the build has finished
+        gradle.buildFinished {
+            if(!failedTests.empty){
+                println "Failed tests for ${project.name}:"
+                failedTests.each { failedTest ->
+                    println failedTest
+                }
+                println ""
+            }
+        }
+
     }
 
 	/**
@@ -78,3 +107,14 @@ subprojects{
 	}
 
 }
+
+allprojects {
+        if(! project.name.equals(rootProject.name) ) {
+            return
+        }
+        gradle.buildFinished {
+        if (buildContainsFailedTests){
+                throw new GradleException('Some tests have failed!')
+            }
+        }
+    }

@@ -35,6 +35,7 @@ public class DomainMessagingModelPlantUMLGenerator implements Generator {
 		context.addLine("@startuml");
 		context.addLine("\n");
 		context.addLine("title "+title);
+		context.addLine("skinparam style strictuml");
 		context.addLine("\n");
 		context.addLine("control "+EVENT_BUS_ID);
 		
@@ -222,7 +223,7 @@ public class DomainMessagingModelPlantUMLGenerator implements Generator {
 	}
 
 	private void handleValidationError(String message) {
-		LOG.warn("NOT VALID:{}", message);
+		throw new IllegalStateException("NOT VALID:"+message);
 	}
 
 	private void sendToEventBus(StringBuilder sb, String sender, MessageID messageID, boolean synchron) {

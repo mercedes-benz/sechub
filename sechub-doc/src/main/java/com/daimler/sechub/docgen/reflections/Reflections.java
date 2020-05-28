@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen.reflections;
 
 import java.io.File;
@@ -15,6 +16,9 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.daimler.sechub.docgen.GeneratorConstants;
+import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
  * A very simple replacement for `org.reflections` library. But fullfils
@@ -96,7 +100,12 @@ public class Reflections {
                 @Override
                 public void visit(Class<?> clazz) {
                     for (Method method : clazz.getDeclaredMethods()) {
-                        if (method.getAnnotation(annotation) != null) {
+                        if (method.getDeclaredAnnotation(annotation) != null) {
+                            if (annotation.equals(UseCaseRestDoc.class)){
+                                if (GeneratorConstants.DEBUG) {
+                                    LOG.info("UsecaseRestDoc found:{}",clazz);
+                                }
+                            }
                             newResult.add(method);
                         }
                     }
@@ -262,6 +271,7 @@ public class Reflections {
             LOG.info("Add source directory:{}", deepSubDir);
             this.sourceDirectories.add(deepSubDir);
         }
+        this.sourceDirectories.add(new File(sechHubDoc,"src/test/java")); // we need this to be able to execute restdoc gen tests + ReflectionsTest.java
     }
 
     private class JavaContentFilter implements FileFilter {

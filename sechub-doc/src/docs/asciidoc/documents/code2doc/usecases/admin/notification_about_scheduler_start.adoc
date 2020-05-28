@@ -1,0 +1,5 @@
+// SPDX-License-Identifier: MIT
+Administrators receive notification about start of a new scheduler instance.
+
+The notification will contain also information about potential zombie jobs - just show all started
+but not finished jobs before scheduler start.

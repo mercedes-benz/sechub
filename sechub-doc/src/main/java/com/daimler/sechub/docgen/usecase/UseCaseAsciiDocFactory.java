@@ -2,6 +2,7 @@
 package com.daimler.sechub.docgen.usecase;
 
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
+import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
 public class UseCaseAsciiDocFactory {
 
@@ -12,6 +13,10 @@ public class UseCaseAsciiDocFactory {
 	public static String createLinkId(UseCaseEntry entry) {
 		return "section-usecase-"+entry.getId();
 	}
+	
+	public static String createLinkId(UseCaseIdentifier identifier) {
+        return "section-usecase-"+identifier.uniqueId();
+    }
 	
 	public static String createLinkId(UseCaseRestDocEntry entry) {
 		return "section-ucrestdoc-" + entry.usecaseEntry.getId() + "-" + entry.variantId;
@@ -36,6 +41,10 @@ public class UseCaseAsciiDocFactory {
 	public static String createLinkToUseCase(UseCaseEntry entry) {
 		return "<<" + createLinkId(entry)+"," + entry.getId()+"-"+entry.getTitle()+" >>";
 	}
+	
+	public static String createLinkToUseCase(UseCaseIdentifier identifier, String title) {
+        return "<<" + createLinkId(identifier)+", "+title+" >>";
+    }
 	
 	public static String createLinkToUseCase(UseCaseRestDocEntry entry) {
 		return createLinkToUseCase(entry.usecaseEntry);

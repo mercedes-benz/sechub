@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen.reflections;
 
 import java.lang.annotation.ElementType;
@@ -13,8 +14,12 @@ import java.lang.annotation.Target;
  * @author Albert Tregnaghi
  *
  */
+/* @formatter:off */
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE} )
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface ReflectionsExampleDefinitionAnnotation {
+@ReflectionsExampleDefinitionAnnotation
+public @interface ReflectionsExampleUsageAnnotation {
 
+    String value();
 }
+/* @formatter:on */

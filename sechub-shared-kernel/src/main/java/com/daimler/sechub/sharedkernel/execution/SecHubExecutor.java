@@ -5,9 +5,10 @@ package com.daimler.sechub.sharedkernel.execution;
  * Execute something for sechub
  * @author Albert Tregnaghi
  *
- * @param <T>
+ * @param <T> result type
+ * @param <P> given parameter
  */
-public interface SecHubExecutor<T> {
+public interface SecHubExecutor<T, P> {
 
 	/**
 	 * Execute within SecHub execution context
@@ -17,5 +18,5 @@ public interface SecHubExecutor<T> {
 	 * @throws SecHubExecutionException
 	 *             when any problems occuring
 	 */
-	public T execute(SecHubExecutionContext context) throws SecHubExecutionException;
+	public T execute(SecHubExecutionContext context, P param) throws SecHubExecutionException;
 }

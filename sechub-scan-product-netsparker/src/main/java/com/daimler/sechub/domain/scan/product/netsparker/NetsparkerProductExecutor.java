@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapterConfig;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig;
+import com.daimler.sechub.adapter.netsparker.NetsparkerMetaDataID;
 import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.product.AbstractWebScanProductExecutor;
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -39,9 +41,9 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 	protected NetsparkerInstallSetup getInstallSetup() {
 		return installSetup;
 	}
-
+	
 	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, NetsparkerInstallSetup setup,
+	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NetsparkerInstallSetup setup,
 			TargetRegistryInfo info) throws Exception{
 		Set<URI> targetURIs = info.getURIs();
 		if (targetURIs.isEmpty()) {
@@ -57,6 +59,12 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 		 */
 		for (URI targetURI: targetURIs) {
 			/* @formatter:off */
+		    
+		    /* special behavior, because having multiple results here, we must find former result corresponding to 
+		     * target URI.
+		     */
+		    executorContext.useFirstFormerResultHavingMetaData(NetsparkerMetaDataID.KEY_TARGET_URI, targetURI);
+		    
 			NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
 					configure(createAdapterOptionsStrategy(context)).
 				    configure(new WebLoginConfigBuilderStrategy(context)).
@@ -72,15 +80,17 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 			/* @formatter:on */
 
 			/* execute NETSPARKER by adapter and return product result */
-			String xml = netsparkerAdapter.start(netsparkerConfig);
-			String projectId = context.getConfiguration().getProjectId();
-			ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
-			results.add(result);
+			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
+			
+			ProductResult currentProductResult = executorContext.getCurrentProductResult();
+            currentProductResult.setResult(xml);
+            results.add(currentProductResult);
+			
 		}
 		return results;
 	}
 
-	@Override
+    @Override
 	public ProductIdentifier getIdentifier() {
 		return ProductIdentifier.NETSPARKER;
 	}

@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+[[section-uc-description-admin_restarts_job_soft]]
+Administrator restarts job
+ 
+When a `JVM` (or `POD`) crashes with running {sechub} job, the job process execution has been
+terminated without resetting the scheduler state.
+
+If this has happened, somebody or a build server who/which is waiting for sechub job
+result will wait infinite and without hope of having a status refresh.
+
+So the admin must be able to restart a job. 
+
+[NOTE]
+====
+The restart will be intransparent for end user
+so they will just keep on waiting but get the result as soon as possible.
+====
+
+The restart will
+
+- first of all write an audit log enry
+- be canceled, when job does not exist in scheduler 
+- be canceled, when execution already finished
+- check for running batch jobs with {sechub} job UUID. +
+  If there are existing batch operations, those will be stopped and abandoned 
+- new scan will be restarted immediately without scheduling, will try to reuse existing 
+  results +
+  _E.g. when a static code scan job is triggered to a product and
+  scan ID is wellknown, no new scan will be started, but state of this scan is refetched 
+  by the ID, etc. etc. But exact resilience behaviour depends on adapter implementation_
+
+
+ 

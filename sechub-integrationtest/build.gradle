@@ -15,6 +15,28 @@ dependencies {
 
 def integrationTestServerPortValue = 8443;
 
+task copyIntegrationTestResults(type: Copy) {
+        with{
+            from "${project.projectDir}/build/test-results/integrationtest"
+            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            include "*.xml"
+        }
+}
+task copyIntegrationServerLogs(type: Copy) {
+        with{
+            from "${project.projectDir}/integrationtest-server.log" 
+            into "${rootProject.projectDir}/build/reports/allTests"
+        }
+}
+copyTestResults.dependsOn copyIntegrationTestResults
+copyTestResults.dependsOn copyIntegrationServerLogs
+
+
+task cleanLogFiles(type: Delete){
+       delete "${project.projectDir}/integrationtest-server.log" 
+}
+tasks.clean.dependsOn(tasks.cleanLogFiles)
+
 task configureIntegrationTestServer{
     def integrationTestServerPortProperty="sechub.integrationtest.serverport";
     if ( project.hasProperty(integrationTestServerPortProperty)){
@@ -28,7 +50,6 @@ task waitForStop(dependsOn: configureIntegrationTestServer){
     }
 
 }
-
 
 task stopOldIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
@@ -55,7 +76,6 @@ task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
         new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
     }
-
 }
 
 
@@ -79,12 +99,6 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
    finalizedBy "stopIntegrationTestServer"
 
 }
-
-task copyIntegrationTestLogToReports(type: Copy){
-   from "integrationtest-server.log"
-   destinationDir(file("${rootProject.projectDir}/build/reports/allTests/"))
-}
-tasks.createCombinedTestReport.dependsOn (copyIntegrationTestLogToReports)
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.

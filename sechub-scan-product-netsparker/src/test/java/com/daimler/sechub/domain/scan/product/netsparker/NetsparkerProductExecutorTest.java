@@ -17,6 +17,9 @@ import org.junit.Test;
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapter;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
+import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
@@ -38,11 +41,13 @@ public class NetsparkerProductExecutorTest {
 	private Target target2;
 	private Target target3;
 	private NetsparkerInstallSetup installSetup;
+    private ProductExecutorContext executorContext;
 
 	@Before
 	public void before() throws Exception {
 		context = mock(SecHubExecutionContext.class);
 		config = mock (SecHubConfiguration.class);
+		executorContext = mock(ProductExecutorContext.class);
 
 		target1 = new Target(URI_1_INTERNET,TargetType.INTERNET);
 		target2 = new Target(URI_2_INTERNET,TargetType.INTERNET);
@@ -57,7 +62,10 @@ public class NetsparkerProductExecutorTest {
 		netsparkerAdapter =mock(NetsparkerAdapter.class);
 
 		when(context.getConfiguration()).thenReturn(config);
-		when(context.getSechubJobUUID()).thenReturn(UUID.randomUUID());
+		UUID pseudoJobUUID = UUID.randomUUID();
+        when(context.getSechubJobUUID()).thenReturn(pseudoJobUUID);
+
+		when(executorContext.getCurrentProductResult()).thenReturn(new ProductResult(pseudoJobUUID, "project1", ProductIdentifier.NETSPARKER, "resullt1"));
 
 		executorToTest = new TestNetsparkerProductExecutor();
 
@@ -82,10 +90,10 @@ public class NetsparkerProductExecutorTest {
 		prepareWebScanWithThreeInternetURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(netsparkerAdapter,times(3)).start(any());
+		verify(netsparkerAdapter,times(3)).start(any(),any());
 	}
 
 	@Test
@@ -100,10 +108,10 @@ public class NetsparkerProductExecutorTest {
 		prepareWebScanWithThreeInternetURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(netsparkerAdapter,times(3)).start(any());
+		verify(netsparkerAdapter,times(3)).start(any(),any());
 	}
 
 	@Test
@@ -119,10 +127,10 @@ public class NetsparkerProductExecutorTest {
 		prepareWebScanWithThreeInternetURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(netsparkerAdapter,times(2)).start(any());
+		verify(netsparkerAdapter,times(2)).start(any(),any());
 	}
 
 	@Test
@@ -133,10 +141,10 @@ public class NetsparkerProductExecutorTest {
 		prepareWebScanWithThreeInternetURIs();
 
 		/* execute */
-		executorToTest.execute(context);
+		executorToTest.execute(context,executorContext);
 
 		/* test */
-		verify(netsparkerAdapter,never()).start(any());
+		verify(netsparkerAdapter,never()).start(any(),any());
 	}
 
 	private void prepareWebScanWithThreeInternetURIs() throws URISyntaxException, SecHubExecutionException {

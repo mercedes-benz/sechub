@@ -5,6 +5,8 @@ import static com.daimler.sechub.domain.schedule.ExecutionState.*;
 import static com.daimler.sechub.domain.schedule.job.JobCreator.*;
 import static org.junit.Assert.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -23,8 +25,8 @@ import com.daimler.sechub.test.TestUtil;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes= {JobRepository.class, JobRepositoryDBTest.SimpleTestConfiguration.class})
-public class JobRepositoryDBTest {
+@ContextConfiguration(classes= {JobRepository.class, SecHubJobRepositoryDBTest.SimpleTestConfiguration.class})
+public class SecHubJobRepositoryDBTest {
 
 	@Autowired
 	private TestEntityManager entityManager;
@@ -38,6 +40,29 @@ public class JobRepositoryDBTest {
 	public void before() {
 
 		jobCreator = jobCreator("project-db-test", entityManager);
+	}
+	
+	@Test
+	public void findAllRunningJobs_from_now_returns_only_former_ones() throws Exception  {
+	    /* prepare */
+        ScheduleSecHubJob newJob1 = jobCreator.started(LocalDateTime.now()).create();
+        ScheduleSecHubJob newJob2 = jobCreator.started(LocalDateTime.now()).create();
+	    LocalDateTime until = LocalDateTime.now();
+	    
+	    Thread.sleep(10); 
+	    ScheduleSecHubJob newJob3 = jobCreator.started(LocalDateTime.now()).create();
+	    
+	    jobRepository.flush();
+	    
+	    /* execute */
+        List<ScheduleSecHubJob> runningJobs = jobRepository.findAllRunningJobsStartedBefore(until);
+        
+        /* test */
+        assertTrue(runningJobs.contains(newJob1));
+        assertTrue(runningJobs.contains(newJob2));
+        assertFalse(runningJobs.contains(newJob3));
+        
+        assertEquals(2,runningJobs.size());
 	}
 
 	@Test

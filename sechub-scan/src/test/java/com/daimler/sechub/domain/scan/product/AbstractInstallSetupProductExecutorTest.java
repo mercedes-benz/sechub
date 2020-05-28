@@ -46,6 +46,7 @@ public class AbstractInstallSetupProductExecutorTest {
 	private Target target3;
 	private Target target4;
 	private SecHubExecutionContext context;
+    private ProductExecutorContext executorContext;
 
 	@Before
 	public void before() throws Exception {
@@ -53,6 +54,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		inetAdressesForTarget = new ArrayList<>();
 		
 		context = mock(SecHubExecutionContext.class);
+		executorContext = mock(ProductExecutorContext.class);
 
 		target1 = new Target(URI_1, TargetType.INTERNET);
 		target2 = new Target(URI_2, TargetType.INTRANET);
@@ -88,7 +90,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		assertTrue(inetAdressesForTarget.isEmpty());
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(0,executorToTest.adapterExecutionCallAmount);
@@ -105,7 +107,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		urisForTarget.add(URI_3);
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(1,executorToTest.adapterExecutionCallAmount);
@@ -122,7 +124,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		inetAdressesForTarget.add(IP_ADRESS1);
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(0,executorToTest.adapterExecutionCallAmount);
@@ -138,7 +140,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		inetAdressesForTarget.add(IP_ADRESS1);
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(1,executorToTest.adapterExecutionCallAmount);
@@ -158,7 +160,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		urisForTarget.add(URI_3);
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(2,executorToTest.adapterExecutionCallAmount);
@@ -178,7 +180,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		urisForTarget.add(URI_3);
 		
 		/* execute */
-		List<ProductResult> result = executorToTest.execute(context);
+		List<ProductResult> result = executorToTest.execute(context,executorContext);
 		
 		/* test */
 		assertEquals(0,executorToTest.adapterExecutionCallAmount);
@@ -208,7 +210,7 @@ public class AbstractInstallSetupProductExecutorTest {
 		}
 
 		@Override
-		protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, InstallSetup setup,
+		protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, InstallSetup setup,
 				TargetRegistryInfo createInfo) throws Exception {
 			assertNotNull(createInfo);
 			adapterExecutionCallAmount++;

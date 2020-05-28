@@ -12,6 +12,6 @@ dependencies {
     compile library.harmcrest
     compile library.slf4j
 
+    compile library.wiremock
 
-}
-
+} 

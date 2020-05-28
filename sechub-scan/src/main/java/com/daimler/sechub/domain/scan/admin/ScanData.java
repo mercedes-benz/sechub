@@ -6,4 +6,6 @@ public class ScanData {
 	public String productId;
 
 	public String result;
+
+    public String metaData;
 }

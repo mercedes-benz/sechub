@@ -21,16 +21,18 @@ public class AbstractSpringRestAdapterContextTest {
 	private TestAbstractSpringRestAdapterContext contextToTest;
 	private TestAdapterConfigInterface config;
 	private TestAdapterInterface adapter;
+    private AdapterRuntimeContext runtimeContext;
 
 	@Before
 	public void before() throws Exception {
 		config = mock(TestAdapterConfigInterface.class);
 		adapter = mock(TestAdapterInterface.class);
+		runtimeContext = mock(AdapterRuntimeContext.class);
 
 		when(config.getProductBaseURL()).thenReturn("http://localhost");
 		when(config.getTargetURI()).thenReturn(new URI("https://my.scan.target"));
 
-		contextToTest = new TestAbstractSpringRestAdapterContext(config, adapter);
+        contextToTest = new TestAbstractSpringRestAdapterContext(config, adapter, runtimeContext);
 	}
 
 	@Test

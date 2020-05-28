@@ -18,7 +18,7 @@ public class TriggerNewInfraScanJobScenario3User1Action extends IntegrationTestA
 
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-		AssertExecutionResult assertResult = TestAPI.as(Scenario3.USER_1).createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
+		AssertExecutionResult assertResult = TestAPI.as(Scenario3.USER_1).withSecHubClient().createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
 		
 		outputAsTextOnSuccess("Job executed, data fetched, last output line:"+assertResult.getResult().getLastOutputLine());
 		outputAsTextOnSuccess("Job UID was:"+assertResult.getResult().getSechubJobUUD());

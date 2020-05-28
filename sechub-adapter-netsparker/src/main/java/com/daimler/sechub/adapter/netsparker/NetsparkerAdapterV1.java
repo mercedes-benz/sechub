@@ -18,7 +18,9 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterProfiles;
+import com.daimler.sechub.adapter.AdapterRuntimeContext;
 import com.daimler.sechub.adapter.WaitForStateSupport;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
@@ -49,9 +51,9 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	private NetsparkerAdapterWebLoginSupportV1 webLoginSupport = new NetsparkerAdapterWebLoginSupportV1();
 
 	@Override
-	public String start(NetsparkerAdapterConfig config) throws AdapterException {
+	public String execute(NetsparkerAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
 		try {
-			NetsparkerContext context = new NetsparkerContext(config, this);
+			NetsparkerContext context = new NetsparkerContext(config, this,runtimeContext);
 			NetsparkerWaitForStateSupport waitSupport = new NetsparkerWaitForStateSupport();
 			ensureNetsparkerWebsiteConfigurationExists(context);
 
@@ -155,6 +157,8 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	private void createNewScanAndFetchId(NetsparkerContext context) throws AdapterException {
 		NetsparkerAdapterConfig config = context.getConfig();
 		String traceID = config.getTraceID();
+		AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
+        metaData.setValue(NetsparkerMetaDataID.KEY_TARGET_URI, ""+context.getConfig().getTargetURI());
 
 		String jsonAsString = buildJsonForCreateNewScan(context.json(), config);
 

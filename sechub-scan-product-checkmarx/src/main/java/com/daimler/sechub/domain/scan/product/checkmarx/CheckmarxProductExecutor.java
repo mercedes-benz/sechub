@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -15,12 +16,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
+import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
@@ -34,57 +38,60 @@ import com.daimler.sechub.storage.core.JobStorage;
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
 
-	@Value("${sechub.adapter.checkmarx.scanresultcheck.period.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
-	private int scanResultCheckPeriodInMinutes;
+    @Value("${sechub.adapter.checkmarx.scanresultcheck.period.minutes:-1}")
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    private int scanResultCheckPeriodInMinutes;
 
-	@Value("${sechub.adapter.checkmarx.scanresultcheck.timeout.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
-	private int scanResultCheckTimeOutInMinutes;
+    @Value("${sechub.adapter.checkmarx.scanresultcheck.timeout.minutes:-1}")
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    private int scanResultCheckTimeOutInMinutes;
 
-	@Autowired
-	CheckmarxAdapter checkmarxAdapter;
+    @Autowired
+    CheckmarxAdapter checkmarxAdapter;
 
-	@Autowired
-	CheckmarxInstallSetup installSetup;
+    @Autowired
+    CheckmarxInstallSetup installSetup;
 
-	@Autowired
-	StorageService storageService;
+    @Autowired
+    StorageService storageService;
 
-	@Autowired
-	MetaDataInspector scanMetaDataCollector;
+    @Autowired
+    MetaDataInspector scanMetaDataCollector;
 
-	@Autowired
-	CheckmarxResilienceConsultant checkmarxResilienceConsultant;
+    @Autowired
+    CheckmarxResilienceConsultant checkmarxResilienceConsultant;
 
-	ResilientActionExecutor<ProductResult> resilientActionExecutor;
+    ResilientActionExecutor<ProductResult> resilientActionExecutor;
 
-	public CheckmarxProductExecutor() {
-		/* we create here our own instance - only for this service!*/
-		this.resilientActionExecutor=new ResilientActionExecutor<>();
+    public CheckmarxProductExecutor() {
+        /* we create here our own instance - only for this service! */
+        this.resilientActionExecutor = new ResilientActionExecutor<>();
 
-	}
+    }
 
-	@PostConstruct
-	protected void postConstruct() {
-		this.resilientActionExecutor.add(checkmarxResilienceConsultant);
-	}
+    @PostConstruct
+    protected void postConstruct() {
+        this.resilientActionExecutor.add(checkmarxResilienceConsultant);
+    }
 
-	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, CheckmarxInstallSetup setup, TargetRegistryInfo data) throws Exception {
-		LOG.debug("Trigger checkmarx adapter execution");
+    @Override
+    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, CheckmarxInstallSetup setup,
+            TargetRegistryInfo data) throws Exception {
+        LOG.debug("Trigger checkmarx adapter execution");
 
-		UUID jobUUID = context.getSechubJobUUID();
-		String projectId = context.getConfiguration().getProjectId();
+        UUID jobUUID = context.getSechubJobUUID();
+        String projectId = context.getConfiguration().getProjectId();
 
-		JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
-		ProductResult result = resilientActionExecutor.executeResilient(()-> {
+        JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-				try (InputStream sourceCodeZipFileInputStream = storage.fetch("sourcecode.zip")) {
+        ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
-					/* @formatter:off */
+            AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
+            try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
+
+                /* @formatter:off */
 
 					CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
 							configure(createAdapterOptionsStrategy(context)).
@@ -100,30 +107,40 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 							build();
 					/* @formatter:on */
 
-					/* inspect*/
-					MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.CHECKMARX.name());
-					inspection.notice(MetaDataInspection.TRACE_ID,checkMarxConfig.getTraceID());
-					inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
-					inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
+                /* inspect */
+                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.CHECKMARX.name());
+                inspection.notice(MetaDataInspection.TRACE_ID, checkMarxConfig.getTraceID());
+                inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
+                inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
 
-					/* execute checkmarx by adapter and return product result */
-					String xml = checkmarxAdapter.start(checkMarxConfig);
-					ProductResult productResult = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
-					return productResult;
-				}
-		});
-		return Collections.singletonList(result);
+                /* execute checkmarx by adapter and update product result */
+                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallBack());
+                
+                ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
+                productResult.setResult(xml);
+                
+                return productResult;
+            }
+        });
+        return Collections.singletonList(result);
 
-	}
+    }
 
-	@Override
-	public ProductIdentifier getIdentifier() {
-		return ProductIdentifier.CHECKMARX;
-	}
+    private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
+        if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+            return null;
+        }
+        return storage.fetch("sourcecode.zip");
+    }
 
-	@Override
-	protected CheckmarxInstallSetup getInstallSetup() {
-		return installSetup;
-	}
+    @Override
+    public ProductIdentifier getIdentifier() {
+        return ProductIdentifier.CHECKMARX;
+    }
+
+    @Override
+    protected CheckmarxInstallSetup getInstallSetup() {
+        return installSetup;
+    }
 
 }

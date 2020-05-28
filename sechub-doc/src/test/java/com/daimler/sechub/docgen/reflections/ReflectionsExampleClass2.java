@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen.reflections;
 
 /**
@@ -8,8 +9,8 @@ package com.daimler.sechub.docgen.reflections;
  * @author Albert Tregnaghi
  *
  */
-@ReflectionsExampleUsageAnnotation("class1")
-public class ReflectionsExampleClass1 implements ReflectionsExampleInterface{
+@ReflectionsExampleUsageAnnotation("class2")
+public class ReflectionsExampleClass2 implements ReflectionsExampleInterface{
 
     @ReflectionsExampleUsageAnnotation("field1")
     private String field1;
