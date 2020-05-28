@@ -35,6 +35,9 @@ public class SecHubResultService {
 	ProductResultRepository productResultRepository;
 
 	@Autowired
+	SecHubResultMerger resultMerger;
+	
+	@Autowired
 	List<ScanReportToSecHubResultTransformer> transformers;
 
 	/**
@@ -63,15 +66,19 @@ public class SecHubResultService {
 		if (productResultAmount > 1) {
 			LOG.warn("Found {} report product results, only one will be transformed!", productResultAmount);
 		}
+		SecHubResult mergedResult = null;
 		for (ProductResult productResult : productResults) {
 			for (ScanReportToSecHubResultTransformer transformer : transformers) {
 				if (transformer.canTransform(productResult.getProductIdentifier())) {
 					LOG.info("Transformer {} is used to transform result", transformer.getClass().getSimpleName());
-					return transformer.transform(productResult.getResult());
+					 SecHubResult transformedResult = transformer.transform(productResult);
+					 mergedResult=resultMerger.merge(mergedResult, transformedResult);
 				}
 			}
 		}
-
-		throw new SecHubExecutionException("No transformable report result format found for:" + secHubJobUUID);
+		if (mergedResult==null) {
+		    throw new SecHubExecutionException("No transformable report result format found for:" + secHubJobUUID);
+		}
+		return mergedResult;
     }
 }

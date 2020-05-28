@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import com.daimler.sechub.domain.scan.SecHubFinding;
 import com.daimler.sechub.domain.scan.SecHubResult;
 import com.daimler.sechub.domain.scan.Severity;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
@@ -23,7 +25,9 @@ import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 @Component
 public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHubResultTransformer {
-
+    
+    @Autowired
+    SerecoFalsePositiveMarker falsePositiveMarker;
 
 	@Value("${sechub.feature.showProductResultLink:false}")
 	@MustBeDocumented(scope="administration",value="Administrators can turn on this mode to allow product links in json and HTML output")
@@ -32,11 +36,20 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
 	private static final Logger LOG = LoggerFactory.getLogger(SerecoReportToSecHubResultTransformer.class);
 
 	@Override
-	public SecHubResult transform(String origin) throws SecHubExecutionException {
+	public SecHubResult transform(ProductResult productResult) throws SecHubExecutionException {
+	    String origin = productResult.getResult();
+	    String projectId = productResult.getProjectId();
+	    
 		SerecoMetaData data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
+
+		falsePositiveMarker.markFalsePositives(projectId,data.getVulnerabilities());
+		
 		SecHubResult result = new SecHubResult();
 
 		List<SecHubFinding> findings = result.getFindings();
+		
+		
+		
 		int id = 1;
 		for (SerecoVulnerability v : data.getVulnerabilities()) {
 			SecHubFinding finding = new SecHubFinding();
