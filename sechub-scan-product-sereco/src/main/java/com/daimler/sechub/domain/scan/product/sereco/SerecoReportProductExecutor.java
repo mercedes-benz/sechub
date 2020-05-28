@@ -26,6 +26,7 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
+
 @Component
 public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 

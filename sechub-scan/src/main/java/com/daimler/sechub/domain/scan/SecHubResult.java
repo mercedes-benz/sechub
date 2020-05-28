@@ -27,8 +27,11 @@ public class SecHubResult implements JSONable<SecHubResult> {
 	public static final String PROPERTY_FINDINGS="findings";
 
 	long count;
+	
 	List<SecHubFinding> findings = new ArrayList<>();
-
+	
+	List<SecHubFinding> falsePositives;
+	
 	public void setCount(long count) {
 		this.count = count;
 	}
@@ -40,7 +43,15 @@ public class SecHubResult implements JSONable<SecHubResult> {
 	public List<SecHubFinding> getFindings() {
 		return findings;
 	}
+	
+	public List<SecHubFinding> getFalsePositives() {
+        return falsePositives;
+    }
 
+	public void setFalsePositives(List<SecHubFinding> falsePositives) {
+        this.falsePositives = falsePositives;
+    }
+	
 	@Override
 	public Class<SecHubResult> getJSONTargetClass() {
 		return SecHubResult.class;

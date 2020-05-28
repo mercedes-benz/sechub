@@ -83,9 +83,9 @@ public class SecHubResultServiceTest {
 			throws Exception {
 		/* prepare */
 		SecHubResult secHubResult = new SecHubResult();
-		when(reportTransformer.transform("scan-result")).thenReturn(secHubResult);
 		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
 		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.SERECO, "scan-result");
+		when(reportTransformer.transform(scanResult)).thenReturn(secHubResult);
 
 		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));

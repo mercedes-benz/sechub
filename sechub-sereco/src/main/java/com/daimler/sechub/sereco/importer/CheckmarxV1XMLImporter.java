@@ -54,15 +54,14 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 			for (Element resultElement : resultElements) {
 
 				String falsePositive = resultElement.attributeValue("FalsePositive");
-				if (Boolean.parseBoolean(falsePositive)) {
-					String nodeId = resultElement.attributeValue("NodeId");
-					LOG.debug("Ignored marked false positive for NodeId:{}", nodeId);
-					continue;
-				}
 				String deeplink = resultElement.attributeValue("DeepLink");
 				String severity = resultElement.attributeValue("Severity");
 
 				SerecoVulnerability vulnerability = new SerecoVulnerability();
+				vulnerability.setFalsePositive(Boolean.parseBoolean(falsePositive));
+				if (vulnerability.isFalsePositive()) {
+				    vulnerability.setFalsePositiveReason("marked directly in security product");
+				}
 				vulnerability.setType(type);
 				if ("Information".equalsIgnoreCase(severity)) {
 					severity = "info";

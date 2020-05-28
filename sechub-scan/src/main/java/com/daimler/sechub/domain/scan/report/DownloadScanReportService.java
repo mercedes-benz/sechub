@@ -43,7 +43,10 @@ public class DownloadScanReportService {
 		assertion.isValidProjectId(projectId);
 		assertion.isValidJobUUID(jobUUID);
 
+		scanAssertService.assertUserHasAccessToProject(projectId);
+
 		auditLogService.log("starts download of report for job: {}",jobUUID);
+		
 		ScanReport report = reportRepository.findBySecHubJobUUID(jobUUID);
 
 		if (report == null) {
