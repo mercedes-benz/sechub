@@ -188,8 +188,8 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
 	private void handleProjectDeleted(ProjectMessage projectMessage, String baseUrl) {
 		informAdminsThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
-		informOwnerThatProjectHasBeenDeletedService.notify(projectMessage);
-		informUsersThatProjectHasBeenDeletedService.notify(projectMessage);
+		informOwnerThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
+		informUsersThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
 	}
 
 	@IsReceivingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)

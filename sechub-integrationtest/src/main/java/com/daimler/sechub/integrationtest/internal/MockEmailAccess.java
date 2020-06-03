@@ -16,6 +16,8 @@ import com.daimler.sechub.test.TestURLBuilder;
 
 public class MockEmailAccess {
 
+	public static final int DEFAULT_TIMEOUT = 3;
+
 	static MockEmailAccess mailAccess() {
 		return new MockEmailAccess();
 	}
@@ -48,11 +50,11 @@ public class MockEmailAccess {
 	}
 
 	public MockEmailEntry findMailOrFail(TestUser toUser, String subject) {
-		return findMailOrFail(toUser, subject, 3);
+		return findMailOrFail(toUser, subject, DEFAULT_TIMEOUT);
 	}
 
 	public MockEmailEntry findMailOrFail(String email, String subject) {
-		return findMailOrFail(email, subject, 3);
+		return findMailOrFail(email, subject, DEFAULT_TIMEOUT);
 	}
 
 	public MockEmailEntry findMailOrFail(TestUser toUser, String subject, int maxSecondsToWait) {
@@ -60,6 +62,10 @@ public class MockEmailAccess {
 	}
 
 	public MockEmailEntry findMailOrFail(String email, String subject, int maxSecondsToWait) {
+		return findMailOrFail(email, subject, false, maxSecondsToWait);
+	}
+
+	public MockEmailEntry findMailOrFail(String email, String subjectRegexp, boolean regularExpression, int maxSecondsToWait) {
 		MockEmailEntry found = null;
 		List<MockEmailEntry> list = null;
 		for (int i = 0; i < maxSecondsToWait; i++) {
@@ -67,7 +73,16 @@ public class MockEmailAccess {
 			list = convertToMockMailList(listAsMap);
 
 			for (MockEmailEntry message : list) {
-				if (subject == null || subject.isEmpty() || subject.equals(message.subject)) {
+				if (subjectRegexp == null || subjectRegexp.isEmpty()) {
+					/* Always found when no subject given */
+					found = message;
+					break;					
+				}
+				if (message.subject == null) {
+					/* cannot be checked */
+					continue;
+				}
+				if (regularExpression ? message.subject.matches(subjectRegexp) : message.subject.equals(subjectRegexp)) {
 					found = message;
 					break;
 				}
@@ -86,7 +101,7 @@ public class MockEmailAccess {
 			sb.append("Did not found mail containing:\n-emailadress (TO/CC/BCC): ");
 			sb.append(email);
 			sb.append("\n-subject: '");
-			sb.append(subject);
+			sb.append(subjectRegexp);
 			sb.append("'\n\nFound mails for this email adress:");
 			for (MockEmailEntry message : list) {
 				sb.append("\n").append(message.toString());

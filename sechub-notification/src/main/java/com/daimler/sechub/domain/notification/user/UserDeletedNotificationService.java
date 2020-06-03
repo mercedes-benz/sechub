@@ -27,7 +27,9 @@ public class UserDeletedNotificationService {
 	
 	public void notify(UserMessage userMessage) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Your account has been removed by an administrator.\n");
+		emailContent.append("Your account '" + userMessage.getUserId() + "'");
+		//emailContent.append(" for environment " + baseUrl);	// not trivial; maybe add this later
+		emailContent.append("\nhas been removed by an administrator.\n");
 
 		SimpleMailMessage message = factory.createMessage("SecHub account removed");
 		message.setTo(userMessage.getEmailAdress());

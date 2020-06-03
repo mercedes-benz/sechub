@@ -24,7 +24,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 /**
  * This tests that REST API for adminsitrators is protected by special profile, so
  * operators must explicit start a server with this profile enabled to have a
- * server instance with such high priviledges.
+ * server instance with such high privileges.
  * are really documented. This will prevent to forget documentation tests!
  *
  * @author Albert Tregnaghi

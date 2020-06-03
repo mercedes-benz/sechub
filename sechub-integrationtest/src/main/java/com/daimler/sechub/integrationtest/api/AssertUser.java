@@ -443,6 +443,12 @@ public class AssertUser extends AbstractAssert {
 
     public AssertUser hasReceivedEmail(String subject) {
         AssertMail.assertMailExists(user.getEmail(), subject);
+        //return hasReceivedEmail(subject, false);
+        return this;
+	}
+
+	public AssertUser hasReceivedEmail(String subject, boolean asRegularExpression) {
+		AssertMail.assertMailExists(user.getEmail(),subject,asRegularExpression);
         return this;
     }
 
