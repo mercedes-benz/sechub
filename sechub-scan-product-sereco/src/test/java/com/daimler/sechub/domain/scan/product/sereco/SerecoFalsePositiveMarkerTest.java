@@ -23,7 +23,7 @@ public class SerecoFalsePositiveMarkerTest {
     private SerecoFalsePositiveMarker markerToTest;
     private ScanProjectConfigService scanProjectConfigService;
     private ScanProjectConfig config;
-    private SerecoFalsePositiveCodeScanFinder falsePositiveCodeFinder;
+    private SerecoFalsePositiveFinder falsePositiveCodeFinder;
     private FalsePositiveProjectConfiguration projectConfig;
 
     @Before
@@ -31,7 +31,7 @@ public class SerecoFalsePositiveMarkerTest {
         markerToTest = new SerecoFalsePositiveMarker();
         
         scanProjectConfigService=mock(ScanProjectConfigService.class);
-        falsePositiveCodeFinder=mock(SerecoFalsePositiveCodeScanFinder.class);
+        falsePositiveCodeFinder=mock(SerecoFalsePositiveFinder.class);
         
         config = new ScanProjectConfig(ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION,PROJECT_ID);
         when(scanProjectConfigService.get(PROJECT_ID, ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION,false)).thenReturn(config);

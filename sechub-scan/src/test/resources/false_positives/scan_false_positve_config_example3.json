@@ -1,0 +1,57 @@
+{
+    "falsePositives": [
+        {
+            "jobData": {
+                "jobUUID": "eb227545-8f37-47d1-ab60-c17dd1576e19",
+                "findingId": 42,
+                "comment": "entry-1"
+            },
+            "author": "testuser1",
+            "created": "2019-01-02 21:22:23",
+            "metaData": {
+                "scanType": "codeScan",
+                "name": "name1",
+                "severity": "MEDIUM",
+                "code": {
+                    "start": {
+                        "location": "location1",
+                        "relevantPart": "relevant1",
+                        "sourceCode": "source1"
+                    },
+                    "end": {
+                        "location": "location2",
+                        "relevantPart": "relevant2",
+                        "sourceCode": "source2"
+                    }
+                }
+            }
+        },
+        {
+            "jobData": {
+                "jobUUID": "eb227545-8f37-47d1-ab60-c17dd1576e19",
+                "findingId": 815,
+                "comment": "comment2"
+            },
+            "author": "testuser2",
+            "created": "2019-02-02 21:22:23",
+            "metaData": {
+                "scanType": "webScan",
+                "name": "name2",
+                "severity": "LOW"
+            }
+        },
+        {
+            "jobData": {
+                "jobUUID": "ec227545-8f37-47d1-ab60-c17dd1576e19",
+                "findingId": 815
+            },
+            "author": "testuser3",
+            "created": "2019-03-02 21:22:23",
+            "metaData": {
+                "scanType": "infraScan",
+                "name": "name3",
+                "severity": "LOW"
+            }
+        }
+    ]
+}

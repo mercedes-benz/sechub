@@ -30,7 +30,7 @@ public class SerecoFalsePositiveMarker {
     private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveMarker.class);
     
     @Autowired
-    SerecoFalsePositiveCodeScanFinder falsePositiveCodeFinder;
+    SerecoFalsePositiveFinder falsePositiveCodeFinder;
     
     @Autowired
     ScanProjectConfigService scanProjectConfigService;
