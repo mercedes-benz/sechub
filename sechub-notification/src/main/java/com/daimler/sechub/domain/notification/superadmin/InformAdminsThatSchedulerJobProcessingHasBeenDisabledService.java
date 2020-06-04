@@ -38,7 +38,7 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
 
 	private String createEmailContent(String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Scheduler job processing has been disabled at SecHub for environment (base url): "
+		emailContent.append("Scheduler job processing has been disabled at SecHub for environment (base url): ");
 		emailContent.append(baseUrl);
 		emailContent.append("\n\n");
 		emailContent.append("WARNING: Users can still add new Jobs, but will wait for execution until scheduler job processing will be enabled again!\n");
