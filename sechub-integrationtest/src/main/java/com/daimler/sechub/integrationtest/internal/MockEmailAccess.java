@@ -98,9 +98,9 @@ public class MockEmailAccess {
 		}
 		if (found == null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Did not found mail containing:\n-emailadress (TO/CC/BCC): ");
+			sb.append("Did not find a mail containing:\n-emailadress (TO/CC/BCC): ");
 			sb.append(email);
-			sb.append("\n-subject: '");
+			sb.append("\n-subject (regexp): '");
 			sb.append(subjectRegexp);
 			sb.append("'\n\nFound mails for this email adress:");
 			for (MockEmailEntry message : list) {

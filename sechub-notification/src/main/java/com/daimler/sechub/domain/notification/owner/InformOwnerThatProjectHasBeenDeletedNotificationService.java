@@ -38,7 +38,11 @@ public class InformOwnerThatProjectHasBeenDeletedNotificationService {
 		SimpleMailMessage message = factory.createMessage("A SecHub project you were the owner was deleted: " + projectMessage.getProjectId());
 
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Your project '" + projectMessage.getProjectId() + "' in environment " + baseUrl + "\n");
+		emailContent.append("Your project '");
+		emailContent.append(projectMessage.getProjectId());
+		emailContent.append("' in environment ");
+		emailContent.append(baseUrl);
+		emailContent.append("\n");
 		emailContent.append("has been deleted.\n\n");
 		emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
 
