@@ -55,7 +55,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* test */
 		assertUser(SUPER_ADMIN).
 			onJobAdministration().canNotFindRunningJob(jobUUID); // means here, the job is not executed at all.. */
-		assertMailToAdminsExists("Scheduler job processing disabled");
+		assertMailToAdminsExists("SecHub: Scheduler job processing disabled");
 
 		/* execute */
 		as(SUPER_ADMIN).enableSchedulerJobProcessing();
@@ -65,7 +65,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* test */
 		assertUser(SUPER_ADMIN).
 			onJobAdministration().canFindRunningJob(jobUUID); // means here, the job is not executed at all.. we know this, because we used long running job (10s) */
-		assertMailToAdminsExists("Scheduler job processing disabled");
+		assertMailToAdminsExists("SecHub: Scheduler job processing disabled");
 
 		/* @formatter:on */
 

@@ -46,7 +46,7 @@ public class InformOwnerThatProjectHasBeenDeletedNotificationServiceTest {
 		when(message.getProjectOwnerEmailAddress()).thenReturn("owner1@example.org");
 
 		/* execute */
-		serviceToTest.notify(message);
+		serviceToTest.notify(message,"base1");
 
 		/* test */
 		// check mocked mail message was sent

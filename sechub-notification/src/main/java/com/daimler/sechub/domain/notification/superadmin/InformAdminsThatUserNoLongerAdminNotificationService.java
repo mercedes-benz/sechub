@@ -25,10 +25,10 @@ public class InformAdminsThatUserNoLongerAdminNotificationService {
 	private EmailService emailService;
 
 	@UseCaseAdministratorRevokesAdminRightsFromAdmin(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform sechub admins that another admin is no longer admin"))
+			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that another admin is no longer admin"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("An admin lost sechub administrator rights");
+		SimpleMailMessage message = factory.createMessage("SecHub: Revoked administrator rights from " + userMessage.getUserId());
 
 		message.setTo(notificationConfiguration.getEmailAdministrators());
 		message.setText(createEmailContent(userMessage, baseUrl));
@@ -39,10 +39,10 @@ public class InformAdminsThatUserNoLongerAdminNotificationService {
 
 	private String createEmailContent(UserMessage userMessage, String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("User ").append(userMessage.getUserId()).append("left hte group of sechub administrators.\n\n");
-		emailContent.append("She/He will be no longer admin for environment (base url):").append(baseUrl).append("\n");
-		emailContent.append("Email adress of old colleague was:"+userMessage.getEmailAdress());
-		emailContent.append("Don't forget: Colleague email adress should be removed from NPM (email administrators) as well.");
+		emailContent.append("User " + userMessage.getUserId() + " left the group of SecHub administrators.\n");
+		emailContent.append("She/He will be no longer admin for environment (base url): " + baseUrl + "\n\n");
+		emailContent.append("Email address of colleague was: " + userMessage.getEmailAdress() + "\n");
+		emailContent.append("Don't forget to remove that email address from NPM (SecHub administrators) as well.\n");
 		String text = emailContent.toString();
 		return text;
 	}
