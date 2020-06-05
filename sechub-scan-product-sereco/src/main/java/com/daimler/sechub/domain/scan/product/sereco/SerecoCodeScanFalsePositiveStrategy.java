@@ -1,5 +1,7 @@
 package com.daimler.sechub.domain.scan.product.sereco;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,6 @@ import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.type.ScanType;
-
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 /**
  * Strategy to check if a code scan vulnerability identified by a product is

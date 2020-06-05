@@ -31,8 +31,8 @@ public class SecHubResultServiceTest {
 	private ScanReportToSecHubResultTransformer reportTransformer;
 	private ProductResultRepository productResultRepository;
 	private SecHubExecutionContext context;
-
 	private UUID secHubJobUUID;
+    private SecHubResultMerger resultMerger;
 
 	@Before
 	public void before() throws Exception {
@@ -42,10 +42,12 @@ public class SecHubResultServiceTest {
 
 		reportTransformer = mock(ScanReportToSecHubResultTransformer.class);
 		productResultRepository = mock(ProductResultRepository.class);
+		resultMerger = mock(SecHubResultMerger.class);
 
 		serviceToTest = new SecHubResultService();
 		serviceToTest.transformers = Collections.singletonList(reportTransformer);
 		serviceToTest.productResultRepository = productResultRepository;
+		serviceToTest.resultMerger=resultMerger;
 	}
 
 	@Test
@@ -83,12 +85,13 @@ public class SecHubResultServiceTest {
 			throws Exception {
 		/* prepare */
 		SecHubResult secHubResult = new SecHubResult();
-		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
 		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.SERECO, "scan-result");
+		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
 		when(reportTransformer.transform(scanResult)).thenReturn(secHubResult);
 
 		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));
+		when(resultMerger.merge(null,secHubResult)).thenReturn(secHubResult);
 
 		/* execute */
 		SecHubResult result = serviceToTest.createResult(context);

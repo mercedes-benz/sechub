@@ -6,6 +6,10 @@ import java.util.UUID;
 
 public class FalsePositiveJobData {
     
+    public static final String PROPERTY_JOBUUID="jobUUID";
+    public static final String PROPERTY_FINDINGID="findingId";
+    public static final String PROPERTY_COMMENT="comment";
+    
     private UUID jobUUID;
     private int findingId;
     private String comment;

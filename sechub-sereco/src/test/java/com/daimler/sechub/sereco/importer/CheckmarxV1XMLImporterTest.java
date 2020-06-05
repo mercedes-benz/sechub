@@ -5,6 +5,7 @@ import static com.daimler.sechub.sereco.test.AssertVulnerabilities.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class CheckmarxV1XMLImporterTest {
 		/* test */
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		SerecoVulnerability v1 = vulnerabilities.get(0);
+		SerecoVulnerability v1 = fetchFirstNonFalsePositive(vulnerabilities);
 		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 		assertEquals("", v1.getDescription());
 		assertEquals(ScanType.CODE_SCAN,v1.getScanType());
@@ -94,7 +95,7 @@ public class CheckmarxV1XMLImporterTest {
 		/* test */
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		SerecoVulnerability v1 = vulnerabilities.get(0);
+		SerecoVulnerability v1 = fetchFirstNonFalsePositive(vulnerabilities);
 		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 
 		assertEquals("https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000866&projectid=279&pathid=2", v1.getProductResultLink());
@@ -111,8 +112,9 @@ public class CheckmarxV1XMLImporterTest {
 
 		/* test @formatter:off */
 		assertVulnerabilities(data.getVulnerabilities()).
-			vulnerability().withSeverity(SerecoSeverity.HIGH).isNotContained(). /* ONE is  high but false positive*/
-			hasVulnerabilities(230); /* inside xml there are 240 vulnerabilities, but 10 are false positives */
+			vulnerability().withSeverity(SerecoSeverity.HIGH).isNotContained(true). /* ONE is  high but false positive*/
+			hasVulnerabilities(240).
+			hasVulnerabilities(230,true); /* inside xml there are 240 vulnerabilities, but 10 are false positives */
 		/* @formatter:on */
 	}
 
@@ -156,4 +158,13 @@ public class CheckmarxV1XMLImporterTest {
 		assertEquals("Insufficient Logging of Exceptions", v109.getType());
 	}
 
+	 private SerecoVulnerability fetchFirstNonFalsePositive(List<SerecoVulnerability> vulnerabilities) {
+	        Iterator<SerecoVulnerability> vit = vulnerabilities.iterator();
+	        SerecoVulnerability v1 = vit.next();
+	        while (v1.isFalsePositive()) {
+	            /* we have also false positives here .. and just search for first non false Positive*/
+	            v1 = vit.next();
+	        }
+	        return v1;
+	    }
 }

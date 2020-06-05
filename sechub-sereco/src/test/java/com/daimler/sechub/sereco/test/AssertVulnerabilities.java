@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.daimler.sechub.sereco.metadata.MetaDataAccess;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
@@ -143,17 +144,34 @@ public class AssertVulnerabilities {
 		}
 
 		public AssertVulnerabilities isNotContained() {
-			return isContained(0);
+			return isNotContained(false);
 		}
-
+		
+		public AssertVulnerabilities isNotContained(boolean ignoreWhenFalsePositive) {
+            return isContained(0,ignoreWhenFalsePositive);
+        }
+		
+		/**
+		 * Assert vulnerability is contained - false 
+		 * @return
+		 */
 		public AssertVulnerabilities isContained() {
-			return isContained(1);
+		    return isContained(false);
 		}
 
-		private AssertVulnerabilities isContained(int expectedAmount) {
+		public AssertVulnerabilities isContained(boolean ignoreWhenFalsePositive) {
+			return isContained(1,ignoreWhenFalsePositive);
+		}
+
+		private AssertVulnerabilities isContained(int expectedAmount,boolean ignoreWhenFalsePositive) {
 			StringBuilder message = new StringBuilder();
 			List<SerecoVulnerability> matches = find(message);
-			if (matches.size() == expectedAmount) {
+			int falsePositives = countFalsePositives(matches);
+			int check = matches.size();
+			if (ignoreWhenFalsePositive) {
+			    check = check - falsePositives;
+			}
+			if (check == expectedAmount) {
 				return AssertVulnerabilities.this;
 			}
 			StringBuilder sb = new StringBuilder();
@@ -161,10 +179,11 @@ public class AssertVulnerabilities {
 				sb.append(v.toString());
 				sb.append("\n");
 			}
-			assertEquals("Not found expected amount of vulnerabilities for given search.\nSearched for:\n" + search + " \n" + message.toString() + "\n",
-					expectedAmount, matches.size());
+			assertEquals("Not found expected amount of vulnerabilities for given search.\nSearched for:\n" + search + " \n" + message.toString() + "\n (vulnerabilitis found at all:"+matches.size()+", false positives:"+falsePositives+")",
+					expectedAmount, check);
 			throw new IllegalStateException("Test must fail before by assertEquals!");
 		}
+
 
 		public class AssertClassification {
 
@@ -222,11 +241,31 @@ public class AssertVulnerabilities {
 		}
 
 	}
-
+	
 	public AssertVulnerabilities hasVulnerabilities(int expectedAmount) {
-		assertEquals("Amount of vulnerabilities differs", expectedAmount, vulnerabilities.size());
+        return hasVulnerabilities(expectedAmount,false);
+
+    }
+
+
+	public AssertVulnerabilities hasVulnerabilities(int expectedAmount, boolean ignoreFalsePositives) {
+		int check = vulnerabilities.size();
+		if (ignoreFalsePositives) {
+		    check = check - countFalsePositives(vulnerabilities);
+		}
+        assertEquals("Amount of vulnerabilities differs", expectedAmount, check);
 		return this;
 
+	}
+	
+	private int countFalsePositives(List<SerecoVulnerability> matches) {
+	    AtomicInteger countOfFalsePositives = new AtomicInteger(0);
+	    matches.forEach( v -> {
+	        if (v.isFalsePositive()) {
+	            countOfFalsePositives.getAndIncrement();
+	        }
+	    });
+	    return countOfFalsePositives.get();
 	}
 
 }

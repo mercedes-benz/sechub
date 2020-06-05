@@ -1,5 +1,7 @@
 package com.daimler.sechub.domain.scan.product.sereco;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,7 +18,6 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigID;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.type.ScanType;
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 /**
  * Marks given vulnerabilities as false positives, if identifieable by false positive configuration
