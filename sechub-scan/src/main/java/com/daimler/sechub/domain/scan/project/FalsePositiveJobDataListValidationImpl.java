@@ -69,7 +69,7 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     }
 
     private void validateType(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {
-        validateContainsExpectedOnly(context, "given type not known", target.getType(),"falsePositiveJobDataList");
+        validateContainsExpectedOnly(context, "given type not known", target.getType(),FalsePositiveJobDataList.ACCEPTED_TYPE);
     }
 
     private void validateVersion(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {

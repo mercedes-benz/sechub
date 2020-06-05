@@ -15,14 +15,16 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @MustBeKeptStable
 public class FalsePositiveJobDataList implements JSONable<FalsePositiveJobDataList> {
 	
-    private static final String DEFAULT_TYPE = "falsePositiveJobDataList";
+    public static final String ACCEPTED_TYPE = "falsePositiveJobDataList";
 	private static final FalsePositiveJobDataList CONVERTER = new FalsePositiveJobDataList();
 	
 	public static final String PROPERTY_API_VERSION = "apiVersion";
+	public static final String PROPERTY_TYPE="type";
+	public static final String PROPERTY_JOBDATA="jobData";
 
 	private String apiVersion;
 	
-	private String type = DEFAULT_TYPE;
+	private String type = ACCEPTED_TYPE;
 	
 	private List<FalsePositiveJobData> jobData = new ArrayList<>();
 	

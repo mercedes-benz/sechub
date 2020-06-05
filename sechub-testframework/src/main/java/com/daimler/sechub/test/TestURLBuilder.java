@@ -136,6 +136,10 @@ public class TestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
     }
     
+    public String buildUserAddsFalsePositiveJobDataListForProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -471,6 +475,8 @@ public class TestURLBuilder {
     public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults-count");
     }
+
+   
 
 
 }

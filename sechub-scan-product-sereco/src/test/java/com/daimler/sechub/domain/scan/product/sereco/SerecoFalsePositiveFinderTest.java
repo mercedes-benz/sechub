@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
 import com.daimler.sechub.domain.scan.project.FalsePositiveEntry;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
@@ -97,7 +96,7 @@ public class SerecoFalsePositiveFinderTest {
     }
 
     private FalsePositiveMetaData fetchFirstEntryMetaDataOfExample3() {
-        String json = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positve_config_example3.json");
+        String json = ScanProductSerecoTestFileSupport.getTestfileSupport().loadTestFile("false_positives/scan_false_positve_config_example3.json");
         FalsePositiveProjectConfiguration config = FalsePositiveProjectConfiguration.fromJSONString(json);
         FalsePositiveEntry entry = config.getFalsePositives().get(0);
         assertEquals("entry-1",entry.getJobData().getComment());//sanity check, means correct entry...
