@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -154,6 +155,9 @@ func assertValidConfig(configPtr *Config) {
 	if configPtr.server == "" {
 		fmt.Println("sechub server not defined!")
 		os.Exit(ExitCodeMissingParameter)
+	} else {
+		// remove trailing / from url if present
+		configPtr.server = strings.TrimSuffix(configPtr.server, "/")
 	}
 
 	if configPtr.configFilePath == "" {
