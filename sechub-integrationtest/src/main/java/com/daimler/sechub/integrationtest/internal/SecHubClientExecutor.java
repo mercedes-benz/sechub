@@ -3,6 +3,7 @@ package com.daimler.sechub.integrationtest.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -14,13 +15,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestUtil;
 
 public class SecHubClientExecutor {
 
     public enum ClientAction {
 
-        START_ASYNC("scanAsync"), START_SYNC("scan"), GET_REPORT("getReport"), GET_STATUS("getStatus"),
+        START_ASYNC("scanAsync"), 
+        
+        START_SYNC("scan"), 
+        
+        GET_REPORT("getReport"), 
+        
+        GET_STATUS("getStatus"),
 
         ;
 
@@ -36,7 +44,8 @@ public class SecHubClientExecutor {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
-
+    private Path outputFolder;
+    
     public class ExecutionResult {
         private int exitCode;
         private String lastOutputLine;
@@ -78,6 +87,22 @@ public class SecHubClientExecutor {
                 }
             }
             return sechubJobUUD;
+        }
+        
+        public File getJSONReportFile() {
+            File outputFile = new File(getOutputFolder(),"sechub_report_"+getSechubJobUUD().toString()+".json");
+            return outputFile;
+        }
+
+        public TrafficLight getTrafficLight() {
+            
+            String last=getLastOutputLine().trim().toUpperCase();
+            for (TrafficLight light: TrafficLight.values()) {
+                if (last.startsWith(light.name())) {
+                    return light;
+                }
+            }
+            return null;
         }
     }
 
@@ -173,6 +198,7 @@ public class SecHubClientExecutor {
             result.lines = output.trim().split("\\n");
 
             result.exitCode = exitCode;
+            result.outputFolder=outputFolder.toFile();
 
             return result;
         } catch (IOException e) {
@@ -183,6 +209,10 @@ public class SecHubClientExecutor {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Execution failed", e);
         }
+    }
+    
+    public void setOutputFolder(Path outputFolder) {
+        this.outputFolder=outputFolder;
     }
 
     public static void main(String[] args) {
@@ -196,4 +226,6 @@ public class SecHubClientExecutor {
             super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:" + executable);
         }
     }
+
+    
 }

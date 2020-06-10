@@ -78,7 +78,7 @@ public class WithSecHubClient {
 
 		private String executeReportDownloadAndGetPathOfFile() {
 			File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
-			SecHubClientExecutor executor = new SecHubClientExecutor();
+			SecHubClientExecutor executor =createExecutor();
 			List<String> list = buildCommand(project, false);
 			list.add("-jobUUID");
 			list.add(jobUUID.toString());
@@ -195,10 +195,10 @@ public class WithSecHubClient {
 	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
 		return startAsynchronScanFor(project, location, null);
 	}
-
+	
 	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String,String> environmentVariables) {
 		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
-		SecHubClientExecutor executor = new SecHubClientExecutor();
+		SecHubClientExecutor executor =createExecutor();
 		List<String> list = buildCommand(project, false);
 		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list,environmentVariables);
 		if (result.getExitCode() != 0) {
@@ -232,14 +232,20 @@ public class WithSecHubClient {
 	 */
 	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
 		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
-		SecHubClientExecutor executor = new SecHubClientExecutor();
+		SecHubClientExecutor executor =createExecutor();
 
 		List<String> list = buildCommand(project, true);
 
 		return doExecute(ClientAction.START_SYNC, file, executor, list,environmentVariables);
 	}
 
-	private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list, Map<String,String> environmentVariables) {
+	private SecHubClientExecutor createExecutor() {
+	    SecHubClientExecutor executor = new SecHubClientExecutor();
+	    executor.setOutputFolder(outputFolder);
+        return executor;
+    }
+
+    private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list, Map<String,String> environmentVariables) {
 		return executor.execute(file, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
 	}
 

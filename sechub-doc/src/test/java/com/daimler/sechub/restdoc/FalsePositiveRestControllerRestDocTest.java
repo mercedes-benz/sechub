@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
+import static com.daimler.sechub.domain.scan.project.FalsePositiveJobData.*;
+import static com.daimler.sechub.domain.scan.project.FalsePositiveJobDataList.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
@@ -11,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.UUID;
-
-import javax.validation.constraints.PastOrPresent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +50,6 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder;
-import static com.daimler.sechub.domain.scan.project.FalsePositiveJobData.*;
-import static com.daimler.sechub.domain.scan.project.FalsePositiveJobDataList.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest(FalsePositiveRestController.class)
 @ContextConfiguration(classes = { FalsePositiveRestController.class, FalsePositiveRestControllerRestDocTest.SimpleTestConfiguration.class })
@@ -105,9 +103,7 @@ public class FalsePositiveRestControllerRestDocTest {
         data.setFindingId(42);
         data.setJobUUID(UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936"));
         list.add(data);
-        
         String content = jobDataList.toJSON();
-        
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				put(https(PORT_USED).buildUserAddsFalsePositiveJobDataListForProject(PROJECT_ID.pathElement()),TestURLBuilder.RestDocPathParameter.PROJECT_ID).
@@ -125,7 +121,7 @@ public class FalsePositiveRestControllerRestDocTest {
                         
                         fieldWithPath(PROPERTY_JOBDATA).description("Job data list containing false positive setup based on former jobs"),
                         fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
-                        fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive"),
+                        fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. *ATTENTION*: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!"),
                         fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_COMMENT).optional().description("A comment describing why this is a false positive")
                         )
 

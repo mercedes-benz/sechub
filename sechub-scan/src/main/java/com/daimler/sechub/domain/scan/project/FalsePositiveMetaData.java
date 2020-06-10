@@ -10,7 +10,43 @@ public class FalsePositiveMetaData {
     private ScanType scanType;
     private String name;
     private Severity severity;
+    
     private FalsePositiveCodeMetaData code;
+
+    private Integer cweId;
+    private String cveId;
+    private String owasp;
+
+    public void setOwasp(String owasp) {
+        this.owasp = owasp;
+    }
+    
+    public String getOwasp() {
+        return owasp;
+    }
+    
+    public String getCveId() {
+        return cveId;
+    }
+    
+    public void setCveId(String cveId) {
+        this.cveId = cveId;
+    }
+    
+    /*
+     * Returns common weakness enumeration ID, see https://cwe.mitre.org/
+     */
+    public Integer getCweId() {
+        return cweId;
+    }
+
+    /*
+     * set common weakness enumeration ID, see https://cwe.mitre.org/
+     */
+    public void setCweId(Integer cweId) {
+        this.cweId = cweId;
+    }
+    
     
     public FalsePositiveCodeMetaData getCode() {
         return code;

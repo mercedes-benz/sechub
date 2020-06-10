@@ -136,23 +136,23 @@ public class CheckmarxV1XMLImporterTest {
 		SerecoClassification classification = v1.getClassification();
 		assertEquals("A5", classification.getOwasp());
 		assertEquals("6.5.8", classification.getPci32());
-		assertEquals("", classification.getPci31());
+		assertEquals(null, classification.getPci31());
 
 		SerecoVulnerability v100 = vulnerabilities.get(99);
 		assertEquals(SerecoSeverity.LOW, v100.getSeverity());
 		classification = v100.getClassification();
-		assertEquals("", classification.getPci32());
-		assertEquals("", classification.getOwasp());
+		assertEquals(null, classification.getPci32());
+		assertEquals(null, classification.getOwasp());
 		assertEquals("AC-3", classification.getNist());
 		assertEquals("Identification And Authentication", classification.getFisma());
 
 		SerecoVulnerability v109 = vulnerabilities.get(108);
 		assertEquals(SerecoSeverity.INFO, v109.getSeverity());
 		classification = v109.getClassification();
-		assertEquals("", classification.getOwasp());
-		assertEquals("", classification.getPci32());
-		assertEquals("", classification.getNist());
-		assertEquals("", classification.getFisma());
+		assertEquals(null, classification.getOwasp());
+		assertEquals(null, classification.getPci32());
+		assertEquals(null, classification.getNist());
+		assertEquals(null, classification.getFisma());
 		assertEquals("778", classification.getCwe());
 
 		assertEquals("Insufficient Logging of Exceptions", v109.getType());

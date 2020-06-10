@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
+import com.daimler.sechub.domain.scan.SecHubFinding;
 import com.daimler.sechub.domain.scan.Severity;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.sharedkernel.type.ScanType;
@@ -26,6 +27,16 @@ public class FalsePositiveJobDataConfigMergerTest {
 
         config = new FalsePositiveProjectConfiguration();
 
+    }
+    
+    @Test
+    public void sanity_check_for_JSON_example_data() {
+        /* execute */
+        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        SecHubFinding secHubFinding = scanReportResult.getResult().getFindings().get(1);
+        assertEquals(Severity.MEDIUM,secHubFinding.getSeverity());
+        Integer cweId = secHubFinding.getCweId();
+        assertEquals(Integer.valueOf(1),cweId);
     }
 
     @Test
@@ -61,6 +72,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         FalsePositiveMetaData metaData = fp1.getMetaData();
         assertNotNull(metaData);
         assertEquals("SSRF", metaData.getName());
+        assertEquals(Integer.valueOf(1), metaData.getCweId());
         assertEquals(Severity.MEDIUM, metaData.getSeverity());
 
         assertEquals(ScanType.CODE_SCAN, metaData.getScanType()); // no scan type defined, but fallback to code scan must work

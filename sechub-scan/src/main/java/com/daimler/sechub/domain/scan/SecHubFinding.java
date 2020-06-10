@@ -9,7 +9,7 @@ import com.daimler.sechub.sharedkernel.type.ScanType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(Include.NON_EMPTY)
 public class SecHubFinding {
 
 	int id;
@@ -50,6 +50,12 @@ public class SecHubFinding {
 	String productResultLink;
 	
 	ScanType type;
+
+    Integer cweId;
+    
+    String cveId;
+    
+    String owasp;
 	
 	public void setType(ScanType scanType) {
         this.type = scanType;
@@ -58,7 +64,35 @@ public class SecHubFinding {
 	public ScanType getType() {
         return type;
     }
-
+	
+	/**
+	 * CVE result - interesting for infra scans
+	 * @return CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/ or <code>null</code>
+	 */
+	public String getCveId() {
+        return cveId;
+    }
+	
+	/***
+	 * Set CVE id - e.g. "CVE-2014-9999999" see https://cve.mitre.org/
+	 * @param cveId
+	 */
+	public void setCveId(String cveId) {
+        this.cveId = cveId;
+    }
+	
+	public void setCweId(Integer cweId) {
+        this.cweId = cweId;
+    }
+	
+	/**
+	 * CWE result - interesting for code scans, web scans
+	 * @return common vulnerability enumeration id - see https://cwe.mitre.org/ or <code>null</code> when not defined
+	 */
+	public Integer getCweId() {
+        return cweId;
+    }
+	
 	public void setProductResultLink(String productResultLink) {
 		this.productResultLink = productResultLink;
 	}

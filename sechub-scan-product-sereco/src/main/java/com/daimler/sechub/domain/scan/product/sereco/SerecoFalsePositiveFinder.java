@@ -17,7 +17,7 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 public class SerecoFalsePositiveFinder {
 
     @Autowired
-    SerecoCodeScanFalsePositiveStrategy codeSCanStrategy;
+    SerecoFalsePositiveCodeScanStrategy codeSCanStrategy;
     
     public boolean isFound(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         if (! isVulnerabilityValid(vulnerability)) {

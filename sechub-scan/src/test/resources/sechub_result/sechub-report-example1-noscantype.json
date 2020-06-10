@@ -12,6 +12,7 @@
                 "references": [
                 ],
                 "severity": "MEDIUM",
+                "cweId": 42,
                 "code": {
                     "location": "com/daimler/sechub/domain/scan/HTMLScanResultReportModelBuilder.java",
                     "line": 128,
@@ -148,6 +149,7 @@
                 "references": [
                 ],
                 "severity": "MEDIUM",
+                "cweId": 1,
                 "code": {
                     "location": "com/daimler/sechub/domain/scan/HTMLScanResultReportModelBuilder.java",
                     "line": 128,
@@ -6289,3 +6291,4 @@
     },
     "trafficLight": "YELLOW"
 }
+

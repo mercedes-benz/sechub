@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodeMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
+import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.type.ScanType;
@@ -22,12 +23,12 @@ import com.daimler.sechub.sharedkernel.type.ScanType;
  *
  */
 @Component
-public class SerecoCodeScanFalsePositiveStrategy {
+public class SerecoFalsePositiveCodeScanStrategy {
 
     @Autowired
     SerecoSourceRelevantPartResolver relevantPartResolver;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoCodeScanFalsePositiveStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveCodeScanStrategy.class);
 
     /**
      * Given data is supposed to be valid
@@ -40,28 +41,47 @@ public class SerecoCodeScanFalsePositiveStrategy {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
 
-        String name = metaData.getName();
-        notNull(metaData, " metaData.name may not be null");
         if (metaData.getScanType() != ScanType.CODE_SCAN) {
             return false;
         }
 
         FalsePositiveCodeMetaData metaDataCode = metaData.getCode();
         if (metaDataCode == null) {
-            LOG.warn("Cannot check code vulnerability for false positives when meta data has no code parts!");
-        }
-        notNull(metaDataCode, " metaData.code may not be null");
-
-        /* ------------------------------------------------------- */
-        /* -------------------TYPE/NAME--------------------------- */
-        /* ------------------------------------------------------- */
-        /*
-         * TODO Albert Tregnaghi, 2020-06-04: Maybe we should implement name resolving
-         * better, map here different names/types from products ?
-         */
-        if (!name.equals(vulnerability.getType())) {
+            LOG.error("Cannot check code vulnerability for false positives when meta data has no code parts!");
             return false;
         }
+
+        /* ---------------------------------------------------- */
+        /* -------------------CWE ID--------------------------- */
+        /* ---------------------------------------------------- */
+
+        /* for code scans we only use CWE as wellknown common identifier */
+        Integer cweId = metaData.getCweId();
+        if (cweId == null) {
+            LOG.error("Cannot check code vulnerability for false positives when code meta data has no CWE id set!");
+            return false;
+        }
+
+        SerecoClassification serecoClassification = vulnerability.getClassification();
+        String serecoCWE = serecoClassification.getCwe();
+        if (serecoCWE == null || serecoCWE.isEmpty()) {
+            LOG.error("Code scan sereco vulnerability type:{} found without CWE! Cannot determin false positive! Classification was:{}",
+                    vulnerability.getType(), serecoClassification);
+            return false;
+        }
+        try {
+            int serecoCWEint = Integer.parseInt(serecoCWE);
+            if (cweId.intValue()!=serecoCWEint) {
+                /* not same type of common vulnerability enumeration - so skip */
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            LOG.error("Code scan sereco vulnerability type:{} found CWE:{} but not expected integer format!", vulnerability.getType(), serecoCWE);
+            return false;
+
+        }
+
         /* ------------------------------------------------------- */
         /* -------------------Location---------------------------- */
         /* ------------------------------------------------------- */
