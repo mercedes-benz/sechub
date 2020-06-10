@@ -140,6 +140,10 @@ public class TestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
     
+    public String buildUserRemovesFalsePositiveJobDataListFromProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */

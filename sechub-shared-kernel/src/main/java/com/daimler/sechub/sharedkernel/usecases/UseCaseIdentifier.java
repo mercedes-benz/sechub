@@ -113,6 +113,8 @@ public enum UseCaseIdentifier {
 	
 	UC_USER_MARKS_FALSE_POSITIVES_FOR_FINISHED_JOB,
 	
+	UC_USER_UNMARKS_FALSE_POSITIVES,
+	
 	;
 
     /* +-----------------------------------------------------------------------+ */

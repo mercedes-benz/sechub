@@ -2,6 +2,7 @@ package com.daimler.sechub.domain.scan.project;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -116,6 +117,63 @@ public class FalsePositiveJobDataConfigMergerTest {
         // check given job data contained
         FalsePositiveJobData jobData = fp1.getJobData();
         assertEquals("comment1", jobData.getComment()); // we still have comment1, so no changes
+        
+    }
+    
+    @Test
+    public void report_example1_REMOVE_job_data_contained_does_remove_it() {
+        /* prepare */
+        UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
+        
+        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+
+        FalsePositiveJobData falsePositiveJobData2 = new FalsePositiveJobData();
+        falsePositiveJobData2.setComment("comment2");
+        falsePositiveJobData2.setFindingId(2);
+        falsePositiveJobData2.setJobUUID(jobUUID);
+        
+        FalsePositiveJobData falsePositiveJobData3 = new FalsePositiveJobData();
+        falsePositiveJobData3.setComment("comment3");
+        falsePositiveJobData3.setFindingId(3);
+        falsePositiveJobData3.setJobUUID(jobUUID);
+        
+        FalsePositiveJobData falsePositiveJobData4 = new FalsePositiveJobData();
+        falsePositiveJobData4.setComment("comment4");
+        falsePositiveJobData4.setFindingId(4);
+        falsePositiveJobData4.setJobUUID(jobUUID);
+        
+        
+        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData2, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData3, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData4, TEST_AUTHOR);
+      
+        /* test */
+        List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
+        assertNotNull(falsePositives);
+        assertEquals(3,falsePositives.size());
+        
+        
+        /* execute */
+        // now we remove the false positive job data
+        FalsePositiveJobData falsePositiveDataToRemove = new FalsePositiveJobData();
+        falsePositiveDataToRemove.setFindingId(3);
+        falsePositiveDataToRemove.setJobUUID(jobUUID);
+
+        toTest.removeJobDataWithMetaDataFromConfig(config, falsePositiveDataToRemove);
+        
+        /* test */
+        falsePositives = config.getFalsePositives();
+        assertNotNull(falsePositives);
+        assertEquals(2,falsePositives.size());
+        
+        Iterator<FalsePositiveEntry> iterator = falsePositives.iterator();
+        FalsePositiveEntry fp2 = iterator.next();
+        FalsePositiveEntry fp4 = iterator.next();
+        
+        FalsePositiveJobData jd2 = fp2.getJobData();
+        FalsePositiveJobData jd4 = fp4.getJobData();
+        assertEquals(2, jd2.getFindingId()); 
+        assertEquals(4, jd4.getFindingId()); 
         
     }
 
