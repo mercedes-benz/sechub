@@ -14,8 +14,8 @@ import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * Merges job based false positive data, meta data from origin report into
- * project false positive configuration. Does also validate that meta data is available - e.g.
- * CWE identifier must be available for code scans.
+ * project false positive configuration. Does also validate that meta data is
+ * available - e.g. CWE identifier must be available for code scans.
  * 
  * @author Albert Tregnaghi
  *
@@ -48,6 +48,14 @@ public class FalsePositiveJobDataConfigMerger {
 
     }
 
+    public void removeJobDataWithMetaDataFromConfig(FalsePositiveProjectConfiguration config, FalsePositiveJobData jobDataToRemove) {
+        FalsePositiveEntry entry = findExistingFalsePositiveEntryInConfig(config, jobDataToRemove);
+        if (entry == null) {
+            return;
+        }
+        config.getFalsePositives().remove(entry);
+    }
+
     private FalsePositiveMetaData createMetaData(SecHubFinding finding) {
         ScanType type = finding.getType();
         if (type == null) {
@@ -78,14 +86,17 @@ public class FalsePositiveJobDataConfigMerger {
         /* CWE id is used to identify same code weaknes accross products */
         Integer cweId = finding.getCweId();
         if (cweId == null) {
-            /* old sechub results do not contain CWE information - so a new scan is necessary to create cwe identifier inside next report*/
-            throw new NotAcceptableException(
-                    "No CWE identifier found in given sechub finding "+finding.getId()+":"+finding.getName()+", so cannot mark false positives!\n"
+            /*
+             * old sechub results do not contain CWE information - so a new scan is
+             * necessary to create cwe identifier inside next report
+             */
+            throw new NotAcceptableException("No CWE identifier found in given sechub finding " + finding.getId() + ":" + finding.getName()
+                    + ", so cannot mark false positives!\n"
                     + "This could be a migration issue from an older report which did not cotain such information. Please just execute a new scan job and retry to mark false positives by new finding");
         }
 
         metaData.setCweId(cweId);
-        
+
         FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
 
         SecHubCodeCallStack startCallStack = finding.getCode();
@@ -104,11 +115,14 @@ public class FalsePositiveJobDataConfigMerger {
         return metaData;
     }
 
-    private FalsePositiveCodePartMetaData importCallStackElement(SecHubCodeCallStack startCallStack) {
+    private FalsePositiveCodePartMetaData importCallStackElement(SecHubCodeCallStack callstack) {
+        if (callstack==null) {
+            return null;
+        }
         FalsePositiveCodePartMetaData start = new FalsePositiveCodePartMetaData();
-        start.setLocation(startCallStack.getLocation());
-        start.setRelevantPart(startCallStack.getRelevantPart());
-        start.setSourceCode(startCallStack.getSource());
+        start.setLocation(callstack.getLocation());
+        start.setRelevantPart(callstack.getRelevantPart());
+        start.setSourceCode(callstack.getSource());
         return start;
     }
 
