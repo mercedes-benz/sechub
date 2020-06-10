@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositivesForJob;
+import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
 
 /**
  * The rest API for project false positive handling - API centric 
@@ -42,6 +43,19 @@ public class FalsePositiveRestController {
             ) {
         /* @formatter:on */
 	    falsePositiveJobDataService.addFalsePositives(projectId, data);
+
+    }
+	
+
+    /* @formatter:off */
+    @UseCaseUserUnmarksFalsePositives(@Step(number=1,name="REST API call to remove false positives by JSON data containing identifiers and job UUID",needsRestDoc=true))
+    @RequestMapping(path = "/false-positives", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public void removeFalsePositivesByJobData(
+            @PathVariable("projectId") String projectId,
+            @RequestBody FalsePositiveJobDataList data
+            ) {
+        /* @formatter:on */
+        falsePositiveJobDataService.removeFalsePositives(projectId, data);
 
     }
 

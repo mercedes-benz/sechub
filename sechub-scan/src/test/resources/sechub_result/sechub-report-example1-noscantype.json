@@ -286,6 +286,7 @@
                 "references": [
                 ],
                 "severity": "MEDIUM",
+                "cweId": 4711,
                 "code": {
                     "location": "com/daimler/sechub/adapter/support/TrustAllSupport.java",
                     "line": 90,
@@ -303,6 +304,7 @@
                 "references": [
                 ],
                 "severity": "MEDIUM",
+                "cweId": 4712,
                 "code": {
                     "location": "com/daimler/sechub/domain/scan/admin/FullScanDataRestController.java",
                     "line": 50,
