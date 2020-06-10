@@ -18,7 +18,7 @@ import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 
-public class JobUsecasesEventTraceScenario3IntTest {
+public class JobUsecasesEventTraceScenario4IntTest {
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario4.class);

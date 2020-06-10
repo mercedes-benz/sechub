@@ -13,7 +13,10 @@ import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
- * Merges job based false positive data, meta data from origin report into project false positive configuration 
+ * Merges job based false positive data, meta data from origin report into
+ * project false positive configuration. Does also validate that meta data is available - e.g.
+ * CWE identifier must be available for code scans.
+ * 
  * @author Albert Tregnaghi
  *
  */
@@ -62,7 +65,7 @@ public class FalsePositiveJobDataConfigMerger {
         case CODE_SCAN:
             return createCodeScan(finding);
         default:
-            throw new NotAcceptableException("A false positive hanlding for given type:{} is currently not suported!")  ;
+            throw new NotAcceptableException("A false positive hanlding for given type:{} is currently not suported!");
         }
     }
 
@@ -71,21 +74,33 @@ public class FalsePositiveJobDataConfigMerger {
         metaData.setName(finding.getName());
         metaData.setScanType(ScanType.CODE_SCAN);
         metaData.setSeverity(finding.getSeverity());
-        FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
+
+        /* CWE id is used to identify same code weaknes accross products */
+        Integer cweId = finding.getCweId();
+        if (cweId == null) {
+            /* old sechub results do not contain CWE information - so a new scan is necessary to create cwe identifier inside next report*/
+            throw new NotAcceptableException(
+                    "No CWE identifier found in given sechub finding "+finding.getId()+":"+finding.getName()+", so cannot mark false positives!\n"
+                    + "This could be a migration issue from an older report which did not cotain such information. Please just execute a new scan job and retry to mark false positives by new finding");
+        }
+
+        metaData.setCweId(cweId);
         
+        FalsePositiveCodeMetaData code = new FalsePositiveCodeMetaData();
+
         SecHubCodeCallStack startCallStack = finding.getCode();
-        if (startCallStack==null) {
+        if (startCallStack == null) {
             throw new IllegalStateException("Callstack must be given to create code scan meta data");
         }
-        SecHubCodeCallStack endCallStack = startCallStack.getCalls(); 
-        while (endCallStack!=null && endCallStack.getCalls()!=null) {
-            endCallStack = endCallStack.getCalls(); 
+        SecHubCodeCallStack endCallStack = startCallStack.getCalls();
+        while (endCallStack != null && endCallStack.getCalls() != null) {
+            endCallStack = endCallStack.getCalls();
         }
-        
+
         code.setStart(importCallStackElement(startCallStack));
         code.setEnd(importCallStackElement(endCallStack));
         metaData.setCode(code);
-        
+
         return metaData;
     }
 

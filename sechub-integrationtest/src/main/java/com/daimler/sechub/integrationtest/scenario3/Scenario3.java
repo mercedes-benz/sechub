@@ -6,7 +6,7 @@ import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
 
 /**
- * In this scenario following is automatically initialized:
+ * In this scenario following is automatically initialized at start (old data removed as well)
  *
  * <pre>
  * PROJECT_1_ is automatically created

@@ -27,6 +27,18 @@ public class SimpleStringUtils {
     }
 
     /**
+     * Converts empty strings to null
+     * @param value
+     * @return value when value is not <code>null</code> or empty, otherwise <code>null</code>
+     */
+    public static String emptyToNull(String value) {
+        if (value==null || value.isEmpty()) {
+            return null;
+        }
+        return value;
+    }
+    
+    /**
      * Will check if given string contains not more than allowed max length. If more than max length
      * string will be truncated and got a trailing with "..."
      * @param string

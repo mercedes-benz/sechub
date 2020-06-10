@@ -29,11 +29,11 @@ public class CheckmarxCategoriesToClassificationConverterTest {
 	
 	
 	@Test
-	public void classification_empty_values() {
+	public void classification_null_values() {
 		SerecoClassification classification = converterToTest.convert(";,;,;",new SerecoClassification());
-		assertEquals("",classification.getOwasp());
-		assertEquals("",classification.getPci31());
-		assertEquals("",classification.getPci32());
+		assertEquals(null,classification.getOwasp());
+		assertEquals(null,classification.getPci31());
+		assertEquals(null,classification.getPci32());
 		
 	}
 	@Test

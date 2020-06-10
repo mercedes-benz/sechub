@@ -14,12 +14,12 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 public class SerecoFalsePositiveCodeScanStrategyTest {
 
-    private SerecoCodeScanFalsePositiveStrategy strategyToTest;
+    private SerecoFalsePositiveCodeScanStrategy strategyToTest;
     private SerecoSourceRelevantPartResolver relevantPartResolver;
 
     @Before
     public void before() throws Exception {
-        strategyToTest = new SerecoCodeScanFalsePositiveStrategy();
+        strategyToTest = new SerecoFalsePositiveCodeScanStrategy();
         
         relevantPartResolver=mock(SerecoSourceRelevantPartResolver.class);
         strategyToTest.relevantPartResolver=relevantPartResolver;
@@ -32,6 +32,7 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
             name("name1").
+            cwe(1).
             codeScan().
                 location("location1").
                 source("source1").
@@ -51,14 +52,42 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
         /* execute + test */
         assertTrue(strategyToTest.isFalsePositive(vulnerability, metaData));
     }
-
     
     @Test
-    public void vulnerability_is_not_found_when_start_location_differs_and_relevant_parts_are_same() {
+    public void vulnerability_is_NOT_found_when_locations_and_relevant_parts_are_same_but_cwe_differs() {
         /* prepare */
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
             name("name1").
+            cwe(4711).
+            codeScan().
+                location("location1").
+                source("source1").
+                relevantPart("relevant1").
+                callsCode().
+                    callsCode().
+                        callsCode().
+                            location("location2").
+                            source("source2").
+                            relevantPart("relevant2").
+               end().build();
+        
+        /* @formatter:on */
+        
+        FalsePositiveMetaData metaData = fetchFirstEntryMetaDataOfExample3();
+        when(relevantPartResolver.toRelevantPart(any())).thenReturn("");        
+        /* execute + test */
+        assertFalse(strategyToTest.isFalsePositive(vulnerability, metaData));
+    }
+
+    
+    @Test
+    public void vulnerability_is_NOT_found_when_start_location_differs_and_relevant_parts_are_same() {
+        /* prepare */
+        /* @formatter:off */
+        SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
+            name("name1").
+            cwe(1).
             codeScan().
                 location("location-other-1").// here different to false-positive meta data! So may not be found!
                 source("source1").
@@ -86,6 +115,7 @@ public class SerecoFalsePositiveCodeScanStrategyTest {
         /* @formatter:off */
         SerecoVulnerability vulnerability = TestSerecoVulnerabilityBuilder.builder().
             name("name1").
+            cwe(1).
             codeScan().
                 location("location1").// here different to false-positive meta data! So may not be found!
                 source("source1").

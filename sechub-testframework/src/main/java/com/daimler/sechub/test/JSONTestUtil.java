@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JSONTestUtil {
+    
     /**
      * Creates a JSON containing also null values (JSONStringer does not support
      * this).

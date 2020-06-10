@@ -14,13 +14,13 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 public class SerecoFalsePositiveFinderTest {
 
     private SerecoFalsePositiveFinder finderToTest;
-    private SerecoCodeScanFalsePositiveStrategy codeSCanStrategy;
+    private SerecoFalsePositiveCodeScanStrategy codeSCanStrategy;
 
     @Before
     public void before() throws Exception {
         finderToTest = new SerecoFalsePositiveFinder();
         
-        codeSCanStrategy=mock(SerecoCodeScanFalsePositiveStrategy.class);
+        codeSCanStrategy=mock(SerecoFalsePositiveCodeScanStrategy.class);
         finderToTest.codeSCanStrategy=codeSCanStrategy;
       
     }

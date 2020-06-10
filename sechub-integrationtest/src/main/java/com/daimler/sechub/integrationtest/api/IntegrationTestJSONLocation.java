@@ -7,6 +7,7 @@ public enum IntegrationTestJSONLocation {
 
 	CLIENT_JSON_SOURCESCAN_GENERIC_TEMPLATE("sechub-integrationtest-client-sourcescan-generic-template.json"),
 
+	/** will use checkmarx-mockdata-multiple.xml as result */
 	CLIENT_JSON_SOURCESCAN_YELLOW("sechub-integrationtest-client-sourcescan-yellow.json"),
 
 	CLIENT_JSON_SOURCESCAN_EXLUDE_SOME_FILES("sechub-integrationtest-client-sourcescan-excluded_some_files.json"),

@@ -56,8 +56,9 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     private void validateJobData(ValidationContext<FalsePositiveJobDataList> context, FalsePositiveJobDataList target) {
         List<FalsePositiveJobData> jobDataList = target.getJobData();
         validateNotNull(context, jobDataList,"jobDataList");
+        
+        validateMinSize(context, jobDataList, 1, "jobDataList");
         validateMaxSize(context, jobDataList, getConfig().maxLength, "jobDataList");
-        validateMinSize(context, jobDataList, getConfig().maxLength, "jobDataList");
         
         if (context.isInValid()) {
             return;

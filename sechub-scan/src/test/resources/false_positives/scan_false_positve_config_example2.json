@@ -12,6 +12,7 @@
             
             "metaData": {
                 "scanType": "codeScan",
+                "cweId": 1,
                 "name": "name1",
                 "severity": "MEDIUM",
                 "code": {
