@@ -35,11 +35,14 @@ public class SecHubResultService {
 	ProductResultRepository productResultRepository;
 
 	@Autowired
+	SecHubResultMerger resultMerger;
+	
+	@Autowired
 	List<ScanReportToSecHubResultTransformer> transformers;
 
 	/**
-	 * Will fetch output from report products for wanted sechub job and returns
-	 * result
+	 * Will fetch output from report products for wanted sechub job and returns a new created
+	 * result.
 	 * 
 	 * @param context
 	 * @return result never <code>null</code>
@@ -48,7 +51,12 @@ public class SecHubResultService {
 		notNull(context, "Context may not be null!");
 
 		UUID secHubJobUUID = context.getSechubJobUUID();
-		List<ProductResult> productResults = productResultRepository.findProductResults(secHubJobUUID, FARRADAY,
+		return createResult(secHubJobUUID);
+	}
+
+    public SecHubResult createResult(UUID secHubJobUUID) throws SecHubExecutionException {
+        notNull(secHubJobUUID, "secHubJobUUID may not be null!");
+        List<ProductResult> productResults = productResultRepository.findProductResults(secHubJobUUID, FARRADAY,
 				SERECO);
 
 		if (productResults.isEmpty()) {
@@ -58,15 +66,19 @@ public class SecHubResultService {
 		if (productResultAmount > 1) {
 			LOG.warn("Found {} report product results, only one will be transformed!", productResultAmount);
 		}
+		SecHubResult mergedResult = null;
 		for (ProductResult productResult : productResults) {
 			for (ScanReportToSecHubResultTransformer transformer : transformers) {
 				if (transformer.canTransform(productResult.getProductIdentifier())) {
 					LOG.info("Transformer {} is used to transform result", transformer.getClass().getSimpleName());
-					return transformer.transform(productResult.getResult());
+					 SecHubResult transformedResult = transformer.transform(productResult);
+					 mergedResult=resultMerger.merge(mergedResult, transformedResult);
 				}
 			}
 		}
-
-		throw new SecHubExecutionException("No transformable report result format found for:" + secHubJobUUID);
-	}
+		if (mergedResult==null) {
+		    throw new SecHubExecutionException("No transformable report result format found for:" + secHubJobUUID);
+		}
+		return mergedResult;
+    }
 }

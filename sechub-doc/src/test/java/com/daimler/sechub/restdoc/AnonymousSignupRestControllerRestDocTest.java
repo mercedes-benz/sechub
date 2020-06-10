@@ -32,7 +32,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserSignup;
-import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationImpl;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.daimler.sechub.test.ExampleConstants;
@@ -42,7 +42,7 @@ import com.daimler.sechub.test.TestPortProvider;
 @ContextConfiguration(classes= {AnonymousSignupRestController.class,
 		SignupJsonInputValidator.class,
 		UserIdValidationImpl.class,
-		ApiVersionValidationImpl.class,
+		ApiVersionValidationFactory.class,
 		EmailValidationImpl.class,
 		AnonymousSignupRestControllerRestDocTest.SimpleTestConfiguration.class})
 @WithMockUser

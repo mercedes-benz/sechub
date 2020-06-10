@@ -1,187 +1,150 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.metadata;
 
+import static com.daimler.sechub.sharedkernel.util.SimpleStringUtils.emptyToNull;
+import java.util.Objects;
+
+/**
+ * Classification content. Empty strings will be automatically converted to <code>null</code>
+ * values, so we have no unnecessary data inside JSON output and its easier to
+ * check something is missing or not
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 public class SerecoClassification {
 
-	private static final String DEFAULT_MISSING_VALUE = "";
-	
-	private String owasp = DEFAULT_MISSING_VALUE; // ...clear
-	private String wasc = DEFAULT_MISSING_VALUE; // wasc - webapplication consortium?
-	private String cwe = DEFAULT_MISSING_VALUE; // common weakness enum
-	private String capec = DEFAULT_MISSING_VALUE; // common attack pattern.
-	private String pci31 = DEFAULT_MISSING_VALUE; // pcidss payment card data security standard
-	private String pci32 = DEFAULT_MISSING_VALUE;
-	private String hipaa = DEFAULT_MISSING_VALUE; // health care ... USA
-	private String nist = DEFAULT_MISSING_VALUE;// National Institute of Standards and Technology - https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology
-	private String fisma = DEFAULT_MISSING_VALUE;// Federal Information Security Modernization Act  (homeland security)
-	/**
-	 * https://www.owasp.org/index.php/OWASP_Proactive_Controls
-	 */
-	private String owaspProactiveControls=DEFAULT_MISSING_VALUE; // security techniques that should be used in every project
+    private String owasp; // ...clear
+    private String wasc; // wasc - webapplication consortium?
+    private String cwe; // common weakness enum - see https://cwe.mitre.org/
+    private String capec; // common attack pattern.
+    private String pci31; // pcidss payment card data security standard
+    private String pci32;
+    private String hipaa; // health care ... USA
+    private String nist;// National Institute of Standards and Technology -
+                        // https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology
+    private String fisma;// Federal Information Security Modernization Act (homeland security)
+    private String cve;
+    /**
+     * https://www.owasp.org/index.php/OWASP_Proactive_Controls
+     */
+    private String owaspProactiveControls; // security techniques that should be used in every project
 
-	public String getOwasp() {
-		return owasp;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SerecoClassification other = (SerecoClassification) obj;
+        return Objects.equals(capec, other.capec) && Objects.equals(cve, other.cve) && Objects.equals(cwe, other.cwe) && Objects.equals(fisma, other.fisma)
+                && Objects.equals(hipaa, other.hipaa) && Objects.equals(nist, other.nist) && Objects.equals(owasp, other.owasp)
+                && Objects.equals(owaspProactiveControls, other.owaspProactiveControls) && Objects.equals(pci31, other.pci31)
+                && Objects.equals(pci32, other.pci32) && Objects.equals(wasc, other.wasc);
+    }
 
-	public void setOwasp(String owasp) {
-		this.owasp = owasp;
-	}
+    public String getCapec() {
+        return capec;
+    }
 
-	public String getWasc() {
-		return wasc;
-	}
+    public String getCve() {
+        return cve;
+    }
 
-	public void setWasc(String wasc) {
-		this.wasc = wasc;
-	}
+    public String getCwe() {
+        return cwe;
+    }
 
-	public String getCwe() {
-		return cwe;
-	}
+    public String getFisma() {
+        return fisma;
+    }
 
-	public void setCwe(String cwe) {
-		this.cwe = cwe;
-	}
+    public String getHipaa() {
+        return hipaa;
+    }
 
-	public String getCapec() {
-		return capec;
-	}
+    public String getNist() {
+        return nist;
+    }
 
-	public void setCapec(String capec) {
-		this.capec = capec;
-	}
+    public String getOwasp() {
+        return owasp;
+    }
 
-	public String getPci31() {
-		return pci31;
-	}
+    public String getOwaspProactiveControls() {
+        return owaspProactiveControls;
+    }
 
-	public void setPci31(String pci31) {
-		this.pci31 = pci31;
-	}
+    public String getPci31() {
+        return pci31;
+    }
 
-	public String getPci32() {
-		return pci32;
-	}
+    public String getPci32() {
+        return pci32;
+    }
 
-	public void setPci32(String pci32) {
-		this.pci32 = pci32;
-	}
+    public String getWasc() {
+        return wasc;
+    }
 
-	public String getHipaa() {
-		return hipaa;
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(capec, cve, cwe, fisma, hipaa, nist, owasp, owaspProactiveControls, pci31, pci32, wasc);
+    }
 
-	public void setHipaa(String hipaa) {
-		this.hipaa = hipaa;
-	}
+    public void setCapec(String capec) {
+        this.capec = emptyToNull(capec);
+    }
 
-	public String getOwaspProactiveControls() {
-		return owaspProactiveControls;
-	}
+    public void setCve(String cve) {
+        this.cve = emptyToNull(cve);
+    }
 
-	public void setOwaspProactiveControls(String owaspProactiveControls) {
-		this.owaspProactiveControls = owaspProactiveControls;
-	}
+    public void setCwe(String cwe) {
+        this.cwe = emptyToNull(cwe);
+    }
 
-	public void setNist(String nist) {
-		this.nist = nist;
-	}
-	public String getNist() {
-		return nist;
-	}
-	
-	public void setFisma(String fixma) {
-		this.fisma = fixma;
-	}
-	
-	public String getFisma() {
-		return fisma;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((capec == null) ? 0 : capec.hashCode());
-		result = prime * result + ((cwe == null) ? 0 : cwe.hashCode());
-		result = prime * result + ((fisma == null) ? 0 : fisma.hashCode());
-		result = prime * result + ((hipaa == null) ? 0 : hipaa.hashCode());
-		result = prime * result + ((nist == null) ? 0 : nist.hashCode());
-		result = prime * result + ((owasp == null) ? 0 : owasp.hashCode());
-		result = prime * result + ((owaspProactiveControls == null) ? 0 : owaspProactiveControls.hashCode());
-		result = prime * result + ((pci31 == null) ? 0 : pci31.hashCode());
-		result = prime * result + ((pci32 == null) ? 0 : pci32.hashCode());
-		result = prime * result + ((wasc == null) ? 0 : wasc.hashCode());
-		return result;
-	}
+    public void setFisma(String fisma) {
+        this.fisma = emptyToNull(fisma);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SerecoClassification other = (SerecoClassification) obj;
-		if (capec == null) {
-			if (other.capec != null)
-				return false;
-		} else if (!capec.equals(other.capec))
-			return false;
-		if (cwe == null) {
-			if (other.cwe != null)
-				return false;
-		} else if (!cwe.equals(other.cwe))
-			return false;
-		if (fisma == null) {
-			if (other.fisma != null)
-				return false;
-		} else if (!fisma.equals(other.fisma))
-			return false;
-		if (hipaa == null) {
-			if (other.hipaa != null)
-				return false;
-		} else if (!hipaa.equals(other.hipaa))
-			return false;
-		if (nist == null) {
-			if (other.nist != null)
-				return false;
-		} else if (!nist.equals(other.nist))
-			return false;
-		if (owasp == null) {
-			if (other.owasp != null)
-				return false;
-		} else if (!owasp.equals(other.owasp))
-			return false;
-		if (owaspProactiveControls == null) {
-			if (other.owaspProactiveControls != null)
-				return false;
-		} else if (!owaspProactiveControls.equals(other.owaspProactiveControls))
-			return false;
-		if (pci31 == null) {
-			if (other.pci31 != null)
-				return false;
-		} else if (!pci31.equals(other.pci31))
-			return false;
-		if (pci32 == null) {
-			if (other.pci32 != null)
-				return false;
-		} else if (!pci32.equals(other.pci32))
-			return false;
-		if (wasc == null) {
-			if (other.wasc != null)
-				return false;
-		} else if (!wasc.equals(other.wasc))
-			return false;
-		return true;
-	}
+    public void setHipaa(String hipaa) {
+        this.hipaa = emptyToNull(hipaa);
+    }
 
-	@Override
-	public String toString() {
-		return "Classification [owasp=" + owasp + ", wasc=" + wasc + ", cwe=" + cwe + ", capec=" + capec + ", pci31="
-				+ pci31 + ", pci32=" + pci32 + ", hipaa=" + hipaa + ", owaspProactiveControls=" + owaspProactiveControls
-				+ "]";
-	}
+    public void setNist(String nist) {
+        this.nist = emptyToNull(nist);
+    }
+
+    public void setOwasp(String owasp) {
+        this.owasp = emptyToNull(owasp);
+    }
+
+    public void setOwaspProactiveControls(String owaspProactiveControls) {
+        this.owaspProactiveControls = emptyToNull(owaspProactiveControls);
+    }
+
+    public void setPci31(String pci31) {
+        this.pci31 = emptyToNull(pci31);
+    }
+
+    public void setPci32(String pci32) {
+        this.pci32 = emptyToNull(pci32);
+    }
+
+    public void setWasc(String wasc) {
+        this.wasc = emptyToNull(wasc);
+    }
+
+    @Override
+    public String toString() {
+        return "SerecoClassification [" + (owasp != null ? "owasp=" + owasp + ", " : "") + (wasc != null ? "wasc=" + wasc + ", " : "")
+                + (cwe != null ? "cwe=" + cwe + ", " : "") + (capec != null ? "capec=" + capec + ", " : "") + (pci31 != null ? "pci31=" + pci31 + ", " : "")
+                + (pci32 != null ? "pci32=" + pci32 + ", " : "") + (hipaa != null ? "hipaa=" + hipaa + ", " : "") + (nist != null ? "nist=" + nist + ", " : "")
+                + (fisma != null ? "fisma=" + fisma + ", " : "") + (cve != null ? "cve=" + cve + ", " : "")
+                + (owaspProactiveControls != null ? "owaspProactiveControls=" + owaspProactiveControls : "") + "]";
+    }
 
 }

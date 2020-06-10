@@ -3,6 +3,8 @@ package com.daimler.sechub.domain.administration.signup;
 
 import static com.daimler.sechub.domain.administration.signup.SignupJsonInput.*;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.EmailValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -22,12 +25,19 @@ public class SignupJsonInputValidator implements Validator {
 
 	@Autowired
 	UserIdValidation useridValidation;
-
+	
 	@Autowired
-	ApiVersionValidation apiVersionValidation;
+    ApiVersionValidationFactory apiVersionValidationFactory;
 
 	@Autowired
 	EmailValidation emailValidation;
+
+	private ApiVersionValidation apiVersionValidation;
+	
+	@PostConstruct
+    void postConstruct() {
+	    apiVersionValidation=apiVersionValidationFactory.createValidationAccepting("1.0");
+    }
 
 	@Override
 	public boolean supports(Class<?> clazz) {

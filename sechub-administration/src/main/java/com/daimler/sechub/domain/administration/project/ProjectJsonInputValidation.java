@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -15,13 +18,21 @@ import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 public class ProjectJsonInputValidation {
 
 	@Autowired
-	ApiVersionValidation apiValidation;
+	ApiVersionValidationFactory apiVersionValidationFactory;
 
 	@Autowired
 	ProjectIdValidation projectIdValidation;;
 
 	@Autowired
 	UserIdValidation userIdValidation;
+	
+	private ApiVersionValidation apiVersionValidation;
+	
+	@PostConstruct
+	void postConstruct() {
+	    apiVersionValidation=apiVersionValidationFactory.createValidationAccepting("1.0");
+	}
+	
 
 	public boolean supports(Class<?> clazz) {
 		return ProjectJsonInput.class.isAssignableFrom(clazz);
@@ -47,7 +58,7 @@ public class ProjectJsonInputValidation {
 		if (apiVersion == null) {
 			return; /* handled before */
 		}
-		ValidationResult apiValidationResult = apiValidation.validate(apiVersion);
+		ValidationResult apiValidationResult = apiVersionValidation.validate(apiVersion);
 		if (!apiValidationResult.isValid()) {
 			errors.rejectValue(ProjectJsonInput.PROPERTY_API_VERSION, "api.error.unsupported.version",
 					apiValidationResult.getErrorDescription());

@@ -1,0 +1,28 @@
+{
+    "falsePositives": [
+        {
+            "jobData": {
+                "jobUUID": "aa634c14-0f5c-40a1-b278-75ebd350a375",
+                "findingId": 42,
+                "comment": "comment1"
+            },
+            "author": "testuser1",
+            
+            "created": "2020-05-28 12:11:48",
+            
+            "metaData": {
+                "scanType": "codeScan",
+                "cweId": 1,
+                "name": "name1",
+                "severity": "MEDIUM",
+                "code": {
+                    "end": {
+                        "location": "location1",
+                        "relevantPart": "relevant1",
+                        "sourceCode": "source2"
+                    }
+                }
+            }
+        }
+    ]
+}

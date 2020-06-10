@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
-import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry;
@@ -23,6 +22,7 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * An abstract product executor implementation which does automatically handle

@@ -15,13 +15,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
-import com.daimler.sechub.domain.scan.ScanType;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class AbstractInstallSetupProductExecutorTest {
 	private static final InetAddress IP_ADRESS1;

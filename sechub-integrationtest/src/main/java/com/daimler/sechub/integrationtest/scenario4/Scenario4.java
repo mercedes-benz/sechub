@@ -8,6 +8,7 @@ import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
 
 /**
  * This is a {@link StaticTestScenario} - please look into details and contract.
+ * <b>DO NOT CHANGE ANY DATA here</b> - use this scenario for doing scans etc.
  * <br>.
  * In this scenario following is automatically <b>ONE TIME</b> initialized:
  *
