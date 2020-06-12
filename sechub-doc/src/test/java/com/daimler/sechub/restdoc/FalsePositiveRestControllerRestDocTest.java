@@ -225,7 +225,7 @@ public class FalsePositiveRestControllerRestDocTest {
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
-        andDo(document(RestDocPathFactory.createPath(UseCaseUserUnmarksFalsePositives.class),
+        andDo(document(RestDocPathFactory.createPath(UseCaseUserFetchesFalsePositiveConfigurationOfProject.class),
                 pathParameters(
                     parameterWithName(PROJECT_ID.paramName()).description("The project id")
                 ),
@@ -238,6 +238,8 @@ public class FalsePositiveRestControllerRestDocTest {
                         fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_SCANTYPE).description("Scan type - e.g. codeScan"),
                         fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_NAME).description("Name of origin finding marked as false positive"),
                         fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_CWE_ID).optional().description("CWE (common weakness enumeration). For code scans this is always set."),
+                        fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_CVE_ID).type(String.class).optional().description("CVE (common vulnerability and exposures). For infra scans this is always set."),
+                        fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_OWASP).type(String.class).optional().description("OWASP At least this field must be set for web scans when no cwe identifier is defined."),
                         fieldWithPath(metaDataPath+"."+FalsePositiveMetaData.PROPERTY_SEVERITY).description("Severity of origin report entry marked as false positive"),
                         fieldWithPath(codeMetaDataPath).optional().description("Code part. Only available for scan type 'codeScan'"),
 
