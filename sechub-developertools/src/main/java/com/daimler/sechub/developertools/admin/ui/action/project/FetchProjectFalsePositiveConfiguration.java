@@ -8,11 +8,11 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
-public class ShowProjectsScanLogsAction extends AbstractUIAction {
+public class FetchProjectFalsePositiveConfiguration extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
-	public ShowProjectsScanLogsAction(UIContext context) {
-		super("Show project scan logs",context);
+	public FetchProjectFalsePositiveConfiguration(UIContext context) {
+		super("Fetch project false positive configuration",context);
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class ShowProjectsScanLogsAction extends AbstractUIAction {
 			return;
 		}
 
-		String data = getContext().getAdministration().fetchProjectScanLogs(asSecHubId(projectId.get()));
+		String data = getContext().getAdministration().fetchProjectFalsePositiveConfiguration(asSecHubId(projectId.get()));
 		outputAsBeautifiedJSONOnSuccess(data);
 	}
 
