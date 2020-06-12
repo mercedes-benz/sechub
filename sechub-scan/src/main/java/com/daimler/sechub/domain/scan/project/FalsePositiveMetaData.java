@@ -9,6 +9,8 @@ public class FalsePositiveMetaData {
     public static final String PROPERTY_SCANTYPE="scanType";
     public static final String PROPERTY_NAME="name";
     public static final String PROPERTY_CWE_ID="cweId";
+    public static final String PROPERTY_CVE_ID="cveId";
+    public static final String PROPERTY_OWASP="owasp";
     public static final String PROPERTY_SEVERITY="severity";
     public static final String PROPERTY_CODE="code";
     
