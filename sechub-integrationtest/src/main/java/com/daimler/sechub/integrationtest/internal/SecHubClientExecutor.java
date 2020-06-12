@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestUtil;
@@ -22,12 +23,12 @@ public class SecHubClientExecutor {
 
     public enum ClientAction {
 
-        START_ASYNC("scanAsync"), 
-        
-        START_SYNC("scan"), 
-        
-        GET_REPORT("getReport"), 
-        
+        START_ASYNC("scanAsync"),
+
+        START_SYNC("scan"),
+
+        GET_REPORT("getReport"),
+
         GET_STATUS("getStatus"),
 
         ;
@@ -45,7 +46,7 @@ public class SecHubClientExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
     private Path outputFolder;
-    
+
     public class ExecutionResult {
         private int exitCode;
         private String lastOutputLine;
@@ -88,16 +89,16 @@ public class SecHubClientExecutor {
             }
             return sechubJobUUD;
         }
-        
+
         public File getJSONReportFile() {
-            File outputFile = new File(getOutputFolder(),"sechub_report_"+getSechubJobUUD().toString()+".json");
+            File outputFile = new File(getOutputFolder(), "sechub_report_" + getSechubJobUUD().toString() + ".json");
             return outputFile;
         }
 
         public TrafficLight getTrafficLight() {
-            
-            String last=getLastOutputLine().trim().toUpperCase();
-            for (TrafficLight light: TrafficLight.values()) {
+
+            String last = getLastOutputLine().trim().toUpperCase();
+            for (TrafficLight light : TrafficLight.values()) {
                 if (last.startsWith(light.name())) {
                     return light;
                 }
@@ -166,7 +167,10 @@ public class SecHubClientExecutor {
             pb.redirectOutput(tmpGoOutputFile);
             Map<String, String> environment = pb.environment();
             environment.put("SECHUB_TRUSTALL", "true");
-            environment.put("SECHUB_DEBUG", "true");
+            if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
+                // we enable only when explicit wanted - so logs are smaller and easier to read
+                environment.put("SECHUB_DEBUG", "true");
+            }
             if (TestUtil.isKeepingTempfiles()) {
                 environment.put("SECHUB_KEEP_TEMPFILES", "true");
             }
@@ -198,7 +202,7 @@ public class SecHubClientExecutor {
             result.lines = output.trim().split("\\n");
 
             result.exitCode = exitCode;
-            result.outputFolder=outputFolder.toFile();
+            result.outputFolder = outputFolder.toFile();
 
             return result;
         } catch (IOException e) {
@@ -210,9 +214,9 @@ public class SecHubClientExecutor {
             throw new IllegalStateException("Execution failed", e);
         }
     }
-    
+
     public void setOutputFolder(Path outputFolder) {
-        this.outputFolder=outputFolder;
+        this.outputFolder = outputFolder;
     }
 
     public static void main(String[] args) {
@@ -227,5 +231,4 @@ public class SecHubClientExecutor {
         }
     }
 
-    
 }

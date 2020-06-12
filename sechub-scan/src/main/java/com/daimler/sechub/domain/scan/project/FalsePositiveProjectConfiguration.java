@@ -13,7 +13,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(value = Include.NON_ABSENT)
 @MustBeKeptStable
 public class FalsePositiveProjectConfiguration implements JSONable<FalsePositiveProjectConfiguration>{
+    
+    public static final String PROPERTY_FALSE_POSITIVES="falsePositives";
+    
     private static final FalsePositiveProjectConfiguration IMPORT = new FalsePositiveProjectConfiguration();
+    
     private List<FalsePositiveEntry> falsePositives = new ArrayList<>();
     
     public List<FalsePositiveEntry> getFalsePositives() {
