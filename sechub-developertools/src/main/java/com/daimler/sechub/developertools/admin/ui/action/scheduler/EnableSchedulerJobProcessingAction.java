@@ -11,6 +11,7 @@ public class EnableSchedulerJobProcessingAction extends AbstractUIAction {
 
     public EnableSchedulerJobProcessingAction(UIContext context) {
         super("Enable scheduler job processing", context);
+        setIcon(getClass().getResource("/icons/material-io/twotone_play_circle_filled_black_18dp.png"));
     }
 
     @Override

@@ -11,6 +11,7 @@ public class DisableSchedulerJobProcessingAction extends AbstractUIAction {
 
 	public DisableSchedulerJobProcessingAction(UIContext context) {
 		super("Disable scheduler job processing",context);
+		setIcon(getClass().getResource("/icons/material-io/twotone_stop_circle_black_18dp.png"));
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
@@ -52,6 +54,7 @@ import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWh
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.status.CheckStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
@@ -69,10 +72,13 @@ import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 public class CommandUI {
 	private JPanel panel;
 	private JMenuBar menuBar;
+	private TrafficLightComponent statusTrafficLight;
 
 	private JProgressBar progressBar;
 	private Queue<String> queue = new ConcurrentLinkedQueue<>();
 	UIContext context;
+    private JToolBar toolBar;
+    private CheckStatusAction checkStatusAction;
 
 	public JPanel getPanel() {
 		return panel;
@@ -90,11 +96,50 @@ public class CommandUI {
 		progressBar.setPreferredSize(new Dimension(400,30));
 
 		panel = new JPanel(new BorderLayout());
-//		panel.setBorder(BorderFactory.createLineBorder(Color.RED));
 
 		panel.add(progressBar, BorderLayout.EAST);
 
-		menuBar = new JMenuBar();
+		
+		checkStatusAction = new CheckStatusAction(context);
+		createMainMenu();
+		
+		createToolBar();
+
+		/* auto execute check status on startup */
+		if (ConfigurationSetup.isCheckOnStartupEnabled()) {
+		    
+		    SwingUtilities.invokeLater(new Runnable() {
+		        
+		        @Override
+		        public void run() {
+		            checkStatusAction.checkStatusWithoutEvent();
+		        }
+		    });
+		}
+	}
+	
+	public TrafficLightComponent getStatusTrafficLight() {
+        return statusTrafficLight;
+    }
+
+    private void createToolBar() {
+        statusTrafficLight=new TrafficLightComponent();
+
+        toolBar = new JToolBar();
+        
+        toolBar.add(statusTrafficLight);
+        toolBar.add(checkStatusAction);
+        toolBar.addSeparator();
+        toolBar.add(new CreateProjectAction(context).tooltipUseText());
+        toolBar.add(new AcceptUserSignupAction(context).tooltipUseText());
+        toolBar.addSeparator();
+        toolBar.add(new EnableSchedulerJobProcessingAction(context).tooltipUseText());
+        toolBar.add(new DisableSchedulerJobProcessingAction(context).tooltipUseText());
+
+    }
+
+    private void createMainMenu() {
+        menuBar = new JMenuBar();
 		createStatusMenu();
 		createJobMenu();
 		createProjectMenu();
@@ -105,8 +150,7 @@ public class CommandUI {
 		createMassOperationsMenu();
 		
 		createAdapterMenu();
-
-	}
+    }
 
 	public void createEditMenu() {
 		JMenu mainMenu = new JMenu("Edit");
@@ -282,5 +326,9 @@ public class CommandUI {
 		progressBar.setIndeterminate(showProgress);
 		context.getGlassPaneUI().block(showProgress);
 	}
+
+    public JToolBar getToolBar() {
+        return toolBar;
+    }
 
 }

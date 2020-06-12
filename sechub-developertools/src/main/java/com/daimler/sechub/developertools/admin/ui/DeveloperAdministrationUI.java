@@ -7,6 +7,7 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
@@ -19,133 +20,138 @@ import com.daimler.sechub.developertools.admin.ErrorHandler;
 
 public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, UIContext {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DeveloperAdministrationUI.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeveloperAdministrationUI.class);
 
-	public static void main(String[] args) {
-		new DeveloperAdministrationUI().start(args);
-	}
+    public static void main(String[] args) {
+        new DeveloperAdministrationUI().start(args);
+    }
 
-	private DeveloperAdministration administration;
-	private CredentialUI credentialUI;
-	private CommandUI commandPanelUI;
-	private OutputUI outputPanelUI;
-	private GlassPaneUI glassPaneUI;
-	private DialogUI dialogUI;
+    private DeveloperAdministration administration;
+    private CredentialUI credentialUI;
+    private CommandUI commandPanelUI;
+    private OutputUI outputPanelUI;
+    private GlassPaneUI glassPaneUI;
+    private DialogUI dialogUI;
     private JFrame frame;
     private boolean errors;
 
-	public DeveloperAdministration getAdministration() {
-		return administration;
-	}
+    public DeveloperAdministration getAdministration() {
+        return administration;
+    }
 
-	public OutputUI getOutputUI() {
-		return outputPanelUI;
-	}
+    public OutputUI getOutputUI() {
+        return outputPanelUI;
+    }
 
-	public CommandUI getCommandUI() {
-		return commandPanelUI;
-	}
+    public CommandUI getCommandUI() {
+        return commandPanelUI;
+    }
 
-	public CredentialUI getCredentialUI() {
-		return credentialUI;
-	}
+    public CredentialUI getCredentialUI() {
+        return credentialUI;
+    }
 
-	public GlassPaneUI getGlassPaneUI() {
-		return glassPaneUI;
-	}
+    public GlassPaneUI getGlassPaneUI() {
+        return glassPaneUI;
+    }
 
-	@Override
-	public DialogUI getDialogUI() {
-		return dialogUI;
-	}
+    @Override
+    public DialogUI getDialogUI() {
+        return dialogUI;
+    }
 
-	@Override
-	public ErrorHandler getErrorHandler() {
-	    return this;
-	}
-	
-	private void start(String[] args) {
+    @Override
+    public ErrorHandler getErrorHandler() {
+        return this;
+    }
 
-		useNimbusLookAndFeel();
-		String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
+    private void start(String[] args) {
 
-		frame = new JFrame(env+" - SecHub");
-		ImageIcon imageIcon = new ImageIcon(DeveloperAdministrationUI.class.getClassLoader().getResource("sechub-logo.png"));
-		Image image = imageIcon.getImage();
-		frame.setIconImage(image);
+        useNimbusLookAndFeel();
+        String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
 
-		Container contentPane = frame.getContentPane();
+        frame = new JFrame(env + " - SecHub");
+        ImageIcon imageIcon = new ImageIcon(DeveloperAdministrationUI.class.getClassLoader().getResource("sechub-logo.png"));
+        Image image = imageIcon.getImage();
+        frame.setIconImage(image);
 
-		credentialUI = new CredentialUI();
-		administration = new DeveloperAdministration(this,this);
-		commandPanelUI = new CommandUI(this);
-		outputPanelUI = new OutputUI();
-		glassPaneUI = new GlassPaneUI(this, frame);
-		dialogUI = new DialogUI(frame);
+        Container contentPane = frame.getContentPane();
 
-		contentPane.add(outputPanelUI.getPanel(), BorderLayout.CENTER);
-		contentPane.add(credentialUI.getPanel(), BorderLayout.NORTH);
-		contentPane.add(commandPanelUI.getPanel(), BorderLayout.SOUTH);
+        credentialUI = new CredentialUI();
+        administration = new DeveloperAdministration(this, this);
+        commandPanelUI = new CommandUI(this);
+        outputPanelUI = new OutputUI();
+        glassPaneUI = new GlassPaneUI(this, frame);
+        dialogUI = new DialogUI(frame);
 
-		frame.setJMenuBar(commandPanelUI.getMenuBar());
+        contentPane.add(outputPanelUI.getPanel(), BorderLayout.CENTER);
+        JPanel northPanel = new JPanel(new BorderLayout());
 
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(1024, 768);
-		frame.setVisible(true);
-	}
+        contentPane.add(northPanel, BorderLayout.NORTH);
+        contentPane.add(commandPanelUI.getPanel(), BorderLayout.SOUTH);
 
-	private void useNimbusLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-		} catch (Exception e) {
-			LOG.error("NimbusLookAndFeel init failed", e);
-		}
-	}
+        northPanel.add(credentialUI.getPanel(), BorderLayout.NORTH);
+        northPanel.add(commandPanelUI.getToolBar(), BorderLayout.SOUTH);
+        
+        frame.setJMenuBar(commandPanelUI.getMenuBar());
 
-	@Override
-	public String getApiToken() {
-		return new String(credentialUI.passwordField.getPassword());
-	}
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(1024, 768);
+        frame.setVisible(true);
+    }
 
-	@Override
-	public String getUser() {
-		return credentialUI.useridField.getText();
-	}
+    private void useNimbusLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            LOG.error("NimbusLookAndFeel init failed", e);
+        }
+    }
 
-	@Override
-	public String getServer() {
-		return credentialUI.serverField.getText();
-	}
+    @Override
+    public String getApiToken() {
+        return new String(credentialUI.passwordField.getPassword());
+    }
 
-	@Override
-	public int getPort() {
-		return credentialUI.getPortNumber();
-	}
+    @Override
+    public String getUser() {
+        return credentialUI.useridField.getText();
+    }
 
-	@Override
-	public void resetErrors() {
-	    errors=false;
-	}
-	
-	@Override
-	public void handleError(String error) {
-	    errors=true;
-		outputPanelUI.error(error);
-	}
-	
-	@Override
-	public boolean hasErrors() {
-	    return errors;
-	}
+    @Override
+    public String getServer() {
+        return credentialUI.serverField.getText();
+    }
 
-	@Override
-	public String getProtocol() {
-		return credentialUI.protocolField.getText();
-	}
-	
-	@Override
-	public JFrame getFrame() {
-	    return frame;
-	}
+    @Override
+    public int getPort() {
+        return credentialUI.getPortNumber();
+    }
+
+    @Override
+    public void resetErrors() {
+        errors = false;
+    }
+
+    @Override
+    public void handleError(String error) {
+        errors = true;
+        outputPanelUI.error(error);
+    }
+
+    @Override
+    public boolean hasErrors() {
+        return errors;
+    }
+
+    @Override
+    public String getProtocol() {
+        return credentialUI.protocolField.getText();
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return frame;
+    }
 
 }
