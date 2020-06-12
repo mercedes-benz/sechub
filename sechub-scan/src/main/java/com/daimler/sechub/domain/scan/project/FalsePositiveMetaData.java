@@ -6,7 +6,12 @@ import com.daimler.sechub.domain.scan.Severity;
 import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class FalsePositiveMetaData {
-
+    public static final String PROPERTY_SCANTYPE="scanType";
+    public static final String PROPERTY_NAME="name";
+    public static final String PROPERTY_CWE_ID="cweId";
+    public static final String PROPERTY_SEVERITY="severity";
+    public static final String PROPERTY_CODE="code";
+    
     private ScanType scanType;
     private String name;
     private Severity severity;

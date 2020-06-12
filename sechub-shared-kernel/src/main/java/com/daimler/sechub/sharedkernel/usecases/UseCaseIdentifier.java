@@ -115,6 +115,8 @@ public enum UseCaseIdentifier {
 	
 	UC_USER_UNMARKS_FALSE_POSITIVES,
 	
+	UC_USER_FETCHES_FALSE_POSITIVE_CONFIGURATION_OF_PROJECT,
+	
 	;
 
     /* +-----------------------------------------------------------------------+ */

@@ -70,6 +70,19 @@ public class FalsePositiveJobDataService {
         configService.set(projectId, CONFIG_ID, config.toJSON());
         
     }
+    
+
+    public FalsePositiveProjectConfiguration fetchFalsePositivesProjectConfiguration(String projectId) {
+        validateProjectAccess(projectId);
+        
+        FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
+        
+        dropMetaData(config);
+        return config;
+    }
+
+    private void dropMetaData(FalsePositiveProjectConfiguration config) {
+    }
 
     private void validateUserInput(String projectId, FalsePositiveJobDataList data) {
         validateProjectAccess(projectId);
@@ -109,6 +122,7 @@ public class FalsePositiveJobDataService {
         FalsePositiveProjectConfiguration falsePositiveConfiguration = FalsePositiveProjectConfiguration.fromJSONString(projectConfig.getData());
         return falsePositiveConfiguration;
     }
+
 
     
 

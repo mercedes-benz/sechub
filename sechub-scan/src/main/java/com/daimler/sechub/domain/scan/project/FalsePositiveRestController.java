@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserFetchesFalsePositiveConfigurationOfProject;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserMarksFalsePositivesForJob;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksFalsePositives;
 
@@ -50,13 +51,24 @@ public class FalsePositiveRestController {
     /* @formatter:off */
     @UseCaseUserUnmarksFalsePositives(@Step(number=1,name="REST API call to remove existing false positive definition",needsRestDoc=true))
     @RequestMapping(path = "/false-positive/{jobUUID}/{findingId}", method = RequestMethod.DELETE)
-    public void removeFalsePositivesByJobData(
+    public void removeFalsePositiveFromProjectByJobUUIDAndFindingId(
             @PathVariable("projectId") String projectId,
             @PathVariable("jobUUID") UUID jobUUID,
             @PathVariable("findingId") int findingId
             ) {
         /* @formatter:on */
         falsePositiveJobDataService.removeFalsePositive(projectId, jobUUID,findingId);
+
+    }
+    
+    /* @formatter:off */
+    @UseCaseUserFetchesFalsePositiveConfigurationOfProject(@Step(number=1,name="REST API call to fetch existing false positive configuration of project",needsRestDoc=true))
+    @RequestMapping(path = "/false-positives", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public FalsePositiveProjectConfiguration fetchFalsePositivesProjectConfiguration(
+            @PathVariable("projectId") String projectId
+            ) {
+        /* @formatter:on */
+        return falsePositiveJobDataService.fetchFalsePositivesProjectConfiguration(projectId);
 
     }
 

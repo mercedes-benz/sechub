@@ -6,6 +6,11 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class FalsePositiveEntry {
+    
+    public static final String PROPERTY_JOBDATA="jobData";
+    public static final String PROPERTY_AUTHOR="author";
+    public static final String PROPERTY_CREATED="created";
+    public static final String PROPERTY_METADATA="metaData";
 
     private FalsePositiveJobData jobData;
 

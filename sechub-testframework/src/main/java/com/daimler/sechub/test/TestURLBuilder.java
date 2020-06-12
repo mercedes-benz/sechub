@@ -145,6 +145,10 @@ public class TestURLBuilder {
     public String buildUserRemovesFalsePositiveEntryFromProject(String projectId, String jobUUID, String findingId) {
         return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
     }
+    
+    public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
@@ -265,6 +269,11 @@ public class TestURLBuilder {
     public String buildFetchJobStatus(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID);
     }
+    
+    public String buildGetFalsePositiveConfigurationOfProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+    
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/jobs ...............................+ */
@@ -481,5 +490,7 @@ public class TestURLBuilder {
     public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults-count");
     }
+
+ 
 
 }
