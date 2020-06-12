@@ -306,6 +306,10 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminRestartsJobHard(jobUUID));
         return "restart job (hard) triggered";
     }
+    
+    public String fetchProjectFalsePositiveConfiguration(String projectId) {
+        return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
+    }
 
     private String commonTriggerDownloadInBrowser(String url) {
         try {
@@ -348,5 +352,7 @@ public class DeveloperAdministration {
         }
 
     }
+
+   
 
 }

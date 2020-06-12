@@ -30,7 +30,7 @@ public class AssignUserToProjectAction extends AbstractUIAction {
 		    return;
 		}
 
-		String infoMessage = getContext().getAdministration().assignUserToProject(userId.get().toLowerCase().trim(), projectId.get().toLowerCase().trim());
+		String infoMessage = getContext().getAdministration().assignUserToProject(asSecHubId(userId.get()), asSecHubId(projectId.get()));
 		outputAsTextOnSuccess(infoMessage);
 	}
 

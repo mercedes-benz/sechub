@@ -49,6 +49,18 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected UIContext getContext() {
         return context;
     }
+    
+    /**
+     * SecHub uses always lower cased identifier - this method is a helper.
+     * @param id
+     * @return lower cased trimmed id - or empty string when given id is null
+     */
+    protected String asSecHubId(String id) {
+        if (id==null || id.isEmpty()) {
+            return ""; 
+        }
+        return id.toLowerCase().trim();
+    }
 
     @Override
     public final void actionPerformed(ActionEvent event) {
