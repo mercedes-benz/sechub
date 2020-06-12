@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.scenario3;
 import static com.daimler.sechub.integrationtest.api.AssertSecHubReport.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
+import static org.junit.Assert.*;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
@@ -92,6 +94,33 @@ public class FalsePositivesScenario3IntTest {
         /* @formatter:on */
     }
 
+    @Test
+    public void fetch_fp_config_when_one_entry_added() throws Exception {
+        /* @formatter:off */
+        /***********/
+        /* prepare */
+        /***********/
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertSecHubReport(result).
+            containsFinding(1, "Absolute Path Traversal").
+            hasTrafficLight(TrafficLight.YELLOW);
+
+        UUID jobUUID = result.getSechubJobUUD();
+
+        /***********/
+        /* execute */
+        /***********/
+        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
+
+        /********/
+        /* test */
+        /********/
+        ProjectFalsePositivesDefinition configuration = as(USER_1).getFalsePositiveConfigurationOfProject(project);
+        assertTrue(configuration.isContaining(1, jobUUID));
+        
+        /* @formatter:on */
+    }
     
 
 }

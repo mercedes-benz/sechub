@@ -4,6 +4,9 @@ import java.util.Objects;
 
 public class FalsePositiveCodePartMetaData {
 
+    public static final String PROPERTY_LOCATION = "location";
+    public static final String PROPERTY_RELEVANT_PART = "relevantPart";
+    public static final String PROPERTY_SOURCE_CODE = "sourceCode";
     private String location;
     private String relevantPart;
     private String sourceCode;

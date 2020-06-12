@@ -1,0 +1,3 @@
+// SPDX-License-Identifier: MIT
+[[sechub-doclink-uc-user-fetches-false-positive-configuration-of-project]]
+A user wants to fetch false positive configuration of project.

@@ -34,11 +34,12 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class AsUser {
 
     private static final Logger LOG = LoggerFactory.getLogger(AsUser.class);
-
+    private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     TestUser user;
 
     AsUser(TestUser user) {
@@ -520,6 +521,37 @@ public class AsUser {
     public MappingData getMappingData(String mappingId) {
         String url = getUrlBuilder().buildGetMapping(mappingId);
         return MappingData.fromString(getRestHelper().getJSon(url));
+    }
+
+    public ProjectFalsePositivesDefinition getFalsePositiveConfigurationOfProject(TestProject project) {
+
+        String url = getUrlBuilder().buildGetFalsePositiveConfigurationOfProject(project.getProjectId());
+        String json = getRestHelper().getJSon(url);
+        
+        ProjectFalsePositivesDefinition def = new ProjectFalsePositivesDefinition(project);
+        
+        try {
+            JsonNode jsonNode = jsonTestSupport.fromJson(json);
+            ArrayNode falsePositives = (ArrayNode) jsonNode.get("falsePositives");
+            
+            for (JsonNode falsePositive: falsePositives) {
+                JsonNode jobData = falsePositive.get("jobData");
+                
+                String jobUUID = jobData.get("jobUUID").asText();
+                int findingId = jobData.get("findingId").asInt();
+                
+                JsonNode commentNode = jobData.get("comment");
+                String comment = null;
+                if (commentNode!=null) {
+                    comment=commentNode.asText();
+                }
+                def.add(findingId, UUID.fromString(jobUUID),comment);
+                
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("JSON not valid",e);
+        }
+        return def;
 
     }
 
@@ -580,18 +612,39 @@ public class AsUser {
             this.project = project;
         }
 
+        public boolean isContaining(int findingId, UUID jobUUID) {
+            JobData found = findJobData(findingId, jobUUID);
+            if (found == null) {
+                return false;
+            }
+            return true;
+        }
+
+        public JobData findJobData(int findingId, UUID jobUUID) {
+            for (JobData d : jobData) {
+                if (d.findingId != findingId) {
+                    continue;
+                }
+                if (!( d.jobUUID.equals(jobUUID))) {
+                    continue;
+                }
+                return d;
+            }
+            return null;
+        }
+
         public void markAsFalsePositive() {
             String json = buildJSON();
             String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
             getRestHelper().putJSon(url, json);
         }
-        
+
         public void unmarkFalsePositive() {
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
-                String url = getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(project.getProjectId(),""+data.jobUUID,""+data.findingId);
-                
+                String url = getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(project.getProjectId(), "" + data.jobUUID, "" + data.findingId);
+
                 getRestHelper().delete(url);
             }
         }
@@ -601,13 +654,13 @@ public class AsUser {
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
-                if (data.comment==null) {
-                    content += "{\"jobUUID\":\""+data.jobUUID.toString()+"\",\"findingId\":"+data.findingId+"}";
-                }else {
-                    content += "{\"jobUUID\":\""+data.jobUUID.toString()+"\",\"findingId\":"+data.findingId+",\"comment\":\""+data.comment+"\"}";
+                if (data.comment == null) {
+                    content += "{\"jobUUID\":\"" + data.jobUUID.toString() + "\",\"findingId\":" + data.findingId + "}";
+                } else {
+                    content += "{\"jobUUID\":\"" + data.jobUUID.toString() + "\",\"findingId\":" + data.findingId + ",\"comment\":\"" + data.comment + "\"}";
                 }
                 if (it.hasNext()) {
-                    content +=",";
+                    content += ",";
                 }
             }
             content += "]}";
