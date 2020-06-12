@@ -310,6 +310,14 @@ public class DeveloperAdministration {
     public String fetchProjectFalsePositiveConfiguration(String projectId) {
         return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
     }
+    
+    public String markFalsePositivesForProjectByJobData(String projectId, String json) {
+        return getRestHelper().putJSon(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId),json);
+    }
+    
+    public void deleteFalsePositivesForProject(String projectId, UUID jobUUID, int findingId) {
+        getRestHelper().delete(getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(projectId, jobUUID.toString(),""+findingId));
+    }
 
     private String commonTriggerDownloadInBrowser(String url) {
         try {
@@ -352,7 +360,6 @@ public class DeveloperAdministration {
         }
 
     }
-
    
 
 }
