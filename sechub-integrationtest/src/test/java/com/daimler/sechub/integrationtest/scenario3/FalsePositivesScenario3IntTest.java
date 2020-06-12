@@ -1,27 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario3;
 
+import static com.daimler.sechub.integrationtest.api.AssertSecHubReport.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
-import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
-import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 public class FalsePositivesScenario3IntTest {
 
     @Rule
@@ -32,82 +26,72 @@ public class FalsePositivesScenario3IntTest {
 
     TestProject project = PROJECT_1;
 
-    private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
-
     @Test
     public void mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green() throws Exception {
-
+        /* @formatter:off */
         /***********/
         /* prepare */
         /***********/
-
-        // create scan + fetch report
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        // check precondition - finding found in report...
-        assertReportContainsFinding(result, 1, "Absolute Path Traversal");
-        assertEquals(TrafficLight.YELLOW, result.getTrafficLight());
+        assertSecHubReport(result).
+            containsFinding(1, "Absolute Path Traversal").
+            hasTrafficLight(TrafficLight.YELLOW);
 
         UUID jobUUID = result.getSechubJobUUD();
 
         /***********/
         /* execute */
         /***********/
-        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).sendToServer();
-        // mark_false_positive_first_finding
+        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
+
+        /********/
+        /* test */
+        /********/
+        ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertSecHubReport(result2).
+            containsNotFinding(1, "Absolute Path Traversal").
+            hasTrafficLight(TrafficLight.GREEN);
+
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void unmark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_gren_to_yellow() throws Exception {
+        /* @formatter:off */
+        /***********/
+        /* prepare */
+        /***********/
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        UUID jobUUID = result.getSechubJobUUD();
+
+        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
+
+        // create scan + fetch report again (check filtering of false positive works as a precondition */
+        ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertSecHubReport(result2).
+            containsNotFinding(1, "Absolute Path Traversal").
+            hasTrafficLight(TrafficLight.GREEN);
+        
+        /***********/
+        /* execute */
+        /***********/
+        as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).unmarkFalsePositive();
 
         /********/
         /* test */
         /********/
 
         // create scan + fetch report again
-        ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        assertReportContainsNotFinding(result2, 1, "Absolute Path Traversal");
-        assertEquals(TrafficLight.GREEN, result2.getTrafficLight());
+        ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertSecHubReport(result3).
+            containsFinding(1, "Absolute Path Traversal").
+            hasTrafficLight(TrafficLight.YELLOW);
 
+        /* @formatter:on */
     }
 
-    /* -------------------------------------------------------------- */
-    /* ------------------------Helpers------------------------------- */
-    /* -------------------------------------------------------------- */
-
-    private void assertReportContainsFinding(ExecutionResult result, int findingId, String findingName) throws Exception {
-        assertReportContainsFindingOrNot(result, findingId, findingName, true);
-    }
-
-    private void assertReportContainsNotFinding(ExecutionResult result, int findingId, String findingName) throws Exception {
-        assertReportContainsFindingOrNot(result, findingId, findingName, false);
-    }
-
-    private void assertReportContainsFindingOrNot(ExecutionResult result, int findingId, String findingName, boolean expectedToBeFound) throws Exception {
-        File file = result.getJSONReportFile();
-        String textFile = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
-        JsonNode jsonObj = jsonTestSupport.fromJson(textFile);
-
-        JsonNode r = jsonObj.get("result");
-        JsonNode f = r.get("findings");
-        ArrayNode findings = (ArrayNode) f;
-        JsonNode found = null;
-        for (int i = 0; i < findings.size(); i++) {
-            JsonNode finding = findings.get(i);
-
-            String foundName = finding.get("name").asText();
-            int foundFindingId = finding.get("id").asInt();
-
-            if (!foundName.equals(findingName)) {
-                continue;
-            }
-            if (foundFindingId != findingId) {
-                continue;
-            }
-            found = finding;
-            break;
-        }
-        if (found == null && expectedToBeFound) {
-            fail("Not found finding");
-        } else if (found != null && !expectedToBeFound) {
-            fail("Did found entry:" + found.toPrettyString());
-        }
-    }
+    
 
 }

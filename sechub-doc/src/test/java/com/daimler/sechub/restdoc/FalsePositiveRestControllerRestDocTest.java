@@ -50,7 +50,6 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUnmarksF
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
-import com.daimler.sechub.test.TestURLBuilder;
 @RunWith(SpringRunner.class)
 @WebMvcTest(FalsePositiveRestController.class)
 @ContextConfiguration(classes = { FalsePositiveRestController.class, FalsePositiveRestControllerRestDocTest.SimpleTestConfiguration.class })
@@ -60,6 +59,7 @@ import com.daimler.sechub.test.TestURLBuilder;
 public class FalsePositiveRestControllerRestDocTest {
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final String PROJECT1_ID = "project1";
 
     @Autowired
     private MockMvc mockMvc;
@@ -107,7 +107,7 @@ public class FalsePositiveRestControllerRestDocTest {
         String content = jobDataList.toJSON();
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
-				put(https(PORT_USED).buildUserAddsFalsePositiveJobDataListForProject(PROJECT_ID.pathElement()),TestURLBuilder.RestDocPathParameter.PROJECT_ID).
+				put(https(PORT_USED).buildUserAddsFalsePositiveJobDataListForProject(PROJECT_ID.pathElement()),PROJECT1_ID).
 		contentType(MediaType.APPLICATION_JSON_VALUE).
         content(content)).
 		andExpect(status().isOk()).
@@ -135,33 +135,21 @@ public class FalsePositiveRestControllerRestDocTest {
     @UseCaseRestDoc(useCase = UseCaseUserUnmarksFalsePositives.class)
     public void restdoc_unmark_false_positives() throws Exception {
         /* prepare */
-        FalsePositiveJobDataList jobDataList = new FalsePositiveJobDataList();
-        jobDataList.setApiVersion("1.0");
-        List<FalsePositiveJobData> list = jobDataList.getJobData();
-        FalsePositiveJobData data = new FalsePositiveJobData();
-        data.setFindingId(42);
-        data.setJobUUID(UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936"));
-        list.add(data);
-        String content = jobDataList.toJSON();
+        int findingId=42;
+        UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
+        
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                delete(https(PORT_USED).buildUserRemovesFalsePositiveJobDataListFromProject(PROJECT_ID.pathElement()),TestURLBuilder.RestDocPathParameter.PROJECT_ID).
-        contentType(MediaType.APPLICATION_JSON_VALUE).
-        content(content)).
+                delete(https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(),JOB_UUID.pathElement(),FINDING_ID.pathElement()),PROJECT1_ID,jobUUID,findingId)
+        ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
         andDo(document(RestDocPathFactory.createPath(UseCaseUserUnmarksFalsePositives.class),
                 pathParameters(
-                    parameterWithName(PROJECT_ID.paramName()).description("The projectId of the project where users removes existing false positives defintion")
-                ),
-                requestFields(
-                        fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-                        fieldWithPath(PROPERTY_TYPE).description("The type of the json content. Currently only accepted value is '"+FalsePositiveJobDataList.ACCEPTED_TYPE+"'."),
-                        
-                        fieldWithPath(PROPERTY_JOBDATA).description("Job data list containing false positive setup based on former jobs"),
-                        fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_JOBUUID).description("SecHub job uuid where finding was"),
-                        fieldWithPath(PROPERTY_JOBDATA+"[]."+ PROPERTY_FINDINGID).description("SecHub finding identifier")
-                        )
+                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
+                    parameterWithName(JOB_UUID.paramName()).description("Job uuid"),
+                    parameterWithName(FINDING_ID.paramName()).description("Finding id - in combination with job UUID this defines the false positive to remove")
+                )
 
                 ));
 
