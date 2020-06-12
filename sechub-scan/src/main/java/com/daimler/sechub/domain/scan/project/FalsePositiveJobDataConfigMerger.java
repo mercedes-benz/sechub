@@ -73,7 +73,7 @@ public class FalsePositiveJobDataConfigMerger {
         case CODE_SCAN:
             return createCodeScan(finding);
         default:
-            throw new NotAcceptableException("A false positive hanlding for given type:{} is currently not suported!");
+            throw new NotAcceptableException("A false positive handling for given type:{} is currently not suported!");
         }
     }
 
