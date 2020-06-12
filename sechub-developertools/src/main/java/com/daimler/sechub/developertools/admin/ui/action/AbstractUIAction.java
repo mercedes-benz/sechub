@@ -2,10 +2,13 @@
 package com.daimler.sechub.developertools.admin.ui.action;
 
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +35,25 @@ public abstract class AbstractUIAction extends AbstractAction {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUIAction.class);
 
     private transient UIContext context;
-
     public AbstractUIAction(String text, UIContext context) {
         this.context = context;
         this.putValue(Action.NAME, text);
     }
-
+    
+    public AbstractUIAction tooltip(String text) {
+        this.putValue(Action.SHORT_DESCRIPTION, text);// tooltip text
+        return this;
+    }
+    public AbstractUIAction tooltipUseText() {
+        return tooltip((String)this.getValue(Action.NAME));
+    }
+    
+    
+    protected void setIcon(URL url) {
+        Icon icon = new ImageIcon(url);
+        putValue(Action.LARGE_ICON_KEY, icon);
+    }
+    
     private static void initializeDefaults() {
         /* @formatter:off */
         inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");

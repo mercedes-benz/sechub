@@ -17,6 +17,7 @@ public enum ConfigurationSetup {
 	
 	SECHUB_DISABLE_CONFIRMATIONS("sechub.developertools.admin.disable.confim",true,"When set to true, no confirmation dialogs will appear"),
 
+	SECHUB_CHECK_STATUS_ON_STARTUP("sechub.developertools.admin.statuscheck.onstartup",true),
 	/**
 	 * Here you can set environment information. See description for details
 	 */
@@ -24,6 +25,7 @@ public enum ConfigurationSetup {
 			"Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors"),
 
 	SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory",true),
+	
 	
 	;
 
@@ -62,6 +64,10 @@ public enum ConfigurationSetup {
 	public static boolean isConfirmationDisabled() {
 	    return Boolean.getBoolean(ConfigurationSetup.SECHUB_DISABLE_CONFIRMATIONS.getSystemPropertyid());
 	}
+	
+	 public static boolean isCheckOnStartupEnabled() {
+	        return Boolean.getBoolean(ConfigurationSetup.SECHUB_CHECK_STATUS_ON_STARTUP.getSystemPropertyid());
+	    }
 
 	/**
 	 * Resolves string value of configuration and fails when not configured
@@ -142,4 +148,5 @@ public enum ConfigurationSetup {
 		}
 		return sb.toString();
 	}
+   
 }
