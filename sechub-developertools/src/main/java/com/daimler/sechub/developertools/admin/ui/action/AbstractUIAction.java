@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.ErrorHandler;
+import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
 import com.daimler.sechub.developertools.admin.ui.ThreeButtonDialogResult;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
@@ -177,7 +178,19 @@ public abstract class AbstractUIAction extends AbstractAction {
     	return getContext().getDialogUI().getUserInputFromField(inputLabelText);
     }
 
+    /**
+     * Maybe we have some actions where override shall not be possible - if so override the method
+     * and return false
+     * @return <code>true</code> (default) when this action confirmations can be disabled by system property
+     */
+    protected boolean canConfirmationBeOverridenBySetup() {
+        return true;
+    }
+    
     protected boolean confirm(String message) {
+        if (canConfirmationBeOverridenBySetup() && ConfigurationSetup.isConfirmationDisabled()) {
+            return true;
+        }
         return getContext().getDialogUI().confirm(message);
     }
 
