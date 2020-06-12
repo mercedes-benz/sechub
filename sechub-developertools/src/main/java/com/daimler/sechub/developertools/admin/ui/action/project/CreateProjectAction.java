@@ -16,6 +16,7 @@ public class CreateProjectAction extends AbstractUIAction {
 
 	public CreateProjectAction(UIContext context) {
 		super("Create project", context);
+		setIcon(getClass().getResource("/icons/material-io/twotone_add_black_18dp.png"));
 	}
 
 	@Override
