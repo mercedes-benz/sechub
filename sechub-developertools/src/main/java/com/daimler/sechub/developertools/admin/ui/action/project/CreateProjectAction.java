@@ -60,7 +60,7 @@ public class CreateProjectAction extends AbstractUIAction {
 		}
 		
 		// build and send request to server over HTTP
-		String postResult = getContext().getAdministration().createProject(projectId.get().toLowerCase().trim(), description.orElse(null),
+		String postResult = getContext().getAdministration().createProject(asSecHubId(projectId.get()), description.orElse(null),
 				owner.get().toLowerCase().trim(), whiteListURLs);
 		outputAsBeautifiedJSONOnSuccess(postResult);
 		outputAsTextOnSuccess("project created:" + projectId);

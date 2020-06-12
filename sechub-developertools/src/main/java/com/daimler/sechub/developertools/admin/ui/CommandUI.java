@@ -38,6 +38,7 @@ import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAc
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.FetchProjectFalsePositiveConfiguration;
 import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
@@ -160,12 +161,19 @@ public class CommandUI {
 		add(menu, new ShowProjectListAction(context));
 		menu.addSeparator();
 		add(menu, new UpdateProjectWhitelistAction(context));
+		menu.addSeparator();
+		JMenu falsePositives= new JMenu("False positives");
+		add(falsePositives, new FetchProjectFalsePositiveConfiguration(context));
+		menu.add(falsePositives);
 		
 		JMenu projectMockData = new JMenu("Mockdata");
 		menu.add(projectMockData);
 		
 		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
 		add(projectMockData, new GetProjectMockConfigurationAction(context));
+
+		
+		
 	}
 
 	private void createStatusMenu() {
