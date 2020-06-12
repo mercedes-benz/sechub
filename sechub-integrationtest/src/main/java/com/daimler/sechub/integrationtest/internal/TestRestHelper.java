@@ -207,7 +207,7 @@ public class TestRestHelper {
 		getTemplate().delete(url);
 
 	}
-
+	
 	public String getStringFromURL(String link) {
 		markLastURL(link);
 		return template.getForEntity(link, String.class).getBody();

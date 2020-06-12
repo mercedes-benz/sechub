@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.project;
 
+import java.util.UUID;
+
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,6 @@ public class FalsePositiveRestController {
 	@Autowired
 	private FalsePositiveJobDataService falsePositiveJobDataService;
 
-
 	/* @formatter:off */
 	@UseCaseUserMarksFalsePositivesForJob(@Step(number=1,name="REST API call to define false positives by JSON data containing identifiers for existing job",needsRestDoc=true))
 	@RequestMapping(path = "/false-positives", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -45,17 +46,17 @@ public class FalsePositiveRestController {
 	    falsePositiveJobDataService.addFalsePositives(projectId, data);
 
     }
-	
 
     /* @formatter:off */
-    @UseCaseUserUnmarksFalsePositives(@Step(number=1,name="REST API call to remove false positives by JSON data containing identifiers and job UUID",needsRestDoc=true))
-    @RequestMapping(path = "/false-positives", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @UseCaseUserUnmarksFalsePositives(@Step(number=1,name="REST API call to remove existing false positive definition",needsRestDoc=true))
+    @RequestMapping(path = "/false-positive/{jobUUID}/{findingId}", method = RequestMethod.DELETE)
     public void removeFalsePositivesByJobData(
             @PathVariable("projectId") String projectId,
-            @RequestBody FalsePositiveJobDataList data
+            @PathVariable("jobUUID") UUID jobUUID,
+            @PathVariable("findingId") int findingId
             ) {
         /* @formatter:on */
-        falsePositiveJobDataService.removeFalsePositives(projectId, data);
+        falsePositiveJobDataService.removeFalsePositive(projectId, jobUUID,findingId);
 
     }
 

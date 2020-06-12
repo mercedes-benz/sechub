@@ -580,10 +580,20 @@ public class AsUser {
             this.project = project;
         }
 
-        public void sendToServer() {
+        public void markAsFalsePositive() {
             String json = buildJSON();
             String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
             getRestHelper().putJSon(url, json);
+        }
+        
+        public void unmarkFalsePositive() {
+            Iterator<JobData> it = jobData.iterator();
+            while (it.hasNext()) {
+                JobData data = it.next();
+                String url = getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(project.getProjectId(),""+data.jobUUID,""+data.findingId);
+                
+                getRestHelper().delete(url);
+            }
         }
 
         private String buildJSON() {
@@ -617,6 +627,7 @@ public class AsUser {
             jobData.add(data);
             return this;
         }
+
     }
 
 }

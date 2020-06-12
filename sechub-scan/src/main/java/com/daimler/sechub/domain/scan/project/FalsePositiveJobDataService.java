@@ -56,21 +56,29 @@ public class FalsePositiveJobDataService {
 
     }
 
-    public void removeFalsePositives(String projectId, FalsePositiveJobDataList data) {
-        validateUserInput(projectId, data);
+    public void removeFalsePositive(String projectId, UUID jobUUID, int findingId) {
+        validateProjectAccess(projectId);
         
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
-        
-        removeJobDataListFromConfiguration(config, data);
+        FalsePositiveJobData jobDataToRemove = new FalsePositiveJobData();
+        jobDataToRemove.setJobUUID(jobUUID);
+        jobDataToRemove.setFindingId(findingId);
 
+        merger.removeJobDataWithMetaDataFromConfig(config,jobDataToRemove);
+        
         /* update configuration */
         configService.set(projectId, CONFIG_ID, config.toJSON());
+        
     }
 
     private void validateUserInput(String projectId, FalsePositiveJobDataList data) {
+        validateProjectAccess(projectId);
+        assertValid(data, falsePositiveJobDataListValidation);
+    }
+
+    private void validateProjectAccess(String projectId) {
         userInputAssertion.isValidProjectId(projectId);
         scanAssertService.assertUserHasAccessToProject(projectId);
-        assertValid(data, falsePositiveJobDataListValidation);
     }
 
     private void addJobDataListToConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveJobDataList jobDataList) {
@@ -95,21 +103,13 @@ public class FalsePositiveJobDataService {
 
     }
     
-    private void removeJobDataListFromConfiguration(FalsePositiveProjectConfiguration config, FalsePositiveJobDataList jobDataList) {
-        List<FalsePositiveJobData> jobDataListToRemove = jobDataList.getJobData();
-        
-        for (FalsePositiveJobData jobDataToRemove: jobDataListToRemove) {
-            merger.removeJobDataWithMetaDataFromConfig(config,jobDataToRemove);
-        }
-        
-    }
-    
-
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {
         ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, "{}"); // access check unnecessary, already done
 
         FalsePositiveProjectConfiguration falsePositiveConfiguration = FalsePositiveProjectConfiguration.fromJSONString(projectConfig.getData());
         return falsePositiveConfiguration;
     }
+
+    
 
 }

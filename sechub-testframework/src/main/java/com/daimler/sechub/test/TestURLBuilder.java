@@ -27,6 +27,8 @@ public class TestURLBuilder {
 
         MAPPING_ID("mappingId"),
 
+        FINDING_ID("findingId"),
+
         ;
 
         private String restDocName;
@@ -135,15 +137,15 @@ public class TestURLBuilder {
     public String buildUploadSourceCodeUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
     }
-    
+
     public String buildUserAddsFalsePositiveJobDataListForProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
-    
-    public String buildUserRemovesFalsePositiveJobDataListFromProject(String projectId) {
-        return buildUrl(API_PROJECT, projectId, "false-positives");
+
+    public String buildUserRemovesFalsePositiveEntryFromProject(String projectId, String jobUUID, String findingId) {
+        return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
     }
-    
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -278,11 +280,11 @@ public class TestURLBuilder {
     public String buildAdminCancelsJob(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
     }
-    
+
     public String buildAdminRestartsJob(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart", jobUUID);
     }
-    
+
     public String buildAdminRestartsJobHard(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart-hard", jobUUID);
     }
@@ -334,9 +336,9 @@ public class TestURLBuilder {
     public String buildCountProjectProductResults(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/count");
     }
-    
+
     public String buildFetchAllProjectProductResultsButShrinked(String projectId, int maxLength) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/all-shrinked/"+maxLength);
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/all-shrinked/" + maxLength);
     }
 
     public String buildCountProjectScanReports(String projectId) {
@@ -383,7 +385,7 @@ public class TestURLBuilder {
     public String buildIntegrationTestLogInfoUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/log/info");
     }
-    
+
     public String buildCheckRoleUser() {
         return buildUrl(API_USER, "integrationtest/check/role/user");
     }
@@ -439,15 +441,15 @@ public class TestURLBuilder {
     public String buildIntegrationTestResetAndStopEventInspection() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/reset-and-stop");
     }
-    
+
     public String buildIntegrationTestStartEventInspection() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/start");
     }
-    
+
     public String buildIntegrationTestFetchEventInspectionStatus() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/status");
     }
-    
+
     public String buildIntegrationTestFetchEventInspectionHistory() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }
@@ -455,32 +457,29 @@ public class TestURLBuilder {
     public String buildIntegrationTestDeleteAllWaitingJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
     }
-    
+
     public String buildIntegrationTestCancelAllScanJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
     }
-    
+
     public String buildIntegrationTestRevertJobAsStillRunning(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-running");
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/" + sechubJobUUID.toString() + "/still-running");
     }
-    
+
     public String buildIntegrationTestRevertJobAsStillNotApproved(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-not-approved");
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/" + sechubJobUUID.toString() + "/still-not-approved");
     }
-    
+
     public String buildIntegrationTestFakeProductResult(String projectId, UUID sechubJobUUID, String productIdentifier) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/project/"+projectId+"/job/"+sechubJobUUID+"/scan/productresult/"+productIdentifier);
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/job/" + sechubJobUUID + "/scan/productresult/" + productIdentifier);
     }
 
     public String buildintegrationTestDeleteProductResults(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults");
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults");
     }
 
     public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults-count");
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults-count");
     }
-
-   
-
 
 }
