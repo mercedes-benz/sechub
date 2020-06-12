@@ -38,14 +38,16 @@ import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAc
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
-import com.daimler.sechub.developertools.admin.ui.action.project.FetchProjectFalsePositiveConfiguration;
+import com.daimler.sechub.developertools.admin.ui.action.project.FetchProjectFalsePositiveConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.MarkProjectFalsePositiveAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnmarkProjectFalsePositiveAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
@@ -163,7 +165,9 @@ public class CommandUI {
 		add(menu, new UpdateProjectWhitelistAction(context));
 		menu.addSeparator();
 		JMenu falsePositives= new JMenu("False positives");
-		add(falsePositives, new FetchProjectFalsePositiveConfiguration(context));
+		add(falsePositives, new FetchProjectFalsePositiveConfigurationAction(context));
+		add(falsePositives, new UnmarkProjectFalsePositiveAction(context));
+		add(falsePositives, new MarkProjectFalsePositiveAction(context));
 		menu.add(falsePositives);
 		
 		JMenu projectMockData = new JMenu("Mockdata");

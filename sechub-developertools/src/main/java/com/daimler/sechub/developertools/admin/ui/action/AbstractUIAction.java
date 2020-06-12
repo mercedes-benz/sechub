@@ -39,12 +39,30 @@ public abstract class AbstractUIAction extends AbstractAction {
     }
 
     private static void initializeDefaults() {
+        /* @formatter:off */
         inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
         inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
                 "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
                         + "   \"webScan\" : {\n" + "         \"result\" : \"green\"   \n" + "   },\n" + "   \"infraScan\" : {\n"
                         + "         \"result\" : \"red\"   \n" + "   }\n" + " \n" + "}");
-
+        inputCache.set(InputCacheIdentifier.MARK_PROJECT_FALSE_POSITIVE, "{\n" + 
+                "    \"apiVersion\": \"1.0\", \n" + 
+                "    \"type\" : \"falsePositiveJobDataList\", \n" + 
+                "    \n" + 
+                "    \"jobData\": [\n" + 
+                "            {\n" + 
+                "                \"jobUUID\": \"$JobUUID\",\n" + 
+                "                \"findingId\": 42, \n" + 
+                "                \"comment\" : \"Can be ignored, because:\" \n" + 
+                "            },\n" + 
+                "            {\n" + 
+                "                \"jobUUID\": \"$JobUUID\",\n" + 
+                "                \"findingId\": 4711\n" + 
+                "            }\n" + 
+                "      ]\n" + 
+                "                \n" + 
+                "}");
+        /* @formatter:on */
     }
 
     protected UIContext getContext() {
