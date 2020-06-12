@@ -8,10 +8,10 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
-public class FetchProjectFalsePositiveConfiguration extends AbstractUIAction {
+public class FetchProjectFalsePositiveConfigurationAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
 
-	public FetchProjectFalsePositiveConfiguration(UIContext context) {
+	public FetchProjectFalsePositiveConfigurationAction(UIContext context) {
 		super("Fetch project false positive configuration",context);
 	}
 
