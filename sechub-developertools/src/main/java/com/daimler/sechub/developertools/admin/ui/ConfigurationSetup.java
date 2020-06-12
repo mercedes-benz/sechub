@@ -14,6 +14,8 @@ public enum ConfigurationSetup {
 	SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol",true),
 
 	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),
+	
+	SECHUB_DISABLE_CONFIRMATIONS("sechub.developertools.admin.disable.confim",true,"When set to true, no confirmation dialogs will appear"),
 
 	/**
 	 * Here you can set environment information. See description for details
@@ -55,6 +57,10 @@ public enum ConfigurationSetup {
 
 	public static boolean isIntegrationTestServerMenuEnabled() {
 		return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid());
+	}
+	
+	public static boolean isConfirmationDisabled() {
+	    return Boolean.getBoolean(ConfigurationSetup.SECHUB_DISABLE_CONFIRMATIONS.getSystemPropertyid());
 	}
 
 	/**
