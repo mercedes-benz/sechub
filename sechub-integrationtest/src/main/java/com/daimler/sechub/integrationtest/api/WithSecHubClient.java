@@ -197,16 +197,16 @@ public class WithSecHubClient {
 	}
 	
 	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String,String> environmentVariables) {
-		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
+		File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
 		SecHubClientExecutor executor =createExecutor();
 		List<String> list = buildCommand(project, false);
-		ExecutionResult result = doExecute(ClientAction.START_ASYNC, file, executor, list,environmentVariables);
+		ExecutionResult result = doExecute(ClientAction.START_ASYNC, sechubConfigFile, executor, list,environmentVariables);
 		if (result.getExitCode() != 0) {
-			fail("Not exit code 0 but:" + result.getExitCode());
+			fail("Not exit code 0 but:" + result.getExitCode()+" , last output line was:"+result.getLastOutputLine());
 		}
 		AssertAsyncResult asynchResult = new AssertAsyncResult();
 		asynchResult.jobUUID = UUID.fromString(result.getLastOutputLine());
-		asynchResult.configFile = file;
+		asynchResult.configFile = sechubConfigFile;
 		return asynchResult;
 	}
 

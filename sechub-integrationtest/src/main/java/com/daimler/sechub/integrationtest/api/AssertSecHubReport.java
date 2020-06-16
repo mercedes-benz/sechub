@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class AssertSecHubReport {
+    private static String lastOutputLIne;
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private JsonNode jsonObj;
 
@@ -20,7 +21,7 @@ public class AssertSecHubReport {
         try {
             jsonObj = jsonTestSupport.fromJson(json);
         } catch (IOException e) {
-           throw new RuntimeException("Not able to read json obj",e);
+            throw new RuntimeException("Not able to read json obj", e);
         }
     }
 
@@ -29,11 +30,15 @@ public class AssertSecHubReport {
     }
 
     public static AssertSecHubReport assertSecHubReport(ExecutionResult result) {
+        lastOutputLIne = result.getLastOutputLine();
         File file = result.getJSONReportFile();
+        if (!file.exists()) {
+            fail("No report file found:"+file.getAbsolutePath()+"\nLast output line was:" + lastOutputLIne);
+        }
         String json = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
-        return new AssertSecHubReport(json);
+        return assertSecHubReport(json);
     }
-    
+
     public AssertSecHubReport containsFinding(int findingId, String findingName) {
         assertReportContainsFindingOrNot(findingId, findingName, true);
         return this;
@@ -43,11 +48,14 @@ public class AssertSecHubReport {
         assertReportContainsFindingOrNot(findingId, findingName, false);
         return this;
     }
-    
+
     public AssertSecHubReport hasTrafficLight(TrafficLight trafficLight) {
         JsonNode r = jsonObj.get("trafficLight");
+        if (r == null) {
+            fail("No trafficlight found inside report!\nLast output line was:" + lastOutputLIne);
+        }
         String trText = r.asText();
-        assertEquals(trafficLight,TrafficLight.fromString(trText));
+        assertEquals(trafficLight, TrafficLight.fromString(trText));
         return this;
     }
 

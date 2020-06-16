@@ -69,7 +69,7 @@
                     "timeToElapseInMilliseconds": 4000
                 },
                  {
-                    "target": "../../../../src",
+                    "target": "testProject1/src/java",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
                     "timeToElapseInMilliseconds": 1000

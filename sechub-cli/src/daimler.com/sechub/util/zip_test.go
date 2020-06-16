@@ -2,6 +2,8 @@
 package util
 
 import (
+	"strings"
+
 	. "daimler.com/sechub/testutil"
 	//"path/filepath"
 	"archive/zip"
@@ -9,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+
 	//"strings"
 	//	"path/filepath"
 	"testing"
@@ -60,8 +63,7 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	path := dirname1 + "/testoutput.zip"
 
 	/* execute */
-	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2} })
-
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
 
 	/* test */
 	expectedErrMsg := "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
@@ -75,7 +77,6 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	}
 
 }
-
 
 func TestZipFileEmptyIsRejected(t *testing.T) {
 	/* prepare */
@@ -107,7 +108,7 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2} })
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
 	expectedErrMsg := "Zipfile has no content!"
 
 	/* test */
@@ -166,7 +167,7 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2} })
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
 
 	/* ---- */
 	/* test */
@@ -203,7 +204,6 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	checksum2 := CreateChecksum(path)
 	AssertEquals(checksum1, checksum2, t)
 }
-
 
 func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	/* prepare */
@@ -256,7 +256,7 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	config:=ZipConfig{Folders: []string{dirname1, dirname2}, Excludes: []string{"**/file3.txt","f*0*.txt"}}
+	config := ZipConfig{Folders: []string{dirname1, dirname2}, Excludes: []string{"**/file3.txt", "f*0*.txt"}}
 	err = ZipFolders(path, &config)
 
 	/* ---- */
@@ -284,10 +284,37 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 		name := ConvertBackslashPath(file.Name)
 		list = append(list, name)
 	}
-	AssertContainsNot(list, "file0.txt", t)  // this file may not be inside, because excluded! (/sub1/file0.txt)
-	AssertContains(list, "file1.txt", t) // this must remain
-	AssertContains(list, "file2.txt", t)  // this must remain
+	AssertContainsNot(list, "file0.txt", t)      // this file may not be inside, because excluded! (/sub1/file0.txt)
+	AssertContains(list, "file1.txt", t)         // this must remain
+	AssertContains(list, "file2.txt", t)         // this must remain
 	AssertContainsNot(list, "sub3/file3.txt", t) // this file may not be inside, because excluded!
 	AssertSize(list, 2, t)
+
+}
+
+func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
+	/* prepare */
+	dir, err := ioutil.TempDir("", "sechub-cli-temp")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	dirname1 := dir + "/nonexistant"
+
+	path := dir + "/testoutput.zip"
+
+	/* execute */
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1}})
+	expectedErrMsg := "Folder not found:"
+
+	/* test */
+	if err == nil {
+		t.Fatalf("No error returned!")
+	}
+
+	if !strings.HasPrefix(err.Error(), expectedErrMsg) {
+		t.Fatalf("Error actual = \"%v\", and expected beginning with = \"%v\"...", err.Error(), expectedErrMsg)
+	}
 
 }

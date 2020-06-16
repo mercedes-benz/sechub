@@ -117,7 +117,14 @@ func handleCodeScan(context *Context) {
 
 	/* compress all folders to one single zip file*/
 	config := ZipConfig{Folders: json.CodeScan.FileSystem.Folders, Excludes: json.CodeScan.Excludes}
-	ZipFolders(context.sourceZipFileName, &config)
+	err := ZipFolders(context.sourceZipFileName, &config)
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		fmt.Print("Exiting due to fatal error...\n")
+		os.Remove(context.sourceZipFileName) // cleanup zip file
+		os.Exit(ExitCodeFailed)
+	}
+
 	/* calculate checksum for zip file */
 	context.sourceZipFileChecksum = CreateChecksum(context.sourceZipFileName)
 }

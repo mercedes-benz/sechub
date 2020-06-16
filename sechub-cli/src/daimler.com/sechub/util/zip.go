@@ -73,9 +73,9 @@ func ZipFolders(filePath string, config *ZipConfig) (err error) {
 func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zipcontext) error {
 	filepathAbs, err := filepath.Abs(folder)
 	if _, err := os.Stat(filepathAbs); os.IsNotExist(err) {
-		return errors.New("Did not found folder " + folder)
+		return errors.New("Folder not found: " + folder + " (" + filepathAbs + ")")
 	}
-	log.Printf("Zipping folder: %s", filepathAbs)
+	log.Printf("Zipping folder: %s (%s)", folder, filepathAbs)
 
 	err = filepath.Walk(folder, func(filePath string, info os.FileInfo, err error) error {
 		if info == nil {
@@ -106,7 +106,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		/* Filter excludes */
 		for _, excludePattern := range zContext.config.Excludes {
 			if Filepathmatch(relPathFromFolder, excludePattern) {
-//				log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder,excludePattern)
+				//				log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder,excludePattern)
 				return nil
 			}
 		}
@@ -151,4 +151,3 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 	})
 	return err
 }
-
