@@ -80,13 +80,13 @@ func Test_newSecHubConfigFromFile_does_resolve_map_entries(t *testing.T) {
 	context := NewContext(configPtr)
 
 	os.Setenv("SHTEST_VERSION", "1.0")
-	os.Setenv("SHTEST_FOLDERS1", "../../../../src")
+	os.Setenv("SHTEST_FOLDERS1", "testProject1/src/java")
 
 	path := filepath.Join("testdata", "sechub-testfile1.json") // relative path
 
 	var config SecHubConfig = newSecHubConfigurationFromFile(context, path)
 	fmt.Printf("Loaded config: %s", config)
 	AssertEquals("1.0", config.APIVersion, t)
-	AssertEquals("../../../../src", config.CodeScan.FileSystem.Folders[0], t)
+	AssertEquals("testProject1/src/java", config.CodeScan.FileSystem.Folders[0], t)
 
 }

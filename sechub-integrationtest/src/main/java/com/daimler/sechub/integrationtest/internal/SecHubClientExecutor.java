@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.internal;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +21,8 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestUtil;
+
+import wiremock.com.google.common.io.Files;
 
 public class SecHubClientExecutor {
 
@@ -91,7 +96,12 @@ public class SecHubClientExecutor {
         }
 
         public File getJSONReportFile() {
-            File outputFile = new File(getOutputFolder(), "sechub_report_" + getSechubJobUUD().toString() + ".json");
+            UUID jobUUID = getSechubJobUUD();
+            if (jobUUID == null) {
+                fail("No job uuid found - last output line was:" + lastOutputLine);
+            }
+            String jobUUIDString = jobUUID.toString();
+            File outputFile = new File(getOutputFolder(), "sechub_report_" + jobUUIDString + ".json");
             return outputFile;
         }
 
@@ -113,6 +123,11 @@ public class SecHubClientExecutor {
                     + " has no apiToken. This can happen if you are using users from another scenario... Please check your test!");
         }
 
+        File exampleScanRootFolder = ensureExampleContentFoldersExist();
+
+        /* other folders are "synthetic" and created simply on demand: */
+
+        // origin path of sechub client path:
         String path = "sechub-cli/build/go/platform/";
         List<String> commandsAsList = new ArrayList<>();
         String sechubExeName = null;
@@ -121,17 +136,16 @@ public class SecHubClientExecutor {
             path += "windows-386";
             commandsAsList.add("cmd.exe");
             commandsAsList.add("/C");
-            commandsAsList.add(sechubExeName);
         } else {
             sechubExeName = "sechub";
-            commandsAsList.add("./" + sechubExeName);
             path += "linux-386";
         }
-        File pathToExecutable = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
-        File executable = new File(pathToExecutable, sechubExeName);
-        if (!executable.exists()) {
-            throw new SecHubClientNotFoundException(executable);
+        File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
+        File executableFile = new File(executableParentFolder, sechubExeName);
+        if (!executableFile.exists()) {
+            throw new SecHubClientNotFoundException(executableFile);
         }
+        commandsAsList.add(0, executableFile.getAbsolutePath());
 
         if (file != null) {
             commandsAsList.add("-configfile");
@@ -177,7 +191,7 @@ public class SecHubClientExecutor {
             if (environmentVariables != null) {
                 environment.putAll(environmentVariables);
             }
-            pb.directory(pathToExecutable);
+            pb.directory(exampleScanRootFolder);
 
             StringBuilder sb = new StringBuilder();
             Iterator<String> it = commandsAsList.iterator();
@@ -213,6 +227,36 @@ public class SecHubClientExecutor {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Execution failed", e);
         }
+    }
+
+    private File ensureExampleContentFoldersExist() {
+        /*
+         * because SecHub client checks for existing folders we must ensure integration
+         * test do scan existing folders so we ensure example content/folders exists
+         */
+        String pathToExamples = "sechub-integrationtest/build/sechub/example/content/"; // same deepness as "sechub-cli/build/go/platform/linux-386"
+        File exampleScanRootFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), pathToExamples);
+        exampleScanRootFolder.mkdirs();
+
+        for (IntegrationTestExampleFolders folder : IntegrationTestExampleFolders.values()) {
+            File projectResourceFoldder = new File(exampleScanRootFolder, folder.getPath());
+            if (folder.isExistingContent()) {
+                assertTrue("This projectResourceFolder must already exist but doesnt:" + projectResourceFoldder.getAbsolutePath(),
+                        projectResourceFoldder.isDirectory() && projectResourceFoldder.exists());
+            } else {
+                projectResourceFoldder.mkdirs();// we generate this one
+                File testFile1 = new File(projectResourceFoldder, "TestMeIfYouCan.java");
+                if (!testFile1.exists()) {
+                    try {
+                        Files.write("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Cannot create test output!", e);
+                    }
+
+                }
+            }
+        }
+        return exampleScanRootFolder;
     }
 
     public void setOutputFolder(Path outputFolder) {

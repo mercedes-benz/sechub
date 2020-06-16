@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.api;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestExampleFolders.*;
 import com.daimler.sechub.test.ExampleConstants;
 
 /**
@@ -26,23 +27,25 @@ public enum IntegrationTestMockMode {
 	WEBSCAN__NETSPARKER_RESULT_ONE_FINDING__FAST("https://netsparker.vulnerable.demo." + ExampleConstants.URI_TARGET_SERVER),
 
 	WEBSCAN__NETSPARKER_MANY_RESULTS__FAST("https://netsparker.manyfindings.demo." + ExampleConstants.URI_TARGET_SERVER),
+	
 
-	CODE_SCAN__CHECKMARX__YELLOW__FAST("../sechub-doc/src/main/java"),
+	CODE_SCAN__CHECKMARX__YELLOW__FAST(CHECKMARX_MOCKDATA_MULTIPLE.getPath()),
 
 	/**
      * runs 1 second - results in green
      */
-	CODE_SCAN__CHECKMARX__GREEN__FAST("../../../../src"),
+	CODE_SCAN__CHECKMARX__GREEN__FAST(CHECKMARX_MOCKDATA_EMPTY_1000_MS.getPath()),
 
 	/**
      * runs 10 milliseconds - results in green
      */
-	CODE_SCAN__CHECKMARX__GREEN__SUPERFAST("../sechub-integrationtest/src/main/java"),
+	CODE_SCAN__CHECKMARX__GREEN__SUPERFAST(CHECKMARX_MOCKDATA_EMPTY_10_MS.getPath()),
 	
 	/**
 	 * runs 4 seconds - results in green
 	 */
-	CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING("../sechub-test/src/main/java"),
+	CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING(CHECKMARX_MOCKDATA_EMPTY_4000_MS.getPath()),
+	
 
 	NOT_PREDEFINED(null), 
 	
