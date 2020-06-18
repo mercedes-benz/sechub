@@ -2,8 +2,9 @@
 package util
 
 import (
-	. "daimler.com/sechub/testutil"
 	"testing"
+
+	. "daimler.com/sechub/testutil"
 )
 
 func Test_Simple_filename_and_pattern_with_asterisk_at_start_and_prefix_matches(t *testing.T) {
@@ -41,6 +42,18 @@ func Test_When_double_asterisk_on_start_any_path_is_accepted_when_filename_witho
 	/* but not when filename does not match*/
 	AssertFalse(Filepathmatch("/x/y/z/V/b.txt", "**/a.txt"), t)
 	AssertFalse(Filepathmatch("/x/y/z/V/a.txt", "**/b.txt"), t)
+}
+
+func Test_When_double_asterisk_on_start_and_filename_with_asterisk(t *testing.T) {
+	AssertFalse(Filepathmatch("/x/y/z/V/a.txtx", "**/*.txt"), t)
+	AssertTrue(Filepathmatch("/x/y/z/V/b.txt", "**/*.txt"), t)
+}
+
+func Test_When_double_asterisk_also_matching_files_in_current_working_directory(t *testing.T) {
+	AssertTrue(Filepathmatch("/.git/x/y/z/V/a.txt", "**/.git/**"), t)
+	AssertTrue(Filepathmatch("/.git/a.txt", "**/.git/**"), t)
+	AssertTrue(Filepathmatch(".git/x/y/z/V/a.txt", "**/.git/**"), t)
+	AssertTrue(Filepathmatch(".git/a.txt", "**/.git/**"), t)
 }
 
 func Test_When_double_asterisk_on_inside_path_is_accepted_when_filename_without_asterisk_matches(t *testing.T) {

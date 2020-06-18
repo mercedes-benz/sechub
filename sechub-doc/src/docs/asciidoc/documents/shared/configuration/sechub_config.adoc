@@ -74,12 +74,13 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 <1> Define code scan
 <2> Use filesystem - so means upload sources to server
 <3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Exclude files (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - `+**/*+` is used to identify any folder +
-    In example above following files are excluded from upload: +
-    * `+**/*.log+` - excludes any log file in any sub directories of given folders
-    * `+README*.md+` excludes all markdown README files in given folders. For example above this means:
-      ** `gamechanger-android/src/main/java/README.md` and
-      ** `gamechanger-server/src/main/java/README.md`
+<4> Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - ` +
+    In example above all files in following directories are excluded from upload: +
+    * `+**/mytestcode/**+` - excludes all files under a directory named `build` including sub directories
+    * `+**/documentation/**+` - same for folder `documentation`
+
+NOTE: Per default, these directories are excluded so you don't have to add them yourself: +
+`+**/test/**+` `+**/.git/**+`
 
 ==== Web scan
 `webScan` (optional) defines the web scan settings.

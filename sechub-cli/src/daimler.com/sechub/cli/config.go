@@ -49,6 +49,7 @@ var reportFormatPtr *string
 
 /* internal stuff - only necessary for development and testing*/
 var debug = os.Getenv("SECHUB_DEBUG") == "true"
+var ignoreDefaultExcludes = os.Getenv("SECHUB_IGNORE_DEFAULT_EXCLUDES") == "true" // make it possible to switch off default excludes
 var keepTempFiles = os.Getenv("SECHUB_KEEP_TEMPFILES") == "true"
 var quiet = os.Getenv("SECHUB_QUIET") == "true"
 var trustAll = os.Getenv("SECHUB_TRUSTALL") == "true"
