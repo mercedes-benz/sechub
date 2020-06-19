@@ -103,8 +103,13 @@ public class DeveloperAdministration {
         return anonyomusRestHelper;
     }
 
-    public String doSignup(String string) {
+    public String acceptSignup(String string) {
         getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(string));
+        return "SENT";
+    }
+    
+    public String declineSignup(String userId) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserSignUpUrl(userId));
         return "SENT";
     }
 
@@ -360,6 +365,8 @@ public class DeveloperAdministration {
         }
 
     }
+
+  
    
 
 }
