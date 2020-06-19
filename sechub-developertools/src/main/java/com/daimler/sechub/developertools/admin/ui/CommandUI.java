@@ -59,6 +59,7 @@ import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntrie
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.CreateUserMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.DeclineUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.DeleteUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
@@ -300,6 +301,7 @@ public class CommandUI {
 	private void createMassOperationsMenu() {
 		JMenu massOperationsMenu = new JMenu("Mass operations");
 		menuBar.add(massOperationsMenu);
+		add(massOperationsMenu, new CreateUserMassCSVImportAction(context));
 		add(massOperationsMenu, new CreateProjectMassCSVImportAction(context));
 		add(massOperationsMenu, new AssignUserToProjectMassCSVImportAction(context));
 		massOperationsMenu.addSeparator();
