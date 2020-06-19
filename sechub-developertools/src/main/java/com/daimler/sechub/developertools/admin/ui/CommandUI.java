@@ -59,6 +59,7 @@ import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntrie
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.DeclineUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.DeleteUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
@@ -172,6 +173,8 @@ public class CommandUI {
 
 		add(menu,new AnonymousSigninNewUserAction(context));
 		add(menu, new AcceptUserSignupAction(context));
+		menu.addSeparator();
+		add(menu, new DeclineUserSignupAction(context));
 		add(menu, new DeleteUserAction(context));
 		menu.addSeparator();
 		add(menu, new ShowUserDetailAction(context));
