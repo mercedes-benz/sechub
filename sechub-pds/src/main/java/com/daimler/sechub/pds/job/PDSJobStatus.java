@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import com.daimler.sechub.pds.PDSJSONConverter;
+import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * This class represents the schedule job status which can be obtained by REST
@@ -16,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(Include.NON_NULL)
 public class PDSJobStatus{
 
     public static final String PROPERTY_JOBUUID = "jobUUID";
@@ -24,7 +29,6 @@ public class PDSJobStatus{
     public static final String PROPERTY_STARTED = "started";
     public static final String PROPERTY_ENDED= "ended";
     public static final String PROPERTY_STATE= "state";
-    public static final String PROPERTY_RESULT= "result";
 
     UUID jobUUID;
 
@@ -35,41 +39,28 @@ public class PDSJobStatus{
     String ended;
 
     String state;
-    String result;
 
     PDSJobStatus() {
 
     }
 
-    public PDSJobStatus(PDSScheduleSecHubJob secHubJob) {
+    public PDSJobStatus(PDSJob secHubJob) {
         this.jobUUID = secHubJob.getUUID();
 
-        /*
-         * why are nearly all parts represented as string and not direct parts? because
-         * I didn't like "null" appearing in output to user - thats all
-         */
         this.owner = secHubJob.getOwner();
 
         this.created = convertToString(secHubJob.getCreated());
         this.started = convertToString(secHubJob.getStarted());
         this.ended = convertToString(secHubJob.getEnded());
 
-        this.state = convertToString(secHubJob.getExecutionState());
-        this.result = convertToString(secHubJob.getExecutionResult());
+        this.state = convertToString(secHubJob.getState());
     }
 
-    private String convertToString(PDSJobExecutionResult result) {
+    private String convertToString(PDSJobStatusState result) {
         if (result == null) {
             return "";
         }
         return result.name();
-    }
-
-    private String convertToString(PDSJobExecutionState state) {
-        if (state == null) {
-            return "";
-        }
-        return state.name();
     }
 
     private String convertToString(LocalDateTime localDateTime) {
@@ -77,5 +68,9 @@ public class PDSJobStatus{
             return "";
         }
         return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    public String toJSON() throws PDSJSONConverterException {
+        return PDSJSONConverter.get().toJSON(this);
     }
 }

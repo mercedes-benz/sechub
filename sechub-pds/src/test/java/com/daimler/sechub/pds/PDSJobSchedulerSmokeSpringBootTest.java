@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.daimler.sechub.pds.job.PDSJobSchedulerRestController;
+import com.daimler.sechub.pds.job.PDSJobRestController;
 
 /**
  * Test simly starts up spring container and checks a schedule rest controller can be initiated. So just a smoke test
@@ -23,7 +23,7 @@ import com.daimler.sechub.pds.job.PDSJobSchedulerRestController;
 public class PDSJobSchedulerSmokeSpringBootTest {
 
 	@Autowired
-	private PDSJobSchedulerRestController controller;
+	private PDSJobRestController controller;
 
 	@Test
 	public void contextLoads() throws Exception {

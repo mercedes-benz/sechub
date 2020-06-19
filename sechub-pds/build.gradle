@@ -6,13 +6,18 @@
  * ============================================================================
  */
 dependencies {
-    compile(library.springboot_starter_batch)
-    compile(library.springboot_starter_web)
-    compile(library.springboot_starter_data_jpa)
-    compile(library.springboot_starter_security)
-    compile(library.flyway)
+    compile project(':sechub-testframework') // testframework has no dependencies or page effects, so we can use the lib for testing
+
+    compile library.springboot_starter_web
+    compile library.springboot_starter_data_jpa
+    compile library.springboot_starter_security
+    compile library.flyway
     compile library.logstashLogbackEncoder
     compile library.database_h2
+    compile library.apache_commons_io
+    
+    testCompile library.springboot_starter_test
+    testCompile library.springframework_security_test
     
 }
 
@@ -64,7 +69,7 @@ publishing {
 
             pom {
                 name = 'SecHub Product Delegation Server'
-                description = 'SecHub Product Delegatoin Server as a sprint boot jar. Ready to use.'
+                description = 'SecHub Product Delegation Server as a sprint boot jar. Ready to use.'
 
                 scm {
                     url = 'https://github.com/daimler/sechub'

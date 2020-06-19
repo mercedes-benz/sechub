@@ -3,12 +3,11 @@ package com.daimler.sechub.pds.job;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class PDSFileUploadService {
+public class PDSCancelJobService {
 
-    public void upload(UUID jobUUID, MultipartFile file, String checkSum) {
+    public void cancelJob(UUID jobUUID) {
         // TODO Auto-generated method stub
         
     }

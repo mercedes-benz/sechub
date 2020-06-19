@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.pds;
+package com.daimler.sechub.pds.security;
 
 /**
  * Never change the string content of identifiers! Will be used for persistence
@@ -17,8 +17,6 @@ public class PDSRoleConstants {
 
 	public static final String ROLE_USER = "ROLE_USER";
 
-	public static final String ROLE_OWNER = "ROLE_OWNER";
-
 	private PDSRoleConstants() {
 	}
 
@@ -28,10 +26,6 @@ public class PDSRoleConstants {
 
 	public static final boolean isUserRole(String role) {
 		return ROLE_USER.equals(role);
-	}
-
-	public static final boolean isOwnerRole(String role) {
-		return ROLE_OWNER.equals(role);
 	}
 
 }

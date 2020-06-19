@@ -47,7 +47,7 @@ BatchJob -> ProcessExecutor : execute CLI command with parameters
 return
 
 Adapter -> Scheduler #green : Command: Fetch job status
-return "CREATED|READY_TO_START|RUNNING|FAILED|DONE"
+return "CREATED|READY_TO_START|RUNNING|CANCELED|FAILED|DONE"
 ...
 BatchJob -> DB: writes result
 BatchJob -> Storage: delete

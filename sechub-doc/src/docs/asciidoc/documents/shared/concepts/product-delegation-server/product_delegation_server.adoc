@@ -1,20 +1,26 @@
 ==== Product delegation server
 
 ===== General
-There are many open source clients available having no server component inside which can do
+There are many open source clients available having no server component inside so lacking:
+
 - REST access
 - queing
 - status requests
 - scalable
 - … more 
 
-So when we want to adapt them in SecHub style (the product does the work and we ask for result) we need provide a `ProductDelegationServer`
-- a spring boot application with network DB (same to SecHub itself, so we can do easily clustering)
+So when we want to adapt them in SecHub style (the product does the work and we ask for result) we 
+need to provide a `ProductDelegationServer` (in short form `PDS`).
+
+`PDS` will
+
+- be a spring boot application with using network DB (like done in SecHub itself, so we have t his
+  as a shared kernel and so have synchronization base to do clustering very easy)
 - provides REST access
 - a very simple auth mechanism at the beginning (just one user, basic auth via TLS, credentials by ENV entries on startup)
 - provides jobs, queing
 - can execute single files (e.g. a bash script) 
-- has got a common simple way for configuration
+- has got a common simple way for configuration (at the beginning: ENV entry containing JSON)
 
 We will also provide a `AbstractProductDelegationServerAdapter` which does only not know the PRODUCT_ID but know how to communicate with `ProductDelegationServer` instances.
 
@@ -51,7 +57,7 @@ This avoids file system freezes...
 ====== Mark JOB ready to start
 [source,bash]
 ----
-https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [POST]
+https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]
 ----
 
 
@@ -71,7 +77,7 @@ https://${baseURL}/api/job/${jobUUID}/result [GET]
 ====== Cancel JOB
 [source,bash]
 ----
-https://${baseURL}/api/job/${jobUUID}/cancel [POST]
+https://${baseURL}/api/job/${jobUUID}/cancel [PUT]
 ----
 
 TIP: This should kill the process hard!

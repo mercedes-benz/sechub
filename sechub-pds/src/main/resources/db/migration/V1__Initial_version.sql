@@ -1,14 +1,19 @@
-CREATE TABLE pds_schedule_job
+CREATE TABLE pds_job
 (
    uuid uuid not null,
-   created timestamp not null,
-   ended timestamp,
-   result varchar(30) not null, -- enum value, max:30
+   sechub_job_uuid uuid not null,
+   
    state varchar(30) not null, -- enum value, max:30
-   configuration varchar(8192) not null, -- we accept maximum of 8192 chars (8kb)
    owner varchar(60) not null, -- we accept 60 (3 x 20) see UserIdValidation
-   project_id varchar(60) not null, -- we accept 60 (3x20), see ProjectIdValidation
+   
+   created timestamp not null,
    started timestamp,
+   ended timestamp,
+   
+   configuration varchar(8192) not null, -- we accept maximum of 8192 chars (8kb)
+   
+   result text, -- contains job result when done
+   
    version integer,
    PRIMARY KEY (uuid)
 );

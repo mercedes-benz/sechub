@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PDSApproveJobService {
+public class PDSGetJobResultService {
 
-    public void approveJob(UUID jobUUID) {
+    public String getJobResult(UUID jobUUID) {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
 }

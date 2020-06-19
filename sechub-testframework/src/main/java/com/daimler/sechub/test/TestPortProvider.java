@@ -100,6 +100,13 @@ public class TestPortProvider {
 		return restDocPort;
 	}
 
+	/**
+	 * Returns port used for MVC testing - this interesting for build servers not running tests in 
+	 * separated environments - for example standard jenkins run on same machine with n worker nodes.
+	 * This avoids race conditions
+	 * 
+	 * @return common port, used for mocked MVC tests.
+	 */
 	public int getWebMVCTestHTTPSPort() {
 		return mvcMockPort;
 	}

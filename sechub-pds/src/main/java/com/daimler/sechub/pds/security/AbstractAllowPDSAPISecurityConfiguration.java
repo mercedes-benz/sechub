@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.pds;
+package com.daimler.sechub.pds.security;
 
-import static com.daimler.sechub.pds.PDSRoleConstants.*;
+import static com.daimler.sechub.pds.security.PDSRoleConstants.*;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
+import com.daimler.sechub.pds.PDSAPIConstants;
 
 
 /**

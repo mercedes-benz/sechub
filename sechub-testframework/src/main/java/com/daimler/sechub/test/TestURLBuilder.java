@@ -74,6 +74,8 @@ public class TestURLBuilder {
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
+    
+    
     private String protocol;
     private String hostname;
     private int port;
@@ -96,6 +98,44 @@ public class TestURLBuilder {
         this.hostname = hostname;
     }
 
+    /**
+     * Special url builder - only for PDS parts
+     * @author Albert Tregnaghi
+     *
+     */
+    public class ProductDelegationServerUrlsBuilder{
+        
+        private static final String API_PDS_JOB="/api/job";
+        
+        public String buildCreateJob() {
+            return buildUrl(API_PDS_JOB, "create");
+        }
+
+        public String buildGetJobStatus(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "status");
+        }
+
+        public String buildGetJobResult(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "result");
+        }
+
+        public String buildUpload(UUID jobUUID, String fileName) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload",fileName);
+        }
+
+        public String buildMarkJobReadyToStart(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "mark-ready-to-start");
+        }
+
+        public String buildCancelJob(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
+        }
+    }
+    
+    public ProductDelegationServerUrlsBuilder pds() {
+        return new ProductDelegationServerUrlsBuilder();
+    }
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ common ...................................+ */
     /* +-----------------------------------------------------------------------+ */
