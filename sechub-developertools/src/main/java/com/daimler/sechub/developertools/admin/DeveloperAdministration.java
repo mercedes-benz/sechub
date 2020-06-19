@@ -51,26 +51,39 @@ public class DeveloperAdministration {
 
                     @Override
                     public void handleError(ClientHttpResponse response) throws IOException {
-                        StringBuilder sb = new StringBuilder();
+                        StringBuilder httpResponseProblem = new StringBuilder();
                         String statusText = response.getStatusText();
-                        sb.append("status code::");
-                        sb.append(response.getStatusCode());
+                        httpResponseProblem.append("status code::");
+                        httpResponseProblem.append(response.getStatusCode());
                         if (statusText != null) {
-                            sb.append(", text:");
-                            sb.append(statusText);
+                            httpResponseProblem.append(", text:");
+                            httpResponseProblem.append(statusText);
                         }
                         try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))) {
                             String line = null;
-                            sb.append(",body:");
+                            httpResponseProblem.append(",body:");
                             while ((line = br.readLine()) != null) {
-                                sb.append("\n");
-                                sb.append(line);
+                                httpResponseProblem.append("\n");
+                                httpResponseProblem.append(line);
                             }
                         } catch (IOException e) {
                             provider.handleError("failed to read response body:" + e.getMessage());
                         }
-                        provider.handleError(sb.toString());
-
+                        StringBuilder errorOutput = new StringBuilder();
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("***                        SENT                                ***\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("Last URL call:").append(TestRestHelper.getLastUrl());
+                        if (TestRestHelper.getLastData()!=null) {
+                            errorOutput.append("\nWith data:").append(TestRestHelper.getLastData());
+                        }
+                        errorOutput.append("\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("***                     RECEIVED                               ***\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append(httpResponseProblem).append("\n");
+                        
+                        provider.handleError(errorOutput.toString());
                     }
                 };
             }
@@ -103,8 +116,8 @@ public class DeveloperAdministration {
         return anonyomusRestHelper;
     }
 
-    public String acceptSignup(String string) {
-        getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(string));
+    public String acceptSignup(String userId) {
+        getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
         return "SENT";
     }
     
