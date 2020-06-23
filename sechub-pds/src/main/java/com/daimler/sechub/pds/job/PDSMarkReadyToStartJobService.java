@@ -16,15 +16,28 @@ public class PDSMarkReadyToStartJobService {
 
     public void markReadyToStart(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
-        
+
+        PDSJob job = assertJobFound(jobUUID);
+        assertJobIsInStateCreated(job);
+
+        job.setState(PDSJobStatusState.READY_TO_START);
+        repository.save(job);
+    }
+
+    private PDSJob assertJobFound(UUID jobUUID) {
         Optional<PDSJob> found = repository.findById(jobUUID);
-        if (! found.isPresent()) {
+        if (!found.isPresent()) {
             throw new IllegalArgumentException("Given job does not exist!");
         }
         PDSJob pdsJob = found.get();
-        pdsJob.setState(PDSJobStatusState.READY_TO_START);
-        
-        repository.save(pdsJob);
+        return pdsJob;
+    }
+
+    private void assertJobIsInStateCreated(PDSJob job) {
+        PDSJobStatusState jobState = job.getState();
+        if (!jobState.equals(PDSJobStatusState.CREATED)) {
+            throw new IllegalStateException("Cannot mark job as ready to start when in state:" + jobState);
+        }
     }
 
 }

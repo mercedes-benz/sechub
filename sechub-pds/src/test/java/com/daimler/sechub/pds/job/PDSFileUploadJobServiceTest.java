@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -27,19 +28,66 @@ public class PDSFileUploadJobServiceTest {
     private PDSFileChecksumSHA256Service checksumService;
     private Path tmpUploadPath;
 
+    private PDSJobRepository repository;
+
+    private PDSJob job;
+
     @Before
     public void before() throws Exception {
         jobUUID = UUID.randomUUID();
         checksumService=mock(PDSFileChecksumSHA256Service.class);
+        repository=mock(PDSJobRepository.class);
+        job = new PDSJob();
+        job.uUID=jobUUID;
+        
+        Optional<PDSJob> jobOption = Optional.of(job);
+        when(repository.findById(jobUUID)).thenReturn(jobOption);
         
         tmpUploadPath = Files.createTempDirectory("pds-upload");
         serviceToTest = new PDSFileUploadJobService();
         serviceToTest.checksumService=checksumService;
         serviceToTest.uploadBasePath=tmpUploadPath.toAbsolutePath().toString();
+        serviceToTest.repository=repository;
         
         when(checksumService.createChecksum(any())).thenReturn("checksum-dummy");
     }
 
+
+    @Test
+    public void upload_all_correct_but_job_not_found_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = "content data";
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "1234567890123456789012345678901234567890";
+        assertEquals(40,fileName.length());// check precondition
+        
+        /* test */
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("Job does not exist");
+
+        /* execute */
+        UUID notExistingJobUUID = UUID.randomUUID();
+        serviceToTest.upload(notExistingJobUUID, fileName, multiPart, "checksum-dummy");
+        
+    }
+    
+    @Test
+    public void upload_all_correct_job_found_but_in_state_ready_to_start_throws_illegal_argument_exception() {
+        /* prepare */
+        String result = "content data";
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String fileName = "1234567890123456789012345678901234567890";
+        assertEquals(40,fileName.length());// check precondition
+        job.setState(PDSJobStatusState.READY_TO_START);
+        
+        /* test */
+        expected.expect(IllegalStateException.class);
+        expected.expectMessage("Upload forbidden at job state");
+
+        /* execute */
+        serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");
+        
+    }
 
     @Test
     public void upload_containing_filename_length_41_throws_illegal_argument_exception() {
