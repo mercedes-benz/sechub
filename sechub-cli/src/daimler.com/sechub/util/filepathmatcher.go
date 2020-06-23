@@ -17,7 +17,7 @@ func Filepathmatch(path string, pattern string) (result bool) {
 
 	// Let's turn the ant style pattern into a regexp:
 	doublestarPatterns := strings.Split(pattern, "**/")
-	//fmt.Printf("\nbefore: %q path: %q", pattern, path)
+
 	for i, subElement := range doublestarPatterns {
 		// esacpe . with backslash, * to .*
 		doublestarPatterns[i] = strings.Replace(strings.Replace(subElement, ".", "\\.", -1), "*", ".*", -1)
@@ -30,7 +30,6 @@ func Filepathmatch(path string, pattern string) (result bool) {
 		path = "./" + path
 	}
 
-	//fmt.Printf("\n after: %q path: %q\n", regexpPattern, path)
 	matched, err := regexp.MatchString(regexpPattern, path)
 	if err != nil {
 		fmt.Println(err, matched)
