@@ -65,7 +65,6 @@ ext {
          apache_commons_validator:              "commons-validator:commons-validator:1.6",
          apache_commons_io:                     "commons-io:commons-io:2.6",
          apache_commons_cli:					"commons-cli:commons-cli:1.4",
-         apache_commons_compress:				"org.apache.commons:commons-compress:1.20",
 
          openjson:                              "com.github.openjson:openjson:1.0.10",
 
