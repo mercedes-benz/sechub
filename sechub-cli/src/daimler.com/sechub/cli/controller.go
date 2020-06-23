@@ -52,8 +52,7 @@ func Execute() {
 		os.Exit(ExitCodeOK)
 
 	} else if action == ActionExecuteGetReport {
-		report := getSecHubJobReport(context)
-		fmt.Println(report)
+		downloadSechubReport(context)
 		os.Exit(ExitCodeOK)
 	}
 	fmt.Printf("Unknown action '%s'", context.config.action)
@@ -217,14 +216,9 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		}
 	}
 	fmt.Print("\n")
+
 	if downloadReport {
-		fileEnding := ".json"
-		if context.config.reportFormat == "html" {
-			fileEnding = ".html"
-		}
-		fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
-		report := Report{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
-		report.save(context)
+		downloadSechubReport(context)
 	}
 
 	/* FAIL mode */
@@ -252,6 +246,19 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 	os.Exit(ExitCodeFailed)
 	return "" // dummy - will never happen
 
+}
+
+func downloadSechubReport(context *Context) string {
+	fileEnding := ".json"
+	if context.config.reportFormat == "html" {
+		fileEnding = ".html"
+	}
+	fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
+
+	report := Report{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
+	report.save(context)
+
+	return "" // Dummy (Error handling is done in report.save method)
 }
 
 func getSecHubJobReport(context *Context) string {

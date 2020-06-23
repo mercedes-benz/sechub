@@ -84,7 +84,7 @@ Will fetch current job status and return result as json or html
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getStatus
+sechub -jobUUID ${jobUUID} getStatus
 ----
 
 ===== getReport
@@ -93,7 +93,7 @@ Will fetch report as json (result will only exist when job is done)
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getReport
+sechub -jobUUID ${jobUUID} getReport
 ----
 ==== Options
 
