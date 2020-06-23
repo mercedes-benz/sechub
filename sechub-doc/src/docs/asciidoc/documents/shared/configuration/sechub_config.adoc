@@ -41,7 +41,7 @@ NOTE: When using REST calls directly you do not need the information inside
 Define `fileSystem` child entry and setup folders to use for code scanning by
 `folders` sub entry.
 
-Those folders will be automatically zipped and uploaded by `{sechub}` client
+All source code files inside these folders will be automatically zipped and uploaded by `{sechub}` client
 to server side for ongoing source analysis.
 
 Pathes must be defined relative from caller location - for example
@@ -62,9 +62,7 @@ on build servers.
 
 ====
 
-====== Example upload folders with excludes
-
-
+===== Example sechub.json
 
 [[sechub-config-example-sourcescan]]
 [source, json]
@@ -78,9 +76,18 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
     In example above all files in following directories are excluded from upload: +
     * `+**/mytestcode/**+` - excludes all files under a directory named `build` including sub directories
     * `+**/documentation/**+` - same for folder `documentation`
-
-NOTE: Per default, these directories are excluded so you don't have to add them yourself: +
+* NOTE: Per default, these directories are excluded so you don't have to add them yourself: +
 `+**/test/**+` `+**/.git/**+`
+
+<5> Additional source file extensions to include (optional) +
+Only these and the default extensions are added to the .zip file.
+
+
+NOTE: These file extensions are considered as source code:
+[source, ruby]
+----
+include::supported-source-extensions.txt[]
+----
 
 ==== Web scan
 `webScan` (optional) defines the web scan settings.
@@ -89,7 +96,7 @@ NOTE: Per default, these directories are excluded so you don't have to add them 
 Use `uri` element to define a string array containing uris you want to scan.
 
 WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do _accidently_ an DoS attack...
+         So you are not able to start scanning foreign domains and do _accidently_ an DoS attack...
 
 ====== Example anonymous
 [[sechub-config-example-webscan-anonymous]]

@@ -9,6 +9,7 @@
               "folders": ["gamechanger-android/src/main/java",
                           "gamechanger-server/src/main/java"] //<3>
          },
-         "excludes": ["**/mytestcode/**","**/documentation/**"]  //<4>
+         "excludes": ["**/mytestcode/**","**/documentation/**"],  //<4>
+         "additionalSourceExts": [".cplusplus",".py9"]  //<5>
       }
 }

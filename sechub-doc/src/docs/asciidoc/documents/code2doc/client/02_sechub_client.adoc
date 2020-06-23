@@ -178,8 +178,6 @@ sechub scan
 ----
 with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
 
-WARNING: Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources...
-
 
 ==== Start a web scan
 
