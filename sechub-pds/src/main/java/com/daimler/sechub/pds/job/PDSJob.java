@@ -73,9 +73,6 @@ public class PDSJob {
     @Column(name = COLUMN_UUID, updatable = false, nullable = false)
     UUID uUID;
 
-    @Column(name = COLUMN_SECHUB_JOB_UUID, updatable = false, nullable = false)
-    UUID sechubJobUUID;
-
     @Column(name = COLUMN_OWNER, nullable = false)
     String owner;
 
@@ -130,10 +127,6 @@ public class PDSJob {
 
     public UUID getUUID() {
         return uUID;
-    }
-
-    public UUID getSechubJobUUID() {
-        return sechubJobUUID;
     }
 
     public void setOwner(String owner) {

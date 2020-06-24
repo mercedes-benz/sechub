@@ -12,6 +12,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.pds.PDSNotFoundException;
+
 public class PDSGetJobStatusServiceTest {
 
     @Rule
@@ -54,9 +56,9 @@ public class PDSGetJobStatusServiceTest {
     }
     
     @Test
-    public void job_not_found_throws_illegal_argument_exception() {
+    public void job_not_found_throws_pds_not_found_exception() {
         /* test */
-        expected.expect(IllegalArgumentException.class);
+        expected.expect(PDSNotFoundException.class);
         expected.expectMessage("Given job does not exist");
   
         /* execute */

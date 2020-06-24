@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.mock.web.MockMultipartFile;
 
+import com.daimler.sechub.pds.PDSNotAcceptableException;
+import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
 public class PDSFileUploadJobServiceTest {
@@ -54,7 +56,7 @@ public class PDSFileUploadJobServiceTest {
 
 
     @Test
-    public void upload_all_correct_but_job_not_found_throws_illegal_argument_exception() {
+    public void upload_all_correct_but_job_not_found_throws_pds_not_found_exception() {
         /* prepare */
         String result = "content data";
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
@@ -62,8 +64,8 @@ public class PDSFileUploadJobServiceTest {
         assertEquals(40,fileName.length());// check precondition
         
         /* test */
-        expected.expect(IllegalArgumentException.class);
-        expected.expectMessage("Job does not exist");
+        expected.expect(PDSNotFoundException.class);
+        expected.expectMessage("Given job does not exist");
 
         /* execute */
         UUID notExistingJobUUID = UUID.randomUUID();
@@ -81,8 +83,8 @@ public class PDSFileUploadJobServiceTest {
         job.setState(PDSJobStatusState.READY_TO_START);
         
         /* test */
-        expected.expect(IllegalStateException.class);
-        expected.expectMessage("Upload forbidden at job state");
+        expected.expect(PDSNotAcceptableException.class);
+        expected.expectMessage("accepted is only:[CREATED]");
 
         /* execute */
         serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");

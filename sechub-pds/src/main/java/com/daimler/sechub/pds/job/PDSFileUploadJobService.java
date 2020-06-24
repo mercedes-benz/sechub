@@ -1,10 +1,10 @@
 package com.daimler.sechub.pds.job;
 
+import static com.daimler.sechub.pds.job.PDSJobAssert.*;
 import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -41,8 +41,8 @@ public class PDSFileUploadJobService {
         notNull(checkSum, "checkSum may not be null");
         validateFileName(fileName);
 
-        PDSJob job = assertJobExists(jobUUID);
-        assertJobIsInStateCreated(job);
+        PDSJob job = assertJobFound(jobUUID,repository);
+        assertJobIsInState(job,PDSJobStatusState.CREATED);
 
         File jobFolder = ensureJobFolder(jobUUID);
         File uploadFile = new File(jobFolder, fileName);
@@ -68,23 +68,6 @@ public class PDSFileUploadJobService {
             LOG.error("Was not able to delete uploads for job {}, reason:", jobUUID, e.getMessage());
             throw new IllegalArgumentException("Cannot store given file", e);
         }
-    }
-
-    private void assertJobIsInStateCreated(PDSJob job) {
-        PDSJobStatusState jobState = job.getState();
-        if (!jobState.equals(PDSJobStatusState.CREATED)) {
-            throw new IllegalStateException("Upload forbidden at job state:" + jobState);
-        }
-    }
-    
-    private PDSJob assertJobExists(UUID jobUUID) {
-        Optional<PDSJob> jobOption = repository.findById(jobUUID);
-        if (!jobOption.isPresent()) {
-            throw new IllegalArgumentException("Job does not exist or you have no access");
-        }
-        
-        PDSJob job = jobOption.get();
-        return job;
     }
 
     /* sanity check to avoid path traversal etc. */

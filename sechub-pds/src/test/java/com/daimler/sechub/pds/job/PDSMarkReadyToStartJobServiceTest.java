@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
+import com.daimler.sechub.pds.PDSNotAcceptableException;
+import com.daimler.sechub.pds.PDSNotFoundException;
+
 public class PDSMarkReadyToStartJobServiceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -42,19 +45,21 @@ public class PDSMarkReadyToStartJobServiceTest {
             if (state==PDSJobStatusState.CREATED) {
                 continue;
             }
-            assertFailsWithIllegalStateFor(state);
+            assertFailsWithNotAcceptableFor(state);
         }
     }
     
-    private void assertFailsWithIllegalStateFor(PDSJobStatusState state) {
+    private void assertFailsWithNotAcceptableFor(PDSJobStatusState state) {
         /* prepare */
         job.setState(state);
-        /* test */
-        expected.expect(IllegalStateException.class);
-        expected.expectMessage("Cannot mark job as ready to start");
+        try {
+            /* execute */
+            serviceToTest.markReadyToStart(jobUUID);
+            
+        }catch(PDSNotAcceptableException e) {
+            assertTrue(e.getMessage().contains("accepted is only:[CREATED]"));
+        }
 
-        /* execute */
-        serviceToTest.markReadyToStart(jobUUID);
     }
     
     @Test
@@ -64,7 +69,7 @@ public class PDSMarkReadyToStartJobServiceTest {
         
         
         /* test */
-        expected.expect(IllegalArgumentException.class);
+        expected.expect(PDSNotFoundException.class);
         expected.expectMessage("Given job does not exist");
   
         /* execute */

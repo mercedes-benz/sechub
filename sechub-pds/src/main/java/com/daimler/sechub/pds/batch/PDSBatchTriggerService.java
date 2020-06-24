@@ -1,4 +1,4 @@
-package com.daimler.sechub.pds.execution;
+package com.daimler.sechub.pds.batch;
 
 import java.util.Optional;
 
@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 
@@ -34,6 +36,9 @@ public class PDSBatchTriggerService {
     @Value("${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
     
+    @Value ("${sechub.pds.config.scheduling.enable:true}")
+    private boolean schedulingEnabled;
+    
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
@@ -43,7 +48,12 @@ public class PDSBatchTriggerService {
     // default 10 seconds delay and 5 seconds initial
     @Scheduled(initialDelayString = "${sechub.pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
+    @Transactional
     public void triggerExecutionOfNextJob() {
+        if (! schedulingEnabled) {
+            LOG.trace("Trigger execution of next job canceled, because scheduling disabled.");
+            return;
+        }
         LOG.trace("Trigger execution of next job started.");
         if (! executionService.isAbleToExecuteNextJob()) {
             LOG.debug("Execution service is not able to execute next job, so cancel here");

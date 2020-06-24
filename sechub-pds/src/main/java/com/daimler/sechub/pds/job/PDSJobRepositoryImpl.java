@@ -1,7 +1,9 @@
 package com.daimler.sechub.pds.job;
 
-import static com.daimler.sechub.pds.job.PDSJobStatusState.*;
 import static com.daimler.sechub.pds.job.PDSJob.*;
+import static com.daimler.sechub.pds.job.PDSJobStatusState.*;
+
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -32,7 +34,12 @@ public class PDSJobRepositoryImpl implements PDSJobRepositoryCustom {
         // see https://www.baeldung.com/jpa-pessimistic-locking
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
-        return Optional.ofNullable((PDSJob) query.getSingleResult());
+        List<?> list = query.getResultList();
+        Object singleResult = null;
+        if (! list.isEmpty()) {
+            singleResult=list.iterator().next();
+        }
+        return Optional.ofNullable((PDSJob) singleResult);
     }
 
 }

@@ -11,6 +11,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.pds.PDSNotAcceptableException;
+import com.daimler.sechub.pds.PDSNotFoundException;
+
 public class PDSGetJobResultServiceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -41,14 +44,14 @@ public class PDSGetJobResultServiceTest {
             if (state==PDSJobStatusState.DONE) {
                 continue;
             }
-            assertFailsWithIllegalStateFor(state);
+            assertFailsWithNotAcceptableFor(state);
         }
     }
     
     @Test
-    public void job_not_found_throws_illegal_argument_exception() {
+    public void job_not_found_throws_pds_not_found_exception() {
         /* test */
-        expected.expect(IllegalArgumentException.class);
+        expected.expect(PDSNotFoundException.class);
         expected.expectMessage("Given job does not exist");
   
         /* execute */
@@ -70,14 +73,16 @@ public class PDSGetJobResultServiceTest {
         assertEquals("the result", result);
     }
     
-    private void assertFailsWithIllegalStateFor(PDSJobStatusState state) {
+    private void assertFailsWithNotAcceptableFor(PDSJobStatusState state) {
         /* prepare */
         job.setState(state);
-        /* test */
-        expected.expect(IllegalStateException.class);
-        expected.expectMessage("Cannot get job result");
+        try {
+            /* execute */
+            serviceToTest.getJobResult(jobUUID);
+            
+        }catch(PDSNotAcceptableException e) {
+            assertTrue(e.getMessage().contains("accepted is only:[DONE]"));
+        }
 
-        /* execute */
-        serviceToTest.getJobResult(jobUUID);
     }
 }

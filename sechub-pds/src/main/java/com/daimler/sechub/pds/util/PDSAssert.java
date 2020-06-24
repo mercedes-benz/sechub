@@ -51,6 +51,19 @@ public class PDSAssert {
 		}
 	}
 	
+	
+	/**
+     * Throws an illegal argument exception when given array  is <code>null</code> or empty
+     * 
+     * @param string
+     * @param message
+     */
+    public static void notEmpty(Object[] array, String message) {
+        if (array == null || array.length==0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+	
 	/**
 	 * Throws an illegal argument exception when given string has length greater than given max
 	 * @param string
