@@ -5,21 +5,31 @@ SecHub Analyzer CLI looks for markers in files and reports back the location of 
 - Start: `NOSECHUB`
 - End: `END-NOSECHUB`
 
+Build:
+
+~~~
+sechub$ ./gradlew buildAnalyzerCLI
+~~~
+
 Usage:
 
 ~~~
 $ java -jar analyzer-0.0.0.jar
-usage: analyzer
+usage: analyzer [-d] [-h] [-p]
+
+Find markers in files.
+
  -d,--debug          Show additional debug messages.
  -h,--help           Display this help.
  -p,--pretty-print   Format output as pretty print.
 
+Please report issues at https://github.com/daimler/sechub
 ~~~
 
 Example:
 
 ~~~
-$ java -jar analyzer-0.0.0.jar -p example
+$ java -jar analyzer-0.0.0.jar -p example/
 {
   "findings" : {
     "example/test.txt" : [ {
