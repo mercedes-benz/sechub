@@ -10,15 +10,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Processor {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.daimler.analyzer.model.AnalyzerResult;
+import com.daimler.analyzer.model.MarkerPair;
+
+public class Processor {
+    private final static Logger logger = LogManager.getLogger(Processor.class.getName());
+    
+    public Processor() {}
+    
     /**
+     * Processes the given files
      * 
      * @param file process a file or folder
      * @return
      * @throws FileNotFoundException
      */
-    public static Map<String, List<MarkerPair>> processFiles(List<String> filePaths, boolean debug) throws FileNotFoundException {
+    public AnalyzerResult processFiles(List<String> filePaths) throws FileNotFoundException {
         Map<String, List<MarkerPair>> result = new HashMap<>();
         List<File> files = new LinkedList<>();
         
@@ -33,12 +43,23 @@ public class Processor {
             }
         }
         
-        result = analyzeFiles(files, debug);
+        result = analyzeFiles(files);
         
-        return result;
+        AnalyzerResult analyzerResult = new AnalyzerResult(result);
+        
+        return analyzerResult;
     }
 
-    protected static Map<String, List<MarkerPair>> analyzeFiles(List<File> rootFiles, boolean debug) {
+    /**
+     * Analyze files
+     * 
+     * Creates a list of all files which have be be analyzed.
+     * Starts the file analysis of all files.
+     * 
+     * @param rootFiles
+     * @return
+     */
+    protected Map<String, List<MarkerPair>> analyzeFiles(List<File> rootFiles) {
         Map<String, List<MarkerPair>> result = new HashMap<>();
 
         Set<File> files = new HashSet<>();
@@ -52,9 +73,9 @@ public class Processor {
         // process files
         for (File file : files) {
             try {
-                SimpleLogger.log("Analyzing: " + file.getPath(), debug);
-                
-                List<MarkerPair> markerPairs = FileAnalyzer.processFile(file);
+                logger.debug("Analyzing: " + file.getPath());
+                 
+                List<MarkerPair> markerPairs = FileAnalyzer.getInstance().processFile(file);
                 
                 // only add a file with findings
                 if (!markerPairs.isEmpty()) {
@@ -62,16 +83,25 @@ public class Processor {
                 }
 
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
         return result;
     }
 
-    protected static Set<File> getFiles(File file, Set<File> files) {
+    /**
+     * Traverses the file system from a given file (root)
+     * 
+     * The file system is traversed recursively.
+     * 
+     * @param file the root folder or file
+     * @param files a set of files
+     * @return
+     */
+    protected Set<File> getFiles(File file, Set<File> files) {
         if (file.isFile()) {
             files.add(file);
         } else if (file.isDirectory()) {

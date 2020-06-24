@@ -7,8 +7,13 @@
  */
 dependencies {
 	compile library.apache_commons_cli
-	compile library.slf4j
 	
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
+	compile group: 'com.fasterxml.jackson.jr', name: 'jackson-jr-all', version: '2.11.0'
+	
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.3'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
+
 	testCompile library.junit
     testCompile library.harmcrest
 }
@@ -19,7 +24,7 @@ task buildAnalyzerCLI(type: Jar) {
     baseName = 'analyzer'
     
 	manifest {
-        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.Analyzer'
+        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.Main'
     }
 
     from { 

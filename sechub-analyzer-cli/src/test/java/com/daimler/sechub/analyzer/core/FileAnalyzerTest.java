@@ -12,6 +12,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.daimler.analyzer.model.Marker;
+import com.daimler.analyzer.model.MarkerPair;
+import com.daimler.analyzer.model.MarkerType;
+
 public class FileAnalyzerTest {
 
     final String path = "src/test/resources/";
@@ -28,7 +32,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_pair.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -60,7 +64,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_multiple.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -70,7 +74,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_only_start.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file);
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -80,7 +84,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_only_end.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -96,7 +100,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_two_ends.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -112,7 +116,7 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_two_starts.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs, is(expectedPairs));
     }
     
@@ -120,7 +124,7 @@ public class FileAnalyzerTest {
     public void test_processFile__no_markers() throws IOException {
         File file = new File(path + "test_no_markers.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file); //SUT
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
@@ -128,7 +132,7 @@ public class FileAnalyzerTest {
     public void test_processFile__same_line() throws IOException {
         File file = new File(path + "test_same_line.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.processFile(file);
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
@@ -137,7 +141,7 @@ public class FileAnalyzerTest {
         File file = new File(path + "not_found.txt");
         
         try {
-            FileAnalyzer.processFile(file); //SUT
+            FileAnalyzer.getInstance().processFile(file); //SUT
             fail("The file does not exist. An exception was expected.");
         } catch (FileNotFoundException e) {
             // do nothing

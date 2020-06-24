@@ -1,4 +1,4 @@
-package com.daimler.sechub.analyzer.core;
+package com.daimler.analyzer.model;
 
 public enum MarkerType {
     START,

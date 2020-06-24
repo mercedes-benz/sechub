@@ -1,4 +1,4 @@
-package com.daimler.sechub.analyzer.core;
+package com.daimler.analyzer.model;
 
 public class MarkerPair {
     private Marker start;

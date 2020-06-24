@@ -8,24 +8,38 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.daimler.analyzer.model.Marker;
+import com.daimler.analyzer.model.MarkerPair;
+import com.daimler.analyzer.model.MarkerType;
+
 /**
- * Analyzes a file for SecHub marker.
+ * Searches through a file looking for SecHub marker.
  */
 public class FileAnalyzer {
     private static final String NOSECHUB = "NOSECHUB";
     private static final String NOSECHUB_END = "END-NOSECHUB";
+    
+    private static FileAnalyzer fileAnalyzer = new FileAnalyzer();
+    
+    private FileAnalyzer() {}
+    
+    public static FileAnalyzer getInstance() {
+        return fileAnalyzer;
+    }
 
     /**
      * Search through a given file for SecHub marker and returns a list with marker.
      * 
-     * Markers: 
+     * Markers:
+     * - Start: NOSECHUB
+     * - END: END-NOSECHUB
      * 
      * @param file
      * @return List<MarerPair> a list of marker pairs
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static List<MarkerPair> processFile(File file) throws FileNotFoundException, IOException {
+    public List<MarkerPair> processFile(File file) throws FileNotFoundException, IOException {
         List<MarkerPair> markerPairs = new LinkedList<>();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
@@ -57,8 +71,8 @@ public class FileAnalyzer {
                 }
 
                 /*
-                 * It only detects a pair, if there is a start and end This approach assumes,
-                 * that the user sets start and end explicitly
+                 * It only detects a pair, if there is a start and end. This approach assumes,
+                 * that the user marks the start and end explicitly.
                  */
                 if (start != null && end != null) {
                     MarkerPair pair = new MarkerPair();
