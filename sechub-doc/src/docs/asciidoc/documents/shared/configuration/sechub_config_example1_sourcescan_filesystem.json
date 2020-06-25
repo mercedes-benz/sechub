@@ -10,6 +10,6 @@
                           "gamechanger-server/src/main/java"] //<3>
          },
          "excludes": ["**/mytestcode/**","**/documentation/**"],  //<4>
-         "additionalSourceExts": [".cplusplus",".py9"]  //<5>
+         "additionalFilenameExtensions": [".cplusplus",".py9"]  //<5>
       }
 }

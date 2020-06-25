@@ -5,7 +5,8 @@
         "fileSystem": {
             "folders": ["../../../../../sechub-integrationtest/src/test/resources/checksum-testfiles"]     
         },
-        "excludes": ["**/exclude-me.txt","README.md"]
+        "excludes": ["**/exclude-me.txt","README.md"],
+        "additionalFilenameExtensions": [".txt"]
      }
     
 }

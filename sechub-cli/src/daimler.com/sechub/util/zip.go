@@ -122,6 +122,9 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 			}
 		}
 		if !isSourceCode { // no matches above -> ignore file
+			if zContext.config.Debug {
+				fmt.Printf("DEBUG: %q no match with source code patterns -> skip\n", relPathFromFolder)
+			}
 			return nil
 		}
 

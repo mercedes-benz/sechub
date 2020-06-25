@@ -53,27 +53,30 @@ public class WithSecHubClient {
 		return this;
 	}
 
-	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+	public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID,
+			IntegrationTestJSONLocation location) {
 		return new AssertJobReport(project, jobUUID, location.getPath());
 	}
 
-	public class AssertJobReport{
+	public class AssertJobReport {
 		UUID jobUUID;
 		TestProject project;
 		String jsonConfigfile;
 		TrafficLight trafficLight;
 
 		public AssertJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
-			this.jobUUID=jobUUID;
-			this.project=project;
-			this.jsonConfigfile=jsonConfigfile;
+			this.jobUUID = jobUUID;
+			this.project = project;
+			this.jsonConfigfile = jsonConfigfile;
 
-			String report = executeReportDownloadAndGetPathOfFile();
-			LOG.debug("loaded report:{}",report);
+			String path = executeReportDownloadAndGetPathOfFile();
+			File file=new File(path);
+			String report = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
+			LOG.debug("loaded report:{}", report);
 			JsonNode data = TestJSONHelper.get().readTree(report);
 			JsonNode tl = data.get("trafficLight");
 			String trafficLightText = tl.asText();
-			this.trafficLight=TrafficLight.fromString(trafficLightText);
+			this.trafficLight = TrafficLight.fromString(trafficLightText);
 		}
 
 		private String executeReportDownloadAndGetPathOfFile() {
@@ -88,7 +91,15 @@ public class WithSecHubClient {
 				fail("Not exit code 0 but:" + result.getExitCode());
 			}
 			/* getReport returns always json in last line, no line separators*/
-			return result.getLastOutputLine();
+			String lastOutputLine = result.getLastOutputLine();
+			// Examnple:" SecHub report written to /tmp/with-sechub-client-8935321107154972222/sechub_report_1d6b228f-74de-450f-9f81-0db6b8ad8be1.json"
+			String identifier = "written to ";
+			int index = lastOutputLine.indexOf(identifier);
+			if (index == -1) {
+				fail("Unexpected Output line:" + lastOutputLine);
+			}
+			String path = lastOutputLine.substring(index+identifier.length());
+			return path;
 		}
 
 		public AssertJobReport hasTrafficLight(TrafficLight expected) {
@@ -195,14 +206,18 @@ public class WithSecHubClient {
 	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
 		return startAsynchronScanFor(project, location, null);
 	}
-	
-	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String,String> environmentVariables) {
-		File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
-		SecHubClientExecutor executor =createExecutor();
+
+	public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location,
+			Map<String, String> environmentVariables) {
+		File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport()
+				.createFileFromResourcePath(location.getPath());
+		SecHubClientExecutor executor = createExecutor();
 		List<String> list = buildCommand(project, false);
-		ExecutionResult result = doExecute(ClientAction.START_ASYNC, sechubConfigFile, executor, list,environmentVariables);
+		ExecutionResult result = doExecute(ClientAction.START_ASYNC, sechubConfigFile, executor, list,
+				environmentVariables);
 		if (result.getExitCode() != 0) {
-			fail("Not exit code 0 but:" + result.getExitCode()+" , last output line was:"+result.getLastOutputLine());
+			fail("Not exit code 0 but:" + result.getExitCode() + " , last output line was:"
+					+ result.getLastOutputLine());
 		}
 		AssertAsyncResult asynchResult = new AssertAsyncResult();
 		asynchResult.jobUUID = UUID.fromString(result.getLastOutputLine());
@@ -215,11 +230,11 @@ public class WithSecHubClient {
 	 *
 	 * @param project
 	 * @param location identifier for the config file which shall be used. Its
-	 *                       automatically resolved from test file support.
+	 *                 automatically resolved from test file support.
 	 * @return
 	 */
 	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
-		return startSynchronScanFor(project, location,null);
+		return startSynchronScanFor(project, location, null);
 	}
 
 	/**
@@ -227,25 +242,27 @@ public class WithSecHubClient {
 	 *
 	 * @param project
 	 * @param location identifier for the config file which shall be used. Its
-	 *                       automatically resolved from test file support.
+	 *                 automatically resolved from test file support.
 	 * @return
 	 */
-	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
+	public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location,
+			Map<String, String> environmentVariables) {
 		File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
-		SecHubClientExecutor executor =createExecutor();
+		SecHubClientExecutor executor = createExecutor();
 
 		List<String> list = buildCommand(project, true);
 
-		return doExecute(ClientAction.START_SYNC, file, executor, list,environmentVariables);
+		return doExecute(ClientAction.START_SYNC, file, executor, list, environmentVariables);
 	}
 
 	private SecHubClientExecutor createExecutor() {
-	    SecHubClientExecutor executor = new SecHubClientExecutor();
-	    executor.setOutputFolder(outputFolder);
-        return executor;
-    }
+		SecHubClientExecutor executor = new SecHubClientExecutor();
+		executor.setOutputFolder(outputFolder);
+		return executor;
+	}
 
-    private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list, Map<String,String> environmentVariables) {
+	private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list,
+			Map<String, String> environmentVariables) {
 		return executor.execute(file, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
 	}
 
@@ -266,27 +283,34 @@ public class WithSecHubClient {
 		}
 		return list;
 	}
+
 	/**
 	 * Starts a code scan - result will be green and not long running
+	 * 
 	 * @param project
 	 * @return
 	 */
 	public AssertExecutionResult startAndWaitForCodeScan(TestProject project) {
-        return startAndWaitForCodeScan(project,IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
-    }
-    public AssertExecutionResult startAndWaitForCodeScan(TestProject project,IntegrationTestJSONLocation location) {
-        ExecutionResult result = startSynchronScanFor(project, location);
-        return AssertExecutionResult.assertResult(result);
-    }
+		return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
+	}
 
-    /**
-     * When not changed by project specific mock data setup this will result in a RED traffic light result.<br><br>
-     * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project to scan!
-     * @param project
-     * @return execution result
-     */
-    public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
-        ExecutionResult result = startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
-        return AssertExecutionResult.assertResult(result);
-    }
+	public AssertExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
+		ExecutionResult result = startSynchronScanFor(project, location);
+		return AssertExecutionResult.assertResult(result);
+	}
+
+	/**
+	 * When not changed by project specific mock data setup this will result in a
+	 * RED traffic light result.<br>
+	 * <br>
+	 * Ensure that "https://fscan.intranet.example.org/" is in whitelist of project
+	 * to scan!
+	 * 
+	 * @param project
+	 * @return execution result
+	 */
+	public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
+		ExecutionResult result = startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
+		return AssertExecutionResult.assertResult(result);
+	}
 }

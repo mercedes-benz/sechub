@@ -76,11 +76,11 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
     In example above all files in following directories are excluded from upload: +
     * `+**/mytestcode/**+` - excludes all files under a directory named `build` including sub directories
     * `+**/documentation/**+` - same for folder `documentation`
-* NOTE: Per default, these directories are excluded so you don't have to add them yourself: +
+* NOTE: Per default, these directories are already excluded: +
 `+**/test/**+` `+**/.git/**+`
 
-<5> Additional source file extensions to include (optional) +
-Only these and the default extensions are added to the .zip file.
+<5> Additional source file extensions to include (optional; you should almost enver need this) +
+Files with these plus the default extensions are added to the .zip file.
 
 
 NOTE: These file extensions are considered as source code:
