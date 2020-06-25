@@ -7,11 +7,14 @@ package util
 import (
 	"archive/zip"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	. "daimler.com/sechub/testutil"
 )
 
 type zipcontext struct {
@@ -20,9 +23,12 @@ type zipcontext struct {
 	config               *ZipConfig
 }
 
+// ZipConfig - contains all necessary things for zipping source code for scanning
 type ZipConfig struct {
-	Folders  []string
-	Excludes []string
+	Folders            []string
+	Excludes           []string
+	SourceCodePatterns []string
+	Debug              bool
 }
 
 // ZipFolders - Will zip given content of given folders into given filePath.
@@ -91,7 +97,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		}
 		/* folder : e.g. "./../../../../build/go-zip/source-for-zip/sub1" */
 		folderAbs, err := filepath.Abs(folder)           /* e.g. /home/albert/project/build/go-zip/source-for-zip/sub1"*/
-		folderAbs = filepath.Clean(folderAbs)            /* remove if trailing is there*/
+		folderAbs = filepath.Clean(folderAbs)            /* remove if trailing / is there*/
 		folderAbs = folderAbs + string(os.PathSeparator) /* append always a trailing slash at the end..., so it will be removed on relative path */
 		if err != nil {
 			return err
@@ -102,10 +108,29 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		}
 		relPathFromFolder := filepath.Clean(strings.TrimPrefix(fileAbs, folderAbs)) /* e.g. "/sub1"*/
 
+		// tribute to Windows...
+		relPathFromFolder = ConvertBackslashPath(relPathFromFolder)
+
+		/* Only accept source code files */
+		isSourceCode := false
+		for _, srcPattern := range zContext.config.SourceCodePatterns {
+			if strings.HasSuffix(relPathFromFolder, srcPattern) {
+				if zContext.config.Debug {
+					fmt.Printf("DEBUG: %q matches %q -> is source code\n", relPathFromFolder, srcPattern)
+				}
+				isSourceCode = true
+			}
+		}
+		if !isSourceCode { // no matches above -> ignore file
+			return nil
+		}
+
 		/* Filter excludes */
 		for _, excludePattern := range zContext.config.Excludes {
 			if Filepathmatch(relPathFromFolder, excludePattern) {
-				//log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder, excludePattern)
+				if zContext.config.Debug {
+					fmt.Printf("DEBUG: %q matches exclude pattern %q -> skip\n", relPathFromFolder, excludePattern)
+				}
 				return nil
 			}
 		}

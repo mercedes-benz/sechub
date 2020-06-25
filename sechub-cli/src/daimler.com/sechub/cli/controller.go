@@ -33,30 +33,40 @@ func Execute() {
 
 	if context.config.trustAll {
 		if !context.config.quiet {
-			fmt.Println("WARNING: Configured to trust all - means unnown service certificate is accepted. Don't use this in production!")
+			fmt.Println("WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
-	action := context.config.action
-	if action == ActionExecuteSynchron {
-		commonWayToApprove(context)
-		waitForSecHubJobDoneAndFailOnTrafficLight(context)
-		os.Exit(ExitCodeOK)
 
-	} else if action == ActionExecuteAsynchron {
-		commonWayToApprove(context)
-		fmt.Println(context.config.secHubJobUUID)
-		os.Exit(ExitCodeOK)
-	} else if action == ActionExecuteGetStatus {
-		state := getSecHubJobState(context, true, false, false)
-		fmt.Println(state)
-		os.Exit(ExitCodeOK)
-
-	} else if action == ActionExecuteGetReport {
-		downloadSechubReport(context)
-		os.Exit(ExitCodeOK)
+	switch context.config.action {
+	case ActionExecuteSynchron:
+		{
+			commonWayToApprove(context)
+			waitForSecHubJobDoneAndFailOnTrafficLight(context)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteAsynchron:
+		{
+			commonWayToApprove(context)
+			fmt.Println(context.config.secHubJobUUID)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteGetStatus:
+		{
+			state := getSecHubJobState(context, true, false, false)
+			fmt.Println(state)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteGetReport:
+		{
+			downloadSechubReport(context)
+			os.Exit(ExitCodeOK)
+		}
+	default:
+		{
+			fmt.Printf("Unknown action '%s'\n", context.config.action)
+			os.Exit(ExitCodeIllegalAction)
+		}
 	}
-	fmt.Printf("Unknown action '%s'", context.config.action)
-	os.Exit(ExitCodeIllegalAction)
 }
 
 /* --------------------------------------------------
@@ -104,6 +114,9 @@ func handleCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
+	// build regexp list for source code file patterns
+	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+
 	// add default exclude patterns to exclude list
 	if !ignoreDefaultExcludes {
 		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
@@ -112,6 +125,7 @@ func handleCodeScan(context *Context) {
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
 	LogDebug(context, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
 	LogDebug(context, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
+	LogDebug(context, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
 	LogDebug(context, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
@@ -120,7 +134,11 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
 
 	/* compress all folders to one single zip file*/
-	config := ZipConfig{Folders: json.CodeScan.FileSystem.Folders, Excludes: json.CodeScan.Excludes}
+	config := ZipConfig{
+		Folders:            json.CodeScan.FileSystem.Folders,
+		Excludes:           json.CodeScan.Excludes,
+		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
+		Debug:              context.config.debug} // pass through debug flag
 	err := ZipFolders(context.sourceZipFileName, &config)
 	if err != nil {
 		fmt.Printf("%s\n", err)

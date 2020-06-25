@@ -24,8 +24,9 @@ type SecHubConfig struct {
 
 // CodeScanConfig contains information how code scan shall be done
 type CodeScanConfig struct {
-	FileSystem FileSystemConfig `json:"fileSystem"`
-	Excludes   []string         `json:"excludes"`
+	FileSystem         FileSystemConfig `json:"fileSystem"`
+	Excludes           []string         `json:"excludes"`
+	SourceCodePatterns []string         `json:"additionalSourceExts"`
 }
 
 // FileSystemConfig contains data for folders

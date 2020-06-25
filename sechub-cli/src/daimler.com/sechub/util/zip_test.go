@@ -63,7 +63,7 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	path := dirname1 + "/testoutput.zip"
 
 	/* execute */
-	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{"*.txt"}})
 
 	/* test */
 	expectedErrMsg := "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
@@ -167,7 +167,7 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
+	err = ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}})
 
 	/* ---- */
 	/* test */
@@ -256,7 +256,10 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	path := dir + "/testoutput.zip"
 
 	/* execute */
-	config := ZipConfig{Folders: []string{dirname1, dirname2}, Excludes: []string{"**/file3.txt", "f*0*.txt"}}
+	config := ZipConfig{
+		Folders:            []string{dirname1, dirname2},
+		Excludes:           []string{"**/file3.txt", "f*0*.txt"},
+		SourceCodePatterns: []string{".txt"}}
 	err = ZipFolders(path, &config)
 
 	/* ---- */
@@ -290,6 +293,86 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	AssertContainsNot(list, "sub3/file3.txt", t) // this file may not be inside, because excluded!
 	AssertSize(list, 2, t)
 
+}
+
+func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
+	/* prepare */
+	dir, err := ioutil.TempDir("", "sechub-cli-temp")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0644)
+		log.Printf("Created not existing directory:%s", dir)
+		if err != nil {
+			t.Fatalf("cannot create test zip folder output - error: %s", err)
+		}
+	}
+	dirname1 := dir + "/sub1"
+	dirname2 := dir + "/sub1/sub2"
+
+	os.Mkdir(dirname1, 0777)
+	os.Mkdir(dirname2, 0777)
+
+	filename0 := dirname1 + "/file0.txt" // should be ignored
+	filename1 := dirname1 + "/file1.c"   // should be added
+	filename2 := dirname2 + "/file2.jpg" // should be ignored
+	filename3 := dirname2 + "/file3.go"  // shoud be added
+
+	err = ioutil.WriteFile(filename0, []byte("hello world0\n"), 0644)
+	Check(err, t)
+	fmt.Printf("written file0: %s\n", filename0)
+
+	err = ioutil.WriteFile(filename1, []byte("hello world1\n"), 0644)
+	Check(err, t)
+	fmt.Printf("written file1: %s\n", filename1)
+
+	err = ioutil.WriteFile(filename2, []byte("hello world2\n"), 0644)
+	Check(err, t)
+	fmt.Printf("written file2: %s\n", filename2)
+
+	err = ioutil.WriteFile(filename3, []byte("hello world3\n"), 0644)
+	Check(err, t)
+	fmt.Printf("written file3: %s\n", filename3)
+
+	path := dir + "/testoutput.zip"
+
+	/* execute */
+	config := ZipConfig{Folders: []string{dirname1}, SourceCodePatterns: []string{".c", ".go"}}
+	err = ZipFolders(path, &config)
+
+	/* ---- */
+	/* test */
+	/* ---- */
+	Check(err, t)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		t.Fatalf("resulted zipfile does not exist!")
+	}
+	fi, err2 := os.Stat(path)
+	if err2 != nil {
+		t.Fatalf("found error: %s", err2)
+	}
+	if fi.Size() < 300 {
+		t.Fatalf("resulted empty zip file!!!")
+	}
+
+	/* read content of zipfile*/
+	zf, err := zip.OpenReader(path)
+	Check(err, t)
+	defer zf.Close()
+
+	list := []string{}
+	for _, file := range zf.File {
+		name := ConvertBackslashPath(file.Name)
+		list = append(list, name)
+	}
+	AssertContainsNot(list, "file0.txt", t)      // file must not be in zip
+	AssertContains(list, "file1.c", t)           // file must exist
+	AssertContainsNot(list, "sub2/file2.jpg", t) // file must not be in zip
+	AssertContains(list, "sub2/file3.go", t)     // file must exist
+	AssertSize(list, 2, t)                       // we expect 2 files in the list
 }
 
 func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
