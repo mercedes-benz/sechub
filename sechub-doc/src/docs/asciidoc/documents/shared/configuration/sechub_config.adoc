@@ -82,8 +82,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 <5> Additional source file extensions to include (optional; you should almost enver need this) +
 Files with these plus the default extensions are added to the .zip file.
 
-
-NOTE: These file extensions are considered as source code:
+NOTE: These file extensions are considered as source code (default extensions):
 [source, ruby]
 ----
 include::supported-source-extensions.txt[]
