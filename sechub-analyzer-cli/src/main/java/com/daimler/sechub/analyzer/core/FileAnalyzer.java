@@ -13,7 +13,7 @@ import com.daimler.analyzer.model.MarkerPair;
 import com.daimler.analyzer.model.MarkerType;
 
 /**
- * Searches through a file looking for SecHub marker.
+ * Searches through a file looking for SecHub markers
  */
 public class FileAnalyzer {
     private static final String NOSECHUB = "NOSECHUB";
@@ -28,7 +28,7 @@ public class FileAnalyzer {
     }
 
     /**
-     * Search through a given file for SecHub marker and returns a list with marker.
+     * Search through a given file for SecHub markers
      * 
      * Markers:
      * - Start: NOSECHUB
@@ -72,7 +72,7 @@ public class FileAnalyzer {
 
                 /*
                  * It only detects a pair, if there is a start and end. This approach assumes,
-                 * that the user marks the start and end explicitly.
+                 * that the user marks the start and end explicitly in the code.
                  */
                 if (start != null && end != null) {
                     MarkerPair pair = new MarkerPair();

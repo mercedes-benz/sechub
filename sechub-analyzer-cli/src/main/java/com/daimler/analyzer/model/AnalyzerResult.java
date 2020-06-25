@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A container class for the analysis result.
+ */
 public class AnalyzerResult {
 
     private Map<String, List<MarkerPair>> findings;
