@@ -2,10 +2,9 @@ package com.daimler.sechub.pds.job;
 
 import static com.daimler.sechub.pds.util.PDSAssert.*;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.assertj.core.util.Arrays;
 
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.PDSNotFoundException;
