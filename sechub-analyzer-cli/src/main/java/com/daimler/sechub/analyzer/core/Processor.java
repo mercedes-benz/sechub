@@ -54,10 +54,10 @@ public class Processor {
      * Analyze files
      * 
      * Creates a list of all files which have be be analyzed.
-     * Starts the file analysis of all files.
+     * Starts the file analysis of all files in the previously created list.
      * 
      * @param rootFiles
-     * @return
+     * @return all files with markers
      */
     protected Map<String, List<MarkerPair>> analyzeFiles(List<File> rootFiles) {
         Map<String, List<MarkerPair>> result = new HashMap<>();
@@ -99,7 +99,7 @@ public class Processor {
      * 
      * @param file the root folder or file
      * @param files a set of files
-     * @return
+     * @return a list of files
      */
     protected Set<File> getFiles(File file, Set<File> files) {
         if (file.isFile()) {
