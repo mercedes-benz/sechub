@@ -15,6 +15,9 @@ public enum PDSJobStatusState {
 	/** JOB is currently running*/
 	RUNNING,
 
+	/** JOB cancelation has been requested*/
+	CANCEL_REQUESTED,
+	
 	/** JOB has been canceled*/
 	CANCELED,
 	

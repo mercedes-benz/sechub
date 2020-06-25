@@ -55,7 +55,7 @@ public class PDSBatchTriggerService {
             return;
         }
         LOG.trace("Trigger execution of next job started.");
-        if (! executionService.isAbleToExecuteNextJob()) {
+        if (executionService.isQueueFull()) {
             LOG.debug("Execution service is not able to execute next job, so cancel here");
             return;
         }
@@ -64,7 +64,7 @@ public class PDSBatchTriggerService {
             LOG.trace("No next job present");
             return;
         }
-        executionService.execute(nextJob.get());
+        executionService.addToQueue(nextJob.get());
     }
 
 }

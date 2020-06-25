@@ -133,7 +133,7 @@ public class PDSJobRepositoryDBTest {
 	@Test
     public void when_two_jobs_exist_but_older_is_canceled_and_newer_failed_findNextJobToExecute_returns_none() {
         /* prepare */
-	    createJob(PDSJobStatusState.CANCELED, 0);
+	    createJob(PDSJobStatusState.CANCEL_REQUESTED, 0);
         createJob(PDSJobStatusState.FAILED, 1);
         
         /* execute */

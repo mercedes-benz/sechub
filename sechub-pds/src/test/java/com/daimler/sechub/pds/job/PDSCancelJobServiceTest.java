@@ -41,7 +41,7 @@ public class PDSCancelJobServiceTest {
     public void canceling_a_job_not_in_state_running_throws_a_not_acceptable_exception() {
         /* prepare */
         for (PDSJobStatusState state : PDSJobStatusState.values()) {
-            if (state == PDSJobStatusState.CANCELED || state == PDSJobStatusState.RUNNING) {
+            if (state == PDSJobStatusState.CANCEL_REQUESTED || state == PDSJobStatusState.RUNNING) {
                 continue;
             }
             assertFailsWithNotAcceptableFor(state);
@@ -71,7 +71,7 @@ public class PDSCancelJobServiceTest {
         serviceToTest.cancelJob(jobUUID);
 
         /* test */
-        assertEquals(PDSJobStatusState.CANCELED, job.getState());
+        assertEquals(PDSJobStatusState.CANCEL_REQUESTED, job.getState());
 
     }
     
