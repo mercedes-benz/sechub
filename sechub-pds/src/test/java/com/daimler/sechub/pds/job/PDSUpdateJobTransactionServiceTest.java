@@ -15,11 +15,11 @@ import org.mockito.ArgumentCaptor;
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.PDSNotFoundException;
 
-public class PDSMarkReadyToStartJobServiceTest {
+public class PDSUpdateJobTransactionServiceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
-    private PDSMarkReadyToStartJobService serviceToTest;
+    private PDSUpdateJobTransactionService serviceToTest;
     private UUID jobUUID;
     private PDSJobRepository repository;
     private PDSJob job;
@@ -35,7 +35,7 @@ public class PDSMarkReadyToStartJobServiceTest {
         
         when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
         
-        serviceToTest = new PDSMarkReadyToStartJobService();
+        serviceToTest = new PDSUpdateJobTransactionService();
         serviceToTest.repository=repository;
     }
     
@@ -54,7 +54,7 @@ public class PDSMarkReadyToStartJobServiceTest {
         job.setState(state);
         try {
             /* execute */
-            serviceToTest.markReadyToStart(jobUUID);
+            serviceToTest.markReadyToStartInOwnTransaction(jobUUID);
             
         }catch(PDSNotAcceptableException e) {
             assertTrue(e.getMessage().contains("accepted is only:[CREATED]"));
@@ -74,7 +74,7 @@ public class PDSMarkReadyToStartJobServiceTest {
   
         /* execute */
         UUID notExistingJobUUID = UUID.randomUUID();
-        serviceToTest.markReadyToStart(notExistingJobUUID);
+        serviceToTest.markReadyToStartInOwnTransaction(notExistingJobUUID);
         
     }
 
@@ -84,7 +84,7 @@ public class PDSMarkReadyToStartJobServiceTest {
         assertEquals(PDSJobStatusState.CREATED, job.state); 
         
         /* execute */
-        serviceToTest.markReadyToStart(jobUUID);
+        serviceToTest.markReadyToStartInOwnTransaction(jobUUID);
         
         /* test */
         verify(repository).findById(jobUUID); // check loaded

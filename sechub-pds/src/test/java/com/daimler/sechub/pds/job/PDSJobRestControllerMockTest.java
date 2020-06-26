@@ -39,7 +39,7 @@ import com.daimler.sechub.test.TestPortProvider;
 /* @formatter:off */
 @ContextConfiguration(classes = { 
         PDSJobRestController.class,
-        PDSMarkReadyToStartJobService.class,
+        PDSUpdateJobTransactionService.class,
         PDSFileUploadJobService.class,
         PDSCreateJobService.class, 
         PDSGetJobResultService.class, 
@@ -47,7 +47,7 @@ import com.daimler.sechub.test.TestPortProvider;
         PDSGetJobStatusService.class,
 		PDSJobRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
-@WithMockUser(authorities = PDSRoleConstants.ROLE_SUPERADMIN)
+@WithMockUser(authorities = PDSRoleConstants.ROLE_USER)
 @ActiveProfiles(PDSProfiles.TEST)
 public class PDSJobRestControllerMockTest {
 
@@ -69,7 +69,7 @@ public class PDSJobRestControllerMockTest {
     private PDSFileUploadJobService mockedFileUploadJobService;
 	
 	@MockBean
-	private PDSMarkReadyToStartJobService mockedMarkReadyToStartJobService;
+	private PDSUpdateJobTransactionService mockedMarkReadyToStartJobService;
 	
 	@MockBean
 	private PDSCancelJobService mockedCancelJobService;
@@ -164,7 +164,7 @@ public class PDSJobRestControllerMockTest {
 
         /* @formatter:on */
         
-        verify(mockedMarkReadyToStartJobService).markReadyToStart(jobUUID);
+        verify(mockedMarkReadyToStartJobService).markReadyToStartInOwnTransaction(jobUUID);
 
     }
 	

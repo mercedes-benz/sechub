@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.execution.PDSExecutionService;
+import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
 @Service
 public class PDSCancelJobService {
@@ -23,6 +24,7 @@ public class PDSCancelJobService {
     @Autowired
     PDSExecutionService executionService;
 
+    @UseCaseUserCancelsJob
     public void cancelJob(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 

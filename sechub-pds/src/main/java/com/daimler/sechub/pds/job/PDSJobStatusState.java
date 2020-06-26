@@ -12,6 +12,9 @@ public enum PDSJobStatusState {
 	/** JOB has been marked to start, but not running */
 	READY_TO_START,
 	
+	/** JOB is queued */
+    QUEUED,
+	
 	/** JOB is currently running*/
 	RUNNING,
 

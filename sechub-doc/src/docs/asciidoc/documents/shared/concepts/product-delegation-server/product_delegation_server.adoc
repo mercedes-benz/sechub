@@ -104,6 +104,7 @@ JOB configuration is done by REST API call (create JOB)
 
 ====== Security Product Server
 Having new security product XYZ but being a command line tool, we 
+
 - create a config file and fill with necessary data
 - start wanted amount of `ProductDelegationServer` instances with dedicated configuration setup to have a clustered, server ready execution of CLI security products.
 

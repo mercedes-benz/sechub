@@ -1,6 +1,6 @@
 package com.daimler.sechub.pds.execution;
 
-public class PDSExecutionCallResult {
+public class PDSExecutionResult {
 
     int exitCode;
     boolean failed;

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
 @Service
@@ -35,6 +36,7 @@ public class PDSFileUploadJobService {
     @Autowired
     PDSJobRepository repository;
 
+    @UseCaseUserUploadsJobData
     public void upload(UUID jobUUID, String fileName, MultipartFile file, String checkSum) {
         notNull(jobUUID, "job uuid may not be null");
         notNull(file, "file may not be null");

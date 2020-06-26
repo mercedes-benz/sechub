@@ -64,7 +64,7 @@ public class PDSBatchTriggerService {
             LOG.trace("No next job present");
             return;
         }
-        executionService.addToQueue(nextJob.get());
+        executionService.addToExecutionQueue(nextJob.get());
     }
 
 }

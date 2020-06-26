@@ -8,12 +8,15 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
+
 @Service
 public class PDSGetJobStatusService {
 
     @Autowired
     PDSJobRepository repository;
 
+    @UseCaseUserFetchesJobStatus
     public PDSJobStatus getJobStatus(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
         

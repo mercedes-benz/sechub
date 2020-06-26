@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.daimler.sechub.pds.job.PDSJobRestController;
 
 /**
- * Test simly starts up spring container and checks a schedule rest controller can be initiated. So just a smoke test
+ * Test simply starts up spring container and checks a schedule rest controller can be initiated. So just a smoke test
  * @author Albert Tregnaghi
  *
  */

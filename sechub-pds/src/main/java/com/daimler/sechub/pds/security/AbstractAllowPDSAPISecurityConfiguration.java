@@ -37,6 +37,8 @@ public abstract class AbstractAllowPDSAPISecurityConfiguration extends WebSecuri
  		 authorizeRequests().
  				antMatchers(PDSAPIConstants.API_JOB+"**").
  					hasAnyAuthority(ROLE_USER, ROLE_SUPERADMIN).
+ 				antMatchers(PDSAPIConstants.API_ADMIN+"**").
+                    hasAnyAuthority(ROLE_SUPERADMIN).
  				antMatchers(PDSAPIConstants.API_ANONYMOUS+"**").
  					permitAll().
  				/* to prevent configuration failures - I had this issue before -

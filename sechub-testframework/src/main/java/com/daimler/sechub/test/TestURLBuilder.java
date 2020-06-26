@@ -106,6 +106,7 @@ public class TestURLBuilder {
     public class ProductDelegationServerUrlsBuilder{
         
         private static final String API_PDS_JOB="/api/job";
+        private static final String API_PDS_ADMIN="/api/admin";
         
         public String buildCreateJob() {
             return buildUrl(API_PDS_JOB, "create");
@@ -129,6 +130,10 @@ public class TestURLBuilder {
 
         public String buildCancelJob(UUID jobUUID) {
             return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
+        }
+        
+        public String buildAdminGetExecutionStatus() {
+            return buildUrl(API_PDS_ADMIN, "execution/status");
         }
     }
     

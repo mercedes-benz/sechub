@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.security.PDSUserContextService;
+import com.daimler.sechub.pds.usecase.UseCaseUserCreatesJob;
 
 @Service
 public class PDSCreateJobService {
@@ -21,6 +22,7 @@ public class PDSCreateJobService {
     @Autowired
     PDSConfigurationValidator configurationValidator;
 
+    @UseCaseUserCreatesJob
     public PDSJobCreateResult createJob(PDSConfiguration configuration) {
         
         configurationValidator.assertPDSConfigurationValid(configuration);
