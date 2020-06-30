@@ -16,6 +16,8 @@ public enum PDSUseCaseIdentifier {
     
     UC_ADMIN_FETCHES_EXECUTION_STATUS,
     
+    UC_ANONYMOUS_CHECK_ALIVE,
+    
     ;
     
     /* +---------------------------------------------------------------------+ */

@@ -106,6 +106,7 @@ public class TestURLBuilder {
     public class ProductDelegationServerUrlsBuilder{
         
         private static final String API_PDS_JOB="/api/job";
+        private static final String API_PDS_ANONYMOUS="/api/anonymous";
         private static final String API_PDS_ADMIN="/api/admin";
         
         public String buildCreateJob() {
@@ -134,6 +135,10 @@ public class TestURLBuilder {
         
         public String buildAdminGetExecutionStatus() {
             return buildUrl(API_PDS_ADMIN, "execution/status");
+        }
+
+        public String buildAnonymousCheckAlive() {
+            return buildUrl(API_PDS_ANONYMOUS, "check/alive");
         }
     }
     
