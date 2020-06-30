@@ -151,10 +151,14 @@ We use currently junit4 as testframework and not junit5.
 *Structure*
 For a better maintenance and reading of tests, we insist on comments dividing a 
 
-- prepare
-- check preconditions _(optional)_
-- execute
-- test
+- *prepare* +
+  setup of mocks, creation of objects etc.
+- *check preconditions* _(optional)_ +
+  if necessary check that precondition is fulfilled before test is started
+- *execute* +
+  Execute the part / method which shall be tested
+- *test*
+  
 
 Except when test code is just a one liner this would be ridiculous.. 
 
@@ -199,10 +203,11 @@ public void before(){
 public void mailservice_is_called(){
 
   /* execute */
-  serviceToTest.informUser("user1")
+  boolean mailSent = serviceToTest.informUser("user1");
 
   /* test */
-  verify(mailService).sendMail  
+  verify(mailService).sendMail("user1");
+  assertTrue(mailSent);
 
 }
 
@@ -217,7 +222,7 @@ public void inform_user_calls_validator_and_throws_validator_exception(){
   doThrow(new IllegalArgumentException("wrong user")).when(validator.validate(eq("user1"));
 
   /* execute */
-  serviceToTest.informUser("user1")
+  serviceToTest.informUser("user1");
 
 
 }
