@@ -1,6 +1,6 @@
 package com.daimler.sechub.pds.execution;
 
-public class PDSExecutionConfigEntry {
+public class PDSExecutionParameterEntry {
 
     private String key;
 

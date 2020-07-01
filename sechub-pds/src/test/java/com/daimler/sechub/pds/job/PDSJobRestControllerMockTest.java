@@ -93,10 +93,10 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:on */
 
         /* test */
-        ArgumentCaptor<PDSConfiguration> configurationCaptor = ArgumentCaptor.forClass(PDSConfiguration.class);
+        ArgumentCaptor<PDSJobConfiguration> configurationCaptor = ArgumentCaptor.forClass(PDSJobConfiguration.class);
 		verify(mockedCreateService).createJob(configurationCaptor.capture());
 		
-		PDSConfiguration configuration = configurationCaptor.getValue();
+		PDSJobConfiguration configuration = configurationCaptor.getValue();
         assertEquals("1.0", configuration.getApiVersion());
 		assertEquals(sechubJobUUID, configuration.getSechubJobUUID());
 	}

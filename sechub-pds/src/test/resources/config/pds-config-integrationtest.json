@@ -1,0 +1,13 @@
+{
+    "apiVersion" : "1.0",
+    
+    "products" : [
+        {
+            "id" : "PRODUCT_1",
+            "path" : "/srv/security/scanner1.sh",
+            "scanType" : "codeScan",
+            "description" : "codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3"
+            
+        }
+    ]
+}

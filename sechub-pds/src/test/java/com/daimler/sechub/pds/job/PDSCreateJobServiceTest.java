@@ -26,14 +26,14 @@ public class PDSCreateJobServiceTest {
     private UUID createdJob1UUID;
     private PDSJob resultJob1;
     private PDSUserContextService userContextService;
-    private PDSConfigurationValidator configurationValidator;
+    private PDSJobConfigurationValidator configurationValidator;
 
     @Before
     public void before() throws Exception {
         sechubJobUUID = UUID.randomUUID();
         createdJob1UUID = UUID.randomUUID();
         repository = mock(PDSJobRepository.class);
-        configurationValidator = mock(PDSConfigurationValidator.class);
+        configurationValidator = mock(PDSJobConfigurationValidator.class);
 
         userContextService = mock(PDSUserContextService.class);
         when(userContextService.getUserId()).thenReturn("callerName");
@@ -52,7 +52,7 @@ public class PDSCreateJobServiceTest {
     @Test
     public void creating_a_job_returns_jobUUD_of_stored_job_in_repository() {
         /* prepare */
-        PDSConfiguration configuration = new PDSConfiguration();
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
         configuration.setSechubJobUUID(sechubJobUUID);
 
         /* execute */
@@ -67,7 +67,7 @@ public class PDSCreateJobServiceTest {
     @Test
     public void creating_a_job_sets_current_user_as_owner() {
         /* prepare */
-        PDSConfiguration configuration = new PDSConfiguration();
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
 
         /* execute */
         PDSJobCreateResult result = serviceToTest.createJob(configuration);
@@ -82,7 +82,7 @@ public class PDSCreateJobServiceTest {
     @Test
     public void creating_a_job_sets_configuration_as_json() throws Exception{
         /* prepare */
-        PDSConfiguration configuration = new PDSConfiguration();
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
 
         /* execute */
         serviceToTest.createJob(configuration);
@@ -94,14 +94,14 @@ public class PDSCreateJobServiceTest {
         String json = configuration.toJSON();
         // Next line normally not valid, but validator does not throw an exception here,
         // so we can have an empty config here... Just to test it
-        assertEquals("{\"config\":[]}", json);
+        assertEquals("{\"parameters\":[]}", json);
         assertEquals(json, jobCaptor.getValue().getJsonConfiguration());
     }
 
     @Test
     public void creating_a_job_calls_configurationValidator() {
         /* prepare */
-        PDSConfiguration configuration = new PDSConfiguration();
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
 
         /* execute */
         serviceToTest.createJob(configuration);
@@ -113,7 +113,7 @@ public class PDSCreateJobServiceTest {
     @Test
     public void creating_a_job_fires_exception_thrown_by_validator() {
         /* prepare */
-        PDSConfiguration configuration = new PDSConfiguration();
+        PDSJobConfiguration configuration = new PDSJobConfiguration();
         doThrow(new PDSNotAcceptableException("ups")).when(configurationValidator).assertPDSConfigurationValid(configuration);
 
         /* test */

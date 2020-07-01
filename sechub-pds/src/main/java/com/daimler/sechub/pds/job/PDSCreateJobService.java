@@ -20,10 +20,10 @@ public class PDSCreateJobService {
     PDSJobRepository repository;
 
     @Autowired
-    PDSConfigurationValidator configurationValidator;
+    PDSJobConfigurationValidator configurationValidator;
 
     @UseCaseUserCreatesJob
-    public PDSJobCreateResult createJob(PDSConfiguration configuration) {
+    public PDSJobCreateResult createJob(PDSJobConfiguration configuration) {
         
         configurationValidator.assertPDSConfigurationValid(configuration);
 

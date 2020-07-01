@@ -9,9 +9,9 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.pds.execution.PDSExecutionConfigEntry;
+import com.daimler.sechub.pds.execution.PDSExecutionParameterEntry;
 
-public class PDSConfigurationTest {
+public class PDSJobConfigurationTest {
 
     @Before
     public void before() throws Exception {
@@ -27,7 +27,7 @@ public class PDSConfigurationTest {
                 "    \"apiVersion\" : \"1.0\",\n" + 
                 "    \"sechubJobUUID\" : \""+sechubJobUUID.toString()+"\",\n" + 
                 "\n" + 
-                "    \"config\": [\n" + 
+                "    \"parameters\": [\n" + 
                 "        {\n" + 
                 "            \"key\" : \"sechub.test.key.1\", \n" + 
                 "            \"value\" : \"value1\" \n" + 
@@ -42,7 +42,7 @@ public class PDSConfigurationTest {
         
 
         /* execute */
-        PDSConfiguration result = PDSConfiguration.fromJSON(json);
+        PDSJobConfiguration result = PDSJobConfiguration.fromJSON(json);
         
 
         /* test */
@@ -50,15 +50,15 @@ public class PDSConfigurationTest {
         assertEquals("1.0", result.getApiVersion());
         assertEquals(sechubJobUUID, result.getSechubJobUUID());
 
-        List<PDSExecutionConfigEntry> config = result.getConfig();
+        List<PDSExecutionParameterEntry> config = result.getParameters();
         assertEquals(2, config.size());
-        Iterator<PDSExecutionConfigEntry> ci = config.iterator();
+        Iterator<PDSExecutionParameterEntry> ci = config.iterator();
         
-        PDSExecutionConfigEntry entry1 = ci.next();
+        PDSExecutionParameterEntry entry1 = ci.next();
         assertEquals("sechub.test.key.1",entry1.getKey());
         assertEquals("value1",entry1.getValue());
 
-        PDSExecutionConfigEntry entry2 = ci.next();
+        PDSExecutionParameterEntry entry2 = ci.next();
         assertEquals("sechub.test.key.2",entry2.getKey());
         assertEquals("value2",entry2.getValue());
         

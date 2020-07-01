@@ -59,7 +59,7 @@ public class PDSJobRestController {
 	@RequestMapping(path = "create", method = RequestMethod.POST)
 	@UseCaseUserCreatesJob
 	public PDSJobCreateResult createJob(
-			@RequestBody PDSConfiguration configuration) {
+			@RequestBody PDSJobConfiguration configuration) {
 		return createJobService.createJob(configuration);
 	}
 
