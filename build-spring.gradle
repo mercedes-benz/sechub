@@ -67,7 +67,7 @@ subprojects {
        if (projectType.springDocProjects.contains(project)){
             compile(library.springboot_starter_web)
        }
-       if (project.name.equals('sechub-server')){
+       if (projectType.bootableSpringApplicationProjects.contains(project)){
             bootJar.enabled = true
             bootRun.enabled = true
             springBoot.buildInfo() // create build.properties in META-INF

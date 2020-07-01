@@ -22,7 +22,7 @@ dependencies {
 }
 
 task assembleArtifact(type: Zip, group: 'sechub') {
-    archiveName "sechub-server-documentation-${project.version}.zip"
+    archiveName "sechub-pds-documentation-${project.version}.zip"
     archiveClassifier.set('documentation')
     destinationDir file("$buildDir/zip/")
     from "${projectDir}/build/go/"
@@ -59,7 +59,7 @@ tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
  */
 apply plugin: 'maven-publish'
 
-version =   VersionData.getProductDelgationServerVersion()
+version =   VersionData.getPdsVersion()
 
 publishing {
     publications {

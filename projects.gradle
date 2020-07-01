@@ -52,6 +52,11 @@ projectType = [
                     project(':sechub-scan-product-sereco'),
                     project(':sechub-scan-product-pds'),
             ],
+            
+            bootableSpringApplicationProjects:[
+                   project(':sechub-server'),
+                   project(':sechub-pds'),
+            ],
 
             /* documentation projects */
             springDocProjects: [
