@@ -1,6 +1,6 @@
 package com.daimler.analyzer.model;
 
-public class MarkerPair {
+public class MarkerPair implements Copyable<MarkerPair> {
     private Marker start;
     private Marker end;
     
@@ -54,5 +54,18 @@ public class MarkerPair {
         } else if (!start.equals(other.start))
             return false;
         return true;
+    }
+
+    @Override
+    public MarkerPair deepClone() {
+        MarkerPair pair = new MarkerPair();
+        
+        Marker startClone = start.deepClone();
+        Marker endClone = end.deepClone();
+        
+        pair.setStart(startClone);
+        pair.setEnd(endClone);
+        
+        return pair;
     }
 }

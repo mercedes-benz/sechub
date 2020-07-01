@@ -2,11 +2,11 @@ package com.daimler.sechub.analyzer.cli;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
 
 import org.hamcrest.core.StringContains;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Analyzer CLI Integration/System Tests
@@ -23,16 +23,19 @@ public class AnalyzerTest {
     
     @Test
     public void test_start__single_folder() {
+        /* prepare */
         String folderPath = path + "test/";
         
         String[] commandLineArguments = {folderPath};
         
-        String output = analyzer.start(commandLineArguments); //SUT
-        
-        String start = "{\"findings\":{";
+        String start = "{\"noSecHubMarkers\":{";
         String testPair = "test/test_pair.txt\":[{\"end\":{\"column\":3,";
         String testPair2 = "test/test_pair2.txt\":[{\"end\":{\"column\":3,";
-
+        
+        /* execute */
+        String output = analyzer.start(commandLineArguments);
+        
+        /* test */
         assertThat(output, startsWith(start));
         assertThat(output, StringContains.containsString(testPair));
         assertThat(output, StringContains.containsString(testPair2));
@@ -40,45 +43,57 @@ public class AnalyzerTest {
     
     @Test
     public void test_start__single_file_pretty_print() {
+        /* prepare */
         String filePath = path + "test_pair.txt";
         
         String[] commandLineArguments = {"-p", filePath};
         
-        String output = analyzer.start(commandLineArguments); //SUT
-        
         String start = "{";
-        String findings = "  \"findings\" : {";
-
+        String findings = "  \"noSecHubMarkers\" : {";
+        
+        /* execute */
+        String output = analyzer.start(commandLineArguments);
+        
+        /* test */
         assertThat(output, startsWith(start));
         assertThat(output, StringContains.containsString(findings));
     }
     
     @Test
     public void test_start__folder_does_not_exist() {
+        /* prepare */
         String folderPath = path + "test/does_not_exist/";
         
         String[] commandLineArguments = {folderPath};
         
-        String output = analyzer.start(commandLineArguments); //SUT
+        /* execute */
+        String output = analyzer.start(commandLineArguments);
         
+        /* test */
         assertThat(output, is(nullValue()));
     }
     
     @Test
-    public void test_start__no_arguments() {       
+    public void test_start__no_arguments() {     
+        /* prepare */
         String[] commandLineArguments = {};
         
-        String output = analyzer.start(commandLineArguments); //SUT
+        /* execute */
+        String output = analyzer.start(commandLineArguments);
         
+        /* test */
         assertThat(output, is(nullValue()));
     }
     
     @Test
-    public void test_start__help() {       
+    public void test_start__help() {
+        /* prepare */
         String[] commandLineArguments = {"-h"};
         
-        String output = analyzer.start(commandLineArguments); //SUT
+        /* execute */
+        String output = analyzer.start(commandLineArguments);
         
+        /* test */
         assertThat(output, is(nullValue()));
     }
 }

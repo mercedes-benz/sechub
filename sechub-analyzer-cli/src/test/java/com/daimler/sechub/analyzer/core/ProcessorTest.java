@@ -1,7 +1,7 @@
 package com.daimler.sechub.analyzer.core;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -29,7 +29,7 @@ import com.daimler.analyzer.model.AnalyzerResult;
 public class ProcessorTest {
     
     final String path = "src/test/resources/";
-    private Processor processor = null;
+    private Processor processor;
     
     @Before
     public void setUp() {

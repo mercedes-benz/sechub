@@ -11,21 +11,22 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.sechub.analyzer.core.Processor;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.JSON.Feature;
+
+import ch.qos.logback.classic.Level;
+
 import com.fasterxml.jackson.jr.ob.JSONObjectException;
 
 public class Analyzer {
     private String applicationName;
     private boolean prettyPrint = false;
-    private final static Logger logger = LogManager.getLogger(Analyzer.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(Analyzer.class.getName());
     
     public Analyzer(String applicationName) {
         this.applicationName = applicationName;
@@ -49,8 +50,11 @@ public class Analyzer {
             List<String> files = commandLine.getArgList();
             
             if (commandLine.hasOption("d")) {
-                Configurator.setRootLevel(Level.ALL);
-                Logger logger = LogManager.getRootLogger();
+                /* Set LogBack logging level */
+                ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.ALL);
+                
+                /* Output message to root logger */
+                Logger logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
                 logger.info("Detailed output.");
             }
             

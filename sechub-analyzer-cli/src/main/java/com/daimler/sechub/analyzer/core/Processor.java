@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.analyzer.model.MarkerPair;
 
 public class Processor {
-    private final static Logger logger = LogManager.getLogger(Processor.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(Processor.class.getName());
     
     public Processor() {}
     
@@ -64,13 +64,13 @@ public class Processor {
 
         Set<File> files = new HashSet<>();
         
-        // create a list of all files
+        /* create a list of all files */
         for (File rootFile : rootFiles) {
             Set<File> filesUnderRoot = getFiles(rootFile, new HashSet<>());
             files.addAll(filesUnderRoot);
         }
 
-        // process files
+        /* process files */
         for (File file : files) {
             try {
                 logger.debug("Analyzing: " + file.getPath());

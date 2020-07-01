@@ -49,23 +49,23 @@ public class FileAnalyzer {
             Marker start = null;
             Marker end = null;
 
-            // iterate through every line in the file
+            /* iterate through every line in the file */
             while ((line = bufferedReader.readLine()) != null) {
                 lineNumber++;
 
-                // search for the NOSECHUB marker
-                int noSecHub = line.indexOf(NOSECHUB);
+                /* search for the NOSECHUB marker */
+                int noSecHubIndex = line.indexOf(NOSECHUB);
 
-                if (noSecHub > -1) {
-                    // search for NOSECHB_END marker
-                    int endNoSecHub = line.indexOf(NOSECHUB_END);
+                if (noSecHubIndex > -1) {
+                    /* search for NOSECHB_END marker */
+                    int endNoSecHubIndex = line.indexOf(NOSECHUB_END);
 
-                    if (endNoSecHub > -1) {
-                        end = new Marker(MarkerType.END, lineNumber, endNoSecHub);
+                    if (endNoSecHubIndex > -1) {
+                        end = new Marker(MarkerType.END, lineNumber, endNoSecHubIndex);
                     } else {
-                        // only set a new start marker if no previous start was found
+                        /* only set a new start marker if no previous start was found */
                         if (start == null) {
-                            start = new Marker(MarkerType.START, lineNumber, noSecHub);
+                            start = new Marker(MarkerType.START, lineNumber, noSecHubIndex);
                         }
                     }
                 }

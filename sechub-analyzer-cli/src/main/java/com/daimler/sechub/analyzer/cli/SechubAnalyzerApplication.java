@@ -1,14 +1,18 @@
 package com.daimler.sechub.analyzer.cli;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Main {
+import ch.qos.logback.classic.Level;
+
+public class SechubAnalyzerApplication {
     private final static String APP_NAME = "analyzer";
     
     public static void main(String[] commandLineArguments) {  
-        // set Log4j2 log level
-        Configurator.setRootLevel(Level.WARN);
+        /* 
+         * Set LogBack log level to Warning
+         */
+        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.WARN);
         
         Analyzer analyzer = new Analyzer(APP_NAME);
         

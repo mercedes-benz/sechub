@@ -1,6 +1,6 @@
 package com.daimler.analyzer.model;
 
-public class Marker {
+public class Marker implements Copyable<Marker> {
     private long line;
     private long column;
     private MarkerType type;
@@ -54,5 +54,12 @@ public class Marker {
         if (type != other.type)
             return false;
         return true;
+    }
+
+    @Override
+    public Marker deepClone() {
+        Marker marker = new Marker(type, line, column);
+        
+        return marker;
     }
 }
