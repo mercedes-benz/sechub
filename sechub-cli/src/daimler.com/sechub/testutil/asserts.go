@@ -4,7 +4,6 @@ package util
 import (
 	"encoding/json"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -82,7 +81,7 @@ func AssertFalse(found bool, t *testing.T) {
 // Check given error is nil, otherwise fails fatal
 func Check(err error, t *testing.T) {
 	if err != nil {
-		t.Fatalf("Error detected:%s", err)
+		t.Fatalf("Error detected: %q", err)
 	}
 }
 
@@ -94,11 +93,6 @@ func Contains(list []string, wanted string) bool {
 		}
 	}
 	return false
-}
-
-/* converts a path containing windows separators to unix ones */
-func ConvertBackslashPath(path string) string {
-	return strings.Replace(path, "\\", "/", -1) /* convert all \ to / if on a windows machine */
 }
 
 func jsonBytesEqual(a, b []byte) (bool, error) {

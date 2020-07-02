@@ -3,6 +3,8 @@ package cli
 
 import (
 	"fmt"
+
+	. "daimler.com/sechub/util"
 )
 
 func InitializeContext() *Context {
@@ -49,5 +51,5 @@ func debugNotDefinedAsOption(context *Context, fieldName string, fieldValue stri
 	if !context.config.debug {
 		return
 	}
-	LogDebug(context, fmt.Sprintf("'%s' not defined by option - use entry from config file:'%s'", fieldName, fieldValue))
+	LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - use entry from config file:'%s'", fieldName, fieldValue))
 }

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	. "daimler.com/sechub/util"
 )
 
 // HandleHTTPError handler method for http errors

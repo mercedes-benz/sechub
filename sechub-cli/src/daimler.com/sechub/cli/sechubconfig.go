@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	. "daimler.com/sechub/util"
 )
 
 // The configuration pendant in Go. But we do only necessary parts from JSON file!
@@ -66,7 +68,7 @@ func showHelpHint() {
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	LogDebug(context, fmt.Sprintf("Loading config file: '%s'\n", filePath))
+	LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'\n", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)

@@ -123,10 +123,10 @@ func handleCodeScan(context *Context) {
 	}
 
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	LogDebug(context, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-	LogDebug(context, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-	LogDebug(context, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-	LogDebug(context, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
+	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
 		return
@@ -214,7 +214,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		data, err := ioutil.ReadAll(response.Body)
 		HandleHTTPError(err)
 		if context.config.debug {
-			LogDebug(context, fmt.Sprintf("get job status :%s", string(data)))
+			LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */
@@ -290,7 +290,7 @@ func getSecHubJobReport(context *Context) string {
 	} else {
 		header["Accept"] = "application/json"
 	}
-	LogDebug(context, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
+	LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -298,7 +298,7 @@ func getSecHubJobReport(context *Context) string {
 
 	jsonString := string(data)
 	if context.config.debug {
-		LogDebug(context, fmt.Sprintf("get job report :%s", jsonString))
+		LogDebug(context.config.debug, fmt.Sprintf("get job report :%s", jsonString))
 	}
 	return jsonString
 }

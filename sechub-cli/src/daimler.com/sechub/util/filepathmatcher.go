@@ -37,3 +37,8 @@ func Filepathmatch(path string, pattern string) (result bool) {
 
 	return matched
 }
+
+// ConvertBackslashPath - converts a path containing windows separators to unix ones
+func ConvertBackslashPath(path string) string {
+	return strings.Replace(path, "\\", "/", -1) /* convert all \ to / if on a windows machine */
+}

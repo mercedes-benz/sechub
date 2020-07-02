@@ -13,8 +13,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	. "daimler.com/sechub/testutil"
 )
 
 type zipcontext struct {
@@ -38,13 +36,7 @@ type ZipConfig struct {
 //
 func ZipFolders(filePath string, config *ZipConfig) (err error) {
 	filename, _ := filepath.Abs(filePath)
-	/* create parent folders if not existing */
-	if _, err = os.Stat(filename); os.IsNotExist(err) {
-		err = os.MkdirAll(filepath.Dir(filename), 0644)
-		if err != nil {
-			return err
-		}
-	}
+
 	/* create zip file */
 	newZipFile, err := os.Create(filename)
 	if err != nil {
@@ -96,7 +88,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 			return errors.New("Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!")
 		}
 		/* folder : e.g. "./../../../../build/go-zip/source-for-zip/sub1" */
-		folderAbs, err := filepath.Abs(folder)           /* e.g. /home/albert/project/build/go-zip/source-for-zip/sub1"*/
+		folderAbs, err := filepath.Abs(folder)           /* e.g. /home/project/build/go-zip/source-for-zip/sub1"*/
 		folderAbs = filepath.Clean(folderAbs)            /* remove if trailing / is there*/
 		folderAbs = folderAbs + string(os.PathSeparator) /* append always a trailing slash at the end..., so it will be removed on relative path */
 		if err != nil {
@@ -108,32 +100,28 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		}
 		relPathFromFolder := filepath.Clean(strings.TrimPrefix(fileAbs, folderAbs)) /* e.g. "/sub1"*/
 
-		// tribute to Windows...
+		// tribute to Windows... (convert \ to / )
 		relPathFromFolder = ConvertBackslashPath(relPathFromFolder)
 
-		/* Only accept source code files */
+		// Only accept source code files
 		isSourceCode := false
 		for _, srcPattern := range zContext.config.SourceCodePatterns {
 			if strings.HasSuffix(relPathFromFolder, srcPattern) {
-				if zContext.config.Debug {
-					fmt.Printf("DEBUG: %q matches %q -> is source code\n", relPathFromFolder, srcPattern)
-				}
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches %q -> is source code", relPathFromFolder, srcPattern))
 				isSourceCode = true
 			}
 		}
-		if !isSourceCode { // no matches above -> ignore file
-			if zContext.config.Debug {
-				fmt.Printf("DEBUG: %q no match with source code patterns -> skip\n", relPathFromFolder)
-			}
+
+		// no matches above -> ignore file
+		if !isSourceCode {
+			LogDebug(zContext.config.Debug, fmt.Sprintf("%q no match with source code patterns -> skip", relPathFromFolder))
 			return nil
 		}
 
-		/* Filter excludes */
+		// Filter excludes
 		for _, excludePattern := range zContext.config.Excludes {
 			if Filepathmatch(relPathFromFolder, excludePattern) {
-				if zContext.config.Debug {
-					fmt.Printf("DEBUG: %q matches exclude pattern %q -> skip\n", relPathFromFolder, excludePattern)
-				}
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", relPathFromFolder, excludePattern))
 				return nil
 			}
 		}

@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	. "daimler.com/sechub/util"
 )
 
 /**
@@ -23,7 +25,7 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
 	/* we use unfilledByteValue - means origin template content, unfilled. Prevents password leak in logs */
-	LogDebug(context, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q\n", url, header, context.unfilledByteValue))
+	LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q\n", url, header, context.unfilledByteValue))
 	/* send */
 
 	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue))
