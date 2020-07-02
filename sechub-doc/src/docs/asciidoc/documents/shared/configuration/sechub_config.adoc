@@ -79,7 +79,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 * NOTE: Per default, these directories are already excluded: +
 `+**/test/**+` `+**/.git/**+`
 
-<5> Additional source file extensions to include (optional; you should almost enver need this) +
+<5> Additional source file extensions to include (optional; you should almost never need this) +
 Files with these plus the default extensions are added to the .zip file.
 
 NOTE: These file extensions are considered as source code (default extensions):
