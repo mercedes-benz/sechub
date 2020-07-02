@@ -18,9 +18,10 @@ import com.daimler.analyzer.model.MarkerPair;
 
 public class Processor {
     private final static Logger logger = LoggerFactory.getLogger(Processor.class.getName());
-    
-    public Processor() {}
-    
+
+    public Processor() {
+    }
+
     /**
      * Processes the given files
      * 
@@ -31,30 +32,30 @@ public class Processor {
     public AnalyzerResult processFiles(List<String> filePaths) throws FileNotFoundException {
         Map<String, List<MarkerPair>> result = new HashMap<>();
         List<File> files = new LinkedList<>();
-        
+
         for (String filePath : filePaths) {
-            
+
             File file = new File(filePath);
-    
+
             if (file.exists()) {
                 files.add(file);
             } else {
                 throw new FileNotFoundException("File not found: " + filePath);
             }
         }
-        
+
         result = analyzeFiles(files);
-        
+
         AnalyzerResult analyzerResult = new AnalyzerResult(result);
-        
+
         return analyzerResult;
     }
 
     /**
      * Analyze files
      * 
-     * Creates a list of all files which have be be analyzed.
-     * Starts the file analysis of all files in the previously created list.
+     * Creates a list of all files which have be be analyzed. Starts the file
+     * analysis of all files in the previously created list.
      * 
      * @param rootFiles
      * @return all files with markers
@@ -63,7 +64,7 @@ public class Processor {
         Map<String, List<MarkerPair>> result = new HashMap<>();
 
         Set<File> files = new HashSet<>();
-        
+
         /* create a list of all files */
         for (File rootFile : rootFiles) {
             Set<File> filesUnderRoot = getFiles(rootFile, new HashSet<>());
@@ -74,9 +75,9 @@ public class Processor {
         for (File file : files) {
             try {
                 logger.debug("Analyzing: " + file.getPath());
-                 
+
                 List<MarkerPair> markerPairs = FileAnalyzer.getInstance().processFile(file);
-                
+
                 // only add a file with findings
                 if (!markerPairs.isEmpty()) {
                     result.put(file.getPath(), markerPairs);
@@ -97,7 +98,7 @@ public class Processor {
      * 
      * The file system is traversed recursively.
      * 
-     * @param file the root folder or file
+     * @param file  the root folder or file
      * @param files a set of files
      * @return a list of files
      */

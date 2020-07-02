@@ -19,6 +19,7 @@ public class AnalyzerResult implements Copyable<AnalyzerResult> {
     }
     
     /**
+     * Get all no sechub markers
      * 
      * @return
      */

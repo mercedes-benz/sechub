@@ -22,6 +22,7 @@ public class FileAnalyzerTest {
 
     @Test
     public void test_processFile__pair() throws IOException {
+        /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 9, 3);
         MarkerPair pair = new MarkerPair();
@@ -32,12 +33,16 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_pair.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__multiple() throws IOException {
+        /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
         Marker start = new Marker(MarkerType.START, 4, 4);
@@ -64,32 +69,44 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_multiple.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__start_only() throws IOException {
+        /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
         File file = new File(path + "test_only_start.txt");
         
+        /* execute */
         List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__end_only() throws IOException {
+        /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
         File file = new File(path + "test_only_end.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__two_ends() throws IOException {
+        /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 9, 3);
         MarkerPair pair = new MarkerPair();
@@ -100,12 +117,16 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_two_ends.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__two_starts() throws IOException {
+        /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 15, 2);
         MarkerPair pair = new MarkerPair();
@@ -116,35 +137,50 @@ public class FileAnalyzerTest {
         
         File file = new File(path + "test_two_starts.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
     public void test_processFile__no_markers() throws IOException {
+        /* prepare */
         File file = new File(path + "test_no_markers.txt");
         
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file); //SUT
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
     @Test
     public void test_processFile__same_line() throws IOException {
+        /* prepare */
         File file = new File(path + "test_same_line.txt");
         
+        /* execute */
         List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
     @Test
     public void test_processFile__file_not_found() {
+        /* prepare */
         File file = new File(path + "not_found.txt");
+        String exceptionMessage = file.getPath() + " (No such file or directory)";
         
         try {
-            FileAnalyzer.getInstance().processFile(file); //SUT
+            /* execute */
+            FileAnalyzer.getInstance().processFile(file);
             fail("The file does not exist. An exception was expected.");
         } catch (FileNotFoundException e) {
-            // do nothing
+            /* test */
+            assertThat(e.getMessage(), is(exceptionMessage));
         } catch (IOException e) {
             fail("Unexpected exception.");
         }

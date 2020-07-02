@@ -38,6 +38,7 @@ public class ProcessorTest {
     
     @Test
     public void test_analyzeFiles__same_folders() throws FileNotFoundException {
+        /* prepare */
         String rootPath = path + "test/";
         File rootFolder = new File(rootPath);
         File rootFolder2 = new File(rootPath);
@@ -55,12 +56,16 @@ public class ProcessorTest {
         expectedResult.put(markedFile, pairs);
         expectedResult.put(markedFile2, pairs2);
         
-        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+        /* execute */
+        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
+        
+        /* test */
         assertThat(actualResult, is(expectedResult));
     }
     
     @Test 
     public void test_analyzeFiles__same_files() throws FileNotFoundException {
+        /* prepare */
         File filePath = new File(path + "test_pair.txt");
         File filePath2 = new File(path + "test_pair.txt");
         List<File> filePaths = new LinkedList<>();
@@ -71,12 +76,16 @@ public class ProcessorTest {
         Map<String, List<MarkerPair>> expectedResult = new HashMap<>();
         expectedResult.put(filePath.getPath(), pairs);
         
-        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(filePaths); //SUT
+        /* execute */
+        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(filePaths);
+        
+        /* test */
         assertThat(actualResult, is(expectedResult));
     }
     
     @Test
     public void test_analyzeFiles__file_folder() throws FileNotFoundException {
+        /* prepare */
         String rootPath = path + "test/";
         
         File folderPath = new File(rootPath);
@@ -98,12 +107,16 @@ public class ProcessorTest {
         expectedResult.put(markedFile2, pairs2);
         expectedResult.put(markedFile3, pairs3);
         
-        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+        /* execute */
+        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
+        
+        /* test */
         assertThat(actualResult, is(expectedResult));
     }
     
     @Test
     public void test_analyzeFiles__single_file() throws FileNotFoundException {
+        /* prepare */
         String filePath = path + "test_pair.txt";
         
         File file = new File(filePath);
@@ -114,13 +127,17 @@ public class ProcessorTest {
         Map<String, List<MarkerPair>> expectedResult = new HashMap<>();
         expectedResult.put(filePath, pairs);
         
-        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+        /* execute */
+        Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
+        
+        /* test */
         assertThat(actualResult, is(expectedResult));
     }
 
     
   @Test
   public void test_analyzeFiles__one_folder() throws FileNotFoundException {
+      /* prepare */
       String rootPath = path + "test/";
       
       File rootFolder = new File(rootPath);
@@ -137,12 +154,16 @@ public class ProcessorTest {
       expectedResult.put(markedFile, pairs);
       expectedResult.put(markedFile2, pairs2);
       
-      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+      /* execute */
+      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
+      
+      /* test */
       assertThat(actualResult, is(expectedResult));
   }
   
   @Test
   public void test_analyzeFiles__nested_folders() throws FileNotFoundException {
+      /* prepare */
       String rootPath = path + "test_nested/";
       
       File rootFolder = new File(rootPath);
@@ -159,14 +180,17 @@ public class ProcessorTest {
       expectedResult.put(markedFile, pairs);
       expectedResult.put(markedFile2, pairs2);
       
+      /* execute */
+      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
       
-      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+      /* test */
       assertThat(actualResult, is(expectedResult));
   }
     
   
   @Test
   public void test_analyzeFiles__single_file_no_markers() throws FileNotFoundException {
+      /* prepare */
       String filePath = path + "test_no_markers.txt";
       
       File file = new File(filePath);
@@ -175,26 +199,33 @@ public class ProcessorTest {
       
       Map<String, List<MarkerPair>> expectedResult = new HashMap<>();
       
-      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots); //SUT
+      /* execute */
+      Map<String, List<MarkerPair>> actualResult = processor.analyzeFiles(roots);
+      
+      /* test */
       assertThat(actualResult, is(expectedResult));
   }
     
     @Test
     public void test_processFiles__notFound() {
+        /* prepare */
         String rootPath = path + "notFound/";
         List<String> rootPaths = new LinkedList<>();
         rootPaths.add(rootPath);
         
         try {
-            processor.processFiles(rootPaths); //SUT
+            /* execute */
+            processor.processFiles(rootPaths);
             fail("Should throw an exception!");
         } catch (FileNotFoundException e) {
+            /* test */
             assertThat("File not found: " + rootPath, is(e.getMessage()));
         }
     }
     
     @Test
     public void test_processFiles__single_file() throws FileNotFoundException {
+        /* prepare */
         String filePath = path + "test_pair.txt";
         List<String> roots = new LinkedList<>();
         roots.add(filePath);
@@ -204,13 +235,17 @@ public class ProcessorTest {
         result.put(filePath, pairs);
         AnalyzerResult expectedAnalyzerResult = new AnalyzerResult(result);
         
-        AnalyzerResult actualAnalyzerResult = processor.processFiles(roots); //SUT
+        /* execute */
+        AnalyzerResult actualAnalyzerResult = processor.processFiles(roots);
+        
+        /* test */
         assertThat(actualAnalyzerResult, is(expectedAnalyzerResult));
         assertThat(actualAnalyzerResult.hasResults(), is(true));
     }
     
     @Test
     public void test_getFiles__directory() {
+        /* prepare */
         File root = new File(path + "test/");
         
         File file = new File(path + "test/test_pair.txt");
@@ -221,12 +256,17 @@ public class ProcessorTest {
         expectedFiles.add(file2);
 
         Set<File> files = new HashSet<>();
-        Set<File> actualFiles = processor.getFiles(root, files); //SUT
+        
+        /* execute */
+        Set<File> actualFiles = processor.getFiles(root, files);
+        
+        /* test */
         assertThat(actualFiles, is(expectedFiles));
     }
     
     @Test
     public void test_getFiles__nested_directory() {
+        /* prepare */
         File root = new File(path + "test_nested/");
         
         File file = new File(path + "test_nested/test_pair.txt");
@@ -238,18 +278,25 @@ public class ProcessorTest {
         
         Set<File> files = new HashSet<>();
 
-        Set<File> actualFiles = processor.getFiles(root, files); //SUT
+        /* execute */
+        Set<File> actualFiles = processor.getFiles(root, files);
+        
+        /* test */
         assertThat(actualFiles, is(expectedFiles));
     }
     
     @Test
     public void test_getFiles__file_not_found() {
+        /* prepare */
         String rootPath = path + "notFound/";
         File root = new File(rootPath);
         
         Set<File> files = new HashSet<>();
         
-        Set<File> actualFiles = processor.getFiles(root, files); //SUT
+        /* execute */
+        Set<File> actualFiles = processor.getFiles(root, files); 
+        
+        /* test */
         assertThat(actualFiles.isEmpty(), is(true));
     }
     
