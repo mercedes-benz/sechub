@@ -10,19 +10,26 @@ public class CommentChecker {
     private String noSecHubLabel;
     private String endNoSecHubLabel;
     
+    private Pattern pattern;
+    
+    
     private CommentChecker(String noSecHubLabel, String endNoSecHubLabel) {
         this.noSecHubLabel = noSecHubLabel;
         this.endNoSecHubLabel = endNoSecHubLabel;
+        
+        initialize();
+    }
+    
+    private void initialize() {
+        String regex = "^(\\s+)?(<!--|--|#|/\\*|//)([-*/ ]+)?(" + noSecHubLabel + "|" + endNoSecHubLabel + ")";
+        pattern = Pattern.compile(regex);
     }
     
     public static CommentChecker of(String noSecHubLabel, String endNoSecHubLabel) {
         return new CommentChecker(noSecHubLabel, endNoSecHubLabel);
     }
     
-    public Boolean isCommentInLine(String line) {
-        String regex = "^(\\s+)?(<!--|--|#|/\\*|//)([-*/ ]+)?(" + noSecHubLabel + "|" + endNoSecHubLabel + ")" ;
-        
-        Pattern pattern = Pattern.compile(regex);
+    public Boolean isCommentInLine(String line) {        
         Matcher matcher = pattern.matcher(line);
         Boolean matches = matcher.lookingAt();
                 
