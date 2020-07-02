@@ -2,12 +2,14 @@ package com.daimler.sechub.pds.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +19,12 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.PDSProductIdentifierValidator;
 
-import wiremock.com.github.jknack.handlebars.internal.Files;
-
 @Service
 public class PDSServerConfigurationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSServerConfigurationService.class);
 
-    private static final String DEFAULT_PATH = "pds-config.json";
+    private static final String DEFAULT_PATH = "./pds-config.json";
 
     private static final PDSServerConfiguration FALLBACK_CONFIGURATION = new PDSServerConfiguration();
 
@@ -46,7 +46,7 @@ public class PDSServerConfigurationService {
         }
         String json;
         try {
-            json = Files.read(file);
+            json = FileUtils.readFileToString(file,Charset.forName("UTF-8"));
             configuration = PDSServerConfiguration.fromJSON(json);
             List<PDSProductSetup> products = configuration.getProducts();
             for (PDSProductSetup setup : products) {

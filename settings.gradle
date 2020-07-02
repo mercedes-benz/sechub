@@ -4,12 +4,18 @@ include 'sechub-cli',
 'sechub-doc',
 
 /* server POD area */
-'sechub-server',
-'sechub-server-core',
+'sechub-server',       // executable spring boot jar
+'sechub-server-core',  // core project for test compile dependencies and more
 
-'sechub-pds', // pds=product delegation server
+/* PDS */
+'sechub-pds', // pds=product delegation server, executable spring boot jar
+'sechub-pds-core', // core project for test compile dependencies and more
 
+/* integration test*/
 'sechub-integrationtest',
+'sechub-pds-integrationtest',
+
+/* server parts */
 'sechub-schedule',
 'sechub-scan',
 'sechub-scan-testbase',

@@ -5,7 +5,7 @@ subprojects {
     if (! projectType.springBootProjects.contains(project)){
 		return;
     }
-
+    ext['junit-jupiter.version'] = '5.6.0'
 
     logger.info("found spring boot relevant project:$project")
 	apply plugin: "org.springframework.boot"
@@ -15,6 +15,7 @@ subprojects {
 	dependencies {
 
         testCompile(library.springboot_starter_test)
+        testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
         compile(library.springboot_starter_json)
 
 // only when using JDK >=10:

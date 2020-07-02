@@ -1,0 +1,27 @@
+{
+    "apiVersion" : "1.0",
+    
+    "products" : [
+        {
+            "id" : "PDS_INTTEST_PRODUCT_CODESCAN",
+            "path" : "pds/product-scripts/integrationtest-codescan.sh",
+            "scanType" : "codeScan",
+            "description" : "code scan test PDS product"
+            
+        },
+        {
+            "id" : "PDS_INTTEST_PRODUCT_INFRASCAN",
+            "path" : "pds/product-scripts/integrationtest-infrascan.sh",
+            "scanType" : "infraScan",
+            "description" : "infra scan test PDS product"
+            
+        },
+        {
+            "id" : "PDS_INTTEST_PRODUCT_WEBSCAN",
+            "path" : "pds/product-scripts/integrationtest-webscan.sh",
+            "scanType" : "webScan",
+            "description" : "web scan test PDS product"
+            
+        }
+    ]
+}

@@ -1,12 +1,19 @@
 # SPDX-License-Identifier: MIT
 spring.profiles.include:
  - pds_localserver
- - pds_initial_admin_predefined
+ 
+sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
  
 sechub.initialadmin:
    userid: sechubadm
    email: sechubadm@example.org    
    apitoken: pseudo-token-development-only
+   
+sechub:
+ pds:
+   techuser:
+       userid: pds-dev-techuser
+       apitoken: pds-dev-apitoken
     
 logging:
  level:

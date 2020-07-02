@@ -29,26 +29,5 @@ public class PDSProfiles {
      */
     public static final String INTEGRATIONTEST="pds_integrationtest";
 
-    /**
-     * When an initial administrator must be created the predefined values will be used
-     * (So API token is well known) see InitialAdmininInitializer.java
-     */
-    public static final String INITIAL_ADMIN_PREDEFINED="pds_initial_admin_predefined";
-    
-    /**
-     * When an initial administrator must be created a static value will be used
-     * (So API token is well known) but this is NOT ENCRYPTED. Use this ONLY for (integration) test purposes!
-     * See InitialAdmininInitializer.java
-     */
-    public static final String INITIAL_ADMIN_STATIC="pds_initial_admin_static";
-    
-    /**
-     * The profile ensures an administrator is available inside system on startup.
-     * If not an initial administrator account will be created. Information about 
-     * login and further steps can be found inside server logs.
-     * See InitialAdmininInitializer.java
-     * 
-     */
-    public static final String INITIAL_ADMIN_CREATED="pds_initial_admin_created";
     
 }

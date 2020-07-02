@@ -1,3 +1,0 @@
-# SPDX-License-Identifier: MIT
-# This profile ensures initial admin is created when no other admin is found in system on startup
-# currently no special setup necessary - all done inside InitialAdminInitializer.java

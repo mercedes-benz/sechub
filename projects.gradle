@@ -21,8 +21,6 @@ projectType = [
                     project(':sechub-storage-core'),
                     project(':sechub-storage-s3-aws'),
                     project(':sechub-storage-s3-aws-test'),
-                    
-                    project(':sechub-pds'),
             ],
 
             /* adapter projects - have simple spring dependencies, but know only sechub-adapter as base */
@@ -33,7 +31,12 @@ projectType = [
                     project(':sechub-adapter-checkmarx'),
                     project(':sechub-adapter-pds'),
             ],
-
+            
+             /* PDS projects, all contained inside product delegation server */
+            springBootPDSProjects: [
+                    project(':sechub-pds'),
+                    project(':sechub-pds-core'),
+            ],
             /* server projects, all contained inside server */
             springBootSecHubServerProjects: [
                     project(':sechub-server'),
@@ -84,6 +87,7 @@ projectType = [
 }
 /* dynamically define java projects */
 projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects)
+projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
 //projectType.springBootProjects.addAll(projectType.springBootFrontentProjects)

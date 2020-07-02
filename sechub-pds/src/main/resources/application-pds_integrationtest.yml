@@ -1,40 +1,16 @@
 # SPDX-License-Identifier: MIT
 spring.profiles.include:
 - pds_localserver
-- pds_initial_admin_static
+
+# next lines is a default when running inside IDE. Links to sechub-integration aprts
+sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
 
 sechub:
-  config:
-    trigger:
-      nextjob:
-        initialdelay: "100"
-        # every 100 milliseconds, so we got faster test results
-        delay: "100"
-    check:
-      canceljob:
-        delay: "3000" # every 3 seconds, so all of our tests, except long runningp arts will have only
-                      # on check (which is always done) except multiple. This is to avoid flaky tests,
-                      # but gives us possiblity to check multiple ones when necessary (default are 60 seconds
-                      # and this too long for test...)
-  scan:
-    scanconfig:
-      refresh:
-        delay: "1000"       
-  initialadmin:
-    userid: int-test_superadmin
-    email: int-test_superadmin@sechub.example.org
-    apitoken: int-test_superadmin-pwd
-  notification:
-    email:
-      administrators: int-test_superadmins_npm@example.org
-  adapter:
-    mock:
-      sanitycheck:
-        enabled: true
-        
-  notification.email.mock.cache:
-    enabled: true
-    
+ pds:
+   techuser:
+       userid: pds-inttest-techuser
+       apitoken: pds-inttest-apitoken
+
 logging:
  level:
    com.daimler.sechub: DEBUG
