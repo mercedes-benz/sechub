@@ -28,7 +28,7 @@ public class AnalyzerResult implements Copyable<AnalyzerResult> {
     }
     
     public boolean hasResults() {
-        return noSecHubMarkers.isEmpty();
+        return !noSecHubMarkers.isEmpty();
     }
     
     @Override

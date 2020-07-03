@@ -12,7 +12,7 @@ public class CommentCheckerTest {
     @Test 
     public void test_of() {
         /* execute */
-        CommentChecker commentCheckerInstance = CommentChecker.of(NOSECHUB, NOSECHUB_END);
+        CommentChecker commentCheckerInstance = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
         
         /* test */
         assertThat(commentCheckerInstance, is(not(nullValue())));

@@ -25,49 +25,17 @@ public class CommentCheckerCommentInLineTest {
     public static Iterable<? extends Object> data() {
         List<Object[]> combined = new LinkedList<>();
         
-        combined.addAll(createStarComments(NOSECHUB));
-        combined.addAll(createStarComments(NOSECHUB_END));
-         
-           /* Slash comments: Java, PostgreSQL, C etc */
-           List<Object[]> slashComments = 
-                   Arrays.asList(new Object[][] {
-                       {" // " + NOSECHUB, true},
-                       {"//" + NOSECHUB + "  ", true},
-                       {"  //" + NOSECHUB, true}
-                   });
+        List<String> markers = createMarkers();
+        
+        for (String marker : markers) {
+            combined.addAll(createStarComments(marker));
+            combined.addAll(createSlashComments(marker));
+            combined.addAll(createPoundComments(marker));
+            combined.addAll(createArrowComments(marker));
+            combined.addAll(createDoubleDashComments(marker));
+        }
            
-           /* Pound comments: Ruby, Python etc. */
-           List<Object[]> poundComments = 
-                   Arrays.asList(new Object[][] {
-                       {" # " + NOSECHUB, true}
-                   });
-           
-           /* Languages: XML, HTML etc. */
-           List<Object[]> arrowComments = 
-                   Arrays.asList(new Object[][] {
-                       {" <!-- " + NOSECHUB, true},
-                       {"<!-- " + NOSECHUB, true},
-                       {" <!--------- " + NOSECHUB, true},
-                       {"<!--    " + NOSECHUB, true},
-                       {" abc <!-- " + NOSECHUB, false},
-                       {" <!-- abc " + NOSECHUB, false},
-                       {" <!-- " + NOSECHUB + " abc", true}
-                   });
-           
-           /* Languages: SQL */
-           List<Object[]> doubleDashComments = 
-                   Arrays.asList(new Object[][] {
-                       {" -- " + NOSECHUB, true }
-                   });
-           
-
-//           combined.addAll(starComments);
-//           combined.addAll(slashComments);
-//           combined.addAll(poundComments);
-//           combined.addAll(arrowComments);
-//           combined.addAll(doubleDashComments);
-
-           return combined;
+        return combined;
     }
     
     @Parameter(0)
@@ -78,7 +46,7 @@ public class CommentCheckerCommentInLineTest {
     
     @Before
     public void setUp() {
-        commentChecker = CommentChecker.of(NOSECHUB, NOSECHUB_END);
+        commentChecker = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
     }
     
     @Test
@@ -87,10 +55,13 @@ public class CommentCheckerCommentInLineTest {
         Boolean isCommentInLine = commentChecker.isCommentInLine(line);
         
         /* test */
-        assertThat(isCommentInLine, is(expected));
+        String reason = "The line: `" + line + "` is not: " + expected;
+        assertThat(reason, isCommentInLine, is(expected));
     }
     
-    /* Star comments: Java, C, JavaScript, CSS etc. */
+    /* 
+     * Star comments: Java, C, JavaScript, CSS etc.
+     */
     private static List<Object[]> createStarComments(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {           
             {"/* " + marker + "  */", true},
@@ -101,9 +72,106 @@ public class CommentCheckerCommentInLineTest {
             {" /* * * * * " + marker, true},
             {" abc /** " + marker, false},
             {" /** abc " + marker, false},
-            {"  /**" + marker, true}
+            {"  /**" + marker, true},
+            {"\t/** " + marker, true},
+            {"\t\t /** " + marker, true},
+            {"/** \t " + marker, true},
+            {" /** " + marker + "abc def", false},
+            {" * " + marker, false},
         });
         
         return comments;
+    }
+    
+    /* 
+     * Slash comments: Java, PostgreSQL, C etc.
+     */
+    private static List<Object[]> createSlashComments(String marker) {
+
+        List<Object[]> comments = Arrays.asList(new Object[][] {
+            {" // " + marker, true},
+            {"//" + marker + "  ", true},
+            {"  //" + marker, true},
+            {" ////// " + marker, true},
+            {"//////" + marker, true},
+            {" abc // " + marker, false},
+            {" // abc " + marker, false},
+            {" // " + marker + "abc", false},
+            {"\t// " + marker + " \t abc def", true},
+            {"\t\t//\t\t" + marker + "\t\t", true},
+            {"//#-*" + marker + "  ", true},
+            {"//###" + marker + "  ", true},
+        });
+        
+        return comments;
+    }
+    
+    /*
+     * Pound comments: Ruby, Python etc.
+     */
+    private static List<Object[]> createPoundComments(String marker) {
+        List<Object[]> comments = Arrays.asList(new Object[][] {
+            {" # " + marker, true},
+            {"\t#\t" + marker, true},
+            {"\t\t#\t\t" + marker, true},
+            {" \t\t #\t\t  " + marker, true},
+            {"   #   " + marker, true},
+            {" abc # " + marker, false},
+            {" # abc " + marker, false},
+            {" # " + marker + "abc", false},
+            {"### " + marker, true},
+            {" #" + marker, true},
+        });
+        
+        return comments;
+    }
+    
+    /* 
+     * Languages: XML, HTML etc. 
+     */
+    private static List<Object[]> createArrowComments(String marker) {
+        List<Object[]> comments = Arrays.asList(new Object[][] {
+            {" <!-- " + marker, true},
+            {"<!-- " + marker, true},
+            {" <!---------" + marker, true},
+            {"<!--    " + marker, true},
+            {" abc <!-- " + marker, false},
+            {" <!-- abc " + marker, false},
+            {" <!-- " + marker + " abc", true},
+            {"\t\t<!--\t\t" + marker + "\t\t", true},
+            {"\t<!--\t" + marker + "\t", true},
+            {"\t<!--\t" + marker + "", true},
+            {"<!--" + marker + "-->", true},
+            {"<!--" + marker + "abc", false},
+            {"<!-- " + marker + " -->", true},
+        });
+        
+        return comments;
+    }
+    
+    /* 
+     * Languages: SQL 
+     */
+    private static List<Object[]> createDoubleDashComments(String marker) {               
+        List<Object[]> comments = Arrays.asList(new Object[][] {
+            {" -- " + marker, true},
+            {"-- " + marker, true},
+            {"\t\t--\t\t" + marker + "\t\t", true},
+            {"\t--\t" + marker + "\t ", true},
+            {"abc -- " + marker, false},
+            {" -- abc " + marker, false},
+            {" -- " + marker + "abc", false},
+            {"--" + marker, true },
+            {" -- " + marker + " abc", true},
+            {" -- " + marker + "\t\tabc", true},
+        });
+        
+        return comments;
+    }
+    
+    private static List<String> createMarkers() {
+        List<String> markers = Arrays.asList(NOSECHUB, NOSECHUB_END);
+        
+        return markers;
     }
 }

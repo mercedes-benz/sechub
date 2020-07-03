@@ -20,6 +20,7 @@ public class FileAnalyzer {
     private static final String NOSECHUB_END = "END-NOSECHUB";
     
     private static FileAnalyzer fileAnalyzer = new FileAnalyzer();
+    private static CommentChecker commentChecker = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
     
     private FileAnalyzer() {}
     
@@ -59,13 +60,18 @@ public class FileAnalyzer {
                 if (noSecHubIndex > -1) {
                     /* search for NOSECHB_END marker */
                     int endNoSecHubIndex = line.indexOf(NOSECHUB_END);
+                    
+                    /* check if the line is a comment */
+                    Boolean isComment = commentChecker.isCommentInLine(line);
 
-                    if (endNoSecHubIndex > -1) {
-                        end = new Marker(MarkerType.END, lineNumber, endNoSecHubIndex);
-                    } else {
-                        /* only set a new start marker if no previous start was found */
-                        if (start == null) {
-                            start = new Marker(MarkerType.START, lineNumber, noSecHubIndex);
+                    if (isComment) {
+                        if (endNoSecHubIndex > -1) {
+                            end = new Marker(MarkerType.END, lineNumber, endNoSecHubIndex);
+                        } else {
+                            /* only set a new start marker if no previous start was found */
+                            if (start == null) {
+                                start = new Marker(MarkerType.START, lineNumber, noSecHubIndex);
+                            }
                         }
                     }
                 }
