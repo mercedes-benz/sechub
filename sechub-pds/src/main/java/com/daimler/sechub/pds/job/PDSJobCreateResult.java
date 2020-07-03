@@ -10,16 +10,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PDSJobCreateResult {
 
-    public static final String PROPERTY_JOBID="jobId";
+    public static final String PROPERTY_JOBID="jobUUID";
     
-    UUID jobId;
+    UUID jobUUID;
 
-    public PDSJobCreateResult(UUID jobId) {
-        this.jobId = jobId;
+    public PDSJobCreateResult(UUID jobUUID) {
+        this.jobUUID = jobUUID;
     }
 
-    public UUID getJobId() {
-        return jobId;
+    public UUID getJobUUID() {
+        return jobUUID;
     }
 
 

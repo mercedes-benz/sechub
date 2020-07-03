@@ -4,7 +4,7 @@
     "products" : [
         {
             "id" : "PRODUCT_1",
-            "path" : "/srv/security/scanner1.sh",
+            "path" : "./pds/product-scripts/integrationtest-codescan.sh",
             "scanType" : "codeScan",
             "description" : "codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3"
             

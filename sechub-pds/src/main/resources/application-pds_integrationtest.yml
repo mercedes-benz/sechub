@@ -4,12 +4,13 @@ spring.profiles.include:
 
 # next lines is a default when running inside IDE. Links to sechub-integration aprts
 sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
+sechub.pds.workspace.rootfolder: "./../sechub-integrationtest/build/test-results/pds-runtime"
 
 sechub:
  pds:
    techuser:
        userid: pds-inttest-techuser
-       apitoken: pds-inttest-apitoken
+       apitoken: "{noop}pds-inttest-apitoken"
 
 logging:
  level:

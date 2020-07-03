@@ -19,6 +19,7 @@ import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
+import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -43,7 +44,7 @@ public class DeveloperAdministration {
     }
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
-        return new TestRestHelper(user) {
+        return new TestRestHelper(user, RestHelperTarget.SECHUB_SERVER) {
 
             @Override
             protected ResponseErrorHandler createErrorHandler() {

@@ -202,15 +202,7 @@ public class PDSJobRestControllerMockTest {
                 multipart(https(PORT_USED).pds().buildUpload(jobUUID,fileName)).
                 file(multiPart).
                 
-                param("checkSum", "mychecksum").
-                with(new RequestPostProcessor() {
-                    /* default is POST, switch to PUT because we add files to existing job */
-                    @Override
-                    public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
-                        request.setMethod(HttpMethod.PUT.name());
-                        return request;
-                    }
-                })
+                param("checkSum", "mychecksum")
                 )./*andDo(print()).*/
                     andExpect(status().isOk()
                 );

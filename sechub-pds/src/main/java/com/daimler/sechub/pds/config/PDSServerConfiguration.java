@@ -17,7 +17,7 @@ public class PDSServerConfiguration {
 
     private String apiVersion;
     private List<PDSProductSetup> products = new ArrayList<>();
-
+    
     public String getApiVersion() {
         return apiVersion;
     }

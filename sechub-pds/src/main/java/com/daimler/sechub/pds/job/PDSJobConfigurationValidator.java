@@ -1,5 +1,7 @@
 package com.daimler.sechub.pds.job;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +11,8 @@ import com.daimler.sechub.pds.PDSProductIdentifierValidator;
 @Component
 public class PDSJobConfigurationValidator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PDSJobConfigurationValidator.class);
+    
     @Autowired
     PDSProductIdentifierValidator productIdentifierValidator;
 
@@ -17,6 +21,8 @@ public class PDSJobConfigurationValidator {
        if (message==null) {
            return;
        }
+       LOG.warn("pds job configuration not valid - message:{}", message);
+
        throw new PDSNotAcceptableException("Configuration invalid:"+message);
         
     }

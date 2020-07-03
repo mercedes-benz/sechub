@@ -1,6 +1,9 @@
 package com.daimler.sechub.pds.config;
 
 public class PDSProductSetup {
+    private static final boolean DEFAULT_UNZIP_UPLOADS = true;
+
+    private boolean unzipUploads = DEFAULT_UNZIP_UPLOADS;
 
     private String id;
 
@@ -17,6 +20,7 @@ public class PDSProductSetup {
 
     /**
      * Represents the product identifier suitable for sechub
+     * 
      * @return
      */
     public String getId() {
@@ -49,6 +53,15 @@ public class PDSProductSetup {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public boolean isUnzipUploads() {
+        return unzipUploads;
+    }
+
+    public void setUnzipUploads(boolean unzipUploads) {
+        this.unzipUploads = unzipUploads;
     }
 
 }

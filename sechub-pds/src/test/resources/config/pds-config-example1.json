@@ -13,8 +13,8 @@
         {
             "id" : "PRODUCT_2",
             "path" : "/srv/security/scanner2.sh",
-            "scanType" : "infraScan"
-            
+            "scanType" : "infraScan" ,
+            "unzipUploads" : false
         }
     ]
 }

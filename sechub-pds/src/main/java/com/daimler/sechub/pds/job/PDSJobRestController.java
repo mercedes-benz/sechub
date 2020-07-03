@@ -66,7 +66,7 @@ public class PDSJobRestController {
 
 	/* @formatter:off */
 	@Validated
-	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.PUT)
+	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.POST)
 	@UseCaseUserUploadsJobData
 	public void upload(
 				@PathVariable("jobUUID") UUID jobUUID,

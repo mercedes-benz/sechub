@@ -60,7 +60,7 @@ public class PDSCreateJobServiceTest {
 
         /* test */
         assertNotNull(result);
-        UUID pdsJobUUID = result.getJobId();
+        UUID pdsJobUUID = result.getJobUUID();
         assertEquals(createdJob1UUID, pdsJobUUID);
     }
 

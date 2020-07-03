@@ -46,7 +46,7 @@ public class PDSServerConfigurationService {
         }
         String json;
         try {
-            json = FileUtils.readFileToString(file,Charset.forName("UTF-8"));
+            json = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
             configuration = PDSServerConfiguration.fromJSON(json);
             List<PDSProductSetup> products = configuration.getProducts();
             for (PDSProductSetup setup : products) {
@@ -63,6 +63,15 @@ public class PDSServerConfigurationService {
 
     public PDSServerConfiguration getServerConfiguration() {
         return configuration;
+    }
+
+    public PDSProductSetup getProductSetupOrNull(String productId) {
+        for (PDSProductSetup setup : configuration.getProducts()) {
+            if (setup.getId().equals(productId)) {
+                return setup;
+            }
+        }
+        return null;
     }
 
 }

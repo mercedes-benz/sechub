@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestExampleFolders.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestExampleFolders.*;
 import com.daimler.sechub.test.ExampleConstants;
 
 /**

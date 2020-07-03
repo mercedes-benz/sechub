@@ -34,10 +34,16 @@ public class PDSFileUploadJobServiceTest {
 
     private PDSJob job;
 
+    private PDSWorkspaceService workspaceService;
+
     @Before
     public void before() throws Exception {
+        tmpUploadPath = Files.createTempDirectory("pds-upload");
         jobUUID = UUID.randomUUID();
         checksumService=mock(PDSFileChecksumSHA256Service.class);
+        workspaceService=mock(PDSWorkspaceService.class);
+        when(workspaceService.getUploadFolder(jobUUID)).thenReturn(new File(tmpUploadPath.toFile(),jobUUID.toString()));
+        
         repository=mock(PDSJobRepository.class);
         job = new PDSJob();
         job.uUID=jobUUID;
@@ -45,10 +51,9 @@ public class PDSFileUploadJobServiceTest {
         Optional<PDSJob> jobOption = Optional.of(job);
         when(repository.findById(jobUUID)).thenReturn(jobOption);
         
-        tmpUploadPath = Files.createTempDirectory("pds-upload");
         serviceToTest = new PDSFileUploadJobService();
         serviceToTest.checksumService=checksumService;
-        serviceToTest.uploadBasePath=tmpUploadPath.toAbsolutePath().toString();
+        serviceToTest.workspaceService=workspaceService;
         serviceToTest.repository=repository;
         
         when(checksumService.createChecksum(any())).thenReturn("checksum-dummy");

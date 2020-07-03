@@ -13,7 +13,7 @@ sechub:
  pds:
    techuser:
        userid: pds-dev-techuser
-       apitoken: pds-dev-apitoken
+       apitoken: "{noop}pds-dev-apitoken"
     
 logging:
  level:

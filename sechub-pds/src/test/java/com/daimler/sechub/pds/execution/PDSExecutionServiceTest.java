@@ -18,6 +18,7 @@ import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
 import com.daimler.sechub.pds.job.PDSJobTestHelper;
 import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
+import com.daimler.sechub.pds.job.PDSWorkspaceService;
 
 public class PDSExecutionServiceTest {
 
@@ -58,7 +59,7 @@ public class PDSExecutionServiceTest {
         private boolean prepareCancelCalled;
 
         public TestPDSExecutionCallable(long waitMillis, PDSExecutionResult result) {
-            super(mock(PDSJob.class), mock(PDSUpdateJobTransactionService.class));
+            super(mock(PDSJob.class), mock(PDSUpdateJobTransactionService.class), mock(PDSWorkspaceService.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

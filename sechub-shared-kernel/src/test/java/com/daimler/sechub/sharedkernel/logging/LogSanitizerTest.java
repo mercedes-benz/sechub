@@ -6,8 +6,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-
 public class LogSanitizerTest {
 	private LogSanitizer sanitizerToTest;
 

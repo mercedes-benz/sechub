@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,15 +22,13 @@ public class PDSFileUploadJobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
 
-    private static final String DEFAULT_UPLOAD_BASE_PATH = "./uploads/";
-
     private static final int MAX_FILENAME_LENGTH = 40;
-
-    @Value("${sechub.pds.upload.basepath:" + DEFAULT_UPLOAD_BASE_PATH + "}")
-    String uploadBasePath = DEFAULT_UPLOAD_BASE_PATH;
 
     @Autowired
     PDSFileChecksumSHA256Service checksumService;
+    
+    @Autowired
+    PDSWorkspaceService workspaceService;
 
     @Autowired
     PDSJobRepository repository;
@@ -46,11 +43,12 @@ public class PDSFileUploadJobService {
         PDSJob job = assertJobFound(jobUUID,repository);
         assertJobIsInState(job,PDSJobStatusState.CREATED);
 
-        File jobFolder = ensureJobFolder(jobUUID);
+        File jobFolder = workspaceService.getUploadFolder(jobUUID);
         File uploadFile = new File(jobFolder, fileName);
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), uploadFile);
+            LOG.debug("Uploaded file {} for job {} to {}",fileName,jobUUID, uploadFile.getAbsolutePath());
         } catch (IOException e) {
             LOG.error("Was not able to store {} for job {}, reason:", fileName, jobUUID, e.getMessage());
             throw new IllegalArgumentException("Cannot store given file", e);
@@ -63,7 +61,7 @@ public class PDSFileUploadJobService {
     public void deleteAllUploads(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null");
 
-        File jobFolder = ensureJobFolder(jobUUID);
+        File jobFolder = workspaceService.getUploadFolder(jobUUID);
         try {
             FileUtils.deleteDirectory(jobFolder);
         } catch (IOException e) {
@@ -88,10 +86,5 @@ public class PDSFileUploadJobService {
         }
     }
 
-    private File ensureJobFolder(UUID jobUUID) {
-        File file = new File(uploadBasePath, jobUUID.toString());
-        file.mkdirs();
-        return file;
-    }
 
 }

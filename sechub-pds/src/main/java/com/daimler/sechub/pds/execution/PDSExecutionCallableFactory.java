@@ -5,14 +5,18 @@ import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
+import com.daimler.sechub.pds.job.PDSWorkspaceService;
 
 @Component
 public class PDSExecutionCallableFactory {
 
     @Autowired
     PDSUpdateJobTransactionService updateJobTransactionService;
+    
+    @Autowired
+    PDSWorkspaceService workspaceService;
 
     public PDSExecutionCallable createCallable(PDSJob job) {
-        return new PDSExecutionCallable(job, updateJobTransactionService);
+        return new PDSExecutionCallable(job, updateJobTransactionService, workspaceService);
     }
 }

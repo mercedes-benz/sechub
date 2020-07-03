@@ -20,7 +20,7 @@ import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.pds.PDSAdapter;
 import com.daimler.sechub.adapter.pds.PDSAdapterConfig;
 import com.daimler.sechub.adapter.pds.PDSMetaDataID;
-import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
+import com.daimler.sechub.adapter.pds.PDSWebScanConfig;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
@@ -33,7 +33,6 @@ import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
-import com.daimler.sechub.adapter.pds.PDSWebScanConfig;
 
 @Service
 public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
