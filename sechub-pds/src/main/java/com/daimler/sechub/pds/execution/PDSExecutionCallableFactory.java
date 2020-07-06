@@ -15,8 +15,11 @@ public class PDSExecutionCallableFactory {
     
     @Autowired
     PDSWorkspaceService workspaceService;
+    
+    @Autowired
+    PDSExecutionEnvironmentService environmentService;
 
     public PDSExecutionCallable createCallable(PDSJob job) {
-        return new PDSExecutionCallable(job, updateJobTransactionService, workspaceService);
+        return new PDSExecutionCallable(job, updateJobTransactionService, workspaceService,environmentService);
     }
 }

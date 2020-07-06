@@ -5,12 +5,16 @@ import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.util.UUID;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 
 @Service
+@RolesAllowed({PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER})
 public class PDSGetJobStatusService {
 
     @Autowired

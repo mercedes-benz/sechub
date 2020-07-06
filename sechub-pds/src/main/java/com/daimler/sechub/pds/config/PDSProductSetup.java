@@ -3,6 +3,8 @@ package com.daimler.sechub.pds.config;
 public class PDSProductSetup {
     private static final boolean DEFAULT_UNZIP_UPLOADS = true;
 
+    private static final long DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT = 120; // 2 hours
+
     private boolean unzipUploads = DEFAULT_UNZIP_UPLOADS;
 
     private String id;
@@ -11,12 +13,24 @@ public class PDSProductSetup {
 
     private String path;
 
+    private long minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
+
     /**
      * The description. Will be available at admin UI at configuration time.
      * Contains hints about usage (e.g. which variable must be set etc) - but is
      * optional
      */
     private String description;
+
+    private PDSProdutParameterSetup parameters = new PDSProdutParameterSetup();
+
+    public PDSProdutParameterSetup getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(PDSProdutParameterSetup parameters) {
+        this.parameters = parameters;
+    }
 
     /**
      * Represents the product identifier suitable for sechub
@@ -55,13 +69,23 @@ public class PDSProductSetup {
         this.description = description;
     }
 
-
     public boolean isUnzipUploads() {
         return unzipUploads;
     }
 
     public void setUnzipUploads(boolean unzipUploads) {
         this.unzipUploads = unzipUploads;
+    }
+
+    public long getMinutesToWaitForProductResult() {
+        if (minutesToWaitForProductResult < 1) {
+            minutesToWaitForProductResult = DEFAULT_MINUTES_TO_WAIT_FOR_PRODUCRESULT;
+        }
+        return minutesToWaitForProductResult;
+    }
+
+    public void setMinutesToWaitForProductResult(long minutesToWaitForProductResult) {
+        this.minutesToWaitForProductResult = minutesToWaitForProductResult;
     }
 
 }

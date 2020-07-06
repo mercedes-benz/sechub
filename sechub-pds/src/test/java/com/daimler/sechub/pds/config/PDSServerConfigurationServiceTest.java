@@ -54,6 +54,27 @@ public class PDSServerConfigurationServiceTest {
         assertEquals(PDSScanType.CODE_SCAN,product1.getScanType());
         assertEquals("codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3",product1.getDescription());
         
+        PDSProdutParameterSetup paramSetup = product1.getParameters();
+        assertNotNull(paramSetup);
+        List<PDSProdutParameterDefinition> mandatory = paramSetup.getMandatory();
+        assertEquals(2,mandatory.size());
+        Iterator<PDSProdutParameterDefinition> mit = mandatory.iterator();
+        PDSProdutParameterDefinition m1 = mit.next();
+        PDSProdutParameterDefinition m2 = mit.next();
+        
+        assertEquals("product1.qualititycheck.enabled",m1.getKey());
+        assertEquals("when 'true' quality scan results are added as well", m1.getDescription());
+        assertEquals("product1.level",m2.getKey());
+        assertEquals("numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal", m2.getDescription());
+        
+        List<PDSProdutParameterDefinition> optional = paramSetup.getOptional();
+        assertEquals(1,optional.size());
+        Iterator<PDSProdutParameterDefinition> oit = optional.iterator();
+        PDSProdutParameterDefinition o1 = oit.next();
+        assertEquals("product1.add.tipoftheday",o1.getKey());
+        assertEquals("add tip of the day as info", o1.getDescription());
+        
+        
         PDSProductSetup product2 = it.next();
         assertEquals("PRODUCT_2",product2.getId());
         assertEquals(PDSScanType.INFRA_SCAN,product2.getScanType());

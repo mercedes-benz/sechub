@@ -244,7 +244,7 @@ public class PDSExecutionService {
                         job.setState(PDSJobStatusState.FAILED);
                         job.setResult("Job interrupted");
                     } catch (ExecutionException e) {
-                        LOG.error("Job with uuid:{} failed in exection", jobUUID,e);
+                        LOG.error("Job with uuid:{} failed in execution", jobUUID,e);
                         job.setState(PDSJobStatusState.FAILED);
                         job.setResult("Job execution failed");
                     }

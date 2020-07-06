@@ -53,7 +53,7 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
                 User.builder()
                    .username(adminUserId)
                    .password(adminApiToken)
-                   .roles(PDSRoles.USER.getRole())
+                   .roles(PDSRoles.SUPERADMIN.getRole())
                    .build();
            /* remove field after start */
         adminApiToken=null;

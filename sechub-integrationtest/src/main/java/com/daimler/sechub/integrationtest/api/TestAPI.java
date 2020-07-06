@@ -71,6 +71,12 @@ public class TestAPI {
      */
     public static final TestUser PDS_TECH_USER = new TestUser("pds-inttest-techuser", "pds-inttest-apitoken", "pds_techuser@" + ExampleConstants.URI_TARGET_SERVER);
 
+    /**
+     * Admin account used for communication with integration test PDS
+     */
+    public static final TestUser PDS_ADMIN = new TestUser("pds-inttest-admin", "pds-inttest-apitoken", "pds_admin@" + ExampleConstants.URI_TARGET_SERVER);
+
+    
     private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;
 
     public static final AsUser as(TestUser user) {

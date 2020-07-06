@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
 @Service
+@RolesAllowed({PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER})
 public class PDSFileUploadJobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);

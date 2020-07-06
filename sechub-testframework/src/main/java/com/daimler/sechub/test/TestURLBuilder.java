@@ -140,6 +140,10 @@ public class TestURLBuilder {
         public String buildAnonymousCheckAlive() {
             return buildUrl(API_PDS_ANONYMOUS, "check/alive");
         }
+
+        public String buildGetJobResultOrErrorText(UUID jobUUID) {
+            return buildUrl(API_PDS_ADMIN, "job",jobUUID,"result");
+        }
     }
     
     public ProductDelegationServerUrlsBuilder pds() {

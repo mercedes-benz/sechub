@@ -59,7 +59,7 @@ public class PDSExecutionServiceTest {
         private boolean prepareCancelCalled;
 
         public TestPDSExecutionCallable(long waitMillis, PDSExecutionResult result) {
-            super(mock(PDSJob.class), mock(PDSUpdateJobTransactionService.class), mock(PDSWorkspaceService.class));
+            super(mock(PDSJob.class), mock(PDSUpdateJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

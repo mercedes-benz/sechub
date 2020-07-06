@@ -10,19 +10,24 @@ import java.util.UUID;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.PDSIntProductIdentifier;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
 /**
- * Integration test directly using REST API of integration test PDS (means without sechub).
- * When these tests fail, sechub tests will also fail, because PDS API corrupt or PDS server not alive
+ * Integration test directly using REST API of integration test PDS (means
+ * without sechub). When these tests fail, sechub tests will also fail, because
+ * PDS API corrupt or PDS server not alive
  * 
  * @author Albert Tregnaghi
  *
  */
 public class DirectPDSAPIScenario4IntTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DirectPDSAPIScenario4IntTest.class);
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario4.class);
@@ -43,7 +48,7 @@ public class DirectPDSAPIScenario4IntTest {
         
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_can_create_job_and_jobid_is_returned() {
         /* @formatter:off */
@@ -59,7 +64,7 @@ public class DirectPDSAPIScenario4IntTest {
         
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_can_get_job_status_of_created_job_and_is_CREATED() {
         /* @formatter:off */
@@ -77,7 +82,7 @@ public class DirectPDSAPIScenario4IntTest {
         assertPDSJobStatus(result).isInState("CREATED");
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_can_upload_content_to_PDS() {
         /* @formatter:off */
@@ -96,7 +101,7 @@ public class DirectPDSAPIScenario4IntTest {
         
         /* @formatter:on */
     }
-    
+
     @Test
     public void pds_techuser_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
         /* @formatter:off */
@@ -118,8 +123,28 @@ public class DirectPDSAPIScenario4IntTest {
         /* @formatter:on */
     }
 
-    
-    
-
+    @Test
+    public void pds_admin_can_mark_job_as_ready_to_start_and_after_while_job_result_is_returned() {
+        /* @formatter:off */
+        /* prepare */
+        
+        UUID sechubJobUUID = UUID.randomUUID();
+        
+        String createResult = asPDS(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
+        asPDS(PDS_ADMIN).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
+        
+        /* execute */
+        asPDS(PDS_ADMIN).markJobAsReadyToStart(pdsJobUUID);
+        
+        /* test */
+        String report = asPDS(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
+        if(!report.contains("CRITICAL")){
+            LOG.error(report);
+            fail("Not expected report but:\n"+report);
+        };
+        
+        /* @formatter:on */
+    }
 
 }

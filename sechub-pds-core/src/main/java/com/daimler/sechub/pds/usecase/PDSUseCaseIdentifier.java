@@ -18,6 +18,7 @@ public enum PDSUseCaseIdentifier {
     
     UC_ANONYMOUS_CHECK_ALIVE,
     
+    UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
     ;
     
     /* +---------------------------------------------------------------------+ */

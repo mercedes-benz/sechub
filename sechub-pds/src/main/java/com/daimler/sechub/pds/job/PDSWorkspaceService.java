@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.hibernate.engine.config.spi.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class PDSWorkspaceService {
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
 
+    @Value("${sechub.pds.workspace.autoclean.disabled:false}")
+    private boolean workspaceAutoCleanDisabled;
+
     /**
      * Resolves upload folder - if not existing it will be created
      * 
@@ -41,11 +45,11 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getUploadFolder(UUID jobUUID) {
-        File file = new File(getWorkspaceFolder(jobUUID),"upload");
+        File file = new File(getWorkspaceFolder(jobUUID), "upload");
         file.mkdirs();
         return file;
     }
-    
+
     /**
      * Resolves upload folder - if not existing it will be created
      * 
@@ -67,7 +71,7 @@ public class PDSWorkspaceService {
         if (!product.isUnzipUploads()) {
             return;
         }
-        unzipUploads(jobUUID,true);
+        unzipUploads(jobUUID, true);
     }
 
     void unzipUploads(UUID jobUUID, boolean deleteOriginZipFiles) throws IOException {
@@ -80,7 +84,7 @@ public class PDSWorkspaceService {
             }
         });
         int amountOfFiles = zipFiles.length;
-        LOG.debug("{} zip file(s) found for job {}",amountOfFiles, jobUUID);
+        LOG.debug("{} zip file(s) found for job {}", amountOfFiles, jobUUID);
         if (amountOfFiles == 0) {
             return;
         }
@@ -102,11 +106,57 @@ public class PDSWorkspaceService {
     public String getProductPathFor(PDSJobConfiguration config) {
         String productId = config.getProductId();
         PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(productId);
-        if (productSetup==null) {
+        if (productSetup == null) {
             return null;
         }
         return productSetup.getPath();
-        
-        
+
     }
+
+    /**
+     * When <code>true</code> workspace will not be automatically cleaned up, means
+     * upload files results etc. are not deleted after scans!
+     * 
+     * @return <code>true</code> when auto clean shall NOT be done
+     */
+    public boolean isWorkspaceAutoCleanDisabled() {
+        return workspaceAutoCleanDisabled;
+    }
+
+    public File getSystemErrorFile(UUID jobUUID) {
+        return new File(getOutputFolder(jobUUID), "system-error.log");
+    }
+
+    public File getSystemOutFile(UUID jobUUID) {
+        return new File(getOutputFolder(jobUUID), "system-out.log");
+    }
+
+    public File getResultFile(UUID jobUUID) {
+        return new File(getOutputFolder(jobUUID), "result.txt");
+    }
+
+    /**
+     * Resolves upload folder - if not existing it will be created
+     * 
+     * @param jobUUID
+     * @return upload folder
+     */
+    public File getOutputFolder(UUID jobUUID) {
+        File outputFolder = new File(getWorkspaceFolder(jobUUID), "output");
+        outputFolder.mkdirs();
+        return outputFolder;
+    }
+
+    public long getMinutesToWaitForResult(PDSJobConfiguration config) {
+        PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(config.getProductId());
+        if (productSetup==null) {
+            return -1;
+        }
+        return productSetup.getMinutesToWaitForProductResult();
+    }
+
+    public String getFileEncoding(UUID jobUUID) {
+        return "UTF-8"; // currently only UTF-8 expected
+    }
+    
 }

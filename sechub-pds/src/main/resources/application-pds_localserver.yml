@@ -11,6 +11,7 @@ server:
       123456
     key-alias:
        tomcat
+  port: 8444
 sechub:
   pds:
     server:

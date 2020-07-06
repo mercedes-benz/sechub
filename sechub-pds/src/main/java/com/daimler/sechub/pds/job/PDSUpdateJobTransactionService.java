@@ -3,6 +3,7 @@ package com.daimler.sechub.pds.job;
 import static com.daimler.sechub.pds.job.PDSJobAssert.*;
 import static com.daimler.sechub.pds.util.PDSAssert.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,39 +18,33 @@ public class PDSUpdateJobTransactionService {
     @Autowired
     PDSJobRepository repository;
 
+    /* mark as running - no matter of state before */
+    public void markReadyToStartInOwnTransaction(UUID jobUUID) {
+        updateJobInOwnTransaction(jobUUID, null,null,null, PDSJobStatusState.READY_TO_START, PDSJobStatusState.CREATED);
+    }
+
     /**
-     * Updates job state and - if not null - the result
+     * Marks job as running - no matter which state before
      * 
-     * @param jobUUID
-     * @param result
-     * @param newState
-     * @param acceptedStatesBefore
+     * @param uuid
      */
-    public void updateJobInOwnTransaction(UUID jobUUID, String result, PDSJobStatusState newState, PDSJobStatusState... acceptedStatesBefore) {
+    public void markJobAsRunningInOwnTransaction(UUID uuid) {
+        updateJobInOwnTransaction(uuid, null, LocalDateTime.now(), null, PDSJobStatusState.RUNNING, PDSJobStatusState.values());
+    }
+
+    private void updateJobInOwnTransaction(UUID jobUUID, String result, LocalDateTime started, LocalDateTime ended, PDSJobStatusState newState, PDSJobStatusState... acceptedStatesBefore) {
         notNull(jobUUID, "job uuid may not be null!");
-
+        
         PDSJob job = assertJobFound(jobUUID, repository);
+        if (started!=null) {
+            job.setStarted(started);
+        }
         assertJobIsInState(job, acceptedStatesBefore);
-
+        
         job.setState(newState);
         if (result != null) {
             job.setResult(result);
         }
         repository.save(job);
     }
-
-    public void markReadyToStartInOwnTransaction(UUID jobUUID) {
-        updateJobInOwnTransaction(jobUUID, null, PDSJobStatusState.READY_TO_START, PDSJobStatusState.CREATED);
-    }
-
-    /* mark as running - no matter of state before */
-    
-    /**
-     * Marks job as running - no matter which state before
-     * @param uuid
-     */
-    public void markJobAsRunningInOwnTransaction(UUID uuid) {
-        updateJobInOwnTransaction(uuid, null, PDSJobStatusState.RUNNING, PDSJobStatusState.values());
-    }
-
 }
