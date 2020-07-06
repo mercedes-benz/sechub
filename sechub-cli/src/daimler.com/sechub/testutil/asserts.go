@@ -3,6 +3,7 @@ package util
 
 import (
 	"encoding/json"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -104,4 +105,23 @@ func jsonBytesEqual(a, b []byte) (bool, error) {
 		return false, err
 	}
 	return reflect.DeepEqual(j2, j), nil
+}
+
+// AssertFileExists - checks if a file exists
+func AssertFileExists(filePath string, t *testing.T) {
+	_, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		t.Fatalf("File %q expected, but does not exist.", filePath)
+	} else {
+		Check(err, t)
+	}
+}
+
+// AssertMinimalFileSize - checks a file's size to be at least `size` bytes
+func AssertMinimalFileSize(filePath string, size int64, t *testing.T) {
+	fileinfo, err := os.Stat(filePath)
+	if fileinfo.Size() < size {
+		t.Fatalf("File %q too small: expected >= %d bytes, but has only %d.", filePath, size, fileinfo.Size())
+	}
+	Check(err, t)
 }

@@ -22,6 +22,7 @@ func initHelp() {
 		action += "   '" + ActionExecuteAsynchron + "' will just trigger scan and return job id in json\n"
 		action += "   '" + ActionExecuteGetStatus + "' will fetch current job status and return result as json\n"
 		action += "   '" + ActionExecuteGetReport + "' will fetch report as json (result will only exist when job is done)\n"
+		action += "   '" + ActionExecuteGetFalsePositives + "' will fetch the project's false-positives list as json\n"
 
 		fmt.Fprintf(w, "Arguments:\n %s", action)
 		fmt.Fprintln(w)

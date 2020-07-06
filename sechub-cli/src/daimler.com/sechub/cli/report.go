@@ -2,8 +2,6 @@
 package cli
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -15,40 +13,49 @@ import (
 type Report struct {
 	outputFileName string
 	outputFolder   string
-	serverResult   string
+	serverResult   []byte
 }
 
 func (report *Report) save(context *Context) {
+	filePath := report.createFilePath(true)
+	LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
 
-	filePath := report.createReportFilePath(context, true)
-	LogDebug(context.config.debug, fmt.Sprintf("filepath %s:\n", filePath))
-	content := report.serverResult
-	if context.config.reportFormat == "json" {
-		content = jsonPrettyPrint(content)
-	}
+	content := append(report.serverResult, []byte("\n")...) // add newline to the end
 
-	d1 := []byte(content)
-	err := ioutil.WriteFile(filePath, d1, 0644)
-	HandleError(err)
+	WriteContentToFile(filePath, content, context.config.reportFormat)
+
 	fmt.Printf("  SecHub report written to %s\n", filePath)
 }
 
-func (report *Report) createReportFilePath(context *Context, forceDirectory bool) string {
+func (report *Report) createFilePath(forceDirectory bool) string {
 	path := report.outputFolder
+
 	if forceDirectory {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			os.MkdirAll(path, os.ModePerm)
+			os.MkdirAll(path, 0755)
 		}
 	}
-	result := filepath.Join(path, report.outputFileName)
-	return result
+
+	return filepath.Join(path, report.outputFileName)
 }
 
-func jsonPrettyPrint(in string) string {
-	var out bytes.Buffer
-	err := json.Indent(&out, []byte(in), "", "   ")
-	if err != nil {
-		return in
+func getSecHubJobReport(context *Context) []byte {
+	fmt.Printf("- Fetching result (format=%s) for job %s\n", context.config.reportFormat, context.config.secHubJobUUID)
+
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+
+	if context.config.reportFormat == "html" {
+		header["Accept"] = "text/html"
+	} else {
+		header["Accept"] = "application/json"
 	}
-	return out.String()
+	LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
+	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
+
+	data, err := ioutil.ReadAll(response.Body)
+	HandleHTTPError(err)
+
+	LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
+	return data
 }

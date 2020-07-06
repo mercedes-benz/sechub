@@ -78,6 +78,12 @@ const ActionExecuteGetStatus = "getStatus"
 // ActionExecuteGetReport name of action to get report (json/html) of job
 const ActionExecuteGetReport = "getReport"
 
+// ActionExecuteGetFalsePositives name of action to download false-positives list (json) of project
+const ActionExecuteGetFalsePositives = "getFalsePositives"
+
+// ActionExecuteMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
+const ActionExecuteMarkFalsePositives = "markFalsePositives"
+
 /* ---------------------------------- */
 /* -------- Status ------------------ */
 /* ---------------------------------- */

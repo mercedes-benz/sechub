@@ -12,7 +12,7 @@ import (
 
 func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
@@ -52,7 +52,7 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 
 func TestZipFileEmptyIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
@@ -86,7 +86,7 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 
 func TestZipFileCanBeCreated(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
@@ -115,16 +115,8 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	/* ---- */
 	Check(err, t)
 
-	fileinfo, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		t.Fatalf("resulted zipfile does not exist!")
-	} else {
-		Check(err, t)
-	}
-
-	if fileinfo.Size() < 300 {
-		t.Fatalf("resulted empty zip file!!!")
-	}
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
 	/* read content of zipfile*/
 	zipfile, err := zip.OpenReader(path)
@@ -149,7 +141,7 @@ func TestZipFileCanBeCreated(t *testing.T) {
 
 func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
@@ -184,16 +176,8 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	/* ---- */
 	Check(err, t)
 
-	fileinfo, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		t.Fatalf("resulted zipfile does not exist!")
-	} else {
-		Check(err, t)
-	}
-
-	if fileinfo.Size() < 300 {
-		t.Fatalf("resulted empty zip file!!!")
-	}
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
 	/* read content of zipfile*/
 	zipfile, err := zip.OpenReader(path)
@@ -215,7 +199,7 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 
 func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
@@ -245,16 +229,8 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	/* ---- */
 	Check(err, t)
 
-	fileinfo, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		t.Fatalf("resulted zipfile does not exist!")
-	} else {
-		Check(err, t)
-	}
-
-	if fileinfo.Size() < 300 {
-		t.Fatalf("resulted empty zip file!!!")
-	}
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
 	/* read content of zipfile*/
 	zipfile, err := zip.OpenReader(path)
@@ -275,7 +251,7 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/nonexistant"

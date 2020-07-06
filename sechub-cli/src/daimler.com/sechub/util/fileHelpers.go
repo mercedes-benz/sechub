@@ -3,6 +3,8 @@
 package util
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,7 +14,8 @@ import (
 	. "daimler.com/sechub/testutil"
 )
 
-func initializeTestTempDir(t *testing.T) (name string) {
+// InitializeTestTempDir - creates a new directory in tmp with a unique name
+func InitializeTestTempDir(t *testing.T) (name string) {
 	name, err := ioutil.TempDir("", "sechub-cli-temp")
 	Check(err, t)
 
@@ -52,4 +55,24 @@ func createTestFile(file string, mode os.FileMode, t *testing.T) {
 	} else {
 		fmt.Printf("File created: %q\n", file)
 	}
+}
+
+// WriteContentToFile - Write content to a file; do pretty printing if of type json
+func WriteContentToFile(filePath string, content []byte, format string) error {
+	if format == "json" {
+		content = JSONPrettyPrint(content)
+	}
+
+	err := ioutil.WriteFile(filePath, content, 0644)
+	return err
+}
+
+// JSONPrettyPrint - beautify json by indenting
+func JSONPrettyPrint(in []byte) []byte {
+	var out bytes.Buffer
+	err := json.Indent(&out, in, "", "   ")
+	if err != nil {
+		return in
+	}
+	return out.Bytes()
 }

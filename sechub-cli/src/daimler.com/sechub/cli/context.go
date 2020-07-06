@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Context - Structure containing all relevant data for SecHub client functionality
 type Context struct {
 	config                *Config
 	unfilledByteValue     []byte
@@ -21,9 +22,7 @@ func (context *Context) isUploadingSourceZip() bool {
 	return context.sourceZipFileName != ""
 }
 
-/**
- * Creates a new CLI context by given config
- */
+// NewContext - Creates a new CLI context by given config
 func NewContext(config *Config) *Context {
 	context := new(Context)
 	context.config = config
