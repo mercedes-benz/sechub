@@ -218,7 +218,7 @@ function handleArguments() {
             ;;
     esac
     if [ -z "$SERVER_PORT" ] ; then
-        SERVER_PORT=8443
+        SERVER_PORT=8444
     fi
     export SERVER_PORT
     echo "Using port $SERVER_PORT for integration test PDS"
