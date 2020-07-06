@@ -12,93 +12,29 @@ There are many open source clients available having no server component inside s
 So when we want to adapt them in SecHub style (the product does the work and we ask for result) we 
 need to provide a `ProductDelegationServer` (in short form `PDS`).
 
-`PDS` will
+`PDS` is
 
-- be a spring boot application with using network DB (like done in SecHub itself, so we have t his
+- a spring boot application with using network DB (like done in SecHub itself, so we have t his
   as a shared kernel and so have synchronization base to do clustering very easy)
 - provides REST access
 - a very simple auth mechanism at the beginning (just one user, basic auth via TLS, credentials by ENV entries on startup)
 - provides jobs, queing
 - can execute single files (e.g. a bash script) 
-- has got a common simple way for configuration (at the beginning: ENV entry containing JSON)
-
-We will also provide a `AbstractProductDelegationServerAdapter` which does only not know the PRODUCT_ID but know how to communicate with `ProductDelegationServer` instances.
+- has got a common simple way for configuration 
 
 ===== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 
-===== REST API 
-====== Create JOB
-[source,bash]
-----
-https://${baseURL}/api/job/create [POST]
-----
-Does contain configuration data for job execution as JSON in a very simple key value style:
+===== Executors and Adapters
+====== Executors
+With PDS there is a default REST API wavailable, for different scanTypyes there will
+be dedicated PDSExecutors (eg. PDSWebScanExecutor, PDSInfraScanExecutor, etc., etc.)
 
-[source,json]
-----
-include::product_delegation_job_config_example1.json[]
-----
-<1> Represents the key, will be provided as argument `${sechub.test.key.1}` but also as `SECHUB_TEST_KEY_1` environment entry on process startup
-    so its up to the implementers if this is something that should not be shown in process tree... +
-    Only `[a-z\.0-9]` is allowed. `.` will be converted always to `_` for the environment variables (spirng boot style)
-<2> Just the value. Must be always a string
+====== Adapters
+The Adapter will always be the same, but filled with other necessary parameters.
 
+NOTE: So there will be no need to write any adapter or executor when using PDS! 
 
-====== Upload data
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/upload [POST]
-----
-
-Uploaded data must be automatically destroyed after job has been done.
-This avoids file system freezes...
-
-====== Mark JOB ready to start
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]
-----
-
-
-====== Fetch JOB status
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/status [GET]
-----
-
-
-====== Fetch JOB result
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/result [GET]
-----
-
-====== Cancel JOB
-[source,bash]
-----
-https://${baseURL}/api/job/${jobUUID}/cancel [PUT]
-----
-
-TIP: This should kill the process hard!
-
-===== Configuration
-
-====== Server
-Server configuration will be done by a JSON file.
-
-We will provide different target execution scripts for dedicated execution types:
-[source,json]
-----
-include::product_delegation_server_config_example1.json[]
-----
-<1> identifier, which will be used at job configuration time. Defines what will be executed
-<2> command what will be executed. Supports variables
-<3> user id of an administrator
-<4> encrypted password (spring boot style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...)
-
-====== Job
-JOB configuration is done by REST API call (create JOB)  
 
 ===== Howto integrate a CLI product in future
 
@@ -109,13 +45,20 @@ Having new security product XYZ but being a command line tool, we
 - start wanted amount of `ProductDelegationServer` instances with dedicated configuration setup to have a clustered, server ready execution of CLI security products.
 
 ====== SecHub Server Development
-Write a {sechub} adapter class which extends `AbstractProductDelegationServerAdapter`. Provide necessary config data on start time
+Nothing special to do, will be provided by default implementation
 
-====== SecHub Server Operations
-Configure to use the adapter on startup, which will be supported by #148
+====== SecHub Server Configuration
+With #148 we will provide possibility to add/remove dedicated executors (with dedicated verions)
+- doing this a PDS executor can be choosen and configured.
+
+====== Environment entries for keys
 
 
-===== TODO
+==== Future concepts
+At configuration phase/wizard, there will be a interchange with PDS server
 
-- What about environment entry injection e.g. all with `SECHUB_.*` could be available inside the jobs
-- What about 3rd-party authentication ?
+Every executor will have possibility to "say" what the optional and mandatory keys are.
+( see https://github.com/Daimler/sechub/issues/278 ) 
+Also there should be a test option inside (developer) admin UI to check if current configuration for 
+PDS is still valid - just check all parameters are defined, maybe later a real test could be implemented
+for PDS servers - so products could check if they are configured correctly? 

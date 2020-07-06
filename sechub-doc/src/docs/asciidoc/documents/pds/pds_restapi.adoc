@@ -1,0 +1,59 @@
+
+=== REST API 
+==== Big picture
+plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+==== Create JOB
+[source,bash]
+----
+https://${baseURL}/api/job/create [POST]
+----
+Does contain configuration data for job execution as JSON in a very simple key value style:
+
+[source,json]
+----
+include::product_delegation_job_config_example1.json[]
+----
+<1> Represents the key, will be provided as argument `${sechub.test.key.1}` but also as `SECHUB_TEST_KEY_1` environment entry on process startup
+    so its up to the implementers if this is something that should not be shown in process tree... +
+    Only `[a-z\.0-9]` is allowed. `.` will be converted always to `_` for the environment variables (spirng boot style)
+<2> Just the value. Must be always a string
+
+
+==== Upload data
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/upload [POST]
+----
+
+Uploaded data must be automatically destroyed after job has been done.
+This avoids file system freezes...
+
+==== Mark JOB ready to start
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]
+----
+
+
+==== Fetch JOB status
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/status [GET]
+----
+
+
+==== Fetch JOB result
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/result [GET]
+----
+
+==== Cancel JOB
+[source,bash]
+----
+https://${baseURL}/api/job/${jobUUID}/cancel [PUT]
+----
+
+TIP: This should kill the process hard!
+
+

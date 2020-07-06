@@ -9,9 +9,9 @@ include::documents/config.adoc[]
 == About
 include::documents/shared/about_sechub.adoc[]
 
-include::documents/pd/about_documentation_product_delegation_server.adoc[]
+include::documents/pds/about_documentation_product_delegation_server.adoc[]
 
-include::documents/pd/about_product_delegation_server.adoc[]
+include::documents/pds/about_product_delegation_server.adoc[]
 
 
 
@@ -22,5 +22,10 @@ include::documents/pd/about_product_delegation_server.adoc[]
 :numbered:
 
 <<<<
-// 1. SecHub client
-include::documents/code2doc/client/02_sechub_client.adoc[]
+== Concept
+include::documents/shared/concepts/product-delegation-server/product_delegation_server.adoc[]
+
+== Runtime view
+include::documents/pds/pds_config.adoc[]
+
+include::documents/pds/pds_restapi.adoc[]

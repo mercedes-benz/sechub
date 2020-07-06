@@ -1,0 +1,20 @@
+{
+    "apiVersion" : "1.0",
+    
+    "products" : [
+        {
+            "id" : "PRODUCT_1", //<1>
+            "path" : "/srv/security/scanner1.sh", //<2>
+            "scanType" : "codeScan",//<3>
+            "description" : "codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3"//<4>
+            
+        },
+        
+        {
+            "id" : "PRODUCT_2", //<1>
+            "path" : "/srv/security/scanner2.sh",//<2>
+            "scanType" : "infraScan" ,//<3>
+            "unzipUploads" : false //<5>
+        }
+    ]
+}

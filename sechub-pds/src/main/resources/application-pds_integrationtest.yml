@@ -11,6 +11,9 @@ sechub:
    techuser:
        userid: pds-inttest-techuser
        apitoken: "{noop}pds-inttest-apitoken"
+   admin:
+       userid: pds-inttest-admin
+       apitoken: "{noop}pds-inttest-apitoken"
 
 logging:
  level:
