@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
+import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
@@ -71,6 +72,9 @@ public class PDSExecutionService {
     PDSExecutionCallableFactory executionCallableFactory;
 
     @Autowired
+    PDSUpdateJobTransactionService updateService;
+
+    @Autowired
     PDSJobRepository repository;
 
     @PostConstruct
@@ -93,13 +97,13 @@ public class PDSExecutionService {
                     Future<PDSExecutionResult> future = entry.getValue();
                     if (future.isDone()) {
                         /* already done or canceled */
-                        LOG.info("cancelation of job with uuid:{} skipped, because already done",jobUUID);
+                        LOG.info("cancelation of job with uuid:{} skipped, because already done", jobUUID);
                         return false;
                     }
                     boolean canceled = future.cancel(true);
                     if (canceled) {
-                        LOG.info("canceled job with uuid:{}",jobUUID);
-                    }else {
+                        LOG.info("canceled job with uuid:{}", jobUUID);
+                    } else {
                         LOG.warn("cancelation of not done job with uuid:{} returned false - this should not happen");
                     }
                     return canceled;
@@ -129,11 +133,11 @@ public class PDSExecutionService {
                 LOG.warn("execution queue overload:{}/{}", size, queueMax);
             }
             pdsJob.setState(PDSJobStatusState.QUEUED);
-            repository.save(pdsJob);
-
+            updateService.updateInOwnTransaction(pdsJob); // we must do this, so its updated before future task added, prevents
+                                                          // optimistic lock problems when execution is too fast...
             PDSExecutionFutureTask task = new PDSExecutionFutureTask(executionCallableFactory.createCallable(pdsJob));
             workers.execute(task);
-            
+
             former = jobsInQueue.put(jobUUID, task);
         }
         handleFormerJob(jobUUID, former);
@@ -153,7 +157,7 @@ public class PDSExecutionService {
                 PDSExecutionJobInQueueStatusEntry statusEntry = new PDSExecutionJobInQueueStatusEntry();
                 statusEntry.done = future.isDone();
                 statusEntry.canceled = future.isCancelled();
-                statusEntry.jobUUID=entry.getKey();
+                statusEntry.jobUUID = entry.getKey();
 
                 Optional<PDSJob> jobOption = repository.findById(entry.getKey());
                 if (jobOption.isPresent()) {
@@ -236,15 +240,15 @@ public class PDSExecutionService {
                         job.setResult(callResult.result);
                         if (callResult.failed) {
                             job.setState(PDSJobStatusState.FAILED);
-                        }else {
+                        } else {
                             job.setState(PDSJobStatusState.DONE);
                         }
                     } catch (InterruptedException e) {
-                        LOG.error("Job with uuid:{} was interrupted", jobUUID,e);
+                        LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
                         job.setState(PDSJobStatusState.FAILED);
                         job.setResult("Job interrupted");
                     } catch (ExecutionException e) {
-                        LOG.error("Job with uuid:{} failed in execution", jobUUID,e);
+                        LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
                         job.setState(PDSJobStatusState.FAILED);
                         job.setResult("Job execution failed");
                     }
@@ -264,7 +268,7 @@ public class PDSExecutionService {
 
     void destroy() {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

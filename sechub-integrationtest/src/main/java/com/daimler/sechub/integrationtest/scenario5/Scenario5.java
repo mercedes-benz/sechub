@@ -3,7 +3,8 @@ package com.daimler.sechub.integrationtest.scenario5;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
+import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
  * <b><u>Scenario5 - the PDS integrationtest standard scenario</u></b><br>
@@ -25,7 +26,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario5 extends AbstractTestScenario {
+public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTestScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

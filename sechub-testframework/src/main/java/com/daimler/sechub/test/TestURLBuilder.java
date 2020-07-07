@@ -144,6 +144,10 @@ public class TestURLBuilder {
         public String buildGetJobResultOrErrorText(UUID jobUUID) {
             return buildUrl(API_PDS_ADMIN, "job",jobUUID,"result");
         }
+
+        public String buildAdminGetServerConfiguration() {
+            return buildUrl(API_PDS_ADMIN, "config/server");
+        }
     }
     
     public ProductDelegationServerUrlsBuilder pds() {
@@ -421,7 +425,7 @@ public class TestURLBuilder {
      *
      * @return url for integration test check
      */
-    public String buildIsAliveUrl() {
+    public String buildIntegrationTestIsAliveUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/alive");
     }
 

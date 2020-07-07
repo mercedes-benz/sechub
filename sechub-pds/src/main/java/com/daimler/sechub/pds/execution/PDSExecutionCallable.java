@@ -2,6 +2,7 @@ package com.daimler.sechub.pds.execution;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +50,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         UUID jobUUID = pdsJob.getUUID();
         try {
             updateService.markJobAsRunningInOwnTransaction(jobUUID);
-
             String configJSON = pdsJob.getJsonConfiguration();
 
             PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
@@ -71,7 +71,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         } catch (Exception e) {
             LOG.error("Execution of job uuid:{} failed", jobUUID, e);
             result.failed = true;
-            result.result = "Job execution failed. See logs for details";
+            result.result = "Execution of job uuid:"+jobUUID+" failed. Please look into PDS logs for details and search for former string.";
         } finally {
             cleanUpWorkspace(jobUUID);
         }
@@ -117,10 +117,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     }
 
     private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {
+        File currentDir = Paths.get("./").toRealPath().toFile();
         List<String> commands = new ArrayList<>();
         commands.add(path);
 
         ProcessBuilder builder = new ProcessBuilder(commands);
+        builder.directory(currentDir);
         builder.inheritIO();
 
         builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
@@ -129,7 +131,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.environment().putAll(environmentService.buildEnvironmentMap(config));
         File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
         builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
-        process = builder.start();
+        try {
+            process = builder.start();
+        }catch(IOException e) {
+            LOG.error("Process start failed for jobUUID:{}. Current directory was:{}",jobUUID,currentDir.getAbsolutePath());
+            throw e;
+        }
     }
 
     /**

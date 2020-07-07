@@ -3,7 +3,7 @@ package com.daimler.sechub.integrationtest.scenario3;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 
 /**
  * In this scenario following is automatically initialized at start (old data removed as well)
@@ -16,7 +16,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario3 extends AbstractTestScenario {
+public class Scenario3 extends AbstractSecHubServerTestScenario {
 
 	/**
 	 * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

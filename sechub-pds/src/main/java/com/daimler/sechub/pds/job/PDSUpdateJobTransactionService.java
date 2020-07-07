@@ -47,4 +47,12 @@ public class PDSUpdateJobTransactionService {
         }
         repository.save(job);
     }
+
+    /**
+     * Use this method when you want to update the given job in own transaction - so it's done and not after callers method has ended...
+     * @param pdsJob
+     */
+    public void updateInOwnTransaction(PDSJob pdsJob) {
+        repository.save(pdsJob);
+    }
 }

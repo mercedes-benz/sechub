@@ -29,17 +29,21 @@ public class PDSExecutionServiceTest {
     private PDSExecutionCallableFactory executionCallableFactory;
     private PDSExecutionResult result1;
 
+    private PDSUpdateJobTransactionService updateService;
+
     @Before
     public void before() throws Exception {
         repository = mock(PDSJobRepository.class);
         executionCallableFactory = mock(PDSExecutionCallableFactory.class);
-
+        updateService=mock(PDSUpdateJobTransactionService.class);
+        
         result1 = new PDSExecutionResult();
 
         serviceToTest = new PDSExecutionService();
         serviceToTest.watcherDisabled = true;
         serviceToTest.repository = repository;
         serviceToTest.executionCallableFactory = executionCallableFactory;
+        serviceToTest.updateService=updateService;
     }
 
     @After

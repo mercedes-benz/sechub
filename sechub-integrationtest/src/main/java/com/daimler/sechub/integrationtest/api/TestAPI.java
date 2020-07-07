@@ -83,7 +83,7 @@ public class TestAPI {
         return new AsUser(user);
     }
     
-    public static final AsPDSUser asPDS(TestUser user) {
+    public static final AsPDSUser asPDSUser(TestUser user) {
         return new AsPDSUser(user);
     }
 
@@ -110,6 +110,10 @@ public class TestAPI {
         return new AssertProject(project);
     }
 
+    public static AssertJSON assertJSON(String json) {
+        return AssertJSON.assertJson(json);
+    }
+    
     /**
      * Creates an assert object to inspect meta data
      * @return
@@ -120,7 +124,12 @@ public class TestAPI {
 
     public static void logInfoOnServer(String text) {
         String url = getURLBuilder().buildIntegrationTestLogInfoUrl();
-        getSuperAdminRestHelper().postPlainText(url,text);
+        getContext().getRestHelper(ANONYMOUS).postPlainText(url,text);
+    }
+    
+    public static void logInfoOnPDS(String text) {
+        String url = getPDSURLBuilder().buildIntegrationTestLogInfoUrl();
+        getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url,text);
     }
     
     /**
@@ -688,6 +697,11 @@ public class TestAPI {
     private static TestURLBuilder getURLBuilder() {
         return getContext().getUrlBuilder();
     }
+    
+    private static TestURLBuilder getPDSURLBuilder() {
+        return getContext().getPDSUrlBuilder();
+    }
+    
 
     public static void revertJobToStillRunning(UUID sechubJobUUID) {
        String url = getURLBuilder().buildIntegrationTestRevertJobAsStillRunning(sechubJobUUID);

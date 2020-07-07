@@ -3,7 +3,7 @@
     "products": [
         {
             "id": "PDS_INTTEST_PRODUCT_CODESCAN",
-            "path": "./pds/product-scripts/integrationtest-codescan.sh",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan.sh",
             "scanType": "codeScan",
             "description": "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
             "parameters": {

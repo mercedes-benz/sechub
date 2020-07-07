@@ -84,6 +84,12 @@ public class AsPDSUser {
         getRestHelper().head(getUrlBuilder().pds().buildAnonymousCheckAlive());
         return true;
     }
+    
+    public String getExecutionStatus() {
+        String url = getUrlBuilder().pds().buildAdminGetExecutionStatus();
+        String result = getRestHelper().getJSon(url);
+        return result;
+    }
 
     public AsPDSUser cancelJob(UUID jobUUID) {
         String url = getUrlBuilder().pds().buildCancelJob(jobUUID);
@@ -108,6 +114,12 @@ public class AsPDSUser {
         String url = getUrlBuilder().pds().buildUpload(pdsJobUUID, uploadName);
         getRestHelper().upload(url, file, sha256CheckSum);
         return this;
+    }
+
+    public String getServerConfiguration() {
+        String url = getUrlBuilder().pds().buildAdminGetServerConfiguration();
+        String result = getRestHelper().getJSon(url);
+        return result;
     }
 
 }
