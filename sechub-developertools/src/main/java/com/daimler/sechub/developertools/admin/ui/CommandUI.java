@@ -33,6 +33,11 @@ import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobHardActio
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSExecutionStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
@@ -152,6 +157,7 @@ public class CommandUI {
 		createMassOperationsMenu();
 		
 		createAdapterMenu();
+		createPDSMenu();
     }
 
 	public void createEditMenu() {
@@ -167,6 +173,18 @@ public class CommandUI {
         
         add(menu, new ShowAdapterDialogAction(context,"Checkmarx",MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
     }
+	public void createPDSMenu() {
+	    JMenu menu = new JMenu("PDS");
+	    menuBar.add(menu);
+	    
+	    add(menu, new FetchPDSConfigurationAction(context));
+	    add(menu, new CheckPDSAliveAction(context));
+	    menu.addSeparator();
+	    add(menu, new CheckPDSExecutionStatusAction(context));
+	    menu.addSeparator();
+	    add(menu, new CheckPDSJobStatusAction(context));
+	    add(menu, new CheckPDSJobResultOrErrorAction(context));
+	}
 
 	private void createUserMenu() {
 		JMenu menu = new JMenu("User");

@@ -56,6 +56,12 @@ public abstract class AbstractUIAction extends AbstractAction {
     
     private static void initializeDefaults() {
         /* @formatter:off */
+        inputCache.set(InputCacheIdentifier.PDS_PORT, "8444");
+        inputCache.set(InputCacheIdentifier.PDS_SERVER, "localhost");
+        
+        inputCache.set(InputCacheIdentifier.PDS_USER, "pds-inttest-admin");
+        inputCache.set(InputCacheIdentifier.PDS_APITOKEN, "pds-inttest-apitoken");
+        
         inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
         inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
                 "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
@@ -156,11 +162,11 @@ public abstract class AbstractUIAction extends AbstractAction {
     }
 
     /**
-     * Output given text - no matter of an error has happend or not
+     * Output given text - no matter of an error has happened or not
      * 
      * @param text
      */
-    void output(String text) {
+    protected void output(String text) {
 
         OutputUI outputUI = getContext().getOutputUI();
         outputUI.output(text);
@@ -185,6 +191,23 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected Optional<String> getUserInput(String message, InputCacheIdentifier identifier) {
 
         Optional<String> x = getContext().getDialogUI().getUserInput(message, inputCache.get(identifier));
+        if (x.isPresent() && identifier != null) {
+            inputCache.set(identifier, x.get());
+        }
+        return x;
+    }
+    
+    /**
+     * Shows an password dialog for user (one liner). Last entered values for given
+     * identifier will be used when nothing entered
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserPassword(String message, InputCacheIdentifier identifier) {
+
+        Optional<String> x = getContext().getDialogUI().getUserPassword(message, inputCache.get(identifier));
         if (x.isPresent() && identifier != null) {
             inputCache.set(identifier, x.get());
         }

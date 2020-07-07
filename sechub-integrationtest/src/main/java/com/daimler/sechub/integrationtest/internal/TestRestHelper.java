@@ -33,6 +33,7 @@ import com.daimler.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
     
+    
     public static enum RestHelperTarget{
         SECHUB_SERVER,
         SECHUB_PDS,

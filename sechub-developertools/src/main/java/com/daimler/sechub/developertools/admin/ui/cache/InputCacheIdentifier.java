@@ -15,4 +15,16 @@ public enum InputCacheIdentifier{
 	PROJECT_MOCK_CONFIG_JSON,
 	
 	MARK_PROJECT_FALSE_POSITIVE,
+	
+	PDS_SERVER,
+	
+	PDS_PORT,
+
+	PDS_USER,
+	
+	PDS_APITOKEN, 
+	
+	PDS_JOBUUID,
+	
+	
 }

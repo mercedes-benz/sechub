@@ -16,6 +16,7 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
+import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
@@ -44,7 +45,11 @@ public class DeveloperAdministration {
     }
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
-        return new TestRestHelper(user, RestHelperTarget.SECHUB_SERVER) {
+        return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
+    }
+
+    private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {
+        return new TestRestHelper(user, restHelperTarget) {
 
             @Override
             protected ResponseErrorHandler createErrorHandler() {
@@ -75,7 +80,7 @@ public class DeveloperAdministration {
                         errorOutput.append("***                        SENT                                ***\n");
                         errorOutput.append("******************************************************************\n");
                         errorOutput.append("Last URL call:").append(TestRestHelper.getLastUrl());
-                        if (TestRestHelper.getLastData()!=null) {
+                        if (TestRestHelper.getLastData() != null) {
                             errorOutput.append("\nWith data:").append(TestRestHelper.getLastData());
                         }
                         errorOutput.append("\n");
@@ -83,7 +88,7 @@ public class DeveloperAdministration {
                         errorOutput.append("***                     RECEIVED                               ***\n");
                         errorOutput.append("******************************************************************\n");
                         errorOutput.append(httpResponseProblem).append("\n");
-                        
+
                         provider.handleError(errorOutput.toString());
                     }
                 };
@@ -113,6 +118,42 @@ public class DeveloperAdministration {
         return restHelper;
     }
 
+    public PDSAdministration pds(String hostname, int port,String userid, String apiToken) {
+        return new PDSAdministration(hostname, port,userid,apiToken);
+    }
+
+    public class PDSAdministration {
+
+        private TestURLBuilder pdsUrlBuilder;
+
+        public PDSAdministration(String hostname, int port, String userid, String apiToken) {
+            pdsUrlBuilder = new TestURLBuilder("https", port, hostname);
+            TestUser user = new TestUser(userid, apiToken, userid + "_pds@example.com");
+            restHelper = new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
+        }
+
+        public String getServerConfiguration() {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
+        }
+
+        public String getServerAlive() {
+            return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildAnonymousCheckAlive());
+        }
+
+        public String getExecutionStatus() {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetExecutionStatus());
+        }
+
+        public String getJobResultOrError(String jobUUID) {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
+        }
+        
+        public String getJobStatus(String jobUUID) {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+        }
+
+    }
+
     public TestRestHelper getAnonyomusRestHelper() {
         return anonyomusRestHelper;
     }
@@ -121,7 +162,7 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
         return "SENT";
     }
-    
+
     public String declineSignup(String userId) {
         getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserSignUpUrl(userId));
         return "SENT";
@@ -320,22 +361,22 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminRestartsJob(jobUUID));
         return "restart job triggered";
     }
-    
+
     public String restartJobHard(UUID jobUUID) {
         getRestHelper().post(getUrlBuilder().buildAdminRestartsJobHard(jobUUID));
         return "restart job (hard) triggered";
     }
-    
+
     public String fetchProjectFalsePositiveConfiguration(String projectId) {
         return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
     }
-    
+
     public String markFalsePositivesForProjectByJobData(String projectId, String json) {
-        return getRestHelper().putJSon(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId),json);
+        return getRestHelper().putJSon(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId), json);
     }
-    
+
     public void deleteFalsePositivesForProject(String projectId, UUID jobUUID, int findingId) {
-        getRestHelper().delete(getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(projectId, jobUUID.toString(),""+findingId));
+        getRestHelper().delete(getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(projectId, jobUUID.toString(), "" + findingId));
     }
 
     private String commonTriggerDownloadInBrowser(String url) {
@@ -379,8 +420,5 @@ public class DeveloperAdministration {
         }
 
     }
-
-  
-   
 
 }
