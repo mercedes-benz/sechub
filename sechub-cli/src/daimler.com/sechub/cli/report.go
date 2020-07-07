@@ -24,7 +24,7 @@ func (report *Report) save(context *Context) {
 
 	WriteContentToFile(filePath, content, context.config.reportFormat)
 
-	fmt.Printf("  SecHub report written to %s\n", filePath)
+	fmt.Printf("- SecHub report written to %s\n", filePath)
 }
 
 func (report *Report) createFilePath(forceDirectory bool) string {

@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	. "daimler.com/sechub/testutil"
-	. "daimler.com/sechub/util"
 )
 
 func TestFalsePositivesFilePathCorrectCreated(t *testing.T) {

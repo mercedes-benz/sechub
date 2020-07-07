@@ -20,15 +20,16 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
 	header["Accept"] = "application/json"
+
 	return sendWithHeader(method, url, context, header)
 }
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
 	/* we use unfilledByteValue - means origin template content, unfilled. Prevents password leak in logs */
 	LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q\n", url, header, context.unfilledByteValue))
-	/* send */
 
-	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue))
+	/* prepare */
+	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.unfilledByteValue))
 	HandleHTTPError(err1)
 	req.SetBasicAuth(context.config.user, context.config.apiToken)
 
@@ -36,8 +37,9 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 		req.Header.Set(key, header[key])
 	}
 
+	/* send */
 	response, err2 := context.HttpClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.byteValue))
-	HandleHTTPErrorAndResponse(response, err2)
+	HandleHTTPErrorAndResponse(response, err2, context)
 	return response
 }
 

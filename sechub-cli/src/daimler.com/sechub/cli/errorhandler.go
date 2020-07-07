@@ -36,7 +36,8 @@ func HandleHTTPResponse(res *http.Response) {
 }
 
 // HandleHTTPErrorAndResponse does just handle error and repsonse
-func HandleHTTPErrorAndResponse(res *http.Response, err error) {
+func HandleHTTPErrorAndResponse(res *http.Response, err error, context *Context) {
+	LogDebug(context.config.debug, fmt.Sprintf("HTTP response: %+v", res))
 	HandleHTTPError(err)
 	HandleHTTPResponse(res)
 }

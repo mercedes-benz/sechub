@@ -38,7 +38,7 @@ func buildGetSecHubJobReportAPICall(context *Context) string {
 }
 
 // https://localhost:8081/api/project/testproject/false-positives
-func buildGetFalsePositivesListAPICall(context *Context) string {
+func buildFalsePositivesAPICall(context *Context) string {
 	apiPart := fmt.Sprintf("project/%s/false-positives", context.config.projectId)
 	return buildAPIUrl(&context.config.server, &apiPart)
 }

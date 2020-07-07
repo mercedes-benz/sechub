@@ -28,5 +28,5 @@ func uploadSourceZipFile(context *Context) {
 
 	response, err := context.HttpClient.Do(request)
 
-	HandleHTTPErrorAndResponse(response, err)
+	HandleHTTPErrorAndResponse(response, err, context)
 }

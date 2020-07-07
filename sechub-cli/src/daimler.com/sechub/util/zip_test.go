@@ -19,17 +19,17 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	/* path to zipfile is also part of added files - because in dirname1*/
 	path := dirname1 + "/testoutput.zip"
@@ -59,9 +59,9 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	/* we do only add empty folders, but not any content - so zip file will be empty. The implementation
 	 * must ensure that this cannot happen because otherwise we upload empty data which will always have a
@@ -93,17 +93,17 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -148,19 +148,19 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename0 := dirname1 + "/file0.txt"
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename0, 0644, t)
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename0, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -205,18 +205,18 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub1/sub2"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
 
 	filename0 := dirname1 + "/file0.txt" // should be ignored
 	filename1 := dirname1 + "/file1.c"   // should be added
 	filename2 := dirname2 + "/file2.jpg" // should be ignored
 	filename3 := dirname2 + "/file3.go"  // shoud be added
 
-	createTestFile(filename0, 0644, t)
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename0, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 

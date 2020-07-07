@@ -64,7 +64,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Println("Call sechub with --help option to show correct usage and examples")
+	fmt.Println("Hint: Call sechub with -help option to show correct usage and examples")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {

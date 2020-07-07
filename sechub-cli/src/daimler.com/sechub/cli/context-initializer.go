@@ -7,6 +7,7 @@ import (
 	. "daimler.com/sechub/util"
 )
 
+// InitializeContext - initialize and validate context
 func InitializeContext() *Context {
 	/* create config and context */
 	configPtr := NewConfigByFlags()

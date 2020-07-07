@@ -62,6 +62,9 @@ const ExitCodeIllegalAction = 6
 // ExitCodeMissingConfigParts means there were missing configuration parts
 const ExitCodeMissingConfigParts = 7
 
+// ExitCodeIOError and http error has occurred
+const ExitCodeIOError = 8
+
 /* ---------------------------------- */
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
@@ -81,8 +84,17 @@ const ActionExecuteGetReport = "getReport"
 // ActionExecuteGetFalsePositives name of action to download false-positives list (json) of project
 const ActionExecuteGetFalsePositives = "getFalsePositives"
 
+// ActionExecuteAddFalsePositives name of action to define false-positives of a project and upload it to SecHub server
+const ActionExecuteAddFalsePositives = "addFalsePositives"
+
 // ActionExecuteMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
 const ActionExecuteMarkFalsePositives = "markFalsePositives"
+
+// ActionExecuteRemoveFalsePositives name of action to undefine false-positives of a project and upload it to SecHub server
+const ActionExecuteRemoveFalsePositives = "removeFalsePositives"
+
+// ActionExecuteUnmarkFalsePositives name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+const ActionExecuteUnmarkFalsePositives = "unmarkFalsePositives"
 
 /* ---------------------------------- */
 /* -------- Status ------------------ */

@@ -23,14 +23,13 @@ type jobScheduleResult struct {
 
 // Execute starts sechub client
 func Execute() {
-	initHelp()
 	context := InitializeContext()
 
 	printLogoWithVersion(os.Stdout)
 
 	if context.config.trustAll {
 		if !context.config.quiet {
-			fmt.Println("WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
+			LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
 
@@ -63,14 +62,25 @@ func Execute() {
 			downloadFalsePositivesList(context)
 			os.Exit(ExitCodeOK)
 		}
+	case ActionExecuteAddFalsePositives:
+		{
+			uploadFalsePositivesFromFile(context)
+			os.Exit(ExitCodeOK)
+		}
 	case ActionExecuteMarkFalsePositives:
 		{
 			markFalsePositives(context)
 			os.Exit(ExitCodeOK)
 		}
+	case ActionExecuteRemoveFalsePositives:
+		{
+			uploadFalsePositivesFromFile(context)
+			os.Exit(ExitCodeOK)
+		}
 	default:
 		{
 			fmt.Printf("Unknown action '%s'\n", context.config.action)
+			showHelpHint()
 			os.Exit(ExitCodeIllegalAction)
 		}
 	}
@@ -153,16 +163,13 @@ func downloadSechubReport(context *Context) string {
 	return "" // Dummy (Error handling is done in report.save method)
 }
 
-func downloadFalsePositivesList(context *Context) string {
+func downloadFalsePositivesList(context *Context) {
 	fileName := "sechub-false-positives-" + context.config.projectId + ".json"
 
 	list := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	list.save(context)
-
-	return "" // Dummy (Error handling is done in `save` method)
 }
 
-func markFalsePositives(context *Context) string {
+func markFalsePositives(context *Context) {
 	fmt.Println("To be done")
-	return ""
 }

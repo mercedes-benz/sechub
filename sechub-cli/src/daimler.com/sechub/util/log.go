@@ -8,6 +8,11 @@ func LogError(text string) {
 	fmt.Printf("ERROR: " + text + "\n")
 }
 
+// LogWarning - print unified error message
+func LogWarning(text string) {
+	fmt.Printf("WARNING: " + text + "\n")
+}
+
 // LogVerbose - print unified verbose message
 func LogVerbose(text string) {
 	fmt.Printf("VERBOSE: " + text + "\n")
