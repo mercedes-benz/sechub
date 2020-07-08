@@ -14,20 +14,33 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.daimler.sechub.pds.PDSProfiles;
+import com.daimler.sechub.pds.PDSShutdownService;
+import com.daimler.sechub.pds.config.PDSPathExecutableValidator;
+import com.daimler.sechub.pds.config.PDSProductIdentifierValidator;
+import com.daimler.sechub.pds.config.PDSServerConfigurationService;
+import com.daimler.sechub.pds.config.PDSServerConfigurationValidator;
+import com.daimler.sechub.pds.config.PDSServerIdentifierValidator;
 
+
+@ActiveProfiles(PDSProfiles.TEST)
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes= {PDSJobRepository.class, PDSJobRepositoryDBTest.SimpleTestConfiguration.class})
+@ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class , PDSServerConfigurationValidator.class, PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class,
+        PDSServerConfigurationService.class, PDSJobRepositoryDBTest.SimpleTestConfiguration.class })
 public class PDSJobRepositoryDBTest {
-
 	@Autowired
 	private TestEntityManager entityManager;
 
 	@Autowired
 	private PDSJobRepository repositoryToTest;
+	
+	@Autowired
+    private PDSServerConfigurationService serverConfigService;
 
 	@Before
 	public void before() {
@@ -146,13 +159,15 @@ public class PDSJobRepositoryDBTest {
 	
 	private PDSJob createJob(PDSJobStatusState state, int minutes) {
         PDSJob job = new PDSJob();
+        job.serverId=serverConfigService.getServerId();
         // necessary because must be not null
         job.created=LocalDateTime.of(2020, 06, 24,13,55,01).plusMinutes(minutes);
         job.owner = "owner";
         job.jsonConfiguration="{}";
         job.state=state;
+
+        /* persist */
         job=entityManager.persistAndFlush(job);
-        
         return job;
     }
 

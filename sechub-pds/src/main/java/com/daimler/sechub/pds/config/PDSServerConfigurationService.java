@@ -76,4 +76,8 @@ public class PDSServerConfigurationService {
         return null;
     }
 
+    public String getServerId() {
+        return configuration.getServerId();
+    }
+
 }

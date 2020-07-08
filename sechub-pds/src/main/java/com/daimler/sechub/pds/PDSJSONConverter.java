@@ -99,7 +99,7 @@ public class PDSJSONConverter {
             byte[] bytes = string.getBytes();
             return mapper.readValue(bytes, clazz);
         } catch (IOException e) {
-            LOG.debug("JSON conversion failed", jSON);
+            LOG.debug("JSON conversion failed:\n{}", jSON);
             throw new PDSJSONConverterException("Was not able to convert JSON string to " + clazz + " object", e);
         }
     }

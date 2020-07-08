@@ -13,6 +13,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
 import com.daimler.sechub.pds.PDSNotAcceptableException;
+import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.security.PDSUserContextService;
 
 public class PDSCreateJobServiceTest {
@@ -27,6 +28,7 @@ public class PDSCreateJobServiceTest {
     private PDSJob resultJob1;
     private PDSUserContextService userContextService;
     private PDSJobConfigurationValidator configurationValidator;
+    private PDSServerConfigurationService serverConfigurationService;
 
     @Before
     public void before() throws Exception {
@@ -34,7 +36,9 @@ public class PDSCreateJobServiceTest {
         createdJob1UUID = UUID.randomUUID();
         repository = mock(PDSJobRepository.class);
         configurationValidator = mock(PDSJobConfigurationValidator.class);
-
+        serverConfigurationService=mock(PDSServerConfigurationService.class);
+        
+        
         userContextService = mock(PDSUserContextService.class);
         when(userContextService.getUserId()).thenReturn("callerName");
 
@@ -42,6 +46,7 @@ public class PDSCreateJobServiceTest {
         serviceToTest.repository = repository;
         serviceToTest.userContextService = userContextService;
         serviceToTest.configurationValidator = configurationValidator;
+        serviceToTest.serverConfigurationService=serverConfigurationService;
 
         resultJob1 = new PDSJob();
         resultJob1.uUID = createdJob1UUID;

@@ -1,6 +1,9 @@
+-- pds job represents job being scheduled by PDSBatchTriggerService
 CREATE TABLE pds_job
 (
    uuid uuid not null,
+   
+   server_id varchar(90) not null,  -- we accept 60 (3x30), see PDSServerIdentifierValidator
    
    state varchar(30) not null, -- enum value, max:30
    owner varchar(60) not null, -- we accept 60 (3 x 20) see UserIdValidation

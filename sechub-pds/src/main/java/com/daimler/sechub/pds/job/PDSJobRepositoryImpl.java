@@ -11,22 +11,30 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.daimler.sechub.pds.config.PDSServerConfigurationService;
+
 public class PDSJobRepositoryImpl implements PDSJobRepositoryCustom {
 
     /* @formatter:off */
 	public static final String JPQL_STRING_SELECT_BY_EXECUTION_STATE = 
 			"select j from "+CLASS_NAME+" j"+
 					" where j."+PROPERTY_STATE+" = :"+PROPERTY_STATE +
+					" and j."+PROPERTY_SERVER_ID+" = :"+PROPERTY_SERVER_ID +
 					" order by j."+PROPERTY_CREATED;
 	/* @formatter:on */
 
     @PersistenceContext
     private EntityManager em;
+    
+    @Autowired
+    PDSServerConfigurationService serverConfigService;
 
     @Override
     public Optional<PDSJob> findNextJobToExecute() {
-
         Query query = em.createQuery(JPQL_STRING_SELECT_BY_EXECUTION_STATE);
+        query.setParameter(PROPERTY_SERVER_ID, serverConfigService.getServerId());
         query.setParameter(PROPERTY_STATE, READY_TO_START);
         query.setMaxResults(1);
         // we use OPTIMISTIC_FORCE_INCREMENT write lock - so only one POD will be able

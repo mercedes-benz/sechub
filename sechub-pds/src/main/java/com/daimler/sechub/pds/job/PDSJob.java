@@ -38,6 +38,7 @@ public class PDSJob {
     public static final String COLUMN_UUID = "UUID";
     public static final String COLUMN_SECHUB_JOB_UUID = "SECHUB_JOB_UUID";
 
+    public static final String COLUMN_SERVER_ID = "SERVER_ID";
     public static final String COLUMN_STATE = "STATE";
     public static final String COLUMN_OWNER = "OWNER";
 
@@ -55,6 +56,7 @@ public class PDSJob {
     public static final String CLASS_NAME = PDSJob.class.getSimpleName();
 
     public static final String PROPERTY_UUID = "uUID";
+    public static final String PROPERTY_SERVER_ID = "serverId";
     public static final String PROPERTY_SECHUB_JOB_UUID = "sechubJobUUID";
 
     public static final String PROPERTY_STATE = "state";
@@ -75,6 +77,14 @@ public class PDSJob {
 
     @Column(name = COLUMN_OWNER, nullable = false)
     String owner;
+    
+    /**
+     * Server ID is used to give possibilty to use a shared database for multiple PDS clusters.
+     * Members of cluster use the same server id, so scheduling etc. is working well even when
+     * multiple PDS are running
+     */
+    @Column(name = COLUMN_SERVER_ID, nullable = false)
+    String serverId;
 
     @Column(name = COLUMN_CREATED, nullable = false) // remark: we setup hibernate to use UTC settings - see
     LocalDateTime created;
@@ -100,6 +110,14 @@ public class PDSJob {
     @Version
     @Column(name = "VERSION")
     Integer version;
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+    
+    public String getServerId() {
+        return serverId;
+    }
 
     public void setResult(String result) {
         this.result = result;
@@ -175,5 +193,7 @@ public class PDSJob {
         PDSJob other = (PDSJob) obj;
         return Objects.equals(uUID, other.uUID);
     }
+
+   
 
 }

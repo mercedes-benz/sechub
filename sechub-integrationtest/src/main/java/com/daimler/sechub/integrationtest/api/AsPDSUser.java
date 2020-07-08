@@ -2,8 +2,13 @@
 package com.daimler.sechub.integrationtest.api;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
@@ -84,7 +89,7 @@ public class AsPDSUser {
         getRestHelper().head(getUrlBuilder().pds().buildAnonymousCheckAlive());
         return true;
     }
-    
+
     public String getExecutionStatus() {
         String url = getUrlBuilder().pds().buildAdminGetExecutionStatus();
         String result = getRestHelper().getJSon(url);
@@ -98,9 +103,50 @@ public class AsPDSUser {
     }
 
     public String createJobFor(UUID sechubJobUUID, PDSIntProductIdentifier identifier) {
+        Map<String, String> params = new LinkedHashMap<>();
+
+        /* create default params */
+        switch (identifier) {
+        case PDS_INTTEST_CODESCAN:
+            params.put("product1.qualititycheck.enabled", "false");
+            params.put("product1.level", "1");
+            break;
+        case PDS_INTTEST_INFRASCAN:
+        case PDS_INTTEST_WEBSCAN:
+        default:
+            params.put("nothing.special", "true");
+        }
+
+        return createJobFor(sechubJobUUID, identifier, params);
+    }
+
+    /*
+     * '* "mandatory": [ { "key": "product1.qualititycheck.enabled", "description":
+     * "when 'true' quality scan results are added as well" }, { "key":
+     * "product1.level", "description":
+     * "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+     * } ], "optional": [ { "key": "product1.add.tipoftheday", "description":
+     * "add tip of the day as info" } ]
+     */
+    public String createJobFor(UUID sechubJobUUID, PDSIntProductIdentifier identifier, Map<String, String> params) {
         String url = getUrlBuilder().pds().buildCreateJob();
-        String json = "{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"" + sechubJobUUID.toString() + "\",\n\"productId\":\"" + identifier.getId() + "\"}";
-        String result = getRestHelper().postJSon(url, json);
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(identifier.getId())
+                .append("\",");
+        sb.append("\"parameters\":[");
+
+        Iterator<String> it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            sb.append("{\"key\":\"").append(key).append("\",");
+            sb.append("\"value\":\"").append(params.get(key)).append("\"}");
+            if (it.hasNext()) {
+                sb.append(',');
+            }
+        }
+        sb.append("]}}");
+
+        String result = getRestHelper().postJSon(url, sb.toString());
         return result;
     }
 

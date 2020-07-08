@@ -2,6 +2,7 @@
 === REST API 
 ==== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+
 ==== Create JOB
 [source,bash]
 ----
@@ -13,10 +14,13 @@ Does contain configuration data for job execution as JSON in a very simple key v
 ----
 include::product_delegation_job_config_example1.json[]
 ----
-<1> Represents the key, will be provided as argument `${sechub.test.key.1}` but also as `SECHUB_TEST_KEY_1` environment entry on process startup
+<1> sechub job UUID - link back to sechub job.
+<2> product identifier - which product shall be used
+<3> parameter area - contains key value pairs to provide parameters at execution time
+<4> Represents the key, will be provided as argument `${sechub.test.key.1}` but also as `SECHUB_TEST_KEY_1` environment entry on process startup
     so its up to the implementers if this is something that should not be shown in process tree... +
     Only `[a-z\.0-9]` is allowed. `.` will be converted always to `_` for the environment variables (spirng boot style)
-<2> Just the value. Must be always a string
+<5> Just the value. Must be always a string
 
 
 ==== Upload data

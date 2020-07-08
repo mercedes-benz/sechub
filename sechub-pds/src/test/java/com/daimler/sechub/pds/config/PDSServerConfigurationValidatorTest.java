@@ -82,7 +82,7 @@ public class PDSServerConfigurationValidatorTest {
         /* prepare */
         prepareValidConfiguration();
         // server id is also validated by product id validator
-        when(productIdValidator.createValidationErrorMessage("server-id")).thenReturn("invalid-reason");
+        when(serverIdValidator.createValidationErrorMessage("server-id")).thenReturn("invalid-reason");
         
         /* execute + test */
         assertNotValid(validatorToTest.createValidationErrorMessage(configuration));
