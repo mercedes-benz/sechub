@@ -23,12 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
-import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
+import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
@@ -72,7 +73,7 @@ public class PDSExecutionService {
     PDSExecutionCallableFactory executionCallableFactory;
 
     @Autowired
-    PDSUpdateJobTransactionService updateService;
+    PDSJobTransactionService updateService;
 
     @Autowired
     PDSJobRepository repository;
@@ -123,8 +124,8 @@ public class PDSExecutionService {
         }
     }
 
-    public void addToExecutionQueue(PDSJob pdsJob) {
-        UUID jobUUID = pdsJob.getUUID();
+    @Async
+    public void addToExecutionQueueAsynchron(UUID jobUUID) {
         Future<?> former = null;
         synchronized (jobsInQueue) {
             LOG.debug("add job to execution queue:{}", jobUUID);
@@ -132,10 +133,7 @@ public class PDSExecutionService {
             if (size >= queueMax) {
                 LOG.warn("execution queue overload:{}/{}", size, queueMax);
             }
-            pdsJob.setState(PDSJobStatusState.QUEUED);
-            updateService.updateInOwnTransaction(pdsJob); // we must do this, so its updated before future task added, prevents
-                                                          // optimistic lock problems when execution is too fast...
-            PDSExecutionFutureTask task = new PDSExecutionFutureTask(executionCallableFactory.createCallable(pdsJob));
+            PDSExecutionFutureTask task = new PDSExecutionFutureTask(executionCallableFactory.createCallable(jobUUID));
             workers.execute(task);
 
             former = jobsInQueue.put(jobUUID, task);

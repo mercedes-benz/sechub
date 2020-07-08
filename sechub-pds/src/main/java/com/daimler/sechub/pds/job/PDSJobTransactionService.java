@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class PDSUpdateJobTransactionService {
+public class PDSJobTransactionService {
 
     @Autowired
     PDSJobRepository repository;
@@ -54,5 +54,9 @@ public class PDSUpdateJobTransactionService {
      */
     public void updateInOwnTransaction(PDSJob pdsJob) {
         repository.save(pdsJob);
+    }
+
+    public String getJobConfiguration(UUID jobUUID) {
+        return assertJobFound(jobUUID, repository).getJsonConfiguration();
     }
 }

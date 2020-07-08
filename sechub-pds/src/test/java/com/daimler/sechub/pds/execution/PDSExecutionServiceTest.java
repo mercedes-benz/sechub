@@ -15,9 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
-import com.daimler.sechub.pds.job.PDSJobStatusState;
 import com.daimler.sechub.pds.job.PDSJobTestHelper;
-import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
+import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
 
 public class PDSExecutionServiceTest {
@@ -29,13 +28,13 @@ public class PDSExecutionServiceTest {
     private PDSExecutionCallableFactory executionCallableFactory;
     private PDSExecutionResult result1;
 
-    private PDSUpdateJobTransactionService updateService;
+    private PDSJobTransactionService updateService;
 
     @Before
     public void before() throws Exception {
         repository = mock(PDSJobRepository.class);
         executionCallableFactory = mock(PDSExecutionCallableFactory.class);
-        updateService=mock(PDSUpdateJobTransactionService.class);
+        updateService=mock(PDSJobTransactionService.class);
         
         result1 = new PDSExecutionResult();
 
@@ -60,10 +59,9 @@ public class PDSExecutionServiceTest {
 
         private long waitMillis;
         private PDSExecutionResult result;
-        private boolean prepareCancelCalled;
 
-        public TestPDSExecutionCallable(long waitMillis, PDSExecutionResult result) {
-            super(mock(PDSJob.class), mock(PDSUpdateJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class));
+        public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
+            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }
@@ -79,7 +77,6 @@ public class PDSExecutionServiceTest {
         
         @Override
         void prepareForCancel(boolean mayInterruptIfRunning) {
-            this.prepareCancelCalled=true;
         }
 
     }
@@ -111,11 +108,10 @@ public class PDSExecutionServiceTest {
         serviceToTest.watcherDisabled = false; // enable watcher
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
-        PDSJob job1 = PDSJobTestHelper.createTestJob(uuid1);
-        when(executionCallableFactory.createCallable(job1)).thenReturn(new TestPDSExecutionCallable(100, result1));
+        when(executionCallableFactory.createCallable(uuid1)).thenReturn(new TestPDSExecutionCallable(uuid1,100, result1));
 
         /* execute */
-        serviceToTest.addToExecutionQueue(job1);
+        serviceToTest.addToExecutionQueueAsynchron(uuid1);
 
         assertTrue(serviceToTest.isQueueFull());
 
@@ -125,48 +121,29 @@ public class PDSExecutionServiceTest {
     }
 
     @Test
-    public void adding_job_to_queue_sets_status_of_job_to_QUEUED() throws Exception {
-
-        /* prepare */
-        serviceToTest.queueMax=5;serviceToTest.postConstruct(); // simulate spring boot container...
-        
-        UUID uuid1 = UUID.randomUUID();
-        PDSJob job1 = PDSJobTestHelper.createTestJob(uuid1);
-        assertEquals(PDSJobStatusState.CREATED,job1.getState());
-        when(executionCallableFactory.createCallable(job1)).thenReturn(new TestPDSExecutionCallable(500,result1));
-        
-        /* execute */
-        serviceToTest.addToExecutionQueue(job1);
-        
-        /* test */
-        assertEquals(PDSJobStatusState.QUEUED,job1.getState());
-        
-    }
-    
-    @Test
     public void adding_jobs_to_queue_status_contains_expected_values() throws Exception {
         /* prepare */
         serviceToTest.queueMax = 5;
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
         PDSJob job1 = PDSJobTestHelper.createTestJob(uuid1);
-        when(executionCallableFactory.createCallable(job1)).thenReturn(new TestPDSExecutionCallable(0, result1));
+        when(executionCallableFactory.createCallable(uuid1)).thenReturn(new TestPDSExecutionCallable(uuid1,0, result1));
 
         UUID uuid2 = UUID.randomUUID();
         PDSJob job2 = PDSJobTestHelper.createTestJob(uuid2);
-        when(executionCallableFactory.createCallable(job2)).thenReturn(new TestPDSExecutionCallable(500, result1));
+        when(executionCallableFactory.createCallable(uuid2)).thenReturn(new TestPDSExecutionCallable(uuid2,500, result1));
 
         UUID uuid3 = UUID.randomUUID();
         PDSJob job3 = PDSJobTestHelper.createTestJob(uuid3);
-        when(executionCallableFactory.createCallable(job3)).thenReturn(new TestPDSExecutionCallable(500, result1));
+        when(executionCallableFactory.createCallable(uuid3)).thenReturn(new TestPDSExecutionCallable(uuid3,500, result1));
 
         when(repository.findById(uuid1)).thenReturn(Optional.of(job1));
         when(repository.findById(uuid2)).thenReturn(Optional.of(job2));
         when(repository.findById(uuid3)).thenReturn(Optional.of(job3));
         
-        serviceToTest.addToExecutionQueue(job1);
-        serviceToTest.addToExecutionQueue(job2);
-        serviceToTest.addToExecutionQueue(job3);
+        serviceToTest.addToExecutionQueueAsynchron(uuid1);
+        serviceToTest.addToExecutionQueueAsynchron(uuid2);
+        serviceToTest.addToExecutionQueueAsynchron(uuid3);
         serviceToTest.cancel(job2.getUUID());
 
         Thread.sleep(100); // avoid race codition with job1 - so its always done

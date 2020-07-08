@@ -19,7 +19,7 @@ public class PDSUpdateJobTransactionServiceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
-    private PDSUpdateJobTransactionService serviceToTest;
+    private PDSJobTransactionService serviceToTest;
     private UUID jobUUID;
     private PDSJobRepository repository;
     private PDSJob job;
@@ -35,7 +35,7 @@ public class PDSUpdateJobTransactionServiceTest {
         
         when(repository.findById(jobUUID)).thenReturn(Optional.of(job));
         
-        serviceToTest = new PDSUpdateJobTransactionService();
+        serviceToTest = new PDSJobTransactionService();
         serviceToTest.repository=repository;
     }
     

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
+import com.daimler.sechub.pds.job.PDSJobStatusState;
 
 @Service
 public class PDSBatchTriggerService {
@@ -23,10 +24,12 @@ public class PDSBatchTriggerService {
 
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 3000;
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 5000;
-    
+
+    private static final boolean DEFAULT_SCHEDULING_ENABLED = true;
+
     @Autowired
     PDSExecutionService executionService;
-    
+
     @Autowired
     PDSJobRepository repository;
 
@@ -35,10 +38,10 @@ public class PDSBatchTriggerService {
 
     @Value("${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
-    
-    @Value ("${sechub.pds.config.scheduling.enable:true}")
-    private boolean schedulingEnabled;
-    
+
+    @Value("${sechub.pds.config.scheduling.enable:"+DEFAULT_SCHEDULING_ENABLED+"}")
+    boolean schedulingEnabled=DEFAULT_SCHEDULING_ENABLED;
+
     @PostConstruct
     protected void postConstruct() {
         // show info about delay values in log (once)
@@ -50,7 +53,7 @@ public class PDSBatchTriggerService {
             + "}", fixedDelayString = "${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @Transactional
     public void triggerExecutionOfNextJob() {
-        if (! schedulingEnabled) {
+        if (!schedulingEnabled) {
             LOG.trace("Trigger execution of next job canceled, because scheduling disabled.");
             return;
         }
@@ -59,12 +62,21 @@ public class PDSBatchTriggerService {
             LOG.debug("Execution service is not able to execute next job, so cancel here");
             return;
         }
+        /* query does auto increment version here! */
         Optional<PDSJob> nextJob = repository.findNextJobToExecute();
-        if (! nextJob.isPresent()) {
+        if (!nextJob.isPresent()) {
             LOG.trace("No next job present");
             return;
         }
-        executionService.addToExecutionQueue(nextJob.get());
+        PDSJob pdsJob = nextJob.get();
+        pdsJob.setState(PDSJobStatusState.QUEUED);
+
+        /*
+         * next is done async - so on leave of this methods PDS job version will be
+         * updated + state set to queue, so no other POD will process this job again
+         */
+        executionService.addToExecutionQueueAsynchron(pdsJob.getUUID());
+
     }
 
 }

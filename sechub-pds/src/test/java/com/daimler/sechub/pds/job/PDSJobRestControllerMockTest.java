@@ -36,7 +36,7 @@ import com.daimler.sechub.test.TestPortProvider;
 /* @formatter:off */
 @ContextConfiguration(classes = { 
         PDSJobRestController.class,
-        PDSUpdateJobTransactionService.class,
+        PDSJobTransactionService.class,
         PDSFileUploadJobService.class,
         PDSCreateJobService.class, 
         PDSGetJobResultService.class, 
@@ -66,7 +66,7 @@ public class PDSJobRestControllerMockTest {
     private PDSFileUploadJobService mockedFileUploadJobService;
 	
 	@MockBean
-	private PDSUpdateJobTransactionService mockedMarkReadyToStartJobService;
+	private PDSJobTransactionService mockedMarkReadyToStartJobService;
 	
 	@MockBean
 	private PDSCancelJobService mockedCancelJobService;

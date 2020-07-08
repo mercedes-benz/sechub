@@ -1,5 +1,7 @@
 package com.daimler.sechub.pds.execution;
 
+import static com.daimler.sechub.pds.util.PDSAssert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -13,11 +15,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
-import com.daimler.sechub.pds.job.PDSUpdateJobTransactionService;
-import com.daimler.sechub.pds.job.PDSWorkspaceService;;
-
+import com.daimler.sechub.pds.job.PDSJobTransactionService;
+import com.daimler.sechub.pds.job.PDSWorkspaceService;
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
  * 
@@ -28,18 +28,21 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionCallable.class);
 
-    PDSJob pdsJob;
-    private PDSUpdateJobTransactionService updateService;
+    private PDSJobTransactionService jobTransactionService;
     private Process process;
 
     private PDSWorkspaceService workspaceService;
 
     private PDSExecutionEnvironmentService environmentService;
 
-    public PDSExecutionCallable(PDSJob pdsJob, PDSUpdateJobTransactionService upateService, PDSWorkspaceService workspaceService,
+    private UUID jobUUID;
+
+    public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService) {
-        this.pdsJob = pdsJob;
-        this.updateService = upateService;
+        notNull(jobUUID, "jobUUID may not be null!");
+        notNull(jobUUID, "jobUUID may not be null!");
+        this.jobUUID = jobUUID;
+        this.jobTransactionService = jobTransactionService;
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
     }
@@ -47,10 +50,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     @Override
     public PDSExecutionResult call() throws Exception {
         PDSExecutionResult result = new PDSExecutionResult();
-        UUID jobUUID = pdsJob.getUUID();
         try {
-            updateService.markJobAsRunningInOwnTransaction(jobUUID);
-            String configJSON = pdsJob.getJsonConfiguration();
+            String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
 
             PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
             long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
@@ -71,7 +72,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         } catch (Exception e) {
             LOG.error("Execution of job uuid:{} failed", jobUUID, e);
             result.failed = true;
-            result.result = "Execution of job uuid:"+jobUUID+" failed. Please look into PDS logs for details and search for former string.";
+            result.result = "Execution of job uuid:" + jobUUID + " failed. Please look into PDS logs for details and search for former string.";
         } finally {
             cleanUpWorkspace(jobUUID);
         }
@@ -90,7 +91,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             prepareForCancel(true);
             return;
         }
-        
+
         result.exitCode = process.exitValue();
         result.result = "";
         File file = workspaceService.getResultFile(jobUUID);
@@ -98,20 +99,22 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         if (file.exists()) {
             result.result = FileUtils.readFileToString(file, encoding);
         } else {
-            /* no result file available - so snap error and system out and paste as result */ 
+            /*
+             * no result file available - so snap error and system out and paste as result
+             */
             result.failed = true;
             result.result = "Result file not found at " + file.getAbsolutePath();
-            
+
             File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
             if (systemOutFile.exists()) {
                 String error = FileUtils.readFileToString(systemOutFile, encoding);
-                result.result+="\nOutput:\n"+error;
+                result.result += "\nOutput:\n" + error;
             }
-            
+
             File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
             if (systemErrorFile.exists()) {
                 String error = FileUtils.readFileToString(systemErrorFile, encoding);
-                result.result+="\nErrors:\n"+error;
+                result.result += "\nErrors:\n" + error;
             }
         }
     }
@@ -133,8 +136,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
         try {
             process = builder.start();
-        }catch(IOException e) {
-            LOG.error("Process start failed for jobUUID:{}. Current directory was:{}",jobUUID,currentDir.getAbsolutePath());
+        } catch (IOException e) {
+            LOG.error("Process start failed for jobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
             throw e;
         }
     }
@@ -152,9 +155,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.info("Cancelation of process: {} will destroy underlying process forcibly");
             process.destroyForcibly();
         } finally {
-            if (pdsJob != null) {
-                cleanUpWorkspace(pdsJob.getUUID());
-            }
+            cleanUpWorkspace(jobUUID);
         }
 
     }

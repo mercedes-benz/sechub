@@ -38,7 +38,7 @@ import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 public class PDSJobRestController {
 
 	@Autowired
-	private PDSUpdateJobTransactionService updateJobTransactionService;
+	private PDSJobTransactionService updateJobTransactionService;
 
 	@Autowired
 	private PDSCreateJobService createJobService;
