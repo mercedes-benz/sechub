@@ -58,6 +58,16 @@ https://${baseURL}/api/job/${jobUUID}/result [GET]
 https://${baseURL}/api/job/${jobUUID}/cancel [PUT]
 ----
 
-TIP: This should kill the process hard!
+TIP: This will the process hard!
 
+==== Get monitoring status
+[source,bash]
+----
+https://${baseURL}/api/admin/monitoring/status [GET]
+----
+
+[source,json]
+----
+include::pds-monitoring-result-example1.json[]
+----
 

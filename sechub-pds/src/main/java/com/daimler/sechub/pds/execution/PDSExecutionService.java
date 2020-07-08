@@ -30,7 +30,7 @@ import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
-import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
 /**
@@ -141,7 +141,7 @@ public class PDSExecutionService {
         handleFormerJob(jobUUID, former);
     }
 
-    @UseCaseAdminFetchesExecutionStatus
+    @UseCaseAdminFetchesMonitoringStatus
     public PDSExecutionStatus getExecutionStatus() {
         PDSExecutionStatus status = new PDSExecutionStatus();
         synchronized (jobsInQueue) {

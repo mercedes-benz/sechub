@@ -24,4 +24,3 @@ logging:
    org.apache.http: WARN
    org.apache.http.headers: WARN
    org.apache.http.wire: WARN
-   

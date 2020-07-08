@@ -18,6 +18,11 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import com.daimler.sechub.pds.util.PDSLocalDateTimeDeserializer;
+import com.daimler.sechub.pds.util.PDSLocalDateTimeSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * Represents a PDS Job which contains information about ownership, related
  * sechub job and also state,configuration and last but not least the result of
@@ -87,12 +92,18 @@ public class PDSJob {
     String serverId;
 
     @Column(name = COLUMN_CREATED, nullable = false) // remark: we setup hibernate to use UTC settings - see
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
     LocalDateTime created;
 
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
     LocalDateTime started;
 
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
     LocalDateTime ended;
 
     @Column(name = COLUMN_CONFIGURATION)

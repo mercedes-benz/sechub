@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
-import com.daimler.sechub.pds.execution.PDSExecutionService;
-import com.daimler.sechub.pds.execution.PDSExecutionStatus;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
-import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 
 /**
  * The REST API for PDS jobs
@@ -29,13 +27,14 @@ import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
 public class PDSAdminMonitoringRestController {
 
     @Autowired
-    private PDSExecutionService executionService;
+    private PDSMonitoringStatusService monitoringStatusService;
+    
 
     @Validated
     @RequestMapping(path = "monitoring/status", method = RequestMethod.GET)
-    @UseCaseAdminFetchesExecutionStatus
-    public PDSExecutionStatus getExecutionStatus() {
-        return executionService.getExecutionStatus();
+    @UseCaseAdminFetchesMonitoringStatus
+    public PDSMonitoring getMonitoringStatus() {
+        return monitoringStatusService.getMonitoringStatus();
     }
 
 }

@@ -19,3 +19,19 @@ CREATE TABLE pds_job
    version integer,
    PRIMARY KEY (uuid)
 );
+
+-- pds hearbeat represents a heartbeat from a server with additional meta information
+CREATE TABLE pds_heartbeat
+(
+   uuid uuid not null,
+   
+   updated timestamp,
+   
+   server_id varchar(90) not null,  -- we accept 60 (3x30), see PDSServerIdentifierValidator
+   
+   
+   result text, -- contains last heartbeat information
+   
+   version integer,
+   PRIMARY KEY (uuid)
+);
