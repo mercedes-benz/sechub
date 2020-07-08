@@ -13,11 +13,7 @@
       <name>Leopard</name>
       <binomial>Panthera pardus</binomial>
    </animal>
-   <animal>
-      <name>Leopard</name>
-      <binomial>Panthera pardus</binomial>
-   </animal>
-   <!-- NOSECHUB-END -->
+   <!-- END-NOSECHUB -->
    <animal>
       <name>Snow Leopard</name>
       <binomial>Panthera uncia</binomial>

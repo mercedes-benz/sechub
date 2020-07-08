@@ -5,7 +5,9 @@ SecHub Analyzer CLI looks for markers in files and reports back the location of 
 - Start: `NOSECHUB`
 - End: `END-NOSECHUB`
 
-The Analyzer CLI markers are programming language agnostic. The markers should be added in a comment. The symbols used to indicate a comment can differ from language to language. SecHub Analyzer CLI supports all of them.
+The markers have to be added in a comment. The symbols used to indicate a comment can differ from language to language. Only single line comments are supported.
+
+Comment examples:
 
 C
 
@@ -44,6 +46,45 @@ def hello():
   # END-NOSECHUB
 
 hello()
+~~~
+
+Except, for the star comment `/* */` and the arrow comment `<!-- -->` which can be in more than one line, but have to be at the beginning of the comment:
+
+Star comment in Java
+
+~~~
+public class HelloWorld
+{
+    public static void main(String args[]) {
+      /* NOSECHUB
+       *
+       */
+      System.out.println("Hello World!");
+      /* END-NOSECHUB
+       *
+       */
+    }
+}
+~~~
+
+Arrow comment in XML
+
+~~~
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<animals>
+   <!-- NOSECHUB 
+   -->
+   <animal>
+      <name>Leopard</name>
+      <binomial>Panthera pardus</binomial>
+   </animal>
+   <!-- END-NOSECHUB 
+   -->
+   <animal>
+      <name>Lion</name>
+      <binomial>Panthera leo</binomial>
+   </animal>
+</animals>
 ~~~
 
 ##### Build

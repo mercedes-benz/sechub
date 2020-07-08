@@ -145,6 +145,102 @@ public class FileAnalyzerTest {
     }
     
     @Test
+    public void test_processFile__c_single_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 6, 5);
+        
+        File file = new File(codePath + "single_line.c");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__c_multiline_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 8, 5);
+        
+        File file = new File(codePath + "multi_line.c");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__c_multiline_comment_comment_not_beginning() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = new LinkedList<>();
+        
+        File file = new File(codePath + "multi_line_comment_not_beginning.c");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__java_multiline_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(5, 11, 7, 11);
+        
+        File file = new File(codePath + "MultiLineComment.java");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__java_multiline_comment_not_beginning() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = new LinkedList<>();
+        
+        File file = new File(codePath + "MultiLineCommentNotBeginning.java");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__java_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 9, 8, 9);
+        
+        File file = new File(codePath + "SingleLineComment.java");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
     public void test_processFile__no_markers() throws IOException {
         /* prepare */
         File file = new File(path + "test_no_markers.txt");
@@ -184,5 +280,17 @@ public class FileAnalyzerTest {
         } catch (IOException e) {
             fail("Unexpected exception.");
         }
+    }
+    
+    private List<MarkerPair> createMarkerPairsOf(int startLine, int startColumn, int endLine, int endColumn) {
+        Marker start = new Marker(MarkerType.START, startLine, startColumn);
+        Marker end = new Marker(MarkerType.END, endLine, endColumn);
+        MarkerPair pair = new MarkerPair();
+        pair.setEnd(end);
+        pair.setStart(start);
+        List<MarkerPair> pairs = new LinkedList<>();
+        pairs.add(pair);
+        
+        return pairs;
     }
 }
