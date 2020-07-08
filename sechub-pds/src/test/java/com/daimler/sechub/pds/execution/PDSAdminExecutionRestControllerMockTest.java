@@ -22,15 +22,16 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.pds.PDSJSONConverter;
 import com.daimler.sechub.pds.PDSProfiles;
+import com.daimler.sechub.pds.monitoring.PDSAdminMonitoringRestController;
 import com.daimler.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(PDSAdminExecutionRestController.class)
+@WebMvcTest(PDSAdminMonitoringRestController.class)
 /* @formatter:off */
 @ContextConfiguration(classes = { 
-        PDSAdminExecutionRestController.class,
+        PDSAdminMonitoringRestController.class,
         PDSExecutionService.class,
 		PDSAdminExecutionRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */

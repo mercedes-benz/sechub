@@ -49,17 +49,28 @@ its is possible to set config file path ( when not defined fallback is `./pds-co
 ----
 include::product_delegation_server_config_example1.json[]
 ----
-<1> identifier, which will be used at job configuration time. Defines what will be executed
-<2> path to command what will be executed.
+<1> unique identifier, which will be used determine a cluster /server. will be used inside logs and
+    also to share common database and divide different pds states etc. 
+<2> unique identifier, which will be used at job configuration time. Defines what will be executed
+    this is also the identifier for SERECO to handle report collection and merging
+<3> path to command what will be executed.
 
-<3> scanType can be either
+<4> scanType can be either
  - codeScan
  - infraScan
  - webScan
-<4> description
-<5> defines if PDS will automatically unzip zip files. default is `true`. When `true` the content
-   of the unzipped files will be available inside `$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}`
+<5> description
+<6> parameter area, here we can define optional and mandatory parameters. Those parameters will be available
+    in executed processes by environment variables. +
+    All other given job parameters will be IGNORED by server - reason: avoid unwanted changes on system environment variables from caller side 
 
+<7> mandatory parameters - server will not accept jobs without these parameters
+<8> a key, will be transformed to ENV variable. In the given example `product1.qualititycheck.enabled` will be available in execution process 
+    as environment variable `PRODUCT1_QUALITYCHECK_ENABLED`
+<9> a value, will be inside ENV entry at execution time
+<10> optional parameters
+<11> defines if PDS will automatically unzip zip files. default is `true`. When `true` the content
+   of the unzipped files will be available inside `$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}`
    
 === Launcher scripts
 

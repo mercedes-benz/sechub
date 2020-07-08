@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.PDSJSONConverterException;
-import com.daimler.sechub.pds.PDSProductIdentifierValidator;
+import com.daimler.sechub.pds.PDSShutdownService;
 
 @Service
 public class PDSServerConfigurationService {
@@ -26,38 +25,41 @@ public class PDSServerConfigurationService {
 
     private static final String DEFAULT_PATH = "./pds-config.json";
 
-    private static final PDSServerConfiguration FALLBACK_CONFIGURATION = new PDSServerConfiguration();
-
     @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
     String pathToConfigFile;
 
     @Autowired
-    PDSProductIdentifierValidator productIdValidator;
+    PDSShutdownService shutdownService;
 
-    private PDSServerConfiguration configuration = FALLBACK_CONFIGURATION;
+    @Autowired
+    PDSServerConfigurationValidator serverConfigurationValidator;
+
+    private PDSServerConfiguration configuration;
 
     @PostConstruct
     protected void postConstruct() {
         Path p = Paths.get(pathToConfigFile);
         File file = p.toFile();
-        if (!file.exists()) {
-            LOG.error("No config file found at {} - so define empty configuration!", file.getAbsolutePath());
-            throw new IllegalStateException("no configuration available, because file missing");
-        }
-        String json;
-        try {
-            json = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
-            configuration = PDSServerConfiguration.fromJSON(json);
-            List<PDSProductSetup> products = configuration.getProducts();
-            for (PDSProductSetup setup : products) {
-                String productIdErrorMessage = productIdValidator.createValidationErrorMessage(setup.getId());
-                if (productIdErrorMessage != null) {
-                    throw new IllegalStateException("configuration not valid:" + productIdErrorMessage);
+        if (file.exists()) {
+            try {
+                String json = FileUtils.readFileToString(file, Charset.forName("UTF-8"));
+                PDSServerConfiguration loadedConfiguration = PDSServerConfiguration.fromJSON(json);
+                String message = serverConfigurationValidator.createValidationErrorMessage(loadedConfiguration);
+                if (message == null) {
+                    configuration = loadedConfiguration;
+                } else {
+                    LOG.error("configuration file not valid: {}", message);
                 }
-            }
 
-        } catch (IOException | PDSJSONConverterException e) {
-            throw new IllegalStateException("no configuration available, because file not valid", e);
+            } catch (PDSJSONConverterException | IOException e) {
+                LOG.error("no configuration available, because cannot read config file", e);
+            }
+        } else {
+            LOG.error("No config file found at {} !", file.getAbsolutePath());
+        }
+        if (configuration == null) {
+            LOG.error("No configuration found\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
+            shutdownService.shutdownApplication();
         }
     }
 

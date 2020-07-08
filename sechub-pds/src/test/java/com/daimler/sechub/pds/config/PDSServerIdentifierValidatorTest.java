@@ -1,17 +1,17 @@
-package com.daimler.sechub.pds;
+package com.daimler.sechub.pds.config;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class PDSProductIdentifierValidatorTest {
+public class PDSServerIdentifierValidatorTest {
 
-    private PDSProductIdentifierValidator validatorToTest;
+    private PDSServerIdentifierValidator validatorToTest;
 
     @Before
     public void before() throws Exception {
-        validatorToTest = new PDSProductIdentifierValidator();
+        validatorToTest = new PDSServerIdentifierValidator();
     }
 
     @Test

@@ -12,24 +12,27 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.daimler.sechub.pds.PDSProductIdentifierValidator;
+import com.daimler.sechub.pds.PDSShutdownService;
 
 public class PDSServerConfigurationServiceTest {
 
     private PDSServerConfigurationService serviceToTest;
-    private PDSProductIdentifierValidator productIdValidator;
+    private PDSServerConfigurationValidator serverConfigurationValidator;
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
+    private PDSShutdownService shutdownService;
 
 
     @Before
     public void before() throws Exception {
         
-        productIdValidator=mock(PDSProductIdentifierValidator.class);
+        serverConfigurationValidator=mock(PDSServerConfigurationValidator.class);
+        shutdownService=mock(PDSShutdownService.class);
         
         serviceToTest = new PDSServerConfigurationService();
-        serviceToTest.productIdValidator=productIdValidator;
+        serviceToTest.serverConfigurationValidator=serverConfigurationValidator;
+        serviceToTest.shutdownService=shutdownService;
     }
 
     @Test
@@ -83,19 +86,46 @@ public class PDSServerConfigurationServiceTest {
     }
     
     @Test
-    public void when_product_id_validator_says_id_is_not_valid_pds_config_example1_cannnot_be_loaded_but_illegal_state_exception_appears() {
-        /* test */
-        expected.expect(IllegalStateException.class);
-        expected.expectMessage("reason");
-        
+    public void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_shutdown_service_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
-        when(productIdValidator.createValidationErrorMessage(any())).thenReturn("reason");
+        when(serverConfigurationValidator.createValidationErrorMessage(any())).thenReturn("reason");
         
         /* execute */
         serviceToTest.postConstruct();
         
+        /* test */
+        verify(shutdownService).shutdownApplication();
+        
         
     }
+    
+    @Test
+    public void when_config_file_loaded_and_server_configuration_validator_returns_NO_validator_error_message_shutdown_service_is_NOT_called() {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
+        // no serverConfigurationValidator mock setup means null returned...
+        
+        /* execute */
+        serviceToTest.postConstruct();
+        
+        /* test */
+        verify(shutdownService,never()).shutdownApplication();
+        
+    }
+    
+    @Test
+    public void when_config_file_NOT_exists_shutdown_service_is_called() {
+        /* prepare */
+        serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example-NOT_EXISTING.json";
+        
+        /* execute */
+        serviceToTest.postConstruct();
+        
+        /* test */
+        verify(shutdownService).shutdownApplication();
+        
+    }
+    
 
 }

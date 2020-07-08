@@ -1,4 +1,4 @@
-package com.daimler.sechub.pds;
+package com.daimler.sechub.pds.config;
 
 import org.springframework.stereotype.Component;
 

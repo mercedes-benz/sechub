@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.pds.execution;
+package com.daimler.sechub.pds.monitoring;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
+import com.daimler.sechub.pds.execution.PDSExecutionService;
+import com.daimler.sechub.pds.execution.PDSExecutionStatus;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
 
@@ -24,13 +26,13 @@ import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesExecutionStatus;
 @EnableAutoConfiguration
 @RequestMapping(PDSAPIConstants.API_ADMIN)
 @RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN })
-public class PDSAdminExecutionRestController {
+public class PDSAdminMonitoringRestController {
 
     @Autowired
     private PDSExecutionService executionService;
 
     @Validated
-    @RequestMapping(path = "execution/status", method = RequestMethod.GET)
+    @RequestMapping(path = "monitoring/status", method = RequestMethod.GET)
     @UseCaseAdminFetchesExecutionStatus
     public PDSExecutionStatus getExecutionStatus() {
         return executionService.getExecutionStatus();

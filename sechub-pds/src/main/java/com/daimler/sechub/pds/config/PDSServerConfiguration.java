@@ -16,14 +16,31 @@ import com.daimler.sechub.pds.PDSJSONConverterException;
 public class PDSServerConfiguration {
 
     private String apiVersion;
+    /**
+     * Server ID is necessary when sharing same database inside a cluster. For
+     * example when a sechub server and all PDS sharing same database. Or when
+     * sechub server has it's own DB but all PDS share another one.<br><br>
+     * The serverID is used inside Database
+     * 
+     */
+    private String serverId;
+
     private List<PDSProductSetup> products = new ArrayList<>();
-    
+
     public String getApiVersion() {
         return apiVersion;
     }
 
     public void setApiVersion(String apiVersion) {
         this.apiVersion = apiVersion;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
     }
 
     public List<PDSProductSetup> getProducts() {
