@@ -22,7 +22,7 @@ func HandleHTTPError(err error) {
 func HandleError(err error) {
 	if err != nil {
 		LogError(fmt.Sprintf("Error: %s\n", err))
-		os.Exit(ExitCodeHTTPError)
+		os.Exit(ExitCodeFailed)
 	}
 }
 

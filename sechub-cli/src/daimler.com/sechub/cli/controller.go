@@ -74,7 +74,7 @@ func Execute() {
 		}
 	case ActionExecuteRemoveFalsePositives:
 		{
-			uploadFalsePositivesFromFile(context)
+			removeFalsePositivesFromFile(context)
 			os.Exit(ExitCodeOK)
 		}
 	default:

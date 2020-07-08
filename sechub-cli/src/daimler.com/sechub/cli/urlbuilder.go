@@ -43,6 +43,12 @@ func buildFalsePositivesAPICall(context *Context) string {
 	return buildAPIUrl(&context.config.server, &apiPart)
 }
 
+// https://localhost:8081/api/project/testproject/false-positive
+func buildFalsePositiveAPICall(context *Context) string {
+	apiPart := fmt.Sprintf("project/%s/false-positive", context.config.projectId)
+	return buildAPIUrl(&context.config.server, &apiPart)
+}
+
 func buildAPIUrl(server *string, apiPart *string) string {
 	return fmt.Sprintf("%s/api/%s", *server, *apiPart)
 }

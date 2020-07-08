@@ -36,6 +36,9 @@ type FileSystemConfig struct {
 	Folders []string `json:"folders"`
 }
 
+// fillTemplate - Fill in environment variables vis go-templating
+// templateSource: content of json config file
+// data: environment variables
 func fillTemplate(templateSource string, data map[string]string) []byte {
 	var tpl bytes.Buffer
 	t := template.Must(template.New("sechubConfig").Parse(templateSource))

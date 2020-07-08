@@ -2,6 +2,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -57,6 +58,9 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 func getFalsePositivesList(context *Context) []byte {
 	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectId)
 
+	// we don't want to send content here
+	context.unfilledByteValue = []byte(``)
+
 	response := sendWithDefaultHeader("GET", buildFalsePositivesAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -75,7 +79,6 @@ func uploadFalsePositivesFromFile(context *Context) {
 	failed := HandleIOError(err)
 
 	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	fmt.Printf("content: %s\n", context.unfilledByteValue)
 	failed = HandleIOError(err)
 
 	if failed {
@@ -85,4 +88,53 @@ func uploadFalsePositivesFromFile(context *Context) {
 
 	// Send to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
+	fmt.Printf("Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectId)
+}
+
+func removeFalsePositivesFromFile(context *Context) {
+	LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
+
+	/* open file and check exists */
+	jsonFile, err := os.Open(context.config.file)
+	defer jsonFile.Close()
+	failed := HandleIOError(err)
+
+	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
+	failed = HandleIOError(err)
+
+	if failed {
+		showHelpHint()
+		os.Exit(ExitCodeIOError)
+	}
+
+	// read json into go struct
+	removeFalsePositivesList := newFalsePositivesListFromBytes(context.unfilledByteValue)
+	LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
+
+	fmt.Printf("Applying false-positives to be removed for project %q:\n", context.config.projectId)
+	// Loop over list and push to SecHub server
+	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
+	urlPrefix := buildFalsePositiveAPICall(context)
+	// we don't want to send content here
+	context.unfilledByteValue = []byte(``)
+
+	for _, element := range removeFalsePositivesList.JobData {
+		fmt.Printf("- JobUUID %s: finding #%d\n", element.JobUUID, element.FindingID)
+		sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID), context)
+		//fmt.Println(fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID))
+	}
+	fmt.Println("Transfer completed")
+}
+
+func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
+	var list FalsePositivesConfig
+
+	/* transform text to json */
+	err := json.Unmarshal(bytes, &list)
+	if err != nil {
+		fmt.Println("sechub confiuration json is not valid json")
+		showHelpHint()
+		HandleError(err)
+	}
+	return list
 }
