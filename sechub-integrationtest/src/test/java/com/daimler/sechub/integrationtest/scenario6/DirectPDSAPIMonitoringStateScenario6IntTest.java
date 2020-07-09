@@ -12,13 +12,14 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
- * without sechub). When these tests fail, sechub tests will also fail, because
- * PDS API corrupt or PDS server not alive
+ * without sechub). When these tests fail, those sechub tests which are relying
+ * on a running PDS will also fail, because PDS API corrupt or PDS server not
+ * alive
  * 
  * @author Albert Tregnaghi
  *
  */
-public class DirectPDSAPIExecutionStateScenario6IntTest {
+public class DirectPDSAPIMonitoringStateScenario6IntTest {
 
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario6.class);
@@ -29,11 +30,16 @@ public class DirectPDSAPIExecutionStateScenario6IntTest {
     @Test
     public void pds_admin_can_fetch_execution_state() {
         /* execute */
-        String json = asPDSUser(PDS_ADMIN).getExecutionStatus();
-
+        String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
+        System.out.println(json);
         /* test */
         /* @formatter:off */
         assertJSON(json).
+            containsText("CREATED").
+            containsText("QUEUED").
+            containsText("READY_TO_START").
+            containsText("RUNNING").
+            containsText("DONE").
             fieldPathes().
                 containsTextValue("50", "queueMax"); // all other values could differ on runtime , so this check is enough. Here we only check that config can be fetched
         /* @formatter:on */
@@ -42,13 +48,13 @@ public class DirectPDSAPIExecutionStateScenario6IntTest {
     @Test
     public void anonymous_cannot_fetch_execution_state() {
         /* execute +test */
-        expectHttpFailure(() -> asPDSUser(ANONYMOUS).getExecutionStatus(), HttpStatus.UNAUTHORIZED);
+        expectHttpFailure(() -> asPDSUser(ANONYMOUS).getMonitoringStatus(), HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void pds_techuser_cannot_fetch_execution_state() {
         /* execute +test */
-        expectHttpFailure(() -> asPDSUser(PDS_TECH_USER).getExecutionStatus(), HttpStatus.FORBIDDEN);
+        expectHttpFailure(() -> asPDSUser(PDS_TECH_USER).getMonitoringStatus(), HttpStatus.FORBIDDEN);
     }
 
 }

@@ -10,4 +10,6 @@ public interface PDSJobRepositoryCustom {
 	 *         necessary
 	 */
 	Optional<PDSJob> findNextJobToExecute();
+	
+	long countJobsOfServerInState(String serverId, PDSJobStatusState state);
 }

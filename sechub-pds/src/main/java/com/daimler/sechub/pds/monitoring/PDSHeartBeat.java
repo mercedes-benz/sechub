@@ -66,7 +66,7 @@ public class PDSHeartBeat {
     @Column(name = COLUMN_RESULT)
     @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
-    String result;
+    String clusterMemberData;
 
     @Version
     @Column(name = "VERSION")
@@ -91,16 +91,16 @@ public class PDSHeartBeat {
         return serverId;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setClusterMemberData(String clusterMemberData) {
+        this.clusterMemberData = clusterMemberData;
     }
 
     public UUID getUUID() {
         return uUID;
     }
 
-    public String getResult() {
-        return result;
+    public String getClusterMemberData() {
+        return clusterMemberData;
     }
 
     @Override

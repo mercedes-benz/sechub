@@ -67,6 +67,11 @@ public class PDSHeartBeatTriggerService {
             LOG.trace("Trigger execution of next hearbeat canceled, because hearbeat disabled.");
             return;
         }
+        executeHeartBeatUpdate();
+
+    }
+
+    private void executeHeartBeatUpdate() {
         LOG.trace("Trigger next heartbeat started.");
 
         /* delete older hearbeats */
@@ -93,18 +98,20 @@ public class PDSHeartBeatTriggerService {
         member.setExecutionState(status);
         member.setHostname(localhostDataBuilder.buildHostname());
         member.setIp(localhostDataBuilder.buildIP());
+        member.setPort(localhostDataBuilder.buildPort());
         member.setExecutionState(status);
 
-        heartBeat.setResult(member.toJSON());
+        heartBeat.setClusterMemberData(member.toJSON());
         heartBeat.setServerId(serverConfigService.getServerId());
         heartBeat.setUpdated(LocalDateTime.now());
         
         /* update/create heartbeat */
         heartBeat = repository.saveAndFlush(heartBeat);
+        
+        LOG.info("heartbeat update - serverid:{}, heartbeatuuid:{}, cluster-member-data:{}",heartBeat.getServerId(),heartBeat.getUUID(), heartBeat.getClusterMemberData());
 
         /* update uuid - either for new, or recreated */
         uuidForThisServerHeartBeat=heartBeat.getUUID();
-
     }
 
 }

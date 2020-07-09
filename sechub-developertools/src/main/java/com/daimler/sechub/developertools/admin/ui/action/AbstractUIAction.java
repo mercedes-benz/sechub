@@ -4,6 +4,7 @@ package com.daimler.sechub.developertools.admin.ui.action;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -61,6 +62,7 @@ public abstract class AbstractUIAction extends AbstractAction {
         
         inputCache.set(InputCacheIdentifier.PDS_USER, "pds-inttest-admin");
         inputCache.set(InputCacheIdentifier.PDS_APITOKEN, "pds-inttest-apitoken");
+        inputCache.set(InputCacheIdentifier.PDS_SECHUB_JOBUUID, UUID.randomUUID().toString());
         
         inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
         inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
@@ -180,6 +182,29 @@ public abstract class AbstractUIAction extends AbstractAction {
         }
     }
 
+    
+    /**
+     * Shows an input dialog for user (one liner). Default values for given
+     * identifier will be shown - and always be reused. NO caching!
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserInput(String message, String defaultValue) {
+        Optional<String> x = getContext().getDialogUI().getUserInput(message, defaultValue);
+        return x;
+    }
+    
+    /**
+     * Shows an input dialog for user (one liner). 
+     * 
+     * @param message
+     * @return
+     */
+    protected Optional<String> getUserInput(String message) {
+        return getUserInput(message, (InputCacheIdentifier)null);        
+    }
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
      * identifier will be shown

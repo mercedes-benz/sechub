@@ -35,7 +35,13 @@ public class AsPDSUser {
     }
 
     public void markJobAsReadyToStart(UUID jobUUID) {
-        getRestHelper().put(getUrlBuilder().pds().buildMarkJobReadyToStart(jobUUID));
+        TestRestHelper restHelper = getRestHelper();
+        TestURLBuilder urlBuilder = getUrlBuilder();
+        markJobAsReadyToStart(jobUUID, restHelper, urlBuilder);
+    }
+
+    public static void markJobAsReadyToStart(UUID jobUUID, TestRestHelper restHelper, TestURLBuilder urlBuilder) {
+        restHelper.put(urlBuilder.pds().buildMarkJobReadyToStart(jobUUID));
     }
 
     public String getJobStatus(UUID jobUUID) {
@@ -88,8 +94,8 @@ public class AsPDSUser {
         return true;
     }
 
-    public String getExecutionStatus() {
-        String url = getUrlBuilder().pds().buildAdminGetExecutionStatus();
+    public String getMonitoringStatus() {
+        String url = getUrlBuilder().pds().buildAdminGetMonitoringStatus();
         String result = getRestHelper().getJSon(url);
         return result;
     }
@@ -118,18 +124,17 @@ public class AsPDSUser {
         return createJobFor(sechubJobUUID, identifier, params);
     }
 
-    /*
-     * '* "mandatory": [ { "key": "product1.qualititycheck.enabled", "description":
-     * "when 'true' quality scan results are added as well" }, { "key":
-     * "product1.level", "description":
-     * "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
-     * } ], "optional": [ { "key": "product1.add.tipoftheday", "description":
-     * "add tip of the day as info" } ]
-     */
     public String createJobFor(UUID sechubJobUUID, PDSIntProductIdentifier identifier, Map<String, String> params) {
-        String url = getUrlBuilder().pds().buildCreateJob();
+        String productId = identifier.getId();
+        TestRestHelper restHelper = getRestHelper();
+        TestURLBuilder urlBuilder = getUrlBuilder();
+        return createJobFor(sechubJobUUID, params, productId, restHelper, urlBuilder);
+    }
+
+    public static String createJobFor(UUID sechubJobUUID, Map<String, String> params, String productId, TestRestHelper restHelper, TestURLBuilder urlBuilder) {
+        String url = urlBuilder.pds().buildCreateJob();
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(identifier.getId())
+        sb.append("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\"").append(sechubJobUUID.toString()).append("\",\"productId\":\"").append(productId)
                 .append("\",");
         sb.append("\"parameters\":[");
 
@@ -144,20 +149,24 @@ public class AsPDSUser {
         }
         sb.append("]}}");
 
-        String result = getRestHelper().postJSon(url, sb.toString());
+        String result = restHelper.postJSon(url, sb.toString());
         return result;
     }
 
     public AsPDSUser upload(UUID pdsJobUUID, String fileName, String pathInsideResources) {
         File uploadFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(pathInsideResources);
-        String checkSum = TestAPI.createSHA256Of(uploadFile);
-        return upload(pdsJobUUID, fileName, uploadFile, checkSum);
+        return upload(pdsJobUUID, fileName, uploadFile);
     }
 
-    public AsPDSUser upload(UUID pdsJobUUID, String uploadName, File file, String sha256CheckSum) {
-        String url = getUrlBuilder().pds().buildUpload(pdsJobUUID, uploadName);
-        getRestHelper().upload(url, file, sha256CheckSum);
+    public AsPDSUser upload(UUID pdsJobUUID, String uploadName, File file) {
+        upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file);
         return this;
+    }
+
+    public static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file) {
+        String checkSum = TestAPI.createSHA256Of(file);
+        String url = urlBuilder.pds().buildUpload(pdsJobUUID, uploadName);
+        restHelper.upload(url, file, checkSum);
     }
 
     public String getServerConfiguration() {

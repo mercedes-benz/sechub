@@ -2,6 +2,7 @@
 package com.daimler.sechub.developertools.admin;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.client.ClientHttpResponse;
@@ -16,6 +18,7 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
+import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -139,9 +142,16 @@ public class DeveloperAdministration {
         public String getServerAlive() {
             return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildAnonymousCheckAlive());
         }
+        
+
+        public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
+            AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
+            
+            return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildCreateJob());
+        }
 
         public String getExecutionStatus() {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetExecutionStatus());
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
         }
 
         public String getJobResultOrError(String jobUUID) {
@@ -150,6 +160,16 @@ public class DeveloperAdministration {
         
         public String getJobStatus(String jobUUID) {
             return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+        }
+
+        public String markJobAsReadyToStart(UUID jobUUID) {
+             AsPDSUser.markJobAsReadyToStart(jobUUID,restHelper,pdsUrlBuilder);
+             return "triggered";
+        }
+
+        public String upload(UUID pdsJobUUID, File file, String uploadName) {
+            AsPDSUser.upload(pdsUrlBuilder, restHelper, pdsJobUUID, uploadName, file);;
+            return "upload done - using uploadname:"+uploadName;
         }
 
     }

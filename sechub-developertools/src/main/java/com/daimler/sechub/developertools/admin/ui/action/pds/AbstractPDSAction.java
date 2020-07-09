@@ -4,6 +4,9 @@ package com.daimler.sechub.developertools.admin.ui.action.pds;
 import java.awt.event.ActionEvent;
 import java.util.Optional;
 
+import javax.swing.JDialog;
+
+import com.daimler.sechub.developertools.admin.DeveloperAdministration.PDSAdministration;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
@@ -44,9 +47,9 @@ public abstract class AbstractPDSAction extends AbstractUIAction {
 		String userId=pdsUserId.get();
 		String apiToken = pdsApiToken.get();
 		
-		executePDS(server,port,userId,apiToken);
+		executePDS(getContext().getAdministration().pds(server,port,userId,apiToken));
 	}
 
-    protected abstract void executePDS(String server, int port, String userId, String apiToken);
+    protected abstract void executePDS(PDSAdministration pds);
 
 }

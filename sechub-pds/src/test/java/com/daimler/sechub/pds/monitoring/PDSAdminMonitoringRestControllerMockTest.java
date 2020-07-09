@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.pds.execution;
+package com.daimler.sechub.pds.monitoring;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.pds.PDSJSONConverter;
 import com.daimler.sechub.pds.PDSProfiles;
-import com.daimler.sechub.pds.monitoring.PDSAdminMonitoringRestController;
 import com.daimler.sechub.pds.security.AbstractAllowPDSAPISecurityConfiguration;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.test.TestPortProvider;
@@ -32,36 +32,39 @@ import com.daimler.sechub.test.TestPortProvider;
 /* @formatter:off */
 @ContextConfiguration(classes = { 
         PDSAdminMonitoringRestController.class,
-        PDSExecutionService.class,
-		PDSAdminExecutionRestControllerMockTest.SimpleTestConfiguration.class })
+        PDSAdminMonitoringRestControllerMockTest.SimpleTestConfiguration.class })
 /* @formatter:on */
 @WithMockUser(authorities = PDSRoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles(PDSProfiles.TEST)
-public class PDSAdminExecutionRestControllerMockTest {
+public class PDSAdminMonitoringRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
-	
-	@Autowired
-	private MockMvc mockMvc;
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@MockBean
-	private PDSExecutionService mockedExecutionService;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Test
-    public void a_get_execution_status_calls_executionService_and_returns_result() throws Exception {
+    @MockBean
+    private PDSMonitoringStatusService mockedMonitoringStatusService;
+
+    private PDSMonitoring result;
+
+    @Before
+    public void before() throws Exception {
         /* prepare */
-        PDSExecutionStatus result = new PDSExecutionStatus();
-        result.jobsInQueue=5;
-        result.queueMax=20;
-        
+        result  = PDSMonitoringTestDataUtil.createTestMonitoringWith2ClusterMembers();
+    }
+
+    @Test
+    public void a_get_execution_status_calls_executionService_and_returns_result() throws Exception {
+
         String expectedJSON = PDSJSONConverter.get().toJSON(result);
-        
-        when(mockedExecutionService.getExecutionStatus()).thenReturn(result);
-        
+
+        when(mockedMonitoringStatusService.getMonitoringStatus()).thenReturn(result);
+
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).pds().buildAdminGetExecutionStatus())
+                get(https(PORT_USED).pds().buildAdminGetMonitoringStatus())
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
                     andExpect(content().json(expectedJSON)
@@ -71,12 +74,11 @@ public class PDSAdminExecutionRestControllerMockTest {
 
     }
 
+    @TestConfiguration
+    @Profile(PDSProfiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
 
-	@TestConfiguration
-	@Profile(PDSProfiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowPDSAPISecurityConfiguration {
-
-	}
+    }
 
 }

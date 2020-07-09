@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui.action.pds;
 
+import com.daimler.sechub.developertools.admin.DeveloperAdministration.PDSAdministration;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 
 public class FetchPDSConfigurationAction extends AbstractPDSAction {
@@ -11,8 +12,8 @@ public class FetchPDSConfigurationAction extends AbstractPDSAction {
     }
 
     @Override
-    protected void executePDS(String server, int port, String userId, String apiToken) {
-        String configuration = getContext().getAdministration().pds(server, port, userId, apiToken).getServerConfiguration();
+    protected void executePDS(PDSAdministration pds) {
+        String configuration = pds.getServerConfiguration();
         outputAsBeautifiedJSONOnSuccess(configuration);
 
     }

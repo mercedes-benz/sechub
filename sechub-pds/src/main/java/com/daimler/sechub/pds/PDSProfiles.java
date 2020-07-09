@@ -8,8 +8,8 @@ public class PDSProfiles {
 
     public static final String DEV="pds_dev";
     public static final String PROD="pds_prod";
+    public static final String SQL_TRACE="pds_sqltrace";
     public static final String TEST="test";
-    public static final String TRACE="trace";
     /**
      * Special profile suitable for development time - will show extreme debug information.
      * Should never be used in production 

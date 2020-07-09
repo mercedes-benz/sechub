@@ -26,5 +26,9 @@ public enum InputCacheIdentifier{
 	
 	PDS_JOBUUID,
 	
+	PDS_SECHUB_JOBUUID,
+	
+	PDS_PRODUCT_ID,
+	
 	
 }

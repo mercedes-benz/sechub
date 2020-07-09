@@ -133,8 +133,8 @@ public class TestURLBuilder {
             return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
         }
         
-        public String buildAdminGetExecutionStatus() {
-            return buildUrl(API_PDS_ADMIN, "execution/status");
+        public String buildAdminGetMonitoringStatus() {
+            return buildUrl(API_PDS_ADMIN, "monitoring/status");
         }
 
         public String buildAnonymousCheckAlive() {

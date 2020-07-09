@@ -13,13 +13,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class AssertJSON {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertJSON.class);
-
+    private String plainJson;
     public static AssertJSON assertJson(String json) {
         return new AssertJSON(json);
     }
 
     private JsonNode rootNode;
 
+    private AssertJSON(String json) {
+        try {
+            plainJson=json;
+            rootNode = JSONTestSupport.DEFAULT.fromJson(json);
+        } catch (IOException e) {
+            LOG.error("JSON parse problem", e);
+            dumpErrorJSON("JSON parse problem", json);
+            fail("Not correct JSON - " + e.getMessage());
+        }
+    }
+
+    
     public AssertJSONFieldPath fieldPathes() {
         return new AssertJSONFieldPath();
     }
@@ -74,13 +86,8 @@ public class AssertJSON {
         LOG.error("JSON dump reason:{}\n{}", reason, json);
     }
 
-    private AssertJSON(String json) {
-        try {
-            rootNode = JSONTestSupport.DEFAULT.fromJson(json);
-        } catch (IOException e) {
-            LOG.error("JSON parse problem", e);
-            dumpErrorJSON("JSON parse problem", json);
-            fail("Not correct JSON - " + e.getMessage());
-        }
+    public AssertJSON containsText(String string) {
+        assertTrue(plainJson.contains(string));
+        return this;
     }
 }

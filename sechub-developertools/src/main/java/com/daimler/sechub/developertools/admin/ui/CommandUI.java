@@ -34,10 +34,13 @@ import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJob
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
-import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSExecutionStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
@@ -180,7 +183,11 @@ public class CommandUI {
 	    add(menu, new FetchPDSConfigurationAction(context));
 	    add(menu, new CheckPDSAliveAction(context));
 	    menu.addSeparator();
-	    add(menu, new CheckPDSExecutionStatusAction(context));
+	    add(menu, new FetchPDSMonitoringStatusAction(context));
+	    menu.addSeparator();
+	    add(menu, new CreatePDSJobAction(context));
+	    add(menu, new UploadPDSJobFileAction(context));
+	    add(menu, new MarkPDSJobReadyAction(context));
 	    menu.addSeparator();
 	    add(menu, new CheckPDSJobStatusAction(context));
 	    add(menu, new CheckPDSJobResultOrErrorAction(context));

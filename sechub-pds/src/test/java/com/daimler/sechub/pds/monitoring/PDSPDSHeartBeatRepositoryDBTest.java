@@ -28,7 +28,7 @@ import com.daimler.sechub.pds.config.PDSServerConfigurationValidator;
 import com.daimler.sechub.pds.config.PDSServerIdentifierValidator;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 
-@ActiveProfiles({PDSProfiles.TEST, PDSProfiles.TRACE})
+@ActiveProfiles({PDSProfiles.TEST/*, PDSProfiles.SQL_TRACE*/})
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
@@ -76,6 +76,7 @@ public class PDSPDSHeartBeatRepositoryDBTest {
         repositoryToTest.removeOlderThan(LocalDateTime.now().minusHours(2));
         
         /* test */
+        entityManager.detach(heartBeat); // detach this object, so its no longer cached but reloaded
         found = repositoryToTest.findById(uuid);
         assertFalse(found.isPresent());
     }
