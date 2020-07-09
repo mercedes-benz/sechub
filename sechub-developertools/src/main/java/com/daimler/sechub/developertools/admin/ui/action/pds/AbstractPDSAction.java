@@ -20,7 +20,7 @@ public abstract class AbstractPDSAction extends AbstractUIAction {
 	@Override
 	public final void execute(ActionEvent e) {
 	    if (!useCacheData()) {
-	        Optional<String> pdsServer = getUserInput("PDS server",InputCacheIdentifier.PDS_SERVER);
+	        Optional<String> pdsServer = getUserInput("PDS server",InputCacheIdentifier.PDS_HOSTNAME);
 	        if (!pdsServer.isPresent()) {
 	            output("Canceled server");
 	            return;
@@ -41,7 +41,7 @@ public abstract class AbstractPDSAction extends AbstractUIAction {
 	            return;
 	        }
 	    }
-	    String server = InputCache.DEFAULT.get(InputCacheIdentifier.PDS_SERVER);
+	    String server = InputCache.DEFAULT.get(InputCacheIdentifier.PDS_HOSTNAME);
 	    String userId=InputCache.DEFAULT.get(InputCacheIdentifier.PDS_USER);
 	    String apiToken = InputCache.DEFAULT.get(InputCacheIdentifier.PDS_APITOKEN);
 	    String portAsString = InputCache.DEFAULT.get(InputCacheIdentifier.PDS_PORT);

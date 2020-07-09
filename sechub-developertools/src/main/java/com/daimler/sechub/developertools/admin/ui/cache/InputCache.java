@@ -18,7 +18,7 @@ public class InputCache {
     private void createDefaults() {
         /* @formatter:off */
 	    set(InputCacheIdentifier.PDS_PORT, "8444");
-	    set(InputCacheIdentifier.PDS_SERVER, "localhost");
+	    set(InputCacheIdentifier.PDS_HOSTNAME, "localhost");
         
 	    set(InputCacheIdentifier.PDS_USER, "pds-inttest-admin");
 	    set(InputCacheIdentifier.PDS_APITOKEN, "pds-inttest-apitoken");

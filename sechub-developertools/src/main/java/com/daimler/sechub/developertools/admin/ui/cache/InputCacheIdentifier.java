@@ -16,7 +16,7 @@ public enum InputCacheIdentifier{
 	
 	MARK_PROJECT_FALSE_POSITIVE,
 	
-	PDS_SERVER,
+	PDS_HOSTNAME,
 	
 	PDS_PORT,
 

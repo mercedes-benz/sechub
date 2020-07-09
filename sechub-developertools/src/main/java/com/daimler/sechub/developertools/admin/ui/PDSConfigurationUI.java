@@ -69,14 +69,14 @@ public class PDSConfigurationUI {
     }
 
     private void getDataFromCache() {
-        hostnameText.setText(InputCache.DEFAULT.get(InputCacheIdentifier.PDS_APITOKEN));
+        hostnameText.setText(InputCache.DEFAULT.get(InputCacheIdentifier.PDS_HOSTNAME));
         portText.setText(InputCache.DEFAULT.get(InputCacheIdentifier.PDS_PORT));
         userIdText.setText(InputCache.DEFAULT.get(InputCacheIdentifier.PDS_USER));
         apiToken.setText(InputCache.DEFAULT.get(InputCacheIdentifier.PDS_APITOKEN));
     }
     
     private void setDataIntoCache() {
-        InputCache.DEFAULT.set(InputCacheIdentifier.PDS_APITOKEN,hostnameText.getText());
+        InputCache.DEFAULT.set(InputCacheIdentifier.PDS_HOSTNAME,hostnameText.getText());
         InputCache.DEFAULT.set(InputCacheIdentifier.PDS_PORT,portText.getText());
         InputCache.DEFAULT.set(InputCacheIdentifier.PDS_USER,userIdText.getText());
         InputCache.DEFAULT.set(InputCacheIdentifier.PDS_APITOKEN,new String(apiToken.getPassword()));
