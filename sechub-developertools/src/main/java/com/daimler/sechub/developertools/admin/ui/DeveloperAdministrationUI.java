@@ -34,6 +34,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     private DialogUI dialogUI;
     private JFrame frame;
     private boolean errors;
+    private PDSConfigurationUI pdsConfigurationUI;
 
     public DeveloperAdministration getAdministration() {
         return administration;
@@ -59,6 +60,11 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     public DialogUI getDialogUI() {
         return dialogUI;
     }
+    
+    @Override
+    public PDSConfigurationUI getPDSConfigurationUI() {
+        return pdsConfigurationUI;
+    }
 
     @Override
     public ErrorHandler getErrorHandler() {
@@ -83,7 +89,8 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
         outputPanelUI = new OutputUI();
         glassPaneUI = new GlassPaneUI(this, frame);
         dialogUI = new DialogUI(frame);
-
+        pdsConfigurationUI = new PDSConfigurationUI(this);
+        
         contentPane.add(outputPanelUI.getPanel(), BorderLayout.CENTER);
         JPanel northPanel = new JPanel(new BorderLayout());
 
@@ -96,6 +103,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
         frame.setJMenuBar(commandPanelUI.getMenuBar());
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // centered...
         frame.setSize(1024, 768);
         frame.setVisible(true);
     }
@@ -153,5 +161,6 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     public JFrame getFrame() {
         return frame;
     }
+
 
 }

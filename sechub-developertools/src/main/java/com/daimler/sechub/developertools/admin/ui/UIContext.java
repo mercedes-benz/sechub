@@ -14,6 +14,8 @@ public interface UIContext {
 
 	CredentialUI getCredentialUI();
 
+    PDSConfigurationUI getPDSConfigurationUI();
+	
 	GlassPaneUI getGlassPaneUI();
 
 	DialogUI getDialogUI();

@@ -6,9 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.DeveloperAdministration.PDSAdministration;
-import com.daimler.sechub.developertools.admin.ui.ThreeButtonDialogResult;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
@@ -21,37 +19,39 @@ public class CreatePDSJobAction extends AbstractPDSAction {
 
     @Override
     protected void executePDS(PDSAdministration pds) {
-        Optional<String> productId = getUserInput("(Fake) sechub job uuid", InputCacheIdentifier.PDS_PRODUCT_ID);
+        Optional<String> productId = getUserInput("Product ID", InputCacheIdentifier.PDS_PRODUCT_ID);
         if (!productId.isPresent()) {
             output("canceled product id");
             return;
         }
-        ThreeButtonDialogResult<String> threeButtonDialog = getUserInputFromField("Enter params (key1=value1;key2=value2...");
-        if (threeButtonDialog.isCanceled()) {
+        Optional<String> optParam = getUserInput("Enter params (key1=value1;key2=value2...", InputCacheIdentifier.PDS_JOB_PARAMS);
+        if (!optParam.isPresent()) {
             output("canceled params");
             return;
             
         }
-        String paramsAsString = threeButtonDialog.getValue();
-        String[] keyValues = paramsAsString.split(";");
         Map<String, String> params = new LinkedHashMap<>();
-        for (String keyValue: keyValues) {
-            String[] splitted =  keyValue.split("=");
-            
-            String key = splitted[0];
-            String value = splitted[1];
-            
-            params.put(key, value);
+        String paramsAsString = optParam.get();
+        if (paramsAsString!=null) {
+            String[] keyValues = paramsAsString.split(";");
+            for (String keyValue: keyValues) {
+                String[] splitted =  keyValue.split("=");
+                
+                String key = splitted[0];
+                String value = splitted[1];
+                
+                params.put(key, value);
+            }
         }
         output("Params parsed into:\n"+params);
         
-        Optional<String> jobUUID = getUserInput("(Fake) sechub job uuid", InputCacheIdentifier.PDS_SECHUB_JOBUUID);
-        if (!jobUUID.isPresent()) {
+        Optional<String> sechubJobUUID = getUserInput("SecHub job uuid", InputCacheIdentifier.PDS_SECHUB_JOBUUID);
+        if (!sechubJobUUID.isPresent()) {
             output("canceled sechu jobuuid");
             return;
         }
         
-        String result = pds.createPDSJob(UUID.fromString(jobUUID.get()), productId.get(), params);
+        String result = pds.createPDSJob(UUID.fromString(sechubJobUUID.get()), productId.get(), params);
         
         outputAsBeautifiedJSONOnSuccess(result);
 

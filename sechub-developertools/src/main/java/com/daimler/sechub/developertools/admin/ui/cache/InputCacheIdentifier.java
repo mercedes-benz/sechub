@@ -30,5 +30,7 @@ public enum InputCacheIdentifier{
 	
 	PDS_PRODUCT_ID,
 	
+	PDS_JOB_PARAMS,
+	
 	
 }

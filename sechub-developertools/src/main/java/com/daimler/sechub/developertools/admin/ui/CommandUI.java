@@ -40,6 +40,7 @@ import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
@@ -180,6 +181,8 @@ public class CommandUI {
 	    JMenu menu = new JMenu("PDS");
 	    menuBar.add(menu);
 	    
+	    add(menu, new ShowPDSConfigurationDialogAction(context));
+	    menu.addSeparator();
 	    add(menu, new FetchPDSConfigurationAction(context));
 	    add(menu, new CheckPDSAliveAction(context));
 	    menu.addSeparator();

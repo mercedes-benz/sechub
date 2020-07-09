@@ -145,9 +145,7 @@ public class DeveloperAdministration {
         
 
         public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
-            AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
-            
-            return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildCreateJob());
+            return AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
         }
 
         public String getExecutionStatus() {

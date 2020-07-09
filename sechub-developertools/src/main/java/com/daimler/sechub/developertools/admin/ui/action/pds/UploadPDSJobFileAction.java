@@ -26,7 +26,7 @@ public class UploadPDSJobFileAction extends AbstractPDSAction {
             output("cancel pds job uuid");
             return;
         }
-        Optional<String> fileNameOpt = getUserInput("PSD job uuid", "sourcecode.zip");
+        Optional<String> fileNameOpt = getUserInput("Filename to use on server side (be aware - we got fixed names here at the moment!))", "sourcecode.zip");
         if (!fileNameOpt.isPresent()) {
             output("cancel pds job uuid");
             return;

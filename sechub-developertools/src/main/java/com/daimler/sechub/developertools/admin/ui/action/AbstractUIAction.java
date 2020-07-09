@@ -4,7 +4,6 @@ package com.daimler.sechub.developertools.admin.ui.action;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -28,14 +27,12 @@ public abstract class AbstractUIAction extends AbstractAction {
     private JSONDeveloperHelper jsonHelper = JSONDeveloperHelper.INSTANCE;
 
     private static final long serialVersionUID = 1L;
-    private static InputCache inputCache = new InputCache();
-    static {
-        initializeDefaults();
-    }
+    private static InputCache inputCache = InputCache.DEFAULT;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUIAction.class);
 
     private transient UIContext context;
+    
     public AbstractUIAction(String text, UIContext context) {
         this.context = context;
         this.putValue(Action.NAME, text);
@@ -53,40 +50,6 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected void setIcon(URL url) {
         Icon icon = new ImageIcon(url);
         putValue(Action.LARGE_ICON_KEY, icon);
-    }
-    
-    private static void initializeDefaults() {
-        /* @formatter:off */
-        inputCache.set(InputCacheIdentifier.PDS_PORT, "8444");
-        inputCache.set(InputCacheIdentifier.PDS_SERVER, "localhost");
-        
-        inputCache.set(InputCacheIdentifier.PDS_USER, "pds-inttest-admin");
-        inputCache.set(InputCacheIdentifier.PDS_APITOKEN, "pds-inttest-apitoken");
-        inputCache.set(InputCacheIdentifier.PDS_SECHUB_JOBUUID, UUID.randomUUID().toString());
-        
-        inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
-        inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
-                "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
-                        + "   \"webScan\" : {\n" + "         \"result\" : \"green\"   \n" + "   },\n" + "   \"infraScan\" : {\n"
-                        + "         \"result\" : \"red\"   \n" + "   }\n" + " \n" + "}");
-        inputCache.set(InputCacheIdentifier.MARK_PROJECT_FALSE_POSITIVE, "{\n" + 
-                "    \"apiVersion\": \"1.0\", \n" + 
-                "    \"type\" : \"falsePositiveJobDataList\", \n" + 
-                "    \n" + 
-                "    \"jobData\": [\n" + 
-                "            {\n" + 
-                "                \"jobUUID\": \"$JobUUID\",\n" + 
-                "                \"findingId\": 42, \n" + 
-                "                \"comment\" : \"Can be ignored, because:\" \n" + 
-                "            },\n" + 
-                "            {\n" + 
-                "                \"jobUUID\": \"$JobUUID\",\n" + 
-                "                \"findingId\": 4711\n" + 
-                "            }\n" + 
-                "      ]\n" + 
-                "                \n" + 
-                "}");
-        /* @formatter:on */
     }
 
     protected UIContext getContext() {
