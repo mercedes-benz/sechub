@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"io"
 )
-func printLogoWithVersion(w io.Writer){
-    printLogoNoNewLine(w)
-	fmt.Printf("Client Version %s\n", Version())
+
+func printLogoWithVersion(w io.Writer) {
+	printLogoNoNewLine(w)
+	fmt.Printf("Client Version %s\n\n", Version())
 }
 func printLogoNoNewLine(w io.Writer) {
 	fmt.Fprintf(w, " _____           _   _       _     \n")

@@ -12,7 +12,7 @@ import (
 
 func TestReportFilePathCorrectCreated(t *testing.T) {
 	/* prepare */
-	report := Report{serverResult: []byte("content"), outputFolder: "path1", outputFileName: "fileName1"}
+	report := ReportDownload{serverResult: []byte("content"), outputFolder: "path1", outputFileName: "fileName1"}
 
 	/* execute */
 	result := report.createFilePath(false)
@@ -29,7 +29,7 @@ func TestReportSaveWritesAFile(t *testing.T) {
 	tempDir := InitializeTestTempDir(t)
 	defer os.RemoveAll(tempDir)
 
-	report := Report{serverResult: []byte("content"), outputFolder: tempDir, outputFileName: "a.out"}
+	report := ReportDownload{serverResult: []byte("content"), outputFolder: tempDir, outputFileName: "a.out"}
 	fmt.Printf("Report: %q\n", report)
 
 	var config Config

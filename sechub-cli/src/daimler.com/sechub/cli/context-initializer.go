@@ -49,8 +49,5 @@ func loadConfigFile(context *Context) {
 }
 
 func debugNotDefinedAsOption(context *Context, fieldName string, fieldValue string) {
-	if !context.config.debug {
-		return
-	}
-	LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - use entry from config file:'%s'", fieldName, fieldValue))
+	LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - using entry from config file: '%s'", fieldName, fieldValue))
 }

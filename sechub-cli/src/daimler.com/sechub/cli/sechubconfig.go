@@ -71,14 +71,13 @@ func showHelpHint() {
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'\n", filePath))
+	LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)
 	defer jsonFile.Close()
 
-	if err != nil {
-		fmt.Println(err)
+	if HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -86,8 +85,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked */
 	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	if err != nil {
-		fmt.Println(err)
+	if HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}

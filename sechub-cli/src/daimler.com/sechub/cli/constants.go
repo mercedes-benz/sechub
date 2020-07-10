@@ -2,6 +2,9 @@
 
 package cli
 
+// CurrentAPIVersion - SecHub current api version
+const CurrentAPIVersion = "1.0"
+
 // DefaultSecHubConfigFile represents the name of the sechub configuration file
 // used per default when no other set
 const DefaultSecHubConfigFile = "sechub.json"

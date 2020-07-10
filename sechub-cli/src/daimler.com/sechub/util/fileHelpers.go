@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"regexp"
 )
 
 // WriteContentToFile - Write content to a file; do pretty printing if of type json
@@ -42,4 +43,30 @@ func HandleIOError(err error) bool {
 		return true
 	}
 	return false
+}
+
+// FindNewestMatchingFileInDir - used e.g. for finding the latest report file
+func FindNewestMatchingFileInDir(filePattern string, dir string) string {
+	var newestFile string = ""
+	var newestTime int64 = 0
+
+	files, err := ioutil.ReadDir(dir)
+	HandleIOError(err)
+
+	for _, file := range files {
+		matched, _ := regexp.MatchString(filePattern, file.Name())
+		if !matched {
+			continue
+		}
+
+		fi, err := os.Stat(dir + "/" + file.Name())
+		HandleIOError(err)
+
+		currTime := fi.ModTime().Unix()
+		if currTime > newestTime {
+			newestTime = currTime
+			newestFile = file.Name()
+		}
+	}
+	return newestFile
 }

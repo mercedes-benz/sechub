@@ -71,7 +71,7 @@ func init() {
 	apiTokenPtr = flag.String(
 		"apitoken", "", "The api token. This is a mandatory option for every action. Can NOT be defined in config file")
 	configFilePathPtr = flag.String(
-		"configfile", "", "Path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
+		"configfile", DefaultSecHubConfigFile, "Path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
 	filePtr = flag.String(
 		"file", "", "Defines file to read from for these actions: "+ActionExecuteAddFalsePositives+" "+ActionExecuteMarkFalsePositives+" "+ActionExecuteRemoveFalsePositives)
 	helpPtr = flag.Bool(
@@ -79,7 +79,7 @@ func init() {
 	secHubJobUUIDPtr = flag.String(
 		"jobUUID", "", "SecHub job uuid (mandatory when using '"+ActionExecuteGetStatus+"' or '"+ActionExecuteGetReport+"')")
 	outputFolderPathPtr = flag.String(
-		"output", "", "Output folder for reports etc. per default current dir")
+		"output", ".", "Output folder for reports etc. per default current dir")
 	projectIdPtr = flag.String(
 		"project", "", "SecHub project id - mandatory, but can also be defined in config file")
 	reportFormatPtr = flag.String(
@@ -142,15 +142,18 @@ func NewConfigByFlags() *Config {
 	config.keepTempFiles = keepTempFiles
 	config.stopOnYellow = *stopOnYellowPtr
 
-	if config.configFilePath == "" {
-		config.configFilePath = DefaultSecHubConfigFile
-	}
 	config.action = flag.Arg(0)
 
 	return config
 }
 
 func assertValidConfig(configPtr *Config) {
+	if configPtr.trustAll {
+		if !configPtr.quiet {
+			LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
+		}
+	}
+
 	/* --------------------------------------------------
 	 * 					Validation
 	 * --------------------------------------------------
@@ -188,6 +191,16 @@ func assertValidConfig(configPtr *Config) {
 			fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
 			fmt.Println("Please define input file with -file option.")
 			os.Exit(ExitCodeMissingParameter)
+		} else if configPtr.action == ActionExecuteMarkFalsePositives {
+			// Let's try to find the latest report and take this as file
+			configPtr.file = FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
+			if configPtr.file == "" {
+				fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
+				fmt.Println("Please define input file with -file option.")
+				os.Exit(ExitCodeMissingParameter)
+			} else {
+				fmt.Printf("Using latest report file %q.\n", configPtr.file)
+			}
 		}
 	}
 

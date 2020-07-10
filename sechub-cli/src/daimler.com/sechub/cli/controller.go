@@ -23,60 +23,35 @@ type jobScheduleResult struct {
 
 // Execute starts sechub client
 func Execute() {
-	context := InitializeContext()
-
 	printLogoWithVersion(os.Stdout)
 
-	if context.config.trustAll {
-		if !context.config.quiet {
-			LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
-		}
-	}
+	context := InitializeContext()
 
 	switch context.config.action {
 	case ActionExecuteSynchron:
 		{
 			commonWayToApprove(context)
 			waitForSecHubJobDoneAndFailOnTrafficLight(context)
-			os.Exit(ExitCodeOK)
 		}
 	case ActionExecuteAsynchron:
 		{
 			commonWayToApprove(context)
 			fmt.Println(context.config.secHubJobUUID)
-			os.Exit(ExitCodeOK)
 		}
 	case ActionExecuteGetStatus:
-		{
-			state := getSecHubJobState(context, true, false, false)
-			fmt.Println(state)
-			os.Exit(ExitCodeOK)
-		}
+		fmt.Println(getSecHubJobState(context, true, false, false))
 	case ActionExecuteGetReport:
-		{
-			downloadSechubReport(context)
-			os.Exit(ExitCodeOK)
-		}
+		downloadSechubReport(context)
 	case ActionExecuteGetFalsePositives:
-		{
-			downloadFalsePositivesList(context)
-			os.Exit(ExitCodeOK)
-		}
+		downloadFalsePositivesList(context)
 	case ActionExecuteAddFalsePositives:
-		{
-			uploadFalsePositivesFromFile(context)
-			os.Exit(ExitCodeOK)
-		}
+		uploadFalsePositivesFromFile(context)
 	case ActionExecuteMarkFalsePositives:
-		{
-			markFalsePositives(context)
-			os.Exit(ExitCodeOK)
-		}
+		markFalsePositives(context)
 	case ActionExecuteRemoveFalsePositives:
-		{
-			removeFalsePositivesFromFile(context)
-			os.Exit(ExitCodeOK)
-		}
+		removeFalsePositivesFromFile(context)
+	case ActionExecuteUnmarkFalsePositives:
+		unmarkFalsePositives(context)
 	default:
 		{
 			fmt.Printf("Unknown action '%s'\n", context.config.action)
@@ -84,6 +59,7 @@ func Execute() {
 			os.Exit(ExitCodeIllegalAction)
 		}
 	}
+	os.Exit(ExitCodeOK)
 }
 
 /* --------------------------------------------------
@@ -157,7 +133,7 @@ func downloadSechubReport(context *Context) string {
 	}
 	fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
 
-	report := Report{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
+	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)
 
 	return "" // Dummy (Error handling is done in report.save method)
@@ -168,8 +144,4 @@ func downloadFalsePositivesList(context *Context) {
 
 	list := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	list.save(context)
-}
-
-func markFalsePositives(context *Context) {
-	fmt.Println("To be done")
 }
