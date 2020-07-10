@@ -48,7 +48,7 @@ class CmdExecutor{
                    println(line);
                 }
                 
-                reader = new BufferedReader(new InputStreamReader(p.getErrgetErrorStream()));
+                reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
                 while ( (line = reader.readLine()) != null) {
                    println("ERROR:" + line);
