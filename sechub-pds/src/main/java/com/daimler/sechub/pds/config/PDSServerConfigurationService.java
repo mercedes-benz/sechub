@@ -48,7 +48,7 @@ public class PDSServerConfigurationService {
                 if (message == null) {
                     configuration = loadedConfiguration;
                 } else {
-                    LOG.error("configuration file not valid: {}", message);
+                    LOG.error("configuration file '{}' not valid - reason: {}", file.getAbsolutePath(), message);
                 }
 
             } catch (PDSJSONConverterException | IOException e) {

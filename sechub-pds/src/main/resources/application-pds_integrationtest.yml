@@ -3,7 +3,7 @@ spring.profiles.include:
 - pds_localserver
 
 # next lines is a default when running inside IDE. Links to sechub-integration aprts
-sechub.pds.config.file: "src/test/resources/config/pds-config-integrationtest.json"
+sechub.pds.config.file: "./../sechub-integrationtest/src/main/resources/pds-config-integrationtest.json"
 sechub.pds.workspace.rootfolder: "./../sechub-integrationtest/build/test-results/pds-runtime"
 
 sechub:
