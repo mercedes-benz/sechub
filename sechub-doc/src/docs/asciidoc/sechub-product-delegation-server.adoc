@@ -28,4 +28,6 @@ include::documents/shared/concepts/concept_pds.adoc[]
 == Runtime view
 include::documents/pds/pds_config.adoc[]
 
+include::documents/pds/pds_usecases.adoc[]
+
 include::documents/pds/pds_restapi.adoc[]

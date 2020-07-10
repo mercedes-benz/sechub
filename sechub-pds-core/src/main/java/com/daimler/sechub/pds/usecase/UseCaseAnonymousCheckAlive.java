@@ -9,9 +9,10 @@ import java.lang.annotation.Target;
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @PDSUseCaseDefinition(
-            id=PDSUseCaseIdentifier.UC_USER_FETCHES_JOB_RESULT,
-            group=PDSUseCaseGroup.JOB_EXECUTION,
+            id=PDSUseCaseIdentifier.UC_ANONYMOUS_CHECK_ALIVE,
+            group=PDSUseCaseGroup.ANONYMOUS,
             title="Anymous check if server is alive", 
             description="Anonymous access to check if server is alive or not")
     public @interface UseCaseAnonymousCheckAlive {
+        PDSStep value();
 }

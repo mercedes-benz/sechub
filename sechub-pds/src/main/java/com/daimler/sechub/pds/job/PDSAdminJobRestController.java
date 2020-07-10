@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
-import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobResult;
+import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobResultOrFailureText;
 
 /**
  * The REST API for PDS jobs
@@ -35,7 +36,7 @@ public class PDSAdminJobRestController {
 	/* @formatter:off */
     @Validated
     @RequestMapping(path = "job/{jobUUID}/result", method = RequestMethod.GET)
-    @UseCaseUserFetchesJobResult
+    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name="rest call",description = "an admin fetches result or failure text for job from db.",number=1))
     public String getJobResultOrFailureText(
             @PathVariable("jobUUID") UUID jobUUID
             ) {

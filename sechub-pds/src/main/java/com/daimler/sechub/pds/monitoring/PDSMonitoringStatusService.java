@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
+import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 
 @Service
 public class PDSMonitoringStatusService {
@@ -26,6 +28,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PDSMonitoringStatusSer
     @Autowired
     PDSHeartBeatRepository heartBeatRepository;
     
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="service call",description = "service fetches job state counts and gathers hearbeats of cluster members by serverId",number=4))
     public PDSMonitoring getMonitoringStatus() {
         String serverId = serverConfiguratonService.getServerId();
         

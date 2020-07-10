@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
+import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
  * 
@@ -147,6 +149,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      * 
      * @param mayInterruptIfRunning
      */
+    @UseCaseUserCancelsJob(@PDSStep(name="process cancelation",description = "process created by job will be destroyed",number=4))
     void prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
             return;

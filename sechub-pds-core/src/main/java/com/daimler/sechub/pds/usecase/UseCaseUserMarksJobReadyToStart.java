@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="User marks job ready to start", 
 		description="A user marks an existing PDS job as ready to start. Means all intermediate parts are done - e.g. uploads")
 public @interface UseCaseUserMarksJobReadyToStart {
-	
+    PDSStep value();
 }
 /* @formatter:on */

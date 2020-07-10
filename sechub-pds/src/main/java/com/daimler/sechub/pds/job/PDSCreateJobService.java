@@ -9,6 +9,7 @@ import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.security.PDSUserContextService;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCreatesJob;
 
 @Service
@@ -26,7 +27,7 @@ public class PDSCreateJobService {
     @Autowired
     PDSServerConfigurationService serverConfigurationService;
 
-    @UseCaseUserCreatesJob
+    @UseCaseUserCreatesJob(@PDSStep(name="service call",description = "job will be created, serverId will be used to store new job",number=2))
     public PDSJobCreateResult createJob(PDSJobConfiguration configuration) {
         
         configurationValidator.assertPDSConfigurationValid(configuration);

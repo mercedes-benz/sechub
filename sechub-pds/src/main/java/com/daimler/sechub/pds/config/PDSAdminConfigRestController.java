@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesServerConfiguration;
 
 /**
@@ -31,7 +32,7 @@ public class PDSAdminConfigRestController {
 
     @Validated
     @RequestMapping(path = "config/server", method = RequestMethod.GET)
-    @UseCaseAdminFetchesServerConfiguration
+    @UseCaseAdminFetchesServerConfiguration(@PDSStep(name="rest call",description = "an admin fetches server configuration of PDS server(s).",number=1))
     public PDSServerConfiguration getServerConfiguration() {
         return executionService.getServerConfiguration();
     }

@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="User uploads job data", 
 		description="A user uploads data for a job")
 public @interface UseCaseUserUploadsJobData {
-	
+    PDSStep value();
 }
 /* @formatter:on */

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.execution.PDSExecutionService;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
 @Service
@@ -24,7 +25,7 @@ public class PDSCancelJobService {
     @Autowired
     PDSExecutionService executionService;
 
-    @UseCaseUserCancelsJob
+    @UseCaseUserCancelsJob(@PDSStep(name="service call",description = "trigger change to execution service and marks job status as cancel requested",number=2))
     public void cancelJob(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 

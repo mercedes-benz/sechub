@@ -24,6 +24,10 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
   available as environment variables at runtime 
 - a standard way to integrate any product into sechub in a scalable and easy way 
 
+===== Handling of resources
+- PDS server provides auto unzipping of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
+- When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
+
 ===== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 
@@ -40,13 +44,21 @@ The Adapter will always be the same, but filled with other necessary parameters.
 NOTE: So there will be no need to write any adapter or executor when using PDS! 
 
 
-===== HowTo integrate a CLI product via PDS
+===== HowTo integrate a new product via PDS
 
 Having new security product XYZ but being a command line tool, we 
 
-- create a `PSD` configuration file and fill with necessary data, define a unique "server-id"
-  which is used only by this kind of PDS server instances (e.g `FIND_SECURITY_BUGS_CLUSTER`)
-  
+
+- create an environment (e.g. a docker container) where all your needed parts are integrated. 
+  E.g. bash shell, tools, the product and its dependencies etc.
+
+- create an executable starter script (e.g. bash) which
+  * calls the product
+  * does system out/err to standard pipes    
+  * writes the product result report to relative path `./output/result.txt`
+
+- create a `PSD` configuration file and fill with necessary data, see <<section-pds-server-config-file,PDS server configuration file>> 
+ 
 - start wanted amount of `ProductDelegationServer` instances with dedicated configuration 
   setup to have a clustered, server ready execution of CLI security products. If you want your
   PDS to be started inside a cluster you have to setup load balancing etc. by your own. 
@@ -59,7 +71,7 @@ Having new security product XYZ but being a command line tool, we
   * mark job as ready to start
   * check job state
   * fetch result and inspect
-  
+
 - when former test was successful
   * Define executor at sechub server side - *will be implemented with #148*
   * When your product uses sereco general report format your are done- *will be implemented with #283* 

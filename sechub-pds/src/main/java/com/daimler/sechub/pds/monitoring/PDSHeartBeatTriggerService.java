@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.execution.PDSExecutionStatus;
+import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.daimler.sechub.pds.util.PDSLocalhostDataBuilder;
 
 @Service
@@ -62,6 +64,7 @@ public class PDSHeartBeatTriggerService {
     @Scheduled(initialDelayString = "${sechub.pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     @Transactional
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="heartbeat update",description = "a scheduled heartbeat update is done by PDS server - will persist hearbeat information of server instance to database and also into logs",number=1))
     public void triggerNextHearbeat() {
         if (!heartbeatEnabled) {
             LOG.trace("Trigger execution of next hearbeat canceled, because hearbeat disabled.");

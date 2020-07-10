@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="User creates job", 
 		description="A user creates a new PDS job")
 public @interface UseCaseUserCreatesJob {
-	
+    PDSStep value();
 }
 /* @formatter:on */

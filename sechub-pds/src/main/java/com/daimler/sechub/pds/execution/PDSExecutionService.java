@@ -30,6 +30,7 @@ import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
@@ -85,7 +86,7 @@ public class PDSExecutionService {
         scheduler.scheduleAtFixedRate(watcher, 300, 1000, TimeUnit.MILLISECONDS);
     }
 
-    @UseCaseUserCancelsJob
+    @UseCaseUserCancelsJob(@PDSStep(name="service call",description = "job execution will be canceled in queue",number=3))
     public boolean cancel(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
@@ -141,7 +142,7 @@ public class PDSExecutionService {
         handleFormerJob(jobUUID, former);
     }
 
-    @UseCaseAdminFetchesMonitoringStatus
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="db lookup",description = "service fetches all execution state",number=2))
     public PDSExecutionStatus getExecutionStatus() {
         PDSExecutionStatus status = new PDSExecutionStatus();
         synchronized (jobsInQueue) {
@@ -218,6 +219,7 @@ public class PDSExecutionService {
          * @param future
          * @return <code>true</code> when work can be removed from jobsInQueue
          */
+        @UseCaseUserCancelsJob(@PDSStep(name="queue work",description = "canceled job will be marked as CANCELED in db",number=5))
         private boolean isFutureDoneAndChangesToDatabaseCanBeApplied(Entry<UUID, Future<PDSExecutionResult>> entry, Future<PDSExecutionResult> future) {
             UUID jobUUID = entry.getKey();
 

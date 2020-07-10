@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobStatus;
 
 @Service
@@ -20,7 +21,7 @@ public class PDSGetJobStatusService {
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserFetchesJobStatus
+    @UseCaseUserFetchesJobStatus(@PDSStep(name="service call",description = "returns job status",number=2))
     public PDSJobStatus getJobStatus(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
         

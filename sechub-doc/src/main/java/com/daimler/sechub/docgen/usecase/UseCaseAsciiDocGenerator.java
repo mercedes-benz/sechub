@@ -17,6 +17,7 @@ import com.daimler.sechub.docgen.GeneratorConstants;
 import com.daimler.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry.UseCaseEntryStep;
+import com.daimler.sechub.pds.usecase.PDSUseCaseGroup;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 
@@ -32,8 +33,16 @@ public class UseCaseAsciiDocGenerator {
     // |Row2A |Row2B |Row2Cs
     // |Row3A |Row3B |Row3C
     // |===
+    private boolean connectUsecaseWithMessage;
+    private boolean showEventDiagrams;
 
     public String generateAsciidoc(UseCaseModel model, File diagramsGenFolder) {
+        return generateAsciidoc(model, diagramsGenFolder,true,true);
+    }
+    public String generateAsciidoc(UseCaseModel model, File diagramsGenFolder, boolean connectUsecaseWithMessage, boolean showEventDiagrams) {
+        this.connectUsecaseWithMessage=connectUsecaseWithMessage;
+        this.showEventDiagrams=showEventDiagrams;
+        
         Context context = new Context();
         context.diagramsGenFolder = diagramsGenFolder;
         int h = 3;
@@ -60,10 +69,26 @@ public class UseCaseAsciiDocGenerator {
     private void generateOverview(UseCaseModel model, Context context, int h) {
         context.addLine(headline(h) + "Overview about usecase groups");
         for (UseCaseGroup group : UseCaseGroup.values()) {
+            SortedSet<UseCaseEntry> entries = model.getUseCasesInsideGroup(group);
+            if (entries.isEmpty()) {
+                continue;
+            }
             context.addLine(headline(h + 1) + group.getTitle());
             context.addLine(group.getDescription());
             context.addLine("");
-            SortedSet<UseCaseEntry> entries = model.getUseCasesInsideGroup(group);
+            for (UseCaseEntry entry : entries) {
+                context.addLine("- <<" + UseCaseAsciiDocFactory.createLinkId(entry) + "," + entry.getId() + "-" + entry.getTitle() + ">>\n");
+            }
+            context.addLine("");
+        }
+        for (PDSUseCaseGroup group : PDSUseCaseGroup.values()) {
+            SortedSet<UseCaseEntry> entries = model.getPDSUseCasesInsideGroup(group);
+            if (entries.isEmpty()) {
+                continue;
+            }
+            context.addLine(headline(h + 1) + group.getTitle());
+            context.addLine(group.getDescription());
+            context.addLine("");
             for (UseCaseEntry entry : entries) {
                 context.addLine("- <<" + UseCaseAsciiDocFactory.createLinkId(entry) + "," + entry.getId() + "-" + entry.getTitle() + ">>\n");
             }
@@ -84,9 +109,12 @@ public class UseCaseAsciiDocGenerator {
         context.addLine("");
         context.addLine("endif::techdoc[]");
 
-        generateEventTraceOverviewIfPreGenerated(context, entry);
-        
-        context.addLine("include::usecase2messages_"+entry.getIdentifierEnumName().toLowerCase()+".adoc[]");
+        if (showEventDiagrams) {
+            generateEventTraceOverviewIfPreGenerated(context, entry);
+        }
+        if (connectUsecaseWithMessage) {
+            context.addLine("include::usecase2messages_"+entry.getIdentifierEnumName().toLowerCase()+".adoc[]");
+        }
 
         context.addLine("*Steps*");
         generateUseCaseStepsTable(context, entry);

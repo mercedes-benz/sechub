@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="Admin fetches server configuration", 
 		description="An administrator fetches server configuration.")
 public @interface UseCaseAdminFetchesServerConfiguration {
-	
+    PDSStep value();
 }
 /* @formatter:on */

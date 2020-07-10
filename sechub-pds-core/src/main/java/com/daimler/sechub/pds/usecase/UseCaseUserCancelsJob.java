@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="User cancels job", 
 		description="A user cancel an existing PDS job")
 public @interface UseCaseUserCancelsJob {
-	
+    PDSStep value();
 }
 /* @formatter:on */

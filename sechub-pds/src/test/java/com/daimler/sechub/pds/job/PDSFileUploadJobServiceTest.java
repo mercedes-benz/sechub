@@ -22,6 +22,9 @@ import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
 public class PDSFileUploadJobServiceTest {
 
+    private static final String ACCEPTED_CHECKSUM = "checksum-accepted";
+    private static final String NOT_ACCEPTED_CHECKSUM = "checksum-failing";
+
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
@@ -56,7 +59,8 @@ public class PDSFileUploadJobServiceTest {
         serviceToTest.workspaceService=workspaceService;
         serviceToTest.repository=repository;
         
-        when(checksumService.createChecksum(any())).thenReturn("checksum-dummy");
+        when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
+        when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
     }
 
 
@@ -74,7 +78,7 @@ public class PDSFileUploadJobServiceTest {
 
         /* execute */
         UUID notExistingJobUUID = UUID.randomUUID();
-        serviceToTest.upload(notExistingJobUUID, fileName, multiPart, "checksum-dummy");
+        serviceToTest.upload(notExistingJobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         
     }
     
@@ -92,7 +96,7 @@ public class PDSFileUploadJobServiceTest {
         expected.expectMessage("accepted is only:[CREATED]");
 
         /* execute */
-        serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         
     }
 
@@ -109,7 +113,7 @@ public class PDSFileUploadJobServiceTest {
         expected.expectMessage("40");
 
         /* execute */
-        serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         
     }
     
@@ -126,7 +130,7 @@ public class PDSFileUploadJobServiceTest {
         expected.expectMessage("[a-zA-Z");
 
         /* execute */
-        serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         
     }
     
@@ -143,7 +147,7 @@ public class PDSFileUploadJobServiceTest {
         expected.expectMessage("[a-zA-Z");
 
         /* execute */
-        serviceToTest.upload(jobUUID, fileName, multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         
     }
     
@@ -156,10 +160,28 @@ public class PDSFileUploadJobServiceTest {
         assertEquals(40,allowedNameWithMaxLength.length());
         
         /* execute */
-        serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, ACCEPTED_CHECKSUM);
         
         /* test */
         assertFileUploaded(allowedNameWithMaxLength);
+        
+    }
+    
+    @Test
+    public void upload_uploads_given_content_to_file_to_specified_path_fails_when_checksum_service_says_not_correct_checksum() {
+        /* prepare */
+        String result = "content data";
+        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
+        String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
+        assertEquals(40,allowedNameWithMaxLength.length());
+        
+        /* test */
+        expected.expect(PDSNotAcceptableException.class);
+        expected.expectMessage("checksum");
+        expected.expectMessage("failed");
+        
+        /* execute */
+        serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, NOT_ACCEPTED_CHECKSUM);
         
     }
     
@@ -169,7 +191,7 @@ public class PDSFileUploadJobServiceTest {
         String result = "content data";
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
 
-        serviceToTest.upload(jobUUID, "fileName1.zip", multiPart, "checksum-dummy");
+        serviceToTest.upload(jobUUID, "fileName1.zip", multiPart, ACCEPTED_CHECKSUM);
         
         /* check precondition */
         assertTrue(jobFolder().exists());

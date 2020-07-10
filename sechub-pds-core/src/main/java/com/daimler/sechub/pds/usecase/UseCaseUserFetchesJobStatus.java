@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 		title="User fetches job status", 
 		description="A user fetches current job status")
 public @interface UseCaseUserFetchesJobStatus {
-	
+    PDSStep value();
 }
 /* @formatter:on */

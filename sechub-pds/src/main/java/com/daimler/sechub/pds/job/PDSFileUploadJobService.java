@@ -5,6 +5,7 @@ import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -16,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
@@ -37,7 +40,7 @@ public class PDSFileUploadJobService {
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserUploadsJobData
+    @UseCaseUserUploadsJobData(@PDSStep(name="service call",description = "uploaded file be stored in job workspace upload location. Also checksum is validated",number=2))
     public void upload(UUID jobUUID, String fileName, MultipartFile file, String checkSum) {
         notNull(jobUUID, "job uuid may not be null");
         notNull(file, "file may not be null");
@@ -58,9 +61,16 @@ public class PDSFileUploadJobService {
             throw new IllegalArgumentException("Cannot store given file", e);
         }
 
-        checksumService.hasCorrectChecksum(checkSum, uploadFile.getAbsolutePath());
+        assertCheckSumCorrect(checkSum, uploadFile.toPath());
     }
 
+    
+    private void assertCheckSumCorrect(String checkSum, Path path) {
+        if (!checksumService.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
+            LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
+            throw new PDSNotAcceptableException("Sourcecode checksum check failed");
+        }
+    }
 
     public void deleteAllUploads(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null");

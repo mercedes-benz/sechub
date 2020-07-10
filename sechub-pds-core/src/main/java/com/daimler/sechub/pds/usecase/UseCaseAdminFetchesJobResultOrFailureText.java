@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PDSUseCaseDefinition(
-		id=PDSUseCaseIdentifier.UC_USER_FETCHES_JOB_RESULT,
+		id=PDSUseCaseIdentifier.UC_ADMIN_FETCHES_JOB_RESULT_OR_FAILURE_TEXT,
 		group=PDSUseCaseGroup.JOB_EXECUTION,
 		title="Admin fetches job result", 
 		description="Same as when a user is fetching a job result. "+
@@ -19,6 +19,6 @@ import java.lang.annotation.Target;
 		"instead of result - but it's no JSON!\n\nSo only administrator is able to get insights"+
 		"to processes and system logs, but no normal user.")
 public @interface UseCaseAdminFetchesJobResultOrFailureText {
-	
+    PDSStep value();
 }
 /* @formatter:on */

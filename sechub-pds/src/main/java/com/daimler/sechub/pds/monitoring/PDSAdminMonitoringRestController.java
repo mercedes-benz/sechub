@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesMonitoringStatus;
 
 /**
@@ -32,7 +33,7 @@ public class PDSAdminMonitoringRestController {
 
     @Validated
     @RequestMapping(path = "monitoring/status", method = RequestMethod.GET)
-    @UseCaseAdminFetchesMonitoringStatus
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="rest call",description = "admin fetches monitoring status by REST API",number=3))
     public PDSMonitoring getMonitoringStatus() {
         return monitoringStatusService.getMonitoringStatus();
     }

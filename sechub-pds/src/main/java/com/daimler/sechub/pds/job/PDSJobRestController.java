@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.daimler.sechub.pds.PDSAPIConstants;
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 import com.daimler.sechub.pds.usecase.UseCaseUserCreatesJob;
 import com.daimler.sechub.pds.usecase.UseCaseUserFetchesJobResult;
@@ -57,7 +58,7 @@ public class PDSJobRestController {
 
 	@Validated
 	@RequestMapping(path = "create", method = RequestMethod.POST)
-	@UseCaseUserCreatesJob
+	@UseCaseUserCreatesJob(@PDSStep(name="rest call",description = "user creates job. If configuration is not valid an error will be thrown",number=1))
 	public PDSJobCreateResult createJob(
 			@RequestBody PDSJobConfiguration configuration) {
 		return createJobService.createJob(configuration);
@@ -67,7 +68,7 @@ public class PDSJobRestController {
 	/* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/upload/{fileName}", method = RequestMethod.POST)
-	@UseCaseUserUploadsJobData
+	@UseCaseUserUploadsJobData(@PDSStep(name="rest call",description = "user uploads a file to workspace of given job",number=1))
 	public void upload(
 				@PathVariable("jobUUID") UUID jobUUID,
 				@PathVariable("fileName") String fileName,
@@ -82,7 +83,7 @@ public class PDSJobRestController {
 	/* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/mark-ready-to-start", method = RequestMethod.PUT)
-	@UseCaseUserMarksJobReadyToStart
+	@UseCaseUserMarksJobReadyToStart(@PDSStep(name="rest call",description = "a user marks job as ready to start.",number=1))
 	public void markReadyToStart(
 				@PathVariable("jobUUID") UUID jobUUID) {
 		updateJobTransactionService.markReadyToStartInOwnTransaction(jobUUID);
@@ -92,7 +93,7 @@ public class PDSJobRestController {
 	/* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/cancel", method = RequestMethod.PUT)
-    @UseCaseUserCancelsJob
+    @UseCaseUserCancelsJob(@PDSStep(name="rest call",description = "a user cancels job",number=1))
     public void cancelJob(
                 @PathVariable("jobUUID") UUID jobUUID) {
         cancelJobService.cancelJob(jobUUID);
@@ -103,7 +104,7 @@ public class PDSJobRestController {
 	/* @formatter:off */
 	@Validated
 	@RequestMapping(path = "{jobUUID}/status", method = RequestMethod.GET)
-	@UseCaseUserFetchesJobStatus
+	@UseCaseUserFetchesJobStatus(@PDSStep(name="rest call",description = "a user fetches status of job.",number=1))
 	public PDSJobStatus getJobStatus(
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
@@ -115,7 +116,7 @@ public class PDSJobRestController {
 	/* @formatter:off */
     @Validated
     @RequestMapping(path = "{jobUUID}/result", method = RequestMethod.GET)
-    @UseCaseUserFetchesJobResult
+    @UseCaseUserFetchesJobResult(@PDSStep(name="rest call",description = "a user wants to get result of job",number=1))
     public String getJobResult(
             @PathVariable("jobUUID") UUID jobUUID
             ) {
