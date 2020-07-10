@@ -13,7 +13,7 @@ import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
  * removed as well): <br> <br>
  * a) <b> PDS integrationtest configuration is done automatically!</b> 
  * All configurations from
- * 'sechub-integrationtest/pds/integrationtest-pds-config.json' will be
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json' will be
  * configured automatically!<br><br>
  * b) User and project data:
  *

@@ -169,14 +169,6 @@ function startServer(){
         echo ">> INFO: removing old logfile:$pathToLog"
         rm $pathToLog
     fi
-    pathToConfigFile="$currentDir/pds/integrationtest-pds-config.json"
-    if [ ! -f $pathToConfigFile ]; then
-        echo ">> FAILURE: no config found, looked into $pathToConfigFile"
-        exit 1
-    fi
-    export SECHUB_PDS_CONFIG_FILE=$pathToConfigFile
-    
-    echo "starting PDS with configuration:$SECHUB_PDS_CONFIG_FILE"
     
     java -jar $pathToJar > $pathToLog &
     echo ">> INFO: integration test PDS has been started"

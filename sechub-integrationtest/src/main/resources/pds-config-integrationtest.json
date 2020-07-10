@@ -27,6 +27,26 @@
                     }
                 ]
             }
+        },
+        {
+            "id": "PDS_INTTEST_PRODUCT_WEBSCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",
+            "scanType": "codeScan",
+            "description": "This is only a fake web scan - used by integration tests.",
+            "parameters": {
+                "mandatory": [
+                    {
+                        "key": "product2.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "PDS_INTTEST_PRODUCT_INFRASCAN",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-infrascan.sh",
+            "scanType": "codeScan",
+            "description": "This is only a fake infra scan - used by integration tests."
         }
     ]
 }

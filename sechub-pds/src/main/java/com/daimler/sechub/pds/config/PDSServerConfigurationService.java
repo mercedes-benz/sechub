@@ -58,7 +58,7 @@ public class PDSServerConfigurationService {
             LOG.error("No config file found at {} !", file.getAbsolutePath());
         }
         if (configuration == null) {
-            LOG.error("No configuration found\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
+            LOG.error("PDS configuration failure\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
             shutdownService.shutdownApplication();
         }
     }
