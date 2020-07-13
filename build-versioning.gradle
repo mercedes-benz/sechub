@@ -71,8 +71,17 @@ def buildVersionFiles(){
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
     serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n"+serverVersion)
 
+    // ------------------------
+    // - PDS
+    // ------------------------
+    def pdsVersion = buildVersionString(serverVersionCommitTag, hasChanged,buildNumber)
+     /* write version info also as asciidoc file*/
+    def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n"+serverVersion)
+
     def reducedServerVersion = simplifiedVersion(serverVersion);
     def reducedClientVersion = simplifiedVersion(clientVersion);
+    def reducedPDSVersion = simplifiedVersion(pdsVersion);
 
     /* we use a simplified version for build artifacts-reason:
      * there were multiple problems. E.g. a user downloading
@@ -80,12 +89,14 @@ def buildVersionFiles(){
      */
     VersionData.setServerVersion(reducedServerVersion);
     VersionData.setClientVersion(reducedClientVersion);
+    VersionData.setPdsVersion(reducedPDSVersion);
 
     def stop = new Date()
 
     TimeDuration td = TimeCategory.minus( stop, start )
     println("- Server :"+VersionData.getServerVersion()+" ["+serverVersion+"]")
     println("- Client :"+VersionData.getClientVersion()+" ["+clientVersion+"]")
+    println("- PDS    :"+VersionData.getClientVersion()+" ["+pdsVersion+"]")
     println("- Time elapsed for versioning:"+td)
 }
 

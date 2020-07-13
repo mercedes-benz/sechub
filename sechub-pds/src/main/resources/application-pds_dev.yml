@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+spring.profiles.include:
+ - pds_localserver
+ 
+sechub.pds.config.file: "src/test/resources/dev-pds-config.json"
+ 
+sechub.initialadmin:
+   userid: sechubadm
+   email: sechubadm@example.org    
+   apitoken: pseudo-token-development-only
+   
+sechub:
+ pds:
+   techuser:
+       userid: pds-dev-techuser
+       apitoken: "{noop}pds-dev-apitoken"
+   admin:
+       userid: pds-dev-admin
+       apitoken: "{noop}pds-dev-apitoken"
+    
+logging:
+ level:
+   com.daimler.sechub: DEBUG
+   org.apache.http: WARN
+   org.apache.http.headers: WARN
+   org.apache.http.wire: WARN

@@ -38,6 +38,9 @@ public enum ProductIdentifier {
 	 * Static code analysis
 	 */
 	CHECKMARX,
+	
+	/** Product delegation server */
+	PDS,
 
 	;
 

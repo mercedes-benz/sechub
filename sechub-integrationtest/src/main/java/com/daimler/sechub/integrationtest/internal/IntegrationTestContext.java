@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder;
 
@@ -22,10 +23,14 @@ public class IntegrationTestContext {
 	private MockEmailAccess mailAccess = MockEmailAccess.mailAccess();
 
 	private Map<TestUser, TestRestHelper> restHelperMap = new HashMap<>();
+	private Map<TestUser, TestRestHelper> pdsRestHelperMap = new HashMap<>();
 	private String hostname = "localhost";
 	private int port = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestServerPort();
+	private int pdsPort = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort();
 
 	private TestURLBuilder urlBuilder;
+
+    private TestURLBuilder pdsUrlBuilder;
 
 	public static IntegrationTestContext get() {
 		return testContext;
@@ -38,6 +43,10 @@ public class IntegrationTestContext {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
+	public void setPdsPort(int pdsPort) {
+        this.pdsPort = pdsPort;
+    }
 
 	public TestURLBuilder getUrlBuilder() {
 		if (urlBuilder == null) {
@@ -45,6 +54,13 @@ public class IntegrationTestContext {
 		}
 		return urlBuilder;
 	}
+	
+	public TestURLBuilder getPDSUrlBuilder() {
+        if (pdsUrlBuilder == null) {
+            pdsUrlBuilder = new TestURLBuilder("https", pdsPort, hostname);
+        }
+        return pdsUrlBuilder;
+    }
 
 	/**
 	 * @return template for super admin
@@ -64,10 +80,18 @@ public class IntegrationTestContext {
 	public TestRestHelper getRestHelper(TestUser user) {
 		return restHelperMap.computeIfAbsent(user, this::createRestHelper);
 	}
+	
+	public TestRestHelper getPDSRestHelper(TestUser user) {
+        return pdsRestHelperMap.computeIfAbsent(user, this::createPDSRestHelper);
+    }
 
 	private TestRestHelper createRestHelper(TestUser user) {
-		return new TestRestHelper(user);
+		return new TestRestHelper(user, RestHelperTarget.SECHUB_SERVER);
 	}
+	
+	private TestRestHelper createPDSRestHelper(TestUser user) {
+        return new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
+    }
 
 	public MockEmailAccess emailAccess() {
 		return mailAccess;

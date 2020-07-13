@@ -36,7 +36,6 @@ public class UsecaseIdentifierUniqueUsageTest {
 						+ annotationName+" uses identifier enum:"+enumName+","
 								+ "\n but this id is already used by:\n"+foundAnnotationName);
 			}
-			System.out.println(enumName+":"+annotationName);
 			map.put(enumName, annotationName);
 		}
 	}

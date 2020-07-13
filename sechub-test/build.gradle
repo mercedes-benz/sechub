@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 dependencies {
-    compile project(':sechub-server')
-    compile project(':sechub-testframework')
-    compile project(':sechub-doc') // here we got the dependency to Reflections lib..
+
+    /* we don reference spring boot application projects but core parts - 
+       reason: fat jars are build which cannot be directly used for testing etc. */
+    testCompile project(':sechub-server-core')
+    testCompile project(':sechub-pds-core')
+    testCompile project(':sechub-testframework')
+    testCompile project(':sechub-doc') // here we got the dependency to Reflections 
 
 }
 

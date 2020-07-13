@@ -16,6 +16,7 @@ ext {
    ]
 
    library = [
+        hsqldb: "org.hsqldb:hsqldb:2.4.0",
       /* autark parts, with same versions like current used spring boot version (2.1.19*/
         // https://mvnrepository.com/artifact/junit/junit
         junit: "junit:junit:4.13",

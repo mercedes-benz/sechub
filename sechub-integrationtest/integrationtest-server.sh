@@ -6,7 +6,7 @@
 function usage(){
     echo "usage: integrationtest-server <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {<serverVersion>}|{<serverPort>}"
     echo "       (server version is only necessary for start command"
-    echo "       (when no serverPort is set, this port will be used, otherweise 8443 as default)"
+    echo "       (when no serverPort is set, this port will be used, otherwise 8443 as default)"
 }
 
 if [ -z "$1" ] ; then

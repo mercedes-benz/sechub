@@ -13,7 +13,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
-import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.test.ExampleConstants;
@@ -24,12 +23,12 @@ import com.daimler.sechub.test.ExampleConstants;
  * @author Albert Tregnaghi
  *
  */
-public abstract class AbstractTestScenario implements TestScenario {
+public abstract class AbstractSecHubServerTestScenario implements SecHubServerTestScenario {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractTestScenario.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSecHubServerTestScenario.class);
 
-	private static Map<Class<? extends AbstractTestScenario>, List<TestUser>> createdTestUsersMap = new HashMap<>();
-	private static Map<Class<? extends AbstractTestScenario>, List<TestProject>> createdTestProjectsMap = new HashMap<>();
+	private static Map<Class<? extends AbstractSecHubServerTestScenario>, List<TestUser>> createdTestUsersMap = new HashMap<>();
+	private static Map<Class<? extends AbstractSecHubServerTestScenario>, List<TestProject>> createdTestProjectsMap = new HashMap<>();
 
 	/**
 	 * Create a test project <b>instance</b> inside a scenario. But will not create
@@ -43,7 +42,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 	 * @param userIdPart
 	 * @return
 	 */
-	protected static TestProject createTestProject(Class<? extends AbstractTestScenario> clazz, String projectIdPart) {
+	protected static TestProject createTestProject(Class<? extends AbstractSecHubServerTestScenario> clazz, String projectIdPart) {
 		return createTestProject(clazz, projectIdPart,true);
 	}
 	/**
@@ -57,7 +56,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 	 *  and normal time consuming test calls (means fast)
 	 * @return
 	 */
-	protected static TestProject createTestProject(Class<? extends AbstractTestScenario> clazz, String projectIdPart, boolean createWhiteList) {
+	protected static TestProject createTestProject(Class<? extends AbstractSecHubServerTestScenario> clazz, String projectIdPart, boolean createWhiteList) {
 		String projectId = clazz.getSimpleName().toLowerCase() + "_" + projectIdPart;
 		TestProject testProject;
 		if (createWhiteList) {
@@ -94,7 +93,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 	 * @param userIdPart
 	 * @return
 	 */
-	protected static TestUser createTestUser(Class<? extends AbstractTestScenario> clazz, String userIdPart) {
+	protected static TestUser createTestUser(Class<? extends AbstractSecHubServerTestScenario> clazz, String userIdPart) {
 		String userid = clazz.getSimpleName().toLowerCase() + "_" + userIdPart;
 		TestUser testUser = new TestUser(userid, null, userid + "@"+ExampleConstants.URI_TARGET_SERVER);
 
@@ -104,17 +103,12 @@ public abstract class AbstractTestScenario implements TestScenario {
 		return testUser;
 	}
 
-	private static List<TestUser> getTestUsers(Class<? extends AbstractTestScenario> clazz) {
+	private static List<TestUser> getTestUsers(Class<? extends AbstractSecHubServerTestScenario> clazz) {
 		return createdTestUsersMap.computeIfAbsent(clazz, key -> new ArrayList<>());
 	}
 
-	private static List<TestProject> getTestProjects(Class<? extends AbstractTestScenario> clazz) {
+	private static List<TestProject> getTestProjects(Class<? extends AbstractSecHubServerTestScenario> clazz) {
 		return createdTestProjectsMap.computeIfAbsent(clazz, key -> new ArrayList<>());
-	}
-
-	@Override
-	public String getName() {
-		return getClass().getSimpleName().toLowerCase();
 	}
 
 	protected ScenarioInitializer initializer() {
@@ -204,33 +198,7 @@ public abstract class AbstractTestScenario implements TestScenario {
 
 	@Override
 	public final void prepare(String testClass, String testMethod) {
-		String scenarioName = getClass().getSimpleName();
-		LOG.info("############################################################################################################");
-		LOG.info("###");
-		LOG.info("### [START] Preparing scenario: '" + scenarioName+"'");
-		LOG.info("###");
-		LOG.info("############################################################################################################");
-		LOG.info("###   Class ="+testClass);
-		LOG.info("###   Method="+testMethod);
-		LOG.info("############################################################################################################");
-
 		prepareImpl();
-
-		LOG.info("############################################################################################################");
-		LOG.info("###");
-		LOG.info("### [DONE ]  Preparing scenario: '" + scenarioName+"'");
-		LOG.info("### [START]  Test itself");
-		LOG.info("###");
-		LOG.info("############################################################################################################");
-		LOG.info("###   Class ="+testClass);
-		LOG.info("###   Method="+testMethod);
-		LOG.info("############################################################################################################");
-		
-		TestAPI.logInfoOnServer("\n\n\n"
-		        + "  Start of integration test\n\n"
-		        + "  - Test class:"+testClass+"\n"
-		        + "  - Method:"+testMethod+"\n\n"
-		        + "\n");
 	}
 
 	protected final void prepareImpl() {

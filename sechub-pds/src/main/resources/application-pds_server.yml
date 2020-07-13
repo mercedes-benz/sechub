@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+server:
+  ssl:
+    keyStoreType:
+      ${PDS_SSL_KEYSTORE_TYPE}
+    key-store:
+       # we use a configurable keystore location, e.g. "file:/var/server/certificate/prod-keystore.p12" 
+       ${PDS_SSL_KEYSTORE_LOCATION}
+    key-store-password:
+       ${PDS_SSL_KEYSTORE_PASSWORD}
+    key-alias:
+       ${PDS_SSL_KEYSTORE_ALIAS}

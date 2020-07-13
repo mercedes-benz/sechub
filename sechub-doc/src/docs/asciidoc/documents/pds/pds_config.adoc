@@ -1,0 +1,127 @@
+[[section-pds-configuration]]
+=== Configuration
+
+=== Tech user credentials
+
+Either use system properties
+
+----
+sechub.pds.techuser.userid
+sechub.pds.techuser.apitoken
+----
+or env entries
+----
+SECHUB_PDS_TECHUSER_USERID
+SECHUB_PDS_TECHUSER_APITOKEN
+----
+to define user credentisals. For apitoken please define encrypted password in spring boot
+style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
+
+=== Admin credentials
+
+Either use system properties
+
+----
+sechub.pds.admin.userid
+sechub.pds.admin.apitoken
+----
+or env entries
+----
+SECHUB_PDS_ADMIN_USERID
+SECHUB_PDS_ADMIN_APITOKEN
+----
+to define admin credentisals. For apitoken please define encrypted password in spring boot
+style - e.g. `{noop}unencrypted`, `{bcrypt}crypted` ...
+
+
+=== Workspace parent folder
+With `-Dsechub.pds.workspace.rootfolder` or using environment variable `SECHUB_PDS_WORKSPACE_ROOTFOLDER`
+workspace location can be defined
+
+[[section-pds-server-config-file]]
+=== Server configuration file
+PDS reads configuration JSON file on startup.
+
+*Location*
+
+With `-Dsechub.pds.config.file=...` or using environment variable `SECHUB_PDS_CONFIG_FILE`
+its is possible to set config file path ( when not defined fallback is `./pds-config.json`)
+
+     
+* `product-id` +
+     Must be *unique* for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it's not inside SERECO listed it must provide general sereco report format from #283.
+     
+
+[source,json]
+[[section-pds-server-example-config-file]]
+----
+include::product_delegation_server_config_example1.json[]
+----
+[[section-pds-server-describe-config-file]]
+<1> `serverId` is a *unique* identifier, which will be used determine a cluster /server. will be used inside logs and
+    also to share common database and divide different pds states etc. +
+    Allowed characters are [a-zA-Z0-9_]. Maximum length:30  +
+    (e.g `FIND_SECURITY_BUGS_CLUSTER` when providing a PDS server for find-security-bugs). 
+    This is *important* ! Do NOT mix up different PDS clusters with same ID. 
+
+<2> product `id` is a unique identifier, which will be used at job configuration time. 
+    Defines what will be executed and is also the identifier for SERECO to check for dedicated
+    report handling +
+    Allowed characters are [a-zA-Z0-9_]. Maximum length:30
+
+<3> `path` defines what command / script will be executed.
+
+<4> `scanType` can be either
+ - codeScan
+ - infraScan
+ - webScan
+
+<5> `description` is a free text description
+
+<6> `parameters` area, here we can define optional and mandatory parameters. Those parameters will be available
+    in executed processes by environment variables. +
+    All other given job parameters will be IGNORED by server - reason: avoid unwanted changes on system environment variables from caller side 
+
+<7> `mandatory` parameters - server will not accept jobs without these parameters
+
+<8> a `key`, will be transformed to ENV variable. In the given example `product1.qualititycheck.enabled` will be available in execution process 
+    as environment variable `PRODUCT1_QUALITYCHECK_ENABLED`.
+    the `value`, will be set by {sechub} job call and available in former described ENV entry at execution time.
+    {sechub} will 
+<9> a 'description' of the 'key'. Should contain information 
+
+<10> optional parameters
+
+<11> defines if PDS will automatically unzip zip files. default is `true`. When `true` the content
+   of the unzipped files will be available inside `$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}`
+   
+=== Launcher scripts
+
+==== Default variables
+===== PDS_JOB_WORKSPACE_LOCATION
+The variable `PDS_JOB_WORKSPACE_LOCATION` is always available and
+points to the job location.
+
+==== File locations
+
+===== Upload
+`$PDS_JOB_WORKSPACE_LOCATION/upload/`
+
+Automatically unzipped content is available inside +
+`$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped`
+
+===== Output
+
+Following files are reserved
+
+- system-err.log _(created automatically)_ +
+  `$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log`
+
+- `system-out.log _(created automatically)_+
+   $PDS_JOB_WORKSPACE_LOCATION/output/system-out.log`
+- *result.txt* - this is the result file which must be created by the executed script +
+  `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`
+
+
+
+   

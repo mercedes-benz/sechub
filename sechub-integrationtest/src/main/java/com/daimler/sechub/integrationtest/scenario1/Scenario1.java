@@ -3,7 +3,7 @@ package com.daimler.sechub.integrationtest.scenario1;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 
 /**
  * In this scenario nearly nothing of the constants is existing, except "OWNER_1" which is necessary for project creation tests
@@ -15,7 +15,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario1 extends AbstractTestScenario{
+public class Scenario1 extends AbstractSecHubServerTestScenario{
 
 	/**
 	 * A test user which will LATER represents an owner. Its already created.

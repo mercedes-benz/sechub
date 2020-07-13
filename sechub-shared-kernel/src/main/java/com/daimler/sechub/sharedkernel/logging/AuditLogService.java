@@ -37,7 +37,7 @@ public class AuditLogService {
 	public void log(String message, Object ...objects ) {
 		String userId = userContextService.getUserId();
 
-		/* convert this to a new list, otherweise slf4j becomes problems with identifying this as list and having wrong output*/
+		/* convert this to a new list, otherwise slf4j becomes problems with identifying this as list and having wrong output*/
 		List<Object> list = new ArrayList<>();
 		list.add(userId);
 		list.addAll(Arrays.asList(objects));
