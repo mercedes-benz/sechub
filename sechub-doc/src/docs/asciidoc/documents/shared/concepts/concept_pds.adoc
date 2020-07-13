@@ -1,0 +1,90 @@
+==== Product delegation server
+
+===== General
+There are many open source clients available having no server component inside so lacking:
+
+- REST access
+- queing
+- status requests
+- scalable
+- … more 
+
+So when we want to adapt them in {sechub} style _(the product does the work and we ask for result)_ we 
+need to provide a `ProductDelegationServer` (in short form `PDS`).
+
+`PDS` is
+
+- a spring boot application which uses a network DB for providing cluster possibility
+- a complete standalone application without runtime dependencies to sechub server (or its shared kernel)
+- provides REST access
+- a very simple priviledge model with just two users (`tech user` + `admin user`), 
+  basic auth via `TLS`, credentials are simply defined by environment entries on startup
+- provides jobs, queing, monitoring etc.
+- can execute single files (e.g. a bash script), where job parameters are
+  available as environment variables at runtime 
+- a standard way to integrate any product into {sechub} in a scalable and easy way 
+
+===== Handling of resources
+- PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
+- When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
+
+===== Big picture
+plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
+
+===== Executors and Adapters
+====== Executors
+With `PDS` there is a default `REST` `API` available. 
+
+For different scanTypyes there will be dedicated PDSExecutors 
+(`PDSWebScanExecutor`, `PDSInfraScanExecutor`, etc., etc.)
+
+====== Adapters
+The Adapter will always be the same, but filled with other necessary parameters.
+
+NOTE: So there will be no need to write any adapter or executor when using PDS! 
+
+
+===== HowTo integrate a new product via PDS
+
+Having new security product XYZ but being a command line tool, we 
+
+
+- create an environment (e.g. a docker container) where all your needed parts are integrated. 
+  E.g. bash shell, tools, the product and its dependencies etc.
+
+- create an executable starter script (e.g. bash) which
+  * calls the product
+  * does system out/err to standard pipes    
+  * writes the product result report to relative path `./output/result.txt`
+
+- create a `PSD` configuration file and fill with necessary data, see <<section-pds-server-config-file,PDS server configuration file>> 
+ 
+- start wanted amount of `ProductDelegationServer` instances with dedicated configuration 
+  setup to have a clustered, server ready execution of CLI security products. If you want your
+  PDS to be started inside a cluster you have to setup load balancing etc. by your own. 
+  For example: When using Kubernetes you normally would do this by just defining a 
+  `Service` pointing to your `PODs`.
+  
+- test via developer admin UI if the servers are working:
+  * create test job, remember PDS job uuid
+  * upload data
+  * mark job as ready to start
+  * check job state
+  * fetch result and inspect
+
+- when former test was successful
+  * Define executor at sechub server side - *will be implemented with #148*
+  * When your product uses sereco general report format your are done- *will be implemented with #283* 
+    otherwise SERECO must have a logic to import custom format for the PRODUCT - means needs an
+    implementatiion
+    
+- test via sechub client by start a new sechub job which shall use the product and verify results
+    
+
+[WARNING]
+====
+*#148 and #283 are not implemented at the moment (07/2020)*, so PDS is currently 
+working autonomous, but not integrated into sechub execution / scan processes!
+====
+
+

@@ -27,14 +27,12 @@ public abstract class AbstractUIAction extends AbstractAction {
     private JSONDeveloperHelper jsonHelper = JSONDeveloperHelper.INSTANCE;
 
     private static final long serialVersionUID = 1L;
-    private static InputCache inputCache = new InputCache();
-    static {
-        initializeDefaults();
-    }
+    private static InputCache inputCache = InputCache.DEFAULT;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUIAction.class);
 
     private transient UIContext context;
+    
     public AbstractUIAction(String text, UIContext context) {
         this.context = context;
         this.putValue(Action.NAME, text);
@@ -52,33 +50,6 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected void setIcon(URL url) {
         Icon icon = new ImageIcon(url);
         putValue(Action.LARGE_ICON_KEY, icon);
-    }
-    
-    private static void initializeDefaults() {
-        /* @formatter:off */
-        inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
-        inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
-                "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
-                        + "   \"webScan\" : {\n" + "         \"result\" : \"green\"   \n" + "   },\n" + "   \"infraScan\" : {\n"
-                        + "         \"result\" : \"red\"   \n" + "   }\n" + " \n" + "}");
-        inputCache.set(InputCacheIdentifier.MARK_PROJECT_FALSE_POSITIVE, "{\n" + 
-                "    \"apiVersion\": \"1.0\", \n" + 
-                "    \"type\" : \"falsePositiveJobDataList\", \n" + 
-                "    \n" + 
-                "    \"jobData\": [\n" + 
-                "            {\n" + 
-                "                \"jobUUID\": \"$JobUUID\",\n" + 
-                "                \"findingId\": 42, \n" + 
-                "                \"comment\" : \"Can be ignored, because:\" \n" + 
-                "            },\n" + 
-                "            {\n" + 
-                "                \"jobUUID\": \"$JobUUID\",\n" + 
-                "                \"findingId\": 4711\n" + 
-                "            }\n" + 
-                "      ]\n" + 
-                "                \n" + 
-                "}");
-        /* @formatter:on */
     }
 
     protected UIContext getContext() {
@@ -156,11 +127,11 @@ public abstract class AbstractUIAction extends AbstractAction {
     }
 
     /**
-     * Output given text - no matter of an error has happend or not
+     * Output given text - no matter of an error has happened or not
      * 
      * @param text
      */
-    void output(String text) {
+    protected void output(String text) {
 
         OutputUI outputUI = getContext().getOutputUI();
         outputUI.output(text);
@@ -174,6 +145,29 @@ public abstract class AbstractUIAction extends AbstractAction {
         }
     }
 
+    
+    /**
+     * Shows an input dialog for user (one liner). Default values for given
+     * identifier will be shown - and always be reused. NO caching!
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserInput(String message, String defaultValue) {
+        Optional<String> x = getContext().getDialogUI().getUserInput(message, defaultValue);
+        return x;
+    }
+    
+    /**
+     * Shows an input dialog for user (one liner). 
+     * 
+     * @param message
+     * @return
+     */
+    protected Optional<String> getUserInput(String message) {
+        return getUserInput(message, (InputCacheIdentifier)null);        
+    }
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
      * identifier will be shown
@@ -185,6 +179,23 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected Optional<String> getUserInput(String message, InputCacheIdentifier identifier) {
 
         Optional<String> x = getContext().getDialogUI().getUserInput(message, inputCache.get(identifier));
+        if (x.isPresent() && identifier != null) {
+            inputCache.set(identifier, x.get());
+        }
+        return x;
+    }
+    
+    /**
+     * Shows an password dialog for user (one liner). Last entered values for given
+     * identifier will be used when nothing entered
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserPassword(String message, InputCacheIdentifier identifier) {
+
+        Optional<String> x = getContext().getDialogUI().getUserPassword(message, inputCache.get(identifier));
         if (x.isPresent() && identifier != null) {
             inputCache.set(identifier, x.get());
         }

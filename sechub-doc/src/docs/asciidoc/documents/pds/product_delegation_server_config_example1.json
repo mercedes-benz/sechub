@@ -1,0 +1,41 @@
+{
+    "apiVersion" : "1.0",
+    
+    "serverId" : "UNIQUE_SERVER_ID", //<1>
+    
+    "products" : [
+        {
+            "id" : "PRODUCT_1",//<2>
+            "path" : "/srv/security/scanner1.sh",//<3>
+            "scanType" : "codeScan",//<4>
+            "description" : "codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3",//<5>
+            
+            "parameters" : {//<6>
+                "mandatory" : [//<7>
+                    {
+                        "key" : "product1.qualititycheck.enabled",//<8>
+                        "description" : "when 'true' quality scan results are added as well"//<9>
+                    }  ,
+                    {
+                        "key" : "product1.level",
+                        "description" : "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    }  
+                ],
+                "optional" : [//<10>
+                    {
+                        "key" : "product1.add.tipoftheday",
+                        "description" : "boolean as string, when 'true' we add always a tip of the day as info to results"
+                    }  
+                ]
+            }
+            
+        },
+        
+        {
+            "id" : "PRODUCT_2",
+            "path" : "/srv/security/scanner2.sh",
+            "scanType" : "infraScan" ,
+            "unzipUploads" : false //<11>
+        }
+    ]
+}

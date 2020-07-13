@@ -12,5 +12,7 @@ public interface TestScenario {
 
 	public void prepare(String testClass,String testMethod);
 
-	public String getName();
+    public default String getName() {
+        return getClass().getSimpleName().toLowerCase();
+    }
 }

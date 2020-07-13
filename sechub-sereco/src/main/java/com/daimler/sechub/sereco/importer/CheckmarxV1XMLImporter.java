@@ -9,8 +9,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
@@ -21,8 +19,6 @@ import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CheckmarxV1XMLImporter.class);
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 

@@ -1,4 +1,5 @@
 <!-- SPDX-License-Identifier: MIT --->
+
 # About this project
 
 sechub-doc contains all documentation about the sechub:

@@ -28,7 +28,7 @@ public class UnmarkProjectFalsePositiveAction extends AbstractUIAction {
             return;
         }
         
-        Optional<String> findingId = getUserInput("Please enter findingId", null);
+        Optional<String> findingId = getUserInput("Please enter findingId");
         if (!findingId.isPresent()) {
             return;
         }

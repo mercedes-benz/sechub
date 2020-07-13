@@ -18,6 +18,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
     destinationDir file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
+    exclude '**/sechub-product-delegation-server.*'
     exclude '**/sechub-client.*'
     exclude '**/.asciidoctor/**'
     description "Assemble archive $archiveName into ${relativePath(destinationDir)}"

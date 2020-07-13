@@ -39,6 +39,21 @@ class CmdExecutor{
           /* handle errors */
           int result = p.exitValue();
           if (result!=0) {
+                println("Exit value of script was not 0. Output was:\n")
+                
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line = null;
+                
+                while ( (line = reader.readLine()) != null) {
+                   println(line);
+                }
+                
+                reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                while ( (line = reader.readLine()) != null) {
+                   println("ERROR:" + line);
+                }
+          
               throw new GradleException("Script returned exit code:$result");
           }
     }

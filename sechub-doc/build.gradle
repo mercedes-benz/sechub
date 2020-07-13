@@ -3,6 +3,7 @@ apply plugin: 'org.asciidoctor.convert'
 
 dependencies {
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
+    compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
     compile library.apache_commons_io
     testCompile project(':sechub-shared-kernel-testframework')
 
@@ -91,7 +92,8 @@ asciidoctor {
         'sechub-client.adoc',
         'sechub-operations.adoc',
         'sechub-restapi.adoc',
-        'sechub-quickstart-guide.adoc'
+        'sechub-quickstart-guide.adoc',
+        'sechub-product-delegation-server.adoc'
     }
 
     // workaround to enable missing includes checking. See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/154

@@ -87,6 +87,7 @@ public class AsciidocGenerator implements Generator {
 		generator.generateMockPropertiesDescription(specialMockValuePropertiesFile);
 		generator.generateMessagingFiles(messagingFile, diagramsGenFolder);
 		generator.generateUseCaseFiles(documentsGenFolder,diagramsGenFolder);
+		generator.generatePDSUseCaseFiles(documentsGenFolder,diagramsGenFolder);
 		generator.generateProfilesOverview(diagramsGenFolder);
 	}
 
@@ -159,6 +160,15 @@ public class AsciidocGenerator implements Generator {
 		writer.save(targetFile3, usecaseRestDocUserDocumentation);
 
 	}
+	
+	private void generatePDSUseCaseFiles(File documentsGenFolder, File diagramsGenFolder) throws IOException {
+        UseCaseModel model = getCollector().fetchPDSUseCaseModel();
+
+        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model,diagramsGenFolder,false,false);
+
+        File targetFile = new File(documentsGenFolder, "gen_pds-usecases.adoc");
+        writer.save(targetFile, useCaseAsciidoc);
+    }
 
 	static void output(String text) {
 		// We just do an output on console for build tool - e.g gradle...

@@ -13,19 +13,22 @@ dependencies {
     compile library.springboot_starter_mail // to have easier access to email parts
 }
 
+/* defaults like set in `application-pds_integrationtest.yml` */
 def integrationTestServerPortValue = 8443;
+def integrationTestPDSPortValue = 8444;
 
 task copyIntegrationTestResults(type: Copy) {
         with{
             from "${project.projectDir}/build/test-results/integrationtest"
-            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            into "${combined_report_junit_tmp}"
             include "*.xml"
         }
 }
 task copyIntegrationServerLogs(type: Copy) {
         with{
-            from "${project.projectDir}/integrationtest-server.log" 
-            into "${rootProject.projectDir}/build/reports/allTests"
+            from "${project.projectDir}"
+            into "${combined_report_target}"
+            include "integrationtest-*.log"
         }
 }
 copyTestResults.dependsOn copyIntegrationTestResults
@@ -33,7 +36,7 @@ copyTestResults.dependsOn copyIntegrationServerLogs
 
 
 task cleanLogFiles(type: Delete){
-       delete "${project.projectDir}/integrationtest-server.log" 
+       delete "${project.projectDir}/integrationtest-*.log" 
 }
 tasks.clean.dependsOn(tasks.cleanLogFiles)
 
@@ -43,10 +46,17 @@ task configureIntegrationTestServer{
         integrationTestServerPortValue = project.getProperty(integrationTestServerPortProperty)
     }
 }
+task configureIntegrationTestPDS{
+    def integrationTestPDSPortProperty="sechub.integrationtest.pdsport";
+    if ( project.hasProperty(integrationTestPDSPortProperty)){
+        integrationTestPDSPortValue = project.getProperty(integrationTestPDSPortProperty)
+    }
+}
 
-task waitForStop(dependsOn: configureIntegrationTestServer){
+task waitForStop(dependsOn: [configureIntegrationTestServer, configureIntegrationTestPDS]){
     doLast{
         new IntegrationTestServerScriptAccess().waitForStop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+        new IntegrationTestPDSScriptAccess().waitForStop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
     }
 
 }
@@ -54,6 +64,13 @@ task waitForStop(dependsOn: configureIntegrationTestServer){
 task stopOldIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
         new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
+    }
+
+}
+
+task stopOldIntegrationTestPDS(dependsOn: configureIntegrationTestPDS){
+    doLast{
+        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
     }
 
 }
@@ -72,17 +89,44 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
 
 }
 
+/** Starts integraitontestserver
+ *  If another integration test server runs, the script will terminate the other server automatically - will kill zombies.
+ */
+task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
+    group 'sechub'
+
+    description 'Starts an integration PDS server - if already a server is running we will wait until timout (10 minutes). ' +
+                'When timeout build fails but "zombie server" will be stopped too!'
+    doLast{
+        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), project.version.toString(),"$integrationTestPDSPortValue")
+    }
+
+}
+
+task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS]){
+}
+
+
+
 task stopIntegrationTestServer(dependsOn: configureIntegrationTestServer){
     doLast{
         new IntegrationTestServerScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestServerPortValue")
     }
+}
+task stopIntegrationTestPDS(dependsOn: configureIntegrationTestServer){
+    doLast{
+        new IntegrationTestPDSScriptAccess().stop(new File("${project.projectDir}"),"$integrationTestPDSPortValue")
+    }
+}
+
+task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopIntegrationTestPDS]){
 }
 
 
 /**
  * Own task for integration tests.
  */
-task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
+task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    group 'sechub'
    description 'Starts integration test server, execute tests and automatically stops server after done or failed'
    // integration tests seems to be very often  "up-to-date"
@@ -96,16 +140,24 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestServer ) {
    systemProperty "sechub.integrationtest.running", "true"
    systemProperty "sechub.integrationtest.longrunning", "true"
 
-   finalizedBy "stopIntegrationTestServer"
+   finalizedBy "stopIntegrationTestInstances"
 
 }
+
+
 
 /**
  * Special groovy class for executing external script. This is because exec task of groovy does ALWAYS wait until process has executed.
  * Unfortunately this has blocked always when using exec in combination (server runs) - even when using "&" option.
  * So this class was created to use just the java process builder.
  */
-class IntegrationTestServerScriptAccess extends CmdExecutor{
+class IntegrationTestScriptAccess extends CmdExecutor{
+       private String scriptName;
+       
+       public IntegrationTestScriptAccess(String scriptName){
+            this.scriptName=scriptName;
+       }
+
        public void waitForStop(File workingDir, String port) throws Exception{
             executeScript("waitForStop",workingDir,null,-1,port)
        }
@@ -124,9 +176,9 @@ class IntegrationTestServerScriptAccess extends CmdExecutor{
           if (OSUtil.isWindows()){
              exec.getCommand().add("cmd");
              exec.getCommand().add("/c");
-             exec.getCommand().add("integrationtest-server.bat");
+             exec.getCommand().add(scriptName+".bat");
           }else{
-             exec.getCommand().add("./integrationtest-server.sh");
+             exec.getCommand().add("./"+scriptName+".sh");
           }
           exec.getCommand().add(command);
           if (command.equals("start")){
@@ -138,5 +190,17 @@ class IntegrationTestServerScriptAccess extends CmdExecutor{
         }
 
 
+}
+
+class IntegrationTestServerScriptAccess extends IntegrationTestScriptAccess{
+    public IntegrationTestServerScriptAccess(){
+        super("integrationtest-server");
+    }
+}
+
+class IntegrationTestPDSScriptAccess extends IntegrationTestScriptAccess{
+    public IntegrationTestPDSScriptAccess(){
+        super("integrationtest-pds");
+    }
 }
 

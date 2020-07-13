@@ -28,7 +28,7 @@ public class CreateProjectAction extends AbstractUIAction {
 		
 		// in case the user does not input any value, the value will be an empty string. 
 		// Null will only be returned if the user pressed cancel.
-		Optional<String> description = getUserInput("Please enter a short description (optional)", null);
+		Optional<String> description = getUserInput("Please enter a short description (optional)");
 		if (!description.isPresent()) {
 			return;
 		}

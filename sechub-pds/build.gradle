@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+
+    compile library.springboot_starter_web
+    compile library.springboot_starter_data_jpa
+    compile library.springboot_starter_security
+    compile library.flyway
+    compile library.logstashLogbackEncoder
+    compile library.database_h2
+    compile library.apache_commons_io
+
+    compile project(':sechub-pds-core')    
+
+    testCompile project(':sechub-testframework') // testframework has no dependencies or page effects, so we can use the lib for testing
+    testCompile library.springboot_starter_test
+    testCompile library.springframework_security_test
+    
+}
+
+task assembleArtifact(type: Zip, group: 'sechub') {
+    archiveName "sechub-pds-documentation-${project.version}.zip"
+    archiveClassifier.set('documentation')
+    destinationDir file("$buildDir/zip/")
+    from "${projectDir}/build/go/"
+    from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
+    include '**/sechub-product-delegation-server.*'
+    description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
+}
+
+/**
+ * For integration tests, local develoment etc. we need a generated, private key
+ * which is different for each developer, not accidently committed to git, also
+ * valid on builds etc.
+ *
+ * This is done by dev-ensure_localhost_certificate.sh - for details refer to bash script
+ */
+task ensureLocalhostCertificate(type: Exec) {
+    group 'sechub'
+    description 'Calling this task, will ensure a localhost certificate exists. This is necessary for development and integration tests'
+
+    workingDir "${projectDir}"
+
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/dev-ensure_localhost_certificate.sh"
+    }else{
+        commandLine "${projectDir}/dev-ensure_localhost_certificate.sh"
+    }
+}
+
+/* make eclipse task depend on ensured local certificate*/
+tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
+
+/**
+ * We currently  publish only the server java spring boot jar, so having complete server on maven repository - documentation can be found inside sechub-doc
+ */
+apply plugin: 'maven-publish'
+
+version =   VersionData.getPdsVersion()
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            from components.java
+
+            pom {
+                name = 'SecHub Product Delegation Server'
+                description = 'SecHub Product Delegation Server as a sprint boot jar. Ready to use.'
+
+                scm {
+                    url = 'https://github.com/daimler/sechub'
+                }
+
+                 licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                    }
+                }
+            }
+        }
+        mavenJava(MavenPublication) {
+
+            artifact source: assembleArtifact, extension: 'zip'
+
+            pom {
+                name = 'SecHub Product Delegation Server documentation'
+                description = 'SecHub Product Delegation Server documentation as single zip file.'
+
+                scm {
+                    url = 'https://github.com/daimler/sechub'
+                }
+
+                 licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
+
+            if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
+                credentials(PasswordCredentials) {
+                    username project.properties['mavenRepoUserName']
+                    password project.properties['mavenRepoPassword']
+                }
+            }
+        }
+    }
+}
+

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.ProgressMonitor;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 @Component
 public class ScanProgressMonitorFactory {

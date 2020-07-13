@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: MIT
+sechub:
+  targettype:
+    detection:
+      intranet:
+        hostname:
+          endswith: intranet.example.org
+spring:
+  jackson:
+    # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper
+    mapper: 
+      # see also JSONConverter class (used by sechub internally), we try have spring setup
+      # and JSONConverter in same way 
+      accept_case_insensitive_enums: true
+    serialization:
+      write_single_elem_arrays_unwrapped: false
+    default-property-inclusion: "non_absent"
+  batch:
+    job:
+      # we do not want to have jobs started automatically (parameters needed etc.)
+      enabled: false
+    ##  Spring Boot Batch Schema file generation:
+    initialize-schema: always
+  jpa:
+     # when not defined: spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering.
+    open-in-view: false
+    hibernate:
+      # https://www.baeldung.com/spring-boot-data-sql-and-schema-sql
+      ddl-auto: none
+      properties:
+        hibernate:
+          jdbc.time_zone: UTC
+          # Avoiding  "java.sql.SQLFeatureNotSupportedException: method org.postgresql.jdbc.PgConnection.createClob() is not implemented yet.":
+          # https://github.com/spring-projects/spring-boot/issues/12007:
+          jdbc.lob.non_contextual_creation: true
+  datasource:
+    initialization-mode: always
+  main:
+    # see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding
+    allow-bean-definition-overriding: true
+  servlet: 
+    # MultiPart file-size limits,
+    # https://spring.io/guides/gs/uploading-files/
+    multipart.max-file-size: 5MB
+    multipart.max-request-size: 5MB
+  http: 
+    multipart.enabled: false
+# --------------------------------------
+# - Security
+# --------------------------------------
+security:
+  basic:
+    enabled: false # turn off standard login screen...
+
+# --------------------------------------
+# - SSL setup  (default)
+# --------------------------------------
+server:
+  port:
+    8444
+  ssl:
+    enabled:
+      true # alwasy enabled
+# keystore, alias etc. must be defined outside

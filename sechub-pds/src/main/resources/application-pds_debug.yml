@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+
+# Logging: suitable for development - e.g. when searching for failures in test cases
+logging:
+ level:
+   com.daimler.sechub: DEBUG
+   org.apache.http: DEBUG
+   org.springframework: DEBUG
+ 
