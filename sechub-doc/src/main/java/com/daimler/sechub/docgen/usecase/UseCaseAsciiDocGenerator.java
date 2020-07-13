@@ -15,8 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.docgen.GeneratorConstants;
 import com.daimler.sechub.docgen.messaging.UseCaseEventOverviewPlantUmlGenerator;
+import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseDefGroup;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry.UseCaseEntryStep;
+import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseModelType;
 import com.daimler.sechub.pds.usecase.PDSUseCaseGroup;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
@@ -24,7 +26,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 public class UseCaseAsciiDocGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(UseCaseAsciiDocGenerator.class);
-    private static final Pattern PATTERN_MATCH_UNDERSCORE= Pattern.compile("_");
+    private static final Pattern PATTERN_MATCH_UNDERSCORE = Pattern.compile("_");
     // [options="header",cols="1,1,1"]
     // |===
     // |HeadA |HeadB |HeadC
@@ -37,12 +39,13 @@ public class UseCaseAsciiDocGenerator {
     private boolean showEventDiagrams;
 
     public String generateAsciidoc(UseCaseModel model, File diagramsGenFolder) {
-        return generateAsciidoc(model, diagramsGenFolder,true,true);
+        return generateAsciidoc(model, diagramsGenFolder, true, true);
     }
+
     public String generateAsciidoc(UseCaseModel model, File diagramsGenFolder, boolean connectUsecaseWithMessage, boolean showEventDiagrams) {
-        this.connectUsecaseWithMessage=connectUsecaseWithMessage;
-        this.showEventDiagrams=showEventDiagrams;
-        
+        this.connectUsecaseWithMessage = connectUsecaseWithMessage;
+        this.showEventDiagrams = showEventDiagrams;
+
         Context context = new Context();
         context.diagramsGenFolder = diagramsGenFolder;
         int h = 3;
@@ -68,32 +71,35 @@ public class UseCaseAsciiDocGenerator {
 
     private void generateOverview(UseCaseModel model, Context context, int h) {
         context.addLine(headline(h) + "Overview about usecase groups");
-        for (UseCaseGroup group : UseCaseGroup.values()) {
-            SortedSet<UseCaseEntry> entries = model.getUseCasesInsideGroup(group);
-            if (entries.isEmpty()) {
-                continue;
+        UseCaseModelType type = model.getType();
+        switch (type) {
+        case SECHUB:
+            for (UseCaseGroup g : UseCaseGroup.values()) {
+                generateGroupUseCaseLinks(context, h, model.getGroup(g));
             }
-            context.addLine(headline(h + 1) + group.getTitle());
-            context.addLine(group.getDescription());
-            context.addLine("");
-            for (UseCaseEntry entry : entries) {
-                context.addLine("- <<" + UseCaseAsciiDocFactory.createLinkId(entry) + "," + entry.getId() + "-" + entry.getTitle() + ">>\n");
+            break;
+        case PDS:
+            for (PDSUseCaseGroup g : PDSUseCaseGroup.values()) {
+                generateGroupUseCaseLinks(context, h, model.getGroup(g));
             }
-            context.addLine("");
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported type:" + type);
         }
-        for (PDSUseCaseGroup group : PDSUseCaseGroup.values()) {
-            SortedSet<UseCaseEntry> entries = model.getPDSUseCasesInsideGroup(group);
-            if (entries.isEmpty()) {
-                continue;
-            }
-            context.addLine(headline(h + 1) + group.getTitle());
-            context.addLine(group.getDescription());
-            context.addLine("");
-            for (UseCaseEntry entry : entries) {
-                context.addLine("- <<" + UseCaseAsciiDocFactory.createLinkId(entry) + "," + entry.getId() + "-" + entry.getTitle() + ">>\n");
-            }
-            context.addLine("");
+    }
+
+    private void generateGroupUseCaseLinks(Context context, int h, UseCaseDefGroup group) {
+        SortedSet<UseCaseEntry> entries = group.getUseCases();
+        if (entries.isEmpty()) {
+            return;
         }
+        context.addLine(headline(h + 1) + group.title);
+        context.addLine(group.description);
+        context.addLine("");
+        for (UseCaseEntry entry : entries) {
+            context.addLine("- <<" + UseCaseAsciiDocFactory.createLinkId(entry) + "," + entry.getId() + "-" + entry.getTitle() + ">>\n");
+        }
+        context.addLine("");
     }
 
     private void generateUseCase(Context context, int h, UseCaseEntry entry) {
@@ -113,7 +119,7 @@ public class UseCaseAsciiDocGenerator {
             generateEventTraceOverviewIfPreGenerated(context, entry);
         }
         if (connectUsecaseWithMessage) {
-            context.addLine("include::usecase2messages_"+entry.getIdentifierEnumName().toLowerCase()+".adoc[]");
+            context.addLine("include::usecase2messages_" + entry.getIdentifierEnumName().toLowerCase() + ".adoc[]");
         }
 
         context.addLine("*Steps*");
@@ -122,7 +128,9 @@ public class UseCaseAsciiDocGenerator {
     }
 
     /**
-     * Generates include of plantuml diagrams which are generated by {@link UseCaseEventOverviewPlantUmlGenerator}
+     * Generates include of plantuml diagrams which are generated by
+     * {@link UseCaseEventOverviewPlantUmlGenerator}
+     * 
      * @param context
      * @param entry
      */
@@ -133,46 +141,50 @@ public class UseCaseAsciiDocGenerator {
 
         String subFolderPath = UseCaseEventOverviewPlantUmlGenerator.createPlantumlFolderSubPathByUsecase(entry.getIdentifierEnumName());
         File usecaseOverViewFolder = new File(context.diagramsGenFolder, subFolderPath);
-        if (! usecaseOverViewFolder.exists()) {
+        if (!usecaseOverViewFolder.exists()) {
             if (GeneratorConstants.DEBUG) {
-                LOG.warn("Event-Trace MISSING:{} - No event-trace overview folder found at:{}",entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+                LOG.warn("Event-Trace MISSING:{} - No event-trace overview folder found at:{}", entry.getIdentifierEnumName(),
+                        usecaseOverViewFolder.getAbsolutePath());
             }
             return;
         }
-        
+
         if (GeneratorConstants.DEBUG) {
-            LOG.info("Event-Trace FOUND  :{} - Event-trace overview folder found  at:{}", entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+            LOG.info("Event-Trace FOUND  :{} - Event-trace overview folder found  at:{}", entry.getIdentifierEnumName(),
+                    usecaseOverViewFolder.getAbsolutePath());
         }
-        
+
         File[] overviewFiles = usecaseOverViewFolder.listFiles();
-        if (overviewFiles==null) {
+        if (overviewFiles == null) {
             if (GeneratorConstants.DEBUG) {
-                LOG.warn("Event-Trace MISSING(2):{} - No event-trace overview folder found at:{}",entry.getIdentifierEnumName(), usecaseOverViewFolder.getAbsolutePath());
+                LOG.warn("Event-Trace MISSING(2):{} - No event-trace overview folder found at:{}", entry.getIdentifierEnumName(),
+                        usecaseOverViewFolder.getAbsolutePath());
             }
             return;
         }
-        
-        Arrays.sort(overviewFiles); 
-        
-        for (File overViewFile: overviewFiles) {
+
+        Arrays.sort(overviewFiles);
+
+        for (File overViewFile : overviewFiles) {
             String variant = UseCaseEventOverviewPlantUmlGenerator.filenameVariantconverter.getVariantFromFilename(overViewFile.getName());
             String targetFilePath = UseCaseEventOverviewPlantUmlGenerator.createPlantumlFileSubPathByUsecase(entry.getIdentifierEnumName(), variant);
             String variantDescription = createDescriptionForVariant(variant);
-            context.addLine("*Event overview"+variantDescription+"*");
+            context.addLine("*Event overview" + variantDescription + "*");
             context.addLine("");
-            context.addLine("plantuml::diagrams/gen/"+targetFilePath+"[format=svg, alt=\"Overview of events happening at usecase "+entry.getIdentifierEnumName()+variantDescription+"]\n");
+            context.addLine("plantuml::diagrams/gen/" + targetFilePath + "[format=svg, alt=\"Overview of events happening at usecase "
+                    + entry.getIdentifierEnumName() + variantDescription + "]\n");
             context.addLine("");
         }
     }
 
     protected String createDescriptionForVariant(String variant) {
         String description = "";
-        if (variant!=null && ! variant.isEmpty()) {
-            description = " - variant: "+PATTERN_MATCH_UNDERSCORE.matcher(variant).replaceAll(" ").trim();
+        if (variant != null && !variant.isEmpty()) {
+            description = " - variant: " + PATTERN_MATCH_UNDERSCORE.matcher(variant).replaceAll(" ").trim();
         }
         return description;
     }
-    
+
     private void generateLinkToRestAPIDoc(Context context, UseCaseEntry entry) {
         if (entry.getRestDocEntries().isEmpty()) {
             return;

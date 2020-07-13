@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 **About documentation**
 
-This documentation is part of `{secHub}`.
+This is the documentation for the product delegation server (`PDS`) of `{secHub}`.
 
 [[documentation-license-info]]
 [options="header",cols="1,1,1"]
@@ -12,4 +12,4 @@ This documentation is part of `{secHub}`.
 |===
 
 Version
-//include::../gen/product-delegation-server-version.adoc[]
+include::../gen/pds-version.adoc[]

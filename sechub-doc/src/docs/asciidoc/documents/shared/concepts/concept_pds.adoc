@@ -9,7 +9,7 @@ There are many open source clients available having no server component inside s
 - scalable
 - … more 
 
-So when we want to adapt them in SecHub style (the product does the work and we ask for result) we 
+So when we want to adapt them in {sechub} style _(the product does the work and we ask for result)_ we 
 need to provide a `ProductDelegationServer` (in short form `PDS`).
 
 `PDS` is
@@ -17,15 +17,15 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
 - a spring boot application which uses a network DB for providing cluster possibility
 - a complete standalone application without runtime dependencies to sechub server (or its shared kernel)
 - provides REST access
-- a very simple auth mechanism at the beginning with just two users (tech-user + admin user), 
-  basic auth via TLS, credentials are defined by environment entries
+- a very simple priviledge model with just two users (`tech user` + `admin user`), 
+  basic auth via `TLS`, credentials are simply defined by environment entries on startup
 - provides jobs, queing, monitoring etc.
-- can execute single files (e.g. a bash script), parameters are defined by job parameters which are
+- can execute single files (e.g. a bash script), where job parameters are
   available as environment variables at runtime 
-- a standard way to integrate any product into sechub in a scalable and easy way 
+- a standard way to integrate any product into {sechub} in a scalable and easy way 
 
 ===== Handling of resources
-- PDS server provides auto unzipping of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
+- PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
 - When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
 
 ===== Big picture

@@ -66,6 +66,7 @@ TIP: This will the process hard!
 https://${baseURL}/api/admin/monitoring/status [GET]
 ----
 
+Here an example output:
 [source,json]
 ----
 include::pds-monitoring-result-example1.json[]

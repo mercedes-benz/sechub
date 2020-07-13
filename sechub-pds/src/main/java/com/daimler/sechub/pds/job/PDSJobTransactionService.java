@@ -6,10 +6,14 @@ import static com.daimler.sechub.pds.util.PDSAssert.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.daimler.sechub.pds.security.PDSRoleConstants;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -19,6 +23,7 @@ public class PDSJobTransactionService {
     PDSJobRepository repository;
 
     /* mark as running - no matter of state before */
+    @RolesAllowed({PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN})
     public void markReadyToStartInOwnTransaction(UUID jobUUID) {
         updateJobInOwnTransaction(jobUUID, null,null,null, PDSJobStatusState.READY_TO_START, PDSJobStatusState.CREATED);
     }
@@ -46,14 +51,6 @@ public class PDSJobTransactionService {
             job.setResult(result);
         }
         repository.save(job);
-    }
-
-    /**
-     * Use this method when you want to update the given job in own transaction - so it's done and not after callers method has ended...
-     * @param pdsJob
-     */
-    public void updateInOwnTransaction(PDSJob pdsJob) {
-        repository.save(pdsJob);
     }
 
     public String getJobConfiguration(UUID jobUUID) {

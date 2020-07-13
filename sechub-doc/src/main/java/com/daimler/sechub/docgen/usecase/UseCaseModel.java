@@ -39,19 +39,25 @@ public class UseCaseModel {
     private Map<PDSUseCaseGroup, UseCaseDefGroup> pdsGroupMap = new LinkedHashMap<>();
     Map<String, UseCaseEntry> useCases = new TreeMap<>();
 
+    private UseCaseModelType type;
 
-    public UseCaseModel(String pathToUseCaseBaseFolder) {
+    public UseCaseModel(String pathToUseCaseBaseFolder, UseCaseModelType type) {
         this.pathToUseCaseBaseFolder = pathToUseCaseBaseFolder;
+        this.type = type;
     }
 
     public SortedSet<UseCaseEntry> getUseCases() {
         return new TreeSet<>(useCases.values());
     }
-    
-    public enum UseCaseSource{
+
+    public static enum UseCaseModelType {
         SECHUB,
-        
+
         PDS,
+    }
+
+    public UseCaseModelType getType() {
+        return type;
     }
 
     public class UseCaseDefGroup {
@@ -59,18 +65,22 @@ public class UseCaseModel {
         public String title;
         public String description;
         public String name;
-        private UseCaseSource source;
-        
-        public UseCaseDefGroup(UseCaseSource source) {
-            this.source=source;
+        private UseCaseModelType modelType;
+
+        public UseCaseDefGroup(UseCaseModelType modelType) {
+            this.modelType = modelType;
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Objects.hash(name, source);
+            result = prime * result + Objects.hash(name, modelType);
             return result;
+        }
+
+        public UseCaseModel getModel() {
+            return UseCaseModel.this;
         }
 
         @Override
@@ -82,7 +92,11 @@ public class UseCaseModel {
             if (getClass() != obj.getClass())
                 return false;
             UseCaseDefGroup other = (UseCaseDefGroup) obj;
-            return Objects.equals(name, other.name) && source == other.source;
+            return Objects.equals(name, other.name) && modelType == other.modelType;
+        }
+
+        public SortedSet<UseCaseEntry> getUseCases() {
+            return getModel().getUseCasesInsideGroup(this);
         }
 
     }
@@ -164,10 +178,10 @@ public class UseCaseModel {
             }
             return true;
         }
-        
+
         @Override
         public String toString() {
-            return "UCEntry:"+id;
+            return "UCEntry:" + id;
         }
 
         public class UseCaseEntryStep implements Comparable<UseCaseEntryStep> {
@@ -331,46 +345,46 @@ public class UseCaseModel {
             PDSUseCaseDefinition pdsDef = clazzToFetch.getAnnotation(PDSUseCaseDefinition.class);
             d.title = pdsDef.title();
             d.description = pdsDef.description();
-            d.group =  convert(pdsDef.group());
+            d.group = convert(pdsDef.group());
         }
         return d;
     }
 
-    private UseCaseDefGroup [] convert(UseCaseGroup[] g) {
-        UseCaseDefGroup[] g2  = new UseCaseDefGroup[g.length];
-        for (int i=0;i<g.length;i++) {
-            g2[i]=getGroup(g[i]);
+    private UseCaseDefGroup[] convert(UseCaseGroup[] g) {
+        UseCaseDefGroup[] g2 = new UseCaseDefGroup[g.length];
+        for (int i = 0; i < g.length; i++) {
+            g2[i] = getGroup(g[i]);
         }
         return g2;
     }
-    
-    private UseCaseDefGroup [] convert(PDSUseCaseGroup[] g) {
-        UseCaseDefGroup[] g2  = new UseCaseDefGroup[g.length];
-        for (int i=0;i<g.length;i++) {
-            g2[i]=getGroup(g[i]);
+
+    private UseCaseDefGroup[] convert(PDSUseCaseGroup[] g) {
+        UseCaseDefGroup[] g2 = new UseCaseDefGroup[g.length];
+        for (int i = 0; i < g.length; i++) {
+            g2[i] = getGroup(g[i]);
         }
         return g2;
     }
-    
-    private UseCaseDefGroup getGroup(UseCaseGroup g) {
+
+    public UseCaseDefGroup getGroup(UseCaseGroup g) {
         UseCaseDefGroup data = groupMap.get(g);
         if (data == null) {
-            data = new UseCaseDefGroup(UseCaseSource.SECHUB);
+            data = new UseCaseDefGroup(UseCaseModelType.SECHUB);
             data.title = g.getTitle();
             data.description = g.getDescription();
-            data.name=g.name();
+            data.name = g.name();
             groupMap.put(g, data);
         }
         return data;
     }
 
-    private UseCaseDefGroup getGroup(PDSUseCaseGroup g) {
+    public UseCaseDefGroup getGroup(PDSUseCaseGroup g) {
         UseCaseDefGroup data = pdsGroupMap.get(g);
         if (data == null) {
-            data = new UseCaseDefGroup(UseCaseSource.PDS);
+            data = new UseCaseDefGroup(UseCaseModelType.PDS);
             data.title = g.getTitle();
             data.description = g.getDescription();
-            data.name=g.name();
+            data.name = g.name();
 
             pdsGroupMap.put(g, data);
         }
@@ -424,26 +438,12 @@ public class UseCaseModel {
         return r;
     }
 
-    public SortedSet<UseCaseEntry> getUseCasesInsideGroup(UseCaseGroup wantedGroup) {
+    public SortedSet<UseCaseEntry> getUseCasesInsideGroup(UseCaseDefGroup wantedGroup) {
         SortedSet<UseCaseEntry> entries = new TreeSet<>();
         SortedSet<UseCaseEntry> all = getUseCases();
         for (UseCaseEntry entry : all) {
             for (UseCaseDefGroup group : entry.getGroups()) {
-                if (group.name == wantedGroup.name()) {
-                    entries.add(entry);
-                    break;
-                }
-            }
-        }
-        return entries;
-    }
-
-    public SortedSet<UseCaseEntry> getPDSUseCasesInsideGroup(PDSUseCaseGroup wantedGroup) {
-        SortedSet<UseCaseEntry> entries = new TreeSet<>();
-        SortedSet<UseCaseEntry> all = getUseCases();
-        for (UseCaseEntry entry : all) {
-            for (UseCaseDefGroup group : entry.getGroups()) {
-                if (group.name == wantedGroup.name()) {
+                if (group.name == wantedGroup.name) {
                     entries.add(entry);
                     break;
                 }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
+import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseModelType;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 
@@ -49,7 +50,7 @@ public class UseCaseModelDataCollector {
 		   so we use                        /../code2doc as path
 		   @formatter:on */
 		
-		UseCaseModel model = new UseCaseModel("../code2doc/usecases");
+		UseCaseModel model = new UseCaseModel("../code2doc/usecases", UseCaseModelType.SECHUB);
 		Set<Class<?>> usesCaseAnnotations = reflections.getTypesAnnotatedWith(UseCaseDefinition.class);
 		if (DEBUG) {
 			LOG.info("> will collect for:{} - {}", usesCaseAnnotations.size(),usesCaseAnnotations);

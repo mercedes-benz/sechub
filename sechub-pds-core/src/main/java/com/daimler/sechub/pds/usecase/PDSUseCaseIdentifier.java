@@ -49,7 +49,7 @@ public enum PDSUseCaseIdentifier {
             sb.insert(0, "0");
         }
 
-        sb.insert(0, "UC_");
+        sb.insert(0, "PDS_UC_");
         return sb.toString();
     }
     

@@ -2,17 +2,21 @@ package com.daimler.sechub.pds.job;
 
 import java.time.LocalDateTime;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
+import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.pds.security.PDSUserContextService;
 import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCreatesJob;
 
 @Service
+@RolesAllowed({PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN})
 public class PDSCreateJobService {
 
     @Autowired

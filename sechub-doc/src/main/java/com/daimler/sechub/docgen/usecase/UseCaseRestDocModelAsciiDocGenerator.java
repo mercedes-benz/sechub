@@ -78,7 +78,7 @@ public class UseCaseRestDocModelAsciiDocGenerator {
 		context.addLine(headline(h) + "Overview");
 		List<List<UseCaseRestDocEntry>> found = new ArrayList<>();
 		for (UseCaseGroup group : UseCaseGroup.values()) {
-			SortedSet<UseCaseEntry> entriesForGroup = model.getUseCaseModel().getUseCasesInsideGroup(group);
+			SortedSet<UseCaseEntry> entriesForGroup = model.getUseCaseModel().getGroup(group).getUseCases();
 			if (entriesForGroup.isEmpty()) {
 				continue;
 			}

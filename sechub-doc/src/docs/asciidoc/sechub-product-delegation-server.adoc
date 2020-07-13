@@ -9,10 +9,9 @@ include::documents/config.adoc[]
 == About
 include::documents/shared/about_sechub.adoc[]
 
-include::documents/pds/about_documentation_product_delegation_server.adoc[]
+include::documents/pds/about_documentation_pds.adoc[]
 
-include::documents/pds/about_product_delegation_server.adoc[]
-
+include::documents/pds/about_pds.adoc[]
 
 
 // horizontal line
