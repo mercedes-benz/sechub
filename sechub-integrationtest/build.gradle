@@ -13,8 +13,9 @@ dependencies {
     compile library.springboot_starter_mail // to have easier access to email parts
 }
 
+/* defaults like set in `application-pds_integrationtest.yml` */
 def integrationTestServerPortValue = 8443;
-def integrationTestPDSPortValue = 8543;
+def integrationTestPDSPortValue = 8444;
 
 task copyIntegrationTestResults(type: Copy) {
         with{

@@ -9,13 +9,13 @@
  */
 
 // createCombinedTestReportZipfile
-//   depOn -> cleanUpAfterTestReportZipfileCreated
-//        depOn-> create combined test report (DELETE)
-//           depOn->internalCreateCombinedTestReportZipfile (ZIP)
-//             depOn->createCombinedTestReport
-//                depOn->subprojects.copyTestResults (COPY)
-//                   depOn->sechub-integrationtest:copyIntegrationTestResults
-//                   depOn->sechub-integrationtest:copyIntegrationServerLogs
+//   depOn->cleanUpAfterTestReportZipfileCreated
+//      depOn->createCombinedTestReport (DELETE)
+//         depOn->internalCreateCombinedTestReportZipfile (ZIP)
+//            depOn->createCombinedTestReport
+//               depOn->subprojects.copyTestResults (COPY)
+//                  depOn->sechub-integrationtest:copyIntegrationTestResults
+//                  depOn->sechub-integrationtest:copyIntegrationServerLogs
 ext{
 
  combined_report_target="${rootProject.projectDir}/build/reports/combined-report"
