@@ -1,9 +1,17 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 // DefaultSecHubConfigFile represents the name of the sechub configuration file
 // used per default when no other set
 const DefaultSecHubConfigFile = "sechub.json"
+
+// DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
+// code in directories named "test" is not considered to end up in the binary
+// also ignore .git directory
+var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**"}
+
+// Definition as var because a constant needs a fix array size.
 
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */

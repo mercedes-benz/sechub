@@ -91,7 +91,6 @@ public class DeveloperAdministration {
                         errorOutput.append("***                     RECEIVED                               ***\n");
                         errorOutput.append("******************************************************************\n");
                         errorOutput.append(httpResponseProblem).append("\n");
-
                         provider.handleError(errorOutput.toString());
                     }
                 };
@@ -180,7 +179,6 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
         return "SENT";
     }
-
     public String declineSignup(String userId) {
         getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserSignUpUrl(userId));
         return "SENT";

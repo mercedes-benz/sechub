@@ -105,6 +105,11 @@ func handleCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
+	// add default exclude patterns to exclude list
+	if !ignoreDefaultExcludes {
+		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
+	}
+
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
 	LogDebug(context, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
 	LogDebug(context, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))

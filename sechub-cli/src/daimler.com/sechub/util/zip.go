@@ -25,12 +25,11 @@ type ZipConfig struct {
 	Excludes []string
 }
 
-/**
- * Will zip given content of given folders into given filePath.
- * E.g. when filePath contains subfolder sub1/text1.txt, sub2/text2.txt, sub2/sub3/text3.txt the
- * zip of sub1 and sub2 will result in "text1.txt,text2.txt,sub3/text3.txt" !
- * This is optimized for sourcecode zipping when having multiple source folders
- */
+// ZipFolders - Will zip given content of given folders into given filePath.
+// E.g. when filePath contains subfolder sub1/text1.txt, sub2/text2.txt, sub2/sub3/text3.txt the
+// zip of sub1 and sub2 will result in "text1.txt,text2.txt,sub3/text3.txt" !
+// This is optimized for sourcecode zipping when having multiple source folders
+//
 func ZipFolders(filePath string, config *ZipConfig) (err error) {
 	filename, _ := filepath.Abs(filePath)
 	/* create parent folders if not existing */
@@ -106,7 +105,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		/* Filter excludes */
 		for _, excludePattern := range zContext.config.Excludes {
 			if Filepathmatch(relPathFromFolder, excludePattern) {
-				//				log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder,excludePattern)
+				//log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder, excludePattern)
 				return nil
 			}
 		}
