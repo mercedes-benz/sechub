@@ -19,14 +19,15 @@ def integrationTestPDSPortValue = 8543;
 task copyIntegrationTestResults(type: Copy) {
         with{
             from "${project.projectDir}/build/test-results/integrationtest"
-            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            into "${combined_report_junit_tmp}"
             include "*.xml"
         }
 }
 task copyIntegrationServerLogs(type: Copy) {
         with{
-            from "${project.projectDir}/integrationtest-*.log"
-            into "${rootProject.projectDir}/build/reports/allTests"
+            from "${project.projectDir}"
+            into "${combined_report_target}"
+            include "integrationtest-*.log"
         }
 }
 copyTestResults.dependsOn copyIntegrationTestResults

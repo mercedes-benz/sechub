@@ -8,12 +8,28 @@
    ============================================================================
  */
 
+// createCombinedTestReportZipfile
+//   depOn -> cleanUpAfterTestReportZipfileCreated
+//        depOn-> create combined test report (DELETE)
+//           depOn->internalCreateCombinedTestReportZipfile (ZIP)
+//             depOn->createCombinedTestReport
+//                depOn->subprojects.copyTestResults (COPY)
+//                   depOn->sechub-integrationtest:copyIntegrationTestResults
+//                   depOn->sechub-integrationtest:copyIntegrationServerLogs
+ext{
+
+ combined_report_target="${rootProject.projectDir}/build/reports/combined-report"
+ combined_report_tmp="${rootProject.projectDir}/build/reports/allTests-tmp"
+ combined_report_junit_tmp="${combined_report_tmp}/junit"
+}
+ 
+
 subprojects{
 
     task copyTestResults(type: Copy) {
         with{
             from "${project.projectDir}/build/test-results/test"
-            into "${rootProject.projectDir}/build/reports/allTests-tmp/junit"
+            into "${combined_report_junit_tmp}"
             include "*.xml"
         }
     }
@@ -28,11 +44,11 @@ task internalCreateCombinedTestReportZipfile(type: Zip, dependsOn: createCombine
         archiveFileName = "combined-sechub-testreport.zip"
         destinationDirectory = file("${rootProject.projectDir}/build/archive")
 
-        from "${rootProject.projectDir}/build/reports/allTests"
+        from "${combined_report_target}"
 }
 
 task cleanUpAfterTestReportZipfileCreated(type: Delete, dependsOn: internalCreateCombinedTestReportZipfile) {
-    delete "${rootProject.projectDir}/build/reports/allTests-tmp","${rootProject.projectDir}/build/reports/allTests" 
+    delete "${combined_report_tmp}","${combined_report_target}" 
 }
 
  /* when not at github actions, we can use this to get same zip file */
@@ -50,7 +66,7 @@ project('sechub-test'){
             if (! tmpFolder.exists()){
                 return;
             }
-            new JunitFilesToOneFileConverter().combineFiles("${rootProject.projectDir}/build/reports/allTests-tmp/junit", "${rootProject.projectDir}/build/reports/allTests/junit-results-exported.xml");
+            new JunitFilesToOneFileConverter().combineFiles("${combined_report_junit_tmp}", "${combined_report_target}/junit-results-exported.xml");
         }
 
     }
