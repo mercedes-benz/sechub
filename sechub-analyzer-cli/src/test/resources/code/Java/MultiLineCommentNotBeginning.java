@@ -1,4 +1,4 @@
-package code;
+package code.Java;
 
 public class MultiLineCommentNotBeginning {
     public static void main(String args[]) {

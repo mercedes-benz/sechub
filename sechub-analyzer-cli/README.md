@@ -1,11 +1,11 @@
 # SecHub Analyzer CLI
 
-SecHub Analyzer CLI looks for markers in files and reports back the location of the markers in the file. The markers are:
+SecHub Analyzer CLI looks for markers in files and reports back the location of those markers. The markers are:
 
 - Start: `NOSECHUB`
 - End: `END-NOSECHUB`
 
-The markers have to be added in a comment. The symbols used to indicate a comment can differ from language to language. Only single line comments are supported.
+The markers have to be added in a comment. The symbols used to indicate a comment can differ from programming language to programming language. In general, only single line comments are supported.
 
 Comment examples:
 
@@ -48,26 +48,43 @@ def hello():
 hello()
 ~~~
 
-Except, for the star comment `/* */` and the arrow comment `<!-- -->` which can be in more than one line, but have to be at the beginning of the comment:
+Except, both the slash-star comment `/* */` and the arrow comment `<!-- -->` can be in more than one line, but they have to be at the beginning of the comment.
 
-Star comment in Java
+Will **not** be detected:
+
+~~~
+#include <stdio.h>
+
+int main() {
+  /*
+   NOSECHUB
+  */
+  printf("Hello World!\n");
+  /*
+  	END-NOSECHUB
+  */
+  return 0;
+}
+~~~
+
+Will be detected:
 
 ~~~
 public class HelloWorld
 {
     public static void main(String args[]) {
-      /* NOSECHUB
-       *
+      /* 
+       * NOSECHUB
        */
       System.out.println("Hello World!");
-      /* END-NOSECHUB
-       *
+      /* 
+       * END-NOSECHUB
        */
     }
 }
 ~~~
 
-Arrow comment in XML
+Arrow comment in XML are detected:
 
 ~~~
 <?xml version = "1.0" encoding = "UTF-8" ?>
@@ -113,39 +130,52 @@ Please report issues at https://github.com/daimler/sechub
 ~~~
 $ java -jar analyzer-0.0.0.jar -p example/
 {
-  "findings" : {
-    "example/test.txt" : [ {
+  "noSecHubMarkers" : {
+    "../../src/test/resources/example/example.xml" : [ {
       "end" : {
-        "column" : 3,
-        "line" : 9,
+        "column" : 8,
+        "line" : 16,
         "type" : "END"
       },
       "start" : {
-        "column" : 3,
-        "line" : 3,
+        "column" : 8,
+        "line" : 11,
         "type" : "START"
       }
     } ],
-    "example/test2.txt" : [ {
+    "../../src/test/resources/example/hello_world.c" : [ {
       "end" : {
-        "column" : 4,
-        "line" : 13,
+        "column" : 5,
+        "line" : 6,
         "type" : "END"
       },
       "start" : {
-        "column" : 7,
-        "line" : 9,
+        "column" : 5,
+        "line" : 4,
         "type" : "START"
       }
-    }, {
+    } ],
+    "../../src/test/resources/example/hello_world.py" : [ {
       "end" : {
-        "column" : 23,
-        "line" : 21,
+        "column" : 4,
+        "line" : 6,
         "type" : "END"
       },
       "start" : {
-        "column" : 23,
-        "line" : 17,
+        "column" : 4,
+        "line" : 4,
+        "type" : "START"
+      }
+    } ],
+    "../../src/test/resources/example/HelloWorld.java" : [ {
+      "end" : {
+        "column" : 11,
+        "line" : 7,
+        "type" : "END"
+      },
+      "start" : {
+        "column" : 11,
+        "line" : 5,
         "type" : "START"
       }
     } ]

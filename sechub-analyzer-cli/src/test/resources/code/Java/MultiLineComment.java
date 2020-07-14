@@ -1,4 +1,4 @@
-package code;
+package code.Java;
 
 public class MultiLineComment {
     public static void main(String args[]) {

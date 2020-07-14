@@ -71,9 +71,7 @@ public class AnalyzerResult implements Copyable<AnalyzerResult> {
           
           List<MarkerPair> markerPairs = noSecHubMarkerEntry.getValue();
           
-          for (MarkerPair markerPair : markerPairs) {
-              System.out.println(markerPair);
-              
+          for (MarkerPair markerPair : markerPairs) {             
               MarkerPair markerPairCopy = markerPair.deepClone();
               
               markerPairsCopy.add(markerPairCopy);

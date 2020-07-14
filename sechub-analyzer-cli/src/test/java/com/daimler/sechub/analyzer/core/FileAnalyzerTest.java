@@ -147,7 +147,7 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__c_single_comment() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/C/";
         
         List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 6, 5);
         
@@ -163,7 +163,7 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__c_multiline_comment() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/C/";
         
         List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 8, 5);
         
@@ -179,7 +179,7 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__c_multiline_comment_comment_not_beginning() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/C/";
         
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
@@ -195,7 +195,7 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__java_multiline_comment() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/Java/";
         
         List<MarkerPair> expectedPairs = createMarkerPairsOf(5, 11, 7, 11);
         
@@ -211,9 +211,9 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__java_multiline_comment_not_beginning() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/Java/";
         
-        List<MarkerPair> expectedPairs = new LinkedList<>();
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 11, 10, 11);
         
         File file = new File(codePath + "MultiLineCommentNotBeginning.java");
         
@@ -227,7 +227,7 @@ public class FileAnalyzerTest {
     @Test
     public void test_processFile__java_single_line() throws IOException {
         /* prepare */
-        String codePath = path + "code/";
+        String codePath = path + "code/Java/";
         
         List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 9, 8, 9);
         
@@ -240,6 +240,303 @@ public class FileAnalyzerTest {
         assertThat(actualPairs, is(expectedPairs));
     }
     
+    @Test
+    public void test_processFile__abap_single_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/ABAP/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 6, 6, 6);
+        
+        File file = new File(codePath + "single_line_star.abap");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__vbnet_single_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/VB.NET/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 10, 5, 10);
+        
+        File file = new File(codePath + "single_line.vb");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__ada_single_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/ADA/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 6, 6, 6);
+        
+        File file = new File(codePath + "single_line.adb");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__assembly_single_comment() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Assembly/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(9, 5, 11, 5);
+        
+        File file = new File(codePath + "single_line.asm");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__batch_single_comment_double_colon() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Batch/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 3, 4, 3);
+        
+        File file = new File(codePath + "single_line_double_colon.bat");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__batch_single_comment_REM() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Batch/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 4, 4, 4);
+        
+        File file = new File(codePath + "single_line_REM.bat");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__fortran_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Fortran/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 4, 5, 4);
+        
+        File file = new File(codePath + "single_line.f90");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__ocaml_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/OCaml/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 3, 3, 3);
+        
+        File file = new File(codePath + "single_line.ml");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__pascal_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Pascal/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 6, 5, 6);
+        
+        File file = new File(codePath + "single_line.p");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    
+    @Test
+    public void test_processFile__python_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Python/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
+        
+        File file = new File(codePath + "single_line_comment.py");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__python_multiple_comments() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Python/";
+        
+        List<MarkerPair> expectedPairs = new LinkedList<>();
+        
+        List<MarkerPair> pair = createMarkerPairsOf(5, 4, 7, 4);
+        List<MarkerPair> pair2 = createMarkerPairsOf(11, 8, 13, 4);
+        
+        expectedPairs.addAll(pair);
+        expectedPairs.addAll(pair2);
+        
+        File file = new File(codePath + "single_line_comment_multiple.py");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__python_single_line_wrong() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Python/";
+        
+        List<MarkerPair> expectedPairs = new LinkedList<>();
+        
+        File file = new File(codePath + "single_line_comment_wrong.py");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    
+    @Test
+    public void test_processFile__ruby_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Ruby/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 4, 5, 4);
+        
+        File file = new File(codePath + "single_line_comment.rb");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    
+    @Test
+    public void test_processFile__scheme_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Scheme/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 2, 3, 2);
+        
+        File file = new File(codePath + "single_line_comment.scm");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__shell_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Shell/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
+        
+        File file = new File(codePath + "single_line_comment.sh");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__sql_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/SQL/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 3, 4, 3);
+        
+        File file = new File(codePath + "single_line_comment.sql");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__tcl_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/Tcl/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 2, 3, 2);
+        
+        File file = new File(codePath + "single_line_comment.tcl");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+    
+    @Test
+    public void test_processFile__xml_single_line() throws IOException {
+        /* prepare */
+        String codePath = path + "code/XML/";
+        
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(11, 8, 16, 8);
+        
+        File file = new File(codePath + "single_line_comment.xml");
+        
+        /* execute */
+        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        
+        /* test */
+        assertThat(actualPairs, is(expectedPairs));
+    }
+
     @Test
     public void test_processFile__no_markers() throws IOException {
         /* prepare */

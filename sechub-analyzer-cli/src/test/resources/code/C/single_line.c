@@ -1,12 +1,8 @@
 #include <stdio.h>
 
 int main() {
-  /* 
-   * NOSECHUB
-   */
+  // NOSECHUB
   printf("Hello World!\n");
-  /* 
-   * END-NOSECHUB
-   */ 
+  // END-NOSECHUB
   return 0;
 }

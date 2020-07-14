@@ -19,13 +19,18 @@ public class CommentChecker {
     private void initialize() {
         /*
          * Explanation:
+         * 
          * ^(\\+)? -> the string can start with a white spaces
+         * 
          * (<!--|--|#|/\\*|//) -> the string has to contain a comment. Different programming languages use different comment styles.
+         * 
          * ([-#/*\\s]+)? -> the string can contain further comment symbols or white spaces. ATTENTION: The `-` has to be at the beginning of the group. 
-         * (" + noSecHubLabel + "|" + endNoSecHubLabel + ") -> look for SecHub labels
+         * 
+         * (" + noSecHubLabel + "|" + endNoSecHubLabel + ") -> look for SecHub marker labels.
+         * 
          * (\\s|-|$)+ -> accepts a line end as well as any whitespace or `-` minus symbols after the SecHub marker label.
          */
-        String regex = "^(\\s+)?(<!--|--|#|/\\*|//)([-#/*\\s]+)?(" + noSecHubLabel + "|" + endNoSecHubLabel + ")(\\s|-|$)+";
+        String regex = "^(\\s+)?(<!--|--|#|/\\*|//|\\(\\*|<#|;|!|%|REM|::|\\*|'|{)([-#/*\\s]+)?(" + noSecHubLabel + "|" + endNoSecHubLabel + ")(\\s|-|$)+";
         pattern = Pattern.compile(regex);
     }
     

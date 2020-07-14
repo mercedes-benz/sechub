@@ -4,13 +4,13 @@
 def hello():
   # NOSECHUB
   print("Hello World!")
-  # NOSECHUB-END
+  # END-NOSECHUB
 
 
 def add(augend: int, addend: int) -> Int:
   #     NOSECHUB
   return augend + addend
-#   NOSECHUB-END
+#   END-NOSECHUB
 
 hello()
 

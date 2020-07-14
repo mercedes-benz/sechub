@@ -3,6 +3,6 @@
 def hello():
   # NOSECHUB
   print("Hello World!")
-  # NOSECHUB-END
+  # END-NOSECHUB-END
 
 hello()

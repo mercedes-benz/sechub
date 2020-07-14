@@ -1,5 +1,5 @@
 @echo off 
-Rem NOSECHUB
+REM NOSECHUB
 set message=Hello World
-Rem END-NOSECHUB
+REM END-NOSECHUB
 echo %message%
