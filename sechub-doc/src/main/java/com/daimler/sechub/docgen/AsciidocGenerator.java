@@ -81,7 +81,7 @@ public class AsciidocGenerator implements Generator {
 		AsciidocGenerator generator = new AsciidocGenerator();
 		
 		generator.generateExampleFiles(documentsGenFolder);
-		generator.generateGoParts(documentsGenFolder);
+		generator.generateClientParts(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
 		generator.generateSystemPropertiesDescription(systemProperitesFile);
 		generator.generateJavaLaunchExample(javaLaunchExampleFile);
@@ -93,7 +93,7 @@ public class AsciidocGenerator implements Generator {
 	}
 
 
-	private void generateGoParts(File documentsGenFolder) throws IOException{
+	private void generateClientParts(File documentsGenFolder) throws IOException{
 	    
 	    String defaultZipAllowedFilePatternsTable = clientDocFilesGenerator.generateDefaultZipAllowedFilePatternsTable();
 	    File clientGenDocFolder = new File(documentsGenFolder,"client");

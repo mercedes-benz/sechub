@@ -5,9 +5,11 @@ A `{sechub}` configuration  must be valid `JSON` and is defined
 at caller side.
 
 It is used by client and also by rest calls to start {sechub}
-scan jobs and add meta data. Some minor parts are client specific and must
-be handled by direct REST calls in a special way, but this is mentioned in
-following description of JSON syntax.
+scan jobs and add meta data. 
+
+Some minor parts are client specific and must
+be handled by direct REST calls in a special way or do just not exist. 
+But this is mentioned inside this documentation
 
 ==== API version
 `apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
@@ -73,10 +75,13 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 <3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
 <4> Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - ` +
     In example above all files in following directories are excluded from upload: +
-    * `+**/mytestcode/**+` - excludes all files under a directory named `build` including sub directories
-    * `+**/documentation/**+` - same for folder `documentation`
-* NOTE: Per default, these directories are already excluded: +
-`+**/test/**+` `+**/.git/**+`
+    * `+**/mytestcode/**+` +
+    excludes all files under a directory named `build` including sub directories
+    * `+**/documentation/**+` +
+    same for folder `documentation`
+    * default excludes +
+     Per default, the directories `+**/test/**+` `+**/.git/**+`
+are already excluded:
 
 <5> Client only option - if you use REST directly, you can ignore this. +
     {sechub} client does only add wellknown sources into created upload zip file. This removes

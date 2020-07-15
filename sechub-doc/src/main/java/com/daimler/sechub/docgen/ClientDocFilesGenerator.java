@@ -30,7 +30,7 @@ public class ClientDocFilesGenerator implements Generator {
         List<SupportedFileExtensionsEntry> entries = createTableModel(lines);
 
         StringBuilder sb = new StringBuilder();
-        add(sb,"[options=\"header\",cols=\"1,10\"]");
+        add(sb,"[options=\"header\",cols=\"1,1\"]");
         add(sb,"|===");
         add(sb,"|Language(s) |File extensions");
         for (SupportedFileExtensionsEntry entry : entries) {
