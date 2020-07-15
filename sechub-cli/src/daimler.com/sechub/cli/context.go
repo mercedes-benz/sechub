@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -7,11 +8,12 @@ import (
 	"time"
 )
 
+// Context represents global context of this sechub client call. Contains configuration, states, client and more
 type Context struct {
 	config                *Config
 	unfilledByteValue     []byte
 	byteValue             []byte
-	HttpClient            *http.Client
+	HTTPClient            *http.Client
 	sechubConfig          *SecHubConfig
 	sourceZipFileChecksum string
 	sourceZipFileName     string
@@ -21,9 +23,7 @@ func (context *Context) isUploadingSourceZip() bool {
 	return context.sourceZipFileName != ""
 }
 
-/**
- * Creates a new CLI context by given config
- */
+// NewContext - creates a new CLI context by given config
 func NewContext(config *Config) *Context {
 	context := new(Context)
 	context.config = config
@@ -32,7 +32,7 @@ func NewContext(config *Config) *Context {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: config.trustAll},
 	}
-	context.HttpClient = &http.Client{Timeout: time.Duration(context.config.timeOutNanoseconds), Transport: tr}
+	context.HTTPClient = &http.Client{Timeout: time.Duration(context.config.timeOutNanoseconds), Transport: tr}
 
 	return context
 }

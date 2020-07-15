@@ -11,8 +11,6 @@ const DefaultSecHubConfigFile = "sechub.json"
 // also ignore .git directory
 var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**"}
 
-// Definition as var because a constant needs a fix array size.
-
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */
 /* ---------------------------------- */

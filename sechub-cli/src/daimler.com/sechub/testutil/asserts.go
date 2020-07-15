@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-package util
+
+package testutil
 
 import (
 	"encoding/json"
@@ -7,6 +8,30 @@ import (
 	"strings"
 	"testing"
 )
+
+// AssertErrorHasExpectedStartMessage checks given error is not null and starts with expected message
+func AssertErrorHasExpectedStartMessage(err error, expectedErrMsg string, t *testing.T) {
+	AssertError(err, t)
+
+	if !strings.HasPrefix(err.Error(), expectedErrMsg) {
+		t.Fatalf("Error actual = \"%v\", and expected beginning with = \"%v\"...", err.Error(), expectedErrMsg)
+	}
+}
+
+// AssertErrorHasExpectedMessage checks given error is not null and contains expected message
+func AssertErrorHasExpectedMessage(err error, expectedErrMsg string, t *testing.T) {
+	AssertError(err, t)
+	if err.Error() != expectedErrMsg {
+		t.Fatalf("Error actual = %v, and Expected = %v.", err.Error(), expectedErrMsg)
+	}
+}
+
+// AssertError checks given error is not null
+func AssertError(err error, t *testing.T) {
+	if err == nil {
+		t.Fatalf("No error returned!")
+	}
+}
 
 // AssertContains checks wanted string is inside given list
 func AssertContains(list []string, wanted string, t *testing.T) {
@@ -82,7 +107,7 @@ func AssertFalse(found bool, t *testing.T) {
 // Check given error is nil, otherwise fails fatal
 func Check(err error, t *testing.T) {
 	if err != nil {
-		t.Fatalf("Error detected:%s", err)
+		t.Fatalf("Error detected: %q", err)
 	}
 }
 
@@ -94,11 +119,6 @@ func Contains(list []string, wanted string) bool {
 		}
 	}
 	return false
-}
-
-/* converts a path containing windows separators to unix ones */
-func ConvertBackslashPath(path string) string {
-	return strings.Replace(path, "\\", "/", -1) /* convert all \ to / if on a windows machine */
 }
 
 func jsonBytesEqual(a, b []byte) (bool, error) {

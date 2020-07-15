@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package util
 
 // inspired by https://golangcode.com/create-zip-files-in-go/
@@ -7,6 +8,7 @@ package util
 import (
 	"archive/zip"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -20,10 +22,19 @@ type zipcontext struct {
 	config               *ZipConfig
 }
 
+// ZipConfig - contains all necessary things for zipping source code for scanning
 type ZipConfig struct {
-	Folders  []string
-	Excludes []string
+	Folders            []string
+	Excludes           []string
+	SourceCodePatterns []string
+	Debug              bool
 }
+
+// ZipFileHasNoContent error message saying zip file has no content
+const ZipFileHasNoContent = "Zipfile has no content!"
+
+// TargetZipFileLoop error message when it comes to an infinite lopp because target inside zipped content
+const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
 
 // ZipFolders - Will zip given content of given folders into given filePath.
 // E.g. when filePath contains subfolder sub1/text1.txt, sub2/text2.txt, sub2/sub3/text3.txt the
@@ -32,13 +43,7 @@ type ZipConfig struct {
 //
 func ZipFolders(filePath string, config *ZipConfig) (err error) {
 	filename, _ := filepath.Abs(filePath)
-	/* create parent folders if not existing */
-	if _, err = os.Stat(filename); os.IsNotExist(err) {
-		err = os.MkdirAll(filepath.Dir(filename), 0644)
-		if err != nil {
-			return err
-		}
-	}
+
 	/* create zip file */
 	newZipFile, err := os.Create(filename)
 	if err != nil {
@@ -63,7 +68,7 @@ func ZipFolders(filePath string, config *ZipConfig) (err error) {
 		}
 	}
 	if !zipcontext.atLeastOneFileZipped {
-		return errors.New("Zipfile has no content!")
+		return errors.New(ZipFileHasNoContent)
 	}
 
 	return nil
@@ -87,11 +92,11 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 			return err
 		}
 		if zContext.filename == filePath {
-			return errors.New("Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!")
+			return errors.New(TargetZipFileLoop)
 		}
 		/* folder : e.g. "./../../../../build/go-zip/source-for-zip/sub1" */
-		folderAbs, err := filepath.Abs(folder)           /* e.g. /home/albert/project/build/go-zip/source-for-zip/sub1"*/
-		folderAbs = filepath.Clean(folderAbs)            /* remove if trailing is there*/
+		folderAbs, err := filepath.Abs(folder)           /* e.g. /home/project/build/go-zip/source-for-zip/sub1"*/
+		folderAbs = filepath.Clean(folderAbs)            /* remove if trailing / is there*/
 		folderAbs = folderAbs + string(os.PathSeparator) /* append always a trailing slash at the end..., so it will be removed on relative path */
 		if err != nil {
 			return err
@@ -102,10 +107,29 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		}
 		relPathFromFolder := filepath.Clean(strings.TrimPrefix(fileAbs, folderAbs)) /* e.g. "/sub1"*/
 
-		/* Filter excludes */
+		// tribute to Windows... (convert \ to / )
+		relPathFromFolder = ConvertBackslashPath(relPathFromFolder)
+
+		// Only accept source code files
+		isSourceCode := false
+		for _, srcPattern := range zContext.config.SourceCodePatterns {
+			if strings.HasSuffix(relPathFromFolder, srcPattern) {
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches %q -> is source code", relPathFromFolder, srcPattern))
+				isSourceCode = true
+				break
+			}
+		}
+
+		// no matches above -> ignore file
+		if !isSourceCode {
+			LogDebug(zContext.config.Debug, fmt.Sprintf("%q no match with source code patterns -> skip", relPathFromFolder))
+			return nil
+		}
+
+		// Filter excludes
 		for _, excludePattern := range zContext.config.Excludes {
 			if Filepathmatch(relPathFromFolder, excludePattern) {
-				//log.Printf("Excluded: %s because of pattern:'%s'", relPathFromFolder, excludePattern)
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", relPathFromFolder, excludePattern))
 				return nil
 			}
 		}

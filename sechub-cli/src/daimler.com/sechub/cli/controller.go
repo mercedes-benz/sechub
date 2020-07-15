@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -8,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 type jobStatusResult struct {
@@ -21,7 +22,7 @@ type jobScheduleResult struct {
 	//    {
 	//    "jobId": "a52e0695-5789-4902-9643-72d2ce138942"
 	//}
-	JobId string `json:"jobId"`
+	JobID string `json:"jobId"`
 }
 
 // Execute starts sechub client
@@ -33,31 +34,40 @@ func Execute() {
 
 	if context.config.trustAll {
 		if !context.config.quiet {
-			fmt.Println("WARNING: Configured to trust all - means unnown service certificate is accepted. Don't use this in production!")
+			fmt.Println("WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
-	action := context.config.action
-	if action == ActionExecuteSynchron {
-		commonWayToApprove(context)
-		waitForSecHubJobDoneAndFailOnTrafficLight(context)
-		os.Exit(ExitCodeOK)
 
-	} else if action == ActionExecuteAsynchron {
-		commonWayToApprove(context)
-		fmt.Println(context.config.secHubJobUUID)
-		os.Exit(ExitCodeOK)
-	} else if action == ActionExecuteGetStatus {
-		state := getSecHubJobState(context, true, false, false)
-		fmt.Println(state)
-		os.Exit(ExitCodeOK)
-
-	} else if action == ActionExecuteGetReport {
-		report := getSecHubJobReport(context)
-		fmt.Println(report)
-		os.Exit(ExitCodeOK)
+	switch context.config.action {
+	case ActionExecuteSynchron:
+		{
+			commonWayToApprove(context)
+			waitForSecHubJobDoneAndFailOnTrafficLight(context)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteAsynchron:
+		{
+			commonWayToApprove(context)
+			fmt.Println(context.config.secHubJobUUID)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteGetStatus:
+		{
+			state := getSecHubJobState(context, true, false, false)
+			fmt.Println(state)
+			os.Exit(ExitCodeOK)
+		}
+	case ActionExecuteGetReport:
+		{
+			downloadSechubReport(context)
+			os.Exit(ExitCodeOK)
+		}
+	default:
+		{
+			fmt.Printf("Unknown action '%s'\n", context.config.action)
+			os.Exit(ExitCodeIllegalAction)
+		}
 	}
-	fmt.Printf("Unknown action '%s'", context.config.action)
-	os.Exit(ExitCodeIllegalAction)
 }
 
 /* --------------------------------------------------
@@ -85,7 +95,7 @@ func createNewSecHubJob(context *Context) {
 	jsonErr := json.Unmarshal(data, &result)
 	HandleError(jsonErr)
 
-	context.config.secHubJobUUID = result.JobId
+	context.config.secHubJobUUID = result.JobID
 }
 
 /* --------------------------------------------------
@@ -105,15 +115,22 @@ func handleCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
+	// build regexp list for source code file patterns
+	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
+
 	// add default exclude patterns to exclude list
 	if !ignoreDefaultExcludes {
 		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
 	}
 
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	LogDebug(context, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-	LogDebug(context, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-	LogDebug(context, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	var debug = context.config.debug
+	if debug {
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
 		return
@@ -121,8 +138,12 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
 
 	/* compress all folders to one single zip file*/
-	config := ZipConfig{Folders: json.CodeScan.FileSystem.Folders, Excludes: json.CodeScan.Excludes}
-	err := ZipFolders(context.sourceZipFileName, &config)
+	config := sechubUtil.ZipConfig{
+		Folders:            json.CodeScan.FileSystem.Folders,
+		Excludes:           json.CodeScan.Excludes,
+		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
+		Debug:              context.config.debug} // pass through debug flag
+	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config)
 	if err != nil {
 		fmt.Printf("%s\n", err)
 		fmt.Print("Exiting due to fatal error...\n")
@@ -131,7 +152,7 @@ func handleCodeScan(context *Context) {
 	}
 
 	/* calculate checksum for zip file */
-	context.sourceZipFileChecksum = CreateChecksum(context.sourceZipFileName)
+	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
 /* --------------------------------------------------
@@ -197,7 +218,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		data, err := ioutil.ReadAll(response.Body)
 		HandleHTTPError(err)
 		if context.config.debug {
-			LogDebug(context, fmt.Sprintf("get job status :%s", string(data)))
+			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */
@@ -217,14 +238,9 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		}
 	}
 	fmt.Print("\n")
+
 	if downloadReport {
-		fileEnding := ".json"
-		if context.config.reportFormat == "html" {
-			fileEnding = ".html"
-		}
-		fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
-		report := Report{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
-		report.save(context)
+		downloadSechubReport(context)
 	}
 
 	/* FAIL mode */
@@ -254,6 +270,19 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 
 }
 
+func downloadSechubReport(context *Context) string {
+	fileEnding := ".json"
+	if context.config.reportFormat == "html" {
+		fileEnding = ".html"
+	}
+	fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
+
+	report := Report{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
+	report.save(context)
+
+	return "" // Dummy (Error handling is done in report.save method)
+}
+
 func getSecHubJobReport(context *Context) string {
 	fmt.Printf("- Fetching result (format=%s) for job %s\n", context.config.reportFormat, context.config.secHubJobUUID)
 
@@ -265,7 +294,7 @@ func getSecHubJobReport(context *Context) string {
 	} else {
 		header["Accept"] = "application/json"
 	}
-	LogDebug(context, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -273,7 +302,7 @@ func getSecHubJobReport(context *Context) string {
 
 	jsonString := string(data)
 	if context.config.debug {
-		LogDebug(context, fmt.Sprintf("get job report :%s", jsonString))
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job report :%s", jsonString))
 	}
 	return jsonString
 }

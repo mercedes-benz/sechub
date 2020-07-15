@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -9,23 +10,26 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	sechubUtil "daimler.com/sechub/util"
 )
 
-// The configuration pendant in Go. But we do only necessary parts from JSON file!
+// SecHubConfig is the sechub configuration JSON pendant in Go. But we do only necessary parts from JSON file!
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
 	APIVersion string         `json:"apiVersion"`
 	User       string         `json:"user"`
-	ProjectId  string         `json:"project"`
+	ProjectID  string         `json:"project"`
 	Server     string         `json:"server"`
 	CodeScan   CodeScanConfig `json:"codeScan"`
 }
 
 // CodeScanConfig contains information how code scan shall be done
 type CodeScanConfig struct {
-	FileSystem FileSystemConfig `json:"fileSystem"`
-	Excludes   []string         `json:"excludes"`
+	FileSystem         FileSystemConfig `json:"fileSystem"`
+	Excludes           []string         `json:"excludes"`
+	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
 }
 
 // FileSystemConfig contains data for folders
@@ -65,7 +69,7 @@ func showHelpHint() {
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	LogDebug(context, fmt.Sprintf("Loading config file: '%s'\n", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'\n", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)
