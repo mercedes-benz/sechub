@@ -159,6 +159,13 @@ you will see network traffic and also JSON sent to server. This JSON will only
 contain the origin template but not the replaced parts. This was done to prevent
 accidently logging of variables - e.g. credentials.
 
+==== Handling of file endings
+The client will per default only include wellknown source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table. 
+
+NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 
 include::../../shared/configuration/sechub_config.adoc[]
 

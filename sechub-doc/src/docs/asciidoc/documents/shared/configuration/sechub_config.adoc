@@ -59,7 +59,6 @@ Please do *NOT* use `\` inside pathes *but* always `/`.
 Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
 call {sechub} inside root folder of your source repository - this is the standard situation
 on build servers.
-
 ====
 
 ===== Example sechub.json
@@ -79,14 +78,14 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 * NOTE: Per default, these directories are already excluded: +
 `+**/test/**+` `+**/.git/**+`
 
-<5> Additional source file extensions to include (optional; you should almost never need this) +
-Files with these plus the default extensions are added to the .zip file.
-
-NOTE: These file extensions are considered as source code (default extensions):
-[source, ruby]
-----
-include::supported-source-extensions.txt[]
-----
+<5> Client only option - if you use REST directly, you can ignore this. +
+    {sechub} client does only add wellknown sources into created upload zip file. This removes
+    unnecessary stuff and reduces upload size automatically. +
+    _E.g. a codescan for a `JPEG` image would not make sense..._ +
+    Instead of defining a negative list, we use a positive list and accept only wellknown sources,
+    which is simply done by file ending. + 
+    In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
+    Inside client documentation you will find a list of the default file endings.  
 
 ==== Web scan
 `webScan` (optional) defines the web scan settings.

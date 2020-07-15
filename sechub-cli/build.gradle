@@ -5,8 +5,24 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+ 
+task genGo(type: Exec) {
+    group 'sechub'
+    description 'Generates some go code'
+    
+    workingDir "${projectDir}"
 
-task buildGo(type: Exec) {
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'bash', "${projectDir}/gen_go.sh"
+    }else{
+        commandLine "${projectDir}/gen_go.sh"
+    }
+}
+
+assemble.dependsOn(tasks.genGo)
+tasks.eclipse.dependsOn(tasks.genGo)
+
+task buildGo(type: Exec, dependsOn: 'genGo') {
     group 'sechub'
     description 'Builds sechub GO client for linux and windows platforms. Does not build anything else.'
     // https://golang.org/cmd/go/

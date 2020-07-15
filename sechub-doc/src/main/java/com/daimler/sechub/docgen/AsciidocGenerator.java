@@ -39,6 +39,7 @@ public class AsciidocGenerator implements Generator {
 	TextFileWriter writer = new TextFileWriter();
 	DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
 	ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
+	ClientDocFilesGenerator clientDocFilesGenerator = new ClientDocFilesGenerator();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -80,6 +81,7 @@ public class AsciidocGenerator implements Generator {
 		AsciidocGenerator generator = new AsciidocGenerator();
 		
 		generator.generateExampleFiles(documentsGenFolder);
+		generator.generateGoParts(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
 		generator.generateSystemPropertiesDescription(systemProperitesFile);
 		generator.generateJavaLaunchExample(javaLaunchExampleFile);
@@ -91,7 +93,16 @@ public class AsciidocGenerator implements Generator {
 	}
 
 
-	private void generateExampleFiles(File documentsGenFolder) throws IOException{
+	private void generateGoParts(File documentsGenFolder) throws IOException{
+	    
+	    String defaultZipAllowedFilePatternsTable = clientDocFilesGenerator.generateDefaultZipAllowedFilePatternsTable();
+	    File clientGenDocFolder = new File(documentsGenFolder,"client");
+        File targetFile = new File(clientGenDocFolder, "gen_table_default_zip_allowed_file_patterns.adoc");
+        writer.save(targetFile, defaultZipAllowedFilePatternsTable);
+    }
+
+
+    private void generateExampleFiles(File documentsGenFolder) throws IOException{
 		generateExample("project_mockdata_config1.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration1());
 		generateExample("project_mockdata_config2.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration2());
 		
