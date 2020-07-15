@@ -53,9 +53,25 @@ task testGo(type:Exec) {
 
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+        commandLine 'cmd', '/c', 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', '-v'
     }else{
-        commandLine 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+        commandLine 'go', 'test', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', '-v'
+    }
+
+}
+
+task linterGo(type:Exec) {
+  group 'sechub'
+  description 'Executes go linter at sechub client sources and outputs warnings etc.'
+  environment GOPATH: "${projectDir}"
+
+  workingDir "${projectDir}/src/daimler.com/sechub/cli"
+
+  //on windows:
+    if (OSUtil.isWindows()){
+        commandLine 'cmd', '/c', 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+    }else{
+        commandLine 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
     }
 
 }

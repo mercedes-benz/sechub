@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package util
 
 import (
@@ -9,6 +10,7 @@ import (
 	"os"
 )
 
+// CreateChecksum creates a sha256 checksum string
 func CreateChecksum(filename string) string {
 	hasher := sha256.New()
 

@@ -11,6 +11,7 @@ SOURCE=supported-source-extensions.txt
 cd `dirname $0`
 cat - <<EOF
 // SPDX-License-Identifier: MIT
+
 package cli
 
 /* Attention!
@@ -22,10 +23,10 @@ DO NOT CHANGE THIS FILE!
 
 To avoid compile errors etc. when developers aren't aware about the generation and just doing
 an import of the project into their IDE, we decided to NOT add to .gitgnore, but add this code
-to git repository even when its generated  
- 
-DefaultZipAllowedFilePatterns - Defines file patterns to include in zip file.
-These patterns are considered as source code to be scanned.*/
+to git repository even when its generated  */
+
+// DefaultZipAllowedFilePatterns - Defines file patterns to include in zip file.
+// These patterns are considered as source code to be scanned.*/
 var DefaultZipAllowedFilePatterns = []string{
 EOF
 

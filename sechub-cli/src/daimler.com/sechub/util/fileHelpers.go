@@ -9,12 +9,12 @@ import (
 	"os"
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	"daimler.com/sechub/testutil"
 )
 
 func initializeTestTempDir(t *testing.T) (name string) {
 	name, err := ioutil.TempDir("", "sechub-cli-temp")
-	Check(err, t)
+	testutil.Check(err, t)
 
 	createTestDirectory(name, 0755, t)
 
@@ -44,7 +44,7 @@ func createTestFile(file string, mode os.FileMode, t *testing.T) {
 
 	content := []byte("Hello world!\n")
 	err = ioutil.WriteFile(file, content, mode)
-	Check(err, t)
+	testutil.Check(err, t)
 
 	_, err = os.Stat(file)
 	if os.IsNotExist(err) {

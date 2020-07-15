@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -26,7 +27,7 @@ func uploadSourceZipFile(context *Context) {
 	}
 	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
-	response, err := context.HttpClient.Do(request)
+	response, err := context.HTTPClient.Do(request)
 
 	HandleHTTPErrorAndResponse(response, err)
 }

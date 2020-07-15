@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -9,9 +10,10 @@ import (
 	"os"
 	"path/filepath"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
+// Report represents a context report context containing metadata about locations and also server result itself
 type Report struct {
 	outputFileName string
 	outputFolder   string
@@ -21,7 +23,7 @@ type Report struct {
 func (report *Report) save(context *Context) {
 
 	filePath := report.createReportFilePath(context, true)
-	LogDebug(context.config.debug, fmt.Sprintf("filepath %s:\n", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("filepath %s:\n", filePath))
 	content := report.serverResult
 	if context.config.reportFormat == "json" {
 		content = jsonPrettyPrint(content)

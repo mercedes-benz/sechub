@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -10,13 +11,11 @@ import (
 	"time"
 )
 
-/**
-* Config for internal CLI calls
- */
+// Config for internal CLI calls
 type Config struct {
 	user               string
 	apiToken           string
-	projectId          string
+	projectID          string
 	server             string
 	configFilePath     string
 	trustAll           bool
@@ -37,7 +36,7 @@ var versionPtr *bool
 var stopOnYellowPtr *bool
 var helpPtr *bool
 var userPtr *string
-var projectIdPtr *string
+var projectIDPtr *string
 var serverPtr *string
 var configFilePath *string
 var configFilePathPtr *string
@@ -69,7 +68,7 @@ func init() {
 	stopOnYellowPtr = flag.Bool("stop-on-yellow", false, "When enabled a yellow traffic light will also break the build")
 	helpPtr = flag.Bool("help", false, "Shows help and terminates")
 	userPtr = flag.String("user", "", "userid - mandatory, but can also be defined in config file")
-	projectIdPtr = flag.String("project", "", "unique project id - mandatory, but can also be defined in config file")
+	projectIDPtr = flag.String("project", "", "unique project id - mandatory, but can also be defined in config file")
 	serverPtr = flag.String("server", "", "server url of sechub server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file")
 	configFilePathPtr = flag.String("configfile", "", "path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
 
@@ -103,7 +102,7 @@ func NewConfigByFlags() *Config {
 	if config.server == "" { // read from environment variable if undefined on cmdline
 		config.server = os.Getenv("SECHUB_SERVER")
 	}
-	config.projectId = *projectIdPtr
+	config.projectID = *projectIDPtr
 	config.configFilePath = *configFilePathPtr
 	config.secHubJobUUID = *secHubJobUUIDPtr
 	config.waitNanoseconds = int64(*waitSecondsPtr) * oneSecond.Nanoseconds()
@@ -148,7 +147,7 @@ func assertValidConfig(configPtr *Config) {
 		os.Exit(ExitCodeMissingParameter)
 	}
 
-	if configPtr.projectId == "" {
+	if configPtr.projectID == "" {
 		fmt.Println("project id missing!")
 		os.Exit(ExitCodeMissingParameter)
 	}

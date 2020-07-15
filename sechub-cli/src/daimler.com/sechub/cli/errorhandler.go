@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -7,13 +8,13 @@ import (
 	"net/http"
 	"os"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 // HandleHTTPError handler method for http errors
 func HandleHTTPError(err error) {
 	if err != nil {
-		LogError(fmt.Sprintf("The HTTP request failed with error %s\n", err))
+		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error %s\n", err))
 		os.Exit(ExitCodeHTTPError)
 	}
 }
@@ -21,7 +22,7 @@ func HandleHTTPError(err error) {
 // HandleError handler method for common errors
 func HandleError(err error) {
 	if err != nil {
-		LogError(fmt.Sprintf("Error: %s\n", err))
+		sechubUtil.LogError(fmt.Sprintf("Error: %s\n", err))
 		os.Exit(ExitCodeHTTPError)
 	}
 }
@@ -30,7 +31,7 @@ func HandleError(err error) {
 func HandleHTTPResponse(res *http.Response) {
 	if res.StatusCode != 200 {
 		b, _ := ioutil.ReadAll(res.Body)
-		LogError(fmt.Sprintf("The HTTP request failed with error %s\nbody=%s\n", res.Status, string(b)))
+		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error %s\nbody=%s\n", res.Status, string(b)))
 		os.Exit(ExitCodeHTTPError)
 	}
 }

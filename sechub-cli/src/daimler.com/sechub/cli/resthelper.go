@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -10,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 /**
@@ -25,7 +26,7 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
 	/* we use unfilledByteValue - means origin template content, unfilled. Prevents password leak in logs */
-	LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q\n", url, header, context.unfilledByteValue))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q\n", url, header, context.unfilledByteValue))
 	/* send */
 
 	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue))
@@ -36,7 +37,7 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 		req.Header.Set(key, header[key])
 	}
 
-	response, err2 := context.HttpClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.byteValue))
+	response, err2 := context.HTTPClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.byteValue))
 	HandleHTTPErrorAndResponse(response, err2)
 	return response
 }

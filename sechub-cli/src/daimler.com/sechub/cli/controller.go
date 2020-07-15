@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -8,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 type jobStatusResult struct {
@@ -21,7 +22,7 @@ type jobScheduleResult struct {
 	//    {
 	//    "jobId": "a52e0695-5789-4902-9643-72d2ce138942"
 	//}
-	JobId string `json:"jobId"`
+	JobID string `json:"jobId"`
 }
 
 // Execute starts sechub client
@@ -94,7 +95,7 @@ func createNewSecHubJob(context *Context) {
 	jsonErr := json.Unmarshal(data, &result)
 	HandleError(jsonErr)
 
-	context.config.secHubJobUUID = result.JobId
+	context.config.secHubJobUUID = result.JobID
 }
 
 /* --------------------------------------------------
@@ -123,10 +124,13 @@ func handleCodeScan(context *Context) {
 	}
 
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	var debug = context.config.debug
+	if debug {
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
 		return
@@ -134,12 +138,12 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
 
 	/* compress all folders to one single zip file*/
-	config := ZipConfig{
+	config := sechubUtil.ZipConfig{
 		Folders:            json.CodeScan.FileSystem.Folders,
 		Excludes:           json.CodeScan.Excludes,
 		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
 		Debug:              context.config.debug} // pass through debug flag
-	err := ZipFolders(context.sourceZipFileName, &config)
+	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config)
 	if err != nil {
 		fmt.Printf("%s\n", err)
 		fmt.Print("Exiting due to fatal error...\n")
@@ -148,7 +152,7 @@ func handleCodeScan(context *Context) {
 	}
 
 	/* calculate checksum for zip file */
-	context.sourceZipFileChecksum = CreateChecksum(context.sourceZipFileName)
+	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
 /* --------------------------------------------------
@@ -214,7 +218,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		data, err := ioutil.ReadAll(response.Body)
 		HandleHTTPError(err)
 		if context.config.debug {
-			LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
+			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */
@@ -290,7 +294,7 @@ func getSecHubJobReport(context *Context) string {
 	} else {
 		header["Accept"] = "application/json"
 	}
-	LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%s\n", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -298,7 +302,7 @@ func getSecHubJobReport(context *Context) string {
 
 	jsonString := string(data)
 	if context.config.debug {
-		LogDebug(context.config.debug, fmt.Sprintf("get job report :%s", jsonString))
+		sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job report :%s", jsonString))
 	}
 	return jsonString
 }
