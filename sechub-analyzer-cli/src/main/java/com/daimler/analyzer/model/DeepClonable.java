@@ -1,5 +1,5 @@
 package com.daimler.analyzer.model;
 
-public interface Copyable<T> {
+public interface DeepClonable<T> {
     public T deepClone();
 }

@@ -18,16 +18,16 @@ import java.util.List;
 public class CommentCheckerCommentInLineTest {
     private static final String NOSECHUB = "NOSECHUB";
     private static final String NOSECHUB_END = "END-NOSECHUB";
-    
+
     private CommentChecker commentChecker;
-    
-    @Parameters
+
+    @Parameters(name = "{index}:\"{0}\" must be found:{1} {2}")
     public static Iterable<? extends Object> data() {
         List<Object[]> combined = new LinkedList<>();
-        
-        List<String> markers = createMarkers();
-        
-        for (String marker : markers) {
+
+        List<String> markerVariantsToTest = createMarkerVariantsToTest();
+
+        for (String marker : markerVariantsToTest) {
             combined.addAll(createStarCommentsTestData(marker));
             combined.addAll(createSlashCommentsTestData(marker));
             combined.addAll(createPoundCommentsTestData(marker));
@@ -44,50 +44,57 @@ public class CommentCheckerCommentInLineTest {
             combined.addAll(createSingleQuoteTestData(marker));
             combined.addAll(createCurlyBracketTestData(marker));
         }
-           
+
         return combined;
     }
-    
+
     @Parameter(0)
     public String line;
-    
+
     @Parameter(1)
     public Boolean expected;
     
+    @Parameter(2)
+    public String remark;
+
     @Before
     public void setUp() {
         commentChecker = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
     }
-    
+
     @Test
-    public void test_isCommentInLine() {        
+    public void test_isCommentInLine() {
         /* execute */
         Boolean isCommentInLine = commentChecker.isCommentInLine(line);
-        
+
         /* test */
-        String reason = "The line: `" + line + "` is not: " + expected;
+        String reason = "The line: `" + line + "` is not: " + expected+" "+remark;
         assertThat(reason, isCommentInLine, is(expected));
     }
+
+    /* @formatter:off */
     
     /* 
      * Star comments: Java, C, JavaScript, CSS etc.
      */
     private static List<Object[]> createStarCommentsTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {           
-            {"/* " + marker + "  */", true},
-            {"  /* " + marker + " */", true},
-            {"/*   " + marker, true},
-            {"  /** " + marker, true},
-            {"  /***** " + marker, true},
-            {" /* * * * * " + marker, true},
-            {" abc /** " + marker, false},
-            {" /** abc " + marker, false},
-            {"  /**" + marker, true},
-            {"\t/** " + marker, true},
-            {"\t\t /** " + marker, true},
-            {"/** \t " + marker, true},
-            {" /** " + marker + "abc def", false},
-            {" * " + marker, true},
+            add("/* " + marker + "  */", true),
+            add("/* " + marker + " \n */", true, "with new line-1a"),
+            add("/* " + marker + " \r */", true, "with backslash r-1b"),
+            add("  /* " + marker + " */", true),
+            add("/*   " + marker, true),
+            add("  /** " + marker, true),
+            add("  /***** " + marker, true),
+            add(" /* * * * * " + marker, true),
+            add(" abc /** " + marker, false),
+            add(" /** abc " + marker, false),
+            add("  /**" + marker, true),
+            add("\t/** " + marker, true),
+            add("\t\t /** " + marker, true),
+            add("/** \t " + marker, true),
+            add(" /** " + marker + "abc def", false),
+            add(" * " + marker, true),
         });
         
         return comments;
@@ -99,18 +106,21 @@ public class CommentCheckerCommentInLineTest {
     private static List<Object[]> createSlashCommentsTestData(String marker) {
 
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" // " + marker, true},
-            {"//" + marker + "  ", true},
-            {"  //" + marker, true},
-            {" ////// " + marker, true},
-            {"//////" + marker, true},
-            {" abc // " + marker, false},
-            {" // abc " + marker, false},
-            {" // " + marker + "abc", false},
-            {"\t// " + marker + " \t abc def", true},
-            {"\t\t//\t\t" + marker + "\t\t", true},
-            {"//#-*" + marker + "  ", true},
-            {"//###" + marker + "  ", true},
+            add(" // " + marker, true),
+            add("//" + marker + "  ", true),
+            add("//" + marker + "\n", true,"with new line-2a"),
+            add("   //" + marker + "\n", true,"with new line-2b"),
+            add("\n   //" + marker + "\n", true,"with new line-2c"),
+            add("  //" + marker, true),
+            add(" ////// " + marker, true),
+            add("//////" + marker, true),
+            add(" abc // " + marker, false),
+            add(" // abc " + marker, false),
+            add(" // " + marker + "abc", false),
+            add("\t// " + marker + " \t abc def", true),
+            add("\t\t//\t\t" + marker + "\t\t", true),
+            add("//#-*" + marker + "  ", true),
+            add("//###" + marker + "  ", true),
         });
         
         return comments;
@@ -121,16 +131,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createPoundCommentsTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" # " + marker, true},
-            {"\t#\t" + marker, true},
-            {"\t\t#\t\t" + marker, true},
-            {" \t\t #\t\t  " + marker, true},
-            {"   #   " + marker, true},
-            {" abc # " + marker, false},
-            {" # abc " + marker, false},
-            {" # " + marker + "abc", false},
-            {"### " + marker, true},
-            {" #" + marker, true},
+            add(" # " + marker, true),
+            add("\t#\t" + marker, true),
+            add("\t\t#\t\t" + marker, true),
+            add(" \t\t #\t\t  " + marker, true),
+            add("   #   " + marker, true),
+            add(" abc # " + marker, false),
+            add(" # abc " + marker, false),
+            add(" # " + marker + "abc", false),
+            add("### " + marker, true),
+            add(" #" + marker, true),
         });
         
         return comments;
@@ -141,19 +151,19 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createArrowCommentsTestData(String marker) {
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" <!-- " + marker, true},
-            {"<!-- " + marker, true},
-            {" <!---------" + marker, true},
-            {"<!--    " + marker, true},
-            {" abc <!-- " + marker, false},
-            {" <!-- abc " + marker, false},
-            {" <!-- " + marker + " abc", true},
-            {"\t\t<!--\t\t" + marker + "\t\t", true},
-            {"\t<!--\t" + marker + "\t", true},
-            {"\t<!--\t" + marker + "", true},
-            {"<!--" + marker + "-->", true},
-            {"<!--" + marker + "abc", false},
-            {"<!-- " + marker + " -->", true},
+            add(" <!-- " + marker, true),
+            add("<!-- " + marker, true),
+            add(" <!---------" + marker, true),
+            add("<!--    " + marker, true),
+            add(" abc <!-- " + marker, false),
+            add(" <!-- abc " + marker, false),
+            add(" <!-- " + marker + " abc", true),
+            add("\t\t<!--\t\t" + marker + "\t\t", true),
+            add("\t<!--\t" + marker + "\t", true),
+            add("\t<!--\t" + marker + "", true),
+            add("<!--" + marker + "-->", true),
+            add("<!--" + marker + "abc", false),
+            add("<!-- " + marker + " -->", true),
         });
         
         return comments;
@@ -164,16 +174,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createDoubleDashCommentsTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" -- " + marker, true},
-            {"-- " + marker, true},
-            {"\t\t--\t\t" + marker + "\t\t", true},
-            {"\t--\t" + marker + "\t ", true},
-            {"abc -- " + marker, false},
-            {" -- abc " + marker, false},
-            {" -- " + marker + "abc", false},
-            {"--" + marker, true },
-            {" -- " + marker + " abc", true},
-            {" -- " + marker + "\t\tabc", true},
+            add(" -- " + marker, true),
+            add("-- " + marker, true),
+            add("\t\t--\t\t" + marker + "\t\t", true),
+            add("\t--\t" + marker + "\t ", true),
+            add("abc -- " + marker, false),
+            add(" -- abc " + marker, false),
+            add(" -- " + marker + "abc", false),
+            add("--" + marker, true),
+            add(" -- " + marker + " abc", true),
+            add(" -- " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -184,16 +194,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createBracketStarTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" (* " + marker, true},
-            {"(* " + marker, true},
-            {"\t\t(*\t\t" + marker + "\t\t", true},
-            {"\t(*\t" + marker + "\t ", true},
-            {"abc (* " + marker, false},
-            {" (* abc " + marker, false},
-            {" (* " + marker + "abc", false},
-            {"(*" + marker, true },
-            {" (* " + marker + " abc", true},
-            {" (* " + marker + "\t\tabc", true},
+            add(" (* " + marker, true),
+            add("(* " + marker, true),
+            add("\t\t(*\t\t" + marker + "\t\t", true),
+            add("\t(*\t" + marker + "\t ", true),
+            add("abc (* " + marker, false),
+            add(" (* abc " + marker, false),
+            add(" (* " + marker + "abc", false),
+            add("(*" + marker, true),
+            add(" (* " + marker + " abc", true),
+            add(" (* " + marker + "\t\tabc", true),
         });
         
 
@@ -206,16 +216,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createLessThanPoundTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" <# " + marker, true},
-            {"<# " + marker, true},
-            {"\t\t<#\t\t" + marker + "\t\t", true},
-            {"\t<#\t" + marker + "\t ", true},
-            {"abc <# " + marker, false},
-            {" <# abc " + marker, false},
-            {" <# " + marker + "abc", false},
-            {"<#" + marker, true },
-            {" <# " + marker + " abc", true},
-            {" <# " + marker + "\t\tabc", true},
+            add(" <# " + marker, true),
+            add("<# " + marker, true),
+            add("\t\t<#\t\t" + marker + "\t\t", true),
+            add("\t<#\t" + marker + "\t ", true),
+            add("abc <# " + marker, false),
+            add(" <# abc " + marker, false),
+            add(" <# " + marker + "abc", false),
+            add("<#" + marker, true),
+            add(" <# " + marker + " abc", true),
+            add(" <# " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -226,16 +236,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createSemiColonTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" ; " + marker, true},
-            {"; " + marker, true},
-            {"\t\t;\t\t" + marker + "\t\t", true},
-            {"\t;\t" + marker + "\t ", true},
-            {"abc ; " + marker, false},
-            {" ; abc " + marker, false},
-            {" ; " + marker + "abc", false},
-            {";" + marker, true },
-            {" ; " + marker + " abc", true},
-            {" ; " + marker + "\t\tabc", true},
+            add(" ; " + marker, true),
+            add("; " + marker, true),
+            add("\t\t;\t\t" + marker + "\t\t", true),
+            add("\t;\t" + marker + "\t ", true),
+            add("abc ; " + marker, false),
+            add(" ; abc " + marker, false),
+            add(" ; " + marker + "abc", false),
+            add(";" + marker, true),
+            add(" ; " + marker + " abc", true),
+            add(" ; " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -246,16 +256,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createPercentageTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" % " + marker, true},
-            {"% " + marker, true},
-            {"\t\t%\t\t" + marker + "\t\t", true},
-            {"\t%\t" + marker + "\t ", true},
-            {"abc % " + marker, false},
-            {" % abc " + marker, false},
-            {" % " + marker + "abc", false},
-            {"%" + marker, true },
-            {" % " + marker + " abc", true},
-            {" % " + marker + "\t\tabc", true},
+            add(" % " + marker, true),
+            add("% " + marker, true),
+            add("\t\t%\t\t" + marker + "\t\t", true),
+            add("\t%\t" + marker + "\t ", true),
+            add("abc % " + marker, false),
+            add(" % abc " + marker, false),
+            add(" % " + marker + "abc", false),
+            add("%" + marker, true),
+            add(" % " + marker + " abc", true),
+            add(" % " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -266,16 +276,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createExclamationMarkTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" ! " + marker, true},
-            {"! " + marker, true},
-            {"\t\t!\t\t" + marker + "\t\t", true},
-            {"\t!\t" + marker + "\t ", true},
-            {"abc ! " + marker, false},
-            {" ! abc " + marker, false},
-            {" ! " + marker + "abc", false},
-            {"!" + marker, true },
-            {" ! " + marker + " abc", true},
-            {" ! " + marker + "\t\tabc", true},
+            add(" ! " + marker, true),
+            add("! " + marker, true),
+            add("\t\t!\t\t" + marker + "\t\t", true),
+            add("\t!\t" + marker + "\t ", true),
+            add("abc ! " + marker, false),
+            add(" ! abc " + marker, false),
+            add(" ! " + marker + "abc", false),
+            add("!" + marker, true),
+            add(" ! " + marker + " abc", true),
+            add(" ! " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -286,16 +296,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createREMTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" REM " + marker, true},
-            {"REM " + marker, true},
-            {"\t\tREM\t\t" + marker + "\t\t", true},
-            {"\tREM\t" + marker + "\t ", true},
-            {"abc REM " + marker, false},
-            {" REM abc " + marker, false},
-            {" REM " + marker + "abc", false},
-            {"REM" + marker, true },
-            {" REM " + marker + " abc", true},
-            {" REM " + marker + "\t\tabc", true},
+            add(" REM " + marker, true),
+            add("REM " + marker, true),
+            add("\t\tREM\t\t" + marker + "\t\t", true),
+            add("\tREM\t" + marker + "\t ", true),
+            add("abc REM " + marker, false),
+            add(" REM abc " + marker, false),
+            add(" REM " + marker + "abc", false),
+            add("REM" + marker, true),
+            add(" REM " + marker + " abc", true),
+            add(" REM " + marker + "\t\tabc", true),
         });
 
         return comments;
@@ -306,16 +316,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createStarTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" * " + marker, true},
-            {"* " + marker, true},
-            {"\t\t*\t\t" + marker + "\t\t", true},
-            {"\t*\t" + marker + "\t ", true},
-            {"abc * " + marker, false},
-            {" * abc " + marker, false},
-            {" * " + marker + "abc", false},
-            {"*" + marker, true },
-            {" * " + marker + " abc", true},
-            {" * " + marker + "\t\tabc", true},
+            add(" * " + marker, true),
+            add("* " + marker, true),
+            add("\t\t*\t\t" + marker + "\t\t", true),
+            add("\t*\t" + marker + "\t ", true),
+            add("abc * " + marker, false),
+            add(" * abc " + marker, false),
+            add(" * " + marker + "abc", false),
+            add("*" + marker, true),
+            add(" * " + marker + " abc", true),
+            add(" * " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -326,16 +336,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createSingleQuoteTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" ' " + marker, true},
-            {"' " + marker, true},
-            {"\t\t'\t\t" + marker + "\t\t", true},
-            {"\t'\t" + marker + "\t ", true},
-            {"abc ' " + marker, false},
-            {" ' abc " + marker, false},
-            {" ' " + marker + "abc", false},
-            {"'" + marker, true },
-            {" ' " + marker + " abc", true},
-            {" ' " + marker + "\t\tabc", true},
+            add(" ' " + marker, true),
+            add("' " + marker, true),
+            add("\t\t'\t\t" + marker + "\t\t", true),
+            add("\t'\t" + marker + "\t ", true),
+            add("abc ' " + marker, false),
+            add(" ' abc " + marker, false),
+            add(" ' " + marker + "abc", false),
+            add("'" + marker, true),
+            add(" ' " + marker + " abc", true),
+            add(" ' " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -346,16 +356,16 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createDoubleColonTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" :: " + marker, true},
-            {":: " + marker, true},
-            {"\t\t::\t\t" + marker + "\t\t", true},
-            {"\t::\t" + marker + "\t ", true},
-            {"abc :: " + marker, false},
-            {" :: abc " + marker, false},
-            {" :: " + marker + "abc", false},
-            {"::" + marker, true },
-            {" :: " + marker + " abc", true},
-            {" :: " + marker + "\t\tabc", true},
+            add(" :: " + marker, true),
+            add(":: " + marker, true),
+            add("\t\t::\t\t" + marker + "\t\t", true),
+            add("\t::\t" + marker + "\t ", true),
+            add("abc :: " + marker, false),
+            add(" :: abc " + marker, false),
+            add(" :: " + marker + "abc", false),
+            add("::" + marker, true),
+            add(" :: " + marker + " abc", true),
+            add(" :: " + marker + "\t\tabc", true),
         });
         
         return comments;
@@ -366,24 +376,31 @@ public class CommentCheckerCommentInLineTest {
      */
     private static List<Object[]> createCurlyBracketTestData(String marker) {               
         List<Object[]> comments = Arrays.asList(new Object[][] {
-            {" { " + marker, true},
-            {"{ " + marker, true},
-            {"\t\t{\t\t" + marker + "\t\t", true},
-            {"\t{\t" + marker + "\t ", true},
-            {"abc { " + marker, false},
-            {" { abc " + marker, false},
-            {" { " + marker + "abc", false},
-            {"{" + marker, true },
-            {" { " + marker + " abc", true},
-            {" { " + marker + "\t\tabc", true},
+            add(" { " + marker, true),
+            add("{ " + marker, true),
+            add("\t\t{\t\t" + marker + "\t\t", true),
+            add("\t{\t" + marker + "\t ", true),
+            add("abc { " + marker, false),
+            add(" { abc " + marker, false),
+            add(" { " + marker + "abc", false),
+            add("{" + marker, true),
+            add(" { " + marker + " abc", true),
+            add(" { " + marker + "\t\tabc", true),
         });
         
         return comments;
     }
+    /* @formatter:on */
     
-    private static List<String> createMarkers() {
-        List<String> markers = Arrays.asList(NOSECHUB, NOSECHUB_END);
-        
-        return markers;
+    private static List<String> createMarkerVariantsToTest() {
+        return Arrays.asList(NOSECHUB, NOSECHUB_END);
+    }
+    
+    private static Object[] add(String comment, boolean expected) {
+        return add(comment,expected,null);
+    }
+
+    private static Object[] add(String comment, boolean expected, String remark) {
+        return new Object[] { comment, expected,remark ==null ? "" : " ("+remark+")"};
     }
 }

@@ -17,7 +17,7 @@ import com.daimler.analyzer.model.MarkerType;
 
 public class AnalyzerResultTest {
     @Test
-    public void test_deepClone() {
+    public void deepClone_results_in_equal_but_not_same_analyzer_result() {
         /* prepare */
         Map<String, List<MarkerPair>> noSecHubMarkers = getNoSecHubMarkers();
         
@@ -32,7 +32,7 @@ public class AnalyzerResultTest {
     }
     
     @Test
-    public void test_getNoSecHubMarkers() {
+    public void getNoSecHubMarkers_returns_markers_given_at_construction_time_but_has_own_list() {
         /* prepare */
         Map<String, List<MarkerPair>> noSecHubMarkers = getNoSecHubMarkers();
                 

@@ -1,30 +1,39 @@
 package com.daimler.analyzer.model;
 
-public class MarkerPair implements Copyable<MarkerPair> {
+/**
+ * Represents always a pair of markers containing
+ * <ul>
+ * <li>start marker</li>
+ * <li>end marker</li>
+ * </ul> 
+ *
+ */
+public class MarkerPair implements DeepClonable<MarkerPair> {
+    
     private Marker start;
     private Marker end;
-    
+
     public Marker getStart() {
         return start;
     }
-    
+
     public void setStart(Marker start) {
         this.start = start;
     }
-    
+
     public Marker getEnd() {
         return end;
     }
-    
+
     public void setEnd(Marker end) {
         this.end = end;
     }
-    
+
     @Override
     public String toString() {
         return "MarkerPair [start=" + start + ", end=" + end + "]";
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -59,13 +68,13 @@ public class MarkerPair implements Copyable<MarkerPair> {
     @Override
     public MarkerPair deepClone() {
         MarkerPair pair = new MarkerPair();
-        
+
         Marker startClone = start.deepClone();
         Marker endClone = end.deepClone();
-        
+
         pair.setStart(startClone);
         pair.setEnd(endClone);
-        
+
         return pair;
     }
 }

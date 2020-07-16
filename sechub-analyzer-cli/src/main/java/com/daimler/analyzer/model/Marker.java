@@ -1,6 +1,7 @@
 package com.daimler.analyzer.model;
 
-public class Marker implements Copyable<Marker> {
+public class Marker implements DeepClonable<Marker> {
+    
     private long line;
     private long column;
     private MarkerType type;

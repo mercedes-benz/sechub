@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * A container class for the analysis result.
  */
-public class AnalyzerResult implements Copyable<AnalyzerResult> {
+public class AnalyzerResult implements DeepClonable<AnalyzerResult> {
 
     private Map<String, List<MarkerPair>> noSecHubMarkers;
 
@@ -19,7 +19,7 @@ public class AnalyzerResult implements Copyable<AnalyzerResult> {
     }
     
     /**
-     * Get all no sechub markers
+     * Get all "no sechub" markers
      * 
      * @return
      */

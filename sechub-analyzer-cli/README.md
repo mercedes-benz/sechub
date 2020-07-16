@@ -1,5 +1,11 @@
 # SecHub Analyzer CLI
 
+SecHub analyzer CLI is a command line tool which analyzes source files.
+
+__At the moment it only scans for sechub markers.__
+
+## SecHub markers
+
 SecHub Analyzer CLI looks for markers in files and reports back the location of those markers. The markers are:
 
 - Start: `NOSECHUB`
@@ -104,13 +110,7 @@ Arrow comment in XML are detected:
 </animals>
 ~~~
 
-##### Build
-
-~~~
-sechub$ ./gradlew buildAnalyzerCLI
-~~~
-
-##### Usage
+## Usage
 
 ~~~
 $ java -jar analyzer-0.0.0.jar
@@ -125,7 +125,7 @@ Find markers in files.
 Please report issues at https://github.com/daimler/sechub
 ~~~
 
-##### Example
+### Example
 
 ~~~
 $ java -jar analyzer-0.0.0.jar -p example/
@@ -182,4 +182,16 @@ $ java -jar analyzer-0.0.0.jar -p example/
   }
 }
 ~~~
+
+
+## Development
+
+### Build
+
+When you want to build the analyzer CLI, just do:
+
+~~~
+sechub$ ./gradlew buildAnalyzerCLI
+~~~
+
 
