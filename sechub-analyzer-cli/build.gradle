@@ -26,7 +26,7 @@ dependencies {
 	compile group: 'com.google.re2j', name: 're2j', version: '1.4'
 	
 	testCompile library.junit
-    testCompile library.harmcrest
+    testCompile library.hamcrest
 }
 
 task buildAnalyzerCLI(type: Jar) {
