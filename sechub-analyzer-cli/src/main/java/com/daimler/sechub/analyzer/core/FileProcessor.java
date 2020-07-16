@@ -15,25 +15,20 @@ import com.daimler.analyzer.model.MarkerType;
 /**
  * Searches through a file looking for SecHub markers
  */
-public class FileAnalyzer {
+public class FileProcessor {
+
     private static final String NOSECHUB = "NOSECHUB";
     private static final String NOSECHUB_END = "END-NOSECHUB";
-    
-    private static FileAnalyzer fileAnalyzer = new FileAnalyzer();
+
     private static CommentChecker commentChecker = CommentChecker.buildFrom(NOSECHUB, NOSECHUB_END);
-    
-    private FileAnalyzer() {}
-    
-    public static FileAnalyzer getInstance() {
-        return fileAnalyzer;
+
+    FileProcessor() {
     }
 
     /**
      * Search through a given file for SecHub markers
      * 
-     * Markers:
-     * - Start: NOSECHUB
-     * - END: END-NOSECHUB
+     * Markers: - Start: NOSECHUB - END: END-NOSECHUB
      * 
      * @param file
      * @return List<MarerPair> a list of marker pairs
@@ -56,26 +51,27 @@ public class FileAnalyzer {
 
                 /* search for the NOSECHUB marker */
                 int noSecHubIndex = line.indexOf(NOSECHUB);
-
-                if (noSecHubIndex > -1) {
-                    /* search for NOSECHB_END marker */
-                    int endNoSecHubIndex = line.indexOf(NOSECHUB_END);
-                    
-                    /* check if the line is a comment */
-                    Boolean isComment = commentChecker.isCommentInLine(line);
-
-                    if (isComment) {
-                        if (endNoSecHubIndex > -1) {
-                            end = new Marker(MarkerType.END, lineNumber, endNoSecHubIndex);
-                        } else {
-                            /* only set a new start marker if no previous start was found */
-                            if (start == null) {
-                                start = new Marker(MarkerType.START, lineNumber, noSecHubIndex);
-                            }
-                        }
-                    }
+                if (noSecHubIndex == -1) {
+                    continue;
                 }
 
+                /* check if the line is a comment */
+                boolean isComment = commentChecker.isCommentInLine(line);
+                if (!isComment) {
+                    continue;
+                }
+                
+                /* search for NOSECHB_END marker */
+                int endNoSecHubIndex = line.indexOf(NOSECHUB_END);
+
+                if (endNoSecHubIndex > -1) {
+                    end = new Marker(MarkerType.END, lineNumber, endNoSecHubIndex);
+                } else {
+                    /* only set a new start marker if no previous start was found */
+                    if (start == null) {
+                        start = new Marker(MarkerType.START, lineNumber, noSecHubIndex);
+                    }
+                }
                 /*
                  * It only detects a pair, if there is a start and end. This approach assumes,
                  * that the user marks the start and end explicitly in the code.

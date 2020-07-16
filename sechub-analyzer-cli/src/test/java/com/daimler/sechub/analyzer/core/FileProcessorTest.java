@@ -1,8 +1,8 @@
 package com.daimler.sechub.analyzer.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,18 +10,25 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.analyzer.model.Marker;
 import com.daimler.analyzer.model.MarkerPair;
 import com.daimler.analyzer.model.MarkerType;
 
-public class FileAnalyzerTest {
+public class FileProcessorTest {
 
     final String path = "src/test/resources/";
+    private FileProcessor analyzerToTest;
+    
+    @Before
+    public void before() throws Exception {
+        analyzerToTest = new FileProcessor();
+    }
 
     @Test
-    public void test_processFile__pair() throws IOException {
+    public void process_pair() throws IOException {
         /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 9, 3);
@@ -34,14 +41,14 @@ public class FileAnalyzerTest {
         File file = new File(path + "test_pair.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__multiple() throws IOException {
+    public void process_multiple() throws IOException {
         /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
@@ -70,42 +77,42 @@ public class FileAnalyzerTest {
         File file = new File(path + "test_multiple.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__start_only() throws IOException {
+    public void process_start_only() throws IOException {
         /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
         File file = new File(path + "test_only_start.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__end_only() throws IOException {
+    public void process_end_only() throws IOException {
         /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
         File file = new File(path + "test_only_end.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__two_ends() throws IOException {
+    public void process_two_ends() throws IOException {
         /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 9, 3);
@@ -118,14 +125,14 @@ public class FileAnalyzerTest {
         File file = new File(path + "test_two_ends.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__two_starts() throws IOException {
+    public void process_two_starts() throws IOException {
         /* prepare */
         Marker start = new Marker(MarkerType.START, 3, 3);
         Marker end = new Marker(MarkerType.END, 15, 2);
@@ -138,14 +145,14 @@ public class FileAnalyzerTest {
         File file = new File(path + "test_two_starts.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__c_single_comment() throws IOException {
+    public void process_c_single_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/C/";
         
@@ -154,14 +161,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.c");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__c_multiline_comment() throws IOException {
+    public void process_c_multiline_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/C/";
         
@@ -170,14 +177,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "multi_line.c");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__c_multiline_comment_comment_not_beginning() throws IOException {
+    public void process_c_multiline_comment_comment_not_beginning() throws IOException {
         /* prepare */
         String codePath = path + "code/C/";
         
@@ -186,14 +193,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "multi_line_comment_not_beginning.c");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__java_multiline_comment() throws IOException {
+    public void process_java_multiline_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/Java/";
         
@@ -202,14 +209,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "MultiLineComment.java");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__java_multiline_comment_not_beginning() throws IOException {
+    public void process_java_multiline_comment_not_beginning() throws IOException {
         /* prepare */
         String codePath = path + "code/Java/";
         
@@ -218,14 +225,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "MultiLineCommentNotBeginning.java");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__java_single_line() throws IOException {
+    public void process_java_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Java/";
         
@@ -234,14 +241,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "SingleLineComment.java");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__abap_single_comment() throws IOException {
+    public void process_abap_single_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/ABAP/";
         
@@ -250,14 +257,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_star.abap");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__vbnet_single_comment() throws IOException {
+    public void process_vbnet_single_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/VB.NET/";
         
@@ -266,14 +273,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.vb");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__ada_single_comment() throws IOException {
+    public void process_ada_single_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/ADA/";
         
@@ -282,14 +289,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.adb");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__assembly_single_comment() throws IOException {
+    public void process_assembly_single_comment() throws IOException {
         /* prepare */
         String codePath = path + "code/Assembly/";
         
@@ -298,14 +305,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.asm");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__batch_single_comment_double_colon() throws IOException {
+    public void process_batch_single_comment_double_colon() throws IOException {
         /* prepare */
         String codePath = path + "code/Batch/";
         
@@ -314,14 +321,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_double_colon.bat");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__batch_single_comment_REM() throws IOException {
+    public void process_batch_single_comment_REM() throws IOException {
         /* prepare */
         String codePath = path + "code/Batch/";
         
@@ -330,14 +337,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_REM.bat");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__fortran_single_line() throws IOException {
+    public void process_fortran_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Fortran/";
         
@@ -346,14 +353,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.f90");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__ocaml_single_line() throws IOException {
+    public void process_ocaml_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/OCaml/";
         
@@ -362,14 +369,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.ml");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__pascal_single_line() throws IOException {
+    public void process_pascal_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Pascal/";
         
@@ -378,7 +385,7 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line.p");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
@@ -386,7 +393,7 @@ public class FileAnalyzerTest {
     
     
     @Test
-    public void test_processFile__python_single_line() throws IOException {
+    public void process_python_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Python/";
         
@@ -395,14 +402,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.py");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__python_multiple_comments() throws IOException {
+    public void process_python_multiple_comments() throws IOException {
         /* prepare */
         String codePath = path + "code/Python/";
         
@@ -417,14 +424,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment_multiple.py");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__python_single_line_wrong() throws IOException {
+    public void process_python_single_line_wrong() throws IOException {
         /* prepare */
         String codePath = path + "code/Python/";
         
@@ -433,7 +440,7 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment_wrong.py");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
@@ -441,7 +448,7 @@ public class FileAnalyzerTest {
     
     
     @Test
-    public void test_processFile__ruby_single_line() throws IOException {
+    public void process_ruby_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Ruby/";
         
@@ -450,7 +457,7 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.rb");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
@@ -458,7 +465,7 @@ public class FileAnalyzerTest {
     
     
     @Test
-    public void test_processFile__scheme_single_line() throws IOException {
+    public void process_scheme_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Scheme/";
         
@@ -467,14 +474,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.scm");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__shell_single_line() throws IOException {
+    public void process_shell_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Shell/";
         
@@ -483,14 +490,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.sh");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__sql_single_line() throws IOException {
+    public void process_sql_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/SQL/";
         
@@ -499,14 +506,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.sql");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__tcl_single_line() throws IOException {
+    public void process_tcl_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/Tcl/";
         
@@ -515,14 +522,14 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.tcl");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
     
     @Test
-    public void test_processFile__xml_single_line() throws IOException {
+    public void process_xml_single_line() throws IOException {
         /* prepare */
         String codePath = path + "code/XML/";
         
@@ -531,45 +538,45 @@ public class FileAnalyzerTest {
         File file = new File(codePath + "single_line_comment.xml");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs, is(expectedPairs));
     }
 
     @Test
-    public void test_processFile__no_markers() throws IOException {
+    public void process_no_markers() throws IOException {
         /* prepare */
         File file = new File(path + "test_no_markers.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
     @Test
-    public void test_processFile__same_line() throws IOException {
+    public void process_same_line() throws IOException {
         /* prepare */
         File file = new File(path + "test_same_line.txt");
         
         /* execute */
-        List<MarkerPair> actualPairs = FileAnalyzer.getInstance().processFile(file);
+        List<MarkerPair> actualPairs = analyzerToTest.processFile(file);
         
         /* test */
         assertThat(actualPairs.isEmpty(), is(true));
     }
     
     @Test
-    public void test_processFile__file_not_found() {
+    public void process_file_not_found() {
         /* prepare */
         File file = new File(path + "not_found.txt");
         String exceptionMessage = file.getPath() + " (No such file or directory)";
         
         try {
             /* execute */
-            FileAnalyzer.getInstance().processFile(file);
+            analyzerToTest.processFile(file);
             fail("The file does not exist. An exception was expected.");
         } catch (FileNotFoundException e) {
             /* test */

@@ -16,6 +16,7 @@ import com.daimler.analyzer.model.MarkerPair;
 import com.daimler.analyzer.model.MarkerType;
 
 public class AnalyzerResultTest {
+    
     @Test
     public void deepClone_results_in_equal_but_not_same_analyzer_result() {
         /* prepare */

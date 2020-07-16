@@ -26,14 +26,14 @@ import com.daimler.analyzer.model.AnalyzerResult;
  * 
  * Tests the Processor and FileAnalyzer classes
  */
-public class ProcessorTest {
+public class AnalyzerTest {
     
     final String path = "src/test/resources/";
-    private Processor processor;
+    private Analyzer processor;
     
     @Before
     public void setUp() {
-        processor = new Processor();
+        processor = new Analyzer();
     }
     
     @Test
@@ -215,7 +215,7 @@ public class ProcessorTest {
         
         try {
             /* execute */
-            processor.processFiles(rootPaths);
+            processor.analyze(rootPaths);
             fail("Should throw an exception!");
         } catch (FileNotFoundException e) {
             /* test */
@@ -236,7 +236,7 @@ public class ProcessorTest {
         AnalyzerResult expectedAnalyzerResult = new AnalyzerResult(result);
         
         /* execute */
-        AnalyzerResult actualAnalyzerResult = processor.processFiles(roots);
+        AnalyzerResult actualAnalyzerResult = processor.analyze(roots);
         
         /* test */
         assertThat(actualAnalyzerResult, is(expectedAnalyzerResult));

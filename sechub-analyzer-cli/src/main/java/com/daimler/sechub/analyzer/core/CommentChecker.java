@@ -55,11 +55,9 @@ public class CommentChecker {
      * @param line  a string to check for a label
      * @return true if the string contains a comment otherwise false
      */
-    public Boolean isCommentInLine(String line) {        
+    public boolean isCommentInLine(String line) {        
         Matcher matcher = pattern.matcher(line);
-        Boolean matches = matcher.lookingAt();
-                
-        return matches;
+        return matcher.lookingAt();
     }
 
     public String getNoSecHubLabel() {

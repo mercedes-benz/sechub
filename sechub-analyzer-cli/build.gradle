@@ -26,6 +26,7 @@ dependencies {
 	compile group: 'com.google.re2j', name: 're2j', version: '1.4'
 	
 	testCompile library.junit
+	testCompile library.mockito
     testCompile library.hamcrest
 }
 
@@ -35,7 +36,7 @@ task buildAnalyzerCLI(type: Jar) {
     baseName = 'analyzer'
     
 	manifest {
-        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.SechubAnalyzerApplication'
+        attributes 'Main-Class': 'com.daimler.sechub.analyzer.cli.SecHubAnalyzerApplication'
     }
 
     from { 

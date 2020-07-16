@@ -16,12 +16,19 @@ import org.slf4j.LoggerFactory;
 import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.analyzer.model.MarkerPair;
 
-public class Processor {
-    private final static Logger logger = LoggerFactory.getLogger(Processor.class.getName());
+/**
+* Main analyzer class which represents the entry point for callers. 
+* Starts processing and returns analzer result. Has no CLI parts inside
+* so can be used also directly - e.g. from a UI.
+* 
+* @author Jeremias Eppler, Albert Tregnaghi
+*
+*/
+public class Analyzer {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(Analyzer.class.getName());
 
-    public Processor() {
-    }
-
+    private FileProcessor fileProcessor = new FileProcessor();
     /**
      * Processes the given files
      * 
@@ -29,8 +36,10 @@ public class Processor {
      * @return
      * @throws FileNotFoundException
      */
-    public AnalyzerResult processFiles(List<String> filePaths) throws FileNotFoundException {
-        Map<String, List<MarkerPair>> result = new HashMap<>();
+    public AnalyzerResult analyze(List<String> filePaths) throws FileNotFoundException {
+        if (filePaths == null || filePaths.isEmpty()) {
+            return null;
+        }
         List<File> files = new LinkedList<>();
 
         for (String filePath : filePaths) {
@@ -44,8 +53,8 @@ public class Processor {
             }
         }
 
-        result = analyzeFiles(files);
-
+        Map<String, List<MarkerPair>> result = analyzeFiles(files);
+        
         AnalyzerResult analyzerResult = new AnalyzerResult(result);
 
         return analyzerResult;
@@ -61,7 +70,6 @@ public class Processor {
      * @return all files with markers
      */
     protected Map<String, List<MarkerPair>> analyzeFiles(List<File> rootFiles) {
-        Map<String, List<MarkerPair>> result = new HashMap<>();
 
         Set<File> files = new HashSet<>();
 
@@ -72,11 +80,12 @@ public class Processor {
         }
 
         /* process files */
+        Map<String, List<MarkerPair>> result = new HashMap<>();
         for (File file : files) {
             try {
-                logger.debug("Analyzing: " + file.getPath());
+                LOG.debug("Analyzing: {}", file.getPath());
 
-                List<MarkerPair> markerPairs = FileAnalyzer.getInstance().processFile(file);
+                List<MarkerPair> markerPairs = fileProcessor.processFile(file);
 
                 // only add a file with findings
                 if (!markerPairs.isEmpty()) {
@@ -84,9 +93,9 @@ public class Processor {
                 }
 
             } catch (FileNotFoundException e) {
-                logger.error(e.getMessage(), e);
+                LOG.error("File not found:{}", file.getAbsolutePath(), e);
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                LOG.error("Was not able to process file:{}", file.getAbsolutePath(), e);
             }
         }
 
