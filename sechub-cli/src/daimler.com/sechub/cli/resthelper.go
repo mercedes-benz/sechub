@@ -30,7 +30,7 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q", url, header, context.unfilledByteValue))
 
 	/* prepare */
-	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.unfilledByteValue))
+	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue)) // we use now "byteValuewith" and not "unfilledByteValue" because we use now the filled template content
 	HandleHTTPError(err1)
 	req.SetBasicAuth(context.config.user, context.config.apiToken)
 
