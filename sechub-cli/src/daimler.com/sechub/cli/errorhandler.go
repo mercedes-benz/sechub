@@ -9,6 +9,7 @@ import (
 	"os"
 
 	sechubUtil "daimler.com/sechub/util"
+	sechubutil "daimler.com/sechub/util"
 )
 
 // HandleHTTPError handler method for http errors
@@ -23,7 +24,7 @@ func HandleHTTPError(err error) {
 func HandleError(err error) {
 	if err != nil {
 		sechubUtil.LogError(fmt.Sprintf("Error: %s\n", err))
-		os.Exit(ExitCodeHTTPError)
+		os.Exit(ExitCodeFailed)
 	}
 }
 
@@ -37,7 +38,8 @@ func HandleHTTPResponse(res *http.Response) {
 }
 
 // HandleHTTPErrorAndResponse does just handle error and repsonse
-func HandleHTTPErrorAndResponse(res *http.Response, err error) {
+func HandleHTTPErrorAndResponse(res *http.Response, err error, context *Context) {
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response: %+v", res))
 	HandleHTTPError(err)
 	HandleHTTPResponse(res)
 }

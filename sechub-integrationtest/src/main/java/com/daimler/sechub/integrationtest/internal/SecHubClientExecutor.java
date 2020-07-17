@@ -35,6 +35,12 @@ public class SecHubClientExecutor {
         GET_REPORT("getReport"),
 
         GET_STATUS("getStatus"),
+        
+        MARK_FALSE_POSITIVES("markFalsePositives"),
+        
+        UNMARK_FALSE_POSITIVES("unmarkFalsePositives"),
+        
+        GET_FALSE_POSITIVES("getFalsePositives"),
 
         ;
 
@@ -94,6 +100,20 @@ public class SecHubClientExecutor {
             }
             return sechubJobUUD;
         }
+        public File getJSONFalsePositiveFile() {
+            //  Output is like: false-positives list written to file /tmp/with-sechub-client-755472131402648511/sechub-false-positives-scenario3_project1.json
+            String lastoutputLine = getLastOutputLine();
+            if (lastoutputLine==null) {
+                fail("no last output line available!");
+            }
+            String marker = "written to file";
+            int index = lastoutputLine.indexOf(marker);
+            if (index==-1) {
+                fail("unexpected last line, did not contain:"+marker+" but was:"+lastoutputLine);
+            }
+            String path = lastoutputLine.substring(index+marker.length());
+            return new File(path.trim());
+        }
 
         public File getJSONReportFile() {
             UUID jobUUID = getSechubJobUUD();
@@ -115,6 +135,7 @@ public class SecHubClientExecutor {
             }
             return null;
         }
+
     }
 
     public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String, String> environmentVariables, String... options) {

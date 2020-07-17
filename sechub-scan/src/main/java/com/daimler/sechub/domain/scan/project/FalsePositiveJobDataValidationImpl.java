@@ -28,5 +28,10 @@ public class FalsePositiveJobDataValidationImpl extends AbstractValidation<False
         validateMaxLength(context, target.getComment(), getConfig().maxLength, "jobData.comment");
 
     }
+    
+    @Override
+    protected String getValidatorName() {
+        return "false positive job data validation";
+    }
 
 }

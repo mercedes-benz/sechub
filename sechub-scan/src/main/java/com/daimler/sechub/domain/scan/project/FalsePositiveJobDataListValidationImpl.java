@@ -35,6 +35,11 @@ public class FalsePositiveJobDataListValidationImpl extends AbstractValidation<F
     }
 
     @Override
+    protected String getValidatorName() {
+        return "false positive list validation";
+    }
+    
+    @Override
     protected void validate(ValidationContext<FalsePositiveJobDataList> context) {
         validateNotNull(context);
         FalsePositiveJobDataList target = getObjectToValidate(context);

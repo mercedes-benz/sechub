@@ -37,6 +37,9 @@ type FileSystemConfig struct {
 	Folders []string `json:"folders"`
 }
 
+// fillTemplate - Fill in environment variables vis go-templating
+// templateSource: content of json config file
+// data: environment variables
 func fillTemplate(templateSource string, data map[string]string) []byte {
 	var tpl bytes.Buffer
 	t := template.Must(template.New("sechubConfig").Parse(templateSource))
@@ -65,35 +68,33 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Println("Call sechub with --help option to show correct usage and examples")
+	fmt.Println("Hint: Call sechub with -help option to show correct usage and examples")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'\n", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)
 	defer jsonFile.Close()
 
-	if err != nil {
-		fmt.Println(err)
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked */
-	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	if err != nil {
-		fmt.Println(err)
+	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	data, _ := envToMap()
-	context.byteValue = fillTemplate(string(context.unfilledByteValue), data)
+	context.contentToSend = fillTemplate(string(context.inputForContentProcessing), data)
 
-	return newSecHubConfigFromBytes(context.byteValue)
+	return newSecHubConfigFromBytes(context.contentToSend)
 }
 
 func envToMap() (map[string]string, error) {

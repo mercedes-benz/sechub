@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Simplifies some issues with eclipse versus gradle scan testing etc. (Gradle
@@ -230,5 +232,14 @@ public class TestFileSupport {
             throw new IllegalStateException("Testcase corrupt: Test file does not exist:" + file.getAbsolutePath());
         }
         return file;
+    }
+    
+    public File createTempFile(String prefix, String ending) {
+        try {
+            Path path = Files.createTempFile(prefix, ending);
+            return path.toFile();
+        } catch (IOException e) {
+           throw new IllegalStateException("cannot create temp file!",e);
+        }
     }
 }

@@ -3,7 +3,6 @@
 package cli
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,44 +12,121 @@ import (
 	sechubUtil "daimler.com/sechub/util"
 )
 
-// Report represents a context report context containing metadata about locations and also server result itself
-type Report struct {
+// ReportDownload - struct for handling report downloads
+type ReportDownload struct {
 	outputFileName string
 	outputFolder   string
-	serverResult   string
+	serverResult   []byte
 }
 
-func (report *Report) save(context *Context) {
-
-	filePath := report.createReportFilePath(context, true)
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("filepath %s:\n", filePath))
-	content := report.serverResult
-	if context.config.reportFormat == "json" {
-		content = jsonPrettyPrint(content)
-	}
-
-	d1 := []byte(content)
-	err := ioutil.WriteFile(filePath, d1, 0644)
-	HandleError(err)
-	fmt.Printf("  SecHub report written to %s\n", filePath)
+// SecHubReport - structure of a SecHub json report
+type SecHubReport struct {
+	JobUUID      string             `json:"jobUUID"`
+	Result       SecHubReportResult `json:"result"`
+	TrafficLight string             `json:"trafficLight"`
 }
 
-func (report *Report) createReportFilePath(context *Context, forceDirectory bool) string {
+// SecHubReportResult - structure of result part of a SecHub json report
+type SecHubReportResult struct {
+	Count    int                    `json:"count"`
+	Findings []SecHubReportFindings `json:"findings"`
+}
+
+// SecHubReportFindings - structure of findings part of a SecHub json report
+type SecHubReportFindings struct {
+	ID       int                  `json:"id"`
+	Name     string               `json:"name"`
+	Severity string               `json:"severity"`
+	Code     SecHubReportCodePart `json:"code"`
+	Type     string               `json:"type"`
+	CweID    int                  `json:"cweId"`
+}
+
+// SecHubReportCodePart - structure of codescan part of a SecHub json report
+type SecHubReportCodePart struct {
+	Location     string `json:"location"`
+	Line         int    `json:"line"`
+	Column       int    `json:"column"`
+	Source       string `json:"source"`
+	RelevantPart string `json:"relevantPart"`
+}
+
+func (report *ReportDownload) save(context *Context) {
+	filePath := report.createFilePath(true)
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
+
+	content := append(report.serverResult, []byte("\n")...) // add newline to the end
+
+	sechubUtil.WriteContentToFile(filePath, content, context.config.reportFormat)
+
+	fmt.Printf("- SecHub report written to %s\n", filePath)
+}
+
+func (report *ReportDownload) createFilePath(forceDirectory bool) string {
 	path := report.outputFolder
+
 	if forceDirectory {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			os.MkdirAll(path, os.ModePerm)
+			os.MkdirAll(path, 0755)
 		}
 	}
-	result := filepath.Join(path, report.outputFileName)
-	return result
+
+	return filepath.Join(path, report.outputFileName)
 }
 
-func jsonPrettyPrint(in string) string {
-	var out bytes.Buffer
-	err := json.Indent(&out, []byte(in), "", "   ")
-	if err != nil {
-		return in
+func getSecHubJobReport(context *Context) []byte {
+	fmt.Printf("- Fetching result (format=%s) for job %s\n", context.config.reportFormat, context.config.secHubJobUUID)
+
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+
+	if context.config.reportFormat == "html" {
+		header["Accept"] = "text/html"
+	} else {
+		header["Accept"] = "application/json"
 	}
-	return out.String()
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
+	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
+
+	data, err := ioutil.ReadAll(response.Body)
+	HandleHTTPError(err)
+
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
+	return data
+}
+
+func newSecHubReportFromFile(context *Context) SecHubReport {
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", context.config.file))
+
+	/* open file and check exists */
+	jsonFile, err := os.Open(context.config.file)
+	defer jsonFile.Close()
+
+	if sechubUtil.HandleIOError(err) {
+		showHelpHint()
+		os.Exit(ExitCodeIOError)
+	}
+
+	var filecontent []byte
+	filecontent, err = ioutil.ReadAll(jsonFile)
+	if sechubUtil.HandleIOError(err) {
+		showHelpHint()
+		os.Exit(ExitCodeIOError)
+	}
+
+	return newSecHubReportFromBytes(filecontent)
+}
+
+// newSecHubReportFromBytes - read json into SecHubReport struct
+func newSecHubReportFromBytes(bytes []byte) SecHubReport {
+	var report SecHubReport
+
+	/* transform text to json */
+	err := json.Unmarshal(bytes, &report)
+	if err != nil {
+		fmt.Println("sechub confiuration json is not valid json")
+		showHelpHint()
+		os.Exit(ExitCodeMissingConfigFile)
+	}
+	return report
 }

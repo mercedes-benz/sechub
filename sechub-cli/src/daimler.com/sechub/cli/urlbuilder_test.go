@@ -5,7 +5,7 @@ package cli
 import (
 	"testing"
 
-	sechubUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "daimler.com/sechub/testutil"
 )
 
 // https://localhost:8443/api/project/testproject/job/
@@ -22,7 +22,7 @@ func TestBuildCreateNewSecHubJobAPICall(t *testing.T) {
 	result := buildCreateNewSecHubJobAPICall(context)
 
 	/* test*/
-	sechubUtil.AssertEquals("https://localhost:8443/api/project/testproject/job", result, t)
+	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job", result, t)
 
 }
 
@@ -42,7 +42,7 @@ func TestBuildGetSecHubJobStatusAPICall(t *testing.T) {
 	result := buildGetSecHubJobStatusAPICall(context)
 
 	/* test*/
-	sechubUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
+	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
 
 }
 
@@ -62,7 +62,7 @@ func TestBuildGetSecHubJobReportAPICall(t *testing.T) {
 	result := buildGetSecHubJobReportAPICall(context)
 
 	/* test*/
-	sechubUtil.AssertEquals("https://localhost:8443/api/project/testproject/report/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
+	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/report/e21b13fc-591e-4abd-b119-755d473c5625", result, t)
 
 }
 
@@ -82,6 +82,6 @@ func TestBuildPostSecHubUploadSourceCodeAPICall(t *testing.T) {
 	result := buildUploadSourceCodeAPICall(context)
 
 	/* test*/
-	sechubUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/sourcecode", result, t)
+	sechubTestUtil.AssertEquals("https://localhost:8443/api/project/testproject/job/e21b13fc-591e-4abd-b119-755d473c5625/sourcecode", result, t)
 
 }

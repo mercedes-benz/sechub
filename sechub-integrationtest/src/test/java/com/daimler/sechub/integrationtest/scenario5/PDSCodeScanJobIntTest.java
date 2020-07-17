@@ -29,6 +29,8 @@ public class PDSCodeScanJobIntTest {
 
     @Test
     public void implement_me() {
+        // at the moment this test does only fail when no PDS server starts - thats all
+        /* TODO Albert Tregnaghi, 2020-07-17: implement this when starting to integrate PDS into SecHub server */
     }
 
     

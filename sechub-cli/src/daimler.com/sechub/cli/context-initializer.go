@@ -8,7 +8,8 @@ import (
 	sechubUtil "daimler.com/sechub/util"
 )
 
-// InitializeContext - creates a new context having configuration values from flags or env entries
+// InitializeContext - initialize and validate context.
+// creates a new context having configuration values from flags or env entries
 // env entries will be overriden by flags (command parameters)
 func InitializeContext() *Context {
 	/* create config and context */
@@ -51,8 +52,5 @@ func loadConfigFile(context *Context) {
 }
 
 func debugNotDefinedAsOption(context *Context, fieldName string, fieldValue string) {
-	if !context.config.debug {
-		return
-	}
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - use entry from config file:'%s'", fieldName, fieldValue))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - using entry from config file: '%s'", fieldName, fieldValue))
 }

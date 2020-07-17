@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 package util
 
 import (
@@ -12,24 +11,24 @@ import (
 
 func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	// path to zipfile is also part of added files - because in dirname1
 	path := dirname1 + "/testoutput.zip"
@@ -40,20 +39,20 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	/* test */
 	AssertErrorHasExpectedMessage(err, "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!", t)
 
-}
+	}
 
 func TestZipFileEmptyIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	//  we do only add empty folders, but not any content - so zip file will be empty. The implementation
 	//  must ensure that this cannot happen because otherwise we upload empty data which will always have a
@@ -70,24 +69,24 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 
 func TestZipFileCanBeCreated(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -96,10 +95,12 @@ func TestZipFileCanBeCreated(t *testing.T) {
 
 	/* test */
 	Check(err, t)
-	assertTestFileExistsAndNotEmpty(path, t)
+
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
 	list := readContentOfZipFile(path, t)
-
+	
 	AssertContains(list, "file1.txt", t)
 	AssertContains(list, "file2.txt", t)
 	AssertContains(list, "sub3/file3.txt", t)
@@ -113,26 +114,26 @@ func TestZipFileCanBeCreated(t *testing.T) {
 
 func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub2"
 	dirname3 := dir + "/sub2/sub3"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
-	createTestDirectory(dirname3, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname3, 0755, t)
 
 	filename0 := dirname1 + "/file0.txt"
 	filename1 := dirname1 + "/file1.txt"
 	filename2 := dirname2 + "/file2.txt"
 	filename3 := dirname3 + "/file3.txt"
 
-	createTestFile(filename0, 0644, t)
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename0, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -146,9 +147,10 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 	/* test */
 	Check(err, t)
 
-	assertTestFileExistsAndNotEmpty(path, t)
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	list := readContentOfZipFile(path, t)
+    list := readContentOfZipFile(path, t)
 
 	AssertContainsNot(list, "file0.txt", t)      // this file may not be inside, because excluded! (/sub1/file0.txt)
 	AssertContains(list, "file1.txt", t)         // this must remain
@@ -160,24 +162,24 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 
 func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub1/sub2"
 
-	createTestDirectory(dirname1, 0755, t)
-	createTestDirectory(dirname2, 0755, t)
+	CreateTestDirectory(dirname1, 0755, t)
+	CreateTestDirectory(dirname2, 0755, t)
 
 	filename0 := dirname1 + "/file0.txt" // should be ignored
 	filename1 := dirname1 + "/file1.c"   // should be added
 	filename2 := dirname2 + "/file2.jpg" // should be ignored
 	filename3 := dirname2 + "/file3.go"  // shoud be added
 
-	createTestFile(filename0, 0644, t)
-	createTestFile(filename1, 0644, t)
-	createTestFile(filename2, 0644, t)
-	createTestFile(filename3, 0644, t)
+	CreateTestFile(filename0, 0644, t)
+	CreateTestFile(filename1, 0644, t)
+	CreateTestFile(filename2, 0644, t)
+	CreateTestFile(filename3, 0644, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -187,10 +189,12 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 	/* test */
 	Check(err, t)
-	assertTestFileExistsAndNotEmpty(path, t)
+	
+	AssertFileExists(path, t)
+	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	list := readContentOfZipFile(path, t)
-
+    list := readContentOfZipFile(path, t)
+	
 	AssertContainsNot(list, "file0.txt", t)      // file must not be in zip
 	AssertContains(list, "file1.c", t)           // file must exist
 	AssertContainsNot(list, "sub2/file2.jpg", t) // file must not be in zip
@@ -200,7 +204,7 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 	/* prepare */
-	dir := initializeTestTempDir(t)
+	dir := InitializeTestTempDir(t)
 	defer os.RemoveAll(dir)
 
 	dirname1 := dir + "/nonexistant"
@@ -218,20 +222,6 @@ func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 /* -------------------------------------*/
 /* --------- Helpers -------------------*/
 /* -------------------------------------*/
-
-func assertTestFileExistsAndNotEmpty(path string, t *testing.T) {
-	fileinfo, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		t.Fatalf("resulted zipfile does not exist!")
-	} else {
-		Check(err, t)
-	}
-
-	if fileinfo.Size() < 300 {
-		t.Fatalf("resulted empty zip file!!!")
-	}
-}
-
 func readContentOfZipFile(path string, t *testing.T) []string {
 
 	zipfile, err := zip.OpenReader(path)

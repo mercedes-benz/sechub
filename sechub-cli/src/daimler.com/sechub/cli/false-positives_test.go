@@ -11,12 +11,12 @@ import (
 	sechubTestUtil "daimler.com/sechub/testutil"
 )
 
-func TestReportFilePathCorrectCreated(t *testing.T) {
+func TestFalsePositivesFilePathCorrectCreated(t *testing.T) {
 	/* prepare */
-	report := ReportDownload{serverResult: []byte("content"), outputFolder: "path1", outputFileName: "fileName1"}
+	list := FalsePositivesList{serverResult: []byte("content"), outputFolder: "path1", outputFileName: "fileName1"}
 
 	/* execute */
-	result := report.createFilePath(false)
+	result := list.createFilePath(false)
 
 	/* test */
 	expected := filepath.Join("path1", "fileName1")
@@ -25,19 +25,19 @@ func TestReportFilePathCorrectCreated(t *testing.T) {
 	}
 }
 
-func TestReportSaveWritesAFile(t *testing.T) {
+func TestFalsePositivesSaveWritesAFile(t *testing.T) {
 	/* prepare */
 	tempDir := sechubTestUtil.InitializeTestTempDir(t)
 	defer os.RemoveAll(tempDir)
 
-	report := ReportDownload{serverResult: []byte("content"), outputFolder: tempDir, outputFileName: "a.out"}
-	fmt.Printf("Report: %q\n", report)
+	list := FalsePositivesList{serverResult: []byte("content"), outputFolder: tempDir, outputFileName: "a.out"}
+	fmt.Printf("list: %q\n", list)
 
 	var config Config
 	context := NewContext(&config)
 
 	/* execute */
-	report.save(context)
+	list.save(context)
 
 	/* test */
 	expected := filepath.Join(tempDir, "a.out")

@@ -20,5 +20,10 @@ public class MappingIdValidationImpl extends AbstractSimpleStringValidation impl
         validateLength(context);
         
     }
+    
+    @Override
+    protected String getValidatorName() {
+        return "mapping id validation";
+    }
 
 }

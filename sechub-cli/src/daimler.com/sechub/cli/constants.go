@@ -2,6 +2,9 @@
 
 package cli
 
+// CurrentAPIVersion - SecHub current api version
+const CurrentAPIVersion = "1.0"
+
 // DefaultSecHubConfigFile represents the name of the sechub configuration file
 // used per default when no other set
 const DefaultSecHubConfigFile = "sechub.json"
@@ -36,6 +39,9 @@ const ExitCodeIllegalAction = 6
 // ExitCodeMissingConfigParts means there were missing configuration parts
 const ExitCodeMissingConfigParts = 7
 
+// ExitCodeIOError and http error has occurred
+const ExitCodeIOError = 8
+
 /* ---------------------------------- */
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
@@ -51,6 +57,21 @@ const ActionExecuteGetStatus = "getStatus"
 
 // ActionExecuteGetReport name of action to get report (json/html) of job
 const ActionExecuteGetReport = "getReport"
+
+// ActionExecuteGetFalsePositives name of action to download false-positives list (json) of project
+const ActionExecuteGetFalsePositives = "getFalsePositives"
+
+// ActionExecuteMarkFalsePositives name of action to define false-positives of a project and upload it to SecHub server
+const ActionExecuteMarkFalsePositives = "markFalsePositives"
+
+// ActionExecuteInteractiveMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
+const ActionExecuteInteractiveMarkFalsePositives = "interactiveMarkFalsePositives"
+
+// ActionExecuteUnmarkFalsePositives name of action to undefine false-positives of a project and upload it to SecHub server
+const ActionExecuteUnmarkFalsePositives = "unmarkFalsePositives"
+
+// ActionExecuteInteractiveUnmarkFalsePositives name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+const ActionExecuteInteractiveUnmarkFalsePositives = "interactiveUnmarkFalsePositives"
 
 /* ---------------------------------- */
 /* -------- Status ------------------ */

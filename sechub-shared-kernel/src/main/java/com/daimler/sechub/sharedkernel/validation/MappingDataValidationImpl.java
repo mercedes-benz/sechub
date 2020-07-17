@@ -28,9 +28,14 @@ public class MappingDataValidationImpl extends AbstractValidation<MappingData> i
             if (result.isValid()) {
                 continue;
             }
-            context.addError(result.getErrorDescription());
+            addErrorMessage(context,result.getErrorDescription());
         }
         
+    }
+    
+    @Override
+    protected String getValidatorName() {
+        return "mapping data validation";
     }
    
 }
