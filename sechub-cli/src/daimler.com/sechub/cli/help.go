@@ -24,9 +24,9 @@ func PrintUsage() {
 	action += "   " + ActionExecuteGetStatus + " - fetch current job status and return result as json\n"
 	action += "   " + ActionExecuteGetReport + " - fetch report as json (result will only exist when job is done)\n"
 	action += "   " + ActionExecuteGetFalsePositives + " - fetch the project's false-positives list as json\n"
-	action += "   " + ActionExecuteAddFalsePositives + " - add from a json file to project's false-positives list\n"
-	action += "   " + ActionExecuteMarkFalsePositives + " - interactively ask for false-positives depending on a json report\n"
-	action += "   " + ActionExecuteRemoveFalsePositives + " - remove from project's false-positives list defined in json file\n"
+	action += "   " + ActionExecuteMarkFalsePositives + " - add from a json file to project's false-positives list\n"
+	action += "   " + ActionExecuteInteractiveMarkFalsePositives + " - interactively ask for false-positives depending on a json report\n"
+	action += "   " + ActionExecuteUnmarkFalsePositives + " - remove from project's false-positives list defined in json file\n"
 
 	fmt.Fprintf(w, action)
 	fmt.Fprintln(w)

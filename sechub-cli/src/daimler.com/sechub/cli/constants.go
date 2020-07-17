@@ -61,17 +61,17 @@ const ActionExecuteGetReport = "getReport"
 // ActionExecuteGetFalsePositives name of action to download false-positives list (json) of project
 const ActionExecuteGetFalsePositives = "getFalsePositives"
 
-// ActionExecuteAddFalsePositives name of action to define false-positives of a project and upload it to SecHub server
-const ActionExecuteAddFalsePositives = "addFalsePositives"
-
-// ActionExecuteMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
+// ActionExecuteMarkFalsePositives name of action to define false-positives of a project and upload it to SecHub server
 const ActionExecuteMarkFalsePositives = "markFalsePositives"
 
-// ActionExecuteRemoveFalsePositives name of action to undefine false-positives of a project and upload it to SecHub server
-const ActionExecuteRemoveFalsePositives = "removeFalsePositives"
+// ActionExecuteInteractiveMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
+const ActionExecuteInteractiveMarkFalsePositives = "interactiveMarkFalsePositives"
 
-// ActionExecuteUnmarkFalsePositives name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+// ActionExecuteUnmarkFalsePositives name of action to undefine false-positives of a project and upload it to SecHub server
 const ActionExecuteUnmarkFalsePositives = "unmarkFalsePositives"
+
+// ActionExecuteInteractiveUnmarkFalsePositives name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+const ActionExecuteInteractiveUnmarkFalsePositives = "interactiveUnmarkFalsePositives"
 
 /* ---------------------------------- */
 /* -------- Status ------------------ */

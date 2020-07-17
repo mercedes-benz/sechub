@@ -72,7 +72,7 @@ func init() {
 	configFilePathPtr = flag.String(
 		"configfile", DefaultSecHubConfigFile, "Path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
 	filePtr = flag.String(
-		"file", "", "Defines file to read from for these actions: "+ActionExecuteAddFalsePositives+" "+ActionExecuteMarkFalsePositives+" "+ActionExecuteRemoveFalsePositives)
+		"file", "", "Defines file to read from for these actions: "+ActionExecuteMarkFalsePositives+" "+ActionExecuteInteractiveMarkFalsePositives+" "+ActionExecuteUnmarkFalsePositives)
 	helpPtr = flag.Bool(
 		"help", false, "Shows help and terminates")
 	secHubJobUUIDPtr = flag.String(
@@ -186,11 +186,11 @@ func assertValidConfig(configPtr *Config) {
 	}
 
 	if configPtr.file == "" {
-		if configPtr.action == ActionExecuteAddFalsePositives || configPtr.action == ActionExecuteRemoveFalsePositives {
+		if configPtr.action == ActionExecuteMarkFalsePositives || configPtr.action == ActionExecuteUnmarkFalsePositives {
 			fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
 			fmt.Println("Please define input file with -file option.")
 			os.Exit(ExitCodeMissingParameter)
-		} else if configPtr.action == ActionExecuteMarkFalsePositives {
+		} else if configPtr.action == ActionExecuteInteractiveMarkFalsePositives {
 			// Let's try to find the latest report and take this as file
 			configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
 			if configPtr.file == "" {

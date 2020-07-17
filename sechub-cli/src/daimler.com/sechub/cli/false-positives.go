@@ -99,7 +99,8 @@ func getFalsePositivesList(context *Context) []byte {
 	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectID)
 
 	// we don't want to send content here
-	context.unfilledByteValue = []byte(``)
+	context.inputForContentProcessing = []byte(``)
+	processContent(context)
 
 	response := sendWithDefaultHeader("GET", buildFalsePositivesAPICall(context), context)
 
@@ -110,6 +111,11 @@ func getFalsePositivesList(context *Context) []byte {
 	return data
 }
 
+/* at the moment this does just set data to both byte value holder - if it's necessary in future, we can provide template mechanism inside this */
+func processContent(context *Context) {
+	context.contentToSend = context.inputForContentProcessing // content data used for TLS encrypted data (currently we do not provide templating for false positive data, so just same)
+}
+
 func uploadFalsePositivesFromFile(context *Context) {
 	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
@@ -118,7 +124,9 @@ func uploadFalsePositivesFromFile(context *Context) {
 	defer jsonFile.Close()
 	failed := sechubutil.HandleIOError(err)
 
-	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
+	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	processContent(context)
+
 	failed = sechubutil.HandleIOError(err)
 
 	if failed {
@@ -130,13 +138,13 @@ func uploadFalsePositivesFromFile(context *Context) {
 }
 
 func uploadFalsePositives(context *Context) {
-	// Send context.unfilledByteValue to SecHub server
+	// Send context.inputForContentProcessing to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
 	fmt.Printf("- Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectID)
 
 }
 
-func removeFalsePositivesFromFile(context *Context) {
+func unmarkFalsePositivesFromFile(context *Context) {
 	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
 
 	/* open file and check exists */
@@ -144,7 +152,9 @@ func removeFalsePositivesFromFile(context *Context) {
 	defer jsonFile.Close()
 	failed := sechubutil.HandleIOError(err)
 
-	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
+	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	processContent(context)
+
 	failed = sechubutil.HandleIOError(err)
 
 	if failed {
@@ -153,20 +163,21 @@ func removeFalsePositivesFromFile(context *Context) {
 	}
 
 	// read json into go struct
-	removeFalsePositivesList := newFalsePositivesListFromBytes(context.unfilledByteValue)
+	removeFalsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
 	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
 
-	removeFalsePositives(context, &removeFalsePositivesList)
+	unmarkFalsePositives(context, &removeFalsePositivesList)
 }
 
-func removeFalsePositives(context *Context, list *FalsePositivesConfig) {
+func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
 	fmt.Printf("Applying false-positives to be removed for project %q:\n", context.config.projectID)
 	// Loop over list and push to SecHub server
 	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
 	urlPrefix := buildFalsePositiveAPICall(context)
 
 	// we don't want to send content here
-	context.unfilledByteValue = []byte(``)
+	context.inputForContentProcessing = []byte(``)
+	processContent(context)
 
 	for _, element := range list.JobData {
 		fmt.Printf("- JobUUID %s: finding #%d\n", element.JobUUID, element.FindingID)
@@ -187,7 +198,7 @@ func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
 	return list
 }
 
-func markFalsePositives(context *Context) {
+func interactiveMarkFalsePositives(context *Context) {
 	FalsePositivesList := newFalsePositivesListFromConsole(context)
 	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
 
@@ -196,7 +207,8 @@ func markFalsePositives(context *Context) {
 	// upload to server
 	jsonBlob, err := json.Marshal(FalsePositivesList)
 	HandleError(err)
-	context.unfilledByteValue = jsonBlob
+	context.inputForContentProcessing = jsonBlob
+	processContent(context)
 	uploadFalsePositives(context)
 }
 
@@ -251,14 +263,14 @@ func printFinding(finding *SecHubReportFindings) {
 	sechubutil.PrintDashedLine()
 }
 
-func unmarkFalsePositives(context *Context) {
+func interactiveUnmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
 	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
 
 	// ToDo: Are you sure?
 
 	// upload to SecHub server
-	removeFalsePositives(context, &FalsePositivesList)
+	unmarkFalsePositives(context, &FalsePositivesList)
 }
 
 func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePositivesConfig) {

@@ -527,31 +527,8 @@ public class AsUser {
 
         String url = getUrlBuilder().buildGetFalsePositiveConfigurationOfProject(project.getProjectId());
         String json = getRestHelper().getJSon(url);
-        
-        ProjectFalsePositivesDefinition def = new ProjectFalsePositivesDefinition(project);
-        
-        try {
-            JsonNode jsonNode = jsonTestSupport.fromJson(json);
-            ArrayNode falsePositives = (ArrayNode) jsonNode.get("falsePositives");
-            
-            for (JsonNode falsePositive: falsePositives) {
-                JsonNode jobData = falsePositive.get("jobData");
-                
-                String jobUUID = jobData.get("jobUUID").asText();
-                int findingId = jobData.get("findingId").asInt();
-                
-                JsonNode commentNode = jobData.get("comment");
-                String comment = null;
-                if (commentNode!=null) {
-                    comment=commentNode.asText();
-                }
-                def.add(findingId, UUID.fromString(jobUUID),comment);
-                
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("JSON not valid",e);
-        }
-        return def;
+
+        return create(project,json);
 
     }
 
@@ -596,6 +573,35 @@ public class AsUser {
         return uuid;
     }
 
+    public ProjectFalsePositivesDefinition create(TestProject project, String json) {
+        ProjectFalsePositivesDefinition def = new ProjectFalsePositivesDefinition(project);
+
+        try {
+            JsonNode jsonNode = jsonTestSupport.fromJson(json);
+            ArrayNode falsePositives = (ArrayNode) jsonNode.get("falsePositives");
+            if (falsePositives==null) {
+                fail("No false positives found in json:"+json);
+            }
+            for (JsonNode falsePositive : falsePositives) {
+                JsonNode jobData = falsePositive.get("jobData");
+
+                String jobUUID = jobData.get("jobUUID").asText();
+                int findingId = jobData.get("findingId").asInt();
+
+                JsonNode commentNode = jobData.get("comment");
+                String comment = null;
+                if (commentNode != null) {
+                    comment = commentNode.asText();
+                }
+                def.add(findingId, UUID.fromString(jobUUID), comment);
+
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("JSON not valid", e);
+        }
+        return def;
+    }
+    
     public class ProjectFalsePositivesDefinition {
 
         private TestProject project;
@@ -607,9 +613,18 @@ public class AsUser {
         }
 
         private List<JobData> jobData = new ArrayList<>();
-
+        private WithSecHubClient withSechubClient;
+        private IntegrationTestJSONLocation location;
+        
         public ProjectFalsePositivesDefinition(TestProject project) {
+            this(project, null, null);
+        }
+
+
+        public ProjectFalsePositivesDefinition(TestProject project, WithSecHubClient withSechubClient, IntegrationTestJSONLocation location) {
             this.project = project;
+            this.withSechubClient = withSechubClient;
+            this.location=location;
         }
 
         public boolean isContaining(int findingId, UUID jobUUID) {
@@ -625,7 +640,7 @@ public class AsUser {
                 if (d.findingId != findingId) {
                     continue;
                 }
-                if (!( d.jobUUID.equals(jobUUID))) {
+                if (!(d.jobUUID.equals(jobUUID))) {
                     continue;
                 }
                 return d;
@@ -634,19 +649,56 @@ public class AsUser {
         }
 
         public void markAsFalsePositive() {
+            if (withSechubClient == null) {
+                markAsFalsePositiveByREST();
+            } else {
+                markFalsePositiveBySecHubClient();
+            }
+        }
+
+        private void markFalsePositiveBySecHubClient() {
             String json = buildJSON();
+
+            IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
+            File file = testfileSupport.createTempFile("mark_as_false_positive", ".json");
+            testfileSupport.writeTextFile(file, json);
+
+            withSechubClient.markAsFalsePositive(project,location, file.getAbsolutePath());
+
+        }
+
+        private void markAsFalsePositiveByREST() {
+            String json = buildJSON();
+
             String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
             getRestHelper().putJSon(url, json);
         }
 
         public void unmarkFalsePositive() {
+            if (withSechubClient == null) {
+                unmarkFalsePositiveByREST();
+            } else {
+                unmarkFalsePositiveBySecHubClient();
+            }
+        }
+
+        private void unmarkFalsePositiveBySecHubClient() {
+            String json = buildJSON();
+            IntegrationTestFileSupport testfileSupport = IntegrationTestFileSupport.getTestfileSupport();
+            File file = testfileSupport.createTempFile("unmark_false_positive", ".json");
+            testfileSupport.writeTextFile(file, json);
+
+            withSechubClient.unmarkAsFalsePositive(project, location, file.getAbsolutePath());
+        }
+
+        private void unmarkFalsePositiveByREST() {
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
                 String url = getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(project.getProjectId(), "" + data.jobUUID, "" + data.findingId);
-
                 getRestHelper().delete(url);
             }
+
         }
 
         private String buildJSON() {
@@ -680,7 +732,5 @@ public class AsUser {
             jobData.add(data);
             return this;
         }
-
     }
-
 }

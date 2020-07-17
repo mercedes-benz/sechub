@@ -42,14 +42,14 @@ func Execute() {
 		downloadSechubReport(context)
 	case ActionExecuteGetFalsePositives:
 		downloadFalsePositivesList(context)
-	case ActionExecuteAddFalsePositives:
-		uploadFalsePositivesFromFile(context)
 	case ActionExecuteMarkFalsePositives:
-		markFalsePositives(context)
-	case ActionExecuteRemoveFalsePositives:
-		removeFalsePositivesFromFile(context)
+		uploadFalsePositivesFromFile(context)
+	case ActionExecuteInteractiveMarkFalsePositives:
+		interactiveMarkFalsePositives(context)
 	case ActionExecuteUnmarkFalsePositives:
-		unmarkFalsePositives(context)
+		unmarkFalsePositivesFromFile(context)
+	case ActionExecuteInteractiveUnmarkFalsePositives:
+		interactiveUnmarkFalsePositives(context)
 	default:
 		{
 			fmt.Printf("Unknown action '%s'\n", context.config.action)

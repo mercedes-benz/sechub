@@ -26,11 +26,11 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 }
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
-	/* we use unfilledByteValue - means origin template content, unfilled. Prevents password leak in logs */
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending to %s\n Headers: %s\n Content: %q", url, header, context.unfilledByteValue))
+	/* we use inputForContentProcessing - means origin content, unfilled, prevents password leak in logs */
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %s:%s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
 
 	/* prepare */
-	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue)) // we use now "byteValuewith" and not "unfilledByteValue" because we use now the filled template content
+	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
 	HandleHTTPError(err1)
 	req.SetBasicAuth(context.config.user, context.config.apiToken)
 
@@ -39,7 +39,7 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 	}
 
 	/* send */
-	response, err2 := context.HTTPClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.byteValue))
+	response, err2 := context.HTTPClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
 	HandleHTTPErrorAndResponse(response, err2, context)
 	return response
 }

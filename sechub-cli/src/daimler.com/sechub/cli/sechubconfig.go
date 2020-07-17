@@ -85,16 +85,16 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked */
-	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
+	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	data, _ := envToMap()
-	context.byteValue = fillTemplate(string(context.unfilledByteValue), data)
+	context.contentToSend = fillTemplate(string(context.inputForContentProcessing), data)
 
-	return newSecHubConfigFromBytes(context.byteValue)
+	return newSecHubConfigFromBytes(context.contentToSend)
 }
 
 func envToMap() (map[string]string, error) {
