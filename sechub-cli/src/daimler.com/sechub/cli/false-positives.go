@@ -209,10 +209,10 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 	// ToDo: sort report by severity,finding id
 
 	var ExpectedInputs = []sechubutil.ConsoleInputItem{
-		{"y", "Yes"},
-		{"n", "No"},
-		{"s", "Skip following findings"},
-		{"c", "Cancel"},
+		{Input: "y", ShortDescription: "Yes"},
+		{Input: "n", ShortDescription: "No"},
+		{Input: "s", ShortDescription: "Skip following findings"},
+		{Input: "c", ShortDescription: "Cancel"},
 	}
 
 	// iterate over entries and ask which to mark
@@ -277,10 +277,10 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 
 	// iterate over entries and ask which to unmark
 	var ExpectedInputs = []sechubutil.ConsoleInputItem{
-		{"y", "Yes"},
-		{"n", "No"},
-		{"s", "Skip the rest"},
-		{"c", "Cancel"},
+		{Input: "y", ShortDescription: "Yes"},
+		{Input: "n", ShortDescription: "No"},
+		{Input: "s", ShortDescription: "Skip the rest"},
+		{Input: "c", ShortDescription: "Cancel"},
 	}
 	for _, falsepositive := range list.Items {
 		printFalsePositiveDefinition(&falsepositive)
