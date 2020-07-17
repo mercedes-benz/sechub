@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -8,7 +9,8 @@ import (
 	"os"
 	"path/filepath"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
+	sechubutil "daimler.com/sechub/util"
 )
 
 // Keyword for false-posisitves json file
@@ -72,13 +74,13 @@ type FalsePositiveDefinitionCodeLocation struct {
 
 func (list *FalsePositivesList) save(context *Context) {
 	filePath := list.createFilePath(false)
-	LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
 
 	content := append(list.serverResult, []byte("\n")...) // add newline to the end
 
-	WriteContentToFile(filePath, content, "json")
+	sechubUtil.WriteContentToFile(filePath, content, "json")
 
-	fmt.Printf("- Project %q: false-positives list written to file %s\n", context.config.projectId, filePath)
+	fmt.Printf("- Project %q: false-positives list written to file %s\n", context.config.projectID, filePath)
 }
 
 func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
@@ -94,7 +96,7 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 }
 
 func getFalsePositivesList(context *Context) []byte {
-	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectId)
+	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectID)
 
 	// we don't want to send content here
 	context.unfilledByteValue = []byte(``)
@@ -104,20 +106,20 @@ func getFalsePositivesList(context *Context) []byte {
 	data, err := ioutil.ReadAll(response.Body)
 	HandleHTTPError(err)
 
-	LogDebug(context.config.debug, fmt.Sprintf("SecHub false-positives list: %s", string(data)))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("SecHub false-positives list: %s", string(data)))
 	return data
 }
 
 func uploadFalsePositivesFromFile(context *Context) {
-	LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
 	defer jsonFile.Close()
-	failed := HandleIOError(err)
+	failed := sechubutil.HandleIOError(err)
 
 	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	failed = HandleIOError(err)
+	failed = sechubutil.HandleIOError(err)
 
 	if failed {
 		showHelpHint()
@@ -130,20 +132,20 @@ func uploadFalsePositivesFromFile(context *Context) {
 func uploadFalsePositives(context *Context) {
 	// Send context.unfilledByteValue to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
-	fmt.Printf("- Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectId)
+	fmt.Printf("- Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectID)
 
 }
 
 func removeFalsePositivesFromFile(context *Context) {
-	LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
 	defer jsonFile.Close()
-	failed := HandleIOError(err)
+	failed := sechubutil.HandleIOError(err)
 
 	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	failed = HandleIOError(err)
+	failed = sechubutil.HandleIOError(err)
 
 	if failed {
 		showHelpHint()
@@ -152,13 +154,13 @@ func removeFalsePositivesFromFile(context *Context) {
 
 	// read json into go struct
 	removeFalsePositivesList := newFalsePositivesListFromBytes(context.unfilledByteValue)
-	LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
 
 	removeFalsePositives(context, &removeFalsePositivesList)
 }
 
 func removeFalsePositives(context *Context, list *FalsePositivesConfig) {
-	fmt.Printf("Applying false-positives to be removed for project %q:\n", context.config.projectId)
+	fmt.Printf("Applying false-positives to be removed for project %q:\n", context.config.projectID)
 	// Loop over list and push to SecHub server
 	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
 	urlPrefix := buildFalsePositiveAPICall(context)
@@ -187,7 +189,7 @@ func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
 
 func markFalsePositives(context *Context) {
 	FalsePositivesList := newFalsePositivesListFromConsole(context)
-	LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
 
 	// ToDo: Are you sure?
 
@@ -206,7 +208,7 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 
 	// ToDo: sort report by severity,finding id
 
-	var ExpectedInputs = []ConsoleInputItem{
+	var ExpectedInputs = []sechubutil.ConsoleInputItem{
 		{"y", "Yes"},
 		{"n", "No"},
 		{"s", "Skip following findings"},
@@ -217,12 +219,12 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 	for _, finding := range report.Result.Findings {
 		printFinding(&finding)
 
-		input, err := ReadAllowedItemFromConsole("Is this a false positive?", ExpectedInputs)
+		input, err := sechubutil.ReadAllowedItemFromConsole("Is this a false positive?", ExpectedInputs)
 		HandleError(err)
 		if input == "y" {
 			// append finding to list
 			fmt.Println("Please add a single line comment:")
-			comment, _ := ReadFromConsole()
+			comment, _ := sechubutil.ReadFromConsole()
 			var listEntry = FalsePositivesJobData{report.JobUUID, finding.ID, comment}
 			list.JobData = append(list.JobData, listEntry)
 		} else if input == "c" {
@@ -242,16 +244,16 @@ func printFinding(finding *SecHubReportFindings) {
 	// java/com/daimler/sechub/docgen/AsciidocGenerator.java, line:28, column:35:
 	//       public static void main(String[] args) throws Exception {
 	// ---------------------------------------------------------------------------
-	PrintDashedLine()
+	sechubutil.PrintDashedLine()
 	fmt.Printf("%d: %s, severity: %s\n", finding.ID, finding.Name, finding.Severity)
 	fmt.Printf("%s, line %d column %d\n", finding.Code.Location, finding.Code.Line, finding.Code.Column)
 	fmt.Printf("%s\n", finding.Code.Source)
-	PrintDashedLine()
+	sechubutil.PrintDashedLine()
 }
 
 func unmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
-	LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
 
 	// ToDo: Are you sure?
 
@@ -269,12 +271,12 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 	var list FalsePositivesDefinition
 	err := json.Unmarshal(jsonBlob.serverResult, &list)
 	HandleError(err)
-	LogDebug(context.config.debug, fmt.Sprintf("Read from Server:\n%+v", list))
+	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Read from Server:\n%+v", list))
 
 	// ToDo: sort report by severity,finding id
 
 	// iterate over entries and ask which to unmark
-	var ExpectedInputs = []ConsoleInputItem{
+	var ExpectedInputs = []sechubutil.ConsoleInputItem{
 		{"y", "Yes"},
 		{"n", "No"},
 		{"s", "Skip the rest"},
@@ -283,7 +285,7 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 	for _, falsepositive := range list.Items {
 		printFalsePositiveDefinition(&falsepositive)
 
-		input, err := ReadAllowedItemFromConsole("Do you want to remove this false positive?", ExpectedInputs)
+		input, err := sechubutil.ReadAllowedItemFromConsole("Do you want to remove this false positive?", ExpectedInputs)
 		HandleError(err)
 		if input == "y" {
 			// append finding to list
@@ -308,7 +310,7 @@ func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
 	//   Code:                 File secHubServer = new File("./sechub-server");
 	// (Added by admin at 2020-07-10 13:41:06; comment: "Only temporary directory")
 	// ------------------------------------------------------------------
-	PrintDashedLine()
+	sechubutil.PrintDashedLine()
 	fmt.Printf("%s, %s severity: %s\n", falsepositive.MetaData.Name, falsepositive.MetaData.ScanType, falsepositive.MetaData.Severity)
 	fmt.Printf("  Origin: Finding ID %d in job %s\n", falsepositive.JobData.FindingID, falsepositive.JobData.JobUUID)
 	// would be cool to have line and column in source code location
@@ -316,5 +318,5 @@ func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
 	fmt.Printf("  Code: %s\n", falsepositive.MetaData.Code.Start.SourceCode)
 	fmt.Printf("(Added by %s at %s; comment: %q)\n", falsepositive.Author, falsepositive.Created, falsepositive.JobData.Comment)
 	// added by name at date
-	PrintDashedLine()
+	sechubutil.PrintDashedLine()
 }

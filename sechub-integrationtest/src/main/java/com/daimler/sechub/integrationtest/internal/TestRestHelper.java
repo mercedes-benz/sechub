@@ -32,6 +32,12 @@ import com.daimler.sechub.adapter.support.TrustAllSupport;
 import com.daimler.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
+    
+    
+    public static enum RestHelperTarget{
+        SECHUB_SERVER,
+        SECHUB_PDS,
+    }
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestRestHelper.class);
 
@@ -49,8 +55,7 @@ public class TestRestHelper {
 		return LAST_DATA;
 	}
 
-
-	public TestRestHelper(UserContext user) {
+	public TestRestHelper(UserContext user,RestHelperTarget target) {
 		this.template = createTrustAllRestTemplate(user);
 		this.template.setErrorHandler(createErrorHandler());
 	}
@@ -223,7 +228,7 @@ public class TestRestHelper {
 		String dataAsString = getStringFromURL(link);
 		return Long.parseLong(dataAsString);
 	}
-
+	
 	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
 		HttpHeaders headers = new HttpHeaders();

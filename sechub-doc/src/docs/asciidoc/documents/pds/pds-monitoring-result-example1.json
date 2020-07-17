@@ -1,0 +1,44 @@
+{
+    "serverId": "serverid1",
+    "jobs": {
+        "CREATED": 1,
+        "QUEUED": 1,
+        "READY_TO_START": 1,
+        "RUNNING": 1,
+        "DONE": 1
+    },
+    "members": [
+        {
+            "hostname": "hostname1",
+            "ip": "192.168.178.23",
+            "heartBeatTimestamp": "2020-07-08T17:22:36.295",
+            "executionState": {
+                "queueMax": 50,
+                "jobsInQueue": 0,
+                "entries": [
+                ]
+            }
+        },
+        {
+            "hostname": "hostname2",
+            "ip": "192.168.178.24",
+            "heartBeatTimestamp": "2020-07-08T17:22:36.295",
+            "executionState": {
+                "queueMax": 50,
+                "jobsInQueue": 1,
+                "entries": [
+                    {
+                        "done": false,
+                        "canceled": false,
+                        "job": {
+                            "owner": "developer",
+                            "serverId": "serverid1",
+                            "started": "2020-07-08T17:22:36.295",
+                            "state": "RUNNING"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

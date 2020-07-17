@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -45,7 +46,7 @@ func PrintUsage() {
 	fmt.Fprintf(w, "\n")
 	fmt.Fprintf(w, "      	\"webScan\"  : {\n")
 	fmt.Fprintf(w, "      		\"uris\": [\"http://$SCAN_TARGET_SERVER/\"]\n")
-	fmt.Fprintf(w, "      	}\n")
+	fmt.Fprintf(w, "        },\n")
 	fmt.Fprintf(w, "      	\"codeScan\"  : {\n")
 	fmt.Fprintf(w, "      	    \"fileSystem\"  : {\n")
 	fmt.Fprintf(w, "      		    \"folders\": [\"gamechanger-android/src/main/java\",\"gamechanger-server/src/main/java\"]\n")

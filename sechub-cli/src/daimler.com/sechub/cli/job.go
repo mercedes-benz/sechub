@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -8,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 /* --------------------------------------------------
@@ -26,7 +27,7 @@ func createNewSecHubJob(context *Context) {
 	jsonErr := json.Unmarshal(data, &result)
 	HandleError(jsonErr)
 
-	context.config.secHubJobUUID = result.JobId
+	context.config.secHubJobUUID = result.JobID
 }
 
 // approveSecHubJob - Approve Job
@@ -89,7 +90,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		data, err := ioutil.ReadAll(response.Body)
 		HandleHTTPError(err)
 		if context.config.debug {
-			LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
+			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */

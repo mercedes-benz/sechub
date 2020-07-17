@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
 	"fmt"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
-// InitializeContext - initialize and validate context
+// InitializeContext - initialize and validate context.
+// creates a new context having configuration values from flags or env entries
+// env entries will be overriden by flags (command parameters)
 func InitializeContext() *Context {
 	/* create config and context */
 	configPtr := NewConfigByFlags()
@@ -40,14 +43,14 @@ func loadConfigFile(context *Context) {
 		debugNotDefinedAsOption(context, "user", configFromFile.User)
 		configPtr.user = configFromFile.User
 	}
-	if configPtr.projectId == "" {
-		debugNotDefinedAsOption(context, "projectId", configFromFile.ProjectId)
-		configPtr.projectId = configFromFile.ProjectId
+	if configPtr.projectID == "" {
+		debugNotDefinedAsOption(context, "projectID", configFromFile.ProjectID)
+		configPtr.projectID = configFromFile.ProjectID
 	}
 
 	context.sechubConfig = &configFromFile
 }
 
 func debugNotDefinedAsOption(context *Context, fieldName string, fieldValue string) {
-	LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - using entry from config file: '%s'", fieldName, fieldValue))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - using entry from config file: '%s'", fieldName, fieldValue))
 }

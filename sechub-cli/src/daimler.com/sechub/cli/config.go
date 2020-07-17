@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -9,12 +10,10 @@ import (
 	"strings"
 	"time"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
-/**
-* Config for internal CLI calls
- */
+// Config for internal CLI calls
 type Config struct {
 	action             string
 	apiToken           string
@@ -23,7 +22,7 @@ type Config struct {
 	file               string
 	keepTempFiles      bool
 	outputFolder       string
-	projectId          string
+	projectID          string
 	quiet              bool
 	reportFormat       string
 	secHubJobUUID      string
@@ -41,7 +40,7 @@ var configFilePathPtr *string
 var filePtr *string
 var helpPtr *bool
 var outputFolderPathPtr *string
-var projectIdPtr *string
+var projectIDPtr *string
 var reportFormatPtr *string
 var secHubJobUUIDPtr *string
 var serverPtr *string
@@ -80,7 +79,7 @@ func init() {
 		"jobUUID", "", "SecHub job uuid (mandatory when using '"+ActionExecuteGetStatus+"' or '"+ActionExecuteGetReport+"')")
 	outputFolderPathPtr = flag.String(
 		"output", ".", "Output folder for reports etc. per default current dir")
-	projectIdPtr = flag.String(
+	projectIDPtr = flag.String(
 		"project", "", "SecHub project id - mandatory, but can also be defined in config file")
 	reportFormatPtr = flag.String(
 		"reportformat", "json", "Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback.")
@@ -110,7 +109,7 @@ func NewConfigByFlags() *Config {
 	if config.apiToken == "" { // read from environment variable if undefined on cmdline
 		config.apiToken = os.Getenv("SECHUB_APITOKEN")
 	} else {
-		LogWarning("Avoid '-apitoken' parameter for security reasons. Please use environment variable $SECHUB_APITOKEN instead!")
+		sechubUtil.LogWarning("Avoid '-apitoken' parameter for security reasons. Please use environment variable $SECHUB_APITOKEN instead!")
 	}
 	config.user = *userPtr
 	if config.user == "" { // read from environment variable if undefined on cmdline
@@ -120,7 +119,7 @@ func NewConfigByFlags() *Config {
 	if config.server == "" { // read from environment variable if undefined on cmdline
 		config.server = os.Getenv("SECHUB_SERVER")
 	}
-	config.projectId = *projectIdPtr
+	config.projectID = *projectIDPtr
 	config.configFilePath = *configFilePathPtr
 	config.file = *filePtr
 	config.secHubJobUUID = *secHubJobUUIDPtr
@@ -150,7 +149,7 @@ func NewConfigByFlags() *Config {
 func assertValidConfig(configPtr *Config) {
 	if configPtr.trustAll {
 		if !configPtr.quiet {
-			LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
+			sechubUtil.LogWarning("Configured to trust all - means unknown service certificate is accepted. Don't use this in production!")
 		}
 	}
 
@@ -168,7 +167,7 @@ func assertValidConfig(configPtr *Config) {
 		os.Exit(ExitCodeMissingParameter)
 	}
 
-	if configPtr.projectId == "" {
+	if configPtr.projectID == "" {
 		fmt.Println("project id missing!")
 		os.Exit(ExitCodeMissingParameter)
 	}
@@ -193,7 +192,7 @@ func assertValidConfig(configPtr *Config) {
 			os.Exit(ExitCodeMissingParameter)
 		} else if configPtr.action == ActionExecuteMarkFalsePositives {
 			// Let's try to find the latest report and take this as file
-			configPtr.file = FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
+			configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
 			if configPtr.file == "" {
 				fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
 				fmt.Println("Please define input file with -file option.")

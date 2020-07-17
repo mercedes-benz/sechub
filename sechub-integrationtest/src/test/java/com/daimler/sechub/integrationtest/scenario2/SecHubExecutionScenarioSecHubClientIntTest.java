@@ -2,11 +2,10 @@
 package com.daimler.sechub.integrationtest.scenario2;
 
 import static com.daimler.sechub.integrationtest.api.AssertExecutionResult.*;
+import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
-
-import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -39,10 +39,12 @@ public abstract class IntegrationTestAction extends AbstractUIAction{
 	}
 
 	private boolean checkIntegrationTestServerRunning() {
-		IntegrationTestContext.get().setHostname(getContext().getServer());
-		IntegrationTestContext.get().setPort(getContext().getPort());
+		IntegrationTestContext integrationTestContext = IntegrationTestContext.get();
+        integrationTestContext.setHostname(getContext().getServer());
+		integrationTestContext.setPort(getContext().getPort());
 
-		if (! Boolean.TRUE.equals(IntegrationTestSetup.fetchTestServerStatus())){
+		String isAliveURL = integrationTestContext.getUrlBuilder().buildIntegrationTestIsAliveUrl();
+        if (! Boolean.TRUE.equals(IntegrationTestSetup.fetchTestServerStatus(isAliveURL))){
 			warn("You are not running an integration test server, so cannot exeucte action!");
 			return false;
 		}

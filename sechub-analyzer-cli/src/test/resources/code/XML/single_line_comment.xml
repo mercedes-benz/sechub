@@ -1,0 +1,25 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<animals>
+   <animal>
+      <name>Lion</name>
+      <binomial>Panthera leo</binomial>
+   </animal>
+   <animal>
+      <name>Tiger</name>
+      <binomial>Panthera tigris</binomial>
+   </animal>
+   <!-- NOSECHUB -->
+   <animal>
+      <name>Leopard</name>
+      <binomial>Panthera pardus</binomial>
+   </animal>
+   <!-- END-NOSECHUB -->
+   <animal>
+      <name>Snow Leopard</name>
+      <binomial>Panthera uncia</binomial>
+   </animal>
+   <animal>
+      <name>Donkey</name>
+      <trinomen>Equus africanus asinus</trinomen>
+   </animal>
+</animals>

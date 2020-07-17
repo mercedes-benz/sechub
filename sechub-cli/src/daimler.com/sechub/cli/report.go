@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -8,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 // ReportDownload - struct for handling report downloads
@@ -52,11 +53,11 @@ type SecHubReportCodePart struct {
 
 func (report *ReportDownload) save(context *Context) {
 	filePath := report.createFilePath(true)
-	LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
 
 	content := append(report.serverResult, []byte("\n")...) // add newline to the end
 
-	WriteContentToFile(filePath, content, context.config.reportFormat)
+	sechubUtil.WriteContentToFile(filePath, content, context.config.reportFormat)
 
 	fmt.Printf("- SecHub report written to %s\n", filePath)
 }
@@ -84,31 +85,31 @@ func getSecHubJobReport(context *Context) []byte {
 	} else {
 		header["Accept"] = "application/json"
 	}
-	LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("getSecHubJobReport: header=%q", header))
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
 	HandleHTTPError(err)
 
-	LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
 	return data
 }
 
 func newSecHubReportFromFile(context *Context) SecHubReport {
-	LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", context.config.file))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", context.config.file))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
 	defer jsonFile.Close()
 
-	if HandleIOError(err) {
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)
 	}
 
 	var filecontent []byte
 	filecontent, err = ioutil.ReadAll(jsonFile)
-	if HandleIOError(err) {
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeIOError)
 	}

@@ -71,6 +71,7 @@ pipeline {
             environment {
                /* against build race conditions - See TestPortProvider.java */
                SERVER_PORT= getJenkinsExecutorPort(8243)
+               PDS_PORT= getJenkinsExecutorPort(8543)
 
                /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
                SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
@@ -85,7 +86,7 @@ pipeline {
             steps {
               script{
                   // start integration tests and also create combined test report after all
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
+                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
                }
             }
         }

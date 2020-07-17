@@ -10,6 +10,7 @@ import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModelDataCollector;
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.spring.MockedAdaptersSpringValueDataCollector;
+import com.daimler.sechub.docgen.usecase.PDSUseCaseModelDataCollector;
 import com.daimler.sechub.docgen.usecase.UseCaseModel;
 import com.daimler.sechub.docgen.usecase.UseCaseModelDataCollector;
 import com.daimler.sechub.docgen.usecase.UseCaseRestDocModel;
@@ -29,6 +30,7 @@ public class ClasspathDataCollector {
 	private MockedAdaptersSpringValueDataCollector mockedAdaptersSprintValueDataCollector;
 	private DomainMessagingModelDataCollector domainMessagingModelDataCollector;
 	private UseCaseModelDataCollector useCaseModelDataCollector;
+	private PDSUseCaseModelDataCollector pdsUseCaseModelDataCollector;
 	private UseCaseRestDocModelDataCollector useCaseRestDocModelDataCollector;
 	
 	public ClasspathDataCollector(){
@@ -40,6 +42,7 @@ public class ClasspathDataCollector {
 		domainMessagingModelDataCollector= new DomainMessagingModelDataCollector(reflections);
 		useCaseModelDataCollector = new UseCaseModelDataCollector(reflections);
 		useCaseRestDocModelDataCollector = new UseCaseRestDocModelDataCollector(reflections);
+		pdsUseCaseModelDataCollector = new PDSUseCaseModelDataCollector(reflections);
 	}
 	
 	public List<DocAnnotationData> fetchMustBeDocumentParts(){
@@ -57,6 +60,10 @@ public class ClasspathDataCollector {
 	public UseCaseModel fetchUseCaseModel() {
 		return useCaseModelDataCollector.collect();
 	}
+	
+	public UseCaseModel fetchPDSUseCaseModel() {
+        return pdsUseCaseModelDataCollector.collect();
+    }
 
 	public UseCaseRestDocModel fetchUseCaseRestDocModel(UseCaseModel model) {
 		return useCaseRestDocModelDataCollector.collect(model);

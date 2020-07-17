@@ -9,7 +9,7 @@ dependencies {
 
     compile library.junit
     compile library.mockito
-    compile library.harmcrest
+    compile library.hamcrest
     compile library.slf4j
 
     compile library.wiremock

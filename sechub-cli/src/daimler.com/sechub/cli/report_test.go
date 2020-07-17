@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -7,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	sechubTestUtil "daimler.com/sechub/testutil"
 )
 
 func TestReportFilePathCorrectCreated(t *testing.T) {
@@ -26,7 +27,7 @@ func TestReportFilePathCorrectCreated(t *testing.T) {
 
 func TestReportSaveWritesAFile(t *testing.T) {
 	/* prepare */
-	tempDir := InitializeTestTempDir(t)
+	tempDir := sechubTestUtil.InitializeTestTempDir(t)
 	defer os.RemoveAll(tempDir)
 
 	report := ReportDownload{serverResult: []byte("content"), outputFolder: tempDir, outputFileName: "a.out"}
@@ -40,5 +41,5 @@ func TestReportSaveWritesAFile(t *testing.T) {
 
 	/* test */
 	expected := filepath.Join(tempDir, "a.out")
-	AssertFileExists(expected, t)
+	sechubTestUtil.AssertFileExists(expected, t)
 }

@@ -132,7 +132,7 @@ Additionally to above cmdline options, you can set some values also via environm
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
 
-=== Configuration file
+=== Client configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
 and use it as sechub configuration. There must be always a valid configuration
 file - otherwise client will not work.
@@ -159,6 +159,16 @@ you will see network traffic and also JSON sent to server. This JSON will only
 contain the origin template but not the replaced parts. This was done to prevent
 accidently logging of variables - e.g. credentials.
 
+==== Accepted source code files
+The client will per default only include wellknown source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table.
+
+*All files having file endings not listed here, will be ignored* and not contained in source upload to
+{sechub} server! 
+
+NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 
 include::../../shared/configuration/sechub_config.adoc[]
 

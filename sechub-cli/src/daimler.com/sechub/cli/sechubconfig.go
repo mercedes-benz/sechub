@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -10,16 +11,16 @@ import (
 	"os"
 	"strings"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
-// The configuration pendant in Go. But we do only necessary parts from JSON file!
+// SecHubConfig is the sechub configuration JSON pendant in Go. But we do only necessary parts from JSON file!
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
 	APIVersion string         `json:"apiVersion"`
 	User       string         `json:"user"`
-	ProjectId  string         `json:"project"`
+	ProjectID  string         `json:"project"`
 	Server     string         `json:"server"`
 	CodeScan   CodeScanConfig `json:"codeScan"`
 }
@@ -71,13 +72,13 @@ func showHelpHint() {
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)
 	defer jsonFile.Close()
 
-	if HandleIOError(err) {
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -85,7 +86,7 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
 	   so we do not have passwords etc. accidently leaked */
 	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	if HandleIOError(err) {
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}

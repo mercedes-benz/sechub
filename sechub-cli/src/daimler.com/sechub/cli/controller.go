@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
 	"fmt"
 	"os"
 
-	. "daimler.com/sechub/util"
+	sechubUtil "daimler.com/sechub/util"
 )
 
 type jobStatusResult struct {
@@ -15,10 +16,7 @@ type jobStatusResult struct {
 }
 
 type jobScheduleResult struct {
-	//    {
-	//    "jobId": "a52e0695-5789-4902-9643-72d2ce138942"
-	//}
-	JobId string `json:"jobId"`
+	JobID string `json:"jobId"`
 }
 
 // Execute starts sechub client
@@ -98,10 +96,13 @@ func handleCodeScan(context *Context) {
 	}
 
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-	LogDebug(context.config.debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	var debug = context.config.debug
+	if debug {
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
 		return
@@ -109,12 +110,12 @@ func handleCodeScan(context *Context) {
 	context.sourceZipFileName = fmt.Sprintf("sourcecode-%s.zip", context.config.secHubJobUUID)
 
 	/* compress all folders to one single zip file*/
-	config := ZipConfig{
+	config := sechubUtil.ZipConfig{
 		Folders:            json.CodeScan.FileSystem.Folders,
 		Excludes:           json.CodeScan.Excludes,
 		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
 		Debug:              context.config.debug} // pass through debug flag
-	err := ZipFolders(context.sourceZipFileName, &config)
+	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config)
 	if err != nil {
 		fmt.Printf("%s\n", err)
 		fmt.Print("Exiting due to fatal error...\n")
@@ -123,7 +124,7 @@ func handleCodeScan(context *Context) {
 	}
 
 	/* calculate checksum for zip file */
-	context.sourceZipFileChecksum = CreateChecksum(context.sourceZipFileName)
+	context.sourceZipFileChecksum = sechubUtil.CreateChecksum(context.sourceZipFileName)
 }
 
 func downloadSechubReport(context *Context) string {
@@ -140,7 +141,7 @@ func downloadSechubReport(context *Context) string {
 }
 
 func downloadFalsePositivesList(context *Context) {
-	fileName := "sechub-false-positives-" + context.config.projectId + ".json"
+	fileName := "sechub-false-positives-" + context.config.projectID + ".json"
 
 	list := FalsePositivesList{serverResult: getFalsePositivesList(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	list.save(context)

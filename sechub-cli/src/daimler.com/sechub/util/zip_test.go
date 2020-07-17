@@ -4,7 +4,6 @@ package util
 import (
 	"archive/zip"
 	"os"
-	"strings"
 	"testing"
 
 	. "daimler.com/sechub/testutil"
@@ -31,24 +30,16 @@ func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {
 	CreateTestFile(filename2, 0644, t)
 	CreateTestFile(filename3, 0644, t)
 
-	/* path to zipfile is also part of added files - because in dirname1*/
+	// path to zipfile is also part of added files - because in dirname1
 	path := dirname1 + "/testoutput.zip"
 
 	/* execute */
 	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{"*.txt"}})
 
 	/* test */
-	expectedErrMsg := "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
+	AssertErrorHasExpectedMessage(err, "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!", t)
 
-	if err == nil {
-		t.Fatalf("No error returned!")
 	}
-
-	if err.Error() != expectedErrMsg {
-		t.Fatalf("Wrong Error\nActual   = %v, \nExpected = %v.", err.Error(), expectedErrMsg)
-	}
-
-}
 
 func TestZipFileEmptyIsRejected(t *testing.T) {
 	/* prepare */
@@ -63,24 +54,16 @@ func TestZipFileEmptyIsRejected(t *testing.T) {
 	CreateTestDirectory(dirname2, 0755, t)
 	CreateTestDirectory(dirname3, 0755, t)
 
-	/* we do only add empty folders, but not any content - so zip file will be empty. The implementation
-	 * must ensure that this cannot happen because otherwise we upload empty data which will always have a
-	 * greeen result
-	 */
+	//  we do only add empty folders, but not any content - so zip file will be empty. The implementation
+	//  must ensure that this cannot happen because otherwise we upload empty data which will always have a
+	//  greeen result
 	path := dir + "/testoutput.zip"
 
 	/* execute */
 	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}})
-	expectedErrMsg := "Zipfile has no content!"
 
 	/* test */
-	if err == nil {
-		t.Fatalf("No error returned!")
-	}
-
-	if err.Error() != expectedErrMsg {
-		t.Fatalf("Error actual = %v, and Expected = %v.", err.Error(), expectedErrMsg)
-	}
+	AssertErrorHasExpectedMessage(err, "Zipfile has no content!", t)
 
 }
 
@@ -110,30 +93,20 @@ func TestZipFileCanBeCreated(t *testing.T) {
 	/* execute */
 	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1, dirname2}, SourceCodePatterns: []string{".txt"}})
 
-	/* ---- */
 	/* test */
-	/* ---- */
 	Check(err, t)
 
 	AssertFileExists(path, t)
 	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	/* read content of zipfile*/
-	zipfile, err := zip.OpenReader(path)
-	Check(err, t)
-	defer zipfile.Close()
-
-	list := []string{}
-	for _, file := range zipfile.File {
-		name := ConvertBackslashPath(file.Name)
-		list = append(list, name)
-	}
+	list := readContentOfZipFile(path, t)
+	
 	AssertContains(list, "file1.txt", t)
 	AssertContains(list, "file2.txt", t)
 	AssertContains(list, "sub3/file3.txt", t)
 	AssertSize(list, 3, t)
 
-	/* cross check: checksum calculated twice for generated zip does always be the same */
+	// cross check: checksum calculated twice for generated zip does always be the same
 	checksum1 := CreateChecksum(path)
 	checksum2 := CreateChecksum(path)
 	AssertEquals(checksum1, checksum2, t)
@@ -171,24 +144,14 @@ func TestZipFileCanBeCreated_with_exclude_patterns_applied(t *testing.T) {
 		SourceCodePatterns: []string{".txt"}}
 	err := ZipFolders(path, &config)
 
-	/* ---- */
 	/* test */
-	/* ---- */
 	Check(err, t)
 
 	AssertFileExists(path, t)
 	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	/* read content of zipfile*/
-	zipfile, err := zip.OpenReader(path)
-	Check(err, t)
-	defer zipfile.Close()
+    list := readContentOfZipFile(path, t)
 
-	list := []string{}
-	for _, file := range zipfile.File {
-		name := ConvertBackslashPath(file.Name)
-		list = append(list, name)
-	}
 	AssertContainsNot(list, "file0.txt", t)      // this file may not be inside, because excluded! (/sub1/file0.txt)
 	AssertContains(list, "file1.txt", t)         // this must remain
 	AssertContains(list, "file2.txt", t)         // this must remain
@@ -224,24 +187,14 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 	config := ZipConfig{Folders: []string{dirname1}, SourceCodePatterns: []string{".c", ".go"}}
 	err := ZipFolders(path, &config)
 
-	/* ---- */
 	/* test */
-	/* ---- */
 	Check(err, t)
-
+	
 	AssertFileExists(path, t)
 	AssertMinimalFileSize(path, 300, t) // check if zip file is empty
 
-	/* read content of zipfile*/
-	zipfile, err := zip.OpenReader(path)
-	Check(err, t)
-	defer zipfile.Close()
-
-	list := []string{}
-	for _, file := range zipfile.File {
-		name := ConvertBackslashPath(file.Name)
-		list = append(list, name)
-	}
+    list := readContentOfZipFile(path, t)
+	
 	AssertContainsNot(list, "file0.txt", t)      // file must not be in zip
 	AssertContains(list, "file1.c", t)           // file must exist
 	AssertContainsNot(list, "sub2/file2.jpg", t) // file must not be in zip
@@ -260,15 +213,25 @@ func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
 
 	/* execute */
 	err := ZipFolders(path, &ZipConfig{Folders: []string{dirname1}})
-	expectedErrMsg := "Folder not found:"
 
 	/* test */
-	if err == nil {
-		t.Fatalf("No error returned!")
-	}
+	AssertErrorHasExpectedStartMessage(err, "Folder not found:", t)
 
-	if !strings.HasPrefix(err.Error(), expectedErrMsg) {
-		t.Fatalf("Error actual = \"%v\", and expected beginning with = \"%v\"...", err.Error(), expectedErrMsg)
-	}
+}
 
+/* -------------------------------------*/
+/* --------- Helpers -------------------*/
+/* -------------------------------------*/
+func readContentOfZipFile(path string, t *testing.T) []string {
+
+	zipfile, err := zip.OpenReader(path)
+	Check(err, t)
+	defer zipfile.Close()
+
+	list := []string{}
+	for _, file := range zipfile.File {
+		name := ConvertBackslashPath(file.Name)
+		list = append(list, name)
+	}
+	return list
 }

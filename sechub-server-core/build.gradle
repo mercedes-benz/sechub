@@ -15,6 +15,6 @@ dependencies {
     compile project(':sechub-scan-product-checkmarx')
     compile project(':sechub-sereco')
 
-    testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
+    testCompile (library.hsqldb)
     testCompile project(':sechub-testframework')
 }
