@@ -13,7 +13,7 @@ public class MockedPDSAdapter extends AbstractMockedAdapter<PDSAdapterContext, P
 		implements PDSAdapter {
 
 
-	protected void validateConfigAsDefinedInMockYAML(PDSAdapterConfig config) {
+	protected void executeMockSanityCheck(PDSAdapterConfig config) {
 	}
 	
 	@Override

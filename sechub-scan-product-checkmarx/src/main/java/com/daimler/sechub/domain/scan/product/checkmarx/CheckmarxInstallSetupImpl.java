@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.daimler.sechub.domain.scan.AbstractInstallSetup;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;
@@ -38,6 +39,10 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 	@Value("${sechub.adapter.checkmarx.password}")
 	@MustBeDocumented(value = "Password of checkmarx user", secret = true)
 	private String password;
+	
+	@Value("${sechub.adapter.checkmarx.clientsecret:"+CheckmarxConfig.DEFAULT_CLIENT_SECRET+"}")
+    @MustBeDocumented(value = "So called 'client secret' of checkmarx. At leat at the moment this ist just a fixed default value, available in public documentation at https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up", secret = false)
+    private String clientSecret = CheckmarxConfig.DEFAULT_CLIENT_SECRET;
 
 	@Value("${sechub.adapter.checkmarx.trustall:false}")
 	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TRUSTALL)
@@ -50,6 +55,10 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 	public String getBaseURL() {
 		return baseURL;
 	}
+	
+	public String getClientSecret() {
+        return clientSecret;
+    }
 
 	@Override
 	public String getUserId() {

@@ -4,6 +4,7 @@ package com.daimler.sechub.adapter.mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterConfig;
@@ -35,6 +36,10 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMockedAdapter.class);
     final MockSupport mockSupport = new MockSupport();
 
+    @Value("${sechub.adapter.mock.sanitycheck.enabled:false}")
+    private boolean mockSanityCheckEnabled;
+    
+    
     @Autowired
     private MockedAdapterSetupService setupService;
 
@@ -50,7 +55,10 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
     public final String execute(C config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         long timeStarted = System.currentTimeMillis();
-
+        if (mockSanityCheckEnabled) {
+            executeMockSanityCheck(config);
+        }
+        
         MockedAdapterSetupEntry setup = setupService.getSetupFor(this, config);
         if (setup == null) {
             LOG.info("did not found adapter setup so returning empty string");
@@ -150,14 +158,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         }
     }
 
-    /**
-     * Check config data is as written in yaml file! This will check that all params
-     * are really given to the mock - means e.g. no data missing or accidently using
-     * defaults.
-     *
-     * @param config
-     */
-    protected abstract void validateConfigAsDefinedInMockYAML(C config);
+    protected abstract void executeMockSanityCheck(C config);
 
     public String getAdapterId() {
         return createAdapterId();
@@ -188,5 +189,10 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
     protected String getMockDataFileEnding() {
         return "xml";
+    }
+    
+    protected void handleSanityFailure(String message) {
+        LOG.error("SANITY CHECK FAILURE for {},{}",getClass().getSimpleName(), message);
+        throw new IllegalStateException("Sanity check failed");
     }
 }
