@@ -87,6 +87,7 @@ public class CheckmarxAdapterV1WireMockTest {
         
         when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
         when(config.getPresetIdForNewProjectsOrNull()).thenReturn(CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
+        when(config.getClientSecret()).thenReturn(CheckmarxConfig.DEFAULT_CLIENT_SECRET);
         when(config.getUser()).thenReturn(USERNAME);
         when(config.getTargetType()).thenReturn(TARGET_TYPE);
         when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
@@ -426,7 +427,7 @@ public class CheckmarxAdapterV1WireMockTest {
            map.put("grant_type", "password");
            map.put("scope", "sast_rest_api");
            map.put("client_id", "resource_owner_client");
-           map.put("client_secret", "014DF517-39D1-4453-B7B3-9930C563627C"); // TODO maybe this must be customizable
+           map.put("client_secret", CheckmarxConfig.DEFAULT_CLIENT_SECRET); 
 
            
 
