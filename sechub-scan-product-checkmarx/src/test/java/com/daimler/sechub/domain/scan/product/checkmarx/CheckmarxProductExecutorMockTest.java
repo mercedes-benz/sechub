@@ -41,6 +41,7 @@ public class CheckmarxProductExecutorMockTest {
 	@MockBean
 	TargetResolver targetResolver;
 
+
 	@Before
 	public void before() {
 	}
@@ -49,6 +50,7 @@ public class CheckmarxProductExecutorMockTest {
 	public void action_executor_contains_checkmarx_resilience_consultant_after_postConstruct() {
 		assertTrue(executorToTest.resilientActionExecutor.containsConsultant(CheckmarxResilienceConsultant.class));
 	}
+	
 
 
 	@TestConfiguration
