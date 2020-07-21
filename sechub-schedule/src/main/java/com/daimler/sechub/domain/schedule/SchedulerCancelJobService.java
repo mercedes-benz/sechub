@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
-import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -78,7 +76,6 @@ public class SchedulerCancelJobService {
         cancelBatchJobService.stopAllRunningBatchJobsForSechubJobUUID(jobUUID);
         markJobAsCanceled(secHubJob);
 
-        MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
         LOG.info("job {} has been canceled", jobUUID);
 
         sendJobCanceled(secHubJob, ownerEmailAddress);
