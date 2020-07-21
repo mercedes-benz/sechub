@@ -4,6 +4,7 @@ package com.daimler.sechub.domain.schedule.batch;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameters;
@@ -16,6 +17,7 @@ import com.daimler.sechub.domain.schedule.ExecutionResult;
 import com.daimler.sechub.domain.schedule.SchedulingConstants;
 import com.daimler.sechub.domain.schedule.batch.BatchConfiguration.BatchJobExecutionScope;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.BatchJobMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
@@ -55,10 +57,17 @@ class ScanExecutionTasklet implements Tasklet {
 		LOG.debug("executing with parameters:{}", jobParameters);
 
 		String secHubJobUUIDAsString = jobParameters.getString(SchedulingConstants.BATCHPARAM_SECHUB_UUID);
+
 		UUID secHubJobUUID = UUID.fromString(secHubJobUUIDAsString);
 		try {
 			ScheduleSecHubJob sechubJob = scope.getSecHubJobRepository().getOne(secHubJobUUID);
 			String secHubConfiguration = sechubJob.getJsonConfiguration();
+			
+			/* own thread so MDC.put necessary */
+			MDC.clear();
+			MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, secHubJobUUIDAsString);
+			MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID,sechubJob.getProjectId());
+			
 			LOG.info("Executing sechub job: {}", secHubJobUUIDAsString);
 
 			/* we send no a synchronous SCAN event */
@@ -85,6 +94,9 @@ class ScanExecutionTasklet implements Tasklet {
 			markSechHubJobFailed(secHubJobUUID);
 			sendJobFailed(secHubJobUUID);
 
+		}finally {
+		    /* cleanup MDC */
+		    MDC.clear();
 		}
 	}
 

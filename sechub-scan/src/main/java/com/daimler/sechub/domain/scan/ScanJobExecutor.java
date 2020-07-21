@@ -5,8 +5,10 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.daimler.sechub.sharedkernel.Abandonable;
+import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.NullProgressMonitor;
 import com.daimler.sechub.sharedkernel.ProgressMonitor;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionAbandonedException;
@@ -40,8 +42,9 @@ class ScanJobExecutor {
     }
 
     public void execute() throws SecHubExecutionException {
-        CanceableScanJobRunnable canceableJobRunner = new CanceableScanJobRunnable();
-        Thread canceableJobThread = new Thread(canceableJobRunner, "SecHub-exec-" + context.getTraceLogId().getPlainId() + "-" + progress.getId());
+        String jobUUID = context.getTraceLogId().getPlainId();
+        CanceableScanJobRunnable canceableJobRunner = new CanceableScanJobRunnable(jobUUID);
+        Thread canceableJobThread = new Thread(canceableJobRunner, "SecHub-exec-" + jobUUID + "-" + progress.getId());
         canceableJobRunner.executorThread = canceableJobThread;
 
         UUID sechubJobUUID = context.getSechubJobUUID();
@@ -77,8 +80,6 @@ class ScanJobExecutor {
     }
 
     private void handleErrors(SecHubExecutionException exception) throws SecHubExecutionException {
-
-        
         if (exception == null) {
             /* no failure - so just return */
             return;
@@ -129,16 +130,26 @@ class ScanJobExecutor {
 
         private SecHubExecutionException exception;
         public Thread executorThread;
-
+        private String sechubJobUUID;
+        
+        private CanceableScanJobRunnable(String sechubJobUUID) {
+            this.sechubJobUUID=sechubJobUUID;
+        }
         @Override
         public void run() {
+            /* runs in own thread so we set job uuid to MDC here !*/
             try {
+                MDC.clear();
+                MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID);
+
                 scanService.codeScanProductExecutionService.executeProductsAndStoreResults(context);
                 scanService.webScanProductExecutionService.executeProductsAndStoreResults(context);
                 scanService.infraScanProductExecutionService.executeProductsAndStoreResults(context);
 
             } catch (SecHubExecutionException e) {
                 this.exception = e;
+            }finally {
+                MDC.clear();
             }
         }
 
