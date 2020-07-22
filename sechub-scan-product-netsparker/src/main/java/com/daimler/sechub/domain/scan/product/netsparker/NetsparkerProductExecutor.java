@@ -94,6 +94,11 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 	public ProductIdentifier getIdentifier() {
 		return ProductIdentifier.NETSPARKER;
 	}
+    
+    @Override
+    public int getVersion() {
+        return 1;
+    }
 
 
 }

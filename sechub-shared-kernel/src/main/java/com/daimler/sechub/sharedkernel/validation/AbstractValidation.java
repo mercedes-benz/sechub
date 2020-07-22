@@ -101,18 +101,6 @@ public abstract class AbstractValidation<T> implements Validation<T> {
     }
 
     /**
-     * Validates given object is not <code>null</code>
-     * 
-     * @param context
-     */
-    protected void validateNotNull(ValidationContext<?> context, String message, Object object) {
-        if (object != null) {
-            return;
-        }
-        addErrorMessage(context,"May not be null:" + message);
-    }
-
-    /**
      * Adds error message to context. Will use configured error prefix
      * - when error prefix is "hello:" and message is "world" the error message will be "hello:world"
      * @param context

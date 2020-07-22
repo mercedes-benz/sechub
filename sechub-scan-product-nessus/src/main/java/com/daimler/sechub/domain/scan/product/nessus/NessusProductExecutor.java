@@ -31,40 +31,39 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 @Service
 public class NessusProductExecutor extends AbstractInfrastructureScanProductExecutor<NessusInstallSetup> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(NessusProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NessusProductExecutor.class);
 
-	@Value("${sechub.adapter.nessus.proxy.hostname:}")
-	@MustBeDocumented("Proxy hostname for nessus server connection, when empty no proxy is used. When not empty proxy port must be set too!")
-	String proxyHostname;
+    @Value("${sechub.adapter.nessus.proxy.hostname:}")
+    @MustBeDocumented("Proxy hostname for nessus server connection, when empty no proxy is used. When not empty proxy port must be set too!")
+    String proxyHostname;
 
-	@Value("${sechub.adapter.nessus.proxy.port:0}")
-	@MustBeDocumented("Proxy port for nessus server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly")
-	int proxyPort;
+    @Value("${sechub.adapter.nessus.proxy.port:0}")
+    @MustBeDocumented("Proxy port for nessus server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly")
+    int proxyPort;
 
+    @Value("${sechub.adapter.nessus.scanresultcheck.period.minutes:-1}")
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    private int scanResultCheckPeriodInMinutes;
 
-	@Value("${sechub.adapter.nessus.scanresultcheck.period.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
-	private int scanResultCheckPeriodInMinutes;
+    @Value("${sechub.adapter.nessus.scanresultcheck.timeout.minutes:-1}")
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    private int scanResultCheckTimeOutInMinutes;
 
-	@Value("${sechub.adapter.nessus.scanresultcheck.timeout.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
-	private int scanResultCheckTimeOutInMinutes;
+    @Autowired
+    NessusAdapter nessusAdapter;
 
-	@Autowired
-	NessusAdapter nessusAdapter;
+    @Autowired
+    NessusInstallSetup installSetup;
 
-	@Autowired
-	NessusInstallSetup installSetup;
-
-	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NessusInstallSetup setup, TargetRegistryInfo data)
-			throws Exception {
-		if (data.getURIs().isEmpty() && data.getIPs().isEmpty()) {
-			return Collections.emptyList();
-		}
-		TargetType targetType = data.getTargetType();
-		LOG.debug("Trigger nessus adapter execution for target type {} and setup {} ", targetType ,setup);
-		/* @formatter:off */
+    @Override
+    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NessusInstallSetup setup,
+            TargetRegistryInfo data) throws Exception {
+        if (data.getURIs().isEmpty() && data.getIPs().isEmpty()) {
+            return Collections.emptyList();
+        }
+        TargetType targetType = data.getTargetType();
+        LOG.debug("Trigger nessus adapter execution for target type {} and setup {} ", targetType, setup);
+        /* @formatter:off */
 		NessusAdapterConfig nessusConfig = NessusConfig.builder().
 				configure(createAdapterOptionsStrategy(context)).
 				configure(new TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(setup,targetType)).
@@ -78,36 +77,39 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 				setTargetIPs(data.getIPs()).
 				setTargetURIs(data.getURIs()).build();
 		/* @formatter:on */
-		String projectId = context.getConfiguration().getProjectId();
+        String projectId = context.getConfiguration().getProjectId();
 
-		/* execute nessus by adapter and return product result */
-		String xml = nessusAdapter.start(nessusConfig,executorContext.getCallBack());
-		ProductResult result = new ProductResult(context.getSechubJobUUID(),projectId, getIdentifier(), xml);
-		return Collections.singletonList(result);
-	}
+        /* execute nessus by adapter and return product result */
+        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallBack());
+        ProductResult result = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
+        return Collections.singletonList(result);
+    }
 
-	@Override
-	public ProductIdentifier getIdentifier() {
-		return ProductIdentifier.NESSUS;
-	}
+    @Override
+    public ProductIdentifier getIdentifier() {
+        return ProductIdentifier.NESSUS;
+    }
 
-	@Override
-	protected NessusInstallSetup getInstallSetup() {
-		return installSetup;
-	}
+    @Override
+    protected NessusInstallSetup getInstallSetup() {
+        return installSetup;
+    }
 
-	@Override
-	protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
-		if (config==null) {
-			return Collections.emptyList();
-		}
-		Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
-		if (! infraScan.isPresent()) {
-			return Collections.emptyList();
-		}
-		return infraScan.get().getIps();
-	}
+    @Override
+    protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
+        if (config == null) {
+            return Collections.emptyList();
+        }
+        Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
+        if (!infraScan.isPresent()) {
+            return Collections.emptyList();
+        }
+        return infraScan.get().getIps();
+    }
 
-
+    @Override
+    public int getVersion() {
+        return 1;
+    }
 
 }

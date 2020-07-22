@@ -27,12 +27,12 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
+public class PDSInfraScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSInfraScanProductExecutor.class);
 
     @Autowired
-    PDSAdapter netsparkerAdapter;
+    PDSAdapter pdsAdapter;
 
     @Autowired
     PDSInstallSetup installSetup;
@@ -51,13 +51,10 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
             return Collections.emptyList();
         }
         TargetType targetType = info.getTargetType();
-        LOG.debug("Trigger netsparker adapter execution for target {} and setup {} ", targetType, setup);
+        LOG.debug("Trigger pds infra scan adapter execution for target {} and setup {} ", targetType, setup);
 
         List<ProductResult> results = new ArrayList<>();
-        /*
-         * NETSPARKER is not able to scan multiple targets, so we start NETSPARKER
-         * multiple times for each target URI
-         */
+        
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
 		    
@@ -80,8 +77,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 					setTargetURI(targetURI).build();
 			/* @formatter:on */
 
-            /* execute NETSPARKER by adapter and return product result */
-            String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
+            /* execute PDS by adapter and return product result */
+            String xml = pdsAdapter.start(netsparkerConfig, executorContext.getCallBack());
 
             ProductResult currentProductResult = executorContext.getCurrentProductResult();
             currentProductResult.setResult(xml);
@@ -93,7 +90,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
     @Override
     public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.PDS_WEBSCAN;
+        return ProductIdentifier.PDS_INFRASCAN;
     }
 
     @Override

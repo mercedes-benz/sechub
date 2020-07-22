@@ -144,4 +144,9 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         return installSetup;
     }
 
+    @Override
+    public int getVersion() {
+        return 1;
+    }
+
 }

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.api.PDSIntProductIdentifier;
+import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 
 /**
  * Integration test directly using REST API of integration test PDS (means
@@ -42,7 +42,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID sechubJobUUID = UUID.randomUUID();
         
         /* execute */
-        String result = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String result = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         
         /* test */
         assertPDSJobCreateResult(result).hasJobUUID().getJobUUID();
@@ -57,7 +57,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute */
@@ -75,7 +75,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute */
@@ -94,7 +94,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
         
@@ -116,7 +116,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID sechubJobUUID = UUID.randomUUID();
         
         /* execute */
-        String result = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String result = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         
         /* test */
         assertPDSJobCreateResult(result).hasJobUUID().getJobUUID();
@@ -131,7 +131,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute */
@@ -149,7 +149,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute */
@@ -168,7 +168,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         asPDSUser(PDS_ADMIN).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
         
@@ -193,7 +193,7 @@ public class DirectPDSAPIJobScenario6IntTest {
         UUID sechubJobUUID = UUID.randomUUID();
         
         /* execute + test */
-        expectHttpFailure(()-> asPDSUser(ANONYMOUS).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN), HttpStatus.UNAUTHORIZED);
+        expectHttpFailure(()-> asPDSUser(ANONYMOUS).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN), HttpStatus.UNAUTHORIZED);
         
         /* @formatter:on */
     }
@@ -205,7 +205,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute + test */
@@ -220,7 +220,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
         /* execute + test */
@@ -236,7 +236,7 @@ public class DirectPDSAPIJobScenario6IntTest {
 
         UUID sechubJobUUID = UUID.randomUUID();
         
-        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntProductIdentifier.PDS_INTTEST_CODESCAN);
+        String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
         
         /* execute + test */
