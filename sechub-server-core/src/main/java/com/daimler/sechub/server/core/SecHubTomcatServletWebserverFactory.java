@@ -12,9 +12,9 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SecHubTomcatServletWebserFactory implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
+public class SecHubTomcatServletWebserverFactory implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecHubTomcatServletWebserFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecHubTomcatServletWebserverFactory.class);
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxFileSizeAsString;
@@ -24,7 +24,7 @@ public class SecHubTomcatServletWebserFactory implements WebServerFactoryCustomi
         /* @formatter:off 
           
            we let Tomcat always swallow one more megabyte than spring servlet filter does
-           so we will get not SocketConnectionExceptions sometimes instad dedicated exceptions
+           so we will get not SocketConnectionExceptions sometimes instead dedicated exceptions
            as defined in SecHubExceptionHandler 
            
            @formatter:on*/

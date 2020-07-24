@@ -74,6 +74,7 @@ public class FileUploadSizeScenario2IntTest {
 		/* test */
 		if (tooBig) {
 			expected.expect(NotAcceptable.class);
+			expected.expectMessage("File upload maximum reached. Please reduce your upload file size.");
 		}else {
 			/* nothing - means expected no exception at all!*/
 		}
