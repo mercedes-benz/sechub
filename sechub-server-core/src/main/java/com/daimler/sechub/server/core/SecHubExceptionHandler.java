@@ -15,27 +15,27 @@ public class SecHubExceptionHandler {
 
     @ExceptionHandler(SizeLimitExceededException.class)
     @ResponseBody
-    public Exception handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
+    public String handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseBody
-    public Exception handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
+    public String handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
-    
+
     }
-    
-    private Exception commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {
+
+    private String commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {
         if (response == null) {
             throw new IllegalStateException("response missing");
         }
         if (ex == null) {
             throw new IllegalStateException("exception missing");
         }
-        
+
         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-        
-        return ex;
+
+        return "File upload maximum reached. Please reduce your upload file size.";
     }
 }
