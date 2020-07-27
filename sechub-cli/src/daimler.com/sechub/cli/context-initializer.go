@@ -4,6 +4,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	sechubUtil "daimler.com/sechub/util"
 )
@@ -46,6 +47,12 @@ func loadConfigFile(context *Context) {
 	if configPtr.projectID == "" {
 		debugNotDefinedAsOption(context, "projectID", configFromFile.ProjectID)
 		configPtr.projectID = configFromFile.ProjectID
+	}
+
+	lowercased := strings.ToLower(configPtr.user)
+	if lowercased != configPtr.user {
+		sechubUtil.LogWarning("Given user id did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending")
+		configPtr.user = lowercased
 	}
 
 	context.sechubConfig = &configFromFile
