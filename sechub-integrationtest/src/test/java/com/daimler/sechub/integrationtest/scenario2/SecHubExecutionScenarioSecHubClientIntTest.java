@@ -34,6 +34,29 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 	@Rule
 	public Timeout timeOut = Timeout.seconds(60 * 5);
 
+	
+	@Test
+    public void sechub_client_is_able_to_trigger_sourcescan_asynchronous_even_when_user_name_is_uppercased() {
+        /* @formatter:off */
+
+        /* prepare */
+        as(SUPER_ADMIN).
+            assignUserToProject(USER_1, PROJECT_1);
+
+        assertUser(USER_1).
+            doesExist().
+            isAssignedToProject(PROJECT_1);
+
+        /* execute + test */
+        as(USER_1.clonedButWithUpperCasedId()).
+            withSecHubClient().
+                startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN).
+                assertJobTriggered();
+
+        /* @formatter:on */
+
+    }
+	
 	@Test
 	public void sechub_client_is_able_to_trigger_sourcescan_asynchronous() {
 		/* @formatter:off */
