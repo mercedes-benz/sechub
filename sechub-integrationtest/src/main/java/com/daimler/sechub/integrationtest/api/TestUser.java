@@ -50,4 +50,13 @@ public class TestUser implements UserContext {
 		return "TestUser [userId=" + userId + ", apiToken=" + apiToken + ", email=" + email + "]";
 	}
 
+	/**
+	 * Create a clone of this instance, but with uppercased user id
+	 * @return new test user object - same as origin (mail, apitoken) but user id is uppercased 
+	 */
+    public TestUser clonedButWithUpperCasedId() {
+        TestUser copy = new TestUser(getUserId().toUpperCase(),getApiToken(),getEmail());
+        return copy;
+    }
+
 }
