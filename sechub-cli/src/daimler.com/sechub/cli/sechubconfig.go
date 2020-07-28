@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -84,11 +85,22 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	}
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
-	   so we do not have passwords etc. accidently leaked */
-	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
+	   so we do not have passwords etc. accidently leaked. We limit read to maximum allowed bytes */
+	context.inputForContentProcessing, err = ioutil.ReadAll(io.LimitReader(jsonFile, MaximumBytesOfSecHubConfig))
+
 	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
+	}
+
+	if len(context.inputForContentProcessing) >= MaximumBytesOfSecHubConfig {
+		sechubUtil.LogError("Given SecHub json config file is too big!")
+		os.Exit(ExitCodeInvalidConfigFile)
+	}
+
+	if !sechubUtil.IsValidJSON(context.inputForContentProcessing) {
+		sechubUtil.LogError("Given SecHub json config file is not correct JSON!")
+		os.Exit(ExitCodeInvalidConfigFile)
 	}
 
 	data, _ := envToMap()
