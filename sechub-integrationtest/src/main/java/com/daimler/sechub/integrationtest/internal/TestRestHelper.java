@@ -55,7 +55,7 @@ public class TestRestHelper {
 		return LAST_DATA;
 	}
 
-	public TestRestHelper(UserContext user,RestHelperTarget target) {
+	public TestRestHelper(UserContext user, RestHelperTarget target) {
 		this.template = createTrustAllRestTemplate(user);
 		this.template.setErrorHandler(createErrorHandler());
 	}

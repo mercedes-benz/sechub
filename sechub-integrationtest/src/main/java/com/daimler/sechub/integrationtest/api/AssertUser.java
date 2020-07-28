@@ -19,6 +19,8 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import junit.framework.AssertionFailedError;
+
 public class AssertUser extends AbstractAssert {
 
     private TestUser user;
@@ -28,7 +30,30 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser doesNotExist() {
-        expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchUserDetails(), user.getUserId() + " found!");
+        return doesNotExist(1);
+    }
+    
+    /**
+     * Check user does exists 
+     * @param tries - amount of retries . Every retry will wait 1 second
+     * @return
+     */
+    public AssertUser doesNotExist(int tries) {
+        AssertionFailedError failure = null;
+        for (int i=0;i<tries && failure==null;i++) {
+            try {
+                if (i>0) {
+                    /* we wait before next check */
+                    TestAPI.waitSeconds(1);
+                }
+                expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchUserDetails(), user.getUserId() + " found!");
+            }catch(AssertionFailedError e) {
+                failure=e;
+            }
+        }
+        if (failure!=null) {
+            throw failure;
+        }
         return this;
     }
 

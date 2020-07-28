@@ -12,10 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.test.ExampleConstants;
 
 /**
  * Abstract base scenario implementation
@@ -57,26 +56,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	 * @return
 	 */
 	protected static TestProject createTestProject(Class<? extends AbstractSecHubServerTestScenario> clazz, String projectIdPart, boolean createWhiteList) {
-		String projectId = clazz.getSimpleName().toLowerCase() + "_" + projectIdPart;
-		TestProject testProject;
-		if (createWhiteList) {
-
-			String whiteListURL = "http://locahost/" + projectId;
-			List<String> whitelist= new ArrayList<>();
-			whitelist.add(whiteListURL);
-
-			for (IntegrationTestMockMode mode: IntegrationTestMockMode.values()) {
-				if (mode.isTargetUsableAsWhitelistEntry()) {
-					whitelist.add(mode.getTarget());
-				}
-			}
-
-			// we additinally add long running url because its configured in webscan and for
-			// infrascan mocks to have longer runs*/
-			testProject = new TestProject(projectId, whitelist.toArray(new String[whitelist.size()]));
-		}else {
-			testProject = new TestProject(projectId);
-		}
+		TestProject testProject = new TestProject(projectIdPart, createWhiteList);
 
 		List<TestProject> testProjects = getTestProjects(clazz);
 		testProjects.add(testProject);
@@ -94,8 +74,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	 * @return
 	 */
 	protected static TestUser createTestUser(Class<? extends AbstractSecHubServerTestScenario> clazz, String userIdPart) {
-		String userid = clazz.getSimpleName().toLowerCase() + "_" + userIdPart;
-		TestUser testUser = new TestUser(userid, null, userid + "@"+ExampleConstants.URI_TARGET_SERVER);
+		TestUser testUser = new TestUser(userIdPart, null);
 
 		List<TestUser> testUsers = getTestUsers(clazz);
 		testUsers.add(testUser);
@@ -126,6 +105,19 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 			dropExistingSignups(user);
 		}
 
+	}
+	
+	public void prepareTestData() {
+	    List<TestUser> testUsers = getTestUsers(getClass());
+	    for (TestUser user : testUsers) {
+            LOG.debug("recalculate user:{}", user);
+            user.prepare(this);
+        }
+	    List<TestProject> testProjects = getTestProjects(getClass());
+        for (TestProject project : testProjects) {
+            LOG.debug("recalculate project:{}", project);
+            project.prepare(this);
+        }
 	}
 
 	protected TestRestHelper getRestHelper() {
@@ -158,7 +150,8 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	}
 
 	private void dropExistingSignups(TestUser user) {
-		try {
+	    
+	    try {
 			getRestTemplate().delete(getContext().getUrlBuilder().buildAdminDeletesUserSignUpUrl(user.getUserId()));
 		} catch (HttpClientErrorException e) {
 			int statusCode = e.getStatusCode().value();
@@ -168,6 +161,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 				/* ok did not exist before... so no delete possible but still okay */
 			}
 		}
+	    TestAPI.assertUser(user).doesNotExist();
 	}
 
 	private void dropExistingProject(TestProject project) {
@@ -181,6 +175,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 				/* ok did not exist before... so no delete possible but still okay */
 			}
 		}
+		TestAPI.assertProject(project).doesNotExist(3); // we try maximum 3 times (waits 1 second)
 	}
 
 	private void dropExistingUser(TestUser user) {
@@ -194,17 +189,19 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 				/* ok did not exist before... so no delete possible but still okay */
 			}
 		}
+		TestAPI.assertUser(user).doesNotExist(3); // we try maximum 3 times (waits 1 second)
 	}
 
 	@Override
 	public final void prepare(String testClass, String testMethod) {
 		prepareImpl();
 	}
-
+	
 	protected final void prepareImpl() {
 
 	    boolean resetEventInspection=true;
 	    boolean resetMails = true;
+	    boolean cleanNecessary=true;
 	    boolean initializeNecessary=true;
 	    
 	    if (this instanceof StaticTestScenario) {
@@ -212,7 +209,20 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	        initializeNecessary = sts.isInitializationNecessary();
 	        resetEventInspection= sts.isEventResetNecessary();
 	        resetMails=sts.isEmailResetNecessary();
+	        cleanNecessary=initializeNecessary;
+	    }else if (this instanceof CleanScenario) {
+	        initializeNecessary=true;
+	        cleanNecessary=true;
+	    }else if (this instanceof GrowingScenario) {
+	        initializeNecessary=true;
+	        cleanNecessary=false;
+	        
+	        GrowingScenario growingScenario = (GrowingScenario) this;
+	        growingScenario.grow();
+	        
 	    }
+	    
+	    prepareTestData();
 	    
 	    if (resetEventInspection) {
 	        resetAndStopEventInspection();
@@ -220,7 +230,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	    if (resetMails) {
 	        resetEmails();
 	    }
-		if (initializeNecessary) {
+		if (cleanNecessary) {
 		    LOG.info("############################################################################################################");
 		    LOG.info("## [CLEAN] remove old test data");
 		    LOG.info("############################################################################################################");
