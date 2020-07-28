@@ -13,7 +13,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
  * application. In future there can be made a seperation into different
  * springapplications to become more "microservice" like.<br>
  * <br>
- * When doing separtion we need to change the behaviour / implementation of
+ * When doing separation we need to change the behaviour / implementation of
  * {@link DomainMessageService}
  * 
  * @author Albert Tregnaghi

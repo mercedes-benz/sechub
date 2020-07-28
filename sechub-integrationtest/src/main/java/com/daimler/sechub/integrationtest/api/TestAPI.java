@@ -52,29 +52,29 @@ public class TestAPI {
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser ANONYMOUS = new TestUser();
+    public static final TestUser ANONYMOUS = new FixedTestUser();
 
     /**
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser SUPER_ADMIN = new TestUser("int-test_superadmin", "int-test_superadmin-pwd",
+    public static final TestUser SUPER_ADMIN = new FixedTestUser("int-test_superadmin", "int-test_superadmin-pwd",
             "superadmin@" + ExampleConstants.URI_SECHUB_SERVER);
     /**
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser ONLY_USER = new TestUser("int-test_onlyuser", "int-test_onlyuser-pwd", "onlyuser@" + ExampleConstants.URI_TARGET_SERVER);
+    public static final TestUser ONLY_USER = new FixedTestUser("int-test_onlyuser", "int-test_onlyuser-pwd", "onlyuser@" + ExampleConstants.URI_TARGET_SERVER);
     
     /**
      * Technical user used for communication with integration test PDS
      */
-    public static final TestUser PDS_TECH_USER = new TestUser("pds-inttest-techuser", "pds-inttest-apitoken", "pds_techuser@" + ExampleConstants.URI_TARGET_SERVER);
+    public static final TestUser PDS_TECH_USER = new FixedTestUser("pds-inttest-techuser", "pds-inttest-apitoken", "pds_techuser@" + ExampleConstants.URI_TARGET_SERVER);
 
     /**
      * Admin account used for communication with integration test PDS
      */
-    public static final TestUser PDS_ADMIN = new TestUser("pds-inttest-admin", "pds-inttest-apitoken", "pds_admin@" + ExampleConstants.URI_TARGET_SERVER);
+    public static final TestUser PDS_ADMIN = new FixedTestUser("pds-inttest-admin", "pds-inttest-apitoken", "pds_admin@" + ExampleConstants.URI_TARGET_SERVER);
 
     
     private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;

@@ -42,7 +42,7 @@ public class DeveloperAdministration {
         this.provider = provider;
         this.errorHandler = errorHandler;
         this.userContext = new AdminUserContext();
-        this.anonymousContext = new AnonymousTestUser(null, null);
+        this.anonymousContext = new AnonymousTestUser(null);
         this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
         this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler, anonymousContext);
     }

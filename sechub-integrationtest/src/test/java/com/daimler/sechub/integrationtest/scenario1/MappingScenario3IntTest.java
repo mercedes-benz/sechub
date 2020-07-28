@@ -29,6 +29,8 @@ public class MappingScenario3IntTest {
             throws IOException {
 
         /* prepare */
+        String projectId = PROJECT_1.getProjectId();
+
         // cleanup former mapping
         changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId());
         changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId());
@@ -40,11 +42,11 @@ public class MappingScenario3IntTest {
 
         /* now prepare parameters for execution:*/
         MappingData mappingData1 = new MappingData();
-        MappingEntry entry = new MappingEntry("scenario3_project1", "123456", "");
+        MappingEntry entry = new MappingEntry(projectId, "123456", "");
         mappingData1.getEntries().add(entry);
         
         MappingData mappingData2 = new MappingData();
-        MappingEntry entry2 = new MappingEntry("scenario3_project1", "replacedTeamId", "");
+        MappingEntry entry2 = new MappingEntry(projectId, "replacedTeamId", "");
         mappingData2.getEntries().add(entry2);
 
         /* @formatter:off */

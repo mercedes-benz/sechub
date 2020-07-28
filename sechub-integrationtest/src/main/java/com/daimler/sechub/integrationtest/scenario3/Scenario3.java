@@ -3,7 +3,7 @@ package com.daimler.sechub.integrationtest.scenario3;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
 
 /**
  * In this scenario following is automatically initialized at start (old data removed as well)
@@ -16,9 +16,11 @@ import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScena
  * @author Albert Tregnaghi
  *
  */
-public class Scenario3 extends AbstractSecHubServerTestScenario {
+public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
 
-	/**
+    public static final String PREFIX_MAIN_ID = "s03";
+
+    /**
 	 * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
 	 */
 	public static final TestUser USER_1 = createTestUser(Scenario3.class, "user1");
@@ -27,6 +29,7 @@ public class Scenario3 extends AbstractSecHubServerTestScenario {
 	 * Project 1 is created on startup, and has {@link #USER_1} assigned
 	 */
 	public static final TestProject PROJECT_1 = createTestProject(Scenario3.class, "project1");
+
 
 
 	@Override
@@ -53,5 +56,10 @@ public class Scenario3 extends AbstractSecHubServerTestScenario {
 			;
 		/* @formatter:on */
 	}
+
+    @Override
+    public String getPrefixMainId() {
+        return PREFIX_MAIN_ID;
+    }
 
 }
