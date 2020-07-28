@@ -27,6 +27,8 @@ public enum ConfigurationSetup {
     SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true),
 
     OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
+    
+    LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
 
     ;
 
@@ -75,6 +77,15 @@ public enum ConfigurationSetup {
        return ConfigurationSetup.OUTPUT_FONT_SETTINGS.getStringValue(defaultSetting);
     }
 
+    /**
+     * 
+     * @return <code>true</code> when nimbus look and feel shall be used - per default not, because
+     *  NIMBUS leads to problem with JDialog on Linux GTK 
+     */
+    public static boolean isNimbusLookAndFeelEnabled() {
+        return Boolean.getBoolean(ConfigurationSetup.LOOK_AND_FEEL.getSystemPropertyid());
+    }
+    
     /**
      * Resolves string value of configuration and fails when not configured
      * 
