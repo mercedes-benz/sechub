@@ -4,6 +4,8 @@ package com.daimler.sechub.integrationtest.api;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assume;
@@ -48,6 +50,8 @@ public class IntegrationTestSetup implements TestRule {
 
     private static Boolean testServerStatusCache = null;
     private static Boolean testPDSStatusCache;
+    
+    private static final Map<Class<? extends TestScenario>,TestScenario> scenarioClassToInstanceMap = new LinkedHashMap<>();
 
     /**
      * The next lines are absolute necessary stuff - why? Unfortunately apache http
@@ -99,13 +103,15 @@ public class IntegrationTestSetup implements TestRule {
     }
 
     public static IntegrationTestSetup forScenario(Class<? extends TestScenario> scenarioClazz) {
-        TestScenario scenario;
-        try {
-            scenario = scenarioClazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException("Cannot create scenario instance for:" + scenarioClazz, e);
-        }
+        TestScenario scenario = scenarioClassToInstanceMap.computeIfAbsent(scenarioClazz, clazz -> {
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new IllegalStateException("Cannot create scenario instance for:" + scenarioClazz, e);
+            }
+        });
         return new IntegrationTestSetup(scenario);
+        
     }
 
     @Override

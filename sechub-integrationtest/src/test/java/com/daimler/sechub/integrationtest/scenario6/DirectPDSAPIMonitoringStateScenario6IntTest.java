@@ -31,7 +31,7 @@ public class DirectPDSAPIMonitoringStateScenario6IntTest {
     public void pds_admin_can_fetch_execution_state() {
         /* execute */
         String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
-        System.out.println(json);
+        
         /* test */
         /* @formatter:off */
         assertJSON(json).

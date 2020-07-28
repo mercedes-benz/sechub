@@ -14,6 +14,8 @@ import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import junit.framework.AssertionFailedError;
+
 public class AssertProject extends AbstractAssert {
 
     private TestProject project;
@@ -28,7 +30,30 @@ public class AssertProject extends AbstractAssert {
      * @return
      */
     public AssertProject doesNotExist() {
-        expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetails(), project.getProjectId() + " found!");
+        return doesNotExist(1);
+    }
+    
+    /**
+     * Check user does exists 
+     * @param tries - amount of retries . Every retry will wait 1 second
+     * @return
+     */
+    public AssertProject doesNotExist(int tries) {
+        AssertionFailedError failure = null;
+        for (int i=0;i<tries && failure==null;i++) {
+            try {
+                if (i>0) {
+                    /* we wait before next check */
+                    TestAPI.waitSeconds(1);
+                }
+                expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetails(), project.getProjectId() + " found!");
+            }catch(AssertionFailedError e) {
+                failure=e;
+            }
+        }
+        if (failure!=null) {
+            throw failure;
+        }
         return this;
     }
 

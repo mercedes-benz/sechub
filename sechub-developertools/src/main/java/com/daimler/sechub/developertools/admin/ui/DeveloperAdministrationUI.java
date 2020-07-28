@@ -60,7 +60,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     public DialogUI getDialogUI() {
         return dialogUI;
     }
-    
+
     @Override
     public PDSConfigurationUI getPDSConfigurationUI() {
         return pdsConfigurationUI;
@@ -90,7 +90,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
         glassPaneUI = new GlassPaneUI(this, frame);
         dialogUI = new DialogUI(frame);
         pdsConfigurationUI = new PDSConfigurationUI(this);
-        
+
         contentPane.add(outputPanelUI.getPanel(), BorderLayout.CENTER);
         JPanel northPanel = new JPanel(new BorderLayout());
 
@@ -99,7 +99,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
 
         northPanel.add(credentialUI.getPanel(), BorderLayout.NORTH);
         northPanel.add(commandPanelUI.getToolBar(), BorderLayout.SOUTH);
-        
+
         frame.setJMenuBar(commandPanelUI.getMenuBar());
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -109,11 +109,14 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     }
 
     private void useNimbusLookAndFeel() {
-//        try {
-//            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-//        } catch (Exception e) {
-//            LOG.error("NimbusLookAndFeel init failed", e);
-//        }
+        if (!ConfigurationSetup.isNimbusLookAndFeelEnabled()) {
+            return;
+        }
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            LOG.error("NimbusLookAndFeel init failed", e);
+        }
     }
 
     @Override
@@ -161,6 +164,5 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     public JFrame getFrame() {
         return frame;
     }
-
 
 }

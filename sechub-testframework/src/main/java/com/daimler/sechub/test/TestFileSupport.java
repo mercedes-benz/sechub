@@ -78,6 +78,9 @@ public class TestFileSupport {
         }
     }
 
+    /**
+     * @return detected gradle root folder
+     */
     public File getRootFolder() {
         return detectedGradleRoot;
     }
