@@ -109,11 +109,11 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     }
 
     private void useNimbusLookAndFeel() {
-        try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        } catch (Exception e) {
-            LOG.error("NimbusLookAndFeel init failed", e);
-        }
+//        try {
+//            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+//        } catch (Exception e) {
+//            LOG.error("NimbusLookAndFeel init failed", e);
+//        }
     }
 
     @Override

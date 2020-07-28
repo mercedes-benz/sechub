@@ -66,6 +66,7 @@ public class DialogUI {
             }
         }
 
+        System.out.println("frame="+frame);
         int result = fileChooser.showOpenDialog(frame);
         if (result != JFileChooser.APPROVE_OPTION) {
             return null;
