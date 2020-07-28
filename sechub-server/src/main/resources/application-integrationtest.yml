@@ -42,7 +42,7 @@ sechub:
     accepted: 
       cpu: 
         average:
-           max: 5 
+           max: 8.0 # Full throttle for integration tests...
 logging:
  level:
    com.daimler.sechub: DEBUG
