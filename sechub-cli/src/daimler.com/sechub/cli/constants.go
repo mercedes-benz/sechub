@@ -42,6 +42,9 @@ const ExitCodeMissingConfigParts = 7
 // ExitCodeIOError and http error has occurred
 const ExitCodeIOError = 8
 
+// ExitCodeInvalidConfigFile means config file is not in expected format
+const ExitCodeInvalidConfigFile = 9
+
 /* ---------------------------------- */
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
@@ -79,3 +82,10 @@ const ActionExecuteInteractiveUnmarkFalsePositives = "interactiveUnmarkFalsePosi
 
 // ExecutionStateEnded sechub job has succesfully finished
 const ExecutionStateEnded = "ENDED"
+
+/* ---------------------------------- */
+/* -------- Validation--------------- */
+/* ---------------------------------- */
+
+// MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
+const MaximumBytesOfSecHubConfig = 20000

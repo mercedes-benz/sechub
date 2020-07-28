@@ -46,7 +46,7 @@ func ReadAllowedItemFromConsole(prompt string, itemList []ConsoleInputItem) (res
 
 // ReadFromConsole - read a string from Console/stdin
 func ReadFromConsole() (result string, err error) {
-	reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReaderSize(os.Stdin, 255) // we limit to 255 characters
 
 	result, err = reader.ReadString('\n')
 	return strings.TrimSuffix(result, "\n"), err
