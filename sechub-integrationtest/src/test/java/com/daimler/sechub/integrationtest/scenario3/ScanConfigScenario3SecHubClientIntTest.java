@@ -37,7 +37,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
 
 		/* prepare*/
 	    changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
-	            new MappingEntry("scenario3_.*", "200001", ""),
+	            new MappingEntry(Scenario3.PREFIX_MAIN_ID+"_.*", "200001", ""),
 	            new MappingEntry(".*", "200002", "")
 	            
 	            );

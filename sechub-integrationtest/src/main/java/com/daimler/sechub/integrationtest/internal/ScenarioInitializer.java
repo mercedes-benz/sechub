@@ -18,10 +18,6 @@ public class ScenarioInitializer {
 	private static final int DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION = 3;
 	private static final Logger LOG = LoggerFactory.getLogger(ScenarioInitializer.class);
 
-	ScenarioInitializer() {
-
-	}
-
 	public ScenarioInitializer createProject(TestProject project, TestUser owner) {
 		TestAPI.as(TestAPI.SUPER_ADMIN).createProject(project,owner.getUserId());
 		return this;
@@ -34,6 +30,7 @@ public class ScenarioInitializer {
 	 * @return
 	 */
 	public ScenarioInitializer createUser(TestUser user) {
+	    
 		LOG.info("create user:{}",user);
 		assertUser(user).doesNotExist();
 

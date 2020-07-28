@@ -7,10 +7,14 @@ package com.daimler.sechub.integrationtest.api;
  * @author Albert Tregnaghi
  *
  */
-public class AnonymousTestUser extends TestUser{
+public class AnonymousTestUser extends FixedTestUser{
 
-	public AnonymousTestUser(String userid, String email) {
-		super(userid,"",email);
+	public AnonymousTestUser(String userid) {
+		super(userid,"",null);
 	}
+	
+	public AnonymousTestUser(String userid, String specialMail) {
+        super(userid,"", specialMail);
+    }
 	
 }
