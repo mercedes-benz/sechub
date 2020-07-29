@@ -34,7 +34,9 @@ More details about generation can be found inside `sechub-techdoc` document. The
 
 ## Create documentation output files and generated content
 When you want to create the documentation files and also the generated content, just enter at repository root folder:
-`gradlew documentation`.
+
+- `./gradlew documentation` _(if you have already called `./gradlew integrationtest` before at least one time)_ otherwise call
+- `./gradlew integrationtest documentation` _(this generate some runtime information used inside documentation)_
 
 After the build you find `HTML` and also `PDF` output files at `sechub-doc/build/asciidoc/`
 
