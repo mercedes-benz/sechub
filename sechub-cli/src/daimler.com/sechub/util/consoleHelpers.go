@@ -5,6 +5,7 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -46,7 +47,7 @@ func ReadAllowedItemFromConsole(prompt string, itemList []ConsoleInputItem) (res
 
 // ReadFromConsole - read a string from Console/stdin
 func ReadFromConsole() (result string, err error) {
-	reader := bufio.NewReaderSize(os.Stdin, 255) // we limit to 255 characters
+	reader := bufio.NewReaderSize(io.LimitReader(os.Stdin, 255),256) // we alwas limit to 255 characters
 
 	result, err = reader.ReadString('\n')
 	return strings.TrimSuffix(result, "\n"), err
