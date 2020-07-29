@@ -506,6 +506,7 @@ public class TestAPI {
      * 
      */
     public static void ensureNoLongerJobExecution() {
+        cancelAllScanJobs();
         removeAllJobsNotRunning();
         waitUntilNoLongerJobsRunning();
     }

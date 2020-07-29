@@ -23,7 +23,7 @@ public class SecHubExecutionScenario2IntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(10);
+	public Timeout timeOut = Timeout.seconds(30);
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Start scan job ...........................+ */
