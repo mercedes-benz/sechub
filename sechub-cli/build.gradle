@@ -65,13 +65,11 @@ task linterGo(type:Exec) {
   description 'Executes go linter at sechub client sources and outputs warnings etc.'
   environment GOPATH: "${projectDir}"
 
-  workingDir "${projectDir}/src/daimler.com/sechub/cli"
-
   //on windows:
     if (OSUtil.isWindows()){
-        commandLine 'cmd', '/c', 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+        commandLine 'cmd', '/c', 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', 'daimler.com/sechub/testutil'
     }else{
-        commandLine 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util'
+        commandLine 'golint', 'daimler.com/sechub/cli', 'daimler.com/sechub/util', 'daimler.com/sechub/testutil'
     }
 
 }
