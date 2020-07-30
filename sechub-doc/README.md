@@ -33,16 +33,22 @@ Some document parts are complete generated , e.g.
 More details about generation can be found inside `sechub-techdoc` document. There is a special documentation chapter inside.
 
 ## Create documentation output files and generated content
-When you want to create the documentation files and also the generated content, just enter at repository root folder:
 
-- `./gradlew documentation` _(if you have already called `./gradlew integrationtest` before at least one time)_ otherwise call
-- `./gradlew integrationtest documentation` _(this generate some runtime information used inside documentation)_
+### From Scratch
+
+When you want to create the documentation files and also the generated content, just enter at repository root folder:
+- `./gradlew buildDoc` 
+
+This builds all software artifacts, starts integrationtests which collect runtime metadata and after this builds all documentation
 
 After the build you find `HTML` and also `PDF` output files at `sechub-doc/build/asciidoc/`
 
-On build server you will find the documents also for each build so a local generation is normally not necessary -
-and because its asciidoc the files can read directly as well.
+### At development phase
 
+When you have already build server, started integration tests etc you should use a shortcut for documentation generation 
+and simply call
+- `./gradlew documentation` _(if you have already called `./gradlew integrationtest` before at least one time)_ otherwise call
+- `./gradlew integrationtest documentation` _(this generate some runtime information used inside documentation)_
 
 ## Tool support for documentation
 For major IDEs you can use dedicated plugins for showing/editing `asciidoc`.

@@ -116,17 +116,27 @@ asciidoctor {
 
 }
 
-
-/* collector task for all documentation parts */
+/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
+   there exists another task: buildDoc which does all in one call*/
 task documentation(){
      group 'sechub'
-     description 'This will generate and build asciidoctor documentation '
+     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
 
      dependsOn 'generateAsciidoc'
      dependsOn 'asciidoctor'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
+}
+
+task buildDoc(type: Exec){
+         group 'sechub'
+         description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
+
+         workingDir = "${rootProject.projectDir}"
+
+         commandLine = "./buildDoc"
+         
 }
 
 task convertSecHubPages(type: Copy){
@@ -166,7 +176,6 @@ task docToPages(type: Copy){
      description 'This will copy current documentation into sechub pages under /docs '
 
      dependsOn 'convertSecHubPages'
-
 
      into sechubPagesTargetBaseFolder
      from ("${rootProject.projectDir}/sechub-doc/build/sechubpages/"){
