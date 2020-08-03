@@ -24,5 +24,10 @@ public interface CheckmarxInstallSetup extends AnyTargetOneInstallSetup{
 	 * @return
 	 */
 	public String getClientSecret();
-
+	
+	/**
+	 * Get the engine configuration name
+	 * @return
+	 */
+	public String getEngineConfigurationName();
 }
