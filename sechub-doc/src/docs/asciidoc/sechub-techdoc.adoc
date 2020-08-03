@@ -26,38 +26,43 @@ Target audience for this document are *SecHub Developers* only!
 
 <<<<
 // 1. Development setup
+// 2. Infrastructure setup, 3. Test use real products, 4. Special setup
 include::documents/techdoc/01_development.adoc[]
 
 <<<<
-// 2. Security in developmewnt
+// 5. Security in development
 include::documents/techdoc/02_security_in_development.adoc[]
 
 <<<<
-// 3. Coding conventions
+// 6. Coding conventions
 include::documents/techdoc/03_coding_conventions.adoc[]
 
 <<<<
-// 4. Documentation
+// 7. Documentation
 include::documents/techdoc/04_documentation.adoc[]
 
 <<<<
-// 5. Build
+// 8. Build
 include::documents/techdoc/05_build.adoc[]
 
 <<<<
-// 6. Concepts
+// 9. Concepts
 include::documents/techdoc/06_concepts.adoc[]
 
 <<<<
-// 7. API
+// 10. API
 include::documents/techdoc/07_api.adoc[]
 
 <<<<
-// 8. technical debt
+// 11. technical debt
 include::documents/techdoc/08_technical_debt.adoc[]
 
 <<<<
-// 9. Howtos
+// 12. Howtos
 include::documents/techdoc/09_howtos.adoc[]
+
+<<<<
+// 13. Reporting
+include::documents/shared/report/sechub_reporting.adoc[]
 
 
