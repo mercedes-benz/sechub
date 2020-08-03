@@ -65,6 +65,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
 			hasAmountOfInspections(1).
 			inspectionNr(0).
 				hasId("CHECKMARX").
+				hasNotice("engineConfiguration","Multilangeangue... defaultvalue"). // scenario3_project1 -> preset 1
 				hasNotice("presetid","200001"). // scenario3_project1 -> preset 1
 				hasNotice("teamid", "teamid3"); // scenario3_project1 -> team 3
 		/* @formatter:on */

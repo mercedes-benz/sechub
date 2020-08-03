@@ -23,4 +23,5 @@ public interface CheckmarxAdapterConfig extends AdapterConfig {
 
     String getClientSecret();
 
+    String getEngineConfigurationName();
 }

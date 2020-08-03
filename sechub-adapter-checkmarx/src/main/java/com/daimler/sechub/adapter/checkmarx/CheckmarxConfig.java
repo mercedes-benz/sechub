@@ -23,6 +23,8 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
     public Long presetIdForNewProjects;
     private String clientSecret;// client secret just ensures it is a checkmarx instance - we use default value,
                                 // but we make it configurable if this changes ever in future
+    
+    private String engineConfigurationName;
 
     private CheckmarxConfig() {
     }
@@ -46,6 +48,11 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
         return sourceCodeZipFileInputStream;
     }
 
+    @Override
+    public String getEngineConfigurationName() {
+        return engineConfigurationName;
+    }
+    
     public static CheckmarxConfigBuilder builder() {
         return new CheckmarxConfigBuilder();
     }
@@ -58,6 +65,8 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
         
         private String clientSecret = DEFAULT_CLIENT_SECRET; // per default use default client secret
 
+        private String engineConfigurationName = CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
+        
         /**
          * When we create a new project this is the team ID to use
          * 
@@ -71,6 +80,11 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
 
         public CheckmarxConfigBuilder setClientSecret(String newClientSecret) {
             this.clientSecret = newClientSecret;
+            return this;
+        }
+        
+        public CheckmarxConfigBuilder setEngineConfigurationName(String engineConfigurationName) {
+            this.engineConfigurationName = engineConfigurationName;
             return this;
         }
 
@@ -96,6 +110,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
             config.presetIdForNewProjects = presetIdForNewProjects;
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.clientSecret = clientSecret;
+            config.engineConfigurationName = engineConfigurationName;
         }
 
         @Override
@@ -116,7 +131,5 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
                 throw new IllegalStateException("no team id given");
             }
         }
-
     }
-
 }
