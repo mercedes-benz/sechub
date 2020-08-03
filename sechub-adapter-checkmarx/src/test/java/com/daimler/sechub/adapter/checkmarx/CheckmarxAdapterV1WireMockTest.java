@@ -88,6 +88,7 @@ public class CheckmarxAdapterV1WireMockTest {
         when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
         when(config.getPresetIdForNewProjectsOrNull()).thenReturn(CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
         when(config.getClientSecret()).thenReturn(CheckmarxConfig.DEFAULT_CLIENT_SECRET);
+        when(config.getEngineConfigurationName()).thenReturn(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
         when(config.getUser()).thenReturn(USERNAME);
         when(config.getTargetType()).thenReturn(TARGET_TYPE);
         when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
@@ -223,8 +224,12 @@ public class CheckmarxAdapterV1WireMockTest {
        simulateCheckProjectExistsReturnsFalse(loginResponse);
        simulateCreateProjectWasSuccessful();
        
+       //TODO
        LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
-       simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap);
+       //long serverReturnedEngineConfigurationID = simulateFetchEngineConfiguration();
+       
+       //simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap,serverReturnedEngineConfigurationID);
+       
        /* upload */
        simulateUploadZipFileWasSuccesful();
        
