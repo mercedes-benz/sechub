@@ -1,0 +1,72 @@
+{
+    "jobUUID": "6cf02ccf-da13-4dee-b529-0225ed9661bd",//<1>
+    "result": {
+        "count": 0,
+        "findings": [
+            {
+                "id": 1,//<2>
+                "description": "",
+                "hostnames": [
+                ],
+                "name": "Absolute Path Traversal",//<3>
+                "references": [
+                ],
+                "severity": "MEDIUM",//<4>
+                "code": {
+                    "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",//<5>
+                    "line": 28,//<6>
+                    "column": 35,
+                    "source": "\tpublic static void main(String[] args) throws Exception {",
+                    "relevantPart": "args",
+                    "calls": {//<7>
+                        "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                        "line": 33,
+                        "column": 17,
+                        "source": "\t\tString path = args[0];",
+                        "relevantPart": "args",
+                        "calls": {
+                            "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                            "line": 33,
+                            "column": 10,
+                            "source": "\t\tString path = args[0];",
+                            "relevantPart": "path",
+                            "calls": {
+                                "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+                                "line": 34,
+                                "column": 38,
+                                "source": "\t\tFile documentsGenFolder = new File(path);",
+                                "relevantPart": "path",
+                                "calls": {
+                                    "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",//<8>
+                                    "line": 34,//<9>
+                                    "column": 29,
+                                    "source": "\t\tFile documentsGenFolder = new File(path);",//<10>
+                                    "relevantPart": "File"//<11>
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+             //<12>
+            {
+                "id": 109, //<13>
+                "description": "",
+                "hostnames": [
+                ],
+                "name": "Insufficient Logging of Exceptions",
+                "references": [
+                ],
+                "severity": "INFO",
+                "code": {
+                    "location": "java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java",
+                    "line": 137,
+                    "column": 5,
+                    "source": "\t\t} catch (IOException e) {",
+                    "relevantPart": "catch"
+                }
+            }
+        ]
+    },
+    "trafficLight": "YELLOW" //<14>
+}
