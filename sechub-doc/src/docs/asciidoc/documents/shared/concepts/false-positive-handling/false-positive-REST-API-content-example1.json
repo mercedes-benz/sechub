@@ -9,12 +9,12 @@
                 "comment" : "Absolute Path Traversal, can be ignored, because not in deployment" //<5>
             },
             {
-                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",//<3>
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
                 "findingId": 2, 
                 "comment" : "Temp File permissions can be ignored, because we are at docker container with only ONE user"
             },
             {
-                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",//<3>
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
                 "findingId": 15
             }
       ]
