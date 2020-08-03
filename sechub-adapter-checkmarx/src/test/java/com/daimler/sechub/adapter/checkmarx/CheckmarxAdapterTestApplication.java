@@ -10,7 +10,12 @@ import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 
 /**
  * This is a simple test application for checkmarx.
- * @author Albert Tregnaghi
+ * 
+ * This test is a system test, which tests the entire Checkmarx adapter.
+ * The test will reach out to the real Checkmarx product to create a new project
+ * and will initiate a real scan against a working instance of Checkmarx.
+ * 
+ * @author Albert Tregnaghi, Jeremias Eppler
  *
  */
 public class CheckmarxAdapterTestApplication {
@@ -28,12 +33,12 @@ public class CheckmarxAdapterTestApplication {
 		dump("javax.net.ssl.keyStore");
 		dump("javax.net.ssl.trustStore");
 
-		String user = ensureProperty("test.sechub.adapter.checkmarx.user");
-		String password =ensureProperty("test.sechub.adapter.checkmarx.password");
-		String baseUrl = ensureProperty("test.sechub.adapter.checkmarx.baseurl");
-		String projectname = ensureProperty("test.sechub.adapter.checkmarx.projectName");
-		String teamId = ensureProperty("test.sechub.adapter.checkmarx.teamid");
-		Long presetId = Long.valueOf(ensureProperty("test.sechub.adapter.checkmarx.presetid"));
+        String user = ensureProperty("test.sechub.adapter.checkmarx.user");
+        String password = ensureProperty("test.sechub.adapter.checkmarx.password");
+        String baseUrl = ensureProperty("test.sechub.adapter.checkmarx.baseurl");
+        String projectname = ensureProperty("test.sechub.adapter.checkmarx.projectName");
+        String teamId = ensureProperty("test.sechub.adapter.checkmarx.teamid");
+        Long presetId = Long.valueOf(ensureProperty("test.sechub.adapter.checkmarx.presetid"));
 
 		String pathInOtherProject = ensurePropertyOrDefault("test.sechub.adapter..checkmarx.zipfilename","zipfile_contains_only_one_simple_java_file.zip");
 	    // "zipfile_contains_only_test1.txt.zip"; // leads to FAILED in queue

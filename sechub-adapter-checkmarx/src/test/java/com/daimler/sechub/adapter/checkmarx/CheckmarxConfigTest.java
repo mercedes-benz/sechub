@@ -33,6 +33,32 @@ public class CheckmarxConfigTest {
         /* test */
         assertEquals(newSecret, config.getClientSecret());
     }
+    
+    @Test
+    public void builder_creates_config_with_engine_configuration_name_set() {
+        /* prepare */
+        String engineConfigurationName = "test-configuration";
+        CheckmarxConfigBuilder builder = createBuilderWithMandatoryParamatersSet();
+        builder.setEngineConfigurationName(engineConfigurationName);
+
+        /* execute */
+        CheckmarxConfig config = builder.build();
+
+        /* test */
+        assertEquals(engineConfigurationName, config.getEngineConfigurationName());
+    }
+    
+    @Test
+    public void builder_creates_config_with_default_engine_configuration_name() {
+        /* prepare */
+        CheckmarxConfigBuilder builder = createBuilderWithMandatoryParamatersSet();
+
+        /* execute */
+        CheckmarxConfig config = builder.build();
+
+        /* test */
+        assertEquals(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME, config.getEngineConfigurationName());
+    }
 
     private CheckmarxConfigBuilder createBuilderWithMandatoryParamatersSet() {
         CheckmarxConfigBuilder builder = CheckmarxConfig.builder();
