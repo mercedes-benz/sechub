@@ -1,0 +1,16 @@
+{
+    "apiVersion": "1.0", //<1>
+    "type" : "falsePositiveJobDataList", //<2>
+    
+    "jobData": [
+            {
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",//<3>
+                "findingId": 1//<4>
+            },
+            {
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
+                "findingId": 15
+            }
+      ]
+                
+}

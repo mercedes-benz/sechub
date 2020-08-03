@@ -95,6 +95,42 @@ Will fetch report as json (result will only exist when job is done)
 SECHUB_APITOKEN=${apitoken}
 sechub -jobUUID ${jobUUID} getReport
 ----
+
+[[section-client-false-positives-mark]]
+===== markFalsePositives
+Read your report carefully and check which of the findings are really so called "false positives".
+After this create an json file containing jobUUID and ID of finding you decided to be an FP. If 
+you like you can add an optional comment, describing your decision to mark this as FP.
+
+*Example JSON:*
+
+[source, json]
+----
+include::../../shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json[]
+----
+<1> api version
+<2> type - must be `falsePositiveJobDataList`
+<3> job where finding was in report
+<4> ID of finding, which shall be marked as false positive
+<5> Comment (optional) describing the reason why this is handled as false positive
+
+
+===== getFalsePositives
+This will fetch the false positive list of your project as JSON - format is same as for `markFalsePositives`
+
+[[section-client-false-positives-unmark]]
+===== unmarkFalsePositives
+When you want to remvoe a former defined false positive entry you can do this the same way
+as for mark operation: Just define a JSON file, select the file by the `-file` argument and start
+action `unmarkFalsePositives`
+
+*Example JSON:*
+
+[source, json]
+----
+include::sechub_client_falsepositve_list_example_unmark.json[]
+----
+
 ==== Options
 
 - `-apitoken <string>` +
@@ -207,3 +243,20 @@ SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .
+
+==== Mark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json markFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
+
+==== Unmark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json unmarkFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
+
