@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.execution;
 
 import java.util.concurrent.FutureTask;

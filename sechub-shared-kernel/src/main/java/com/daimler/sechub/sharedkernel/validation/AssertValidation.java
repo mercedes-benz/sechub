@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.validation;
 
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
