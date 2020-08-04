@@ -533,11 +533,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#project">2.1.3. Project</a></li>
 <li><a href="#code-scan">2.1.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#upload-sources-from-file-system">2.1.4.1. Upload sources from file system</a>
-<ul class="sectlevel5">
-<li><a href="#example-upload-folders-with-excludes">2.1.4.1.1. Example upload folders with excludes</a></li>
-</ul>
-</li>
+<li><a href="#upload-sources-from-file-system">2.1.4.1. Upload sources from file system</a></li>
+<li><a href="#example-sechub-json">2.1.4.2. Example sechub.json</a></li>
 </ul>
 </li>
 <li><a href="#web-scan">2.1.5. Web scan</a>
@@ -625,24 +622,46 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#section-ucrestdoc-UC_010-html">2.2.23.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-self-registration">2.2.24. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">2.2.25. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">2.2.26. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">2.2.27. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">2.2.28. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">2.2.29. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">2.2.30. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">2.2.31. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">2.2.32. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">2.2.33. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.34. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">2.2.35. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">2.2.36. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">2.2.37. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">2.2.38. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">2.2.39. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">2.2.40. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">2.2.41. Admin checks server version</a></li>
+<li><a href="#user-marks-false-positives-for-finished-sechub-job">2.2.24. User marks false positives for finished sechub job</a></li>
+<li><a href="#user-unmarks-existing-false-positive-definitons">2.2.25. User unmarks existing false positive definitons</a></li>
+<li><a href="#user-fetches-false-positive-configuration-of-project">2.2.26. User fetches false positive configuration of project</a></li>
+<li><a href="#user-self-registration">2.2.27. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">2.2.28. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">2.2.29. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">2.2.30. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">2.2.31. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">2.2.32. Admin lists all running jobs</a></li>
+<li><a href="#admin-cancels-a-job">2.2.33. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">2.2.34. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">2.2.35. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">2.2.36. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">2.2.37. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">2.2.38. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">2.2.39. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">2.2.40. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">2.2.41. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">2.2.42. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">2.2.43. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">2.2.44. Admin checks server version</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#section-sechub-reporting">3. Reporting</a>
+<ul class="sectlevel2">
+<li><a href="#job-reports">3.1. Job reports</a>
+<ul class="sectlevel3">
+<li><a href="#html">3.1.1. HTML</a>
+<ul class="sectlevel4">
+<li><a href="#example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</a></li>
+</ul>
+</li>
+<li><a href="#json">3.1.2. JSON</a>
+<ul class="sectlevel4">
+<li><a href="#example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -732,7 +751,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-1be7fd2-latest</p>
+0.0.0-eae54cb-latest</p>
 </div>
 <hr>
 </div>
@@ -769,9 +788,12 @@ at caller side.</p>
 </div>
 <div class="paragraph">
 <p>It is used by client and also by rest calls to start SecHub
-scan jobs and add meta data. Some minor parts are client specific and must
-be handled by direct REST calls in a special way, but this is mentioned in
-following description of JSON syntax.</p>
+scan jobs and add meta data.</p>
+</div>
+<div class="paragraph">
+<p>Some minor parts are client specific and must
+be handled by direct REST calls in a special way or do just not exist.
+But this is mentioned inside this documentation</p>
 </div>
 <div class="sect3">
 <h4 id="api-version">2.1.1. API version</h4>
@@ -849,7 +871,7 @@ When using REST calls directly you do not need the information inside
 <code>folders</code> sub entry.</p>
 </div>
 <div class="paragraph">
-<p>Those folders will be automatically zipped and uploaded by <code>SecHub</code> client
+<p>All source code files inside these folders will be automatically zipped and uploaded by <code>SecHub</code> client
 to server side for ongoing source analysis.</p>
 </div>
 <div class="paragraph">
@@ -890,24 +912,26 @@ on build servers.</p>
 </tr>
 </table>
 </div>
-<div class="sect5">
-<h6 id="example-upload-folders-with-excludes">2.1.4.1.1. Example upload folders with excludes</h6>
+</div>
+<div class="sect4">
+<h5 id="example-sechub-json">2.1.4.2. Example sechub.json</h5>
 <div id="sechub-config-example-sourcescan" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
               <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
-                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
-        }
-      }</code></pre>
+                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+         },
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>],  <i class="conum" data-value="4"></i><b>(4)</b>
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="5"></i><b>(5)</b>
+      }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -926,31 +950,38 @@ on build servers.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Exclude files (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - <code>**/*</code> is used to identify any folder<br>
-In example above following files are excluded from upload:<br>
+<td>Exclude directories (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - `<br>
+In example above all files in following directories are excluded from upload:<br>
 <div class="ulist">
 <ul>
 <li>
-<p><code>**/*.log</code> - excludes any log file in any sub directories of given folders</p>
+<p><code>**/mytestcode/**</code><br>
+excludes all files under a directory named <code>build</code> including sub directories</p>
 </li>
 <li>
-<p><code>README*.md</code> excludes all markdown README files in given folders. For example above this means:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><code>gamechanger-android/src/main/java/README.md</code> and</p>
+<p><code>**/documentation/**</code><br>
+same for folder <code>documentation</code></p>
 </li>
 <li>
-<p><code>gamechanger-server/src/main/java/README.md</code></p>
-</li>
-</ul>
-</div>
+<p>default excludes<br>
+     Per default, the directories <code>**/test/**</code> <code>**/.git/**</code>
+are already excluded:</p>
 </li>
 </ul>
 </div></td>
 </tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Client only option - if you use REST directly, you can ignore this.<br>
+SecHub client does only add wellknown sources into created upload zip file. This removes
+unnecessary stuff and reduces upload size automatically.<br>
+<em>E.g. a codescan for a <code>JPEG</code> image would not make sense&#8230;&#8203;</em><br>
+Instead of defining a negative list, we use a positive list and accept only wellknown sources,
+which is simply done by file ending.<br>
+In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
+Inside client documentation you will find a list of the default file endings.</td>
+</tr>
 </table>
-</div>
 </div>
 </div>
 </div>
@@ -972,7 +1003,7 @@ In example above following files are excluded from upload:<br>
 </td>
 <td class="content">
 URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
+         So you are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
 </td>
 </tr>
 </table>
@@ -1452,7 +1483,7 @@ because scanners do not scan them self.</td>
 <div class="sect4">
 <h5 id="sechub-execution">2.2.1.5. Sechub execution</h5>
 <div class="paragraph">
-<p>Execution of sechub -either by CLI or direct with REST api call</p>
+<p>Execution of SecHub -either by CLI or direct with REST api call</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1470,6 +1501,15 @@ because scanners do not scan them self.</td>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_010">REST API for UC_010-User downloads sechub job report </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_044">REST API for UC_044-User marks false positives for finished sechub job </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_045">REST API for UC_045-User unmarks existing false positive definitons </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_046">REST API for UC_046-User fetches false positive configuration of project </a></p>
 </li>
 </ul>
 </div>
@@ -1891,7 +1931,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/8e81ce8a-fb88-47c5-8311-921bb2abd7f4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/42fb1bf6-28a9-4bee-a937-ffa5ef8a1d32' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -2947,7 +2987,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/947e2a2d-49c0-497b-a92b-edf386bc3532/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/41958638-7054-492f-bc6d-457498ba56b4/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -2993,7 +3033,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7726ef50-e84d-4812-9209-5a7e9117ee34/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/da8b9f11-eb66-4134-b22d-eaab01bfcb78/approve' -i -X PUT \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -3093,7 +3133,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/df174001-c134-4648-a96a-a92315770e20' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/61ee66e0-a108-4cfc-808b-e4b426e35184' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -3110,7 +3150,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/374aa432-08e6-46b3-9a2a-86ff9dbbfff0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/415dd8ee-965f-48fb-878f-cdb05c5b4189' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -3123,7 +3163,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/759bdcb6-e6f4-470a-a76a-e89132a7d0e9' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/72f0d904-3633-4858-81a8-384171088ae7' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -3131,7 +3171,308 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">2.2.24. User self registration</h4>
+<h4 id="user-marks-false-positives-for-finished-sechub-job">2.2.24. User marks false positives for finished sechub job</h4>
+<div id="section-ucrestdoc-uc-UC_044" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives for finished sechub job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_044-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 20. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The projectId of the project where users adds false positives for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job data list containing false positive setup based on former jobs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub job uuid where finding was</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].findingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. <strong>ATTENTION</strong>: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comment describing why this is a false positive</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/false-positives' -i -X PUT \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;,&quot;type&quot;:&quot;falsePositiveJobDataList&quot;,&quot;jobData&quot;:[{&quot;jobUUID&quot;:&quot;f1d02a9d-5e1b-4f52-99e5-401854ccf936&quot;,&quot;findingId&quot;:42,&quot;comment&quot;:&quot;an optional comment why this is a false positive...&quot;}]}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-unmarks-existing-false-positive-definitons">2.2.25. User unmarks existing false positive definitons</h4>
+<div id="section-ucrestdoc-uc-UC_045" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons </a></p>
+</div>
+<div id="section-ucrestdoc-UC_045-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 21. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job uuid</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finding id - in combination with job UUID this defines the false positive to remove</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-fetches-false-positive-configuration-of-project">2.2.26. User fetches false positive configuration of project</h4>
+<div id="section-ucrestdoc-uc-UC_046" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_046">UC_046-User fetches false positive configuration of project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_046-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 22. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job data list containing false positive setup based on former jobs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].author</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User id of author who created false positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].created</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creation timestamp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meta data for this false positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.scanType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scan type - e.g. codeScan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of origin finding marked as false positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.cweId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CWE (common weakness enumeration). For code scans this is always set.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.cveId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CVE (common vulnerability and exposures). For infra scans this is always set.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.owasp</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>class java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWASP At least this field must be set for web scans when no cwe identifier is defined.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.severity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Severity of origin report entry marked as false positive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code part. Only available for scan type 'codeScan'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entry point</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">location of code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.relevantPart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">relevant part of source vulnerability</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.sourceCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">source code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">end point (sink)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">location of code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.relevantPart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">relevant part of source vulnerability</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.sourceCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">source code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job data parts, can be used as key to identify false positives</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.jobUUID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub job uuid where finding was</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.findingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. <strong>ATTENTION</strong>: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.comment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A comment from author describing why this was marked as a false positive</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/false-positives' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="user-self-registration">2.2.27. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
@@ -3181,7 +3522,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">2.2.25. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">2.2.28. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
@@ -3195,7 +3536,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">2.2.26. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">2.2.29. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
@@ -3203,7 +3544,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 20. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 23. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3231,7 +3572,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">2.2.27. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">2.2.30. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
@@ -3239,7 +3580,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 21. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 24. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3267,7 +3608,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">2.2.28. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">2.2.31. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
@@ -3275,7 +3616,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 22. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 25. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3304,7 +3645,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">2.2.29. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">2.2.32. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
@@ -3368,7 +3709,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">2.2.30. Admin cancels a job</h4>
+<h4 id="admin-cancels-a-job">2.2.33. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -3377,13 +3718,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/5ab1a8ee-db16-49a0-b0e0-9fff0a2de728' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/ee795b6a-8857-4d98-a70d-d383c118e8d7' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">2.2.31. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">2.2.34. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -3392,13 +3733,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a09448ae-7bff-40fb-8635-80f944e58f34' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/6d7a67ae-a50e-41a7-82c3-7a868fd249b3' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">2.2.32. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">2.2.35. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -3407,13 +3748,13 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/70f01ee8-f499-4364-aae6-e0286511cef2' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/b0d006f3-388a-4630-a29c-597a67327174' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">2.2.33. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">2.2.36. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -3430,7 +3771,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.34. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">2.2.37. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -3446,7 +3787,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">2.2.35. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">2.2.38. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -3454,7 +3795,7 @@ because scanners do not scan them self.</td>
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 23. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 26. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3518,7 +3859,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">2.2.36. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">2.2.39. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -3567,7 +3908,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">2.2.37. Admin disables job processing in scheduler</h4>
+<h4 id="admin-disables-job-processing-in-scheduler">2.2.40. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -3582,7 +3923,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">2.2.38. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">2.2.41. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -3597,7 +3938,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">2.2.39. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">2.2.42. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -3612,7 +3953,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">2.2.40. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">2.2.43. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -3656,7 +3997,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">2.2.41. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">2.2.44. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -3669,6 +4010,289 @@ because scanners do not scan them self.</td>
     -H 'Content-Type: text/plain'</code></pre>
 </div>
 </div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-sechub-reporting">3. Reporting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes the different SecHub reports and how to read them.</p>
+</div>
+<div class="paragraph">
+<p>At the moment SecHub only provides job reports and no cumulated reports.
+Job reports do only contain information of exact one scan job done by SecHub.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you want to have management summaries you could store downloaded JSON job reports
+ , process data and provide those reports by your own - or you wait while this
+ becomes part of SecHub.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="job-reports">3.1. Job reports</h3>
+<div class="paragraph">
+<p>With SecHub users are able to download their scan results for finished project jobs. We provide following
+formats:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTML<br>
+human friendly report variant with less details</p>
+</li>
+<li>
+<p>JSON<br>
+as a machine readable format, usable for sechub client to determine to break build. Will also be
+the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="html">3.1.1. HTML</h4>
+<div class="paragraph">
+<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
+to your current situation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>At the left top corner you see a traffic light showing either</p>
+<div class="ulist">
+<ul>
+<li>
+<p>GREEN</p>
+</li>
+<li>
+<p>YELLOW or</p>
+</li>
+<li>
+<p>RED.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</h5>
+<div class="paragraph">
+<p>The next picture shows a report which resulted in yellow traffic light.</p>
+</div>
+<div class="paragraph">
+<p>At the top of the report you will find the most critical parts - in our example it is only one
+yellow finding which is a <code>Absolute path traversal</code>.</p>
+</div>
+<div class="paragraph">
+<p>The entry point for the found vulnerability is the <strong>Line 28</strong> in java class <code>AsciidocGenerator</code>.
+The data sink (where the path traversal could lead to problems at the end) is ins same class but
+at <strong>Line 29</strong>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The call hierarchy between entry point and data sink is not shown in HTML reports - reason: This would
+overload the report. Even for security mitigations/development changes
+it&#8217;s normally enough to know entry point and data sink + name of finding.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are other findings (green) which are less problematic.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+SecHub client will break your build per default only at a RED traffic light, but you can also
+configure client to do this also on color YELLOW. Only Green is always accepted.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-report-html-example1.png" alt="sechub report html example1">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</h5>
+<div class="paragraph">
+<p>At the moment SecHub does not contain this inside it&#8217;s reports, but this feature will come in future</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="json">3.1.2. JSON</h4>
+<div class="paragraph">
+<p>This is the machine readable report format.</p>
+</div>
+<div class="sect4">
+<h5 id="example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="JSON">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cf02ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">findings</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>,<i class="conum" data-value="6"></i><b>(6)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="7"></i><b>(7)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,<i class="conum" data-value="9"></i><b>(9)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="10"></i><b>(10)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="11"></i><b>(11)</b>
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+             <i class="conum" data-value="12"></i><b>(12)</b>
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">109</span>, <i class="conum" data-value="13"></i><b>(13)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Insufficient Logging of Exceptions</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">catch</span><span class="delimiter">&quot;</span></span>
+                }
+            }
+        ]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">YELLOW</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="14"></i><b>(14)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>SecHub job UUID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Finding ID inside report</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the vulnerability<br>
+<em>in our case an <code>Absolute path traversal</code> where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The severity of the report<br>
+<em>(will be used to calculate the traffic light color)</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Entry point location<br>
+<em>in this case the Java class where the potential malicious input starts</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Line number of entry point</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Next call hierarchy element<br>
+<em>this is the next element of the call hierarchy, means what is called by</em>
+<em>entry point with potential malicious content as parameter. This is ongoing</em>
+<em>until last entry inside call hierarchy which is the so called "data sink"</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Data sink location</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Line number inside data sink</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Source snippet</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Relevant code part where the found vulnerability lies/could be exploited</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>More findings - in example this was cut</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Last finding with ID - format explanation see points above.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Traffic light color of report - here YELLOW</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3676,7 +4300,7 @@ because scanners do not scan them self.</td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-26 17:23:48 CET
+Last updated 2020-08-04 16:42:52 CEST
 </div>
 </div>
 </body>
