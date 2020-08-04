@@ -57,7 +57,7 @@ public class CheckmarxConfigTest {
         CheckmarxConfig config = builder.build();
 
         /* test */
-        assertEquals(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME, config.getEngineConfigurationName());
+        assertEquals(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME, config.getEngineConfigurationName());
     }
 
     private CheckmarxConfigBuilder createBuilderWithMandatoryParamatersSet() {
