@@ -65,7 +65,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
         
         private String clientSecret = DEFAULT_CLIENT_SECRET; // per default use default client secret
 
-        private String engineConfigurationName = CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
+        private String engineConfigurationName = CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
         
         /**
          * When we create a new project this is the team ID to use
