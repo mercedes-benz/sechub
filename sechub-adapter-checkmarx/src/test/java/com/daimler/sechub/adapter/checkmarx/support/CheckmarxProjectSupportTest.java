@@ -21,7 +21,7 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig.CheckmarxConfigBuild
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxEngineConfiguration;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxEngineConfigurationOptions;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxSastScanSettings;
 
 public class CheckmarxProjectSupportTest {
@@ -105,7 +105,7 @@ public class CheckmarxProjectSupportTest {
         
         CheckmarxEngineConfiguration multiLanguageScanConfiguration = new CheckmarxEngineConfiguration();
         multiLanguageScanConfiguration.setId(5L);
-        multiLanguageScanConfiguration.setName(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
+        multiLanguageScanConfiguration.setName(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
         
         /* execute */
         List<CheckmarxEngineConfiguration> engineConfigurations = supportToTest.extractEngineConfigurationsFromGet(json_data, JSONAdapterSupport.FOR_UNKNOWN_ADAPTER);
@@ -132,13 +132,13 @@ public class CheckmarxProjectSupportTest {
         
         CheckmarxEngineConfiguration multiLanguageScanConfiguration = new CheckmarxEngineConfiguration();
         multiLanguageScanConfiguration.setId(5L);
-        multiLanguageScanConfiguration.setName(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
+        multiLanguageScanConfiguration.setName(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
         engineConfigurations.add(testConfiguration);
         engineConfigurations.add(defaultConfiguration);
         engineConfigurations.add(multiLanguageScanConfiguration);
         
         /* execute */
-        CheckmarxEngineConfiguration actualEngineConfiguration = supportToTest.findEngineConfigurationByName(CheckmarxEngineConfigurationOptions.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME, engineConfigurations);
+        CheckmarxEngineConfiguration actualEngineConfiguration = supportToTest.findEngineConfigurationByName(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME, engineConfigurations);
         
         /* test */
         assertThat(actualEngineConfiguration, notNullValue());
@@ -146,7 +146,7 @@ public class CheckmarxProjectSupportTest {
     }
     
     @Test
-    public void updatePresetIdWhenPresetIdSetInSecHub_preset_id_set_in_sechub() {
+    public void updatePresetIdWhenSetInAdapterConfig_preset_id_set_in_sechub() {
         /* prepare */
         long secHubPresetId = 39203;
         long checkmarxPresetId = 1;
@@ -162,7 +162,7 @@ public class CheckmarxProjectSupportTest {
         InternalUpdateContext updateContext = supportToTest.new InternalUpdateContext();
         
         /* execute */
-        supportToTest.updatePresetIdWhenPresetIdSetInSecHub(config, checkmarxScanSettings, updateContext);
+        supportToTest.updatePresetIdWhenSetInAdapterConfig(config, checkmarxScanSettings, updateContext);
         
         /* test */
         assertThat(updateContext.isUpdateOfPresetIdNecessary(), is(true));
@@ -171,7 +171,7 @@ public class CheckmarxProjectSupportTest {
     }
     
     @Test
-    public void updatePresetIdWhenPresetIdSetInSecHub_presetId_sechub_not_set() {
+    public void updatePresetIdWhenSetInAdapterConfig_presetId_sechub_not_set__no_update_necessary() {
         /* prepare */
         long presetId = 443940;
         
@@ -186,7 +186,7 @@ public class CheckmarxProjectSupportTest {
         InternalUpdateContext updateContext = supportToTest.new InternalUpdateContext();
         
         /* execute */
-        supportToTest.updatePresetIdWhenPresetIdSetInSecHub(config, checkmarxScanSettings, updateContext);
+        supportToTest.updatePresetIdWhenSetInAdapterConfig(config, checkmarxScanSettings, updateContext);
         
         /* test */
         assertThat(updateContext.isUpdateOfPresetIdNecessary(), is(false));

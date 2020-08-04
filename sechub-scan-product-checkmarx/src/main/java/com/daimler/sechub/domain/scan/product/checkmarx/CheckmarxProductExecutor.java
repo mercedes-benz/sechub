@@ -113,7 +113,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.CHECKMARX.name());
                 inspection.notice(MetaDataInspection.TRACE_ID, checkMarxConfig.getTraceID());
                 inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
-                inspection.notice("engineConfigurationName", checkMarxConfig.getEngineConfigurationName());
+                inspection.notice("engineconfigurationname", checkMarxConfig.getEngineConfigurationName());
                 inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
 
                 /* execute checkmarx by adapter and update product result */

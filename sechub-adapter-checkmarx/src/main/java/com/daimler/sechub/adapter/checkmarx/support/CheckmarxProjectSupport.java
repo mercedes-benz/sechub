@@ -88,8 +88,14 @@ public class CheckmarxProjectSupport {
 
         return sessionData;
     }
-    
-    protected void updatePresetIdWhenPresetIdSetInSecHub(CheckmarxAdapterConfig config, CheckmarxSastScanSettings checkmarxScanSettings,
+
+    /**
+     * Update preset id of checkmarx project when in adapter config set 
+     * @param config
+     * @param checkmarxScanSettings
+     * @param updateContext
+     */
+    protected void updatePresetIdWhenSetInAdapterConfig(CheckmarxAdapterConfig config, CheckmarxSastScanSettings checkmarxScanSettings,
             InternalUpdateContext updateContext) {
 
         boolean updatePresetId = false;
@@ -142,7 +148,7 @@ public class CheckmarxProjectSupport {
         updateContext.setEngineConfigurationId(engineConfigurationId);
     }
     
-    protected class InternalUpdateContext {
+    class InternalUpdateContext {
         private boolean updatePresetId;
         private boolean updateEngineConfiguration;
         private long presetId;
@@ -194,7 +200,7 @@ public class CheckmarxProjectSupport {
         CheckmarxSastScanSettings checkmarxSastScanSettings = fetchCurrentSastScanSettings(context, sessionData);
         List<CheckmarxEngineConfiguration> engineConfigurations = fetchEngineConfigurations(context, sessionData);
 
-        updatePresetIdWhenPresetIdSetInSecHub(config, checkmarxSastScanSettings, updateContext);
+        updatePresetIdWhenSetInAdapterConfig(config, checkmarxSastScanSettings, updateContext);
         updateEngineCondfigurationIdWhenSecHubAndCheckmarxDiffer(config, engineConfigurations, checkmarxSastScanSettings, updateContext);
 
         /* check if the engine configuration needs to be updated */
