@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.analyzer.core;
 
 import com.google.re2j.Matcher;

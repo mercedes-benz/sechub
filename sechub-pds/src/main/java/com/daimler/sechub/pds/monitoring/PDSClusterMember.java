@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.monitoring;
 
 import java.time.LocalDateTime;

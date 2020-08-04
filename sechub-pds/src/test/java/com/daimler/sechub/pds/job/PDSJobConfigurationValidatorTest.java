@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.job;
 
 import static org.mockito.Mockito.*;
