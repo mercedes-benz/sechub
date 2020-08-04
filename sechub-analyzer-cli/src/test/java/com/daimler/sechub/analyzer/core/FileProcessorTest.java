@@ -205,7 +205,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Java/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(5, 11, 7, 11);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 11, 8, 11);
         
         File file = new File(codePath + "MultiLineComment.java");
         
@@ -221,7 +221,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Java/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 11, 10, 11);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(7, 11, 11, 11);
         
         File file = new File(codePath + "MultiLineCommentNotBeginning.java");
         
@@ -237,7 +237,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Java/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 9, 8, 9);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(7, 9, 9, 9);
         
         File file = new File(codePath + "SingleLineComment.java");
         
