@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class NessusV1XMLImporter extends AbstractProductResultImporter {
@@ -41,7 +42,8 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 			String name = reportItem.attributeValue("svc_name");
 			String type = NAME_PATTERN.matcher(name).replaceAll(" ");
 			String output = reportItem.elementText("plugin_output");
-
+			String cve = reportItem.elementText("cve");
+			
 			SerecoVulnerability vulnerability = new SerecoVulnerability();
 			SerecoSeverity severity = null;
 			int severityLevel = Integer.parseInt(reportItem.attributeValue("severity"));
@@ -57,6 +59,8 @@ public class NessusV1XMLImporter extends AbstractProductResultImporter {
 			vulnerability.setSeverity(severity);
 			vulnerability.setType(type);
 			vulnerability.setDescription(output);
+			vulnerability.setScanType(ScanType.INFRA_SCAN);
+			vulnerability.getClassification().setCve(cve);
 			metaData.getVulnerabilities().add(vulnerability);
 		}
 		return metaData;

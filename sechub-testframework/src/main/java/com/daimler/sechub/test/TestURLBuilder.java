@@ -27,6 +27,8 @@ public class TestURLBuilder {
 
         MAPPING_ID("mappingId"),
 
+        FINDING_ID("findingId"),
+
         ;
 
         private String restDocName;
@@ -72,6 +74,8 @@ public class TestURLBuilder {
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
+    
+    
     private String protocol;
     private String hostname;
     private int port;
@@ -94,6 +98,62 @@ public class TestURLBuilder {
         this.hostname = hostname;
     }
 
+    /**
+     * Special url builder - only for PDS parts
+     * @author Albert Tregnaghi
+     *
+     */
+    public class ProductDelegationServerUrlsBuilder{
+        
+        private static final String API_PDS_JOB="/api/job";
+        private static final String API_PDS_ANONYMOUS="/api/anonymous";
+        private static final String API_PDS_ADMIN="/api/admin";
+        
+        public String buildCreateJob() {
+            return buildUrl(API_PDS_JOB, "create");
+        }
+
+        public String buildGetJobStatus(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "status");
+        }
+
+        public String buildGetJobResult(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "result");
+        }
+
+        public String buildUpload(UUID jobUUID, String fileName) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload",fileName);
+        }
+
+        public String buildMarkJobReadyToStart(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "mark-ready-to-start");
+        }
+
+        public String buildCancelJob(UUID jobUUID) {
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
+        }
+        
+        public String buildAdminGetMonitoringStatus() {
+            return buildUrl(API_PDS_ADMIN, "monitoring/status");
+        }
+
+        public String buildAnonymousCheckAlive() {
+            return buildUrl(API_PDS_ANONYMOUS, "check/alive");
+        }
+
+        public String buildGetJobResultOrErrorText(UUID jobUUID) {
+            return buildUrl(API_PDS_ADMIN, "job",jobUUID,"result");
+        }
+
+        public String buildAdminGetServerConfiguration() {
+            return buildUrl(API_PDS_ADMIN, "config/server");
+        }
+    }
+    
+    public ProductDelegationServerUrlsBuilder pds() {
+        return new ProductDelegationServerUrlsBuilder();
+    }
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ common ...................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -135,7 +195,19 @@ public class TestURLBuilder {
     public String buildUploadSourceCodeUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID, "sourcecode");
     }
+
+    public String buildUserAddsFalsePositiveJobDataListForProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+
+    public String buildUserRemovesFalsePositiveEntryFromProject(String projectId, String jobUUID, String findingId) {
+        return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
+    }
     
+    public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ anonymous ................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -255,6 +327,11 @@ public class TestURLBuilder {
     public String buildFetchJobStatus(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID);
     }
+    
+    public String buildGetFalsePositiveConfigurationOfProject(String projectId) {
+        return buildUrl(API_PROJECT, projectId, "false-positives");
+    }
+    
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/jobs ...............................+ */
@@ -270,11 +347,11 @@ public class TestURLBuilder {
     public String buildAdminCancelsJob(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
     }
-    
+
     public String buildAdminRestartsJob(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart", jobUUID);
     }
-    
+
     public String buildAdminRestartsJobHard(UUID jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart-hard", jobUUID);
     }
@@ -326,9 +403,9 @@ public class TestURLBuilder {
     public String buildCountProjectProductResults(String projectId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/count");
     }
-    
+
     public String buildFetchAllProjectProductResultsButShrinked(String projectId, int maxLength) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/all-shrinked/"+maxLength);
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/scan/productresult/all-shrinked/" + maxLength);
     }
 
     public String buildCountProjectScanReports(String projectId) {
@@ -348,7 +425,7 @@ public class TestURLBuilder {
      *
      * @return url for integration test check
      */
-    public String buildIsAliveUrl() {
+    public String buildIntegrationTestIsAliveUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/alive");
     }
 
@@ -375,7 +452,7 @@ public class TestURLBuilder {
     public String buildIntegrationTestLogInfoUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/log/info");
     }
-    
+
     public String buildCheckRoleUser() {
         return buildUrl(API_USER, "integrationtest/check/role/user");
     }
@@ -431,15 +508,15 @@ public class TestURLBuilder {
     public String buildIntegrationTestResetAndStopEventInspection() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/reset-and-stop");
     }
-    
+
     public String buildIntegrationTestStartEventInspection() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/start");
     }
-    
+
     public String buildIntegrationTestFetchEventInspectionStatus() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/status");
     }
-    
+
     public String buildIntegrationTestFetchEventInspectionHistory() {
         return buildUrl(API_ANONYMOUS, "integrationtest/event/inspection/history");
     }
@@ -447,30 +524,31 @@ public class TestURLBuilder {
     public String buildIntegrationTestDeleteAllWaitingJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/jobs/waiting");
     }
-    
+
     public String buildIntegrationTestCancelAllScanJobsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/scan/cancel/jobs");
     }
-    
+
     public String buildIntegrationTestRevertJobAsStillRunning(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-running");
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/" + sechubJobUUID.toString() + "/still-running");
     }
-    
+
     public String buildIntegrationTestRevertJobAsStillNotApproved(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/"+sechubJobUUID.toString()+"/still-not-approved");
+        return buildUrl(API_ANONYMOUS, "integrationtest/schedule/revert/job/" + sechubJobUUID.toString() + "/still-not-approved");
     }
-    
+
     public String buildIntegrationTestFakeProductResult(String projectId, UUID sechubJobUUID, String productIdentifier) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/project/"+projectId+"/job/"+sechubJobUUID+"/scan/productresult/"+productIdentifier);
+        return buildUrl(API_ANONYMOUS, "integrationtest/project/" + projectId + "/job/" + sechubJobUUID + "/scan/productresult/" + productIdentifier);
     }
 
     public String buildintegrationTestDeleteProductResults(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults");
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults");
     }
 
     public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
-        return buildUrl(API_ANONYMOUS, "integrationtest/job/"+sechubJobUUID+"/productresults-count");
+        return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults-count");
     }
 
+ 
 
 }

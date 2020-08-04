@@ -93,7 +93,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 /* @formatter:off */
 
-					CheckmarxAdapterConfig checkMarxConfig =CheckmarxConfig.builder().
+					CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
 							configure(createAdapterOptionsStrategy(context)).
 							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
@@ -101,6 +101,8 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
 							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
 							setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
+							setClientSecret(setup.getClientSecret()).
+							setEngineConfigurationName(setup.getEngineConfigurationName()).
 							setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
 							setProjectId(projectId).
 							setTraceID(context.getTraceLogIdAsString()).
@@ -111,6 +113,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.CHECKMARX.name());
                 inspection.notice(MetaDataInspection.TRACE_ID, checkMarxConfig.getTraceID());
                 inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
+                inspection.notice("engineconfigurationname", checkMarxConfig.getEngineConfigurationName());
                 inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
 
                 /* execute checkmarx by adapter and update product result */

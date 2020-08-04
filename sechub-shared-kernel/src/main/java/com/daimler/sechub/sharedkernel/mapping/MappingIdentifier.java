@@ -21,7 +21,7 @@ public enum MappingIdentifier {
     CHECKMARX_NEWPROJECT_TEAM_ID("checkmarx.newproject.teamid", MappingType.ADAPTER_CONFIGURATION),
 
     CHECKMARX_NEWPROJECT_PRESET_ID("checkmarx.newproject.presetid",MappingType.ADAPTER_CONFIGURATION),
-
+    
     ;
 
     private String id;

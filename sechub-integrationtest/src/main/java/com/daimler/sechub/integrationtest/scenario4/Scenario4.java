@@ -3,11 +3,12 @@ package com.daimler.sechub.integrationtest.scenario4;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
 
 /**
  * This is a {@link StaticTestScenario} - please look into details and contract.
+ * <b>DO NOT CHANGE ANY DATA here</b> - use this scenario for doing scans etc.
  * <br>.
  * In this scenario following is automatically <b>ONE TIME</b> initialized:
  *
@@ -22,7 +23,7 @@ import com.daimler.sechub.integrationtest.internal.StaticTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario4 extends AbstractTestScenario implements StaticTestScenario {
+public class Scenario4 extends AbstractSecHubServerTestScenario implements StaticTestScenario {
 
 	/**
 	 * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}

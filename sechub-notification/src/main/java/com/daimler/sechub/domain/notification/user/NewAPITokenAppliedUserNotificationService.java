@@ -27,9 +27,9 @@ public class NewAPITokenAppliedUserNotificationService {
 	public void notify(UserMessage userMessage) {
 		StringBuilder emailContent = new StringBuilder();
 		emailContent.append("You have requested a new api token.\n");
-		emailContent.append(MessageFormat.format("The new api token has been applied to your user:\"{0}\".\n",
+		emailContent.append(MessageFormat.format("The new api token has been applied to your user: {0}\n\n",
 				userMessage.getUserId()));
-		emailContent.append("If you have not triggered an api token change please inform administrators.");
+		emailContent.append("If you have not triggered an api token change please inform administrators.\n");
 
 		SimpleMailMessage message1 = factory.createMessage("SecHub API token changed");
 		message1.setTo(userMessage.getEmailAdress());

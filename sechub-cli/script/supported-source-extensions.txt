@@ -1,0 +1,20 @@
+Apex: .apex .apexp .component .object .page .report .tgr .trigger .workflow
+ASP (Active Server Pages): .asp
+ASP: .ascx .aspx
+C/C++: .c .c++ .cc .cpp .cxx .h .h++ .hh .hpp .hxx
+C#, VB.NET, Visual Basic, VB Script: .bas .cls .cs .cshtml .csproj .ctl .dsr .frm .sln .vb .vbp .vbs .xaml
+Go, Protobuf: .go
+Groovy: .groovy .gsh .gvy .gy
+HTML: .htm .html
+Java ecosystem: .hbs .java .javasln .jsp .jspf .project .properties .tag .tld
+JavaScript: .js .json .jsx
+Kotlin: .kt .kts
+Objective C, Swift: .m .swift .xib
+Perl: .pl .plx .pm .psgi
+php: .ctp .php .php3 .php4 .php5 .php5.6 .phtm .phtml .tpl .twig
+PL/SQL: .pck .pkb .pkh .pks .pls .sql
+Python, Django: .py .py2 .py3 .pyi .python
+Ruby: .erb .rb .rhtml .rjs .rxml
+Scala: .conf .sc .scala
+Typescript/Angular: .ts .tsx
+Others: .build .cgi .config .inc .xml

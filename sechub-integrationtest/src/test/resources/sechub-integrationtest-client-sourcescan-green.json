@@ -3,7 +3,7 @@
     
     "codeScan": {
         "fileSystem": {
-            "folders": ["../../../../src"]     
+            "folders": ["testProject1/src/java"]     
         }
      }
     

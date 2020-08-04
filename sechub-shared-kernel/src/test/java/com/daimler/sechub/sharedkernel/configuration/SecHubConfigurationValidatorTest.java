@@ -16,6 +16,7 @@ import org.mockito.verification.VerificationMode;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class SecHubConfigurationValidatorTest {
@@ -23,6 +24,7 @@ public class SecHubConfigurationValidatorTest {
 	private SecHubConfigurationValidator validatorToTest;
 	private Errors errors;
 	private SecHubConfiguration target;
+	private ApiVersionValidationFactory apiVersionValidationFactory;
 	private ApiVersionValidation apiValidation;
 	private ValidationResult okResult;
 	private ValidationResult failedResult;
@@ -36,15 +38,19 @@ public class SecHubConfigurationValidatorTest {
 		when(failedResult.isValid()).thenReturn(false);
 
 		apiValidation=mock(ApiVersionValidation.class);
+		apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
 		when(apiValidation.validate(any())).thenReturn(okResult);
 		validatorToTest = new SecHubConfigurationValidator();
-		validatorToTest.apiValidation=apiValidation;
+		validatorToTest.apiVersionValidationFactory=apiVersionValidationFactory;
+		when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
 		errors = mock(Errors.class);
 		target = mock(SecHubConfiguration.class);
 
 		/* prepare defaults */
 		when(target.getApiVersion()).thenReturn("1.0");
 		when(target.getWebScan()).thenReturn(Optional.empty());
+		
+		validatorToTest.postConstruct();// simulate spring boot post construct
 	}
 
 	@Test

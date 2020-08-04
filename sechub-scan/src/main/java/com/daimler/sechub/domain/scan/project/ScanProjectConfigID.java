@@ -8,7 +8,11 @@ import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 @MustBeKeptStable("You can rename enums, but do not change id parts, because used inside DB!")
 public enum ScanProjectConfigID {
 
-	MOCK_CONFIGURATION("mock_config");
+	MOCK_CONFIGURATION("mock_config"), 
+	
+	FALSE_POSITIVE_CONFIGURATION("false_positives"),
+	
+	;
 	
 	private String id;
 

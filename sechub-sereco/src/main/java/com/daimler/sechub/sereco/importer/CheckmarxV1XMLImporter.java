@@ -9,19 +9,16 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CheckmarxV1XMLImporter.class);
 
 	private static final Pattern NAME_PATTERN = Pattern.compile("_");
 
@@ -53,15 +50,14 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 			for (Element resultElement : resultElements) {
 
 				String falsePositive = resultElement.attributeValue("FalsePositive");
-				if (Boolean.parseBoolean(falsePositive)) {
-					String nodeId = resultElement.attributeValue("NodeId");
-					LOG.debug("Ignored marked false positive for NodeId:{}", nodeId);
-					continue;
-				}
 				String deeplink = resultElement.attributeValue("DeepLink");
 				String severity = resultElement.attributeValue("Severity");
 
 				SerecoVulnerability vulnerability = new SerecoVulnerability();
+				vulnerability.setFalsePositive(Boolean.parseBoolean(falsePositive));
+				if (vulnerability.isFalsePositive()) {
+				    vulnerability.setFalsePositiveReason("marked directly in security product");
+				}
 				vulnerability.setType(type);
 				if ("Information".equalsIgnoreCase(severity)) {
 					severity = "info";
@@ -74,6 +70,7 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 				vulnerability.setProductResultLink(deeplink);
 				vulnerability.setDescription(""); // at least at the moment we set no description any more
 				vulnerability.getClassification().setCwe(cweId);
+				vulnerability.setScanType(ScanType.CODE_SCAN);
 
 				categoryConverter.convert(categories, vulnerability.getClassification());
 

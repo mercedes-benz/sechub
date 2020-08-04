@@ -37,7 +37,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
 
 		/* prepare*/
 	    changeScanMappingDirectly(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
-	            new MappingEntry("scenario3_.*", "200001", ""),
+	            new MappingEntry(Scenario3.PREFIX_MAIN_ID+"_.*", "200001", ""),
 	            new MappingEntry(".*", "200002", "")
 	            
 	            );
@@ -65,6 +65,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
 			hasAmountOfInspections(1).
 			inspectionNr(0).
 				hasId("CHECKMARX").
+				hasNotice("engineconfigurationname","int-test-checkmarx-engine-name"). // 
 				hasNotice("presetid","200001"). // scenario3_project1 -> preset 1
 				hasNotice("teamid", "teamid3"); // scenario3_project1 -> team 3
 		/* @formatter:on */

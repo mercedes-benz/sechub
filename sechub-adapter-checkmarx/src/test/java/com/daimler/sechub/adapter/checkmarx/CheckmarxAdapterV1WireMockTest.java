@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -54,6 +56,7 @@ public class CheckmarxAdapterV1WireMockTest {
     
     private static final long CHECKMARX_PROJECT_ID = 10666;
     private static final long CHECKMARX_CONFIGURATION_ID=20666;
+    private static final String CHECKMARX_ENGINE_CONFIGURATION_NAME = "Multi-language Scan";
     private static final long CHECKMARX_SECHUB_DEFAULT_PRESET_ID = 4711;
     private static final long CHECKMARX_SCAN_ID = 28331;
     private static final long CHECKMARX_REPORT_ID = 12345;
@@ -87,6 +90,8 @@ public class CheckmarxAdapterV1WireMockTest {
         
         when(config.getTraceID()).thenReturn(SECHUB_TRACE_ID);
         when(config.getPresetIdForNewProjectsOrNull()).thenReturn(CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
+        when(config.getClientSecret()).thenReturn(CheckmarxConfig.DEFAULT_CLIENT_SECRET);
+        when(config.getEngineConfigurationName()).thenReturn(CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME);
         when(config.getUser()).thenReturn(USERNAME);
         when(config.getTargetType()).thenReturn(TARGET_TYPE);
         when(config.getPasswordOrAPIToken()).thenReturn(PASSWORD);
@@ -222,8 +227,14 @@ public class CheckmarxAdapterV1WireMockTest {
        simulateCheckProjectExistsReturnsFalse(loginResponse);
        simulateCreateProjectWasSuccessful();
        
+       /* update scan settings */
        LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
-       simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap);
+       List<Map<String, Object>> fetchEngineConfigurationsMap = simulateFetchEngineConfigurations();
+       Map<String, Object> multiLanguageEngineConfiguration = findMapByValue(CHECKMARX_ENGINE_CONFIGURATION_NAME, fetchEngineConfigurationsMap);
+       long serverReturnedEngineConfigurationId = Long.valueOf(multiLanguageEngineConfiguration.get("id").toString());
+       
+       simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap, serverReturnedEngineConfigurationId);
+       
        /* upload */
        simulateUploadZipFileWasSuccesful();
        
@@ -322,9 +333,9 @@ public class CheckmarxAdapterV1WireMockTest {
                    );
     }
 
-    private void simulateUpdateScanSettingsForProjectWereSuccessful(LinkedHashMap<String, Object> fetchScanSettingsResultMap) {
+    private void simulateUpdateScanSettingsForProjectWereSuccessful(LinkedHashMap<String, Object> fetchScanSettingsResultMap, long engineConfigurationId) {
         LinkedHashMap<String,Object> updateScanSettingsParamMap = new LinkedHashMap<>();
-           updateScanSettingsParamMap.put("engineConfigurationId",CHECKMARX_CONFIGURATION_ID);
+           updateScanSettingsParamMap.put("engineConfigurationId",engineConfigurationId);
            updateScanSettingsParamMap.put("presetId",CHECKMARX_SECHUB_DEFAULT_PRESET_ID);
            updateScanSettingsParamMap.put("projectId",CHECKMARX_PROJECT_ID);
            
@@ -357,6 +368,28 @@ public class CheckmarxAdapterV1WireMockTest {
                        .withBody(JSONTestUtil.toJSONContainingNullValues(fetchScanSettingsResultMap)))
                    );
         return fetchScanSettingsResultMap;
+    }
+    
+    private List<Map<String, Object>> simulateFetchEngineConfigurations() {
+        List<Map<String, Object>> fetchEngineConfigurations = new LinkedList<>();
+        LinkedHashMap<String,Object> defaultConfigurationMap = new LinkedHashMap<>();
+        LinkedHashMap<String,Object> multiLanguageScanMap = new LinkedHashMap<>();
+
+        defaultConfigurationMap.put("id", 1);
+        defaultConfigurationMap.put("name", "Default Configuration");
+        multiLanguageScanMap.put("id", 5);
+        multiLanguageScanMap.put("name", CHECKMARX_ENGINE_CONFIGURATION_NAME);
+        fetchEngineConfigurations.add(defaultConfigurationMap);
+        fetchEngineConfigurations.add(multiLanguageScanMap);
+
+        stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/sast/engineConfigurations")))).
+                willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", APPLICATION_JSON+";v=1.1")
+                        .withBody(JSONTestUtil.toJSONContainingNullValues(fetchEngineConfigurations)))
+                );
+       
+        return fetchEngineConfigurations;
     }
 
     private void simulateCreateProjectWasSuccessful() {
@@ -426,7 +459,7 @@ public class CheckmarxAdapterV1WireMockTest {
            map.put("grant_type", "password");
            map.put("scope", "sast_rest_api");
            map.put("client_id", "resource_owner_client");
-           map.put("client_secret", "014DF517-39D1-4453-B7B3-9930C563627C"); // TODO maybe this must be customizable
+           map.put("client_secret", CheckmarxConfig.DEFAULT_CLIENT_SECRET); 
 
            
 
@@ -495,6 +528,18 @@ public class CheckmarxAdapterV1WireMockTest {
                     .withHeader("Content-Type", APPLICATION_JSON)
                     .withBody(JSONTestUtil.toJSONContainingNullValues(scanStatus)))
                 );
+    }
+    
+    private Map<String, Object> findMapByValue(String name, List<Map<String, Object>> listMap) {
+        Map<String, Object> result = null;
+        
+        for (Map<String, Object> map : listMap) {
+            if (map.containsValue(name)) {
+                result = map;
+            }
+        }
+            
+        return result;
     }
 
 }

@@ -25,10 +25,10 @@ public class InformAdminsThatUserBecomesAdminNotificationService {
 	private EmailService emailService;
 
 	@UseCaseAdministratorGrantsAdminRightsToUser(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform sechub admins that another user became administrator"))
+			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that another user became administrator"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("A user gained sechub administrator rights");
+		SimpleMailMessage message = factory.createMessage("SecHub: Granted administrator rights to " + userMessage.getUserId());
 
 		message.setTo(notificationConfiguration.getEmailAdministrators());
 		message.setText(createEmailContent(userMessage, baseUrl));
@@ -39,10 +39,10 @@ public class InformAdminsThatUserBecomesAdminNotificationService {
 
 	private String createEmailContent(UserMessage userMessage, String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Please welcome ").append(userMessage.getUserId()).append("\n\n");
-		emailContent.append("as a new administrator of sechub for environment (base url):").append(baseUrl).append("\n");
-		emailContent.append("Email adress of new colleague is:"+userMessage.getEmailAdress());
-		emailContent.append("Don't forget: Colleague email adress should be added to NPM (email administrators) as well.");
+		emailContent.append("Please welcome \n  " + userMessage.getUserId() + "\n");
+		emailContent.append("as a new administrator of SecHub for environment (base url): " + baseUrl + "\n\n");
+		emailContent.append("Email address of new colleague is: " + userMessage.getEmailAdress() + "\n");
+		emailContent.append("Don't forget to add that email address to NPM (SecHub administrators) as well.\n");
 
 		String text = emailContent.toString();
 		return text;

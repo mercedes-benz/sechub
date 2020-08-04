@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportException;
-import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.ProgressMonitor;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -139,7 +137,6 @@ public class ScanService implements SynchronMessageHandler {
 
     protected void executeScan(SecHubExecutionContext context, DomainMessage request) throws SecHubExecutionException {
         DomainDataTraceLogID sechubJobUUID = traceLogID(request);
-        MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, sechubJobUUID.getPlainId());
 
         LOG.info("start scan for {}", sechubJobUUID);
 

@@ -45,30 +45,59 @@ public class TestAPI {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestAPI.class);
 
+    
+    public static File PDS_WORKSPACE_FOLDER = new File("./build/test-results/pds-runtime/workspace");
+    
     /**
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser ANONYMOUS = new TestUser();
+    public static final TestUser ANONYMOUS = new FixedTestUser();
 
     /**
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser SUPER_ADMIN = new TestUser("int-test_superadmin", "int-test_superadmin-pwd",
+    public static final TestUser SUPER_ADMIN = new FixedTestUser("int-test_superadmin", "int-test_superadmin-pwd",
             "superadmin@" + ExampleConstants.URI_SECHUB_SERVER);
     /**
      * Do <b>NOT</b> change this user in tests! This is only for checks. Only
      * special scenario users are automatically reverted
      */
-    public static final TestUser ONLY_USER = new TestUser("int-test_onlyuser", "int-test_onlyuser-pwd", "onlyuser@" + ExampleConstants.URI_TARGET_SERVER);
+    public static final TestUser ONLY_USER = new FixedTestUser("int-test_onlyuser", "int-test_onlyuser-pwd", "onlyuser@" + ExampleConstants.URI_TARGET_SERVER);
+    
+    /**
+     * Technical user used for communication with integration test PDS
+     */
+    public static final TestUser PDS_TECH_USER = new FixedTestUser("pds-inttest-techuser", "pds-inttest-apitoken", "pds_techuser@" + ExampleConstants.URI_TARGET_SERVER);
 
+    /**
+     * Admin account used for communication with integration test PDS
+     */
+    public static final TestUser PDS_ADMIN = new FixedTestUser("pds-inttest-admin", "pds-inttest-apitoken", "pds_admin@" + ExampleConstants.URI_TARGET_SERVER);
+
+    
     private static final long MAXIMUM_WAIT_FOR_RUNNING_JOBS = 300 * 1000;// 300 seconds = 5 minutes max;
 
     public static final AsUser as(TestUser user) {
         return new AsUser(user);
     }
+    
+    public static final AsPDSUser asPDSUser(TestUser user) {
+        return new AsPDSUser(user);
+    }
 
+    public static AssertPDSStatus assertPDSJobStatus(String json) {
+        return new AssertPDSStatus(json);
+    }
+    public static AssertPDSCreateJobResult assertPDSJobCreateResult(String json) {
+        return new AssertPDSCreateJobResult(json);
+    }
+    
+    public static AssertPDSWorkspace assertPDSWorkspace() {
+        return new AssertPDSWorkspace();
+    }
+    
     public static AssertUser assertUser(TestUser user) {
         return new AssertUser(user);
     }
@@ -81,6 +110,10 @@ public class TestAPI {
         return new AssertProject(project);
     }
 
+    public static AssertJSON assertJSON(String json) {
+        return AssertJSON.assertJson(json);
+    }
+    
     /**
      * Creates an assert object to inspect meta data
      * @return
@@ -91,7 +124,12 @@ public class TestAPI {
 
     public static void logInfoOnServer(String text) {
         String url = getURLBuilder().buildIntegrationTestLogInfoUrl();
-        getSuperAdminRestHelper().postPlainText(url,text);
+        getContext().getRestHelper(ANONYMOUS).postPlainText(url,text);
+    }
+    
+    public static void logInfoOnPDS(String text) {
+        String url = getPDSURLBuilder().buildIntegrationTestLogInfoUrl();
+        getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url,text);
     }
     
     /**
@@ -468,6 +506,7 @@ public class TestAPI {
      * 
      */
     public static void ensureNoLongerJobExecution() {
+        cancelAllScanJobs();
         removeAllJobsNotRunning();
         waitUntilNoLongerJobsRunning();
     }
@@ -659,6 +698,11 @@ public class TestAPI {
     private static TestURLBuilder getURLBuilder() {
         return getContext().getUrlBuilder();
     }
+    
+    private static TestURLBuilder getPDSURLBuilder() {
+        return getContext().getPDSUrlBuilder();
+    }
+    
 
     public static void revertJobToStillRunning(UUID sechubJobUUID) {
        String url = getURLBuilder().buildIntegrationTestRevertJobAsStillRunning(sechubJobUUID);

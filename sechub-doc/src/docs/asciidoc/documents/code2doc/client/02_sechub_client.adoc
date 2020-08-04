@@ -84,7 +84,7 @@ Will fetch current job status and return result as json or html
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getStatus
+sechub -jobUUID ${jobUUID} getStatus
 ----
 
 ===== getReport
@@ -93,8 +93,44 @@ Will fetch report as json (result will only exist when job is done)
 **Minimum call syntax**
 ----
 SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getReport
+sechub -jobUUID ${jobUUID} getReport
 ----
+
+[[section-client-false-positives-mark]]
+===== markFalsePositives
+Read your report carefully and check which of the findings are really so called "false positives".
+After this create an json file containing jobUUID and ID of finding you decided to be an FP. If 
+you like you can add an optional comment, describing your decision to mark this as FP.
+
+*Example JSON:*
+
+[source, json]
+----
+include::../../shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json[]
+----
+<1> api version
+<2> type - must be `falsePositiveJobDataList`
+<3> job where finding was in report
+<4> ID of finding, which shall be marked as false positive
+<5> Comment (optional) describing the reason why this is handled as false positive
+
+
+===== getFalsePositives
+This will fetch the false positive list of your project as JSON - format is same as for `markFalsePositives`
+
+[[section-client-false-positives-unmark]]
+===== unmarkFalsePositives
+When you want to remvoe a former defined false positive entry you can do this the same way
+as for mark operation: Just define a JSON file, select the file by the `-file` argument and start
+action `unmarkFalsePositives`
+
+*Example JSON:*
+
+[source, json]
+----
+include::sechub_client_falsepositve_list_example_unmark.json[]
+----
+
 ==== Options
 
 - `-apitoken <string>` +
@@ -132,7 +168,7 @@ Additionally to above cmdline options, you can set some values also via environm
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
 
-=== Configuration file
+=== Client configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
 and use it as sechub configuration. There must be always a valid configuration
 file - otherwise client will not work.
@@ -159,6 +195,16 @@ you will see network traffic and also JSON sent to server. This JSON will only
 contain the origin template but not the replaced parts. This was done to prevent
 accidently logging of variables - e.g. credentials.
 
+==== Accepted source code files
+The client will per default only include wellknown source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table.
+
+*All files having file endings not listed here, will be ignored* and not contained in source upload to
+{sechub} server! 
+
+NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 
 include::../../shared/configuration/sechub_config.adoc[]
 
@@ -177,8 +223,6 @@ SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
-
-WARNING: Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources...
 
 
 ==== Start a web scan
@@ -199,3 +243,20 @@ SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
 sechub scan
 ----
 with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .
+
+==== Mark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json markFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
+
+==== Unmark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json unmarkFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
+

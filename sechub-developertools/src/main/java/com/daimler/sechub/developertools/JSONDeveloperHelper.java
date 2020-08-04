@@ -50,6 +50,10 @@ public class JSONDeveloperHelper {
 		mapper.registerModule(new Jdk8Module());
 	}
 
+	public ObjectMapper getMapper() {
+        return mapper;
+    }
+	
 	public String beatuifyJSON(String json) {
 		if (json==null) {
 			return null;

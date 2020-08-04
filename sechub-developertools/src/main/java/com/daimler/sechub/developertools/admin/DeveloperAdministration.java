@@ -2,6 +2,7 @@
 package com.daimler.sechub.developertools.admin;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.client.ClientHttpResponse;
@@ -16,9 +18,12 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
+import com.daimler.sechub.integrationtest.api.AsPDSUser;
+import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
+import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,13 +42,17 @@ public class DeveloperAdministration {
         this.provider = provider;
         this.errorHandler = errorHandler;
         this.userContext = new AdminUserContext();
-        this.anonymousContext = new AnonymousTestUser(null, null);
+        this.anonymousContext = new AnonymousTestUser(null);
         this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
         this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler, anonymousContext);
     }
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
-        return new TestRestHelper(user) {
+        return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
+    }
+
+    private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {
+        return new TestRestHelper(user, restHelperTarget) {
 
             @Override
             protected ResponseErrorHandler createErrorHandler() {
@@ -51,26 +60,38 @@ public class DeveloperAdministration {
 
                     @Override
                     public void handleError(ClientHttpResponse response) throws IOException {
-                        StringBuilder sb = new StringBuilder();
+                        StringBuilder httpResponseProblem = new StringBuilder();
                         String statusText = response.getStatusText();
-                        sb.append("status code::");
-                        sb.append(response.getStatusCode());
+                        httpResponseProblem.append("status code::");
+                        httpResponseProblem.append(response.getStatusCode());
                         if (statusText != null) {
-                            sb.append(", text:");
-                            sb.append(statusText);
+                            httpResponseProblem.append(", text:");
+                            httpResponseProblem.append(statusText);
                         }
                         try (BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"))) {
                             String line = null;
-                            sb.append(",body:");
+                            httpResponseProblem.append(",body:");
                             while ((line = br.readLine()) != null) {
-                                sb.append("\n");
-                                sb.append(line);
+                                httpResponseProblem.append("\n");
+                                httpResponseProblem.append(line);
                             }
                         } catch (IOException e) {
                             provider.handleError("failed to read response body:" + e.getMessage());
                         }
-                        provider.handleError(sb.toString());
-
+                        StringBuilder errorOutput = new StringBuilder();
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("***                        SENT                                ***\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("Last URL call:").append(TestRestHelper.getLastUrl());
+                        if (TestRestHelper.getLastData() != null) {
+                            errorOutput.append("\nWith data:").append(TestRestHelper.getLastData());
+                        }
+                        errorOutput.append("\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append("***                     RECEIVED                               ***\n");
+                        errorOutput.append("******************************************************************\n");
+                        errorOutput.append(httpResponseProblem).append("\n");
+                        provider.handleError(errorOutput.toString());
                     }
                 };
             }
@@ -99,12 +120,67 @@ public class DeveloperAdministration {
         return restHelper;
     }
 
+    public PDSAdministration pds(String hostname, int port,String userid, String apiToken) {
+        return new PDSAdministration(hostname, port,userid,apiToken);
+    }
+
+    public class PDSAdministration {
+
+        private TestURLBuilder pdsUrlBuilder;
+
+        public PDSAdministration(String hostname, int port, String userid, String apiToken) {
+            pdsUrlBuilder = new TestURLBuilder("https", port, hostname);
+            TestUser user = new TestUser(userid, apiToken, userid + "_pds@example.com");
+            restHelper = new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
+        }
+
+        public String getServerConfiguration() {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
+        }
+
+        public String getServerAlive() {
+            return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildAnonymousCheckAlive());
+        }
+        
+
+        public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
+            return AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
+        }
+
+        public String getExecutionStatus() {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
+        }
+
+        public String getJobResultOrError(String jobUUID) {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
+        }
+        
+        public String getJobStatus(String jobUUID) {
+            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+        }
+
+        public String markJobAsReadyToStart(UUID jobUUID) {
+             AsPDSUser.markJobAsReadyToStart(jobUUID,restHelper,pdsUrlBuilder);
+             return "triggered";
+        }
+
+        public String upload(UUID pdsJobUUID, File file, String uploadName) {
+            AsPDSUser.upload(pdsUrlBuilder, restHelper, pdsJobUUID, uploadName, file);;
+            return "upload done - using uploadname:"+uploadName;
+        }
+
+    }
+
     public TestRestHelper getAnonyomusRestHelper() {
         return anonyomusRestHelper;
     }
 
-    public String doSignup(String string) {
-        getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(string));
+    public String acceptSignup(String userId) {
+        getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
+        return "SENT";
+    }
+    public String declineSignup(String userId) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserSignUpUrl(userId));
         return "SENT";
     }
 
@@ -301,10 +377,22 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminRestartsJob(jobUUID));
         return "restart job triggered";
     }
-    
+
     public String restartJobHard(UUID jobUUID) {
         getRestHelper().post(getUrlBuilder().buildAdminRestartsJobHard(jobUUID));
         return "restart job (hard) triggered";
+    }
+
+    public String fetchProjectFalsePositiveConfiguration(String projectId) {
+        return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
+    }
+
+    public String markFalsePositivesForProjectByJobData(String projectId, String json) {
+        return getRestHelper().putJSon(getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(projectId), json);
+    }
+
+    public void deleteFalsePositivesForProject(String projectId, UUID jobUUID, int findingId) {
+        getRestHelper().delete(getUrlBuilder().buildUserRemovesFalsePositiveEntryFromProject(projectId, jobUUID.toString(), "" + findingId));
     }
 
     private String commonTriggerDownloadInBrowser(String url) {

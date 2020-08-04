@@ -12,7 +12,6 @@ public class AbstractMockedAdapterTest {
 
 	private TestAbstractMockedAdapter testAdapter;
 
-
 	@Before
 	public void before() {
 		testAdapter = new TestAbstractMockedAdapter();
@@ -39,10 +38,6 @@ public class AbstractMockedAdapterTest {
 		private String fileEnding;
 		
 		@Override
-		protected void validateConfigAsDefinedInMockYAML(AdapterConfig config) {
-			// not necessary
-		}
-		@Override
 		protected String getMockDataFileEnding() {
 			if (fileEnding!=null) {
 				return fileEnding;
@@ -53,6 +48,10 @@ public class AbstractMockedAdapterTest {
 		public int getAdapterVersion() {
 			return 10;
 		}
+        @Override
+        protected void executeMockSanityCheck(AdapterConfig config) {
+            // not necessary
+        }
 		
 	}
 }

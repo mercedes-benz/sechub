@@ -16,6 +16,7 @@ public class CreateProjectAction extends AbstractUIAction {
 
 	public CreateProjectAction(UIContext context) {
 		super("Create project", context);
+		setIcon(getClass().getResource("/icons/material-io/twotone_add_black_18dp.png"));
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class CreateProjectAction extends AbstractUIAction {
 		
 		// in case the user does not input any value, the value will be an empty string. 
 		// Null will only be returned if the user pressed cancel.
-		Optional<String> description = getUserInput("Please enter a short description (optional)", null);
+		Optional<String> description = getUserInput("Please enter a short description (optional)");
 		if (!description.isPresent()) {
 			return;
 		}
@@ -60,7 +61,7 @@ public class CreateProjectAction extends AbstractUIAction {
 		}
 		
 		// build and send request to server over HTTP
-		String postResult = getContext().getAdministration().createProject(projectId.get().toLowerCase().trim(), description.orElse(null),
+		String postResult = getContext().getAdministration().createProject(asSecHubId(projectId.get()), description.orElse(null),
 				owner.get().toLowerCase().trim(), whiteListURLs);
 		outputAsBeautifiedJSONOnSuccess(postResult);
 		outputAsTextOnSuccess("project created:" + projectId);

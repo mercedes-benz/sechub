@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.internal;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,14 +17,30 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestUtil;
+
+import wiremock.com.google.common.io.Files;
 
 public class SecHubClientExecutor {
 
     public enum ClientAction {
 
-        START_ASYNC("scanAsync"), START_SYNC("scan"), GET_REPORT("getReport"), GET_STATUS("getStatus"),
+        START_ASYNC("scanAsync"),
+
+        START_SYNC("scan"),
+
+        GET_REPORT("getReport"),
+
+        GET_STATUS("getStatus"),
+        
+        MARK_FALSE_POSITIVES("markFalsePositives"),
+        
+        UNMARK_FALSE_POSITIVES("unmarkFalsePositives"),
+        
+        GET_FALSE_POSITIVES("getFalsePositives"),
 
         ;
 
@@ -36,6 +56,7 @@ public class SecHubClientExecutor {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
+    private Path outputFolder;
 
     public class ExecutionResult {
         private int exitCode;
@@ -79,6 +100,42 @@ public class SecHubClientExecutor {
             }
             return sechubJobUUD;
         }
+        public File getJSONFalsePositiveFile() {
+            //  Output is like: false-positives list written to file /tmp/with-sechub-client-755472131402648511/sechub-false-positives-scenario3_project1.json
+            String lastoutputLine = getLastOutputLine();
+            if (lastoutputLine==null) {
+                fail("no last output line available!");
+            }
+            String marker = "written to file";
+            int index = lastoutputLine.indexOf(marker);
+            if (index==-1) {
+                fail("unexpected last line, did not contain:"+marker+" but was:"+lastoutputLine);
+            }
+            String path = lastoutputLine.substring(index+marker.length());
+            return new File(path.trim());
+        }
+
+        public File getJSONReportFile() {
+            UUID jobUUID = getSechubJobUUD();
+            if (jobUUID == null) {
+                fail("No job uuid found - last output line was:" + lastOutputLine);
+            }
+            String jobUUIDString = jobUUID.toString();
+            File outputFile = new File(getOutputFolder(), "sechub_report_" + jobUUIDString + ".json");
+            return outputFile;
+        }
+
+        public TrafficLight getTrafficLight() {
+
+            String last = getLastOutputLine().trim().toUpperCase();
+            for (TrafficLight light : TrafficLight.values()) {
+                if (last.startsWith(light.name())) {
+                    return light;
+                }
+            }
+            return null;
+        }
+
     }
 
     public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String, String> environmentVariables, String... options) {
@@ -87,6 +144,11 @@ public class SecHubClientExecutor {
                     + " has no apiToken. This can happen if you are using users from another scenario... Please check your test!");
         }
 
+        File exampleScanRootFolder = ensureExampleContentFoldersExist();
+
+        /* other folders are "synthetic" and created simply on demand: */
+
+        // origin path of sechub client path:
         String path = "sechub-cli/build/go/platform/";
         List<String> commandsAsList = new ArrayList<>();
         String sechubExeName = null;
@@ -95,17 +157,16 @@ public class SecHubClientExecutor {
             path += "windows-386";
             commandsAsList.add("cmd.exe");
             commandsAsList.add("/C");
-            commandsAsList.add(sechubExeName);
         } else {
             sechubExeName = "sechub";
-            commandsAsList.add("./" + sechubExeName);
             path += "linux-386";
         }
-        File pathToExecutable = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
-        File executable = new File(pathToExecutable, sechubExeName);
-        if (!executable.exists()) {
-            throw new SecHubClientNotFoundException(executable);
+        File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
+        File executableFile = new File(executableParentFolder, sechubExeName);
+        if (!executableFile.exists()) {
+            throw new SecHubClientNotFoundException(executableFile);
         }
+        commandsAsList.add(0, executableFile.getAbsolutePath());
 
         if (file != null) {
             commandsAsList.add("-configfile");
@@ -141,14 +202,17 @@ public class SecHubClientExecutor {
             pb.redirectOutput(tmpGoOutputFile);
             Map<String, String> environment = pb.environment();
             environment.put("SECHUB_TRUSTALL", "true");
-            environment.put("SECHUB_DEBUG", "true");
+            if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
+                // we enable only when explicit wanted - so logs are smaller and easier to read
+                environment.put("SECHUB_DEBUG", "true");
+            }
             if (TestUtil.isKeepingTempfiles()) {
                 environment.put("SECHUB_KEEP_TEMPFILES", "true");
             }
             if (environmentVariables != null) {
                 environment.putAll(environmentVariables);
             }
-            pb.directory(pathToExecutable);
+            pb.directory(exampleScanRootFolder);
 
             StringBuilder sb = new StringBuilder();
             Iterator<String> it = commandsAsList.iterator();
@@ -173,6 +237,7 @@ public class SecHubClientExecutor {
             result.lines = output.trim().split("\\n");
 
             result.exitCode = exitCode;
+            result.outputFolder = outputFolder.toFile();
 
             return result;
         } catch (IOException e) {
@@ -183,6 +248,40 @@ public class SecHubClientExecutor {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Execution failed", e);
         }
+    }
+
+    private File ensureExampleContentFoldersExist() {
+        /*
+         * because SecHub client checks for existing folders we must ensure integration
+         * test do scan existing folders so we ensure example content/folders exists
+         */
+        String pathToExamples = "sechub-integrationtest/build/sechub/example/content/"; // same deepness as "sechub-cli/build/go/platform/linux-386"
+        File exampleScanRootFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), pathToExamples);
+        exampleScanRootFolder.mkdirs();
+
+        for (IntegrationTestExampleFolders folder : IntegrationTestExampleFolders.values()) {
+            File projectResourceFoldder = new File(exampleScanRootFolder, folder.getPath());
+            if (folder.isExistingContent()) {
+                assertTrue("This projectResourceFolder must already exist but doesnt:" + projectResourceFoldder.getAbsolutePath(),
+                        projectResourceFoldder.isDirectory() && projectResourceFoldder.exists());
+            } else {
+                projectResourceFoldder.mkdirs();// we generate this one
+                File testFile1 = new File(projectResourceFoldder, "TestMeIfYouCan.java");
+                if (!testFile1.exists()) {
+                    try {
+                        Files.write("class TestMeifYouCan {}", testFile1, Charset.forName("UTF-8"));
+                    } catch (IOException e) {
+                        throw new IllegalStateException("Cannot create test output!", e);
+                    }
+
+                }
+            }
+        }
+        return exampleScanRootFolder;
+    }
+
+    public void setOutputFolder(Path outputFolder) {
+        this.outputFolder = outputFolder;
     }
 
     public static void main(String[] args) {
@@ -196,4 +295,5 @@ public class SecHubClientExecutor {
             super("SecHub client not available, did you forget to build the client with `gradlew buildGo` ?\nExpected:" + executable);
         }
     }
+
 }

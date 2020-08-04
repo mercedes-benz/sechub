@@ -22,7 +22,7 @@ public class ShowProjectsScanLogsAction extends AbstractUIAction {
 			return;
 		}
 
-		String data = getContext().getAdministration().fetchProjectScanLogs(projectId.get().toLowerCase().trim());
+		String data = getContext().getAdministration().fetchProjectScanLogs(asSecHubId(projectId.get()));
 		outputAsBeautifiedJSONOnSuccess(data);
 	}
 

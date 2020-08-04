@@ -4,9 +4,18 @@ include 'sechub-cli',
 'sechub-doc',
 
 /* server POD area */
-'sechub-server',
-'sechub-server-core',
+'sechub-server',       // executable spring boot jar
+'sechub-server-core',  // core project for test compile dependencies and more
+
+/* PDS */
+'sechub-pds', // pds=product delegation server, executable spring boot jar
+'sechub-pds-core', // core project for test compile dependencies and more
+
+/* integration test*/
 'sechub-integrationtest',
+'sechub-pds-integrationtest',
+
+/* server parts */
 'sechub-schedule',
 'sechub-scan',
 'sechub-scan-testbase',
@@ -14,12 +23,14 @@ include 'sechub-cli',
 'sechub-scan-product-nessus',
 'sechub-scan-product-checkmarx',
 'sechub-scan-product-sereco',
+'sechub-scan-product-pds',
 
 // adapters
 'sechub-adapter',
 'sechub-adapter-netsparker',
 'sechub-adapter-nessus',
 'sechub-adapter-checkmarx',
+'sechub-adapter-pds',
 
 // authorization
 'sechub-authorization',
@@ -42,7 +53,12 @@ include 'sechub-cli',
 'sechub-storage-s3-aws',
 'sechub-storage-s3-aws-test',
 
-'sechub-developertools'
+'sechub-developertools',
+
+// Analyzer CLI
+'sechub-analyzer-cli'
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

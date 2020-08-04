@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +20,11 @@ import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportProductExecutor;
 import com.daimler.sechub.sereco.Sereco;
 import com.daimler.sechub.sereco.Workspace;
-import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
+
 @Component
 public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
@@ -56,8 +55,6 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		UUID secHubJobUUID = context.getSechubJobUUID();
 		UUIDTraceLogID traceLogId = UUIDTraceLogID.traceLogID(secHubJobUUID);
 
-		MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, projectId);
-		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, traceLogId.getPlainId());
 		LOG.debug("{} start sereco execution", traceLogId);
 
 		/* load the results by job uuid */

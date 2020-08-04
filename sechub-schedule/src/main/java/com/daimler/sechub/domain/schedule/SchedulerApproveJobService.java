@@ -5,13 +5,11 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
-import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
@@ -46,7 +44,6 @@ public class SchedulerApproveJobService {
 		secHubJob.setExecutionState(ExecutionState.READY_TO_START);
 		jobRepository.save(secHubJob);
 
-		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
 		LOG.info("job {} now approved", jobUUID);
 	}
 

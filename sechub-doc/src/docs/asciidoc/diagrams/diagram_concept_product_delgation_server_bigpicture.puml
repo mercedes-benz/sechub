@@ -1,0 +1,71 @@
+@startuml 
+
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+
+box "Sechub"
+    participant Executor as "Product Delegation Executor"
+    participant Adapter as "Product Delegation Adapter"
+end box
+
+box "ProductDelegationServer"
+    participant Scheduler
+    queue Queue
+    participant BatchJob
+    participant ProcessExecutor
+    
+    database DB
+    entity Storage
+ 
+end box
+autoactivate on
+== create and configure job ==
+Executor -> Adapter: uses
+Adapter -> Scheduler #green : Command: Create and configure new job 
+return
+Scheduler --> DB : creates new job entry
+
+
+== upload data==
+Adapter -> Scheduler #green : Command: Upload data
+Scheduler -> Storage
+return
+return
+
+== mark ready to start ==
+Adapter -> Scheduler #green : Command: Mark ready to start
+Scheduler -> Queue
+return
+return
+
+== fetch status ==
+activate Queue
+Queue -> BatchJob
+deactivate Queue
+BatchJob -> ProcessExecutor : execute CLI command with parameters
+return
+
+Adapter -> Scheduler #green : Command: Fetch job status
+return "CREATED|READY_TO_START|RUNNING|CANCELED|FAILED|DONE"
+...
+BatchJob -> DB: writes result
+BatchJob -> Storage: delete
+Storage ->x]
+
+deactivate Storage
+deactivate DB
+deactivate BatchJob
+
+== fetch result ==
+Adapter -> Scheduler #green : Command: Fetch result from job
+
+Scheduler -> DB
+return "result as String"
+
+return
+Adapter -> Executor
+
+
+
+@enduml 

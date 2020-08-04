@@ -3,7 +3,7 @@ package com.daimler.sechub.integrationtest.scenario2;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
-import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
+import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
 
 /**
  * In this scenario following is automatically initialized:
@@ -18,7 +18,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractTestScenario;
  * @author Albert Tregnaghi
  *
  */
-public class Scenario2 extends AbstractTestScenario {
+public class Scenario2 extends AbstractGrowingSecHubServerTestScenario {
 
 	/**
 	 * Owner 1 is registered on startup and is default owner for created projects
@@ -81,5 +81,12 @@ public class Scenario2 extends AbstractTestScenario {
 			;
 		/* @formatter:on */
 	}
+
+    @Override
+    public String getPrefixMainId() {
+        return "s02";
+    }
+	
+	
 
 }

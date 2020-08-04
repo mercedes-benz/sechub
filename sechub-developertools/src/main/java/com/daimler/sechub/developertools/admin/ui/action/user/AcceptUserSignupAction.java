@@ -13,6 +13,7 @@ public class AcceptUserSignupAction extends AbstractUIAction {
 
 	public AcceptUserSignupAction(UIContext context) {
 		super("Accept user sign up",context);
+		setIcon(getClass().getResource("/icons/material-io/twotone_accessibility_new_black_18dp.png"));
 	}
 
 	@Override
@@ -26,7 +27,7 @@ public class AcceptUserSignupAction extends AbstractUIAction {
 		    return;
 		}
 		
-		String infoMessage = getContext().getAdministration().doSignup(userToSignup.get().toLowerCase().trim());
+		String infoMessage = getContext().getAdministration().acceptSignup(userToSignup.get().toLowerCase().trim());
 		outputAsTextOnSuccess(infoMessage);
 	}
 

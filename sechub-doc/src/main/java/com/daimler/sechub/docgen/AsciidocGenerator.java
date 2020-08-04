@@ -39,6 +39,7 @@ public class AsciidocGenerator implements Generator {
 	TextFileWriter writer = new TextFileWriter();
 	DomainMessagingFilesGenerator domainMessagingFilesGenerator = new DomainMessagingFilesGenerator(writer);
 	ExampleJSONGenerator exampleJSONGenerator = new ExampleJSONGenerator();
+	ClientDocFilesGenerator clientDocFilesGenerator = new ClientDocFilesGenerator();
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -80,6 +81,7 @@ public class AsciidocGenerator implements Generator {
 		AsciidocGenerator generator = new AsciidocGenerator();
 		
 		generator.generateExampleFiles(documentsGenFolder);
+		generator.generateClientParts(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
 		generator.generateSystemPropertiesDescription(systemProperitesFile);
 		generator.generateJavaLaunchExample(javaLaunchExampleFile);
@@ -87,11 +89,21 @@ public class AsciidocGenerator implements Generator {
 		generator.generateMockPropertiesDescription(specialMockValuePropertiesFile);
 		generator.generateMessagingFiles(messagingFile, diagramsGenFolder);
 		generator.generateUseCaseFiles(documentsGenFolder,diagramsGenFolder);
+		generator.generatePDSUseCaseFiles(documentsGenFolder,diagramsGenFolder);
 		generator.generateProfilesOverview(diagramsGenFolder);
 	}
 
 
-	private void generateExampleFiles(File documentsGenFolder) throws IOException{
+	private void generateClientParts(File documentsGenFolder) throws IOException{
+	    
+	    String defaultZipAllowedFilePatternsTable = clientDocFilesGenerator.generateDefaultZipAllowedFilePatternsTable();
+	    File clientGenDocFolder = new File(documentsGenFolder,"client");
+        File targetFile = new File(clientGenDocFolder, "gen_table_default_zip_allowed_file_patterns.adoc");
+        writer.save(targetFile, defaultZipAllowedFilePatternsTable);
+    }
+
+
+    private void generateExampleFiles(File documentsGenFolder) throws IOException{
 		generateExample("project_mockdata_config1.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration1());
 		generateExample("project_mockdata_config2.json", documentsGenFolder,exampleJSONGenerator.generateScanProjectMockDataConfiguration2());
 		
@@ -159,6 +171,15 @@ public class AsciidocGenerator implements Generator {
 		writer.save(targetFile3, usecaseRestDocUserDocumentation);
 
 	}
+	
+	private void generatePDSUseCaseFiles(File documentsGenFolder, File diagramsGenFolder) throws IOException {
+        UseCaseModel model = getCollector().fetchPDSUseCaseModel();
+
+        String useCaseAsciidoc = useCaseModelAsciiDocGenerator.generateAsciidoc(model,diagramsGenFolder,false,false);
+
+        File targetFile = new File(documentsGenFolder, "gen_pds-usecases.adoc");
+        writer.save(targetFile, useCaseAsciidoc);
+    }
 
 	static void output(String text) {
 		// We just do an output on console for build tool - e.g gradle...

@@ -21,4 +21,7 @@ public interface CheckmarxAdapterConfig extends AdapterConfig {
 
 	InputStream getSourceCodeZipFileInputStream();
 
+    String getClientSecret();
+
+    String getEngineConfigurationName();
 }

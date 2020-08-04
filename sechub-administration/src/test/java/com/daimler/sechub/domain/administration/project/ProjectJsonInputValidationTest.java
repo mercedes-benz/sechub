@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
@@ -19,21 +20,24 @@ public class ProjectJsonInputValidationTest {
 	private ProjectJsonInputValidation toTest;
 	private ProjectJsonInput input;
 	private Errors errors;
+	private ApiVersionValidationFactory apiVersionValidationFactory;
 	private ApiVersionValidation apiValidation;
 	private ProjectIdValidation projectIdValidation;
 	private UserIdValidation userIdValidation;
 	private ValidationResult okResult;
 	private ValidationResult failedResult;
+	
 
 	@Before
 	public void before() throws Exception {
-
+	    apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
 		apiValidation= mock(ApiVersionValidation.class);
 		projectIdValidation=mock(ProjectIdValidation.class);
 		userIdValidation=mock(UserIdValidation.class);
 
 		toTest = new ProjectJsonInputValidation();
-		toTest.apiValidation=apiValidation;
+		toTest.apiVersionValidationFactory=apiVersionValidationFactory;
+		when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
 		toTest.projectIdValidation=projectIdValidation;
 		toTest.userIdValidation=userIdValidation;
 
@@ -45,6 +49,8 @@ public class ProjectJsonInputValidationTest {
 
 		failedResult = mock(ValidationResult.class);
 		when(failedResult.isValid()).thenReturn(false);
+		
+		toTest.postConstruct();// simulate post construct...
 	}
 
 	@Test

@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MIT
+// ====================================
+// SecHub Client Documentation
+// ====================================
+include::documents/config.adoc[]
+
+= image:sechub-logo.png[sechub] SecHub Client Documentation
+
+== About
+include::documents/shared/about_sechub.adoc[]
+
+include::documents/pds/about_documentation_pds.adoc[]
+
+include::documents/pds/about_pds.adoc[]
+
+
+// horizontal line
+***
+
+// numbering from here on
+:numbered:
+
+<<<<
+== Concept
+include::documents/shared/concepts/concept_pds.adoc[]
+
+== Runtime view
+include::documents/pds/pds_config.adoc[]
+
+include::documents/pds/pds_usecases.adoc[]
+
+include::documents/pds/pds_restapi.adoc[]

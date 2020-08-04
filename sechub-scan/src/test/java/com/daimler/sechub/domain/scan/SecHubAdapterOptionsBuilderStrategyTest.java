@@ -12,6 +12,7 @@ import com.daimler.sechub.adapter.AdapterOptionKey;
 import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class SecHubAdapterOptionsBuilderStrategyTest {

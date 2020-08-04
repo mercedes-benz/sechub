@@ -29,7 +29,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 	EmailService emailService;
 
 	@UseCaseAdministratorDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
-	public void notify(ProjectMessage projectMessage) {
+	public void notify(ProjectMessage projectMessage, String baseUrl) {
 		requireNonNull(projectMessage);
 
 		Set<String> mailAdresses = projectMessage.getUserEmailAdresses();
@@ -37,11 +37,12 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 			LOG.info("No users found for project {} so ignore sending info mail about delete", projectMessage.getProjectId());
 			return;
 		}
-		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Project ").append(projectMessage.getProjectId()).append(" has been deleted.\n");
+		SimpleMailMessage message = factory.createMessage("A SecHub project where you have been a user was deleted: " + projectMessage.getProjectId());
 
-		SimpleMailMessage message = factory.createMessage("A SecHub project where you have been a user was deleted");
-		emailContent.append("This means that all report data has been deleted, and no longer access for sechub scans for this project is possible.\n\n");
+		StringBuilder emailContent = new StringBuilder();
+		emailContent.append("Project '" + projectMessage.getProjectId() + "' in environment " + baseUrl + "\n");
+		emailContent.append("has been deleted.\n\n");
+		emailContent.append("This means that all report data has been deleted, and thus sechub scans for this project are no longer accessible.\n");
 
 		String[] userAdresses = projectMessage.getUserEmailAdresses().toArray(new String[mailAdresses.size()]);
 

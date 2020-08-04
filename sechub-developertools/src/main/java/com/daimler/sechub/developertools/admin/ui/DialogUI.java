@@ -14,11 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class DialogUI {
@@ -47,14 +50,14 @@ public class DialogUI {
     public File selectFile(String initialPath) {
         if (initialPath != null) {
             File file = new File(initialPath);
-            
+
             if (file.exists()) {
                 if (file.isDirectory()) {
                     fileChooser.setCurrentDirectory(file);
-                }else {
+                } else {
                     fileChooser.setSelectedFile(file);
                 }
-            }else {
+            } else {
                 File parent = file.getParentFile();
                 if (parent.exists()) {
                     fileChooser.setCurrentDirectory(parent);
@@ -63,6 +66,7 @@ public class DialogUI {
             }
         }
 
+        System.out.println("frame="+frame);
         int result = fileChooser.showOpenDialog(frame);
         if (result != JFileChooser.APPROVE_OPTION) {
             return null;
@@ -83,6 +87,31 @@ public class DialogUI {
         return Optional.ofNullable(JOptionPane.showInputDialog(frame, message, defaultValue));
     }
 
+    /**
+     * Shows an input dialog for user. Last entered values for given identifier will
+     * be shown
+     *
+     * @param message
+     * @param identifier
+     * @return
+     */
+    public Optional<String> getUserPassword(String message, String defaultValue) {
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("Enter a password:");
+        JPasswordField passwordField = new JPasswordField(10);
+        passwordField.setText(defaultValue);
+        panel.add(label);
+        panel.add(passwordField);
+        String[] options = new String[] { "OK", "Cancel" };
+        int option = JOptionPane.showOptionDialog(frame, panel, message, JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+        if (option == 0) {
+            char[] password = passwordField.getPassword();
+            return Optional.ofNullable(new String(password));
+        }else {
+            return Optional.empty();
+        }
+    }
+
     public Optional<String> getUserInputFromTextArea(String title, String content) {
         SimpleTextDialog dialog = new SimpleTextDialog(title);
         dialog.setText(content);
@@ -95,15 +124,15 @@ public class DialogUI {
         return Optional.ofNullable(dialog.getText());
     }
 
-	public ThreeButtonDialogResult<String> getUserInputFromField(String inputLabelText) {
-		ThreeButtonDialogUI dialog = new ThreeButtonDialogUI(frame, "Input", inputLabelText);
-		dialog.setVisible(true);
-		
-		ThreeButtonDialogResult<String> options = new ThreeButtonDialogResult<String>(dialog.isCancelPressed(),
-				dialog.isAddPressed(), dialog.isFinishPresssed(), dialog.getText());
+    public ThreeButtonDialogResult<String> getUserInputFromField(String inputLabelText) {
+        ThreeButtonDialogUI dialog = new ThreeButtonDialogUI(frame, "Input", inputLabelText);
+        dialog.setVisible(true);
 
-		return options;
-	}
+        ThreeButtonDialogResult<String> options = new ThreeButtonDialogResult<String>(dialog.isCancelPressed(), dialog.isAddPressed(),
+                dialog.isFinishPresssed(), dialog.getText());
+
+        return options;
+    }
 
     public List<String> editList(String title, List<String> list) {
         SimpleTextDialog dialog = new SimpleTextDialog(title);

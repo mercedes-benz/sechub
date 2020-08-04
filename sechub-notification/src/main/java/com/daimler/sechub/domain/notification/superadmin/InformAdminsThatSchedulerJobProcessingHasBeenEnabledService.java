@@ -24,10 +24,10 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenEnabledService {
 	private EmailService emailService;
 
 	@UseCaseAdministratorEnablesSchedulerJobProcessing(@Step(number = 4, next = {
-			Step.NO_NEXT_STEP }, name = "Inform sechub admins that scheduler job processing has been enabled"))
+			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been enabled"))
 	public void notify(String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("Scheduler job processing enabled");
+		SimpleMailMessage message = factory.createMessage("SecHub: Scheduler job processing enabled");
 
 		message.setTo(notificationConfiguration.getEmailAdministrators());
 		message.setText(createEmailContent(baseUrl));
@@ -38,7 +38,7 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenEnabledService {
 
 	private String createEmailContent(String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Scheduler job processing has been enabled at sechub for environment (base url):").append(baseUrl).append("\n");
+		emailContent.append("Scheduler job processing has been enabled at SecHub for environment (base url): " + baseUrl + "\n");
 
 		String text = emailContent.toString();
 		return text;

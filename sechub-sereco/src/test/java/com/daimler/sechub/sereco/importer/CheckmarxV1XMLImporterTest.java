@@ -5,6 +5,7 @@ import static com.daimler.sechub.sereco.test.AssertVulnerabilities.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -17,6 +18,7 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class CheckmarxV1XMLImporterTest {
 
@@ -52,9 +54,10 @@ public class CheckmarxV1XMLImporterTest {
 		/* test */
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		SerecoVulnerability v1 = vulnerabilities.get(0);
+		SerecoVulnerability v1 = fetchFirstNonFalsePositive(vulnerabilities);
 		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 		assertEquals("", v1.getDescription());
+		assertEquals(ScanType.CODE_SCAN,v1.getScanType());
 
 		SerecoCodeCallStackElement codeInfo = v1.getCode();
 		assertNotNull(codeInfo);
@@ -92,7 +95,7 @@ public class CheckmarxV1XMLImporterTest {
 		/* test */
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
-		SerecoVulnerability v1 = vulnerabilities.get(0);
+		SerecoVulnerability v1 = fetchFirstNonFalsePositive(vulnerabilities);
 		assertEquals(SerecoSeverity.MEDIUM, v1.getSeverity());
 
 		assertEquals("https://defvm1676.intranet.example.org/CxWebClient/ViewerMain.aspx?scanid=1000866&projectid=279&pathid=2", v1.getProductResultLink());
@@ -109,8 +112,9 @@ public class CheckmarxV1XMLImporterTest {
 
 		/* test @formatter:off */
 		assertVulnerabilities(data.getVulnerabilities()).
-			vulnerability().withSeverity(SerecoSeverity.HIGH).isNotContained(). /* ONE is  high but false positive*/
-			hasVulnerabilities(230); /* inside xml there are 240 vulnerabilities, but 10 are false positives */
+			vulnerability().withSeverity(SerecoSeverity.HIGH).isNotContained(true). /* ONE is  high but false positive*/
+			hasVulnerabilities(240).
+			hasVulnerabilities(230,true); /* inside xml there are 240 vulnerabilities, but 10 are false positives */
 		/* @formatter:on */
 	}
 
@@ -132,26 +136,35 @@ public class CheckmarxV1XMLImporterTest {
 		SerecoClassification classification = v1.getClassification();
 		assertEquals("A5", classification.getOwasp());
 		assertEquals("6.5.8", classification.getPci32());
-		assertEquals("", classification.getPci31());
+		assertEquals(null, classification.getPci31());
 
 		SerecoVulnerability v100 = vulnerabilities.get(99);
 		assertEquals(SerecoSeverity.LOW, v100.getSeverity());
 		classification = v100.getClassification();
-		assertEquals("", classification.getPci32());
-		assertEquals("", classification.getOwasp());
+		assertEquals(null, classification.getPci32());
+		assertEquals(null, classification.getOwasp());
 		assertEquals("AC-3", classification.getNist());
 		assertEquals("Identification And Authentication", classification.getFisma());
 
 		SerecoVulnerability v109 = vulnerabilities.get(108);
 		assertEquals(SerecoSeverity.INFO, v109.getSeverity());
 		classification = v109.getClassification();
-		assertEquals("", classification.getOwasp());
-		assertEquals("", classification.getPci32());
-		assertEquals("", classification.getNist());
-		assertEquals("", classification.getFisma());
+		assertEquals(null, classification.getOwasp());
+		assertEquals(null, classification.getPci32());
+		assertEquals(null, classification.getNist());
+		assertEquals(null, classification.getFisma());
 		assertEquals("778", classification.getCwe());
 
 		assertEquals("Insufficient Logging of Exceptions", v109.getType());
 	}
 
+	 private SerecoVulnerability fetchFirstNonFalsePositive(List<SerecoVulnerability> vulnerabilities) {
+	        Iterator<SerecoVulnerability> vit = vulnerabilities.iterator();
+	        SerecoVulnerability v1 = vit.next();
+	        while (v1.isFalsePositive()) {
+	            /* we have also false positives here .. and just search for first non false Positive*/
+	            v1 = vit.next();
+	        }
+	        return v1;
+	    }
 }

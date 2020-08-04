@@ -158,6 +158,7 @@ public class SystemMonitorService {
         if (maximumAcceptedCPULoadAverage > 10) {
             LOG.warn("Maybe too high configured maximum accepted CPU load average:{} ", maximumAcceptedCPULoadAverage);
         }
+        LOG.info("Defined maximum CPU load average:{}",maximumAcceptedCPULoadAverage);
     }
 
     private void healtchCheckMemorySetup() {
@@ -173,6 +174,7 @@ public class SystemMonitorService {
         if (maximumAcceptedMemoryUsage > 95) {
             LOG.warn("Maybe too high configured maximum accepted memory usage:{}%", maximumAcceptedMemoryUsage);
         }
+        LOG.info("Defined maximum MEMORY load average:{}",maximumAcceptedMemoryUsage);
     }
 
 }

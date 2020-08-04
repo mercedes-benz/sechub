@@ -31,12 +31,15 @@ public class EmailValidationImpl extends AbstractValidation<String >implements E
 			return;
 		}
 		if (! apacheEmailValidator.isValid(mail)) {
-			context.addError("Mail is not in valid format");
+		    addErrorMessage(context,"Mail is not in valid format");
 		}
 	}
 
 
-
+	 @Override
+	    protected String getValidatorName() {
+	        return "email validation";
+	    }
 
 
 }

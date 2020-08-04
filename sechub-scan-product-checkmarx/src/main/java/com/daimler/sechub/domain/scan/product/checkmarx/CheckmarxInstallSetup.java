@@ -18,5 +18,16 @@ public interface CheckmarxInstallSetup extends AnyTargetOneInstallSetup{
 	 * @return preset Id or <code>null</code> - in case of null checkmarx will use default preset
 	 */
 	public Long getPresetIdForNewProjects(String projectId);
-
+	
+	/**
+	 * Get 'client secret' value
+	 * @return
+	 */
+	public String getClientSecret();
+	
+	/**
+	 * Get the engine configuration name
+	 * @return
+	 */
+	public String getEngineConfigurationName();
 }

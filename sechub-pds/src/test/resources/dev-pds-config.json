@@ -1,0 +1,29 @@
+{
+    "apiVersion" : "1.0",
+    
+    "serverId" : "development_server_instance",
+    
+    "products" : [
+        {
+            "id" : "PDS_INTTEST_PRODUCT_CODESCAN",
+            "path" : "../sechub-integrationtest/pds/product-scripts/integrationtest-codescan.sh",
+            "scanType" : "codeScan",
+            "description" : "code scan test PDS product"
+            
+        },
+        {
+            "id" : "PDS_INTTEST_PRODUCT_INFRASCAN",
+            "path" : "../sechub-integrationtest/pds/product-scripts/integrationtest-infrascan.sh",
+            "scanType" : "infraScan",
+            "description" : "infra scan test PDS product"
+            
+        },
+        {
+            "id" : "PDS_INTTEST_PRODUCT_WEBSCAN",
+            "path" : "../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",
+            "scanType" : "webScan",
+            "description" : "web scan test PDS product"
+            
+        }
+    ]
+}

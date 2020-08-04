@@ -5,9 +5,11 @@ A `{sechub}` configuration  must be valid `JSON` and is defined
 at caller side.
 
 It is used by client and also by rest calls to start {sechub}
-scan jobs and add meta data. Some minor parts are client specific and must
-be handled by direct REST calls in a special way, but this is mentioned in
-following description of JSON syntax.
+scan jobs and add meta data. 
+
+Some minor parts are client specific and must
+be handled by direct REST calls in a special way or do just not exist. 
+But this is mentioned inside this documentation
 
 ==== API version
 `apiVersion` must be defined (so mandatory). Currently only `1.0` is valid.
@@ -41,7 +43,7 @@ NOTE: When using REST calls directly you do not need the information inside
 Define `fileSystem` child entry and setup folders to use for code scanning by
 `folders` sub entry.
 
-Those folders will be automatically zipped and uploaded by `{sechub}` client
+All source code files inside these folders will be automatically zipped and uploaded by `{sechub}` client
 to server side for ongoing source analysis.
 
 Pathes must be defined relative from caller location - for example
@@ -59,12 +61,9 @@ Please do *NOT* use `\` inside pathes *but* always `/`.
 Also do *NOT* use absolute pathes *but* always relative pathes! Normally you should
 call {sechub} inside root folder of your source repository - this is the standard situation
 on build servers.
-
 ====
 
-====== Example upload folders with excludes
-
-
+===== Example sechub.json
 
 [[sechub-config-example-sourcescan]]
 [source, json]
@@ -74,12 +73,24 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 <1> Define code scan
 <2> Use filesystem - so means upload sources to server
 <3> Upload will contain sources from `gamechanger-android/src/main/java` and `gamechanger-server/src/main/java` and their sub folders
-<4> Exclude files (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - `+**/*+` is used to identify any folder +
-    In example above following files are excluded from upload: +
-    * `+**/*.log+` - excludes any log file in any sub directories of given folders
-    * `+README*.md+` excludes all markdown README files in given folders. For example above this means:
-      ** `gamechanger-android/src/main/java/README.md` and
-      ** `gamechanger-server/src/main/java/README.md`
+<4> Exclude directories (optional), syntax is similar to https://ant.apache.org/manual/Types/fileset.html[ANT fileset] - ` +
+    In example above all files in following directories are excluded from upload: +
+    * `+**/mytestcode/**+` +
+    excludes all files under a directory named `build` including sub directories
+    * `+**/documentation/**+` +
+    same for folder `documentation`
+    * default excludes +
+     Per default, the directories `+**/test/**+` `+**/.git/**+`
+are already excluded:
+
+<5> Client only option - if you use REST directly, you can ignore this. +
+    {sechub} client does only add wellknown sources into created upload zip file. This removes
+    unnecessary stuff and reduces upload size automatically. +
+    _E.g. a codescan for a `JPEG` image would not make sense..._ +
+    Instead of defining a negative list, we use a positive list and accept only wellknown sources,
+    which is simply done by file ending. + 
+    In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
+    Inside client documentation you will find a list of the default file endings.  
 
 ==== Web scan
 `webScan` (optional) defines the web scan settings.
@@ -88,7 +99,7 @@ include::sechub_config_example1_sourcescan_filesystem.json[]
 Use `uri` element to define a string array containing uris you want to scan.
 
 WARNING: URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do _accidently_ an DoS attack...
+         So you are not able to start scanning foreign domains and do _accidently_ an DoS attack...
 
 ====== Example anonymous
 [[sechub-config-example-webscan-anonymous]]

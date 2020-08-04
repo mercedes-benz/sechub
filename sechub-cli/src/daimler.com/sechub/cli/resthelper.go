@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -9,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	sechubUtil "daimler.com/sechub/util"
 )
 
 /**
@@ -18,15 +21,16 @@ func sendWithDefaultHeader(method string, url string, context *Context) *http.Re
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
 	header["Accept"] = "application/json"
+
 	return sendWithHeader(method, url, context, header)
 }
 
 func sendWithHeader(method string, url string, context *Context, header map[string]string) *http.Response {
-	/* we use unfilledByteValue - means origin template content, unfilled. Prevents password leak in logs */
-	LogDebug(context, fmt.Sprintf("Sending to %s:\nHeaders:\n%s\nContent:\n%s\n", url, header, context.unfilledByteValue))
-	/* send */
+	/* we use inputForContentProcessing - means origin content, unfilled, prevents password leak in logs */
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %s:%s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
 
-	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.byteValue))
+	/* prepare */
+	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
 	HandleHTTPError(err1)
 	req.SetBasicAuth(context.config.user, context.config.apiToken)
 
@@ -34,8 +38,9 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 		req.Header.Set(key, header[key])
 	}
 
-	response, err2 := context.HttpClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.byteValue))
-	HandleHTTPErrorAndResponse(response, err2)
+	/* send */
+	response, err2 := context.HTTPClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
+	HandleHTTPErrorAndResponse(response, err2, context)
 	return response
 }
 

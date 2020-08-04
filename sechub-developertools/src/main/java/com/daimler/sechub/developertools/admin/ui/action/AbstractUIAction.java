@@ -2,16 +2,20 @@
 package com.daimler.sechub.developertools.admin.ui.action;
 
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.ErrorHandler;
+import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
 import com.daimler.sechub.developertools.admin.ui.ThreeButtonDialogResult;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
@@ -23,31 +27,45 @@ public abstract class AbstractUIAction extends AbstractAction {
     private JSONDeveloperHelper jsonHelper = JSONDeveloperHelper.INSTANCE;
 
     private static final long serialVersionUID = 1L;
-    private static InputCache inputCache = new InputCache();
-    static {
-        initializeDefaults();
-    }
+    private static InputCache inputCache = InputCache.DEFAULT;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUIAction.class);
 
     private transient UIContext context;
-
+    
     public AbstractUIAction(String text, UIContext context) {
         this.context = context;
         this.putValue(Action.NAME, text);
     }
-
-    private static void initializeDefaults() {
-        inputCache.set(InputCacheIdentifier.EMAILADRESS, "sechub@example.org");
-        inputCache.set(InputCacheIdentifier.PROJECT_MOCK_CONFIG_JSON,
-                "{ \n" + "  \"apiVersion\" : \"1.0\",\n" + "\n" + "   \"codeScan\" : {\n" + "         \"result\" : \"yellow\"   \n" + "   },\n"
-                        + "   \"webScan\" : {\n" + "         \"result\" : \"green\"   \n" + "   },\n" + "   \"infraScan\" : {\n"
-                        + "         \"result\" : \"red\"   \n" + "   }\n" + " \n" + "}");
-
+    
+    public AbstractUIAction tooltip(String text) {
+        this.putValue(Action.SHORT_DESCRIPTION, text);// tooltip text
+        return this;
+    }
+    public AbstractUIAction tooltipUseText() {
+        return tooltip((String)this.getValue(Action.NAME));
+    }
+    
+    
+    protected void setIcon(URL url) {
+        Icon icon = new ImageIcon(url);
+        putValue(Action.LARGE_ICON_KEY, icon);
     }
 
     protected UIContext getContext() {
         return context;
+    }
+    
+    /**
+     * SecHub uses always lower cased identifier - this method is a helper.
+     * @param id
+     * @return lower cased trimmed id - or empty string when given id is null
+     */
+    protected String asSecHubId(String id) {
+        if (id==null || id.isEmpty()) {
+            return ""; 
+        }
+        return id.toLowerCase().trim();
     }
 
     @Override
@@ -109,11 +127,11 @@ public abstract class AbstractUIAction extends AbstractAction {
     }
 
     /**
-     * Output given text - no matter of an error has happend or not
+     * Output given text - no matter of an error has happened or not
      * 
      * @param text
      */
-    void output(String text) {
+    protected void output(String text) {
 
         OutputUI outputUI = getContext().getOutputUI();
         outputUI.output(text);
@@ -127,6 +145,29 @@ public abstract class AbstractUIAction extends AbstractAction {
         }
     }
 
+    
+    /**
+     * Shows an input dialog for user (one liner). Default values for given
+     * identifier will be shown - and always be reused. NO caching!
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserInput(String message, String defaultValue) {
+        Optional<String> x = getContext().getDialogUI().getUserInput(message, defaultValue);
+        return x;
+    }
+    
+    /**
+     * Shows an input dialog for user (one liner). 
+     * 
+     * @param message
+     * @return
+     */
+    protected Optional<String> getUserInput(String message) {
+        return getUserInput(message, (InputCacheIdentifier)null);        
+    }
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
      * identifier will be shown
@@ -138,6 +179,23 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected Optional<String> getUserInput(String message, InputCacheIdentifier identifier) {
 
         Optional<String> x = getContext().getDialogUI().getUserInput(message, inputCache.get(identifier));
+        if (x.isPresent() && identifier != null) {
+            inputCache.set(identifier, x.get());
+        }
+        return x;
+    }
+    
+    /**
+     * Shows an password dialog for user (one liner). Last entered values for given
+     * identifier will be used when nothing entered
+     * 
+     * @param message
+     * @param identifier
+     * @return
+     */
+    protected Optional<String> getUserPassword(String message, InputCacheIdentifier identifier) {
+
+        Optional<String> x = getContext().getDialogUI().getUserPassword(message, inputCache.get(identifier));
         if (x.isPresent() && identifier != null) {
             inputCache.set(identifier, x.get());
         }
@@ -165,7 +223,19 @@ public abstract class AbstractUIAction extends AbstractAction {
     	return getContext().getDialogUI().getUserInputFromField(inputLabelText);
     }
 
+    /**
+     * Maybe we have some actions where override shall not be possible - if so override the method
+     * and return false
+     * @return <code>true</code> (default) when this action confirmations can be disabled by system property
+     */
+    protected boolean canConfirmationBeOverridenBySetup() {
+        return true;
+    }
+    
     protected boolean confirm(String message) {
+        if (canConfirmationBeOverridenBySetup() && ConfigurationSetup.isConfirmationDisabled()) {
+            return true;
+        }
         return getContext().getDialogUI().confirm(message);
     }
 
