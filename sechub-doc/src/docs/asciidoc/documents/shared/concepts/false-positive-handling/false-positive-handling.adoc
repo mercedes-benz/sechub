@@ -122,7 +122,7 @@ include::FalsePositiveJavaApplication.java[]
 <1> marks start
 <2> marks end
 
-All between those tags will be ignored by  
+All between those tags will be ignored by {sechub}.
 
 ==== API centric
 see <<section-concept-false-positive-general-api-centric,general concept>> 

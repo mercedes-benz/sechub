@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<title>SecHub Quickstart Guide</title>
+<title>SecHub Client Documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -519,21 +519,76 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Quickstart Guide</h1>
+<h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
 <div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
+<div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
-<li><a href="#guide">1. Guide</a>
+<li><a href="#about">1. About</a></li>
+<li><a href="#concept">2. Concept</a>
+<ul class="sectlevel3">
+<li><a href="#product-delegation-server">2.1. Product delegation server</a>
+<ul class="sectlevel4">
+<li><a href="#general">2.1.1. General</a></li>
+<li><a href="#handling-of-resources">2.1.2. Handling of resources</a></li>
+<li><a href="#big-picture">2.1.3. Big picture</a></li>
+<li><a href="#executors-and-adapters">2.1.4. Executors and Adapters</a>
+<ul class="sectlevel5">
+<li><a href="#executors">2.1.4.1. Executors</a></li>
+<li><a href="#adapters">2.1.4.2. Adapters</a></li>
+</ul>
+</li>
+<li><a href="#howto-integrate-a-new-product-via-pds">2.1.5. HowTo integrate a new product via PDS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#runtime-view">3. Runtime view</a>
 <ul class="sectlevel2">
-<li><a href="#requirements">1.1. Requirements</a></li>
-<li><a href="#instructions">1.2. Instructions</a></li>
+<li><a href="#section-pds-configuration">3.1. Configuration</a></li>
+<li><a href="#tech-user-credentials">3.2. Tech user credentials</a></li>
+<li><a href="#admin-credentials">3.3. Admin credentials</a></li>
+<li><a href="#workspace-parent-folder">3.4. Workspace parent folder</a></li>
+<li><a href="#section-pds-server-config-file">3.5. Server configuration file</a></li>
+<li><a href="#launcher-scripts">3.6. Launcher scripts</a>
+<ul class="sectlevel3">
+<li><a href="#default-variables">3.6.1. Default variables</a>
+<ul class="sectlevel4">
+<li><a href="#pds_job_workspace_location">3.6.1.1. PDS_JOB_WORKSPACE_LOCATION</a></li>
+</ul>
+</li>
+<li><a href="#file-locations">3.6.2. File locations</a>
+<ul class="sectlevel4">
+<li><a href="#upload">3.6.2.1. Upload</a></li>
+<li><a href="#output">3.6.2.2. Output</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#section-usecases">3.7. Use cases</a>
+<ul class="sectlevel3">
+<li><a href="#overview-about-usecase-groups">3.7.1. Overview about usecase groups</a></li>
+</ul>
+</li>
+<li><a href="#rest-api">3.8. REST API</a>
+<ul class="sectlevel3">
+<li><a href="#big-picture-2">3.8.1. Big picture</a></li>
+<li><a href="#create-job">3.8.2. Create JOB</a></li>
+<li><a href="#upload-data">3.8.3. Upload data</a></li>
+<li><a href="#mark-job-ready-to-start">3.8.4. Mark JOB ready to start</a></li>
+<li><a href="#fetch-job-status">3.8.5. Fetch JOB status</a></li>
+<li><a href="#fetch-job-result">3.8.6. Fetch JOB result</a></li>
+<li><a href="#cancel-job">3.8.7. Cancel JOB</a></li>
+<li><a href="#get-monitoring-status">3.8.8. Get monitoring status</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="about">1. About</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>About SecHub</strong></p>
@@ -588,7 +643,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <p><strong>About documentation</strong></p>
 </div>
 <div class="paragraph">
-<p>This documentation is part of <code>SecHub</code>.</p>
+<p>This is the documentation for the product delegation server (<code>PDS</code>) of <code>SecHub</code>.</p>
 </div>
 <table id="documentation-license-info" class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -611,100 +666,610 @@ build pipeline / contionus integration (CI) and helps to provide
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Version
+0.0.0-eae54cb-latest</p>
+</div>
+<div class="paragraph">
+<p>The product delegation server (<code>PDS</code>) represents a server which is high configurable and
+can execute any command line tool. It has no runtime dependencies to SecHub, so it can be started
+as another server.</p>
+</div>
+<div class="paragraph">
+<p>Via <code>PDS</code> it is possible to easily integrate new security products into SecHub without writing
+adapters or executors, because <code>PDS</code> as a part of SecHub is automatically supported.</p>
+</div>
+<div class="paragraph">
+<p>You can use <code>PDS</code> instances also in a clustered way - e.g. by using Kubernetes and define a service
+for the <code>PDS</code> PODs.</p>
+</div>
+<hr>
+<div style="page-break-after: always;"></div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide">1. Guide</h2>
+<h2 id="concept">2. Concept</h2>
 <div class="sectionbody">
+<div class="sect3">
+<h4 id="product-delegation-server">2.1. Product delegation server</h4>
+<div class="sect4">
+<h5 id="general">2.1.1. General</h5>
 <div class="paragraph">
-<p>This guide describes how to get started with SecHub.</p>
+<p>There are many open source clients available having no server component inside so lacking:</p>
 </div>
-<div class="paragraph">
-<p>The following topics are covered:</p>
-</div>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-check-square-o"></i> Getting SecHub</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Starting SecHub in Integration Test Server mode</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Getting default passwords</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Working with the REST API and <a href="https://curl.haxx.se/">cURL</a></p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Stopping the server</p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="requirements">1.1. Requirements</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>Java SDK</p>
+<p>REST access</p>
 </li>
 <li>
-<p>Git</p>
+<p>queing</p>
 </li>
 <li>
-<p>cURL</p>
+<p>status requests</p>
+</li>
+<li>
+<p>scalable</p>
+</li>
+<li>
+<p>… more</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Ubuntu 18.04 &amp; 20.04:</p>
+<p>So when we want to adapt them in SecHub style <em>(the product does the work and we ask for result)</em> we
+need to provide a <code>ProductDelegationServer</code> (in short form <code>PDS</code>).</p>
+</div>
+<div class="paragraph">
+<p><code>PDS</code> is</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a spring boot application which uses a network DB for providing cluster possibility</p>
+</li>
+<li>
+<p>a complete standalone application without runtime dependencies to sechub server (or its shared kernel)</p>
+</li>
+<li>
+<p>provides REST access</p>
+</li>
+<li>
+<p>a very simple priviledge model with just two users (<code>tech user</code> + <code>admin user</code>),
+basic auth via <code>TLS</code>, credentials are simply defined by environment entries on startup</p>
+</li>
+<li>
+<p>provides jobs, queing, monitoring etc.</p>
+</li>
+<li>
+<p>can execute single files (e.g. a bash script), where job parameters are
+available as environment variables at runtime</p>
+</li>
+<li>
+<p>a standard way to integrate any product into SecHub in a scalable and easy way</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="handling-of-resources">2.1.2. Handling of resources</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>PDS server provides <code>auto unzipping</code> of uploaded resources when configured  - see <a href="#section-pds-server-config-file">PDS server configuration file</a></p>
+</li>
+<li>
+<p>When a PDS job fails or is done the resources inside job workspace location are <strong>automatically removed</strong></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="big-picture">2.1.3. Big picture</h5>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_product_delgation_server_bigpicture.png" alt="diagram concept product delgation server bigpicture" width="253" height="134">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="executors-and-adapters">2.1.4. Executors and Adapters</h5>
+<div class="sect5">
+<h6 id="executors">2.1.4.1. Executors</h6>
+<div class="paragraph">
+<p>With <code>PDS</code> there is a default <code>REST</code> <code>API</code> available.</p>
+</div>
+<div class="paragraph">
+<p>For different scanTypyes there will be dedicated PDSExecutors
+(<code>PDSWebScanExecutor</code>, <code>PDSInfraScanExecutor</code>, etc., etc.)</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="adapters">2.1.4.2. Adapters</h6>
+<div class="paragraph">
+<p>The Adapter will always be the same, but filled with other necessary parameters.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+So there will be no need to write any adapter or executor when using PDS!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="howto-integrate-a-new-product-via-pds">2.1.5. HowTo integrate a new product via PDS</h5>
+<div class="paragraph">
+<p>Having new security product XYZ but being a command line tool, we</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create an environment (e.g. a docker container) where all your needed parts are integrated.
+E.g. bash shell, tools, the product and its dependencies etc.</p>
+</li>
+<li>
+<p>create an executable starter script (e.g. bash) which</p>
+<div class="ulist">
+<ul>
+<li>
+<p>calls the product</p>
+</li>
+<li>
+<p>does system out/err to standard pipes</p>
+</li>
+<li>
+<p>writes the product result report to relative path <code>./output/result.txt</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>create a <code>PSD</code> configuration file and fill with necessary data, see <a href="#section-pds-server-config-file">PDS server configuration file</a></p>
+</li>
+<li>
+<p>start wanted amount of <code>ProductDelegationServer</code> instances with dedicated configuration
+setup to have a clustered, server ready execution of CLI security products. If you want your
+PDS to be started inside a cluster you have to setup load balancing etc. by your own.
+For example: When using Kubernetes you normally would do this by just defining a
+<code>Service</code> pointing to your <code>PODs</code>.</p>
+</li>
+<li>
+<p>test via developer admin UI if the servers are working:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>create test job, remember PDS job uuid</p>
+</li>
+<li>
+<p>upload data</p>
+</li>
+<li>
+<p>mark job as ready to start</p>
+</li>
+<li>
+<p>check job state</p>
+</li>
+<li>
+<p>fetch result and inspect</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>when former test was successful</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Define executor at sechub server side - <strong>will be implemented with #148</strong></p>
+</li>
+<li>
+<p>When your product uses sereco general report format your are done- <strong>will be implemented with #283</strong>
+otherwise SERECO must have a logic to import custom format for the PRODUCT - means needs an
+implementatiion</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>test via sechub client by start a new sechub job which shall use the product and verify results</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>#148 and #283 are not implemented at the moment (07/2020)</strong>, so PDS is currently
+working autonomous, but not integrated into sechub execution / scan processes!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="runtime-view">3. Runtime view</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="section-pds-configuration">3.1. Configuration</h3>
+
+</div>
+<div class="sect2">
+<h3 id="tech-user-credentials">3.2. Tech user credentials</h3>
+<div class="paragraph">
+<p>Either use system properties</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-8-jdk curl</pre>
+<pre>sechub.pds.techuser.userid
+sechub.pds.techuser.apitoken</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Debian 10:</p>
+<p>or env entries</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-11-jdk curl</pre>
+<pre>SECHUB_PDS_TECHUSER_USERID
+SECHUB_PDS_TECHUSER_APITOKEN</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>CentOS 8 &amp; Fedora 31:</p>
+<p>to define user credentisals. For apitoken please define encrypted password in spring boot
+style - e.g. <code>{noop}unencrypted</code>, <code>{bcrypt}crypted</code> &#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="admin-credentials">3.3. Admin credentials</h3>
+<div class="paragraph">
+<p>Either use system properties</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sudo dnf install git java-1.8.0-openjdk-devel curl</pre>
+<pre>sechub.pds.admin.userid
+sechub.pds.admin.apitoken</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or env entries</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SECHUB_PDS_ADMIN_USERID
+SECHUB_PDS_ADMIN_APITOKEN</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to define admin credentisals. For apitoken please define encrypted password in spring boot
+style - e.g. <code>{noop}unencrypted</code>, <code>{bcrypt}crypted</code> &#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="workspace-parent-folder">3.4. Workspace parent folder</h3>
+<div class="paragraph">
+<p>With <code>-Dsechub.pds.workspace.rootfolder</code> or using environment variable <code>SECHUB_PDS_WORKSPACE_ROOTFOLDER</code>
+workspace location can be defined</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-pds-server-config-file">3.5. Server configuration file</h3>
+<div class="paragraph">
+<p>PDS reads configuration JSON file on startup.</p>
+</div>
+<div class="paragraph">
+<p><strong>Location</strong></p>
+</div>
+<div class="paragraph">
+<p>With <code>-Dsechub.pds.config.file=&#8230;&#8203;</code> or using environment variable <code>SECHUB_PDS_CONFIG_FILE</code>
+its is possible to set config file path ( when not defined fallback is <code>./pds-config.json</code>)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>product-id</code><br>
+Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it&#8217;s not inside SERECO listed it must provide general sereco report format from #283.</p>
+</li>
+</ul>
+</div>
+<div id="section-pds-server-example-config-file" class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">serverId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">UNIQUE_SERVER_ID</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">products</span><span class="delimiter">&quot;</span></span> : [
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">PRODUCT_1</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">/srv/security/scanner1.sh</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">codescanner script needs environment variable ENV_CODESCAN_LEVEL set containing 1,2,3</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">parameters</span><span class="delimiter">&quot;</span></span> : {<i class="conum" data-value="6"></i><b>(6)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">mandatory</span><span class="delimiter">&quot;</span></span> : [<i class="conum" data-value="7"></i><b>(7)</b>
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">product1.qualititycheck.enabled</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">when 'true' quality scan results are added as well</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="9"></i><b>(9)</b>
+                    }  ,
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">product1.level</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal</span><span class="delimiter">&quot;</span></span>
+                    }
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">optional</span><span class="delimiter">&quot;</span></span> : [<i class="conum" data-value="10"></i><b>(10)</b>
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">product1.add.tipoftheday</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">boolean as string, when 'true' we add always a tip of the day as info to results</span><span class="delimiter">&quot;</span></span>
+                    }
+                ]
+            }
+
+        },
+
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">PRODUCT_2</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">/srv/security/scanner2.sh</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">infraScan</span><span class="delimiter">&quot;</span></span> ,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">unzipUploads</span><span class="delimiter">&quot;</span></span> : <span class="value">false</span> <i class="conum" data-value="11"></i><b>(11)</b>
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div id="section-pds-server-describe-config-file" class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>serverId</code> is a <strong>unique</strong> identifier, which will be used determine a cluster /server. will be used inside logs and
+also to share common database and divide different pds states etc.<br>
+Allowed characters are [a-zA-Z0-9_]. Maximum length:30 <br>
+(e.g <code>FIND_SECURITY_BUGS_CLUSTER</code> when providing a PDS server for find-security-bugs).
+This is <strong>important</strong> ! Do NOT mix up different PDS clusters with same ID.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>product <code>id</code> is a unique identifier, which will be used at job configuration time.
+Defines what will be executed and is also the identifier for SERECO to check for dedicated
+report handling<br>
+Allowed characters are [a-zA-Z0-9_]. Maximum length:30</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>path</code> defines what command / script will be executed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><code>scanType</code> can be either
+<div class="ulist">
+<ul>
+<li>
+<p>codeScan</p>
+</li>
+<li>
+<p>infraScan</p>
+</li>
+<li>
+<p>webScan</p>
+</li>
+</ul>
+</div></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>description</code> is a free text description</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><code>parameters</code> area, here we can define optional and mandatory parameters. Those parameters will be available
+in executed processes by environment variables.<br>
+All other given job parameters will be IGNORED by server - reason: avoid unwanted changes on system environment variables from caller side</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><code>mandatory</code> parameters - server will not accept jobs without these parameters</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>a <code>key</code>, will be transformed to ENV variable. In the given example <code>product1.qualititycheck.enabled</code> will be available in execution process
+as environment variable <code>PRODUCT1_QUALITYCHECK_ENABLED</code>.
+the <code>value</code>, will be set by SecHub job call and available in former described ENV entry at execution time.
+SecHub will</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>a 'description' of the 'key'. Should contain information</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>optional parameters</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>defines if PDS will automatically unzip zip files. default is <code>true</code>. When <code>true</code> the content
+of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="launcher-scripts">3.6. Launcher scripts</h3>
+<div class="sect3">
+<h4 id="default-variables">3.6.1. Default variables</h4>
+<div class="sect4">
+<h5 id="pds_job_workspace_location">3.6.1.1. PDS_JOB_WORKSPACE_LOCATION</h5>
+<div class="paragraph">
+<p>The variable <code>PDS_JOB_WORKSPACE_LOCATION</code> is always available and
+points to the job location.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="file-locations">3.6.2. File locations</h4>
+<div class="sect4">
+<h5 id="upload">3.6.2.1. Upload</h5>
+<div class="paragraph">
+<p><code>$PDS_JOB_WORKSPACE_LOCATION/upload/</code></p>
+</div>
+<div class="paragraph">
+<p>Automatically unzipped content is available inside<br>
+<code>$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="output">3.6.2.2. Output</h5>
+<div class="paragraph">
+<p>Following files are reserved</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>system-err.log <em>(created automatically)</em><br>
+<code>$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log</code></p>
+</li>
+<li>
+<p><code>system-out.log <em>(created automatically)</em>+
+$PDS_JOB_WORKSPACE_LOCATION/output/system-out.log</code></p>
+</li>
+<li>
+<p><strong>result.txt</strong> - this is the result file which must be created by the executed script<br>
+<code>$PDS_JOB_WORKSPACE_LOCATION/output/result.txt</code></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="instructions">1.2. Instructions</h3>
+<h3 id="section-usecases">3.7. Use cases</h3>
+<div class="sect3">
+<h4 id="overview-about-usecase-groups">3.7.1. Overview about usecase groups</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="rest-api">3.8. REST API</h3>
+<div class="sect3">
+<h4 id="big-picture-2">3.8.1. Big picture</h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_product_delgation_server_bigpicture.png" alt="diagram concept product delgation server bigpicture" width="253" height="134">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create-job">3.8.2. Create JOB</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/create [POST]</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>Let&#8217;s start with:</p>
+<p>Does contain configuration data for job execution as JSON in a very simple key value style:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Cloning the repository</p>
 <div class="listingblock">
 <div class="content">
-<pre>$ cd ~
-$ mkdir develop
-$ cd develop
-$ git clone https://github.com/Daimler/sechub.git
-$ cd sechub</pre>
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">sechubJobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">288607bf-ac81-4088-842c-005d5702a9e9</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">productId</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">THE_PRODUCT_IDENTIFIER</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">parameters</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="3"></i><b>(3)</b>
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">sechub.test.key.1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value1</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
+        },
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">sechub.test.key.2</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value2</span><span class="delimiter">&quot;</span></span>
+        }
+     ]
+}</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Generate a self-signed certificate</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>sechub job UUID - link back to sechub job.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>product identifier - which product shall be used</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>parameter area - contains key value pairs to provide parameters at execution time</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Represents the key, will be provided as argument <code>${sechub.test.key.1}</code> but also as <code>SECHUB_TEST_KEY_1</code> environment entry on process startup
+so its up to the implementers if this is something that should not be shown in process tree&#8230;&#8203;<br>
+Only <code>[a-z\.0-9]</code> is allowed. <code>.</code> will be converted always to <code>_</code> for the environment variables (spirng boot style)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Just the value. Must be always a string</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="upload-data">3.8.3. Upload data</h4>
 <div class="listingblock">
 <div class="content">
-<pre>~/develop/sechub$ ./gradlew ensureLocalhostCertificate</pre>
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/upload [POST]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Uploaded data must be automatically destroyed after job has been done.
+This avoids file system freezes&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mark-job-ready-to-start">3.8.4. Mark JOB ready to start</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-status">3.8.5. Fetch JOB status</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/status [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-result">3.8.6. Fetch JOB result</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/result [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cancel-job">3.8.7. Cancel JOB</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/cancel [PUT]</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -714,172 +1279,70 @@ $ cd sechub</pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<div class="title">Proxy</div>
-<div class="paragraph">
-<p>In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: <a href="https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy">Accessing the web through a HTTP proxy</a></p>
-</div>
-<div class="paragraph">
-<p>Example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>./gradlew -Dhttp.proxyHost=locahost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 ensureLocalhostCertificate</pre>
-</div>
-</div>
+This will the process hard!
 </td>
 </tr>
 </table>
 </div>
-</li>
-<li>
-<p>Build SecHub</p>
+</div>
+<div class="sect3">
+<h4 id="get-monitoring-status">3.8.8. Get monitoring status</h4>
 <div class="listingblock">
 <div class="content">
-<pre>~/develop/sechub$ ./gradlew build</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Start integration test server</p>
-<div class="listingblock">
-<div class="content">
-<pre>~/develop/sechub$ ./gradlew startIntegrationTestServer</pre>
-</div>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Do not use the Integration Test Server mode in production.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="title">Logs</div>
-In case of an error message or failure, you can find the server log under: <code>./sechub-integrationtest/integrationtest-server.log</code>.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Test if the server is up and running</p>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl --insecure --head https://localhost:8443/api/anonymous/check/alive</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>insecure</code> parameter is needed, because a self-signed certificate is used in this guide.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">HTTP/1.1 200 <i class="conum" data-value="1"></i><b>(1)</b>
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-Strict-Transport-Security: max-age=31536000 ; includeSubDomains
-X-Frame-Options: DENY
-Content-Length: 0
-Date: Thu, 12 Dec 2019 15:26:19 GMT</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>You should get a <code>HTTP 200</code> code back from the running integration server.</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Get the initial credentials</p>
-<div class="paragraph">
-<p>Open the log file <code>./sechub-integrationtest/integrationtest-server.log</code> and search for:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>##################### ATTENTION #####################################################
-# Created initial admin:'int-test_superadmin' with password:'{noop}int-test_superadmin-pwd'
-#                 email:'int-test_superadmin@sechub.example.org'
-# In production: CHANGE this initial API token, when your server has been started.
-# Everybody able to read this log file has access to these admin credentials!
-#####################################################################################</pre>
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/monitoring/status [GET]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Superadmin username and password:</p>
+<p>Here an example output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>username: int-test_superadmin
-password: int-test_superadmin-pwd</pre>
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">serverId</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">serverid1</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobs</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">CREATED</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">QUEUED</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">READY_TO_START</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">DONE</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">members</span><span class="delimiter">&quot;</span></span>: [
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">hostname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hostname1</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">ip</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">192.168.178.23</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">heartBeatTimestamp</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">2020-07-08T17:22:36.295</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">queueMax</span><span class="delimiter">&quot;</span></span>: <span class="integer">50</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobsInQueue</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
+                ]
+            }
+        },
+        {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">hostname</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hostname2</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">ip</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">192.168.178.24</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">heartBeatTimestamp</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">2020-07-08T17:22:36.295</span><span class="delimiter">&quot;</span></span>,
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">executionState</span><span class="delimiter">&quot;</span></span>: {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">queueMax</span><span class="delimiter">&quot;</span></span>: <span class="integer">50</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobsInQueue</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
+                    {
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">done</span><span class="delimiter">&quot;</span></span>: <span class="value">false</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">canceled</span><span class="delimiter">&quot;</span></span>: <span class="value">false</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">job</span><span class="delimiter">&quot;</span></span>: {
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">owner</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">developer</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">serverId</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">serverid1</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">started</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">2020-07-08T17:22:36.295</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">state</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">RUNNING</span><span class="delimiter">&quot;</span></span>
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>User account username and password:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>username: int-test_onlyuser
-password: int-test_onlyuser-pwd</pre>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The <code>{noop}</code> has to be excluded from the password string <code>{noop}int-test_superadmin-pwd</code>, therefor the password is: <code>int-test_superadmin-pwd</code>
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>List all users as administrator</p>
-<div class="paragraph">
-<p>List all users on the SecHub server using the administrator credentials</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>curl --insecure --user int-test_superadmin:int-test_superadmin-pwd 'https://localhost:8443/api/admin/users'; echo</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Stop server</p>
-<div class="listingblock">
-<div class="content">
-<pre>~/develop/sechub$ ./gradlew stopIntegrationTestServer</pre>
-</div>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>
@@ -887,7 +1350,7 @@ The <code>{noop}</code> has to be excluded from the password string <code>{noop}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-01 17:48:27 CEST
+Last updated 2020-08-04 16:42:52 CEST
 </div>
 </div>
 </body>

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package code.Java;
 
 public class MultiLineComment {

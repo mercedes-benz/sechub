@@ -537,15 +537,19 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#scanasync">2.3.2.2. scanAsync</a></li>
 <li><a href="#getstatus">2.3.2.3. getStatus</a></li>
 <li><a href="#getreport">2.3.2.4. getReport</a></li>
+<li><a href="#section-client-false-positives-mark">2.3.2.5. markFalsePositives</a></li>
+<li><a href="#getfalsepositives">2.3.2.6. getFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.3.2.7. unmarkFalsePositives</a></li>
 </ul>
 </li>
 <li><a href="#options">2.3.3. Options</a></li>
 <li><a href="#environment-variables">2.3.4. Environment variables</a></li>
 </ul>
 </li>
-<li><a href="#configuration-file">2.4. Configuration file</a>
+<li><a href="#client-configuration-file">2.4. Client configuration file</a>
 <ul class="sectlevel3">
 <li><a href="#variables-inside-configuration-files">2.4.1. Variables inside configuration files</a></li>
+<li><a href="#accepted-source-code-files">2.4.2. Accepted source code files</a></li>
 </ul>
 </li>
 <li><a href="#sechub-configuration">2.5. SecHub configuration</a>
@@ -555,11 +559,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#project">2.5.3. Project</a></li>
 <li><a href="#code-scan">2.5.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#upload-sources-from-file-system">2.5.4.1. Upload sources from file system</a>
-<ul class="sectlevel5">
-<li><a href="#example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</a></li>
-</ul>
-</li>
+<li><a href="#upload-sources-from-file-system">2.5.4.1. Upload sources from file system</a></li>
+<li><a href="#example-sechub-json">2.5.4.2. Example sechub.json</a></li>
 </ul>
 </li>
 <li><a href="#web-scan">2.5.5. Web scan</a>
@@ -600,6 +601,27 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#start-a-source-scan">2.6.1. Start a source scan</a></li>
 <li><a href="#start-a-web-scan">2.6.2. Start a web scan</a></li>
 <li><a href="#start-a-infra-scan">2.6.3. Start a infra scan</a></li>
+<li><a href="#mark-false-positives">2.6.4. Mark false positives</a></li>
+<li><a href="#unmark-false-positives">2.6.5. Unmark false positives</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#section-sechub-reporting">3. Reporting</a>
+<ul class="sectlevel2">
+<li><a href="#job-reports">3.1. Job reports</a>
+<ul class="sectlevel3">
+<li><a href="#html">3.1.1. HTML</a>
+<ul class="sectlevel4">
+<li><a href="#example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</a></li>
+</ul>
+</li>
+<li><a href="#json">3.1.2. JSON</a>
+<ul class="sectlevel4">
+<li><a href="#example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -689,7 +711,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </table>
 <div class="paragraph">
 <p>Version
-0.0.0-1be7fd2-latest</p>
+0.0.0-eae54cb-latest</p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -807,7 +829,7 @@ The is the most preferred scan action for builds - you only have to make one
 </div>
 <div class="paragraph">
 <p>Prerequisite is a configuration file <code>sechub.json</code> in current directory.<br>
-See here for details: <a href="#configuration-file">Configuration file</a></p>
+See here for details: <a href="#Configuration file">[Configuration file]</a></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -876,7 +898,7 @@ sechub scanAsync</pre>
 <div class="listingblock">
 <div class="content">
 <pre>SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getStatus</pre>
+sechub -jobUUID ${jobUUID} getStatus</pre>
 </div>
 </div>
 </div>
@@ -891,7 +913,105 @@ sechub -jobUUID §{jobUUID} getStatus</pre>
 <div class="listingblock">
 <div class="content">
 <pre>SECHUB_APITOKEN=${apitoken}
-sechub -jobUUID §{jobUUID} getReport</pre>
+sechub -jobUUID ${jobUUID} getReport</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-client-false-positives-mark">2.3.2.5. markFalsePositives</h5>
+<div class="paragraph">
+<p>Read your report carefully and check which of the findings are really so called "false positives".
+After this create an json file containing jobUUID and ID of finding you decided to be an FP. If
+you like you can add an optional comment, describing your decision to mark this as FP.</p>
+</div>
+<div class="paragraph">
+<p><strong>Example JSON:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>, <i class="conum" data-value="4"></i><b>(4)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal, can be ignored, because not in deployment</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="5"></i><b>(5)</b>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Temp File permissions can be ignored, because we are at docker container with only ONE user</span><span class="delimiter">&quot;</span></span>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
+            }
+      ]
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>api version</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>type - must be <code>falsePositiveJobDataList</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>job where finding was in report</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>ID of finding, which shall be marked as false positive</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Comment (optional) describing the reason why this is handled as false positive</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="getfalsepositives">2.3.2.6. getFalsePositives</h5>
+<div class="paragraph">
+<p>This will fetch the false positive list of your project as JSON - format is same as for <code>markFalsePositives</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-client-false-positives-unmark">2.3.2.7. unmarkFalsePositives</h5>
+<div class="paragraph">
+<p>When you want to remvoe a former defined false positive entry you can do this the same way
+as for mark operation: Just define a JSON file, select the file by the <code>-file</code> argument and start
+action <code>unmarkFalsePositives</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Example JSON:</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">falsePositiveJobDataList</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobData</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span><i class="conum" data-value="4"></i><b>(4)</b>
+            },
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cfa2ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">findingId</span><span class="delimiter">&quot;</span></span>: <span class="integer">15</span>
+            }
+      ]
+
+}</code></pre>
 </div>
 </div>
 </div>
@@ -973,7 +1093,7 @@ The SecHub server url. (same as <code>-server</code> option)</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-file">2.4. Configuration file</h3>
+<h3 id="client-configuration-file">2.4. Client configuration file</h3>
 <div class="paragraph">
 <p>If not defined, secHub client will load <code>sechub.json</code> file from current directory
 and use it as sechub configuration. There must be always a valid configuration
@@ -1019,6 +1139,202 @@ accidently logging of variables - e.g. credentials.
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="accepted-source-code-files">2.4.2. Accepted source code files</h4>
+<div class="paragraph">
+<p>The client will per default only include wellknown source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table.</p>
+</div>
+<div class="paragraph">
+<p><strong>All files having file endings not listed here, will be ignored</strong> and not contained in source upload to
+SecHub server!</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+But of course you can also define additional source file endings - see <a href="#sechub-config-example-sourcescan">config file example</a> .
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Language(s)</th>
+<th class="tableblock halign-left valign-top">File extensions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.apex<br>
+.apexp<br>
+.component<br>
+.object<br>
+.page<br>
+.report<br>
+.tgr<br>
+.trigger<br>
+.workflow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ASP (Active Server Pages)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.asp</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ASP</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ascx<br>
+.aspx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C/C++</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.c<br>
+.c&#43;&#43;<br>
+.cc<br>
+.cpp<br>
+.cxx<br>
+.h<br>
+.h&#43;&#43;<br>
+.hh<br>
+.hpp<br>
+.hxx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C#, VB.NET, Visual Basic, VB Script</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.bas<br>
+.cls<br>
+.cs<br>
+.cshtml<br>
+.csproj<br>
+.ctl<br>
+.dsr<br>
+.frm<br>
+.sln<br>
+.vb<br>
+.vbp<br>
+.vbs<br>
+.xaml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go, Protobuf</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.go</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Groovy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.groovy<br>
+.gsh<br>
+.gvy<br>
+.gy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.htm<br>
+.html</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java ecosystem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.hbs<br>
+.java<br>
+.javasln<br>
+.jsp<br>
+.jspf<br>
+.project<br>
+.properties<br>
+.tag<br>
+.tld</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JavaScript</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.js<br>
+.json<br>
+.jsx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kotlin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.kt<br>
+.kts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Objective C, Swift</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.m<br>
+.swift<br>
+.xib</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Perl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.pl<br>
+.plx<br>
+.pm<br>
+.psgi</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">php</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ctp<br>
+.php<br>
+.php3<br>
+.php4<br>
+.php5<br>
+.php5.6<br>
+.phtm<br>
+.phtml<br>
+.tpl<br>
+.twig</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PL/SQL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.pck<br>
+.pkb<br>
+.pkh<br>
+.pks<br>
+.pls<br>
+.sql</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Python, Django</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.py<br>
+.py2<br>
+.py3<br>
+.pyi<br>
+.python</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ruby</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.erb<br>
+.rb<br>
+.rhtml<br>
+.rjs<br>
+.rxml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scala</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.conf<br>
+.sc<br>
+.scala</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Typescript/Angular</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.ts<br>
+.tsx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Others</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.build<br>
+.cgi<br>
+.config<br>
+.inc<br>
+.xml</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="sechub-configuration">2.5. SecHub configuration</h3>
@@ -1028,9 +1344,12 @@ at caller side.</p>
 </div>
 <div class="paragraph">
 <p>It is used by client and also by rest calls to start SecHub
-scan jobs and add meta data. Some minor parts are client specific and must
-be handled by direct REST calls in a special way, but this is mentioned in
-following description of JSON syntax.</p>
+scan jobs and add meta data.</p>
+</div>
+<div class="paragraph">
+<p>Some minor parts are client specific and must
+be handled by direct REST calls in a special way or do just not exist.
+But this is mentioned inside this documentation</p>
 </div>
 <div class="sect3">
 <h4 id="api-version">2.5.1. API version</h4>
@@ -1108,7 +1427,7 @@ When using REST calls directly you do not need the information inside
 <code>folders</code> sub entry.</p>
 </div>
 <div class="paragraph">
-<p>Those folders will be automatically zipped and uploaded by <code>SecHub</code> client
+<p>All source code files inside these folders will be automatically zipped and uploaded by <code>SecHub</code> client
 to server side for ongoing source analysis.</p>
 </div>
 <div class="paragraph">
@@ -1149,24 +1468,26 @@ on build servers.</p>
 </tr>
 </table>
 </div>
-<div class="sect5">
-<h6 id="example-upload-folders-with-excludes">2.5.4.1.1. Example upload folders with excludes</h6>
+</div>
+<div class="sect4">
+<h5 id="example-sechub-json">2.5.4.2. Example sechub.json</h5>
 <div id="sechub-config-example-sourcescan" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>    : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://sechub.example.org</span><span class="delimiter">&quot;</span></span>,
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
 
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">project</span><span class="delimiter">&quot;</span></span>   : <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger</span><span class="delimiter">&quot;</span></span>,
-
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="1"></i><b>(1)</b>
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">fileSystem</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="2"></i><b>(2)</b>
               <span class="key"><span class="delimiter">&quot;</span><span class="content">folders</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-android/src/main/java</span><span class="delimiter">&quot;</span></span>,
-                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>], <i class="conum" data-value="3"></i><b>(3)</b>
-           <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>  : [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/*.log</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">README*.md</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="4"></i><b>(4)</b>
-        }
-      }</code></pre>
+                          <span class="string"><span class="delimiter">&quot;</span><span class="content">gamechanger-server/src/main/java</span><span class="delimiter">&quot;</span></span>] <i class="conum" data-value="3"></i><b>(3)</b>
+         },
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">excludes</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">**/mytestcode/**</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">**/documentation/**</span><span class="delimiter">&quot;</span></span>],  <i class="conum" data-value="4"></i><b>(4)</b>
+         <span class="key"><span class="delimiter">&quot;</span><span class="content">additionalFilenameExtensions</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">.cplusplus</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">.py9</span><span class="delimiter">&quot;</span></span>]  <i class="conum" data-value="5"></i><b>(5)</b>
+      }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1185,31 +1506,38 @@ on build servers.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Exclude files (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - <code>**/*</code> is used to identify any folder<br>
-In example above following files are excluded from upload:<br>
+<td>Exclude directories (optional), syntax is similar to <a href="https://ant.apache.org/manual/Types/fileset.html">ANT fileset</a> - `<br>
+In example above all files in following directories are excluded from upload:<br>
 <div class="ulist">
 <ul>
 <li>
-<p><code>**/*.log</code> - excludes any log file in any sub directories of given folders</p>
+<p><code>**/mytestcode/**</code><br>
+excludes all files under a directory named <code>build</code> including sub directories</p>
 </li>
 <li>
-<p><code>README*.md</code> excludes all markdown README files in given folders. For example above this means:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><code>gamechanger-android/src/main/java/README.md</code> and</p>
+<p><code>**/documentation/**</code><br>
+same for folder <code>documentation</code></p>
 </li>
 <li>
-<p><code>gamechanger-server/src/main/java/README.md</code></p>
-</li>
-</ul>
-</div>
+<p>default excludes<br>
+     Per default, the directories <code>**/test/**</code> <code>**/.git/**</code>
+are already excluded:</p>
 </li>
 </ul>
 </div></td>
 </tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Client only option - if you use REST directly, you can ignore this.<br>
+SecHub client does only add wellknown sources into created upload zip file. This removes
+unnecessary stuff and reduces upload size automatically.<br>
+<em>E.g. a codescan for a <code>JPEG</code> image would not make sense&#8230;&#8203;</em><br>
+Instead of defining a negative list, we use a positive list and accept only wellknown sources,
+which is simply done by file ending.<br>
+In the example we allow also ".cplusplus" and ".py9" as additional accepted source files.
+Inside client documentation you will find a list of the default file endings.</td>
+</tr>
 </table>
-</div>
 </div>
 </div>
 </div>
@@ -1231,7 +1559,7 @@ In example above following files are excluded from upload:<br>
 </td>
 <td class="content">
 URI must be one of the whitelisted URLs of your project. Otherwise it will be rejected.
-         So your are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
+         So you are not able to start scanning foreign domains and do <em>accidently</em> an DoS attack&#8230;&#8203;
 </td>
 </tr>
 </table>
@@ -1638,18 +1966,6 @@ sechub scan</code></pre>
 <div class="paragraph">
 <p>with corresponding 'sechub.json' config file: see <a href="#sechub-config-example-sourcescan">source scan example</a> .</p>
 </div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources&#8230;&#8203;
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect3">
 <h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
@@ -1676,13 +1992,320 @@ sechub scan</code></pre>
 <p>with corresponding <code>sechub.json</code> config file: <a href="#sechub-config-example-infrascan-with-ip">infrastructure scan example</a> .</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="mark-false-positives">2.6.4. Mark false positives</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json markFalsePositives</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-mark">Mark false positives JSON format</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="unmark-false-positives">2.6.5. Unmark false positives</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json unmarkFalsePositives</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-unmark">Unmark false positives JSON format</a></p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-sechub-reporting">3. Reporting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes the different SecHub reports and how to read them.</p>
+</div>
+<div class="paragraph">
+<p>At the moment SecHub only provides job reports and no cumulated reports.
+Job reports do only contain information of exact one scan job done by SecHub.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you want to have management summaries you could store downloaded JSON job reports
+ , process data and provide those reports by your own - or you wait while this
+ becomes part of SecHub.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="job-reports">3.1. Job reports</h3>
+<div class="paragraph">
+<p>With SecHub users are able to download their scan results for finished project jobs. We provide following
+formats:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTML<br>
+human friendly report variant with less details</p>
+</li>
+<li>
+<p>JSON<br>
+as a machine readable format, usable for sechub client to determine to break build. Will also be
+the base for planned development of IDE plugins (<code>Eclipse</code>, <code>IntelliJ</code>, <code>VSCode</code>)</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="html">3.1.1. HTML</h4>
+<div class="paragraph">
+<p>The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
+to your current situation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>At the left top corner you see a traffic light showing either</p>
+<div class="ulist">
+<ul>
+<li>
+<p>GREEN</p>
+</li>
+<li>
+<p>YELLOW or</p>
+</li>
+<li>
+<p>RED.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</h5>
+<div class="paragraph">
+<p>The next picture shows a report which resulted in yellow traffic light.</p>
+</div>
+<div class="paragraph">
+<p>At the top of the report you will find the most critical parts - in our example it is only one
+yellow finding which is a <code>Absolute path traversal</code>.</p>
+</div>
+<div class="paragraph">
+<p>The entry point for the found vulnerability is the <strong>Line 28</strong> in java class <code>AsciidocGenerator</code>.
+The data sink (where the path traversal could lead to problems at the end) is ins same class but
+at <strong>Line 29</strong>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The call hierarchy between entry point and data sink is not shown in HTML reports - reason: This would
+overload the report. Even for security mitigations/development changes
+it&#8217;s normally enough to know entry point and data sink + name of finding.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are other findings (green) which are less problematic.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+SecHub client will break your build per default only at a RED traffic light, but you can also
+configure client to do this also on color YELLOW. Only Green is always accepted.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-report-html-example1.png" alt="sechub report html example1">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</h5>
+<div class="paragraph">
+<p>At the moment SecHub does not contain this inside it&#8217;s reports, but this feature will come in future</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="json">3.1.2. JSON</h4>
+<div class="paragraph">
+<p>This is the machine readable report format.</p>
+</div>
+<div class="sect4">
+<h5 id="example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="JSON">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">jobUUID</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">6cf02ccf-da13-4dee-b529-0225ed9661bd</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">findings</span><span class="delimiter">&quot;</span></span>: [
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,<i class="conum" data-value="2"></i><b>(2)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Absolute Path Traversal</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MEDIUM</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="4"></i><b>(4)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">28</span>,<i class="conum" data-value="6"></i><b>(6)</b>
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">35</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="content">public static void main(String[] args) throws Exception {</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="7"></i><b>(7)</b>
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">17</span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">args</span><span class="delimiter">&quot;</span></span>,
+                        <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">33</span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">10</span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">String path = args[0];</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+                            <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">38</span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span>,
+                                <span class="key"><span class="delimiter">&quot;</span><span class="content">calls</span><span class="delimiter">&quot;</span></span>: {
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/AsciidocGenerator.java</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="8"></i><b>(8)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">34</span>,<i class="conum" data-value="9"></i><b>(9)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">29</span>,
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">File documentsGenFolder = new File(path);</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="10"></i><b>(10)</b>
+                                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">File</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="11"></i><b>(11)</b>
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+             <i class="conum" data-value="12"></i><b>(12)</b>
+            {
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="integer">109</span>, <i class="conum" data-value="13"></i><b>(13)</b>
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">hostnames</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Insufficient Logging of Exceptions</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">references</span><span class="delimiter">&quot;</span></span>: [
+                ],
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">severity</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">code</span><span class="delimiter">&quot;</span></span>: {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelDataCollector.java</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">line</span><span class="delimiter">&quot;</span></span>: <span class="integer">137</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">column</span><span class="delimiter">&quot;</span></span>: <span class="integer">5</span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">source</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="char">\t</span><span class="char">\t</span><span class="content">} catch (IOException e) {</span><span class="delimiter">&quot;</span></span>,
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">relevantPart</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">catch</span><span class="delimiter">&quot;</span></span>
+                }
+            }
+        ]
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">trafficLight</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">YELLOW</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="14"></i><b>(14)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>SecHub job UUID</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Finding ID inside report</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the vulnerability<br>
+<em>in our case an <code>Absolute path traversal</code> where attackers could try to manipulate path input, so output could contain unwanted content/wrong file (e.g. a passwd file etc.)</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The severity of the report<br>
+<em>(will be used to calculate the traffic light color)</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Entry point location<br>
+<em>in this case the Java class where the potential malicious input starts</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Line number of entry point</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Next call hierarchy element<br>
+<em>this is the next element of the call hierarchy, means what is called by</em>
+<em>entry point with potential malicious content as parameter. This is ongoing</em>
+<em>until last entry inside call hierarchy which is the so called "data sink"</em></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Data sink location</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Line number inside data sink</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Source snippet</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Relevant code part where the found vulnerability lies/could be exploited</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>More findings - in example this was cut</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Last finding with ID - format explanation see points above.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Traffic light color of report - here YELLOW</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-26 17:23:48 CET
+Last updated 2020-08-04 16:42:52 CEST
 </div>
 </div>
 </body>
