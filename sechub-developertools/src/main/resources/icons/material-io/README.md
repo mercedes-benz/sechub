@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 Icons inside these folder are from
 https://material.io/resources/icons
 

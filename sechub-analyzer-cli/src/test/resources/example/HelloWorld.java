@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package example;
 
 public class HelloWorld {

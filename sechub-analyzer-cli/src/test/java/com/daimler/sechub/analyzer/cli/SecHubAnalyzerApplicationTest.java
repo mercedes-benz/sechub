@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.analyzer.cli;
 
 import static org.hamcrest.MatcherAssert.*;

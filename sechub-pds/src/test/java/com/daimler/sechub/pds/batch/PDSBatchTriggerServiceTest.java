@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.batch;
 
 import static org.junit.Assert.*;

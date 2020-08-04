@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.usecase;
 
 import java.lang.annotation.ElementType;

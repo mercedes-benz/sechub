@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # SecHub Analyzer CLI
 
 SecHub analyzer CLI is a command line tool which analyzes source files.
