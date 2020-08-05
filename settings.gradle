@@ -56,8 +56,10 @@ include 'sechub-cli',
 'sechub-developertools',
 
 // Analyzer CLI
-'sechub-analyzer-cli'
+'sechub-analyzer-cli',
 
+// java client library
+ 'sechub-client-java'
 
 
 buildCache {

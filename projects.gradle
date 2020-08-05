@@ -8,6 +8,7 @@ projectType = [
  			javaProjects: [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
+               project(':sechub-client-java'),
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here*/
@@ -79,6 +80,7 @@ projectType = [
             eclipseProjects: [
                     project(':sechub-doc'),
                     project(':sechub-other'),
+                    project(':sechub-client-java'),
             ],
 
             asciiDoctorProjects: [
