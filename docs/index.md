@@ -26,3 +26,4 @@ This project is licensed under the [MIT LICENSE](https://github.com/Daimler/sech
 - [RestAPI](https://daimler.github.io/sechub/latest/sechub-restapi.html)
 - [Client](https://daimler.github.io/sechub/latest/sechub-client.html)
 - [Operations](https://daimler.github.io/sechub/latest/sechub-operations.html)
+- [Product Delegation Server](https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html)
