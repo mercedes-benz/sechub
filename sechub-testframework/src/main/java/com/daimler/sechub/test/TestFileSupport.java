@@ -179,7 +179,7 @@ public class TestFileSupport {
      * @param lineBreak
      * @return
      */
-    public String loadTextFile(File file, String lineBreak) {
+    public static String loadTextFile(File file, String lineBreak) {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {

@@ -28,3 +28,19 @@ task startIntegrationTestAdminUI(type: JavaExec){
                '-Dsechub.developertools.admin.apitoken=int-test_superadmin-pwd']
 
 }
+
+task buildDeveloperAdminUI(type: Jar) {
+    group 'sechub'
+    description 'Builds the SecHub Developer Admin tool as standalone executable jar. Use launch-developer-admin-ui script to execute'
+    baseName = 'sechub-developer-admin-ui'
+    
+    manifest {
+        attributes 'Main-Class': 'com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI'
+    }
+
+    from { 
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    }
+
+    with jar
+}
