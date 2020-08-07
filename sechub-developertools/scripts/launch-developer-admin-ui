@@ -17,6 +17,9 @@ export SECHUB_ADMIN_USERID=int-test_superadmin # your admin user id
 export SECHUB_ADMIN_APITOKEN=int-test_superadmin-pwd
 export SECHUB_ADMIN_SERVER=localhost # server IP or name
 export SECHUB_ADMIN_SERVER_PORT=8443
+
+export SECHUB_WAITTIME_DEFAULT=60 # so 60 seconds
+
 export SECHUB_ADMIN_SERVER_PROTOCOL=https
 
 export SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU=true

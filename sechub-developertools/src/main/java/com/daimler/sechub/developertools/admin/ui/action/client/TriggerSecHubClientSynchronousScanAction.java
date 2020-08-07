@@ -14,6 +14,7 @@ import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
+import com.daimler.sechub.integrationtest.api.WithSecHubClient.ClientWaitMode;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 
 public class TriggerSecHubClientSynchronousScanAction extends AbstractUIAction {
@@ -50,7 +51,7 @@ public class TriggerSecHubClientSynchronousScanAction extends AbstractUIAction {
         WithSecHubClient withClient = getContext().getAdministration().withSecHubClientOnDefinedBinPath();
         Map<String, String> environmentVariables = new HashMap<>();
         ExecutionResult result = withClient.startSynchronScanFor(optionalProject.isPresent() ? new TestProject(optionalProject.get()) : null,
-                environmentVariables, file, ApiTokenStrategy.HIDEN_BY_ENV);
+                environmentVariables, file, ApiTokenStrategy.HIDEN_BY_ENV, ClientWaitMode.WAIT_WITH_ENV_SETTINGS);
 
         output("synchronous scan done");
         output("RESULT:");
