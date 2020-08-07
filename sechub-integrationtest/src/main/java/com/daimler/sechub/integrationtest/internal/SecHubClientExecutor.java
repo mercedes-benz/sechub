@@ -19,7 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
 
 import wiremock.com.google.common.io.Files;
@@ -35,11 +37,11 @@ public class SecHubClientExecutor {
         GET_REPORT("getReport"),
 
         GET_STATUS("getStatus"),
-        
+
         MARK_FALSE_POSITIVES("markFalsePositives"),
-        
+
         UNMARK_FALSE_POSITIVES("unmarkFalsePositives"),
-        
+
         GET_FALSE_POSITIVES("getFalsePositives"),
 
         ;
@@ -57,6 +59,8 @@ public class SecHubClientExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubClientExecutor.class);
     private Path outputFolder;
+    private String sechubClientBinaryPath;
+    private boolean trustAll;
 
     public class ExecutionResult {
         private int exitCode;
@@ -100,18 +104,20 @@ public class SecHubClientExecutor {
             }
             return sechubJobUUD;
         }
+
         public File getJSONFalsePositiveFile() {
-            //  Output is like: false-positives list written to file /tmp/with-sechub-client-755472131402648511/sechub-false-positives-scenario3_project1.json
+            // Output is like: false-positives list written to file
+            // /tmp/with-sechub-client-755472131402648511/sechub-false-positives-scenario3_project1.json
             String lastoutputLine = getLastOutputLine();
-            if (lastoutputLine==null) {
+            if (lastoutputLine == null) {
                 fail("no last output line available!");
             }
             String marker = "written to file";
             int index = lastoutputLine.indexOf(marker);
-            if (index==-1) {
-                fail("unexpected last line, did not contain:"+marker+" but was:"+lastoutputLine);
+            if (index == -1) {
+                fail("unexpected last line, did not contain:" + marker + " but was:" + lastoutputLine);
             }
-            String path = lastoutputLine.substring(index+marker.length());
+            String path = lastoutputLine.substring(index + marker.length());
             return new File(path.trim());
         }
 
@@ -138,106 +144,35 @@ public class SecHubClientExecutor {
 
     }
 
-    public ExecutionResult execute(File file, TestUser user, ClientAction action, Map<String, String> environmentVariables, String... options) {
-        if (user.getApiToken() == null) {
-            throw new IllegalStateException("Test user:" + user.getUserId()
-                    + " has no apiToken. This can happen if you are using users from another scenario... Please check your test!");
-        }
+    public ExecutionResult execute(File file, ApiTokenStrategy apiTokenStrategy, TestUser user, ClientAction action, Map<String, String> environmentVariables,
+            String... options) {
+        assertAPITokenSet(user);
 
-        File exampleScanRootFolder = ensureExampleContentFoldersExist();
-
-        /* other folders are "synthetic" and created simply on demand: */
-
-        // origin path of sechub client path:
-        String path = "sechub-cli/build/go/platform/";
+        File targetFolder = resolveScanTargetFolder(file);
         List<String> commandsAsList = new ArrayList<>();
-        String sechubExeName = null;
-        if (TestUtil.isWindows()) {
-            sechubExeName = "sechub.exe";
-            path += "windows-386";
-            commandsAsList.add("cmd.exe");
-            commandsAsList.add("/C");
-        } else {
-            sechubExeName = "sechub";
-            path += "linux-386";
-        }
-        File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), path);
-        File executableFile = new File(executableParentFolder, sechubExeName);
-        if (!executableFile.exists()) {
-            throw new SecHubClientNotFoundException(executableFile);
-        }
-        commandsAsList.add(0, executableFile.getAbsolutePath());
 
-        if (file != null) {
-            commandsAsList.add("-configfile");
-            if (TestUtil.isWindows()) {
-                commandsAsList.add("\"" + file.getAbsolutePath() + "\"");
-            } else {
-                commandsAsList.add(file.getAbsolutePath());
-            }
-        }
-        if (user != null) {
-            commandsAsList.add("-user");
-            commandsAsList.add(user.getUserId());
+        handleExecutable(commandsAsList);
+        handleConfigFileCommand(file, commandsAsList);
+        handleUserCredentials(apiTokenStrategy, user, environmentVariables, commandsAsList);
+        handleOptions(commandsAsList, options);
+        handleAction(action, commandsAsList);
 
-            commandsAsList.add("-apitoken");
-            commandsAsList.add(user.getApiToken());
-        }
+        return execute(environmentVariables, targetFolder, commandsAsList);
+    }
 
-        commandsAsList.addAll(Arrays.asList(options));
-
-        if (action != null) {
-            commandsAsList.add(action.getCommand());
-        }
-
+    private ExecutionResult execute(Map<String, String> environmentVariables, File targetFolder, List<String> commandsAsList) {
         try {
-            /* create temp file for output */
-            File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
-            tmpGoOutputFile.deleteOnExit();
-            LOG.info("Temporary go output at:{}", tmpGoOutputFile);
+            File tmpGoOutputFile = createTempFileForOutput();
 
-            /* setup process */
-            ProcessBuilder pb = new ProcessBuilder(commandsAsList);
-            pb.redirectErrorStream(true);
-            pb.redirectOutput(tmpGoOutputFile);
-            Map<String, String> environment = pb.environment();
-            environment.put("SECHUB_TRUSTALL", "true");
-            if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
-                // we enable only when explicit wanted - so logs are smaller and easier to read
-                environment.put("SECHUB_DEBUG", "true");
-            }
-            if (TestUtil.isKeepingTempfiles()) {
-                environment.put("SECHUB_KEEP_TEMPFILES", "true");
-            }
-            if (environmentVariables != null) {
-                environment.putAll(environmentVariables);
-            }
-            pb.directory(exampleScanRootFolder);
+            ProcessBuilder pb = createProcessBuilder(environmentVariables, targetFolder, commandsAsList, tmpGoOutputFile);
 
-            StringBuilder sb = new StringBuilder();
-            Iterator<String> it = commandsAsList.iterator();
-            while (it.hasNext()) {
-                sb.append(it.next());
-                if (it.hasNext()) {
-                    sb.append(" ");
-                }
-            }
-            LOG.info("Execute command '{}'", sb.toString());
+            logCommand(commandsAsList);
 
             /* start process and wait for execution done */
             Process process = pb.start();
             int exitCode = process.waitFor();
 
-            /* show go output */
-            String output = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(tmpGoOutputFile, "\n");
-            LOG.info("Command output:\n{}", output);
-
-            /* prepare and return result */
-            ExecutionResult result = new ExecutionResult();
-            result.lines = output.trim().split("\\n");
-
-            result.exitCode = exitCode;
-            result.outputFolder = outputFolder.toFile();
+            ExecutionResult result = extractResult(tmpGoOutputFile, exitCode);
 
             return result;
         } catch (IOException e) {
@@ -248,6 +183,162 @@ public class SecHubClientExecutor {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Execution failed", e);
         }
+    }
+
+    private ProcessBuilder createProcessBuilder(Map<String, String> environmentVariables, File targetFolder, List<String> commandsAsList,
+            File tmpGoOutputFile) {
+        ProcessBuilder pb = new ProcessBuilder(commandsAsList);
+        pb.redirectErrorStream(true);
+        pb.redirectOutput(tmpGoOutputFile);
+
+        Map<String, String> environment = pb.environment();
+        environment.put("SECHUB_TRUSTALL", "" + trustAll);
+
+        if (IntegrationTestSetup.SECHUB_CLIENT_DEBUGGING_ENABLED) {
+            // we enable only when explicit wanted - so logs are smaller and easier to read
+            environment.put("SECHUB_DEBUG", "true");
+        }
+        if (TestUtil.isKeepingTempfiles()) {
+            environment.put("SECHUB_KEEP_TEMPFILES", "true");
+        }
+        if (environmentVariables != null) {
+            environment.putAll(environmentVariables);
+        }
+        pb.directory(targetFolder);
+        return pb;
+    }
+
+    private ExecutionResult extractResult(File tmpGoOutputFile, int exitCode) {
+        String output = TestFileSupport.loadTextFile(tmpGoOutputFile, "\n");
+        LOG.info("Command output:\n{}", output);
+
+        /* prepare and return result */
+        ExecutionResult result = new ExecutionResult();
+        result.lines = output.trim().split("\\n");
+
+        result.exitCode = exitCode;
+        result.outputFolder = outputFolder.toFile();
+        return result;
+    }
+
+    private void logCommand(List<String> commandsAsList) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> it = commandsAsList.iterator();
+        while (it.hasNext()) {
+            sb.append(it.next());
+            if (it.hasNext()) {
+                sb.append(" ");
+            }
+        }
+        LOG.info("Execute command '{}'", sb.toString());
+    }
+
+    private File createTempFileForOutput() throws IOException {
+        /* create temporary file for output */
+        File tmpGoOutputFile = File.createTempFile("sechub-client-test-", ".txt");
+        tmpGoOutputFile.deleteOnExit();
+        LOG.info("Temporary go output at:{}", tmpGoOutputFile);
+        return tmpGoOutputFile;
+    }
+
+    private void assertAPITokenSet(TestUser user) {
+        if (user.getApiToken() == null) {
+            throw new IllegalStateException("Test user:" + user.getUserId()
+                    + " has no apiToken. This can happen if you are using users from another scenario... Please check your test!");
+        }
+    }
+
+    private void handleAction(ClientAction action, List<String> commandsAsList) {
+        if (action != null) {
+            commandsAsList.add(action.getCommand());
+        }
+    }
+
+    private void handleOptions(List<String> commandsAsList, String... options) {
+        commandsAsList.addAll(Arrays.asList(options));
+    }
+
+    private File resolveScanTargetFolder(File file) {
+        File targetFolder = null;
+
+        if (file != null && file.isDirectory()) {
+            LOG.info("Handling given file as target folder:{}", file);
+            targetFolder = file;
+        } else {
+            targetFolder = ensureExampleContentFoldersExist();
+        }
+        return targetFolder;
+    }
+
+    private void handleUserCredentials(ApiTokenStrategy apiTokenStrategy, TestUser user, Map<String, String> environmentVariables,
+            List<String> commandsAsList) {
+        if (user != null) {
+            commandsAsList.add("-user");
+            commandsAsList.add(user.getUserId());
+
+            switch (apiTokenStrategy) {
+            case HIDEN_BY_ENV:
+                environmentVariables.put("SECHUB_APITOKEN", user.getApiToken());
+                break;
+            case VISIBLE_AS_ARGUMENT:
+                commandsAsList.add("-apitoken");
+                commandsAsList.add(user.getApiToken());
+                break;
+            default:
+                throw new IllegalStateException("User set, but defined unsupported strategy:" + apiTokenStrategy);
+
+            }
+        }
+    }
+
+    private void handleExecutable(List<String> commandsAsList) {
+        File executableFile = resolveExistingExecutableAndAppendAdditionalCommands();
+        if (TestUtil.isWindows()) {
+            commandsAsList.add("cmd.exe");
+            commandsAsList.add("/C");
+        }
+        commandsAsList.add(executableFile.getAbsolutePath());
+    }
+
+    private void handleConfigFileCommand(File file, List<String> commandsAsList) {
+        if (file != null) {
+            if (file.isFile()) {
+                commandsAsList.add("-configfile");
+                if (TestUtil.isWindows()) {
+                    commandsAsList.add("\"" + file.getAbsolutePath() + "\"");
+                } else {
+                    commandsAsList.add(file.getAbsolutePath());
+                }
+            } else if (file.isDirectory()) {
+                LOG.info("Handling given file as target folder, so using sechub.json inside:{}", file);
+            }
+        }
+    }
+
+    private File resolveExistingExecutableAndAppendAdditionalCommands() {
+        File executableFile = null;
+        LOG.debug("sechub client binary path:{}",sechubClientBinaryPath);
+        
+        if (sechubClientBinaryPath == null) {
+            String parentFolder = "sechub-cli/build/go/platform/"; // when not set we use build location
+            String sechubExeName = null;
+            if (TestUtil.isWindows()) {
+                sechubExeName = "sechub.exe";
+                parentFolder += "windows-386";
+            } else {
+                sechubExeName = "sechub";
+                parentFolder += "linux-386";
+            }
+            File executableParentFolder = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(), parentFolder);
+            executableFile = new File(executableParentFolder, sechubExeName);
+        } else {
+            executableFile = new File(sechubClientBinaryPath);
+        }
+
+        if (!executableFile.exists()) {
+            throw new SecHubClientNotFoundException(executableFile);
+        }
+        return executableFile;
     }
 
     private File ensureExampleContentFoldersExist() {
@@ -280,12 +371,20 @@ public class SecHubClientExecutor {
         return exampleScanRootFolder;
     }
 
+    public void setTrustAll(boolean trustAll) {
+        this.trustAll = trustAll;
+    }
+
     public void setOutputFolder(Path outputFolder) {
         this.outputFolder = outputFolder;
     }
 
+    public void setSechubClientBinaryPath(String pathToSecHubClientBinary) {
+        this.sechubClientBinaryPath = pathToSecHubClientBinary;
+    }
+
     public static void main(String[] args) {
-        new SecHubClientExecutor().execute(null, null, null, null, "-help");
+        new SecHubClientExecutor().execute(null, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, null, null, null, "-help");
     }
 
     public class SecHubClientNotFoundException extends IllegalStateException {

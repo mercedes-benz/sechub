@@ -60,12 +60,12 @@ public class OutputUI {
         error(message, null);
     }
 
-    public void error(String message, Exception e) {
-        LOG.error(message, e);
+    public void error(String message, Throwable t) {
+        LOG.error(message, t);
         output("ERROR:");
         output(message);
-        if (e != null) {
-            output(e.toString());
+        if (t != null) {
+            output(t.toString());
             output(">> Look into your shell or IDE console output for details!");
         }
     }
