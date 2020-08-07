@@ -1,12 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui.cache;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
+
 public class InputCache {
     
+
+    private static final Logger LOG = LoggerFactory.getLogger(InputCache.class);
+
     public static InputCache DEFAULT = new InputCache();
 	
 	private Map<InputCacheIdentifier,String> cache = new EnumMap<>(InputCacheIdentifier.class);
@@ -17,7 +27,18 @@ public class InputCache {
 
     private void createDefaults() {
         /* @formatter:off */
-	    set(InputCacheIdentifier.PDS_PORT, "8444");
+        String targetFolder = ConfigurationSetup.getParentFolderPathForSecHubClientScanOrNull();
+        if (targetFolder!=null) {
+            set(InputCacheIdentifier.CLIENT_SCAN_TARGETFOLDER, targetFolder);
+        }else {
+            try {
+                set(InputCacheIdentifier.CLIENT_SCAN_TARGETFOLDER, Paths.get("./..").toRealPath().toString());
+            } catch (IOException e) {
+                LOG.error("Was not able to set default scan target folder",e);
+            }
+        }
+        
+        set(InputCacheIdentifier.PDS_PORT, "8444");
 	    set(InputCacheIdentifier.PDS_HOSTNAME, "localhost");
         
 	    set(InputCacheIdentifier.PDS_USER, "pds-inttest-admin");

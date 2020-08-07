@@ -17,10 +17,15 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
+import com.daimler.sechub.integrationtest.api.AsUser;
+import com.daimler.sechub.integrationtest.api.FixedTestUser;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
+import com.daimler.sechub.integrationtest.api.WithSecHubClient;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
@@ -130,7 +135,7 @@ public class DeveloperAdministration {
 
         public PDSAdministration(String hostname, int port, String userid, String apiToken) {
             pdsUrlBuilder = new TestURLBuilder("https", port, hostname);
-            TestUser user = new TestUser(userid, apiToken, userid + "_pds@example.com");
+            TestUser user = new FixedTestUser(userid, apiToken, userid + "_pds@example.com");
             restHelper = new TestRestHelper(user, RestHelperTarget.SECHUB_PDS);
         }
 
@@ -367,7 +372,30 @@ public class DeveloperAdministration {
         String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);
     }
-
+    
+    /**
+     * Creates temporary test user object and provides direct access to integration test object: AsUser.
+     * So all things available in integration tests can be done directly without additional methods
+     * @return asUser object
+     */
+    AsUser createAsUserTestObject() {
+        String user = provider.getUser();
+        String token = provider.getApiToken();
+        TestUser testUser = new FixedTestUser(user,token);
+        return TestAPI.as(testUser);
+    }
+    
+    public WithSecHubClient withSecHubClientOnDefinedBinPath() {
+        WithSecHubClient withSechubClient = createAsUserTestObject().withSecHubClient();
+        String pathToBinaryparentFolder = ConfigurationSetup.SECHUB_PATH_TO_SECHUB_CLIENT_BINARY.getStringValue(null, false);
+        withSechubClient.fromPath(pathToBinaryparentFolder);
+        if (ConfigurationSetup.isTrustAllDenied()) {
+            withSechubClient.denyTrustAll();
+        }
+        return withSechubClient;
+        
+    }
+    
     public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
         String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);
