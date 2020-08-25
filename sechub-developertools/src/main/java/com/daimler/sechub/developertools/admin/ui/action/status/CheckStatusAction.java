@@ -44,7 +44,7 @@ public class CheckStatusAction extends AbstractUIAction {
                 sb.append("Scheduler is NOT enabled!");
                 problemCount++;
             }
-        } catch (Exception ex) {
+        } catch (Exception| AssertionError  ex) {
             problemCount++;
             sb.append("Was not able to execute checks:" + ex.getMessage());
         }
@@ -71,7 +71,7 @@ public class CheckStatusAction extends AbstractUIAction {
     public void checkStatusWithoutEvent() {
         try {
             execute(null);
-        } catch (Exception e) {
+        } catch (Exception| AssertionError e) {
             getContext().getErrorHandler().handleError("Was not able to check status:" + e.getMessage());
         }
 

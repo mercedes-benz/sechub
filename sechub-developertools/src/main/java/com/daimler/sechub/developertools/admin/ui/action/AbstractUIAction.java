@@ -136,12 +136,25 @@ public abstract class AbstractUIAction extends AbstractAction {
         OutputUI outputUI = getContext().getOutputUI();
         outputUI.output(text);
     }
+    
+
+    /**
+     * Output given text - no matter of an error has happened or not
+     * 
+     * @param text
+     */
+    protected void error(String text) {
+
+        OutputUI outputUI = getContext().getOutputUI();
+        outputUI.error(text);
+    }
+
 
     private void safeExecute(ActionEvent event, String executionDescription) {
         try {
             execute(event);
-        } catch (Exception e) {
-            context.getOutputUI().error("Execution of " + executionDescription + " failed", e);
+        } catch (Throwable t) {
+            context.getOutputUI().error("Execution of " + executionDescription + " failed", t);
         }
     }
 

@@ -22,6 +22,7 @@ import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ClientAc
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -39,6 +40,11 @@ public class WithSecHubClient {
 
     private boolean stopOnYellow;
 
+    private String sechubClientBinaryPath;
+
+    private boolean trustAll = true; // in tests we normally trust all - other usages, like dev tools should change
+                                     // this
+
     WithSecHubClient(AsUser asUser) {
         this.asUser = asUser;
         try {
@@ -49,8 +55,18 @@ public class WithSecHubClient {
         }
     }
 
-    public ProjectFalsePositivesDefinition startFalsePositiveDefinition(TestProject project,IntegrationTestJSONLocation location) {
-        return asUser.new ProjectFalsePositivesDefinition(project, this,location);
+    public ProjectFalsePositivesDefinition startFalsePositiveDefinition(TestProject project, IntegrationTestJSONLocation location) {
+        return asUser.new ProjectFalsePositivesDefinition(project, this, location);
+    }
+
+    public WithSecHubClient fromPath(String pathToSechubClientBinary) {
+        this.sechubClientBinaryPath = pathToSechubClientBinary;
+        return this;
+    }
+
+    public WithSecHubClient denyTrustAll() {
+        this.trustAll = false;
+        return this;
     }
 
     public WithSecHubClient enableStopOnYellow() {
@@ -75,7 +91,7 @@ public class WithSecHubClient {
 
             String path = executeReportDownloadAndGetPathOfFile();
             File file = new File(path);
-            String report = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
+            String report = TestFileSupport.loadTextFile(file, "\n");
             LOG.debug("loaded report:{}", report);
             JsonNode data = TestJSONHelper.get().readTree(report);
             JsonNode tl = data.get("trafficLight");
@@ -86,7 +102,7 @@ public class WithSecHubClient {
         private String executeReportDownloadAndGetPathOfFile() {
             File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(jsonConfigfile);
             SecHubClientExecutor executor = createExecutor();
-            List<String> list = buildCommand(project, false);
+            List<String> list = buildEnvironmentAndBehaviourCommands(project);
             list.add("-jobUUID");
             list.add(jobUUID.toString());
 
@@ -208,15 +224,37 @@ public class WithSecHubClient {
 
     }
 
+    /**
+     * Starts asynchronous scan for test project - WILL NOT HIDE API token - so use
+     * only in tests!
+     * 
+     * @param project
+     * @param location
+     * @return assert object
+     */
     public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
         return startAsynchronScanFor(project, location, null);
     }
 
+    /**
+     * Starts asynchronous scan for test project - WILL NOT HIDE API token - so use
+     * only in tests!
+     * 
+     * @param project
+     * @param location
+     * @param environmentVariables
+     * @return assert object
+     */
     public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
+        return startAsynchronScanFor(project, location, environmentVariables, ApiTokenStrategy.VISIBLE_AS_ARGUMENT);
+    }
+
+    public AssertAsyncResult startAsynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables,
+            ApiTokenStrategy apiTokenStrategy) {
         File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
         SecHubClientExecutor executor = createExecutor();
-        List<String> list = buildCommand(project, false);
-        ExecutionResult result = doExecute(ClientAction.START_ASYNC, sechubConfigFile, executor, list, environmentVariables);
+        List<String> list = buildEnvironmentAndBehaviourCommands(project);
+        ExecutionResult result = doExecute(ClientAction.START_ASYNC, apiTokenStrategy, sechubConfigFile, executor, list, environmentVariables);
         if (result.getExitCode() != 0) {
             fail("Not exit code 0 but:" + result.getExitCode() + " , last output line was:" + result.getLastOutputLine());
         }
@@ -232,49 +270,104 @@ public class WithSecHubClient {
      * @param project
      * @param location identifier for the config file which shall be used. Its
      *                 automatically resolved from test file support.
-     * @return
+     * @return assert object
      */
     public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location) {
         return startSynchronScanFor(project, location, null);
     }
 
     /**
-     * Starts a synchronous scan for given project.
+     * Starts a synchronous scan for given project (WILL NOT HIDE API TOKEN! And
+     * does also always use wait zero time. So use only inside tests!)
      *
      * @param project
      * @param location identifier for the config file which shall be used. Its
      *                 automatically resolved from test file support.
-     * @return
+     * @return result
      */
     public ExecutionResult startSynchronScanFor(TestProject project, IntegrationTestJSONLocation location, Map<String, String> environmentVariables) {
         File file = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
+        return startSynchronScanFor(project, environmentVariables, file, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, ClientWaitMode.WAIT_ZERO_TIME);
+    }
+
+    /**
+     * Starts a synchronous scan for given project (WILL NOT HIDE API TOKEN! So use
+     * only inside tests!)
+     * 
+     * @param project
+     * @param environmentVariables
+     * @param file
+     * @return result
+     */
+    public ExecutionResult startSynchronScanFor(TestProject project, Map<String, String> environmentVariables, File file) {
+        return startSynchronScanFor(project, environmentVariables, file, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, ClientWaitMode.WAIT_ZERO_TIME);
+    }
+
+    public enum ClientWaitMode {
+        WAIT_ZERO_TIME,
+
+        WAIT_NORMAL,
+
+        WAIT_WITH_ENV_SETTINGS,
+    }
+
+    public ExecutionResult startSynchronScanFor(TestProject project, Map<String, String> environmentVariables, File file, ApiTokenStrategy apiTokenStrategy,
+            ClientWaitMode waitMode) {
         SecHubClientExecutor executor = createExecutor();
 
-        List<String> list = buildCommand(project, true);
+        List<String> list = buildEnvironmentAndBehaviourCommands(project, waitMode);
+        if (waitMode == ClientWaitMode.WAIT_WITH_ENV_SETTINGS) {
+            String value = System.getenv().get("SECHUB_WAITTIME_DEFAULT");
+            if (value != null) {
+                environmentVariables.put("SECHUB_WAITTIME_DEFAULT", value);
+            }
+        }
 
-        return doExecute(ClientAction.START_SYNC, file, executor, list, environmentVariables);
+        return doExecute(ClientAction.START_SYNC, apiTokenStrategy, file, executor, list, environmentVariables);
     }
 
     private SecHubClientExecutor createExecutor() {
         SecHubClientExecutor executor = new SecHubClientExecutor();
         executor.setOutputFolder(outputFolder);
+        executor.setSechubClientBinaryPath(sechubClientBinaryPath);
+        executor.setTrustAll(trustAll);
         return executor;
+    }
+
+    public enum ApiTokenStrategy {
+        HIDEN_BY_ENV,
+
+        VISIBLE_AS_ARGUMENT
     }
 
     private ExecutionResult doExecute(ClientAction action, File file, SecHubClientExecutor executor, List<String> list,
             Map<String, String> environmentVariables) {
-        return executor.execute(file, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
+        return doExecute(action, ApiTokenStrategy.VISIBLE_AS_ARGUMENT, file, executor, list, environmentVariables);
     }
 
-    private List<String> buildCommand(TestProject project, boolean withWait0) {
+    private ExecutionResult doExecute(ClientAction action, ApiTokenStrategy hideAPIToken, File file, SecHubClientExecutor executor, List<String> list,
+            Map<String, String> environmentVariables) {
+        return executor.execute(file, hideAPIToken, asUser.user, action, environmentVariables, list.toArray(new String[list.size()]));
+    }
+
+    private List<String> buildEnvironmentAndBehaviourCommands(TestProject project) {
+        return buildEnvironmentAndBehaviourCommands(project, ClientWaitMode.WAIT_NORMAL);
+    }
+
+    private List<String> buildEnvironmentAndBehaviourCommands(TestProject project, ClientWaitMode waitMode) {
         List<String> list = new ArrayList<>();
-        list.add("-server");
-        list.add(asUser.getServerURL());
-        list.add("-project");
-        list.add(project.getProjectId());
+        String serverURL = asUser.getServerURL();
+        if (serverURL != null) {
+            list.add("-server");
+            list.add(serverURL);
+        }
+        if (project != null) {
+            list.add("-project");
+            list.add(project.getProjectId());
+        }
         list.add("-output");
         list.add(outputFolder.toFile().getAbsolutePath());
-        if (withWait0) {
+        if (waitMode == ClientWaitMode.WAIT_ZERO_TIME) {
             list.add("-wait");
             list.add("0");
         }
@@ -317,10 +410,10 @@ public class WithSecHubClient {
     public void markAsFalsePositive(TestProject project, IntegrationTestJSONLocation location, String pathToJSONFile) {
         File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
         SecHubClientExecutor executor = createExecutor();
-        List<String> list = buildCommand(project, false);
+        List<String> list = buildEnvironmentAndBehaviourCommands(project);
         list.add("-file");
         list.add(pathToJSONFile);
-        
+
         ExecutionResult result = doExecute(ClientAction.MARK_FALSE_POSITIVES, sechubConfigFile, executor, list, null);
         if (result.getExitCode() != 0) {
             fail("Not exit code 0 but:" + result.getExitCode() + " , last output line was:" + result.getLastOutputLine());
@@ -330,29 +423,29 @@ public class WithSecHubClient {
     public void unmarkAsFalsePositive(TestProject project, IntegrationTestJSONLocation location, String pathToJSONFile) {
         File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
         SecHubClientExecutor executor = createExecutor();
-        List<String> list = buildCommand(project, false);
+        List<String> list = buildEnvironmentAndBehaviourCommands(project);
         list.add("-file");
         list.add(pathToJSONFile);
-        
+
         ExecutionResult result = doExecute(ClientAction.UNMARK_FALSE_POSITIVES, sechubConfigFile, executor, list, null);
         if (result.getExitCode() != 0) {
             fail("Not exit code 0 but:" + result.getExitCode() + " , last output line was:" + result.getLastOutputLine());
         }
-        
+
     }
 
     public ProjectFalsePositivesDefinition getFalsePositiveConfigurationOfProject(TestProject project, IntegrationTestJSONLocation location) {
         File sechubConfigFile = IntegrationTestFileSupport.getTestfileSupport().createFileFromResourcePath(location.getPath());
         SecHubClientExecutor executor = createExecutor();
-        List<String> list = buildCommand(project, false);
-        
+        List<String> list = buildEnvironmentAndBehaviourCommands(project);
+
         ExecutionResult result = doExecute(ClientAction.GET_FALSE_POSITIVES, sechubConfigFile, executor, list, null);
         if (result.getExitCode() != 0) {
             fail("Not exit code 0 but:" + result.getExitCode() + " , last output line was:" + result.getLastOutputLine());
         }
         File file = result.getJSONFalsePositiveFile();
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
-        
+        String json = TestFileSupport.loadTextFile(file, "\n");
+
         return asUser.create(project, json);
     }
 }
