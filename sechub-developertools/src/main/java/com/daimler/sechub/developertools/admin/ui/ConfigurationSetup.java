@@ -108,12 +108,11 @@ public enum ConfigurationSetup {
      */
     public static boolean isNimbusLookAndFeelEnabled() {
         return Boolean.getBoolean(ConfigurationSetup.SECHUB_LOOK_AND_FEEL.getSystemPropertyid());
+    }
     
     public static boolean isTrustAllDenied() {
         return Boolean.getBoolean(ConfigurationSetup.SECHUB_TRUSTALL_DENIED.getSystemPropertyid());
     }
-    }
-    
     /**
      * Resolves string value of configuration and fails when not configured
      * 
