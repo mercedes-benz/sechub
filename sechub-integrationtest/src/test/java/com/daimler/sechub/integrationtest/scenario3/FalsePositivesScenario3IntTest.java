@@ -29,6 +29,7 @@ public class FalsePositivesScenario3IntTest {
     TestProject project = PROJECT_1;
 
     
+    
     @Test
     public void with_sechubclient_mark_falsepositives_of_only_existing_medium_will_result_in_report_without_defined__And_trafficlight_changes_from_yellow_to_green() throws Exception {
         /* @formatter:off */
@@ -86,6 +87,39 @@ public class FalsePositivesScenario3IntTest {
             containsNotFinding(1, "Absolute Path Traversal").
             hasTrafficLight(TrafficLight.GREEN);
 
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void REST_API_direct_mark_20_false_positives_with_comments_is_accepted() throws Exception {
+        /* @formatter:off */
+        
+        /***********/
+        /* prepare */
+        /***********/
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        UUID jobUUID = result.getSechubJobUUD();
+
+        /***********/
+        /* execute */
+        /***********/
+        ProjectFalsePositivesDefinition def = as(USER_1).
+            startFalsePositiveDefinition(project);
+        
+        int loops = 20;
+        
+        for (int i=1;i<loops;i++) {
+            def.add(i, jobUUID, "comment for loop:"+i);
+        }
+        def.markAsFalsePositive();
+        
+        /********/
+        /* test */
+        /********/
+        ProjectFalsePositivesDefinition configuration = as(USER_1).getFalsePositiveConfigurationOfProject(project);
+        configuration.isContaining(loops-1, jobUUID);
+        
         /* @formatter:on */
     }
     
