@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
-
+    
+    
 	int getTimeOutInMilliseconds();
 
 	/**
@@ -67,7 +68,7 @@ public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
 	 * Returns a map for options. Can be used to provide special behaviours which are not default. E.g. wire mock extensions etc.
 	 * @return map with options
 	 */
-	public Map<String, Object> getOptions();
+	public Map<AdapterOptionKey, String> getOptions();
 
 	/**
 	 * Returns root target URIs (equals in URLs is a little bit odd, can make Domain look ups so we use URI instead).<br><br>

@@ -3,124 +3,170 @@ package com.daimler.sechub.developertools.admin.ui;
 
 public enum ConfigurationSetup {
 
-	SECHUB_ADMIN_USERID(false),
+    SECHUB_ADMIN_USERID(false),
 
-	SECHUB_ADMIN_APITOKEN(false),
+    SECHUB_ADMIN_APITOKEN(false),
 
-	SECHUB_ADMIN_SERVER("sechub.developertools.admin.server",false),
+    SECHUB_ADMIN_SERVER("sechub.developertools.admin.server", false),
 
-	SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport",true),
+    SECHUB_ADMIN_SERVER_PORT("sechub.developertools.admin.serverport", true),
 
-	SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol",true),
+    SECHUB_ADMIN_SERVER_PROTOCOL("sechub.developertools.admin.serverprotocol", true),
 
-	SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver",true),
+    SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU("sechub.developertools.admin.integrationtestserver", true),
 
-	/**
-	 * Here you can set environment information. Currently supported: "PROD" and "INT"
-	 */
-	SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment",true),
+    SECHUB_DISABLE_CONFIRMATIONS("sechub.developertools.admin.disable.confim", true, "When set to true, no confirmation dialogs will appear"),
 
-	SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory",true),
+    SECHUB_CHECK_STATUS_ON_STARTUP("sechub.developertools.admin.statuscheck.onstartup", true),
+    /**
+     * Here you can set environment information. See description for details
+     */
+    SECHUB_ADMIN_ENVIRONMENT("sechub.developertools.admin.environment", false,
+            "Use 'PROD', 'INT' or anything containing 'TEST' for dedicated colors (red,yellow,cyan). All other variants are without special colors"),
 
-	;
+    SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true),
 
-	private String systemPropertyid;
-	private String environmentEntryId;
+    OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
+    
+    LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
 
-	private boolean optional;
+    ;
 
-	private ConfigurationSetup(boolean optional) {
-		this(null,optional);
-	}
+    private String systemPropertyid;
+    private String environmentEntryId;
 
-	private ConfigurationSetup(String systemPropertyid, boolean optional) {
-		this.optional=optional;
-		this.systemPropertyid = systemPropertyid;
-		this.environmentEntryId = name();
-	}
+    private boolean optional;
+    private String description;
 
-	public String getEnvironmentEntryId() {
-		return environmentEntryId;
-	}
+    private ConfigurationSetup(boolean optional) {
+        this(null, optional);
+    }
 
-	public String getSystemPropertyid() {
-		return systemPropertyid;
-	}
+    private ConfigurationSetup(String systemPropertyid, boolean optional) {
+        this(systemPropertyid, optional, null);
+    }
 
-	public static boolean isIntegrationTestServerMenuEnabled() {
-		return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid());
-	}
+    private ConfigurationSetup(String systemPropertyid, boolean optional, String description) {
+        this.optional = optional;
+        this.systemPropertyid = systemPropertyid;
+        this.environmentEntryId = name();
+        this.description = description;
+    }
 
-	/**
-	 * Resolves string value of configuration and fails when not configured
-	 * @return value
-	 * @throws IllegalStateException when value not found
-	 */
-	public String getStringValueOrFail() {
-		return getStringValue(null);
-	}
+    public String getEnvironmentEntryId() {
+        return environmentEntryId;
+    }
 
-	/**
-	 * Resolves string value of configuration.
-	 * @param defaultValue
-	 * @return value or default value
-	 * @throws IllegalStateException when value not found and no default value available
-	 */
-	public String getStringValue(String defaultValue) {
-		String value = null;
-		/* first try ENV entry */
-		if (environmentEntryId != null) {
-			value = System.getenv(environmentEntryId);
-		}
-		/* then try system property - if not already set*/
-		if (value==null) {
-			value = System.getProperty(getSystemPropertyid(), defaultValue);
-		}
-		/* then use default value - if not already set*/
-		if (value==null) {
-			value=defaultValue;
-		}
-		assertNotEmpty(value, name());
-		return value;
-	}
+    public String getSystemPropertyid() {
+        return systemPropertyid;
+    }
 
-	private void assertNotEmpty(String part, String missing) {
-		if (part == null || part.isEmpty()) {
-			throw new IllegalStateException(
-					"Missing configuration entry:" + missing + ".\nYou have to configure these values:" + ConfigurationSetup.description());
-		}
+    public static boolean isIntegrationTestServerMenuEnabled() {
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_ENABLE_INTEGRATION_TESTSERVER_MENU.getSystemPropertyid());
+    }
 
-	}
+    public static boolean isConfirmationDisabled() {
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_DISABLE_CONFIRMATIONS.getSystemPropertyid());
+    }
 
-	private static String description() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Use following system properties:\n");
-		for (ConfigurationSetup setup : values()) {
-			if (setup.systemPropertyid == null) {
-				continue;
-			}
-			sb.append("-D");
-			sb.append(setup.systemPropertyid);
-			sb.append("=");
-			String val = System.getProperty(setup.systemPropertyid);
-			if (val != null && !val.isEmpty()) {
-				val = "**** (already set)";
-			}
-			sb.append(val);
-			if (setup.optional) {
-				sb.append(" (optional)");
-			}
-			sb.append("\n");
-		}
-		sb.append("\nFor security reasons next parts must be set as environment variables (so not visible in process view):\n");
-		for (ConfigurationSetup setup : values()) {
-			if (setup.environmentEntryId == null) {
-				continue;
-			}
-			sb.append("  ");
-			sb.append(setup.environmentEntryId);
-			sb.append("'\n");
-		}
-		return sb.toString();
-	}
+    public static boolean isCheckOnStartupEnabled() {
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_CHECK_STATUS_ON_STARTUP.getSystemPropertyid());
+    }
+    
+    public static String getOutputFontSettings(String defaultSetting) {
+       return ConfigurationSetup.OUTPUT_FONT_SETTINGS.getStringValue(defaultSetting);
+    }
+
+    /**
+     * 
+     * @return <code>true</code> when nimbus look and feel shall be used - per default not, because
+     *  NIMBUS leads to problem with JDialog on Linux GTK 
+     */
+    public static boolean isNimbusLookAndFeelEnabled() {
+        return Boolean.getBoolean(ConfigurationSetup.LOOK_AND_FEEL.getSystemPropertyid());
+    }
+    
+    /**
+     * Resolves string value of configuration and fails when not configured
+     * 
+     * @return value
+     * @throws IllegalStateException when value not found
+     */
+    public String getStringValueOrFail() {
+        return getStringValue(null);
+    }
+
+    /**
+     * Resolves string value of configuration.
+     * 
+     * @param defaultValue
+     * @return value or default value
+     * @throws IllegalStateException when value not found and no default value
+     *                               available
+     */
+    public String getStringValue(String defaultValue) {
+        String value = null;
+        /* first try ENV entry */
+        if (environmentEntryId != null) {
+            value = System.getenv(environmentEntryId);
+        }
+        /* then try system property - if not already set */
+        if (value == null) {
+            if (systemPropertyid != null) {
+                value = System.getProperty(systemPropertyid, defaultValue);
+            }
+        }
+        /* then use default value - if not already set */
+        if (value == null) {
+            value = defaultValue;
+        }
+        assertNotEmpty(value, name());
+        return value;
+    }
+
+    private void assertNotEmpty(String part, String missing) {
+        if (part == null || part.isEmpty()) {
+            throw new IllegalStateException(
+                    "Missing configuration entry:" + missing + ".\nYou have to configure these values:" + ConfigurationSetup.description());
+        }
+
+    }
+
+    private static String description() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Use following system properties:\n");
+        for (ConfigurationSetup setup : values()) {
+            if (setup.systemPropertyid == null) {
+                continue;
+            }
+            sb.append("-D");
+            sb.append(setup.systemPropertyid);
+            sb.append("=");
+            String val = System.getProperty(setup.systemPropertyid);
+            if (val != null && !val.isEmpty()) {
+                val = "**** (already set)";
+            }
+            sb.append(val);
+            if (setup.optional) {
+                sb.append(" (optional)");
+            }
+            if (setup.description != null) {
+                sb.append(" [");
+                sb.append(setup.description);
+                sb.append("]");
+            }
+            sb.append("\n");
+        }
+        sb.append("\nFor security reasons next parts must be set as environment variables (so not visible in process view):\n");
+        for (ConfigurationSetup setup : values()) {
+            if (setup.environmentEntryId == null) {
+                continue;
+            }
+            sb.append("  ");
+            sb.append(setup.environmentEntryId);
+            sb.append("'\n");
+        }
+        return sb.toString();
+    }
+
 }

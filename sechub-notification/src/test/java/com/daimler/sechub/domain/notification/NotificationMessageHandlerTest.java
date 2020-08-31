@@ -96,8 +96,8 @@ public class NotificationMessageHandlerTest {
 
 		/* test */
 		verify(mockedInformAdminsThatProjectHasBeenDeletedNotificationService).notify(projectMessage,"base1");
-		verify(mockedInformOwnerThatProjectHasBeenDeletedNotificationService).notify(projectMessage);
-		verify(mockedInformUsersThatProjectHasBeenDeletedNotificationService).notify(projectMessage);
+		verify(mockedInformOwnerThatProjectHasBeenDeletedNotificationService).notify(projectMessage,"base1");
+		verify(mockedInformUsersThatProjectHasBeenDeletedNotificationService).notify(projectMessage,"base1");
 
 	}
 

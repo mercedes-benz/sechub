@@ -7,6 +7,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.validation.Validator;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 @Component
@@ -26,11 +29,18 @@ public class SecHubConfigurationValidator implements Validator {
 	private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationValidator.class);
 
 	@Autowired
-	ApiVersionValidation apiValidation;
+	ApiVersionValidationFactory apiVersionValidationFactory;
 
 	@Autowired
 	UserContextService userContextService;
 
+	private ApiVersionValidation apiVersionValidation;
+	
+	@PostConstruct
+	void postConstruct() {
+	    apiVersionValidation=apiVersionValidationFactory.createValidationAccepting("1.0");
+	}
+	
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return SecHubConfiguration.class.isAssignableFrom(clazz);
@@ -118,7 +128,7 @@ public class SecHubConfigurationValidator implements Validator {
 			return;
 		}
 		String apiVersion = configuration.getApiVersion();
-		ValidationResult apiValidationResult = apiValidation.validate(apiVersion);
+		ValidationResult apiValidationResult = apiVersionValidation.validate(apiVersion);
 
 		if (!apiValidationResult.isValid()) {
 			errors.rejectValue(PROPERTY_API_VERSION, "api.error.unsupported.version", apiValidationResult.getErrorDescription());

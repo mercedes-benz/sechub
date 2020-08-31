@@ -25,19 +25,29 @@ public abstract class AbstractAdapterContext<C extends AdapterConfig, A extends 
 
 	private JSONAdapterSupport jsonAdapterSupport;
 
-	public AbstractAdapterContext(C config, A adapter) {
+    private AdapterRuntimeContext runtimeContext;
+
+	public AbstractAdapterContext(C config, A adapter, AdapterRuntimeContext runtimeContext) {
 		if (config == null) {
 			throw new IllegalArgumentException("config may not be null");
 		}
 		if (adapter == null) {
 			throw new IllegalArgumentException("adapter may not be null");
 		}
-
+		if (runtimeContext == null) {
+            throw new IllegalArgumentException("runtimeContext may not be null");
+        }
+		
 		this.config = config;
 		this.adapter = adapter;
+		this.runtimeContext=runtimeContext;
 		this.started = System.currentTimeMillis();
 
 	}
+	
+	public AdapterRuntimeContext getRuntimeContext() {
+        return runtimeContext;
+    }
 	
 	@Override
 	public AdapterException asAdapterException(String message, Throwable t) {

@@ -25,7 +25,6 @@ public abstract class DomainMessagePart {
 		return id;
 	}
 	
-
 	/**
 	 * Get parameter value by given key
 	 * 

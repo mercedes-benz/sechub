@@ -14,9 +14,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
@@ -30,6 +32,8 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
  *
  */
 public class UsecaseStepsWithRestDocAreDocumentedTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UsecaseStepsWithRestDocAreDocumentedTest.class);
 
 	@Test
 	public void usecases_having_steps_with_restapi_doc_needed_are_documented_by_restdoc() throws Exception {
@@ -120,8 +124,14 @@ public class UsecaseStepsWithRestDocAreDocumentedTest {
 								+ data.toString());
 				context.amountOfmissingRestDocTests++;
 			} else if (data.areMoreRestDocsDefinedThanSteps()) {
-				context.problems.append(
-						"\nMore tests annotated with @UseCaseRestDoc for the use case found, than defined in Steps. Please add entry to corresponding step: "
+				if (data.stepmessages.size()==1) {
+					/* just one step with multiple variants - always okay */
+					continue;
+				}
+				/* This could be problematic - maybe */
+				LOG.warn("More tests annotated with @UseCaseRestDoc for the use case found, than defined in Steps. This can happen when having multiple variations. \n"+
+				"It's not clear if this a problem and how many rest doc tests should be defined, because you have "+data.stepmessages.size()+ " annotated steps needing rest doc and there were "+data.restDocFound+" rest doc tests found.\n\n"
+						+ "PLease ensure you haven't missed one to describe :"
 								+ data.toString());
 			}
 		}

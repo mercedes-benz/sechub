@@ -57,6 +57,24 @@
                     "timeToElapseInMilliseconds": 2000
                 },
                 {
+                    "target": "../sechub-integrationtest/src/main/java",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
+                    "timeToElapseInMilliseconds": 10
+                },
+                {
+                    "target": "../sechub-test/src/main/java",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
+                    "timeToElapseInMilliseconds": 4000
+                },
+                 {
+                    "target": "testProject1/src/java",
+                    "throwsAdapterException": false,
+                    "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",
+                    "timeToElapseInMilliseconds": 1000
+                },
+                {
                     "target": "{any-other-target}",
                     "throwsAdapterException": false,
                     "filePath": "./../sechub-other/mockdata/checkmarx-mockdata-empty.xml",

@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.scenario1.Scenario1;
 
 public class GetServerInfoScenario1IntTest {
 

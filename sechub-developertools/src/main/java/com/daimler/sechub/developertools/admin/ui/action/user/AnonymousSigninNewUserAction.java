@@ -9,26 +9,34 @@ import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class AnonymousSigninNewUserAction extends AbstractUIAction {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AnonymousSigninNewUserAction(UIContext context) {
-		super("Create new user signin",context);
-	}
+    public AnonymousSigninNewUserAction(UIContext context) {
+        super("Create new user sign in", context);
+    }
 
-	@Override
-	public void execute(ActionEvent e) {
-		Optional<String> name = getUserInput("Give name of new user",InputCacheIdentifier.USERNAME);
-		if (! name.isPresent()) {
-			return;
-		}
+    @Override
+    public void execute(ActionEvent e) {
+        Optional<String> name = getUserInput("Give name of new user", InputCacheIdentifier.USERNAME);
+        if (!name.isPresent()) {
+            return;
+        }
 
-		Optional<String>email = getUserInput("Give Email of new user",InputCacheIdentifier.EMAILADRESS);
-		if (!email.isPresent()) {
-			return;
-		}
+        Optional<String> email = getUserInput("Give Email of new user", InputCacheIdentifier.EMAILADRESS);
+        if (!email.isPresent()) {
+            return;
+        }
+        
+        if (!confirm("Do you really want to sign up user? \n\nname: " + name.get() + "\nemail: " + email.get())) {
+            return;
+        }
+        
+        String userNameLowerCasedAndTimmed = name.get().toLowerCase().trim();
+        String emailLowerCasedAndTrimmed = email.get().toLowerCase().trim();
+        
+        String infoMessage = getContext().getAdministration().createNewUserSignup(userNameLowerCasedAndTimmed, emailLowerCasedAndTrimmed);
 
-		String infoMessage = getContext().getAdministration().createNewUserSignup(name.get(),email.get());
-		outputAsText(infoMessage);
-	}
+        outputAsTextOnSuccess(infoMessage);
+    }
 
 }

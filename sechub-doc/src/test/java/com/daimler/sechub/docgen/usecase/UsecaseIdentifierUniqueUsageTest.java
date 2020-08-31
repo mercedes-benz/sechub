@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.junit.Test;
-import org.reflections.Reflections;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
@@ -36,7 +36,6 @@ public class UsecaseIdentifierUniqueUsageTest {
 						+ annotationName+" uses identifier enum:"+enumName+","
 								+ "\n but this id is already used by:\n"+foundAnnotationName);
 			}
-			System.out.println(enumName+":"+annotationName);
 			map.put(enumName, annotationName);
 		}
 	}

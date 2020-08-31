@@ -19,7 +19,6 @@ public class CheckmarxScanReportSupportTest {
 	@Before
 	public void before() throws Exception {
 		supportToTest = new CheckmarxScanReportSupport();
-
 	}
 
 	@Test

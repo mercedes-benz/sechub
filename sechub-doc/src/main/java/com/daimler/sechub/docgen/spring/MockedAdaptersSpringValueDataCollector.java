@@ -11,12 +11,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.daimler.sechub.adapter.mock.MockedAdapter;
 import com.daimler.sechub.adapter.mock.MockedAdapterSetupService;
 import com.daimler.sechub.docgen.DocAnnotationData;
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.DocGeneratorUtil;
 
 /**

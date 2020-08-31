@@ -4,7 +4,9 @@ package com.daimler.sechub.adapter;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.crypto.SealedObject;
@@ -54,6 +56,8 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 	private String projectId;
 
+	private Map<AdapterOptionKey, String> options = new LinkedHashMap<>();
+
 
 	protected AbstractAdapterConfigBuilder() {
 		uriShrinker = createURIShrinker();
@@ -77,7 +81,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		strategy.configure((B) this);
 		return (B) this;
 	}
-
+	
 	/**
 	 * Set result check interval in milliseconds.
 	 *
@@ -211,6 +215,26 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 		}
 		return setTargetIPs(Collections.singleton(ipAdress));
 	}
+	
+
+	/**
+	 * Set or remove option
+	 * @param option key
+	 * @param value string representation of option value
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public B setOption(AdapterOptionKey option, String value) {
+		if (option==null) {
+			return (B) this;
+		}
+		if (value==null) {
+			options.remove(option);
+		}else {
+			options.put(option, value);
+		}
+		return (B) this;
+	}
 
 	/**
 	 * Be aware when using this - this highly insecure and
@@ -255,6 +279,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
 		abstractAdapterConfig.traceID = traceID;
 		abstractAdapterConfig.projectId=projectId;
+		abstractAdapterConfig.getOptions().putAll(options);
 
 		packageInternalCustomBuild(config);
 		customBuild(config);
@@ -280,7 +305,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 			traceID = "FALLBACK_TRACE_ID#" + System.nanoTime();
 		}
 	}
-
+	
 	private void ensureTimeSetup() {
 		if (timeToWaitForNextCheckOperationInMinutes > MAX_1_HOUR_IN_MINUTES) {
 			LOG.warn(

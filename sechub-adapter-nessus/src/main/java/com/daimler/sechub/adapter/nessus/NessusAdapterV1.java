@@ -25,6 +25,7 @@ import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.AdapterLogId;
 import com.daimler.sechub.adapter.AdapterProfiles;
+import com.daimler.sechub.adapter.AdapterRuntimeContext;
 import com.daimler.sechub.adapter.WaitForStateSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -52,9 +53,9 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 	private static final String MSG_APICALL_EXPORT_SCAN_DOWNLOAD = "/scans/{0}/export/{1}/download";
 
 	@Override
-	public String start(NessusAdapterConfig config) throws AdapterException {
+	public String execute(NessusAdapterConfig config,AdapterRuntimeContext runtimeContext) throws AdapterException {
 		try {
-			NessusContext context = new NessusContext(config, this);
+			NessusContext context = new NessusContext(config, this,runtimeContext);
 			NessusWaitForScanStateSupport waitForScanDoneSupport = new NessusWaitForScanStateSupport();
 			WaitForExportStatusSupport waitForExportDoneSupport = new WaitForExportStatusSupport();
 
@@ -76,6 +77,11 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 			throw asAdapterException("Was not able to perform scan!", e, config);
 		}
 
+	}
+	
+	@Override
+	public int getAdapterVersion() {
+		return 1;
 	}
 
 	private void updateContextWithNessusPolicyUUID(NessusContext context) throws AdapterException {
@@ -340,19 +346,6 @@ public class NessusAdapterV1 extends AbstractAdapter<NessusAdapterContext, Nessu
 	private MultiValueMap<String, String> createHeader(NessusAdapterConfig config) {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		return headers;
-	}
-
-	String dumpPolicies(NessusAdapterConfig config) throws AdapterException {
-		try {
-			NessusContext context = new NessusContext(config, this);
-			loginAndFetchToken(context);
-			return fetchPoliciesBody(context);
-
-		} catch (AdapterException e) {
-			throw e;
-		} catch (Exception e) {
-			throw asAdapterException("Was not able to perform scan!", e, config);
-		}
 	}
 
 	@Override

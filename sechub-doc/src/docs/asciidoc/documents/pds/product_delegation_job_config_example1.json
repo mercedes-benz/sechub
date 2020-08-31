@@ -1,0 +1,19 @@
+{
+    "apiVersion" : "1.0",
+
+    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9", // <1>
+
+    "productId": "THE_PRODUCT_IDENTIFIER", // <2>
+    
+    "parameters": [// <3>
+        { 
+            "key" : "sechub.test.key.1", // <4>
+            "value" : "value1" // <5>
+        },
+        { 
+            "key" : "sechub.test.key.2", 
+            "value" : "value2"
+        }
+     ]
+}
+

@@ -2,12 +2,20 @@
 package com.daimler.sechub.developertools.admin.ui.action.status;
 
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
+import com.daimler.sechub.developertools.JSONDeveloperHelper;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class ListStatusEntriesAction extends AbstractUIAction {
 	private static final long serialVersionUID = 1L;
+    private String lastData;
 
 	public ListStatusEntriesAction(UIContext context) {
 		super("List status entries",context);
@@ -15,8 +23,37 @@ public class ListStatusEntriesAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		String data = getContext().getAdministration().getStatusList();
-		outputAsBeautifiedJSON(data);
+		lastData = getContext().getAdministration().getStatusList();
+		outputAsBeautifiedJSONOnSuccess(lastData);
 	}
+	
+	public String getLastData() {
+        return lastData;
+    }
 
+	
+	public Map<String,String> getLastDataAsKeyValueMap(){
+	    String json = getLastData();
+        if (json==null) {
+            return Collections.emptyMap(); 
+        }
+        JSONDeveloperHelper h = new JSONDeveloperHelper();
+        TreeMap<String,String> map = new TreeMap<>();
+        JsonNode root;
+        try {
+            root = h.getMapper().readTree(json);
+        } catch (JsonProcessingException e) {
+           throw new RuntimeException("json not readable",e);
+        }
+        ArrayNode array = (ArrayNode) root;
+        for (JsonNode node: array) {
+            JsonNode key = node.get("key");
+            JsonNode value = node.get("value");
+            
+            String keyText = key.asText();
+            String valueText = value.asText();
+            map.put(keyText, valueText);
+        }
+        return map;
+	}
 }

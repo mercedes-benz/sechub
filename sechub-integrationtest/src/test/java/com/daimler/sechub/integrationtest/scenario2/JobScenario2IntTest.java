@@ -22,7 +22,7 @@ public class JobScenario2IntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Rule
-	public Timeout timeOut = Timeout.seconds(10);
+	public Timeout timeOut = Timeout.seconds(30);
 
 	@Test
 	public void a_triggered_job_being_running_is_NOT_found_anymore_when_canceled_by_admin() {
@@ -105,18 +105,25 @@ public class JobScenario2IntTest {
 
 		UUID jobUUID = assertUser(USER_1).
 			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST);
-
-		assertUser(USER_1).
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingExecutionState(TestExecutionState.INITIALIZING).
+		
+        assertUser(USER_1).
+			onJobScheduling(PROJECT_1).
+			    canFindJob(jobUUID).
+			    havingExecutionState(TestExecutionState.INITIALIZING).
 			and().
-			canApproveJob(PROJECT_1, jobUUID).
-			afterThis().
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED);// either ready or already started
+			canApproveJob(PROJECT_1, jobUUID);
 
 		assertUser(SUPER_ADMIN).
-			onJobScheduling(PROJECT_1).canFindJob(jobUUID).havingOneOfExecutionStates(TestExecutionState.READY_TO_START, TestExecutionState.STARTED).// either ready or already started
+		    waitForJobDone(PROJECT_1, jobUUID).
+		    
+		    afterThis().
+		    
+			onJobScheduling(PROJECT_1).
+			    canFindJob(jobUUID).
+			    havingOneOfExecutionStates(TestExecutionState.ENDED).
 			and().
-			onJobAdministration().canNotFindRunningJob(jobUUID); // means events are triggered and handled */
+			onJobAdministration().
+			    canNotFindRunningJob(jobUUID); // means events are triggered and handled */
 		/* @formatter:on */
 
 	}

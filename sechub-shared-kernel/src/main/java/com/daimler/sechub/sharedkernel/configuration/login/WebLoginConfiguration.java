@@ -6,9 +6,11 @@ import java.util.Optional;
 
 public class WebLoginConfiguration {
 
+	public static final String PROPERTY_BASIC = "basic";
+	public static final String PROPERTY_FORM = "form";
 	private URL url;
-	private Optional<BasicLoginConfiguration> basic = Optional.empty();
-	private Optional<FormLoginConfiguration> form = Optional.empty();
+	Optional<BasicLoginConfiguration> basic = Optional.empty();
+	Optional<FormLoginConfiguration> form = Optional.empty();
 
 	public URL getUrl() {
 		return url;

@@ -11,8 +11,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -34,6 +32,10 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
 	@Autowired
 	ProductResultRepository productResultRepository;
+	
+	
+	@Autowired
+	ProductExecutorContextFactory productExecutorContextFactory;
 
 	/**
 	 * Registers given product executors which shall be executed
@@ -52,13 +54,17 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @throws SecHubExecutionException
 	 */
 	public void executeProductsAndStoreResults(SecHubExecutionContext context) throws SecHubExecutionException {
-		try {
+	    try {
 
 			UUIDTraceLogID traceLogID = traceLogID(context.getSechubJobUUID());
 
 			SecHubConfiguration configuration = context.getConfiguration();
+			if (context.isCanceledOrAbandonded()) {
+			    LOG.debug("{} canceled or abandoned, so ignored by {}", traceLogID, getClass().getSimpleName());
+			    return;
+			}
 			if (!isExecutionNecessary(context, traceLogID, configuration)) {
-				LOG.debug("NO execution necessary by {}", getClass().getSimpleName());
+				LOG.debug("{} NO execution necessary by {}", traceLogID, getClass().getSimpleName());
 				return;
 			}
 			executeAndPersistResults(productExecutors, context, traceLogID);
@@ -70,11 +76,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
 	protected abstract boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration);
 
-	protected List<ProductResult> execute(ProductExecutor executor, SecHubExecutionContext context, UUIDTraceLogID traceLogID) throws SecHubExecutionException {
+	protected List<ProductResult> execute(ProductExecutor executor, ProductExecutorContext executorContext , SecHubExecutionContext context, UUIDTraceLogID traceLogID) throws SecHubExecutionException {
 
 		LOG.info("Start executor {} and wait for result. {}", executor.getIdentifier(), traceLogID);
 
-		List<ProductResult> productResults = executor.execute(context);
+		List<ProductResult> productResults = executor.execute(context,executorContext);
+		if (context.isCanceledOrAbandonded()) {
+		    return Collections.emptyList();
+		}
 		int amount = 0;
 		if (productResults != null) {
 			amount = productResults.size();
@@ -106,54 +115,50 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		requireNonNull(projectId, "Project id must be set");
 
 		for (ProductExecutor productExecutor : executors) {
-			List<ProductResult> productResults = Collections.emptyList();
+		    if (context.isCanceledOrAbandonded()) {
+                return;
+            }
+		    /* find former results - necessary for restart, contains necessary meta data for restart*/
+		    List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
+		    ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults,context, productExecutor);
+		            
+			List<ProductResult> productResults = null;
 			try {
-				productResults = execute(productExecutor, context, traceLogID);
+				productResults = execute(productExecutor, executorContext, context, traceLogID);
+				if (context.isCanceledOrAbandonded()) {
+	                return;
+	            }
 				if (productResults == null) {
 					getMockableLog().error("Product executor {} returned null as results {}", productExecutor.getIdentifier(), traceLogID);
 					continue;
 				}
 			} catch (Exception e) {
-				getMockableLog().error("Product executor failed:" + productExecutor.getIdentifier() + " " + traceLogID, e);
+				getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
 
 				productResults = new ArrayList<ProductResult>();
 				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
 				productResults.add(fallbackResult);
 			}
-
-			/* execution was successful */
+			if (context.isCanceledOrAbandonded()) {
+                return;
+            }
+			/* execution was successful - so persist new results */
 			for (ProductResult productResult : productResults) {
-				persistResult(traceLogID, productExecutor, productResult);
+			    executorContext.persist(productResult);
 			}
+			
+			/* we drop former results which are duplicates */
+            for(ProductResult oldResult: formerResults) {
+                if (productResults.contains(oldResult)) {
+                    /* reused - so ignore */
+                    continue;
+                }
+                productResultRepository.delete(oldResult);
+            }
 		}
 	}
 
-	/**
-	 * Persists the result. This will ALWAYS start a new transaction. So former
-	 * results will NOT get lost if this persistence fails. Necessary for debugging
-	 * and also the later possibility to relaunch already existing sechub jobs!
-	 * Reason: When a former scan did take a very long time and was done. The next
-	 * time another product exeuction fails because of problems inside the security
-	 * infrastructure we do not want to restart all parts again, but only the failed
-	 * / missing ones...<br>
-	 * <br>
-	 *
-	 * @see https://www.ibm.com/developerworks/java/library/j-ts1/index.html for
-	 *      details on REQUIRES_NEW when using ORM frameworks
-	 * @param traceLogID
-	 * @param productExecutor
-	 * @param productResult
-	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void persistResult(UUIDTraceLogID traceLogID, ProductExecutor productExecutor, ProductResult productResult) {
-		if (productResult == null) {
-			getMockableLog().error("Product executor {} returned null as one of the results {}", productExecutor.getIdentifier(), traceLogID);
-			return;
-		}
-		productResultRepository.save(productResult);
-	}
-
-	/**
+    /**
 	 * Normally unnecessary, but we want the ability to check log usage in tests
 	 *
 	 * @return log

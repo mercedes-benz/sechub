@@ -179,8 +179,10 @@ public class SchedulerRestControllerMockTest {
 		MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		multipart(https(PORT_USED).buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()) ,PROJECT1_ID,randomUUID).
-        			file(file1).param("checkSum", "mychecksum")
+        		multipart(https(PORT_USED).
+        		    buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()) ,PROJECT1_ID,randomUUID).
+        			file(file1).
+        			param("checkSum", "mychecksum")
         		);
 
         verify(mockedUploadService).uploadSourceCode(PROJECT1_ID, randomUUID, file1, "mychecksum");

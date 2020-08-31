@@ -16,8 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.daimler.sechub.domain.scan.access.ScanAccessRepository;
-import com.daimler.sechub.domain.scan.log.ProjectScanLog;
-import com.daimler.sechub.domain.scan.log.ProjectScanLogRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

@@ -16,7 +16,7 @@ public class CheckAliveAction extends AbstractUIAction {
 	@Override
 	public void execute(ActionEvent e) {
 		String infoMessage = getContext().getAdministration().checkAlive();
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

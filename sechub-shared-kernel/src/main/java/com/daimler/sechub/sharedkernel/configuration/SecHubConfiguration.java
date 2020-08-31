@@ -27,6 +27,7 @@ public class SecHubConfiguration implements JSONable<SecHubConfiguration> {
 	public static final String PROPERTY_INFRA_SCAN = "infraScan";
 	public static final String PROPERTY_CODE_SCAN = "codeScan";
 
+	private static final SecHubConfiguration INITIALIZER = new SecHubConfiguration();
 	private Optional<SecHubWebScanConfiguration> webScan = Optional.empty();
 	private Optional<SecHubInfrastructureScanConfiguration> infraScan = Optional.empty();
 	private Optional<SecHubCodeScanConfiguration> codeScan = Optional.empty();
@@ -34,6 +35,10 @@ public class SecHubConfiguration implements JSONable<SecHubConfiguration> {
 	private String apiVersion;
 
 	private String projectId;
+
+	public static SecHubConfiguration createFromJSON(String json) {
+		return INITIALIZER.fromJSON(json);
+	}
 
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;

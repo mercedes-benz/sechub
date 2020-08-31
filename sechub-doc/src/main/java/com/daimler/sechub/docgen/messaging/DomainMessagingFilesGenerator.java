@@ -57,11 +57,15 @@ public class DomainMessagingFilesGenerator {
 			sb.append("===== Message "+id+"\n");
 			sb.append("plantuml::diagrams/gen/"+messagePlantUmlFileName+"[format=svg, alt=\"Sequence diagram of messaging "+id+"\"]\n");
 			sb.append("\n");
+			sb.append("include::message2usecases_"+createMessagingLinkId(id)+".adoc[]\n");
 		}
 		writer.save(messagingFile, sb.toString());
 	}
 
-	private String createMessagingLinkId(String messageId) {
+	public static String createMessagingLinkId(MessageID messageId) {
+	    return createMessagingLinkId(messageId.name());
+	}
+	public static String createMessagingLinkId(String messageId) {
 		return "section-gen-messaging-"+messageId.toLowerCase();
 	}
 

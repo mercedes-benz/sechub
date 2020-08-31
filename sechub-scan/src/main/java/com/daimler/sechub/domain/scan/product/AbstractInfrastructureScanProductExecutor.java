@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.daimler.sechub.domain.scan.InstallSetup;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public abstract class AbstractInfrastructureScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements InfrastructureScanProductExecutor {
 
@@ -25,6 +26,12 @@ public abstract class AbstractInfrastructureScanProductExecutor<S extends Instal
 			throw new IllegalStateException("At this state URIs must be set - validation failed!");
 		}
 		return uris;
+	}
+	
+
+	@Override
+	protected ScanType getScanType() {
+		return ScanType.INFRA_SCAN;
 	}
 
 }

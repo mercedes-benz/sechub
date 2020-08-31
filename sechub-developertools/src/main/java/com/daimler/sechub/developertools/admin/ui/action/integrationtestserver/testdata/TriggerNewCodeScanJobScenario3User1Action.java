@@ -15,16 +15,16 @@ public class TriggerNewCodeScanJobScenario3User1Action extends IntegrationTestAc
 	private IntegrationTestMockMode mode;
 
 	public TriggerNewCodeScanJobScenario3User1Action(UIContext context, IntegrationTestMockMode mode) {
-		super("Trigger new code scan job (Scenario3) -"+mode, context);
-		this.mode=mode;
+		super("Trigger new code scan job (Scenario3) -" + mode, context);
+		this.mode = mode;
 	}
 
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-		UUID uuid = TestAPI.as(Scenario3.USER_1).createCodeScan(Scenario3.PROJECT_1,mode);
-		outputAsText("Job created:"+uuid);
-		TestAPI.as(Scenario3.USER_1).approveJob(Scenario3.PROJECT_1, uuid);
-		outputAsText("Job approved:"+uuid);
+		UUID uuid = TestAPI.as(Scenario3.USER_1).createCodeScan(Scenario3.PROJECT_1, mode);
+		outputAsTextOnSuccess("Job created:" + uuid);
+		TestAPI.as(Scenario3.USER_1).upload(Scenario3.PROJECT_1, uuid, "zipfile_contains_only_test1.txt.zip").approveJob(Scenario3.PROJECT_1, uuid);
+		outputAsTextOnSuccess("Job uploaded and approved:" + uuid);
 	}
 
 }

@@ -11,12 +11,26 @@ public class ValidationContext<T>{
 		this.objectToValidate=target;
 	}
 
-	public void addError(String error) {
-		result.addError(error);
+	public void addError(String prefix, String error) {
+	    if (error==null) {
+	        return;
+	    }
+	    if (prefix==null) {
+	        result.addError(error);
+	    }else {
+	        result.addError(prefix+error);
+	    }
 	}
 
 	public boolean isInValid() {
 		return ! result.valid;
 	}
+
+    public void addErrors(ValidationResult otherResult) {
+        if (otherResult==null) {
+            return;
+        }
+        result.addErrors(otherResult);
+    }
 
 }

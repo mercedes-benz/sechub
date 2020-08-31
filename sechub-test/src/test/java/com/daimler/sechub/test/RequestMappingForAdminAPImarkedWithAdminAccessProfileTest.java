@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-import org.reflections.Reflections;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.util.ReflectionsFactory;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -24,7 +24,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 /**
  * This tests that REST API for adminsitrators is protected by special profile, so
  * operators must explicit start a server with this profile enabled to have a
- * server instance with such high priviledges.
+ * server instance with such high privileges.
  * are really documented. This will prevent to forget documentation tests!
  *
  * @author Albert Tregnaghi

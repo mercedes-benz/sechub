@@ -50,13 +50,20 @@ public class JSONDeveloperHelper {
 		mapper.registerModule(new Jdk8Module());
 	}
 
+	public ObjectMapper getMapper() {
+        return mapper;
+    }
+	
 	public String beatuifyJSON(String json) {
+		if (json==null) {
+			return null;
+		}
 		try {
 			Object jsonObj = mapper.readValue(json, Object.class);
 			String indented = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObj);
 			return indented;
 		}catch(IOException e) {
-			LOG.error("Was not able to beautify json, will return umbeatified as fallback");
+			LOG.error("Was not able to beautify json, will return origin text as fallback");
 			return json;
 		}
 	}

@@ -7,21 +7,8 @@
  */
 dependencies {
 
-    compile(library.springboot_starter_batch)
-    compile(library.flyway)
+    compile project(':sechub-server-core')
 
-    compile project(':sechub-shared-kernel')
-    compile project(':sechub-schedule')
-    compile project(':sechub-authorization')
-    compile project(':sechub-administration')
-    compile project(':sechub-notification')
-    compile project(':sechub-scan-product-netsparker')
-    compile project(':sechub-scan-product-nessus')
-    compile project(':sechub-scan-product-sereco')
-    compile project(':sechub-scan-product-checkmarx')
-    compile project(':sechub-sereco')
-
-    testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.0'
     testCompile project(':sechub-testframework')
 }
 
@@ -31,6 +18,7 @@ task assembleArtifact(type: Zip, group: 'sechub') {
     destinationDir file("$buildDir/zip/")
     from "${projectDir}/build/go/"
     from "${rootProject.projectDir}/sechub-doc/build/asciidoc"
+    exclude '**/sechub-product-delegation-server.*'
     exclude '**/sechub-client.*'
     exclude '**/.asciidoctor/**'
     description "Assemble archive $archiveName into ${relativePath(destinationDir)}"

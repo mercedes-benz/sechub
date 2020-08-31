@@ -15,7 +15,7 @@ pipeline {
     environment {
         SECHUB_TRUSTALL= "true" // necessary for integration tests
         SECHUB_SCAN_ENABLED = getStringCredentialsOrUndefined('sechub-scan-enabled')
-
+        SECHUB_BUILD_USE_TMP_CACHE ="true" // we use temporary cache, so always clean and timestamps in tests are always correct
     }
 
     stages {
@@ -71,6 +71,7 @@ pipeline {
             environment {
                /* against build race conditions - See TestPortProvider.java */
                SERVER_PORT= getJenkinsExecutorPort(8243)
+               PDS_PORT= getJenkinsExecutorPort(8543)
 
                /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
                SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
@@ -84,12 +85,12 @@ pipeline {
 
             steps {
               script{
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT}")
+                  // start integration tests and also create combined test report after all
+                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
                }
             }
         }
-
-       stage('Security scan') {
+        stage('Security scan') {
             when{
                 not {
                     environment name: 'SECHUB_SCAN_ENABLED', value: 'undefined'
@@ -140,9 +141,11 @@ pipeline {
             )
         }
         always {
-            archive '**/integrationtest-server.log'
             junit '**/build/test-results/*/TEST-*.xml'
-
+            script{
+                  callGradleWrapper('createCombinedTestReportZipfile')
+            }
+            archive 'build/archive/combined-sechub-testreport.zip'
         }
     }
 }
@@ -178,7 +181,7 @@ void executeSecHubScan() {
      if (isUnix()) {
          sh "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      } else {
-         bat "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         bat "sechub.exe -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
      }
 }
 
@@ -326,4 +329,3 @@ class SecHubBuildContext{
 
 
 }
-

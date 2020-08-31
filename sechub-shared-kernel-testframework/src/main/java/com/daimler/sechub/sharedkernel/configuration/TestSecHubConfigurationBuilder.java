@@ -5,6 +5,10 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Optional;
+
+import com.daimler.sechub.sharedkernel.configuration.login.TestWebLoginConfigurationBuilder;
+import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 
 public class TestSecHubConfigurationBuilder {
 
@@ -13,7 +17,7 @@ public class TestSecHubConfigurationBuilder {
 	public static final TestSecHubConfigurationBuilder configureSecHub() {
 		return new TestSecHubConfigurationBuilder();
 	}
-
+	
 	private TestSecHubConfigurationBuilder() {
 		this.data = new Data();
 	}
@@ -60,9 +64,17 @@ public class TestSecHubConfigurationBuilder {
 			return TestSecHubConfigurationBuilder.this;
 		}
 		
+		public TestWebConfigurationBuilder login(WebLoginConfiguration loginConfig) {
+			TestSecHubConfigurationBuilder.this.data.webConfig.login=Optional.ofNullable(loginConfig);
+			return this;
+		}
+		
 		public TestWebConfigurationBuilder addURI(String uri) {
 			TestSecHubConfigurationBuilder.this.data.webConfig.getUris().add(URI.create(uri));
 			return this;
+		}
+		public TestWebLoginConfigurationBuilder login(String loginURL) {
+			return new TestWebLoginConfigurationBuilder(loginURL,this);
 		}
 	}
 	
@@ -116,7 +128,7 @@ public class TestSecHubConfigurationBuilder {
 			try {
 				TestSecHubConfigurationBuilder.this.data.infraConfig.getIps().add(InetAddress.getByName(ip));
 			} catch (UnknownHostException e) {
-				throw new IllegalStateException("Unknown host - should not hapen in testcase. Seems to be infrastructure problem!",e);
+				throw new IllegalStateException("Unknown host - should not happen in testcase. Seems to be infrastructure problem!",e);
 			}
 			return this;
 		}
@@ -125,6 +137,6 @@ public class TestSecHubConfigurationBuilder {
 		TestSecHubConfigurationBuilder.this.data.projectId=projectId;
 		return this;
 	}
-
+	
 
 }

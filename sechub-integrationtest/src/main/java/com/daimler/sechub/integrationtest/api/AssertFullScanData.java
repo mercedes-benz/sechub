@@ -13,8 +13,15 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class AssertFullScanData {
+    
+
+    private static final Logger LOG = LoggerFactory.getLogger(AssertFullScanData.class);
+
 	List<FullScanDataElement> fullDataScanElements;
 	private File file;
 
@@ -29,6 +36,11 @@ public class AssertFullScanData {
 		this.fullDataScanElements=readZipfile(file);
 	}
 
+	public AssertFullScanData dumpDownloadFilePath() {
+	    LOG.info("Full scan downloaded: {}", file.getAbsolutePath());
+	    return this;
+	}
+	
 	public AssertFullScanData containsFiles(int amount) {
 		assertEquals(amount,fullDataScanElements.size());
 		return this;

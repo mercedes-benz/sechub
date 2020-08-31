@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
-import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationImpl;
+import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
@@ -32,8 +32,15 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousSignupRestController.class)
-@ContextConfiguration(classes = { AnonymousSignupRestController.class, SignupJsonInputValidator.class, UserIdValidationImpl.class, EmailValidationImpl.class,
-		ApiVersionValidationImpl.class, AnonymousSignupRestControllerMockTest.SimpleTestConfiguration.class })
+/* @formatter:off */
+@ContextConfiguration(classes = { 
+        AnonymousSignupRestController.class, 
+        SignupJsonInputValidator.class, 
+        UserIdValidationImpl.class, 
+        EmailValidationImpl.class,
+		ApiVersionValidationFactory.class, 
+		AnonymousSignupRestControllerMockTest.SimpleTestConfiguration.class })
+/* @formatter:on */
 @WithMockUser
 @ActiveProfiles(Profiles.TEST)
 public class AnonymousSignupRestControllerMockTest {

@@ -21,10 +21,10 @@ public class InformUserThatUserBecomesAdminNotificationService {
 	private EmailService emailService;
 
 	@UseCaseAdministratorGrantsAdminRightsToUser(@Step(number = 3, next = {
-			4 }, name = "Inform user that he/she becomes administrator"))
+			4 }, name = "Inform user that he/she became administrator"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
-		SimpleMailMessage message = factory.createMessage("Sechub administrator priviledges granted");
+		SimpleMailMessage message = factory.createMessage("SecHub administrator privileges granted");
 
 		message.setTo(userMessage.getEmailAdress());
 		message.setText(createEmailContent(userMessage, baseUrl));
@@ -35,9 +35,9 @@ public class InformUserThatUserBecomesAdminNotificationService {
 
 	private String createEmailContent(UserMessage userMessage, String baseUrl) {
 		StringBuilder emailContent = new StringBuilder();
-		emailContent.append("Welcome ").append(userMessage.getUserId()).append(",\n\n");
-		emailContent.append("Congratulations! You become administrator of sechub\n");
-		emailContent.append("at environment:"+baseUrl);
+		emailContent.append("Congratulations " + userMessage.getUserId() + ",\n\n");
+		emailContent.append("You are now administrator of SecHub\n");
+		emailContent.append("for environment: " + baseUrl + "\n");
 		String text = emailContent.toString();
 		return text;
 	}

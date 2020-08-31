@@ -19,17 +19,17 @@ public class DeleteProjectMassCSVImporter {
 	}
 
 	public void importProjectDeletesByCSV(File file) throws IOException {
-		List<ImportCSVRow> rows = csvImporter.importCSVFile(file, 1, 1);
+		List<CSVRow> rows = csvImporter.importCSVFile(file, 1, 1);
 
-		for (ImportCSVRow row: rows) {
+		for (CSVRow row: rows) {
 			importRow(row);
 		}
 
 	}
 
-	private void importRow(ImportCSVRow row) {
-		Iterator<ImportCSVColumn> it = row.columns.iterator();
-		String projectId = it.next().cell;
+	private void importRow(CSVRow row) {
+		Iterator<CSVColumn> it = row.columns.iterator();
+		String projectId = it.next().cell.trim();
 
 		administration.deleteProject(projectId);
 	}

@@ -14,9 +14,8 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class NotificationConfiguration {
 
-	private static final String DEFAULT_MAIL_ADRESS_ADMINISTRATORS = "sechub@example.org";
-
-	@Value("${sechub.notification.email.administrators:" + DEFAULT_MAIL_ADRESS_ADMINISTRATORS+ "}")
+	@MustBeDocumented(value="Single mail adress used for emails to administrators. This should an NPM (non personalized mailbox)")
+	@Value("${sechub.notification.email.administrators}")
 	private String emailAdministrators;
 
 	@MustBeDocumented(value="Adress used for emails sent by sechub system")

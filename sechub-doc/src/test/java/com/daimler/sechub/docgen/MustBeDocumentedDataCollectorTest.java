@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.reflections.Reflections;
 
+import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 public class MustBeDocumentedDataCollectorTest {

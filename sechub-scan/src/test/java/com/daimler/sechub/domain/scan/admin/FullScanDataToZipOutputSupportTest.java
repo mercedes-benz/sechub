@@ -48,14 +48,23 @@ public class FullScanDataToZipOutputSupportTest {
 		/* test */
 
 		List<Data> list = readZipfile(file);
-	    assertEquals(3,list.size());
+	    assertEquals(5,list.size());
 	    Data data1 = assertFile("product1.json",list);
-	    Data data2 = assertFile("product2.xml",list);
+        Data data2 = assertFile("product2.xml",list);
 	    Data data3 = assertFile("log_null.txt",list); // null because log is not persisted and has no UUID
+	    
+	    Data data4 = assertFile("metadata_product1.json",list);
+        Data data5 = assertFile("metadata_product2.json",list);
 
 	    assertTrue(data1.content.contains("OK"));
 	    assertTrue(data2.content.contains("NOT-OK"));
 	    assertTrue(data3.content.contains("'heavy'"));
+	    
+	    assertTrue(data4.content.contains("metadata"));
+	    assertTrue(data4.content.contains("product1"));
+
+	    assertTrue(data5.content.contains("metadata"));
+	    assertTrue(data5.content.contains("product2"));
 
 	}
 
@@ -76,12 +85,17 @@ public class FullScanDataToZipOutputSupportTest {
 		/* test */
 
 		List<Data> list = readZipfile(file);
-	    assertEquals(5,list.size());
+	    assertEquals(9,list.size());
 	    assertFile("product1.json",list);
 	    assertFile("product1[1].json",list);
 	    assertFile("product2.xml",list);
 	    assertFile("product2[1].xml",list);
 	    assertFile("log_null.txt",list); // null because log is not persisted and has no UUID
+	    
+	    assertFile("metadata_product1.json",list);
+        assertFile("metadata_product1[1].json",list);
+        assertFile("metadata_product2.json",list);
+        assertFile("metadata_product2[1].json",list);
 
 	}
 
@@ -101,10 +115,12 @@ public class FullScanDataToZipOutputSupportTest {
 		ScanData data1 = new ScanData();
 		data1.productId="product1";
 		data1.result="{ 'result' : 'OK'}";
+		data1.metaData="{ \"metadata\" : \"product1\" }";
 
 		ScanData data2 = new ScanData();
 		data2.productId="product2";
 		data2.result="<?xml version='1.0'>\n<result>NOT-OK</result>}";
+		data2.metaData="{ \"metadata\" : \"product2\" }";
 
 		fullScanData.allScanData.add(data1);
 		fullScanData.allScanData.add(data2);

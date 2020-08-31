@@ -1,0 +1,22 @@
+{
+    "apiVersion": "1.0", //<1>
+    "type" : "falsePositiveJobDataList", //<2>
+    
+    "jobData": [
+            {
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",//<3>
+                "findingId": 1, //<4>
+                "comment" : "Absolute Path Traversal, can be ignored, because not in deployment" //<5>
+            },
+            {
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
+                "findingId": 2, 
+                "comment" : "Temp File permissions can be ignored, because we are at docker container with only ONE user"
+            },
+            {
+                "jobUUID": "6cfa2ccf-da13-4dee-b529-0225ed9661bd",
+                "findingId": 15
+            }
+      ]
+                
+}

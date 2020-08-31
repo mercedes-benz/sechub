@@ -10,13 +10,11 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.daimler.sechub.sharedkernel.LogConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
@@ -57,15 +55,12 @@ public class SchedulerUploadService {
 
 	@Autowired
 	UserInputAssertion assertion;
-
+	
 	@UseCaseUserUploadsSourceCode(@Step(number = 2, name = "Try to find project annd upload sourcecode as zipfile", description = "When project is found and user has access and job is initializing the sourcecode file will be uploaded"))
 	public void uploadSourceCode(String projectId, UUID jobUUID, MultipartFile file, String checkSum) {
 		assertion.isValidProjectId(projectId);
 		assertion.isValidJobUUID(jobUUID);
 		notNull(file, "file may not be null!");
-
-		MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, jobUUID.toString());
-		MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, projectId);
 
 		String traceLogID = logSanitizer.sanitize(UUIDTraceLogID.traceLogID(jobUUID),-1);
 

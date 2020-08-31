@@ -1,0 +1,259 @@
+// SPDX-License-Identifier: MIT
+
+// It is included from /sechub-doc/src/docs/asciidoc/documents/architecture/08_concepts.adoc
+// so we use h3 here
+
+
+[[concept-false-positive-handling]]
+
+{sechub} must be able to handle false positives of used products.
+
+=== General
+
+Normally every commercial security product is able to mark false positives, but maybe not every tool
+has got a REST API for this issue, or some command line tools do not have an API for this. 
+
+Also a change of the underlying product would lead to mass API calls to update false positive-handling
+
+So instead to configure  products to know false positives (e.g. calling a REST API),
+we do the filtering of false positives always at sechub side only!
+
+==== Different kinds of false-positive filtering
+Some people prefer code/API-centric way to define false positives, some prefer WebUI.
+
+NOTE: In future we will provide both, but we begin with the easiest approach
+
+===== Code centric
+Inside source code / deployment scripts etc. users can define comments to define false positive handling
+- this is only possible for situations where we have access to source code - means SAST 
+(static application security testing)
+
+
+[[section-concept-false-positive-general-api-centric]]
+===== API centric
+Define false positive handling in JSON by referencing a former {sechub} job UUID and the
+corresponding finding entry (by id) and post it to REST API. 
+
+====== JSON content for defining false-positives by job and finding IDs
+
+[source,json]
+----
+include::false-positive-REST-API-content-example1.json[]
+----
+<1> API version
+<2> just a type identifier for false positives, so it's clear what this file represents
+<3> job UUID for which the given identifiers are representative
+<4> comment _(optional)_ are only to define why this is a false positive.
+
+[NOTE]
+====
+This is a very easy, generic approach - and also future-proof: The only dependency is to the job, 
+UUID, for which the report must still exist while the definition is done. Every false-positive in 
+any kind of scan can be handled like that.  
+
+The REST controller logic must read the job result data and create an internally false positive handling, 
+so removing former job should not destroy false-positive setup - means dependency is only given at
+definition time but not later.
+
+====
+
+====== ID handling
+We must ensure identifiers are always correct and continue even for false positives.
+An example:
+
+We have a {sechub} job 1 were we mark the first finding with id 1 as a false positve.
+Executing now {sechub} job 2 finding with id 1 must be filtered. But findings may no longer 
+start with identifier 1! Because the finding already exists.
+
+====== Reports with false positives inside
+We also need *later* a way to show up false positives inside reports. CLI client should have an option here
+which will be set as an parameter to REST API calls.
+
+The REST controller will return in case of showing false positives a `JSON` containing even false positives,
+but marked with `"falsePositive":"true"`.
+
+[IMPORTANT]
+====
+We should also think about treatment of false-positives set by product UI itself.
+How should we handle this? This is still an open question, maybe we should ignore this, because
+its defined already inside the product. On the other side the information would be still relevant
+====
+ 
+[[section-concept-false-positive-general-web-ui]]
+==== Web UI
+
+Just uses the API centric approach (by using given REST API,) over UI... 
+
+
+=== Code scan
+
+==== Code centric
+
+Inside source code the developers will be able to mark their code, marked as vulnerable, as 
+being a false positive by using comments. After the push to repository it's inside history who
+was defining the vulnerability as a false positive.
+
+We use following tags:
+
+`NOSECHUB`
+
+and
+
+`NOSECHUB-END`
+
+[NOTE]
+====
+In future we could provide additional identifiers for `NOSECHUB` to define which kind of
+false positive is ignored/will not be fixed.
+
+E.g. something like `NOSECHUB:PATH_TRAVERSAL,PWD_UNSECURE` etc. But if we implement this,
+SecHub Sereco must map product names of vulnerability to common identifiers!
+
+====
+
+
+===== Java
+
+We will provide single comments (`//`) 
+[source,java]
+----
+include::FalsePositiveJavaApplication.java[]
+----
+<1> marks start
+<2> marks end
+
+All between those tags will be ignored by {sechub}.
+
+==== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+
+[NOTE]
+====
+What about code changes e.g. a simple new line? Same failure type but other entry? 
+We must have always relevant code snippet to identify...
+====
+
+===== How to identify same vulnerability on code changes
+- We need to inspect source and sink. We will use
+  * Location
+  * relevant part - this is absolutely necessary.
+- Line numbers must always be irrelevant!
+
+[IMPORTANT]
+====
+Very important for Sereco: If no relevant part is available we must at least create a
+pseudo one by given source snippet - in a whitespace reduced form! 
+We will compress the source content, so 
+adding new lines, spaces, tabs etc. would not matter.
+
+So if a product does not support "relevant part" detection we must create this inside
+`Sereco` by our self! 
+====
+ 
+==== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+
+=== Web scan
+
+==== Code centric
+Not possible
+
+==== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+==== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+=== Infra scan
+
+==== Code centric
+Not possible
+
+==== API centric
+see <<section-concept-false-positive-general-api-centric,general concept>> 
+
+NOTE: The identification of similarity will be done here by CVE 
+
+==== Web UI
+see <<section-concept-false-positive-general-web-ui,general concept>> 
+
+
+=== Analyzing
+
+==== Command line tool
+With https://github.com/Daimler/sechub/issues/206 we will implement an (java?) based CLI tool, which
+will inspect code to fetch duplicates etc.
+
+
+==== Integration inside SecHub Server
+
+We reuse the adapter concept already introduced for security products and report products.
+
+[TIP]
+====
+So we are able to mock the analyzer as any other product - interesting for fast integration tests of
+sechub server without dependencies. 
+
+====
+
+We need to call the analyzer product adapter twice. First to receive the adapter id. at the
+end to fetch the meta data - see next picture. 
+
+
+plantuml::diagrams/diagram_false_positive_concept_server_integration.puml[]
+
+===== Reuse of ProductDelegationServer
+
+Because we handle the analyzing like a product call (we just call it twice to "simulate" asynchronous
+product execution calls [adapters do synchronous calls...]) - we need another
+server application: `SechubAnalyzerServer` with REST API, queuing, execution etc. etc.
+
+But... this is something we already want to develop for other CLI commands! So we are able to
+use/reuse the server designed inside the `ProductDelegationServer` concept.
+
+
+[TIP]
+====
+AS long as there is no final concept, please refer to issue https://github.com/Daimler/sechub/issues/204
+====
+
+===== Necessary configuration parts
+If not already defined in `ProductDelegationServer` concept, this must be handled:
+
+We need 
+
+* a technical administrator account
+* TLS encryption 
+* A REST API
+** create a analyzer job UUID
+** upload zip content to analyzer by job UUID
+** start analyzer job
+** fetch analyzer job status
+** fetch analyzer job result
+* Queuing (like done in SechubScheduler)
+* Batch job execution
+** batch job must call the CLi tool with parameters +
+   Those parameters must be defined in adapter call
+
+=== Sereco
+We need to enhance Sereco to understand analyzer data and filter
+
+[NOTE]
+====
+TODO: either we do filtering outside of serecto or inside. 
+
+When inside we should store the analyzer result like a normal product result and sereco would
+also read it andd handle it.
+
+When not we do not need to store result.
+
+( I think the "handle analyzer like a product" approach - stor the result and let Serco handle it -
+would be best. But should be reconsidered before we start implementation.
+====
+
+
+
+
+

@@ -6,45 +6,70 @@ import java.awt.Dimension;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
-import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewCodeScanJobScenario3User1Action;
+import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewInfraScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.TriggerNewWebScanJobScenario3User1Action;
 import com.daimler.sechub.developertools.admin.ui.action.job.CancelJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadFullscanDataForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadHTMLReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.DownloadJSONReportForJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.GetJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobHardAction;
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.DeleteProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.FetchProjectFalsePositiveConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.GetProjectMockConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.MarkProjectFalsePositiveAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockDataConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnmarkProjectFalsePositiveAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.status.CheckStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.status.ListStatusEntriesAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AcceptUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousRequestNewAPITokenUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.AnonymousSigninNewUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.CreateUserMassCSVImportAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.DeclineUserSignupAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.DeleteUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
@@ -53,14 +78,18 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CommandUI {
 	private JPanel panel;
 	private JMenuBar menuBar;
+	private TrafficLightComponent statusTrafficLight;
 
 	private JProgressBar progressBar;
 	private Queue<String> queue = new ConcurrentLinkedQueue<>();
 	UIContext context;
+    private JToolBar toolBar;
+    private CheckStatusAction checkStatusAction;
 
 	public JPanel getPanel() {
 		return panel;
@@ -78,21 +107,62 @@ public class CommandUI {
 		progressBar.setPreferredSize(new Dimension(400,30));
 
 		panel = new JPanel(new BorderLayout());
-//		panel.setBorder(BorderFactory.createLineBorder(Color.RED));
 
 		panel.add(progressBar, BorderLayout.EAST);
 
-		menuBar = new JMenuBar();
-		createGlobalMenu();
+		
+		checkStatusAction = new CheckStatusAction(context);
+		createMainMenu();
+		
+		createToolBar();
+
+		/* auto execute check status on startup */
+		if (ConfigurationSetup.isCheckOnStartupEnabled()) {
+		    
+		    SwingUtilities.invokeLater(new Runnable() {
+		        
+		        @Override
+		        public void run() {
+		            checkStatusAction.checkStatusWithoutEvent();
+		        }
+		    });
+		}
+	}
+	
+	public TrafficLightComponent getStatusTrafficLight() {
+        return statusTrafficLight;
+    }
+
+    private void createToolBar() {
+        statusTrafficLight=new TrafficLightComponent();
+
+        toolBar = new JToolBar();
+        
+        toolBar.add(statusTrafficLight);
+        toolBar.add(checkStatusAction);
+        toolBar.addSeparator();
+        toolBar.add(new CreateProjectAction(context).tooltipUseText());
+        toolBar.add(new AcceptUserSignupAction(context).tooltipUseText());
+        toolBar.addSeparator();
+        toolBar.add(new EnableSchedulerJobProcessingAction(context).tooltipUseText());
+        toolBar.add(new DisableSchedulerJobProcessingAction(context).tooltipUseText());
+
+    }
+
+    private void createMainMenu() {
+        menuBar = new JMenuBar();
+		createStatusMenu();
 		createJobMenu();
 		createProjectMenu();
 		createUserMenu();
-
 		createEditMenu();
+		createSchedulerMenu();
 		createIntegrationTestServerMenu();
 		createMassOperationsMenu();
-
-	}
+		
+		createAdapterMenu();
+		createPDSMenu();
+    }
 
 	public void createEditMenu() {
 		JMenu mainMenu = new JMenu("Edit");
@@ -100,44 +170,58 @@ public class CommandUI {
 		support.apply(mainMenu, support.createDefaultCutCopyAndPastActions());
 		menuBar.add(mainMenu);
 	}
+	
+	public void createAdapterMenu() {
+        JMenu menu = new JMenu("Adapter");
+        menuBar.add(menu);
+        
+        add(menu, new ShowAdapterDialogAction(context,"Checkmarx",MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+    }
+	public void createPDSMenu() {
+	    JMenu menu = new JMenu("PDS");
+	    menuBar.add(menu);
+	    
+	    add(menu, new ShowPDSConfigurationDialogAction(context));
+	    menu.addSeparator();
+	    add(menu, new FetchPDSConfigurationAction(context));
+	    add(menu, new CheckPDSAliveAction(context));
+	    menu.addSeparator();
+	    add(menu, new FetchPDSMonitoringStatusAction(context));
+	    menu.addSeparator();
+	    add(menu, new CreatePDSJobAction(context));
+	    add(menu, new UploadPDSJobFileAction(context));
+	    add(menu, new MarkPDSJobReadyAction(context));
+	    menu.addSeparator();
+	    add(menu, new CheckPDSJobStatusAction(context));
+	    add(menu, new CheckPDSJobResultOrErrorAction(context));
+	}
 
 	private void createUserMenu() {
 		JMenu menu = new JMenu("User");
 		menuBar.add(menu);
 
-		JMenu signupMenu = new JMenu("Signup");
-		menu.add(signupMenu);
-		add(signupMenu, new ListSignupsAction(context));
-		add(signupMenu, new AcceptUserSignupAction(context));
-
+		add(menu,new AnonymousSigninNewUserAction(context));
+		add(menu, new AcceptUserSignupAction(context));
 		menu.addSeparator();
-
-		add(menu, new ShowUserListAction(context));
+		add(menu, new DeclineUserSignupAction(context));
+		add(menu, new DeleteUserAction(context));
+		menu.addSeparator();
 		add(menu, new ShowUserDetailAction(context));
-		add(menu, new ShowAdminListAction(context));
+		add(menu,new AnonymousRequestNewAPITokenUserAction(context));
 		menu.addSeparator();
-
+		add(menu, new ListSignupsAction(context));
+		add(menu, new ShowUserListAction(context));
+		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
 		menu.addSeparator();
 
-		add(menu, new DeleteUserAction(context));
-		menu.addSeparator();
-
-		JMenu anonymous = new JMenu("Anonymous");
-		menu.add(anonymous);
-		add(anonymous,new AnonymousRequestNewAPITokenUserAction(context));
-		add(anonymous,new AnonymousSigninNewUserAction(context));
-
-		JMenu grantMenu = new JMenu("Grant");
-		add(grantMenu,new GrantAdminRightsToUserAction(context));
-		menu.add(grantMenu);
-
-		JMenu revokeMenu = new JMenu("Revoke");
-		add(revokeMenu,new RevokeAdminRightsFromAdminAction(context));
-		menu.add(revokeMenu);
-
-
+		JMenu adminMenu = new JMenu("Admin rights");
+		add(adminMenu,new GrantAdminRightsToUserAction(context));
+		add(adminMenu,new RevokeAdminRightsFromAdminAction(context));
+		adminMenu.addSeparator();
+		add(adminMenu, new ShowAdminListAction(context));
+		menu.add(adminMenu);
 	}
 
 	private void createProjectMenu() {
@@ -146,54 +230,69 @@ public class CommandUI {
 
 		add(menu, new CreateProjectAction(context));
 		add(menu, new DeleteProjectAction(context));
-		menu.addSeparator();
-		add(menu, new ShowProjectListAction(context));
 		add(menu, new ShowProjectDetailAction(context));
 		add(menu, new ShowProjectsScanLogsAction(context));
-		add(menu, new UpdateProjectWhitelistAction(context));
 		menu.addSeparator();
 		add(menu, new AssignUserToProjectAction(context));
 		add(menu, new UnassignUserFromProjectAction(context));
+		menu.addSeparator();
+		add(menu, new ShowProjectListAction(context));
+		menu.addSeparator();
+		add(menu, new UpdateProjectWhitelistAction(context));
+		menu.addSeparator();
+		JMenu falsePositives= new JMenu("False positives");
+		add(falsePositives, new FetchProjectFalsePositiveConfigurationAction(context));
+		add(falsePositives, new UnmarkProjectFalsePositiveAction(context));
+		add(falsePositives, new MarkProjectFalsePositiveAction(context));
+		menu.add(falsePositives);
+		
+		JMenu projectMockData = new JMenu("Mockdata");
+		menu.add(projectMockData);
+		
+		add(projectMockData, new SetProjectMockDataConfigurationAction(context));
+		add(projectMockData, new GetProjectMockConfigurationAction(context));
 
+		
+		
 	}
 
-	private void createGlobalMenu() {
-		JMenu menu = new JMenu("Global");
+	private void createStatusMenu() {
+		JMenu menu = new JMenu("Status");
 		menuBar.add(menu);
 
-		JMenu schedulerMenu = new JMenu("Scheduler");
-		add(schedulerMenu, new DisableSchedulerJobProcessingAction(context));
-		add(schedulerMenu, new EnableSchedulerJobProcessingAction(context));
-		add(schedulerMenu, new RefreshSchedulerStatusAction(context));
-		menu.add(schedulerMenu);
-
-		JMenu statusMenu = new JMenu("Status");
-		menu.add(statusMenu);
-
-		add(statusMenu, new ShowRunningBatchJobsListAction(context));
-		statusMenu.addSeparator();
-		add(statusMenu, new CheckAliveAction(context));
-		add(statusMenu, new CheckVersionAction(context));
-		statusMenu.addSeparator();
-		add(statusMenu, new ListStatusEntriesAction(context));
-		add(statusMenu, new CreateOverviewCSVExportAction(context));
-		add(statusMenu, new ShowAdminListAction(context));
-
+		add(menu, new ShowRunningBatchJobsListAction(context));
+		menu.addSeparator();
+		add(menu, new CheckAliveAction(context));
+		add(menu, new CheckVersionAction(context));
+		add(menu, new ListStatusEntriesAction(context));
+		menu.addSeparator();
+		add(menu, new ShowAdminListAction(context));
+		add(menu, new CreateOverviewCSVExportAction(context));
 	}
+
+	private void createSchedulerMenu() {
+		JMenu menu = new JMenu("Scheduler");
+		menuBar.add(menu);
+
+		add(menu, new DisableSchedulerJobProcessingAction(context));
+		add(menu, new EnableSchedulerJobProcessingAction(context));
+		add(menu, new RefreshSchedulerStatusAction(context));
+	}
+
 	private void createJobMenu() {
 		JMenu menu = new JMenu("Job");
 		menuBar.add(menu);
 		add(menu, new GetJobStatusAction(context));
-		add(menu, new ShowRunningBatchJobsListAction(context));
 		add(menu, new CancelJobAction(context));
+		add(menu, new RestartJobAction(context));
+		add(menu, new RestartJobHardAction(context));
+		menu.addSeparator();
+		add(menu, new ShowRunningBatchJobsListAction(context));
 		menu.addSeparator();
 		add(menu, new DownloadJSONReportForJobAction(context));
 		add(menu, new DownloadHTMLReportForJobAction(context));
 		menu.addSeparator();
 		add(menu, new DownloadFullscanDataForJobAction(context));
-		add(menu, new ShowRunningBatchJobsListAction(context));
-
-
 	}
 
 	private void createIntegrationTestServerMenu() {
@@ -205,11 +304,16 @@ public class CommandUI {
 		}
 		add(menu, new FetchMockMailsAction(context));
 		menu.addSeparator();
+		add(menu, new SetProjectMockDataConfigurationAction(context));
+		add(menu, new GetProjectMockConfigurationAction(context));
+		menu.addSeparator();
 
 		JMenu testDataMenu = new JMenu("Testdata");
 		menu.add(testDataMenu);
 		add(testDataMenu, new CreateScenario2TestDataAction(context));
 		add(testDataMenu, new CreateScenario3TestDataAction(context));
+		testDataMenu.addSeparator();
+		add(testDataMenu, new TriggerNewInfraScanJobScenario3User1Action(context));
 		testDataMenu.addSeparator();
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST));
 		add(testDataMenu, new TriggerNewWebScanJobScenario3User1Action(context,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING));
@@ -225,13 +329,16 @@ public class CommandUI {
 	private void createMassOperationsMenu() {
 		JMenu massOperationsMenu = new JMenu("Mass operations");
 		menuBar.add(massOperationsMenu);
+		add(massOperationsMenu, new CreateUserMassCSVImportAction(context));
 		add(massOperationsMenu, new CreateProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new AssignUserToProjectMassCSVImportAction(context));
 		massOperationsMenu.addSeparator();
 		add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
+		add(massOperationsMenu, new UnassignUserFromProjectMassCSVImportAction(context));
 	}
 
 
-	private void add(JMenu menu, AbstractUIAction action) {
+	private void add(JMenu menu, AbstractAction action) {
 		JMenuItem menuItem = new JMenuItem(action);
 		menu.add(menuItem);
 
@@ -252,5 +359,9 @@ public class CommandUI {
 		progressBar.setIndeterminate(showProgress);
 		context.getGlassPaneUI().block(showProgress);
 	}
+
+    public JToolBar getToolBar() {
+        return toolBar;
+    }
 
 }

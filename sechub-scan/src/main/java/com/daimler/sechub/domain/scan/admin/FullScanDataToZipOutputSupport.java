@@ -25,6 +25,11 @@ public class FullScanDataToZipOutputSupport {
 	    	}
 	    	for (ScanData sd: data.allScanData) {
 	    		writeStringAsZipFileEntry(zippedOut, sd.result, sd.productId,fileNamesAlreadyUsed);
+	    		String metaData = sd.metaData;
+	    		if (metaData==null) {
+	    		    metaData="{ \"message\" : \"no meta data available\" }";
+	    		}
+	    		writeStringAsZipFileEntry(zippedOut, metaData, "metadata_"+sd.productId,fileNamesAlreadyUsed);
 	    	}
 	    	zippedOut.closeEntry();
 	    	zippedOut.finish();

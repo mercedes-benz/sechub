@@ -14,6 +14,7 @@ import javax.crypto.SealedObject;
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;
+	
 	private SealedObject passwordOrAPITokenBase64encoded;
 
 	int timeToWaitForNextCheckOperationInMilliseconds;
@@ -34,22 +35,18 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String traceID;
 	boolean trustAllCertificatesEnabled;
-	private Map<String, Object> options = new HashMap<>();
+	private Map<AdapterOptionKey, String> options = new HashMap<>();
 	LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
 	private String targetType;
-
-
+	
 	protected AbstractAdapterConfig() {
 	}
-
-
-
 
 	@Override
 	public final int getTimeOutInMilliseconds() {
 		return timeOutInMilliseconds;
 	}
-
+	
 	@Override
 	public int getTimeToWaitForNextCheckOperationInMilliseconds() {
 		return timeToWaitForNextCheckOperationInMilliseconds;
@@ -171,7 +168,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public Map<String, Object> getOptions() {
+	public Map<AdapterOptionKey, String> getOptions() {
 		return options;
 	}
 

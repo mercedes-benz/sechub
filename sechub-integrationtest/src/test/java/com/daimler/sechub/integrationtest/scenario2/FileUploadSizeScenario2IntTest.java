@@ -17,9 +17,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 
 public class FileUploadSizeScenario2IntTest {
@@ -41,7 +42,7 @@ public class FileUploadSizeScenario2IntTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void when_file_exceeds_5MB_a_server_error_is_thrown() throws IOException {
+	public void when_file_exceeds_5MB_a_NOT_ACCEPTABLE_is_returned() throws IOException {
 		/* @formatter:off */
 		handleBigUpload(true);
 	}
@@ -72,18 +73,8 @@ public class FileUploadSizeScenario2IntTest {
 
 		/* test */
 		if (tooBig) {
-//			We do not expect ResourceAccessException here but a 500, see
-//			https://stackoverflow.com/questions/48891490/sizelimitexceededexception-not-being-caught-by-spring-controlleradvice
-//			https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/support/MultipartFilter.html
-//			Did try suggestions done at https://www.baeldung.com/exception-handling-for-rest-with-spring but did not work at all
-//			we got always
-//
-//			org.apache.tomcat.util.http.fileupload.FileUploadBase$SizeLimitExceededException: the request was rejected because its size (5244303) exceeds the configured maximum (5242880)
-//			at org.apache.tomcat.util.http.fileupload.FileUploadBase$FileItemIteratorImpl.<init>(FileUploadBase.java:802) ~[tomcat-embed-core-8.5.32.jar:8.5.32]
-//          done by apache server which leads to a 500.
-//
-//			would be nice to to throw a NotAcceptableException instead
-			expected.expect(HttpServerErrorException.class);
+			expected.expect(NotAcceptable.class);
+			expected.expectMessage("File upload maximum reached. Please reduce your upload file size.");
 		}else {
 			/* nothing - means expected no exception at all!*/
 		}
@@ -100,14 +91,15 @@ public class FileUploadSizeScenario2IntTest {
 	 * filename, sha256checksum,..)
 	 */
 	private File createZipFileContainingMegabytes(boolean uploadShallBeTooLarge) throws FileNotFoundException, IOException {
-		String tmpOutputFilePath = "build/resources/bigFile";
+		String tmpPath = "build/resources/bigFile";
 		if (uploadShallBeTooLarge) {
-			tmpOutputFilePath += "-too-large";
+		    tmpPath += "-too-large";
 		} else {
-			tmpOutputFilePath += "-accepted";
+		    tmpPath += "-accepted";
 		}
-		tmpOutputFilePath += ".zip";
-
+		File file = new File(IntegrationTestFileSupport.getTestfileSupport().getRootFolder(),"sechub-integrationtest/"+tmpPath+".zip");
+		file.getParentFile().mkdirs(); // ensure parent folder structure exists, avoid FileNotFoundException because of parent missing
+		
 		int maximumUploadSizeInMB = 5;
 		int maximumUploadSizeInBytes = 1024 * 1024 * maximumUploadSizeInMB;
 		int bytesToOrder = maximumUploadSizeInBytes;
@@ -116,18 +108,16 @@ public class FileUploadSizeScenario2IntTest {
 														// checksum on upload)
 		}
 		byte[] content = new byte[bytesToOrder];
-
-		try (FileOutputStream fileOutputStream = new FileOutputStream(tmpOutputFilePath);
+		try (FileOutputStream fileOutputStream = new FileOutputStream(file);
 				ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(fileOutputStream));) {
 
-			ZipEntry zipEntry = new ZipEntry(tmpOutputFilePath);
+			ZipEntry zipEntry = new ZipEntry("test.bin");
 			// Set compression level to minimum to generate big zip file
 			zipOutputStream.setLevel(0);
 			zipOutputStream.putNextEntry(zipEntry);
 			zipOutputStream.write(content);
 			zipOutputStream.flush();
 		}
-		File file = new File(tmpOutputFilePath);
 		if (uploadShallBeTooLarge && file.length() < maximumUploadSizeInBytes) {
 			throw new IllegalStateException("Wanted at least file size: " + maximumUploadSizeInBytes + " but was:" + file.length());
 		}

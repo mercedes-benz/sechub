@@ -29,12 +29,9 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public static final String PROPERTY_TRAFFICLIGHT="trafficLight";
 	public static final String PROPERTY_INFO="info";
 
-	/**
-	 * Just an reusable instance for JSON from calls - so we do not need to create
-	 * always an empty object
-	 */
-	private static final SecHubResult SECHUB_RESULT = new SecHubResult();
 	private static final Logger LOG = LoggerFactory.getLogger(ScanReportResult.class);
+	
+	private static final ScanReportResult IMPORTER = new ScanReportResult();
 
 	UUID jobUUID;
 
@@ -60,13 +57,17 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public String getTrafficLight() {
 		return trafficLight;
 	}
-
+	
+	private ScanReportResult() {
+	    /* only internal for IMPORTER */
+	}
+	
 	public ScanReportResult(ScanReport report) {
 		notNull(report, "Report may not be null!");
 		jobUUID = report.getSecHubJobUUID();
 		trafficLight = report.getTrafficLightAsString();
 		try {
-			result = SECHUB_RESULT.fromJSON(report.getResult());
+			result = SecHubResult.fromJSONString(report.getResult());
 		} catch (JSONConverterException e) {
 			/* Should never happen, because we set secHubResult to database as string from report
 			 * If this happens. We got a data corruption and are NOT backward compatible on changes.
@@ -81,4 +82,9 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public Class<ScanReportResult> getJSONTargetClass() {
 		return ScanReportResult.class;
 	}
+	
+	public static ScanReportResult fromJSONString(String json) {
+	    return IMPORTER.fromJSON(json);
+	}
+	
 }

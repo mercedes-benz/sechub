@@ -2,8 +2,9 @@
 apply plugin: 'org.asciidoctor.convert'
 
 dependencies {
-    compile 'org.reflections:reflections:0.9.11'
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
+    compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
+    compile library.apache_commons_io
     testCompile project(':sechub-shared-kernel-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
@@ -90,7 +91,9 @@ asciidoctor {
         'sechub-architecture.adoc',
         'sechub-client.adoc',
         'sechub-operations.adoc',
-        'sechub-restapi.adoc'
+        'sechub-restapi.adoc',
+        'sechub-quickstart-guide.adoc',
+        'sechub-product-delegation-server.adoc'
     }
 
     // workaround to enable missing includes checking. See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/154
@@ -113,17 +116,27 @@ asciidoctor {
 
 }
 
-
-/* collector task for all documentation parts */
+/* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
+   there exists another task: buildDoc which does all in one call*/
 task documentation(){
      group 'sechub'
-     description 'This will generate and build asciidoctor documentation '
+     description 'This will generate asciidoctor documentation - but preconditions must be fulfilled (e.g. build, integrationtest, certificates)'
 
      dependsOn 'generateAsciidoc'
      dependsOn 'asciidoctor'
 
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('asciidoctor').mustRunAfter 'generateAsciidoc'
+}
+
+task buildDoc(type: Exec){
+         group 'sechub'
+         description 'This will build full documentation from scratch - will build, test ensure all dependencies are fulfilled before'
+
+         workingDir = "${rootProject.projectDir}"
+
+         commandLine = "./buildDoc"
+         
 }
 
 task convertSecHubPages(type: Copy){
@@ -163,7 +176,6 @@ task docToPages(type: Copy){
      description 'This will copy current documentation into sechub pages under /docs '
 
      dependsOn 'convertSecHubPages'
-
 
      into sechubPagesTargetBaseFolder
      from ("${rootProject.projectDir}/sechub-doc/build/sechubpages/"){

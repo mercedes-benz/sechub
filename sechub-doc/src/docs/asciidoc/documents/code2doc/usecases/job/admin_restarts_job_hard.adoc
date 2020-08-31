@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MIT
+[[section-uc-description-admin_restarts_job_hard]]
+Administrator restarts job the hard way , means  
+it is possible to restart a running (not finished) job and destroy all former results.
+
+
+[NOTE]
+====
+It is very similar to related use case 
+<<section-uc-description-admin_restarts_job_soft,admin restarts job>>, but with difference
+that all former product results and also adapter meta data is removed.
+====
+
+[IMPORTANT]
+====
+We do NOT allow restarts of former finished jobs because finalization does destroy interim data 
+- e.g. uploaded source code etc. - and is no longer restartable. Also we cannot ensure that a 
+client has not already downloaded the existing results, so we we keep them as is!
+
+The term "hard" is only because we destroy former meta data and product results! So the restart
+is like from "scratch". 
+====
+
+The restart will
+
+- first of all write an audit log enry
+- be canceled, when job does not exist in scheduler 
+- be canceled, when execution already finished
+- delete all former product results and also adapter meta data
+- check for running batch jobs with {sechub} job UUID. +
+  If there are existing batch operations, those will be stopped and abandoned 
+- new scan will be restarted immediately without scheduling, will not try to reuse existing 
+  results because such information was formerly deleted
+
+
+ 

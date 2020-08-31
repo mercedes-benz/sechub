@@ -11,12 +11,17 @@ public class DisableSchedulerJobProcessingAction extends AbstractUIAction {
 
 	public DisableSchedulerJobProcessingAction(UIContext context) {
 		super("Disable scheduler job processing",context);
+		setIcon(getClass().getResource("/icons/material-io/twotone_stop_circle_black_18dp.png"));
 	}
 
 	@Override
 	public void execute(ActionEvent e) {
+	    if (!confirm("Do you really want to disable the processing of all jobs in the queue?")) {
+	        return;
+	    }
+	    
 		String infoMessage = getContext().getAdministration().disableSchedulerJobProcessing();
-		outputAsText(infoMessage);
+		outputAsTextOnSuccess(infoMessage);
 	}
 
 }

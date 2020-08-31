@@ -1,0 +1,42 @@
+{
+    "apiVersion" : "1.0",
+    
+    "type" : "projectFalsePositiveConfiguration",
+    
+    "falsePositives" : [
+    
+        {
+            "jobData" : {
+                "jobUUID" : "12345",
+                "findingId" : "15",
+                "comment" :  "can be ignored, because ..." 
+            },
+
+            "author" : "userid1",
+
+            
+            "metaData" : {
+                "scanType" : "codeScan",
+                "name" : "Absolute Path traversal",
+                "serverity" : "MEDIUM",
+                "code" : {
+                    "start" : {
+                        "location" : "java/org/example/Testme.java",
+                        "relevantpart" : "args",
+                        "sourceCode" : "xxx"
+                    },
+                    "end" : {
+                        "location" : "java/org/example/Other.java",
+                        "relevantpart" : "xxx",
+                        "sourceCode" : "xxx"
+                    }
+                }
+            }
+            
+        }
+    
+    ]
+    
+    
+    
+}

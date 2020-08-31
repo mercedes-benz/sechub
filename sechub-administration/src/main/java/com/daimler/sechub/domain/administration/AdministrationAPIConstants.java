@@ -38,6 +38,7 @@ public class AdministrationAPIConstants{
 	public static final String API_SCHEDULER_ENABLE_JOB_PROCESSING = API_ADMINISTRATION + "scheduler/enable/job-processing";
 
 
+	/* TODO Albert Tregnaghi, 2020-03-16: next ones are inside amin layer not scheduler! so we should rename these constants! */
 	/**
 	 * Refresh scheduler status
 	 */
@@ -45,7 +46,15 @@ public class AdministrationAPIConstants{
 
 	public static final String API_SCHEDULER_GET_STATUS = API_ADMINISTRATION + "status";
 
+	/**
+	 * Admin only parts
+	 */
 	public static final String API_ADMIN_CANCELS_JOB = API_ADMINISTRATION+"jobs/cancel/{jobUUID}";
+	
+    public static final String API_ADMIN_RESTARTS_JOB = API_ADMINISTRATION+"jobs/restart/{jobUUID}";;
+    public static final String API_ADMIN_RESTARTS_JOB_HARD = API_ADMINISTRATION+"jobs/restart-hard/{jobUUID}";;
+
+	
 	/**
 	 * show all users wanting to sign up
 	 */
@@ -81,12 +90,15 @@ public class AdministrationAPIConstants{
 	public static final String API_UPDATE_PROJECT_WHITELIST=API_ADMINISTRATION+"project/{projectId}/whitelist";
 
 	public static final String API_LIST_JOBS_RUNNING = API_ADMINISTRATION+"jobs/running";
+	
+	public static final String API_CONFIG_MAPPING = API_ADMINISTRATION+"config/mapping/{mappingId}";
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Anonymous ................................+ */
 	/* +-----------------------------------------------------------------------+ */
 	public static final String API_FETCH_NEW_API_TOKEN_BY_ONE_WAY_TOKEN = API_ANONYMOUS+"apitoken";
 	public static final String API_REQUEST_NEW_APITOKEN = API_ANONYMOUS+"refresh/apitoken/{emailAddress}";
+
 
 
 

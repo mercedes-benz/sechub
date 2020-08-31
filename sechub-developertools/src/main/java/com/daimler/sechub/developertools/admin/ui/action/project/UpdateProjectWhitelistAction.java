@@ -18,17 +18,23 @@ public class UpdateProjectWhitelistAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		Optional<String> projectId = getUserInput("Please enter project ID/name",InputCacheIdentifier.PROJECT_ID);
-		if (! projectId.isPresent()) {
+		Optional<String> optProjectId = getUserInput("Please enter project ID/name",InputCacheIdentifier.PROJECT_ID);
+		if (! optProjectId.isPresent()) {
 			return;
 		}
 
-		List<String> data = getContext().getAdministration().fetchProjectWhiteList(projectId.get());
-		List<String> result = getContext().getDialogUI().editList("Whitelist entries for "+projectId.get(), data);
+		String projectId = optProjectId.get().toLowerCase().trim();
+		List<String> data = getContext().getAdministration().fetchProjectWhiteList(projectId);
+		List<String> result = getContext().getDialogUI().editList("Whitelist entries for "+projectId, data);
 		if (result==null) {
 			return;
 		}
-		getContext().getAdministration().updateProjectWhiteList(projectId.get(),result);
+		
+		if (!confirm("Do you really want to update the project whitelist for project:"+projectId+" ?")) {
+		    return;
+		}
+		
+		getContext().getAdministration().updateProjectWhiteList(projectId,result);
 
 	}
 

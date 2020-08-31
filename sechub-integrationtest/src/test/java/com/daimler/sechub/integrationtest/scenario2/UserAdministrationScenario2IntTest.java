@@ -21,17 +21,17 @@ public class UserAdministrationScenario2IntTest {
 	/* @formatter:off */
 	@Test
 	public void superadmin_can_grant_user_admin_rights_mails_are_sent_and_user_appears_as_expected_then() {
-		TestUser adminUser = USER_1;
+		TestUser userBecomingAdmin = USER_1;
 
 		/* execute grant +test */
-		assertUser(SUPER_ADMIN).canGrantSuperAdminRightsTo(adminUser);
+		assertUser(SUPER_ADMIN).canGrantSuperAdminRightsTo(userBecomingAdmin);
 		/* test behavior*/
-		assertUser(adminUser).
+		assertUser(userBecomingAdmin).
 			isSuperAdmin().
 			isInSuperAdminList();
 		/* test notifications */
-		assertUser(adminUser).hasReceivedEmail("Sechub administrator priviledges granted");
-		assertMailExists("sechub@example.org", "A user gained sechub administrator rights");
+		assertUser(userBecomingAdmin).hasReceivedEmail("SecHub administrator privileges granted");
+		assertMailExists("int-test_superadmins_npm@example.org", "SecHub: Granted administrator rights.*" + userBecomingAdmin.getUserId(), true);
 	}
 	/* @formatter:on */
 
@@ -72,20 +72,21 @@ public class UserAdministrationScenario2IntTest {
 	@Test
 	public void superadmin_can_revoke_user_admin_rights() {
 		/* prepare */
-		TestUser adminUser = USER_2;
-		as(SUPER_ADMIN).grantSuperAdminRightsTo(adminUser);
-		assertUser(adminUser).isSuperAdmin();
+		TestUser userNoMoreAdmin = USER_2;
+		as(SUPER_ADMIN).grantSuperAdminRightsTo(userNoMoreAdmin);
+		assertUser(userNoMoreAdmin).isSuperAdmin();
 
 		/* execute + test */
-		assertUser(SUPER_ADMIN).canRevokeSuperAdminRightsTo(adminUser);
+		assertUser(SUPER_ADMIN).canRevokeSuperAdminRightsTo(userNoMoreAdmin);
 		/* test behavior*/
-		assertUser(adminUser).
+		assertUser(userNoMoreAdmin).
 			isNotSuperAdmin().
 			isNotInSuperAdminList();
 
 		/* test notifications */
-		assertUser(adminUser).hasReceivedEmail("Sechub administrator priviledges revoked");
-		assertMailExists("sechub@example.org", "An admin lost sechub administrator rights");
+		assertUser(userNoMoreAdmin).hasReceivedEmail("SecHub administrator privileges revoked");
+		assertMailExists("int-test_superadmins_npm@example.org", 
+				"SecHub: Revoked administrator rights.*" + userNoMoreAdmin.getUserId(), true);
 	}
 	/* @formatter:on */
 

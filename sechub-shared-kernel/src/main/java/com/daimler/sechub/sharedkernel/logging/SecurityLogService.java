@@ -20,7 +20,7 @@ public class SecurityLogService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityLogService.class);
 
-	private static String SECURITY = "[SECURITY] [{}]";
+	private static String SECURITY = "[SECURITY] [USER:{}]";
 	private static String SECURITY_USERNAME = SECURITY+" ({}) :";
 
 	public void log(SecurityLogType type, String message, Object ...objects ) {
@@ -28,7 +28,7 @@ public class SecurityLogService {
 			type=SecurityLogType.UNKNOWN;
 			LOG.warn("Security log service was called with no type id! Wrong implemented! Use fallback:{}",type);
 		}
-		/* convert this to a new list, otherweise slf4j becomes problems with identifying this as list and having wrong output*/
+		/* convert this to a new list, otherwise slf4j becomes problems with identifying this as list and having wrong output*/
 		String userId = userContextService.getUserId();
 		List<Object> list = new ArrayList<>();
 		list.add(userId);

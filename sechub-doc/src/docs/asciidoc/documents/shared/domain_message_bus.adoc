@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MIT
+==== Domain Message Bus
+The domain message bus represents an abstraction layer for communication between different domains.
+It shall be the ONLY way to communicate between the different domains.
+Purpose: In future maybe the domains will be separate spring boot applications and be also
+autark deployable!
+
+Currently SecHub contains of ONE deployable spring boot application.
+But to prevent the "Big ball of mud" this abstraction must be always used when
+one domain calls another one.
+
+==== Domain communication and actions
+image::domain-communication-and-actions.svg[title="Domain communication and actions" opts="interactive,inline"]
+
+include::../gen/gen_messaging.adoc[]

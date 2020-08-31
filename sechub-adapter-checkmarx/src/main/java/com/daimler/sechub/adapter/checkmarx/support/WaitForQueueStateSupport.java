@@ -50,9 +50,15 @@ class WaitForQueueStateSupport extends WaitForStateSupport<CheckmarxContext, Che
 				}
 				break;
 			case "Failed":
+			    if (!details.newQueueEntryFound) {
+                    details.newQueueEntryFound = true;
+                }
 				details.failureText=context.json().fetch("stageDetails", body).asText();
 				break;
 			case "Finished":
+			    if (!details.newQueueEntryFound) {
+                    details.newQueueEntryFound = true;
+                }
 				details.done=true;
 				break;
 			default:

@@ -27,6 +27,9 @@ public class MockEmailService implements EmailService {
 
 	@Autowired
 	LogSanitizer logSanitizer;
+	
+	@Autowired
+	private SimpleMailMessageSupport mailMessageSupport;
 
 	@MustBeDocumented("When email mock shall cache the mails this must be configured to true, per default disabled!")
 	@Value("${sechub.notification.email.mock.cache.enabled:false}")
@@ -40,6 +43,7 @@ public class MockEmailService implements EmailService {
 
 	@Override
 	public void send(SimpleMailMessage message) {
+		LOG.info("sending email: {}", mailMessageSupport.describeTopic(message));
 		if (!cacheEmailsEnabled) {
 			return;
 		}

@@ -48,7 +48,7 @@ public class SignUpRequestedAdminNotificationServiceTest {
 		// message to receive from event bus
 		UserMessage message = mock(UserMessage.class);
 		when(message.getUserId()).thenReturn("schlaubi");
-		when(message.getEmailAdress()).thenReturn("schlaubi@schlumpfhausen.de");
+		when(message.getEmailAdress()).thenReturn("schlau.schlumpf@schlumpfhausen.de");
 
 		/* execute */
 		serviceToTest.notify(message);
@@ -64,8 +64,8 @@ public class SignUpRequestedAdminNotificationServiceTest {
 		ArgumentCaptor<String> stringMessageCaptor = ArgumentCaptor.forClass(String.class);
 		verify(mockedMailMessage).setText(stringMessageCaptor.capture());
 		String textInMessageBody = stringMessageCaptor.getValue();
-		assertTrue(textInMessageBody.contains("'schlaubi'"));
-		assertTrue(textInMessageBody.contains("'schlaubi@schlumpfhausen.de'"));
+		assertTrue(textInMessageBody.contains("schlaubi"));
+		assertTrue(textInMessageBody.contains("schlau.schlumpf@schlumpfhausen.de"));
 	}
 
 }

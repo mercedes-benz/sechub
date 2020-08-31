@@ -23,7 +23,7 @@ public class CheckmarxCategoriesToClassificationConverter {
 		return classification;
 	}
 
-	private void inspect(String split, SerecoClassification classification) {
+    private void inspect(String split, SerecoClassification classification) {
 		if (split==null || split.isEmpty()) {
 			return;
 		}
@@ -34,10 +34,10 @@ public class CheckmarxCategoriesToClassificationConverter {
 		}
 		String key= keyValue[0].toUpperCase();
 		String value = keyValue[1];
-		if (key==null) {
+		if (key==null || key.isEmpty()) {
 			return;
 		}
-		if (value==null) {
+		if (value==null || value.isEmpty()) {
 			return;
 		}
 		handleOWASP(key,value,classification);

@@ -41,12 +41,18 @@ Does scan synchronous which means
  - fetch automatically result report to output folder (html or json)
  - break your build when not `green`
 
+TIP: For security reasons always pass your api token via the environment variable `SECHUB_APITOKEN`.
+
 TIP: The is the most preferred scan action for builds - you only have to make one
      single client call and your are done.
 
 **Minimum call syntax**
+
+Prerequisite is a configuration file `sechub.json` in current directory. +
+See here for details: <<Configuration file>>
 ----
-sechub -apitoken ${apitoken} scan
+SECHUB_APITOKEN=${apitoken}
+sechub scan
 ----
 
 ===== scanAsync
@@ -67,7 +73,8 @@ TIP: This can be interesting if you have long running scans and you want have a 
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} scanAsync
+SECHUB_APITOKEN=${apitoken}
+sechub scanAsync
 ----
 
 
@@ -76,7 +83,8 @@ Will fetch current job status and return result as json or html
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getStatus
+SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID ${jobUUID} getStatus
 ----
 
 ===== getReport
@@ -84,34 +92,83 @@ Will fetch report as json (result will only exist when job is done)
 
 **Minimum call syntax**
 ----
-sechub -apitoken ${apitoken} -jobUUID §{jobUUID} getReport
+SECHUB_APITOKEN=${apitoken}
+sechub -jobUUID ${jobUUID} getReport
 ----
+
+[[section-client-false-positives-mark]]
+===== markFalsePositives
+Read your report carefully and check which of the findings are really so called "false positives".
+After this create an json file containing jobUUID and ID of finding you decided to be an FP. If 
+you like you can add an optional comment, describing your decision to mark this as FP.
+
+*Example JSON:*
+
+[source, json]
+----
+include::../../shared/concepts/false-positive-handling/false-positive-REST-API-content-example1.json[]
+----
+<1> api version
+<2> type - must be `falsePositiveJobDataList`
+<3> job where finding was in report
+<4> ID of finding, which shall be marked as false positive
+<5> Comment (optional) describing the reason why this is handled as false positive
+
+
+===== getFalsePositives
+This will fetch the false positive list of your project as JSON - format is same as for `markFalsePositives`
+
+[[section-client-false-positives-unmark]]
+===== unmarkFalsePositives
+When you want to remvoe a former defined false positive entry you can do this the same way
+as for mark operation: Just define a JSON file, select the file by the `-file` argument and start
+action `unmarkFalsePositives`
+
+*Example JSON:*
+
+[source, json]
+----
+include::sechub_client_falsepositve_list_example_unmark.json[]
+----
+
 ==== Options
 
-- apitoken `<string>` +
-  The api token. This is a mandatory option for every action. Can *NOT* be defined in config file
-- configfile `<string>` +
+- `-apitoken <string>` +
+  The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable `SECHUB_APITOKEN` (see: <<Environment variables>>) and not to use this option.
+  Can *NOT* be defined in config file
+- `-configfile <string>` +
   Path to `{sechub}` config file, if not defined `sechub.json` will be used in current directory
-- help +
+- `-help` +
   Shows help and terminates
-- jobUUID `<string>` +
+- `-jobUUID <string>` +
   `{sechub}` job uuid (mandatory when using 'getStatus' or 'getReport')
-- output `<string>` +
+- `-output <string>` +
   Output folder for reports etc. per default current dir
-- project `<string>` +
+- `-project <string>` +
   Unique project id - mandatory, but can also be defined in config file
-- reportformat `<string>` +
+- `-reportformat <string>` +
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
-- server `<string>` +
-  Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file
-- user `<string>` +
-  Username - mandatory, but can also be defined in config file
-- version +
+- `-server <string>` +
+  Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
+- `-user <string>` +
+  Username - mandatory, but can also be defined in config file or via environment variable.
+- `-version` +
   Shows version info and terminates
-- wait `<int>` + +
-       wait time in seconds. Will be used for automatic status checks etc. when action='scan'. Default is 60 seconds (default 60)
+- `-wait <integer>` + 
+       wait time in seconds (default 60). 
+       Will be used for automatic status checks etc. when action=`scan`.
 
-=== Configuration file
+==== Environment variables
+Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
+
+- `SECHUB_USERID` +
+  The SecHub username. (same as `-user` option)
+- `SECHUB_APITOKEN` +
+  The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_SERVER` +
+  The SecHub server url. (same as `-server` option)
+
+=== Client configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
 and use it as sechub configuration. There must be always a valid configuration
 file - otherwise client will not work.
@@ -127,9 +184,7 @@ it in json config like
 
 [source,json]
 ----
-{
-    "apiVersion" : "{{ .USED_API_VERSION }}"
-}
+include::sechub_config_apiversion_example.json[]
 ----
 
 `{sechub} client` will automatically fill the variable with content from environment
@@ -140,6 +195,16 @@ you will see network traffic and also JSON sent to server. This JSON will only
 contain the origin template but not the replaced parts. This was done to prevent
 accidently logging of variables - e.g. credentials.
 
+==== Accepted source code files
+The client will per default only include wellknown source files.
+This is done by inspecting the filename ending. The accepted defaults are shown in next table.
+
+*All files having file endings not listed here, will be ignored* and not contained in source upload to
+{sechub} server! 
+
+NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
+
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 
 include::../../shared/configuration/sechub_config.adoc[]
 
@@ -154,18 +219,18 @@ NOTE: Next following sub chapters contain some `{sechub}` configuration examples
 
 [source, bash]
 ----
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding 'sechub.json' config file: see <<sechub-config-example-sourcescan,source scan example>> .
-
-WARNING: Currently wrong defined folder setup will be not checked by client. So when wrong configured you will upload no sources...
 
 
 ==== Start a web scan
 
 [source, bash]
 ----
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding 'sechub.json' config file:
 see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
@@ -174,7 +239,24 @@ see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
 
 [source, bash]
 ----
-
-sechub -apitoken 7536a8c4aa82407da7e06bdbEXAMPLE scan
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub scan
 ----
 with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-with-ip, infrastructure scan example>> .
+
+==== Mark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json markFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
+
+==== Unmark false positives
+[source, bash]
+----
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub -f mark-fp.json unmarkFalsePositives
+----
+with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
+

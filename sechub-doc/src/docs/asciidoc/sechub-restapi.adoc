@@ -21,3 +21,7 @@ include::documents/shared/about_documentation_server.adoc[]
 
 // 1. REST API
 include::documents/server/03_sechub_rest_api.adoc[]
+
+<<<<
+// 2. Reporting
+include::documents/shared/report/sechub_reporting.adoc[]

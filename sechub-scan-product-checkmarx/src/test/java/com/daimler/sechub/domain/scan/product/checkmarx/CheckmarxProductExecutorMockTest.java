@@ -18,11 +18,12 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.daimler.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {CheckmarxProductExecutor.class,CheckmarxResilienceConsultant.class,
-		CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class })
+		CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class, DefaultMetaDataInspector.class })
 public class CheckmarxProductExecutorMockTest {
 
 	@Autowired
@@ -40,6 +41,7 @@ public class CheckmarxProductExecutorMockTest {
 	@MockBean
 	TargetResolver targetResolver;
 
+
 	@Before
 	public void before() {
 	}
@@ -48,7 +50,7 @@ public class CheckmarxProductExecutorMockTest {
 	public void action_executor_contains_checkmarx_resilience_consultant_after_postConstruct() {
 		assertTrue(executorToTest.resilientActionExecutor.containsConsultant(CheckmarxResilienceConsultant.class));
 	}
-
+	
 
 
 	@TestConfiguration

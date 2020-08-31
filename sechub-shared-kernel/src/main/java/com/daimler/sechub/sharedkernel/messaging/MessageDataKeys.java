@@ -33,7 +33,10 @@ public class MessageDataKeys {
 	public static final MessageDataKey<UUID> SECHUB_UUID = createKey("sechub.uuid", new UUIDMessageDataProvider());
 	public static final MessageDataKey<SecHubConfiguration> SECHUB_CONFIG = createKey("sechub.config",
 			new SecHubConfigurationMessageDataProvider());
-
+	public static final MessageDataKey<BatchJobMessage> BATCH_JOB_ID= createKey("sechub.batchjob.id", new BatchJobMessageDataProvider());
+	public static final MessageDataKey<BatchJobMessage> BATCH_JOB_STATUS= createKey("sechub.batchjob.status", new BatchJobMessageDataProvider());
+	public static final MessageDataKey<ClusterMemberMessage> ENVIRONMENT_CLUSTER_MEMBER_STATUS = createKey("environment.cluster.member.status",
+            new ClusterMemberMessageDataProvider());
 	/**
 	 * Must contain userid, mail adress
 	 */
@@ -115,9 +118,11 @@ public class MessageDataKeys {
 	 * Must contain job uuid,job owner (but can be null)
 	 */
 	public static final MessageDataKey<JobMessage> JOB_CANCEL_DATA = createJobMessageKey("job.cancel.data");
+	public static final MessageDataKey<JobMessage> JOB_RESTART_DATA = createJobMessageKey("job.restart.data");
 
 	public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
 
+	public static final MessageDataKey<MappingMessage> CONFIG_MAPPING_DATA = createMappingMessageKey("config.mapping.data");
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Helpers ..................................+ */
@@ -137,6 +142,11 @@ public class MessageDataKeys {
 	private static MessageDataKey<JobMessage> createJobMessageKey(String id) {
 		return createKey(id, new JobMessageDataProvider());
 	}
+	
+	private static MessageDataKey<MappingMessage> createMappingMessageKey(String id) {
+        return createKey(id, new MappingMessageDataProvider());
+    }
+	
 
 	private static <T> MessageDataKey<T> createKey(String id, MessageDataProvider<T> provider) {
 		return new MessageDataKey<>(id, provider);

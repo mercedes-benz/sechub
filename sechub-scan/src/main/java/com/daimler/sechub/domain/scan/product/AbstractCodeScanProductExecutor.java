@@ -17,11 +17,12 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubCodeScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfiguration;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
-public abstract class AbstractCodeScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements CodeScanProductExecutor {
+public abstract class AbstractCodeScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S>
+		implements CodeScanProductExecutor {
 
-
-private static final Logger LOG = LoggerFactory.getLogger(AbstractCodeScanProductExecutor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractCodeScanProductExecutor.class);
 
 	protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
 		/* SecHubCodeScanConfiguration does not provide target uris */
@@ -34,13 +35,19 @@ private static final Logger LOG = LoggerFactory.getLogger(AbstractCodeScanProduc
 		return Collections.emptyList();
 	}
 
+	@Override
+	protected ScanType getScanType() {
+		return ScanType.CODE_SCAN;
+	}
+
 	/**
 	 * Fetches filesystem folders to scan for - if defined
+	 * 
 	 * @param context
 	 * @return list containing pathes, or empty list, never <code>null</code>
 	 */
 	protected List<String> fetchFolders(SecHubConfiguration configuration) {
-		if (configuration==null) {
+		if (configuration == null) {
 			return Collections.emptyList();
 		}
 		Optional<SecHubCodeScanConfiguration> codeScan = configuration.getCodeScan();
@@ -54,16 +61,14 @@ private static final Logger LOG = LoggerFactory.getLogger(AbstractCodeScanProduc
 		return Collections.emptyList();
 	}
 
-
 	@Override
-	protected void customRegistration(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry,
-			SecHubConfiguration config) {
+	protected void customRegistration(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, SecHubConfiguration config) {
 		List<String> folders = fetchFolders(config);
 		if (folders.isEmpty()) {
 			return;
 		}
-		for (String folder: folders) {
-			if (folder==null) {
+		for (String folder : folders) {
+			if (folder == null) {
 				continue;
 			}
 			tryToRegister(traceLogId, setup, registry, folder);

@@ -75,7 +75,30 @@ We try to create small spring services, in most cases a
 service with annotation `@Service` should have only one public method
 
 So pretty simple and easy to maintain.
-The name should provide information what the service does.
+
+The name should provide information what the service does and has to
+end with `Service`. 
+
+Some examples: 
+
+- `MailService` 
+- `CreateUserService`
+- `InformAdminsThatSchedulerJobProcessingHasBeenDisabledService`
+
+==== Special service variants
+===== Transaction services
+Sometimes it is necessary to divide transactions.
+E.g. When a service triggers a message into event bus and we need
+to ensure that data is stored in transaction before the message has been sent.
+
+In this case we insist service ends with `TransactionService`.
+For an example look into `ProjectTransactionService`.
+
+[IMPORTANT]
+====
+Only add the special transactional parts to the "transactional" service but  
+do all other stuff inside "normal" services!
+====
 
 === RestController
 Rest controller should not do any business logic by themselves, but delegate
@@ -120,6 +143,106 @@ So it's easier to find and also possible to use package private fields for mocki
 ===== Unit tests
 ====== Fields
 We prefer fields to local variables, fields have to be rebuild by an `@Before` method.
+
+====== Junit 4
+We use currently junit4 as testframework and not junit5.
+
+====== Maintainable tests
+*Structure*
+For a better maintenance and reading of tests, we insist on comments dividing a 
+
+- *prepare* +
+  setup of mocks, creation of objects etc.
+- *check preconditions* _(optional)_ +
+  if necessary check that precondition is fulfilled before test is started
+- *execute* +
+  Execute the part / method which shall be tested
+- *test*
+  
+
+Except when test code is just a one liner this would be ridiculous.. 
+
+*Naming and creation of fields*
+
+We do
+
+- use a before method to create the instance to test, so "fresh" on every test.
+- setup mocks general behaviour in before method, special parts inside test methods
+- the part to test shall be named like `${name}toTest` - e.g. `analyzerToTest`
+- create mocks inside before method - so no side effects
+- provide mocks to services by package private methods (easy to inject + test)
+- use simple names for normal mockito mocks, use `mocked${name}` inside MockMVC tests
+  where we have injected spring mockito objects. 
+- test methods do normally not start with `test` because with Junit4 this become absolete and we
+  try to avoid duplication (it's clear this is a test method when `@Test` annotation is at 
+  method...)
+
+
+NOTE: Just refer to existing tests when you start a new one.
+
+[source,java,title='Test structure example1']
+----
+
+@Rule
+public void ExpectedException expected = ExpectedException.none();
+
+@Before
+public void before(){
+    /* mocks */
+    validator = mock(SimpleUIserIdValidator.class);
+    mailService  = mock(SimpleMailService.class);
+    
+    /* setup */ 
+    serviceToTest = new MyServiceToTest();
+    serviceToTest.valdiator = validator;
+    serviceToTest.mailService = mailService;
+    
+}
+
+@Test
+public void mailservice_is_called(){
+
+  /* execute */
+  boolean mailSent = serviceToTest.informUser("user1");
+
+  /* test */
+  verify(mailService).sendMail("user1");
+  assertTrue(mailSent);
+
+}
+
+@Test
+public void inform_user_calls_validator_and_throws_validator_exception(){
+
+  /* test */
+  expected.expect(IllegalArgumentException.class);
+  expected.expectMessage("wrong user");
+
+  /* prepare */
+  doThrow(new IllegalArgumentException("wrong user")).when(validator.validate(eq("user1"));
+
+  /* execute */
+  serviceToTest.informUser("user1");
+
+
+}
+----
+When a precondition check is really necessary we add also `/* check preconditions */` segment:
+
+[source,java,title='Test structure example2']
+----
+public void testMe(){
+  /* prepare */
+  .....
+  /* check preconditions */
+  ...
+  /* execute */
+  ...
+  /* test */
+  ...
+
+}
+----
 
 ====== Naming of mocks and test targets
 - Creating a mock field for e.g. a service `UserService` will be named as `userService`.
@@ -171,15 +294,23 @@ For more details about those tests read the `README.md` file inside
 projects root folder.
 
 ====== Integration tests using RestAPI
-These tests will be called `${name}IntTest.java`
+These tests will be called `${name}Scenario${n}IntTest.java`
 
 ====== Integration tests using SecHubClient
 Some integration tests do need a build SecHub client and execute the client.
-These tests will be called `${name}SecHubClientIntTest.java`
+These tests will be called `${name}Scenario${n}SecHubClientIntTest.java`
 
 TIP: If these tests are failing, please check you have called `gradlew buildGo` before,
      otherwise no sechub client is available for test...
 
+[[section-coding-convention-event-trace]]
+====== Integration tests generating event trace information
+We wanted to have an overview about events happening when a usecase is executed and do 
+this by special integration tests where event tracing is enabled. At the end of the test
+we write JSON files containing event trace information .
+
+We use `${name}EventTraceScenario${n}IntTest.java` as naming convention for those tests.
+See also <<section-documentation-usecase-event-overview,Usecase event overview>> for more information.
 
 [[section-coding-convention-restdoc]]
 ===== RestDOC tests

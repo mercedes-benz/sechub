@@ -32,6 +32,12 @@ import com.daimler.sechub.adapter.support.TrustAllSupport;
 import com.daimler.sechub.integrationtest.api.UserContext;
 
 public class TestRestHelper {
+    
+    
+    public static enum RestHelperTarget{
+        SECHUB_SERVER,
+        SECHUB_PDS,
+    }
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestRestHelper.class);
 
@@ -49,8 +55,7 @@ public class TestRestHelper {
 		return LAST_DATA;
 	}
 
-
-	public TestRestHelper(UserContext user) {
+	public TestRestHelper(UserContext user, RestHelperTarget target) {
 		this.template = createTrustAllRestTemplate(user);
 		this.template.setErrorHandler(createErrorHandler());
 	}
@@ -72,8 +77,12 @@ public class TestRestHelper {
 	}
 
 	public void put(String url) {
+		put(url,null);
+	}
+
+	public void put(String url, Object request) {
 		markLastURL(url);
-		template.put(url, null);
+		template.put(url, request);
 	}
 
 	/**
@@ -91,6 +100,60 @@ public class TestRestHelper {
 
 		markLastURL(url,json);
 		return template.postForEntity(url, httpEntity, String.class).getBody();
+	}
+	
+
+    /**
+     * Post string to url
+     *
+     * @param url
+     * @param json
+     * @return result
+     * @throws RestClientException
+     */
+    public String postPlainText(String url, String text) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpEntity<String> httpEntity = new HttpEntity<>(text, headers);
+
+        markLastURL(url,text);
+        return template.postForEntity(url, httpEntity, String.class).getBody();
+    }
+	
+	/**
+	 * PUT json to url
+	 *
+	 * @param url
+	 * @param json
+	 * @return result
+	 * @throws RestClientException
+	 */
+	public String putJSon(String url, String json) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
+
+		markLastURL(url,json);
+		template.put(url, httpEntity);
+		return "";
+	}
+	
+	/**
+	 * PUT plain text to url
+	 *
+	 * @param url
+	 * @param json
+	 * @return result
+	 * @throws RestClientException
+	 */
+	public String putPlainText(String url, String json) {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.TEXT_PLAIN);
+	    HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);
+	    
+	    markLastURL(url,json);
+	    template.put(url, httpEntity);
+	    return "";
 	}
 
 	private TrustAllSupport getTrustAllSupport() {
@@ -149,7 +212,7 @@ public class TestRestHelper {
 		getTemplate().delete(url);
 
 	}
-
+	
 	public String getStringFromURL(String link) {
 		markLastURL(link);
 		return template.getForEntity(link, String.class).getBody();
@@ -165,7 +228,7 @@ public class TestRestHelper {
 		String dataAsString = getStringFromURL(link);
 		return Long.parseLong(dataAsString);
 	}
-
+	
 	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
 		HttpHeaders headers = new HttpHeaders();

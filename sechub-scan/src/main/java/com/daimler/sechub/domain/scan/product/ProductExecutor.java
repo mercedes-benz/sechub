@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutor;
  * @author Albert Tregnaghi
  *
  */
-public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<List<ProductResult>> {
+public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<List<ProductResult>, ProductExecutorContext> {
 
 	/**
 	 * Execute within SecHub execution context. 
@@ -28,5 +28,6 @@ public interface ProductExecutor extends ProductIdentifiable, SecHubExecutor<Lis
 	 * @throws SecHubExecutionException
 	 *             when any problems occuring
 	 */
-	public List<ProductResult> execute(SecHubExecutionContext context) throws SecHubExecutionException;
+	public List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext) throws SecHubExecutionException;
+	
 }

@@ -5,9 +5,9 @@ projectType = [
             goProjects: [
                     project(':sechub-cli'),
             ],
-
-            javaProjects: [
+ 			javaProjects: [
                project(':sechub-testframework'),
+               project(':sechub-analyzer-cli'),
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here*/
@@ -30,11 +30,18 @@ projectType = [
                     project(':sechub-adapter-netsparker'),
                     project(':sechub-adapter-nessus'),
                     project(':sechub-adapter-checkmarx'),
+                    project(':sechub-adapter-pds'),
             ],
-
+            
+             /* PDS projects, all contained inside product delegation server */
+            springBootPDSProjects: [
+                    project(':sechub-pds'),
+                    project(':sechub-pds-core'),
+            ],
             /* server projects, all contained inside server */
             springBootSecHubServerProjects: [
                     project(':sechub-server'),
+                    project(':sechub-server-core'),
                     project(':sechub-schedule'),
                     project(':sechub-authorization'),
                     project(':sechub-administration'),
@@ -47,6 +54,12 @@ projectType = [
                     project(':sechub-scan-product-nessus'),
                     project(':sechub-scan-product-checkmarx'),
                     project(':sechub-scan-product-sereco'),
+                    project(':sechub-scan-product-pds'),
+            ],
+            
+            bootableSpringApplicationProjects:[
+                   project(':sechub-server'),
+                   project(':sechub-pds'),
             ],
 
             /* documentation projects */
@@ -75,6 +88,7 @@ projectType = [
 }
 /* dynamically define java projects */
 projectType.springBootProjects.addAll(projectType.springBootSecHubServerProjects)
+projectType.springBootProjects.addAll(projectType.springBootPDSProjects)
 projectType.springBootProjects.addAll(projectType.springBootAdapterProjects)
 projectType.springBootProjects.addAll(projectType.springDocProjects)
 //projectType.springBootProjects.addAll(projectType.springBootFrontentProjects)

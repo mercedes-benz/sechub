@@ -28,11 +28,10 @@ import com.daimler.sechub.adapter.support.TrustAllSupport;
  */
 public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, A extends Adapter<C>> extends AbstractAdapterContext<C,A> {
 
-	public static final String SECHUB_OPTION_CLIENTHTTPREQUESTINTERCEPTOR = "sechub.option.clienthttprequestinterceptor";
 	private RestTemplate restTemplate;
 
-	public AbstractSpringRestAdapterContext(C config, A adapter) {
-		super(config,adapter);
+	public AbstractSpringRestAdapterContext(C config, A adapter, AdapterRuntimeContext runtimeContext) {
+		super(config,adapter,runtimeContext);
 		/* setup dedicated rest template */
 
 		ClientHttpRequestFactory requestFactory = createRequestFactory(config);
@@ -48,7 +47,7 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
 			interceptors.add(interceptor);
 		}
 
-		Object obj = config.getOptions().get(SECHUB_OPTION_CLIENTHTTPREQUESTINTERCEPTOR);
+		Object obj = config.getOptions().get(AdapterOptionKey.CLIENT_HTTP_REQUEST_INTERCEPTOR);
 		if (obj instanceof ClientHttpRequestInterceptor) {
 			ClientHttpRequestInterceptor optionInterceptor = (ClientHttpRequestInterceptor) obj;
 			interceptors.add(optionInterceptor);

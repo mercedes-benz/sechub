@@ -1,0 +1,6 @@
+UserId;Email;auto-accept
+import-user1;import-user1@example.com;true
+import-user2;import-user2@example.com;true
+import-user3;import-user3@example.com;false
+accept-signup-user4;;true
+accept-signup-user5;;false

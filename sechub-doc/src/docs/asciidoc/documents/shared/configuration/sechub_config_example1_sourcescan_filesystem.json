@@ -1,14 +1,15 @@
 {
+      "apiVersion": "1.0",
+      "server"    : "https://sechub.example.org",
 
-        "apiVersion": "1.0",
-        "server"    : "https://sechub.example.org",
+      "project"   : "gamechanger",
 
-        "project"   : "gamechanger",
-
-        "codeScan": { //<1>
-           "fileSystem": { //<2>
+      "codeScan": { //<1>
+         "fileSystem": { //<2>
               "folders": ["gamechanger-android/src/main/java",
-                          "gamechanger-server/src/main/java"], //<3>
-           "excludes"  : ["**/*.log","README*.md"]  //<4>
-        }
+                          "gamechanger-server/src/main/java"] //<3>
+         },
+         "excludes": ["**/mytestcode/**","**/documentation/**"],  //<4>
+         "additionalFilenameExtensions": [".cplusplus",".py9"]  //<5>
       }
+}

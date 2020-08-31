@@ -16,4 +16,8 @@ public interface ScanReportRepository extends JpaRepository<ScanReport, UUID> {
 	@Modifying
 	@Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_PROJECT_ID + " = ?1", nativeQuery = true)
 	void deleteAllReportsForProject(String projectId);
+	
+	@Modifying
+	@Query(value = "DELETE FROM " + TABLE_NAME + " where " + COLUMN_SECHUB_JOB_UUID + " = ?1", nativeQuery = true)
+	void deleteAllReportsForSecHubJobUUID(UUID sechubJobUUID);
 }

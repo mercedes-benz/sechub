@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 package cli
 
 import (
@@ -6,26 +7,30 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	sechubUtil "daimler.com/sechub/util"
 )
 
-// The configuration pendant in Go. But we do only necessary parts from JSON file!
+// SecHubConfig is the sechub configuration JSON pendant in Go. But we do only necessary parts from JSON file!
 // so Webscan, InfraScan are not handled here (but still uploaded)
 // Only code scan is necessary, because determination necessary if there is an upload necessary or not.
 type SecHubConfig struct {
 	APIVersion string         `json:"apiVersion"`
 	User       string         `json:"user"`
-	ProjectId  string         `json:"project"`
+	ProjectID  string         `json:"project"`
 	Server     string         `json:"server"`
 	CodeScan   CodeScanConfig `json:"codeScan"`
 }
 
 // CodeScanConfig contains information how code scan shall be done
 type CodeScanConfig struct {
-	FileSystem FileSystemConfig `json:"fileSystem"`
-	Excludes   []string         `json:"excludes"`
+	FileSystem         FileSystemConfig `json:"fileSystem"`
+	Excludes           []string         `json:"excludes"`
+	SourceCodePatterns []string         `json:"additionalFilenameExtensions"`
 }
 
 // FileSystemConfig contains data for folders
@@ -33,6 +38,9 @@ type FileSystemConfig struct {
 	Folders []string `json:"folders"`
 }
 
+// fillTemplate - Fill in environment variables vis go-templating
+// templateSource: content of json config file
+// data: environment variables
 func fillTemplate(templateSource string, data map[string]string) []byte {
 	var tpl bytes.Buffer
 	t := template.Must(template.New("sechubConfig").Parse(templateSource))
@@ -61,35 +69,44 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Println("Call sechub with --help option to show correct usage and examples")
+	fmt.Println("Hint: Call sechub with -help option to show correct usage and examples")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	LogDebug(context, fmt.Sprintf("Loading config file: '%s'\n", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(filePath)
 	defer jsonFile.Close()
 
-	if err != nil {
-		fmt.Println(err)
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
-	   so we do not have passwords etc. accidently leaked */
-	context.unfilledByteValue, err = ioutil.ReadAll(jsonFile)
-	if err != nil {
-		fmt.Println(err)
+	   so we do not have passwords etc. accidently leaked. We limit read to maximum allowed bytes */
+	context.inputForContentProcessing, err = ioutil.ReadAll(io.LimitReader(jsonFile, MaximumBytesOfSecHubConfig))
+
+	if sechubUtil.HandleIOError(err) {
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
 
-	data, _ := envToMap()
-	context.byteValue = fillTemplate(string(context.unfilledByteValue), data)
+	if len(context.inputForContentProcessing) >= MaximumBytesOfSecHubConfig {
+		sechubUtil.LogError("Given SecHub json config file is too big!")
+		os.Exit(ExitCodeInvalidConfigFile)
+	}
 
-	return newSecHubConfigFromBytes(context.byteValue)
+	if !sechubUtil.IsValidJSON(context.inputForContentProcessing) {
+		sechubUtil.LogError("Given SecHub json config file is not correct JSON!")
+		os.Exit(ExitCodeInvalidConfigFile)
+	}
+
+	data, _ := envToMap()
+	context.contentToSend = fillTemplate(string(context.inputForContentProcessing), data)
+
+	return newSecHubConfigFromBytes(context.contentToSend)
 }
 
 func envToMap() (map[string]string, error) {

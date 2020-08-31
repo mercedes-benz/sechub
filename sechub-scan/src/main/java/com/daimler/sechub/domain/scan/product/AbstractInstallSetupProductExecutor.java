@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.daimler.sechub.domain.scan.InstallSetup;
+import com.daimler.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
@@ -21,6 +22,7 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * An abstract product executor implementation which does automatically handle
@@ -42,9 +44,18 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 
 	@Autowired
 	protected TargetResolver targetResolver;
+	
+	/**
+	 * @return scan type of this executor - never <code>null</code>
+	 */
+	protected abstract ScanType getScanType();
 
+	protected SecHubAdapterOptionsBuilderStrategy createAdapterOptionsStrategy(SecHubExecutionContext context) {
+		return new SecHubAdapterOptionsBuilderStrategy(context, getScanType());
+	}
+	
 	@Override
-	public final List<ProductResult> execute(SecHubExecutionContext context) throws SecHubExecutionException {
+	public final List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext ) throws SecHubExecutionException {
 		UUIDTraceLogID traceLogId = context.getTraceLogId();
 
 		LOG.debug("Executing {}", traceLogId);
@@ -63,7 +74,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 		customRegistration(traceLogId, setup, registry, config);
 
 		try {
-			return execute(context, registry, setup);
+			return execute(context, executorContext, registry, setup);
 		} catch (SecHubExecutionException e) {
 			throw e;
 		} catch (Exception e) {
@@ -75,7 +86,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 		}
 
 	}
-
+	
 	protected void customRegistration(UUIDTraceLogID traceLogId, S setup, TargetRegistry registry, SecHubConfiguration config) {
 		/* do nothing per default*/
 	}
@@ -141,7 +152,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 	 *         scan)
 	 * @throws SecHubExecutionException
 	 */
-	protected List<ProductResult> execute(SecHubExecutionContext context, TargetRegistry registry, S setup)
+	protected List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext,TargetRegistry registry, S setup)
 			throws Exception /* NOSONAR */ {
 		List<ProductResult> result = new ArrayList<>();
 
@@ -151,14 +162,14 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 				/* not executable*/
 				continue;
 			}
-			executeAdapterWhenTargetTypeSupported(context, registry, setup, result, type);
+			executeAdapterWhenTargetTypeSupported(context, executorContext, registry, setup, result, type);
 		}
 
 		return result;
 
 	}
 
-	private void executeAdapterWhenTargetTypeSupported(SecHubExecutionContext context, TargetRegistry registry, S setup,
+	private void executeAdapterWhenTargetTypeSupported(SecHubExecutionContext context, ProductExecutorContext executorContext ,TargetRegistry registry, S setup,
 			List<ProductResult> result, TargetType targetType) throws Exception {
 		if (!setup.isAbleToScan(targetType)) {
 			LOG.debug("{} Setup says its not able to scan target type {} with {}", context.getTraceLogId(), targetType,
@@ -177,7 +188,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 		}
 
 		LocalDateTime started = LocalDateTime.now();
-		List<ProductResult> productResults = executeWithAdapter(context, setup, registryInfo);
+		List<ProductResult> productResults = executeWithAdapter(context, executorContext, setup, registryInfo);
 		LocalDateTime ended = LocalDateTime.now();
 
 		if (productResults != null) {
@@ -196,7 +207,8 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 	 * The implementation handles the final execution by adapter and must decide if
 	 * it uses the adapter in a single call for the given target, or make a loop
 	 * call (e.g. when the product is not able to scan multiple URIs or IPs at same
-	 * time )
+	 * time and produces multiple product results - exotic, but could happen - so we use
+	 * a list as result!)
 	 *
 	 * @param context
 	 * @param setup
@@ -204,7 +216,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 	 * @return
 	 * @throws Exception
 	 */
-	protected abstract List<ProductResult> executeWithAdapter(SecHubExecutionContext context, S setup,
+	protected abstract List<ProductResult> executeWithAdapter(SecHubExecutionContext context,ProductExecutorContext executorContext, S setup,
 			TargetRegistryInfo targetData) throws Exception/* NOSONAR */;
 
 	/**

@@ -37,7 +37,7 @@ public class CheckmarxOAuthSupport {
 		map.add("grant_type", "password");
 		map.add("scope", "sast_rest_api");
 		map.add("client_id", "resource_owner_client");
-		map.add("client_secret", "014DF517-39D1-4453-B7B3-9930C563627C"); // client secret just ensures it is a checkmarx instance - so public...
+		map.add("client_secret", config.getClientSecret()); 
 
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
