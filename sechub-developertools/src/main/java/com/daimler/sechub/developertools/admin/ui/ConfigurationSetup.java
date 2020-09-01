@@ -1,6 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui;
 
+/**
+ * Defines ENV variables and corresponding system properites.
+ * <br><br>
+ * BE AWARE: env entries are exact like names of enum, system properties as defined in concstructor call!
+ * So NOT SAME!!! Was done to provide standard env entries of sechub-client but have possiblity to define 
+ * different when necessary . System properties are first class citizens so will override ENV variants
+ * @author Albert Tregnaghi
+ *
+ */
 public enum ConfigurationSetup {
 
     SECHUB_ADMIN_USERID(false),
@@ -29,10 +38,20 @@ public enum ConfigurationSetup {
     /**
      * Usage: for example -Dsechub.developertools.output.font.settings="courier 18"
      */
-    OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
-    
-    LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
+    SECHUB_OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
 
+    SECHUB_LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
+
+    SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN("sechub.developertools.admin.launch.scan.targetfolder", true,
+            "Default path to parent folder of configuration file and sources to scan"),
+    
+    /**
+     * When defined we use this path instead IDE relative one
+     */
+    SECHUB_PATH_TO_SECHUB_CLIENT_BINARY("sechub.developertools.admin.launch.clientbinary.path",true),
+    
+    
+    SECHUB_TRUSTALL_DENIED("sechub.developertools.trustall.denied",true);
     ;
 
     private String systemPropertyid;
@@ -75,20 +94,28 @@ public enum ConfigurationSetup {
     public static boolean isCheckOnStartupEnabled() {
         return Boolean.getBoolean(ConfigurationSetup.SECHUB_CHECK_STATUS_ON_STARTUP.getSystemPropertyid());
     }
-    
+
     public static String getOutputFontSettings(String defaultSetting) {
-       return ConfigurationSetup.OUTPUT_FONT_SETTINGS.getStringValue(defaultSetting);
+        return ConfigurationSetup.SECHUB_OUTPUT_FONT_SETTINGS.getStringValue(defaultSetting);
     }
+
+    public static String getParentFolderPathForSecHubClientScanOrNull() {
+        return ConfigurationSetup.SECHUB_TARGETFOLDER_FOR_SECHUB_CLIENT_SCAN.getStringValue(null,false);
+     }
 
     /**
      * 
-     * @return <code>true</code> when nimbus look and feel shall be used - per default not, because
-     *  NIMBUS leads to problem with JDialog on Linux GTK 
+     * @return <code>true</code> when nimbus look and feel shall be used - per
+     *         default not, because NIMBUS leads to problem with JDialog on Linux
+     *         GTK
      */
     public static boolean isNimbusLookAndFeelEnabled() {
-        return Boolean.getBoolean(ConfigurationSetup.LOOK_AND_FEEL.getSystemPropertyid());
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_LOOK_AND_FEEL.getSystemPropertyid());
     }
     
+    public static boolean isTrustAllDenied() {
+        return Boolean.getBoolean(ConfigurationSetup.SECHUB_TRUSTALL_DENIED.getSystemPropertyid());
+    }
     /**
      * Resolves string value of configuration and fails when not configured
      * 
@@ -103,11 +130,25 @@ public enum ConfigurationSetup {
      * Resolves string value of configuration.
      * 
      * @param defaultValue
-     * @return value or default value
+     * @return value or default value - never <code>null</code>
      * @throws IllegalStateException when value not found and no default value
      *                               available
      */
     public String getStringValue(String defaultValue) {
+        return getStringValue(defaultValue, true);
+    }
+
+    /**
+     * Resolves string value of configuration.
+     * 
+     * @param defaultValue
+     * @param failWhenNull - when true, null is not accepted
+     * @return value or default value - never <code>null</code>
+     * @throws IllegalStateException when failWhenNull is set to <code>true</code>
+     *                               and value not found and no default value
+     *                               available
+     */
+    public String getStringValue(String defaultValue, boolean failWhenNull) {
         String value = null;
         /* first try ENV entry */
         if (environmentEntryId != null) {
@@ -123,7 +164,9 @@ public enum ConfigurationSetup {
         if (value == null) {
             value = defaultValue;
         }
-        assertNotEmpty(value, name());
+        if (failWhenNull) {
+            assertNotEmpty(value, name());
+        }
         return value;
     }
 
@@ -171,5 +214,7 @@ public enum ConfigurationSetup {
         }
         return sb.toString();
     }
+
+   
 
 }
