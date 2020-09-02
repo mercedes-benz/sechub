@@ -22,7 +22,7 @@ public class FileProcessorTest {
 
     final String path = "src/test/resources/";
     private FileProcessor analyzerToTest;
-    
+
     @Before
     public void before() throws Exception {
         analyzerToTest = new FileProcessor();
@@ -573,18 +573,9 @@ public class FileProcessorTest {
     public void process_file_not_found() {
         /* prepare */
         File file = new File(path + "not_found.txt");
-        String exceptionMessage = file.getPath() + " (No such file or directory)";
         
-        try {
-            /* execute */
-            analyzerToTest.processFile(file);
-            fail("The file does not exist. An exception was expected.");
-        } catch (FileNotFoundException e) {
-            /* test */
-            assertThat(e.getMessage(), is(exceptionMessage));
-        } catch (IOException e) {
-            fail("Unexpected exception.");
-        }
+        /* execute */
+        assertThrows(FileNotFoundException.class, ()->analyzerToTest.processFile(file));
     }
     
     private List<MarkerPair> createMarkerPairsOf(int startLine, int startColumn, int endLine, int endColumn) {
