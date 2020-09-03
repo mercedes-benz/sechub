@@ -13,6 +13,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -35,6 +36,7 @@ public class BatchConfiguration {
 	public JobRepository jobRepository;
 
 	@Autowired
+	@Lazy
 	private DomainMessageService eventBusService;
 
 	@Autowired

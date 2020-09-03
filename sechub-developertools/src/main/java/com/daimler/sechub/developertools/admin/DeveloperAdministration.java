@@ -18,7 +18,6 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
-import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.AsUser;
 import com.daimler.sechub.integrationtest.api.FixedTestUser;
@@ -39,17 +38,13 @@ public class DeveloperAdministration {
     private AdminUserContext userContext;
     private TestRestHelper restHelper;
     private TestURLBuilder urlBuilder;
-    private AnonymousTestUser anonymousContext;
-    private TestRestHelper anonyomusRestHelper;
     private ErrorHandler errorHandler;
 
     public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
         this.provider = provider;
         this.errorHandler = errorHandler;
         this.userContext = new AdminUserContext();
-        this.anonymousContext = new AnonymousTestUser(null);
         this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
-        this.anonyomusRestHelper = createTestRestHelperWithErrorHandling(errorHandler, anonymousContext);
     }
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
@@ -176,10 +171,6 @@ public class DeveloperAdministration {
 
     }
 
-    public TestRestHelper getAnonyomusRestHelper() {
-        return anonyomusRestHelper;
-    }
-
     public String acceptSignup(String userId) {
         getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
         return "SENT";
@@ -202,7 +193,7 @@ public class DeveloperAdministration {
     public String createNewUserSignup(String name, String email) {
 
         String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-        return getAnonyomusRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+        return getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
     public String fetchUserList() {
@@ -336,7 +327,7 @@ public class DeveloperAdministration {
     }
 
     public String requestNewApiToken(String emailAddress) {
-        getAnonyomusRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
+        getRestHelper().post(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress));
         return "Sent request for new API token for email: " + emailAddress + " - New API token will be delivered to this address if user exists!";
     }
 

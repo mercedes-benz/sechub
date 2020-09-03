@@ -35,6 +35,9 @@ public enum ConfigurationSetup {
 
     SECHUB_MASS_OPERATION_PARENTDIRECTORY("sechub.developertools.admin.massoperation.parentdirectory", true),
 
+    /**
+     * Usage: for example -Dsechub.developertools.output.font.settings="courier 18"
+     */
     SECHUB_OUTPUT_FONT_SETTINGS("sechub.developertools.output.font.settings", true),
 
     SECHUB_LOOK_AND_FEEL("sechub.developertools.lookandfeel.nimbus", true),
