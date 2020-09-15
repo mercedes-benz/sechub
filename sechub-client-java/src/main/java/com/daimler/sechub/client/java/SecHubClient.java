@@ -245,9 +245,9 @@ public class SecHubClient {
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             report = mapper.readValue(file, SecHubReport.class);
         } catch (JsonParseException|JsonMappingException e) {
-            throw new SecHubReportReadingException(e);
+            throw new SecHubReportReadingException("Content is not valid JSON",e);
         } catch (IOException e) {
-            throw new SecHubReportReadingException(e);
+            throw new SecHubReportReadingException("Wasn't able to read report file",e);
         }
 
         return report;
