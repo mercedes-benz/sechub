@@ -12,7 +12,8 @@
 ext {
 
    libraryVersion= [
-      springBoot:   "2.2.6.RELEASE"
+      springBoot:   "2.2.6.RELEASE",
+      restDocsApiSpec: "0.9.5"
    ]
 
    library = [
@@ -97,7 +98,10 @@ ext {
           * Link: https://github.com/google/re2j
           */
          // https://mvnrepository.com/artifact/com.google.re2j/re2j
-         google_re2j:                           "com.google.re2j:re2j:1.4"
+         google_re2j:                           "com.google.re2j:re2j:1.4",
+         
+         /* epages - see https://github.com/ePages-de/restdocs-api-spec */
+         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}"
          
    ]
 

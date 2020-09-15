@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'com.epages.restdocs-api-spec' //see https://github.com/ePages-de/restdocs-api-spec
 
 dependencies {
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
     compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
     compile library.apache_commons_io
+    testCompile library.epages_restdoc_api_spec_mockmvc
     testCompile project(':sechub-shared-kernel-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
@@ -16,7 +18,6 @@ dependencies {
     testCompile(library.springframework_restdocs)
     testCompile(library.springframework_security_test)
 }
-
 task generateAsciidoc(type: JavaExec, dependsOn: 'test') {
     main = 'com.daimler.sechub.docgen.AsciidocGenerator'
     args = ["${project.projectDir}/src/docs/asciidoc/documents/gen"]
@@ -200,3 +201,14 @@ task "documentation-with-pages" {
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('docToPages').mustRunAfter 'documentation'
 }
+
+openapi3 {
+    server = 'https://localhost'
+    title = 'SecHub API'
+    description = 'SecHub API description'
+    tagDescriptionsPropertiesFile = 'src/test/resources/openapi/tags.yaml'
+    version = '0.1.0'
+    format = 'yaml'
+}
+ 
+

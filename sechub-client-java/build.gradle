@@ -6,7 +6,7 @@
  * ============================================================================
  */
  
- dependencies {
+dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile library.slf4j
     compile library.jackson_core
@@ -18,7 +18,7 @@
     testCompile library.mockito
     testCompile library.hamcrest
 }
- 
+
 /**
  * Custom gradle task to build a "fatJar".
  */
