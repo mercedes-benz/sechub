@@ -48,12 +48,14 @@ asciidoctor.doFirst {
         from file('src/docs/asciidoc/images')
         into file("$buildDir/asciidoc/images")
         include '*.*'
+        include 'gen/**'
     }
 
     copy {
         from file('src/docs/asciidoc/diagrams')
         into file("$buildDir/asciidoc/diagrams")
         include '*.*'
+        include 'gen/**'
     }
 }
 
