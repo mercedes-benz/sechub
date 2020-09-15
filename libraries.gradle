@@ -81,7 +81,7 @@ ext {
 
          /* logback */
          // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-         logback_classic:                       "ch.qos.logback:logback-classic:1.2.3'",
+         logback_classic:                       "ch.qos.logback:logback-classic:1.2.3",
          logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.2",
 
          // JDK 10 build problems handling

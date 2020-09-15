@@ -1,15 +1,11 @@
 package com.daimler.sechub.client.java;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.client.java.core.SecHubReportReadingException;
@@ -19,9 +15,6 @@ import com.daimler.sechub.client.java.report.SecHubReport;
 import com.daimler.sechub.client.java.report.SecHubResult;
 import com.daimler.sechub.client.java.report.Severity;
 import com.daimler.sechub.client.java.report.TrafficLight;
-
-
-
 
 public class SecHubClientTest {
 
@@ -35,10 +28,10 @@ public class SecHubClientTest {
         SecHubResult result = report.getResult();
 
         /* test */
-        assertNotNull("Report may not be null",report);
+        assertNotNull("Report may not be null", report);
         assertEquals(report.getJobUUID(), UUID.fromString("d47c1e28-9f76-4e43-a879-9af5184d505e"));
         assertEquals(report.getTrafficLight(), TrafficLight.GREEN);
-        assertNotNull("Report result may not be null",result);
+        assertNotNull("Report result may not be null", result);
         assertEquals(result.getCount(), 0);
         assertTrue(result.getFindings().isEmpty());
 
@@ -57,10 +50,10 @@ public class SecHubClientTest {
         List<SecHubFinding> findings = result.getFindings();
 
         /* test */
-        assertNotNull("Report may not be null",report);
+        assertNotNull("Report may not be null", report);
         assertEquals(report.getJobUUID(), UUID.fromString("94bcffcc-b995-4bb5-b3ad-9130cf743f35"));
         assertEquals(report.getTrafficLight(), TrafficLight.RED);
-        assertNotNull("Report result may not be null",result);
+        assertNotNull("Report result may not be null", result);
         assertEquals(result.getCount(), 0);
 
         SecHubFinding firstFinding = findings.get(0);
@@ -84,10 +77,10 @@ public class SecHubClientTest {
         List<SecHubFinding> findings = result.getFindings();
 
         /* test */
-        assertNotNull("Report may not be null",report);
+        assertNotNull("Report may not be null", report);
         assertEquals(report.getJobUUID(), UUID.fromString("6cf02ccf-da13-4dee-b529-0225ed9661bd"));
         assertEquals(report.getTrafficLight(), TrafficLight.YELLOW);
-        assertNotNull("Report result may not be null",result);
+        assertNotNull("Report result may not be null", result);
         assertEquals(result.getCount(), 2);
 
         SecHubFinding firstFinding = findings.get(0);

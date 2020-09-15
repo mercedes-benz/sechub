@@ -7,7 +7,7 @@ import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
