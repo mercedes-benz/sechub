@@ -99,9 +99,10 @@ sechub -jobUUID ${jobUUID} getReport
 
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
-Read your report carefully and check which of the findings are really so called "false positives" (FP).
-After this create an json file containing jobUUID and ID of finding you decided to be a FP. If 
+Read your report carefully and check which of the findings are really "false positives" (FP).
+After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If 
 you like you can add an optional comment, describing your decision to mark this as FP.
+Select this file by the `-file` argument and start action `markFalsePositives`.
 
 *Example JSON:*
 
@@ -142,7 +143,7 @@ You can select the report file using the `-file` option of the client. Otherwise
 For each finding in the reports file, you are prompted: `"Add this as false positive?"`
 Your choices are:
 
-- `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help later to understand why this has been marked.
+- `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
 - `n` No - Do nothing and go to next item.
 - `s` Skip following findings - End the asking here and add the marked items to the false positives list on the sechub server.
 - `c` Cancel - Quit and upload nothing
@@ -160,7 +161,7 @@ Your choices are:
 
 - `y` Yes - Unmark this false positive.
 - `n` No - Do nothing and go to next item.
-- `s` Skip following findings - End the asking here and remove the marked items from the false positives list on the sechub server.
+- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the sechub server.
 - `c` Cancel - Quit and change nothing
 
 See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
