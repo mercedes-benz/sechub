@@ -307,8 +307,8 @@ public class AnalyzerTest {
      * @return a marker pair
      */
     private static List<MarkerPair> getMarkers() {
-        Marker start = new Marker(MarkerType.START, 3, 3);
-        Marker end = new Marker(MarkerType.END, 9, 3);
+        Marker start = new Marker(MarkerType.START, 5, 3);
+        Marker end = new Marker(MarkerType.END, 11, 3);
         MarkerPair pair = new MarkerPair();
         pair.setEnd(end);
         pair.setStart(start);

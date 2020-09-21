@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. In consectetur sem vitae odio porta bibendum. Etiam vel malesuada erat. Nunc rhoncus mollis massa, in ornare leo. Aenean id dolor et metus varius consequat. Proin vulputate, purus a sodales semper, ante purus fermentum lectus, sit amet tempus arcu mauris eu mauris. Nullam suscipit augue libero, ut commodo nunc varius non. Phasellus consequat interdum ex. Donec at ante sed ante tempor convallis at eu massa.
 
 // NOSECHUB
