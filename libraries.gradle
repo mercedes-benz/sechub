@@ -13,7 +13,9 @@ ext {
 
    libraryVersion= [
       springBoot:   "2.2.6.RELEASE",
-      restDocsApiSpec: "0.9.11"
+      
+      // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
+      restDocsApiSpec: "0.10.0"
    ]
 
    library = [

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-//apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'com.epages.restdocs-api-spec' //see https://github.com/ePages-de/restdocs-api-spec
 apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
@@ -21,19 +20,29 @@ dependencies {
     testCompile(library.springframework_restdocs)
     testCompile(library.springframework_security_test)
 }
-task generateAsciidoc(type: JavaExec, dependsOn: 'test') {
+
+def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
+
+task dropOldGeneratedAsciidoc(dependsOn: 'test'){
+    doFirst {
+        //cleanup former old data
+        delete fileTree (dir: "${targetAsciiDocGenFolder}", exclude: ['README.md','.gitignore'])
+    } 
+}
+
+task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
+
+
     main = 'com.daimler.sechub.docgen.AsciidocGenerator'
-    args = ["${project.projectDir}/src/docs/asciidoc/documents/gen"]
+    args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'
     classpath = sourceSets.test.runtimeClasspath
-}
 
-asciidoctorj {
-    version = '2.0.0'
 }
 
 asciidoctor.doFirst {
+
     // pre-process
     copy {
         /* Why do we do this here ? Because PDF converter does read the images
@@ -51,12 +60,6 @@ asciidoctor.doFirst {
         include 'gen/**'
     }
 
-    copy {
-        from file('src/docs/asciidoc/diagrams')
-        into file("$buildDir/asciidoc/diagrams")
-        include '*.*'
-        include 'gen/**'
-    }
 }
 
 asciidoctor {
@@ -82,7 +85,6 @@ asciidoctor {
             'sectnumlevels': '5',
             'version': rootProject.version
 
-//    requires = ['asciidoctor-diagram']
 
     /* has to be defined inside this build script again, because
        asciidoctor pdf seems to have an problem with relational path
@@ -121,6 +123,20 @@ asciidoctor {
 
 
 }
+
+asciidoctorj {
+
+    version = '2.0.0'
+    
+    // Enable jdiagram support (new way)
+    // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
+    modules {
+       diagram.use() 
+       diagram.version '1.5.16' 
+    }
+}
+
+
 
 /* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
    there exists another task: buildDoc which does all in one call*/
