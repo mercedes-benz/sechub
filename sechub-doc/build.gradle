@@ -26,7 +26,10 @@ def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/g
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
         //cleanup former old data
-        delete fileTree (dir: "${targetAsciiDocGenFolder}", exclude: ['README.md','.gitignore'])
+        delete fileTree (
+            dir: "${targetAsciiDocGenFolder}", 
+            // *-version.adoc files are generated iniital by each gradle call and may not be deleted 
+            exclude: ['README.md','.gitignore','*-version.adoc'])
     } 
 }
 
