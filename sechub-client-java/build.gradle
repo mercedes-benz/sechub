@@ -19,6 +19,87 @@ dependencies {
     testCompile library.hamcrest
 }
 
+// see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
+apply plugin: 'org.openapi.generator'
+
+def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
+def generatedSourcesDir = "$buildDir/generated/openapi"
+
+//task generateOpenAPIJavaClient (type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
+//    group 'sechub' 
+//    
+//    outputs.upToDateWhen { false }
+//    outputs.cacheIf { false }
+//    
+//    generatorName="java"
+//    inputSpec = specFilePath.toString()
+//    outputDir= generatedSourcesDir.toString()
+//    apiPackage = "com.daimler.sechub.client.java.api"
+//    invokerPackage = "com.daimler.sechub.client.java.invoker"
+//    modelPackage = "com.daimler.sechub.client.java.model"
+//    modelFilesConstrainedTo = [
+//            "Error"
+//    ]
+//    configOptions = [
+//        dateLibrary: "java8",
+//    ]
+//    additionalProperties = [
+//        generateApis: "true"
+//    ]
+//    
+//}
+
+openApiValidate {
+    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+}
+
+openApiGenerate {
+    generatorName = "java"
+    
+    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "org.openapi.example.api"
+    invokerPackage = "org.openapi.example.invoker"
+    modelPackage = "org.openapi.example.model"
+    modelFilesConstrainedTo = [
+            "Error"
+    ]
+    systemProperties = [
+            validateSpec   : "false",
+            modelDocs      : "false",
+            models         : "",
+            apis           : "",
+            supportingFiles: "false"
+    ]
+    configOptions = [
+            useOptional          : "true",
+            swaggerDocketConfig  : "false",
+            performBeanValidation: "false",
+            useBeanValidation    : "false",
+            useTags              : "true",
+            singleContentTypes   : "true",
+            basePackage          : "com.daimler.sechub.openapi",
+            configPackage        : "com.daimler.sechub.openapi",
+            title                : rootProject.name,
+            java8                : "true",
+            dateLibrary          : "java8",
+            serializableModel    : "true",
+            artifactId           : rootProject.name,
+            apiPackage           : "com.daimler.sechub.openapi",
+            modelPackage         : "com.daimler.sechub.openapi.model",
+            invokerPackage       : "com.daimler.sechub.openapi",
+            interfaceOnly        : "true"
+    ]
+}
+
+tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+}
+
+// let's generate always java open api parts before compile:
+//compileJava.dependsOn tasks.openApiGenerate
+
 /**
  * Custom gradle task to build a "fatJar".
  */
@@ -29,5 +110,7 @@ task buildJavaClientAll(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+
+
 
 
