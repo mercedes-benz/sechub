@@ -7,8 +7,8 @@ import java.util.Collection;
 
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.core.util.SimpleStringUtils;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
-import com.daimler.sechub.sharedkernel.util.SimpleStringUtils;
 
 @Component
 public class ProjectWhiteListSupport {

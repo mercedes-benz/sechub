@@ -25,3 +25,11 @@ include::documents/server/03_sechub_rest_api.adoc[]
 <<<<
 // 2. Reporting
 include::documents/shared/report/sechub_reporting.adoc[]
+
+== Additional information
+<<<<
+// Usecases headline in include
+include::documents/gen/gen_usecases.adoc[]
+
+include::documents/gen/gen_messaging.adoc[]
+

@@ -49,7 +49,7 @@ TIP: The is the most preferred scan action for builds - you only have to make on
 **Minimum call syntax**
 
 Prerequisite is a configuration file `sechub.json` in current directory. +
-See here for details: <<Configuration file>>
+See here for details: <<section-client-configuration-file,Configuration file>>
 ----
 SECHUB_APITOKEN=${apitoken}
 sechub scan
@@ -203,6 +203,8 @@ Additionally to above cmdline options, you can set some values also via environm
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
+
+[[section-client-configuration-file]]
 
 === Client configuration file
 If not defined, secHub client will load `sechub.json` file from current directory

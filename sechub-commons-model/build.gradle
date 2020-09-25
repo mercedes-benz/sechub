@@ -1,0 +1,12 @@
+dependencies{
+    
+    compile library.jackson_core
+    compile library.jackson_databind
+    compile library.jackson_JDK8
+    compile library.slf4j
+    compile project(':sechub-commons-core')
+    
+    testCompile library.junit
+    testCompile library.mockito
+    testCompile library.hamcrest
+}

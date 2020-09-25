@@ -12,12 +12,12 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.daimler.sechub.domain.scan.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.SecHubResultService;
 import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class ReportServiceTest {
 

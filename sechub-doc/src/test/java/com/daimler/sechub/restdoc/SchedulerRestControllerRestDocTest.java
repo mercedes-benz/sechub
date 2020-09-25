@@ -5,9 +5,9 @@ import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.
 import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -37,6 +37,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.docgen.util.RestDocTestFileSupport;
 import com.daimler.sechub.domain.schedule.ExecutionResult;
@@ -62,7 +63,6 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfigurati
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
-import com.daimler.sechub.sharedkernel.util.JSONable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

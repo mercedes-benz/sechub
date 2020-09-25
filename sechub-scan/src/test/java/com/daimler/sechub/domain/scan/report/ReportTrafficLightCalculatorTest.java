@@ -12,10 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
-import com.daimler.sechub.domain.scan.Severity;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 /**
  * 2018-02-20 we defined following logic which is tested here:

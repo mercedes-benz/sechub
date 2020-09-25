@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.schedule.ExecutionResult;
 import com.daimler.sechub.domain.schedule.ExecutionState;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 @Component
 public class SecHubJobSafeUpdater {

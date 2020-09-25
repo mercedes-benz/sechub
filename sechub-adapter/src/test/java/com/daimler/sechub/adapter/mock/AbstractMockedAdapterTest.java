@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.mock;
 
-import com.daimler.sechub.adapter.AdapterConfig;
-
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.daimler.sechub.adapter.AdapterConfig;
 
 public class AbstractMockedAdapterTest {
 

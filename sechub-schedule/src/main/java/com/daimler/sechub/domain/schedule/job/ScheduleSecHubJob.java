@@ -17,9 +17,9 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.schedule.ExecutionResult;
 import com.daimler.sechub.domain.schedule.ExecutionState;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 /**
  * Represents a JOB in SecHub. We did not name it as Job because of Spring batch

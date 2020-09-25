@@ -8,5 +8,6 @@
 dependencies {
     compile library.apache_httpcomponents_core
     compile library.apache_httpcomponents_client
+    compile project(':sechub-commons-core')
 }
 
