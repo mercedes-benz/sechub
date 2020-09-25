@@ -2,6 +2,7 @@
 package com.daimler.sechub.docgen.messaging;
 
 import static com.daimler.sechub.docgen.GeneratorConstants.*;
+import static com.daimler.sechub.docgen.messaging.DomainUtil.*;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 import java.lang.annotation.Annotation;
@@ -15,7 +16,6 @@ import com.daimler.sechub.docgen.messaging.DomainMessagingModel.Domain;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel.DomainPart;
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessaging;
-import static com.daimler.sechub.docgen.messaging.DomainUtil.*;
 /**
  * Collector - inspired by
  * https://github.com/de-jcup/code2doc/blob/master/code2doc-core/src/main/java/de/jcup/code2doc/core/internal/collect/TechInfoLinkAnnotationDataCollector.java

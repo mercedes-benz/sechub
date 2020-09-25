@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.InstallSetup;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetRegistry;
@@ -17,7 +18,6 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubCodeScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfiguration;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public abstract class AbstractCodeScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S>
 		implements CodeScanProductExecutor {

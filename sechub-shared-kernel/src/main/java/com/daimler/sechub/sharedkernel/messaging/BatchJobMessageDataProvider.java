@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.messaging;
 
-import com.daimler.sechub.sharedkernel.util.JSONConverterException;
-import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
+import com.daimler.sechub.commons.model.JSONConverterException;
+import com.daimler.sechub.commons.model.SecHubRuntimeException;
 
 public class BatchJobMessageDataProvider implements MessageDataProvider<BatchJobMessage>{
 

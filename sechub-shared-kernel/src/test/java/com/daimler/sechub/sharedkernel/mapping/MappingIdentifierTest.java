@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.mapping;
 
-import static org.junit.Assert.*;
 import static com.daimler.sechub.sharedkernel.mapping.MappingIdentifier.*;
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
 
 public class MappingIdentifierTest {
 

@@ -5,7 +5,7 @@ import java.awt.Color;
 
 import javax.swing.JButton;
 
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 public class TrafficLightComponent extends JButton {
     

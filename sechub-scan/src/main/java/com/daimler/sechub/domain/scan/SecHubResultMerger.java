@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+
 /**
  * A component to merge different sechub results into one. At the moment very dumb, by just adding all
  * content. 
@@ -29,7 +32,7 @@ public class SecHubResultMerger {
         mergeFalsePositives(result1, merged);
         mergeFalsePositives(result2, merged);
         
-        merged.count=result1.count+result2.count;
+        merged.setCount(result1.getCount()+result2.getCount());
         
         return merged;
     }

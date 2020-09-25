@@ -5,8 +5,8 @@ import java.net.URI;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
-import com.daimler.sechub.sharedkernel.util.JSONable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

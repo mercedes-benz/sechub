@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
-apply plugin: 'org.asciidoctor.convert'
+
+apply plugin: 'com.epages.restdocs-api-spec' //see https://github.com/ePages-de/restdocs-api-spec
+apply plugin: 'org.asciidoctor.jvm.convert'
+apply plugin: 'org.asciidoctor.jvm.pdf'
 
 dependencies {
     compile project(':sechub-server') // we want to expect server and all dependencies for documentation
     compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
     compile library.apache_commons_io
+    testCompile library.epages_restdoc_api_spec_mockmvc
     testCompile project(':sechub-shared-kernel-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
@@ -17,24 +21,31 @@ dependencies {
     testCompile(library.springframework_security_test)
 }
 
-task generateAsciidoc(type: JavaExec, dependsOn: 'test') {
+def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
+
+task dropOldGeneratedAsciidoc(dependsOn: 'test'){
+    doFirst {
+        //cleanup former old data
+        delete fileTree (
+            dir: "${targetAsciiDocGenFolder}", 
+            // *-version.adoc files are generated iniital by each gradle call and may not be deleted 
+            exclude: ['README.md','.gitignore','*-version.adoc'])
+    } 
+}
+
+task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
+
+
     main = 'com.daimler.sechub.docgen.AsciidocGenerator'
-    args = ["${project.projectDir}/src/docs/asciidoc/documents/gen"]
+    args = ["${targetAsciiDocGenFolder}"]
     group = 'sechub'
     description = 'Starts asciidoc generator. Will generate planuml files and more'
     classpath = sourceSets.test.runtimeClasspath
-}
-
-asciidoctorj {
-    // we do not want to have jcenter() added per default!
-    // see http://asciidoctor.org/docs/asciidoctor-gradle-plugin/
-    noDefaultRepositories = true
-
-    version = '1.5.6'
 
 }
 
 asciidoctor.doFirst {
+
     // pre-process
     copy {
         /* Why do we do this here ? Because PDF converter does read the images
@@ -49,20 +60,21 @@ asciidoctor.doFirst {
         from file('src/docs/asciidoc/images')
         into file("$buildDir/asciidoc/images")
         include '*.*'
+        include 'gen/**'
     }
 
-    copy {
-        from file('src/docs/asciidoc/diagrams')
-        into file("$buildDir/asciidoc/diagrams")
-        include '*.*'
-    }
 }
 
 asciidoctor {
 
-    separateOutputDirs = false
+    outputOptions {
+        backends "html5", "pdf"
+    
+        separateOutputDirs = false
+    }
+    
+    baseDir 'src/docs/asciidoc'
 
-    backends "html5", "pdf"
     attributes 'build-gradle': file('build.gradle'),
             'source-highlighter': 'coderay',
             'toc': 'left',
@@ -76,7 +88,6 @@ asciidoctor {
             'sectnumlevels': '5',
             'version': rootProject.version
 
-    requires = ['asciidoctor-diagram']
 
     /* has to be defined inside this build script again, because
        asciidoctor pdf seems to have an problem with relational path
@@ -115,6 +126,20 @@ asciidoctor {
 
 
 }
+
+asciidoctorj {
+
+    version = '2.0.0'
+    
+    // Enable jdiagram support (new way)
+    // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
+    modules {
+       diagram.use() 
+       diagram.version '1.5.16' 
+    }
+}
+
+
 
 /* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
    there exists another task: buildDoc which does all in one call*/
@@ -200,3 +225,14 @@ task "documentation-with-pages" {
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('docToPages').mustRunAfter 'documentation'
 }
+
+openapi3 {
+    server = 'https://localhost'
+    title = 'SecHub API'
+    description = 'SecHub API description'
+    tagDescriptionsPropertiesFile = 'src/test/resources/openapi/tags.yaml'
+    version = '0.1.0'
+    format = 'yaml'
+}
+ 
+

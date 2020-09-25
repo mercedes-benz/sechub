@@ -10,10 +10,10 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 @Component
 public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {

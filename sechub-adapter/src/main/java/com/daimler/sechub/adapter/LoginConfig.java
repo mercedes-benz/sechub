@@ -5,6 +5,8 @@ import java.net.URL;
 
 import javax.crypto.SealedObject;
 
+import com.daimler.sechub.commons.core.security.CryptoAccess;
+
 public interface LoginConfig {
 
 	default boolean isBasic() {

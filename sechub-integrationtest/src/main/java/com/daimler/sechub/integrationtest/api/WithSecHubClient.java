@@ -15,13 +15,13 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;

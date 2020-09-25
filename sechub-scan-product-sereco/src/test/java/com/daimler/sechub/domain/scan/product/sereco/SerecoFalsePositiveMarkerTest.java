@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.FalsePositiveEntry;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveProjectConfiguration;
@@ -16,7 +17,6 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfig;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigID;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 public class SerecoFalsePositiveMarkerTest {
 

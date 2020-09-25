@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
@@ -23,7 +24,6 @@ import com.daimler.sechub.sereco.Workspace;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 
 @Component
 public class SerecoReportProductExecutor implements ScanReportProductExecutor {

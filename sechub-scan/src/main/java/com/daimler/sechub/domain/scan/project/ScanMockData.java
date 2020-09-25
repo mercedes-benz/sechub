@@ -3,7 +3,7 @@ package com.daimler.sechub.domain.scan.project;
 
 import java.util.Objects;
 
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 public class ScanMockData {
 

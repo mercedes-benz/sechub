@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class AssertExecutionResult {
 

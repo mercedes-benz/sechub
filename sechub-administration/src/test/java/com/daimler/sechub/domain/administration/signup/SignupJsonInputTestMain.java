@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.signup;
 
-import com.daimler.sechub.sharedkernel.util.JSONConverterException;
+import com.daimler.sechub.commons.model.JSONConverterException;
 
 public class SignupJsonInputTestMain {
 

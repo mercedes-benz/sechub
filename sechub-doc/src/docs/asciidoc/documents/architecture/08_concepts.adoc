@@ -15,8 +15,8 @@ include::../shared/concepts/concept_simple_resilience.adoc[]
 === Mappings
 include::../shared/concepts/concept_mappings.adoc[]
 
-=== Product delegation server 
-include::../shared/concepts/concept_mappings.adoc[]
+// Product delegation server (headline in include)
+include::../shared/concepts/concept_pds.adoc[]
 
 === False-positive handling
 include::../shared/concepts/false-positive-handling/false-positive-handling.adoc[]

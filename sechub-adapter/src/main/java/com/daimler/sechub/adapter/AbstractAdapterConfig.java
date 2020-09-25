@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.crypto.SealedObject;
 
+import com.daimler.sechub.commons.core.security.CryptoAccess;
+
 public abstract class AbstractAdapterConfig implements AdapterConfig {
 
 	String productBaseURL;

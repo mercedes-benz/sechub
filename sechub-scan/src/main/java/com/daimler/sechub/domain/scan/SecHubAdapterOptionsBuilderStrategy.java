@@ -10,10 +10,10 @@ import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.AdapterConfig;
 import com.daimler.sechub.adapter.AdapterConfigurationStrategy;
 import com.daimler.sechub.adapter.AdapterOptionKey;
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * A common strategy to provide SecHub options to adapters <br>

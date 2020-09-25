@@ -17,7 +17,7 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 @Entity
 @Table(name = ScanReport.TABLE_NAME)

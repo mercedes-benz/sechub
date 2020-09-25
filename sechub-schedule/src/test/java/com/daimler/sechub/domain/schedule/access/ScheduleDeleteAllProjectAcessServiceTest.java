@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.schedule.access;
 
 import static org.mockito.Mockito.*;
+
 import org.junit.Test;
 
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;

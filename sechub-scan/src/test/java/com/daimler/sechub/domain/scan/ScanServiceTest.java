@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.core.task.TaskExecutor;
 
+import com.daimler.sechub.commons.model.JSONConverterException;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
 import com.daimler.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.daimler.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
@@ -38,8 +40,6 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
-import com.daimler.sechub.sharedkernel.util.JSONConverterException;
 import com.daimler.sechub.storage.core.JobStorage;
 
 public class ScanServiceTest {

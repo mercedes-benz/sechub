@@ -2,10 +2,10 @@
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 import com.daimler.sechub.domain.scan.config.NamePatternIdprovider;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;

@@ -19,12 +19,15 @@ buildscript{
 	dependencies{
 		classpath gradleApi()
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${libraryVersion.springBoot}"
-        classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
-		classpath "org.asciidoctor:asciidoctorj-diagram:1.5.4.1"
-		classpath "org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16"
 		classpath "org.ajoberstar.grgit:grgit-gradle:4.0.1" // necessary for version calculation
+		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
 
 	}
+}
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.1.0'
+    id 'org.asciidoctor.jvm.pdf' version '3.1.0'
+    id 'org.openapi.generator' version '4.2.3'
 }
 
 ext {
@@ -32,13 +35,19 @@ ext {
 }
 
 /* own clean task - we need this because root project has not included a module providing the task */
-task clean(type: Delete){
-    def rootBuildFolder = file("${project.projectDir}/build")
-    if (! rootBuildFolder.exists()){
-        rootBuildFolder.mkdirs();
-    } 
-    delete rootBuildFolder.listFiles() // so we do NOT clear buildSrc/build here!
+task internalCleanRootBuildFolder(type: Delete){
+
+    doFirst {
+        def rootBuildFolder = file("${project.projectDir}/build")
+        if (! rootBuildFolder.exists()){
+            rootBuildFolder.mkdirs();
+        } 
+        delete rootBuildFolder.listFiles() // so we do NOT clear buildSrc/build here!
+    }
+
 }
+
+tasks.clean.dependsOn.internalCleanRootBuildFolder
 
 allprojects {
 
