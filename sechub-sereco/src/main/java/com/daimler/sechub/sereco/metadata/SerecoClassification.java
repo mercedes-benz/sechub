@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.metadata;
 
-import static com.daimler.sechub.sharedkernel.util.SimpleStringUtils.emptyToNull;
+import static com.daimler.sechub.commons.core.util.SimpleStringUtils.*;
+
 import java.util.Objects;
 
 /**

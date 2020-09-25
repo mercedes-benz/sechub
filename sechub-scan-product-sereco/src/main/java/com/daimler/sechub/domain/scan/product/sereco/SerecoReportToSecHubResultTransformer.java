@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.daimler.sechub.domain.scan.SecHubCodeCallStack;
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
-import com.daimler.sechub.domain.scan.Severity;
+import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.SecHubCodeCallStack;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
@@ -23,7 +24,6 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 @Component
 public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHubResultTransformer {

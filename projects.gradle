@@ -9,6 +9,8 @@ projectType = [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
                project(':sechub-client-java'),
+               project(':sechub-commons-core'),
+               project(':sechub-commons-model'),
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here*/

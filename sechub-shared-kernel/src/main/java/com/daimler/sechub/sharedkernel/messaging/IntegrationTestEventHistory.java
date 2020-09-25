@@ -4,7 +4,7 @@ package com.daimler.sechub.sharedkernel.messaging;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.daimler.sechub.sharedkernel.util.JSONable;
+import com.daimler.sechub.commons.model.JSONable;
 
 public class IntegrationTestEventHistory implements JSONable<IntegrationTestEventHistory> {
     

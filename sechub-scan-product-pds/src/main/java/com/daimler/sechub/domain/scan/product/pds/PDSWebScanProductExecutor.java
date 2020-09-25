@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.adapter.pds.PDSAdapter;
 import com.daimler.sechub.adapter.pds.PDSAdapterConfig;
-import com.daimler.sechub.adapter.pds.PDSWebScanConfig;
 import com.daimler.sechub.adapter.pds.PDSMetaDataID;
+import com.daimler.sechub.adapter.pds.PDSWebScanConfig;
 import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;

@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.daimler.sechub.commons.model.SecHubCodeCallStack;
+import com.daimler.sechub.commons.model.SecHubFinding;
+
 /**
  * This class builds descriptions suitable for HTML output
  *

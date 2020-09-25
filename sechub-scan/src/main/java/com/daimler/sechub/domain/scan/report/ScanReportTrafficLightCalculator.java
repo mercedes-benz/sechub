@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
-import com.daimler.sechub.domain.scan.Severities;
-import com.daimler.sechub.domain.scan.Severity;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.Severities;
+import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 @Component
 public class ScanReportTrafficLightCalculator {

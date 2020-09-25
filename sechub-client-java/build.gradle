@@ -12,6 +12,8 @@ dependencies {
     compile library.jackson_core
     compile library.jackson_databind
     
+    compile project(':sechub-commons-model')
+    
     compile library.apache_httpcomponents_client
 
     testCompile library.junit
@@ -24,30 +26,6 @@ apply plugin: 'org.openapi.generator'
 
 def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
 def generatedSourcesDir = "$buildDir/generated/openapi"
-
-//task generateOpenAPIJavaClient (type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
-//    group 'sechub' 
-//    
-//    outputs.upToDateWhen { false }
-//    outputs.cacheIf { false }
-//    
-//    generatorName="java"
-//    inputSpec = specFilePath.toString()
-//    outputDir= generatedSourcesDir.toString()
-//    apiPackage = "com.daimler.sechub.client.java.api"
-//    invokerPackage = "com.daimler.sechub.client.java.invoker"
-//    modelPackage = "com.daimler.sechub.client.java.model"
-//    modelFilesConstrainedTo = [
-//            "Error"
-//    ]
-//    configOptions = [
-//        dateLibrary: "java8",
-//    ]
-//    additionalProperties = [
-//        generateApis: "true"
-//    ]
-//    
-//}
 
 openApiValidate {
     inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
@@ -65,7 +43,7 @@ openApiGenerate {
             "Error"
     ]
     systemProperties = [
-            validateSpec   : "false",
+            validateSpec   : "true",
             modelDocs      : "false",
             models         : "",
             apis           : "",
@@ -78,16 +56,16 @@ openApiGenerate {
             useBeanValidation    : "false",
             useTags              : "true",
             singleContentTypes   : "true",
-            basePackage          : "com.daimler.sechub.openapi",
-            configPackage        : "com.daimler.sechub.openapi",
+            basePackage          : "com.daimler.sechub.client.java.api",
+            configPackage        : "com.daimler.sechub.client.java.api",
             title                : rootProject.name,
             java8                : "true",
             dateLibrary          : "java8",
             serializableModel    : "true",
             artifactId           : rootProject.name,
-            apiPackage           : "com.daimler.sechub.openapi",
-            modelPackage         : "com.daimler.sechub.openapi.model",
-            invokerPackage       : "com.daimler.sechub.openapi",
+            apiPackage           : "com.daimler.sechub.client.java.api",
+            modelPackage         : "com.daimler.sechub.client.java.api.model",
+            invokerPackage       : "com.daimler.sechub.client.java.api",
             interfaceOnly        : "true"
     ]
 }

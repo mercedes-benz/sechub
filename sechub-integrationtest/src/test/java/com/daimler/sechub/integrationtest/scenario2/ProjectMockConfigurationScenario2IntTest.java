@@ -11,8 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class ProjectMockConfigurationScenario2IntTest {
 

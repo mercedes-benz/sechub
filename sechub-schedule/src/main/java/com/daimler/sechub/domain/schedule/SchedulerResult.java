@@ -3,7 +3,7 @@ package com.daimler.sechub.domain.schedule;
 
 import java.util.UUID;
 
-import com.daimler.sechub.sharedkernel.util.JSONable;
+import com.daimler.sechub.commons.model.JSONable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen;
 
+import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
-import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 public class ExampleJSONGenerator implements Generator {
 

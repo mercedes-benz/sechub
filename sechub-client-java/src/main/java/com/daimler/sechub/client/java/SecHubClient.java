@@ -9,14 +9,18 @@ import javax.crypto.SealedObject;
 
 import org.apache.http.client.utils.URIBuilder;
 
-import com.daimler.sechub.client.java.report.SecHubReport;
-import com.daimler.sechub.client.java.report.SecHubReportException;
-import com.daimler.sechub.client.java.util.CryptoAccess;
+import com.daimler.sechub.commons.core.security.CryptoAccess;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Entry point for client actions. In future network access will be accessible be here as well, when
+ * generated openapi parts are integrated.
+ * @author Albert Tregnaghi
+ *
+ */
 public class SecHubClient {
 
     private String username;

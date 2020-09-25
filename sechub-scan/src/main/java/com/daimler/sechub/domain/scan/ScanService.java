@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.commons.model.JSONConverterException;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
 import com.daimler.sechub.domain.scan.product.CodeScanProductExecutionService;
 import com.daimler.sechub.domain.scan.product.InfrastructureScanProductExecutionService;
@@ -42,7 +43,6 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
-import com.daimler.sechub.sharedkernel.util.JSONConverterException;
 import com.daimler.sechub.storage.core.JobStorage;
 
 /**

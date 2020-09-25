@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.report;
 
-import com.daimler.sechub.domain.scan.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;

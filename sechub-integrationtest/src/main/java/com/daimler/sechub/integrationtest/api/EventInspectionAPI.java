@@ -3,8 +3,8 @@ package com.daimler.sechub.integrationtest.api;
 
 import java.util.Map;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
-import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 public class EventInspectionAPI {
 

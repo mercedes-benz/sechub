@@ -15,9 +15,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
 
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class HTMLScanResultReportModelBuilderTest {
 

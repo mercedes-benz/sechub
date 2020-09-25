@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 import static com.daimler.sechub.test.TestURLBuilder.*;
-import static org.mockito.Mockito.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
@@ -29,7 +30,6 @@ import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfigurationSe
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserDefinesProjectMockdata;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProjectMockdata;

@@ -17,10 +17,10 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient.ApiTokenStrategy;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
 

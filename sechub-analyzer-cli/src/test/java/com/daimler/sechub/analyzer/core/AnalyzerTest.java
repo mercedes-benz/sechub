@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.analyzer.core;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,10 +17,10 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.analyzer.model.AnalyzerResult;
 import com.daimler.analyzer.model.Marker;
 import com.daimler.analyzer.model.MarkerPair;
 import com.daimler.analyzer.model.MarkerType;
-import com.daimler.analyzer.model.AnalyzerResult;
 
 /**
  * Integration Tests

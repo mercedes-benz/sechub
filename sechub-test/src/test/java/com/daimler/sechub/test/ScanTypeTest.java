@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.pds.config.PDSScanType;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * PDS is complete standalone application - no sechub dependencies. here we check that scan type

@@ -60,7 +60,7 @@ ext {
          database_postgres:                     "org.postgresql:postgresql:42.2.2",
 
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
-         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.3",
          // https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
          jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.11.0",
          jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.10.1",

@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.validation;
 
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
-import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
 
 /**
  * This component is convenient point to handle assertions on simple user input data.

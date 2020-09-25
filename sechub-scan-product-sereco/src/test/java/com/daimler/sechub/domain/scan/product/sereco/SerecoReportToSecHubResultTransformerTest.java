@@ -10,10 +10,12 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubCodeCallStack;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.AssertSecHubResult;
-import com.daimler.sechub.domain.scan.SecHubCodeCallStack;
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
@@ -21,8 +23,6 @@ import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.daimler.sechub.sharedkernel.type.ScanType;
-import com.daimler.sechub.sharedkernel.util.JSONConverter;
 
 public class SerecoReportToSecHubResultTransformerTest {
 
@@ -101,7 +101,7 @@ public class SerecoReportToSecHubResultTransformerTest {
 		AssertSecHubResult.assertSecHubResult(result).
 			hasFindingWithId(1).
 				hasDescription("desc1").
-				hasSeverity(com.daimler.sechub.domain.scan.Severity.MEDIUM).
+				hasSeverity(com.daimler.sechub.commons.model.Severity.MEDIUM).
 				hasName("type1");
 		/* @formatter:on */
     }

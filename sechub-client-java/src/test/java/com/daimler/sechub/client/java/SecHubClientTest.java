@@ -1,16 +1,14 @@
 package com.daimler.sechub.client.java;
 
-import static com.daimler.sechub.client.java.AssertAPI.*;
+import static com.daimler.sechub.client.java.AssertJavaClientAPI.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 
 import org.junit.Test;
 
-import com.daimler.sechub.client.java.report.SecHubReport;
-import com.daimler.sechub.client.java.report.SecHubReportException;
-import com.daimler.sechub.client.java.report.Severity;
-import com.daimler.sechub.client.java.report.TrafficLight;
+import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.commons.model.TrafficLight;
 public class SecHubClientTest {
 
     @Test
@@ -102,7 +100,18 @@ public class SecHubClientTest {
                 hasName("Absolute Path Traversal").
                 hasDescription("").
                 codeCall(0).
+                    hasLine(28).
                     hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
+                codeCall(1).
+                    hasLine(33).
+                    hasRelevantPart("args").
+                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
+                codeCall(2).
+                    hasLine(33).
+                    hasRelevantPart("path").
+                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
+                codeCall(3).
+                hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
             finding(1).
                 hasId(2).
                 hasSeverity(Severity.LOW).
@@ -116,6 +125,7 @@ public class SecHubClientTest {
                     hasColumn(53).
                     hasSource("\t\tFile[] files = entry.copiedRestDocFolder.listFiles();").
                     hasRelevantPart("listFiles");
+                
     }
 
     @Test

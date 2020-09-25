@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 class AssertCalculation {
 

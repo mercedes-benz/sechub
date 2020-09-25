@@ -34,6 +34,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.schedule.access.ScheduleAccess;
 import com.daimler.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCompositeKey;
 import com.daimler.sechub.domain.schedule.access.ScheduleAccessRepository;
@@ -43,7 +44,6 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)

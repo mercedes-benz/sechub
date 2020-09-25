@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.analyzer.core;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 @RunWith(Parameterized.class)
 public class CommentCheckerCommentInLineTest {

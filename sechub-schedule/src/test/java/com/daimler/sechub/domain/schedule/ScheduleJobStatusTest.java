@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class ScheduleJobStatusTest {
 

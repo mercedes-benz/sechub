@@ -4,12 +4,12 @@ package com.daimler.sechub.developertools.admin.ui.action.status;
 import java.awt.event.ActionEvent;
 import java.util.Map;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.developertools.admin.ui.TrafficLightComponent;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.RefreshSchedulerStatusAction;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 public class CheckStatusAction extends AbstractUIAction {
     private static final long serialVersionUID = 1L;

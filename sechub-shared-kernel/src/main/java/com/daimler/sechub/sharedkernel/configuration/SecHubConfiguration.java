@@ -3,8 +3,8 @@ package com.daimler.sechub.sharedkernel.configuration;
 
 import java.util.Optional;
 
+import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
-import com.daimler.sechub.sharedkernel.util.JSONable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

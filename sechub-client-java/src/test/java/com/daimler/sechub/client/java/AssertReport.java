@@ -5,12 +5,11 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.UUID;
 
-import com.daimler.sechub.client.java.report.SecHubCodeCallStack;
-import com.daimler.sechub.client.java.report.SecHubFinding;
-import com.daimler.sechub.client.java.report.SecHubReport;
-import com.daimler.sechub.client.java.report.SecHubResult;
-import com.daimler.sechub.client.java.report.Severity;
-import com.daimler.sechub.client.java.report.TrafficLight;
+import com.daimler.sechub.commons.model.SecHubCodeCallStack;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.commons.model.TrafficLight;
 
 public class AssertReport {
 
@@ -107,8 +106,9 @@ public class AssertReport {
             SecHubCodeCallStack code = finding.getCode();
             while (code!=null && currentLevel!=level) {
                 code = code.getCalls();
+                currentLevel++;
             }
-            return new AssertCodeCall(code,level);
+            return new AssertCodeCall(code,currentLevel);
         }
         
         public class AssertCodeCall{
@@ -117,7 +117,7 @@ public class AssertReport {
 
             public AssertCodeCall(SecHubCodeCallStack callStack, int level) {
                 if (callStack==null) {
-                    fail("Fidning "+finding.getId()+" has no code call stack with level:"+level);
+                    fail("Finding "+finding.getId()+" has no code call stack with level:"+level);
                 }
                 this.callStack=callStack;
             }
@@ -149,6 +149,10 @@ public class AssertReport {
             public AssertCodeCall hasLine(int column) {
                 assertEquals(Integer.valueOf(column),callStack.getLine());
                 return this;
+            }
+            
+            public AssertCodeCall codeCall(int level) {
+                return AssertFinding.this.codeCall(level);
             }
         }
 
