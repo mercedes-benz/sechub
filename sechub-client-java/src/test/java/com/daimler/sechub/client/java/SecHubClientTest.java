@@ -1,21 +1,16 @@
 package com.daimler.sechub.client.java;
 
+import static com.daimler.sechub.client.java.AssertAPI.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.util.List;
-import java.util.UUID;
 
 import org.junit.Test;
 
-import com.daimler.sechub.client.java.core.SecHubReportReadingException;
-import com.daimler.sechub.client.java.report.SecHubCodeCallStack;
-import com.daimler.sechub.client.java.report.SecHubFinding;
 import com.daimler.sechub.client.java.report.SecHubReport;
-import com.daimler.sechub.client.java.report.SecHubResult;
+import com.daimler.sechub.client.java.report.SecHubReportException;
 import com.daimler.sechub.client.java.report.Severity;
 import com.daimler.sechub.client.java.report.TrafficLight;
-
 public class SecHubClientTest {
 
     @Test
@@ -25,45 +20,65 @@ public class SecHubClientTest {
 
         /* execute */
         SecHubReport report = SecHubClient.importSecHubJsonReport(file);
-        SecHubResult result = report.getResult();
 
         /* test */
-        assertNotNull("Report may not be null", report);
-        assertEquals(report.getJobUUID(), UUID.fromString("d47c1e28-9f76-4e43-a879-9af5184d505e"));
-        assertEquals(report.getTrafficLight(), TrafficLight.GREEN);
-        assertNotNull("Report result may not be null", result);
-        assertEquals(result.getCount(), 0);
-        assertTrue(result.getFindings().isEmpty());
+        /* @formatter:off */
+        assertReport(report).
+            hasJobUUID("d47c1e28-9f76-4e43-a879-9af5184d505e").
+            hasFindings(0).
+            hasTrafficLight(TrafficLight.GREEN);
+        /* @formatter:on */
 
     }
 
     @Test
-    public void client_reads_scan_code_red_checkmarks_error() throws Exception {
+    public void client_reads_scan_code_red_product_error() throws Exception {
         /* prepare */
-        File file = new File("src/test/resources/scan_code_red_checkmarks_error.json");
+        File file = new File("src/test/resources/scan_code_red_product_error.json");
 
-        SecHubReport report;
         /* execute */
-        report = SecHubClient.importSecHubJsonReport(file);
-
-        SecHubResult result = report.getResult();
-        List<SecHubFinding> findings = result.getFindings();
+        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
 
         /* test */
-        assertNotNull("Report may not be null", report);
-        assertEquals(report.getJobUUID(), UUID.fromString("94bcffcc-b995-4bb5-b3ad-9130cf743f35"));
-        assertEquals(report.getTrafficLight(), TrafficLight.RED);
-        assertNotNull("Report result may not be null", result);
-        assertEquals(result.getCount(), 0);
+        /* @formatter:off */
+        assertReport(report).
+            hasJobUUID("94bcffcc-b995-4bb5-b3ad-9130cf743f35").
+            hasFindings(1).
+            hasTrafficLight(TrafficLight.RED).
+            finding(0).
+                hasId(1).
+                hasSeverity(Severity.CRITICAL).
+                hasNoHostnames().
+                hasNoReferences().
+                hasName("SecHub failure").
+                hasDescription("Security product 'XYZ' failed, so cannot give a correct answer.");
+        /* @formatter:on */
+     
+    }
 
-        SecHubFinding firstFinding = findings.get(0);
+   
+    @Test
+    public void client_reads_test_report_1() throws Exception {
+        /* prepare */
+        File file = new File("src/test/resources/test_sechub_report-1.json");
 
-        assertEquals(firstFinding.getId(), 1);
-        assertEquals(firstFinding.getDescription(), "Security product 'CHECKMARX' failed, so cannot give a correct answer.");
-        assertTrue(firstFinding.getHostnames().isEmpty());
-        assertEquals(firstFinding.getName(), "SecHub failure");
-        assertTrue(firstFinding.getReferences().isEmpty());
-        assertEquals(firstFinding.getSeverity(), Severity.CRITICAL);
+        /* execute */
+        SecHubReport report = SecHubClient.importSecHubJsonReport(file);
+
+
+        /* test */
+        /* @formatter:off */
+        assertReport(report).
+            hasJobUUID("061234c8-40aa-4dcf-81f8-7bb8f723b780").
+            hasFindings(277).
+            hasTrafficLight(TrafficLight.YELLOW).
+            finding(0).
+                hasSeverity(Severity.MEDIUM).
+                hasNoHostnames().
+                hasNoReferences().
+                hasName("Unsafe Object Binding").
+                hasDescription(null);
+        /* @formatter:on */
     }
 
     @Test
@@ -73,50 +88,38 @@ public class SecHubClientTest {
 
         /* execute */
         SecHubReport report = SecHubClient.importSecHubJsonReport(file);
-        SecHubResult result = report.getResult();
-        List<SecHubFinding> findings = result.getFindings();
 
         /* test */
-        assertNotNull("Report may not be null", report);
-        assertEquals(report.getJobUUID(), UUID.fromString("6cf02ccf-da13-4dee-b529-0225ed9661bd"));
-        assertEquals(report.getTrafficLight(), TrafficLight.YELLOW);
-        assertNotNull("Report result may not be null", result);
-        assertEquals(result.getCount(), 2);
-
-        SecHubFinding firstFinding = findings.get(0);
-
-        assertEquals(firstFinding.getId(), 1);
-        assertEquals(firstFinding.getDescription(), "");
-        assertTrue(firstFinding.getHostnames().isEmpty());
-        assertEquals(firstFinding.getName(), "Absolute Path Traversal");
-        assertTrue(firstFinding.getReferences().isEmpty());
-        assertEquals(firstFinding.getSeverity(), Severity.MEDIUM);
-
-        SecHubCodeCallStack code = firstFinding.getCode();
-        assertNotNull(code);
-        assertNotNull(code.getCalls().getCalls().getCalls().getCalls());
-        assertNull(code.getCalls().getCalls().getCalls().getCalls().getCalls());
-
-        SecHubFinding secondFinding = findings.get(1);
-
-        assertEquals(secondFinding.getId(), 2);
-        assertEquals(secondFinding.getDescription(), "");
-        assertTrue(secondFinding.getHostnames().isEmpty());
-        assertEquals(secondFinding.getName(), "Improper Exception Handling");
-        assertTrue(secondFinding.getReferences().isEmpty());
-        assertEquals(secondFinding.getSeverity(), Severity.LOW);
-
-        SecHubCodeCallStack code2 = secondFinding.getCode();
-        assertEquals(code2.getLocation(), "java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java");
-        assertEquals(code2.getLine(), new Integer(112));
-        assertEquals(code2.getColumn(), new Integer(53));
-        assertEquals(code2.getSource(), "\t\tFile[] files = entry.copiedRestDocFolder.listFiles();");
-        assertEquals(code2.getRelevantPart(), "listFiles");
-        assertNull(code2.getCalls());
+        assertReport(report).
+            hasJobUUID("6cf02ccf-da13-4dee-b529-0225ed9661bd").
+            hasFindings(2).
+            hasTrafficLight(TrafficLight.YELLOW).
+            finding(0).
+                hasId(1).
+                hasSeverity(Severity.MEDIUM).
+                hasNoHostnames().
+                hasNoReferences().
+                hasName("Absolute Path Traversal").
+                hasDescription("").
+                codeCall(0).
+                    hasLocation("java/com/daimler/sechub/docgen/AsciidocGenerator.java").
+            finding(1).
+                hasId(2).
+                hasSeverity(Severity.LOW).
+                hasName("Improper Exception Handling").
+                hasDescription("").
+                hasNoReferences().
+                hasNoHostnames().
+                codeCall(0).
+                    hasLocation("java/com/daimler/sechub/docgen/usecase/UseCaseRestDocModelAsciiDocGenerator.java").
+                    hasLine(112).
+                    hasColumn(53).
+                    hasSource("\t\tFile[] files = entry.copiedRestDocFolder.listFiles();").
+                    hasRelevantPart("listFiles");
     }
 
     @Test
-    public void client_reads_wrong_file() throws SecHubReportReadingException {
+    public void client_reads_wrong_file() throws SecHubReportException {
         /* prepare */
         File file = new File("src/test/resources/no_sechub_report.json");
 
@@ -124,7 +127,7 @@ public class SecHubClientTest {
         /* @formatter:off */
         assertThrows( 
                 "The report is not a SecHub report and cannot be read. It should throw an exception.",
-                SecHubReportReadingException.class,
+                SecHubReportException.class,
                 () -> SecHubClient.importSecHubJsonReport(file));
         /* @formatter:on */
     }

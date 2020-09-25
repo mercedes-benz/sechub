@@ -2,6 +2,9 @@ package com.daimler.sechub.client.java.report;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown =true)
 public class SecHubReport {
     private UUID jobUUID;
     private TrafficLight trafficLight;

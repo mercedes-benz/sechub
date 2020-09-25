@@ -4,15 +4,15 @@ package com.daimler.sechub.client.java.report;
 // Modified copy of: com/daimler/sechub/domain/scan/Severity.java
 public enum Severity {
 
-    INFO, 
+    INFO,
 
-    UNCLASSIFIED, 
+    UNCLASSIFIED,
 
-    LOW, 
+    LOW,
 
-    MEDIUM, 
+    MEDIUM,
 
-    HIGH, 
+    HIGH,
 
     CRITICAL,
 

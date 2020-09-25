@@ -5,7 +5,7 @@
 		"findings": [
 			{
 				"id": 1,
-				"description": "Security product 'CHECKMARX' failed, so cannot give a correct answer.",
+				"description": "Security product 'XYZ' failed, so cannot give a correct answer.",
 				"hostnames": [
 				],
 				"name": "SecHub failure",

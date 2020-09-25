@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 // Modified copy of: com/daimler/sechub/domain/scan/SecHubFinding.java
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown =true)
 public class SecHubFinding {
 
     int id;
