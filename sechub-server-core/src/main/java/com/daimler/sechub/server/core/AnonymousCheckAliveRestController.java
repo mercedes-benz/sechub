@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.server.core;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +20,10 @@ public class AnonymousCheckAliveRestController {
 				name="REST API call",
 				needsRestDoc=true,
 				description="An anonymous user checks if the server is alive and running using the REST API"))
-	@RequestMapping(path = APIConstants.API_ANONYMOUS + "check/alive", method = RequestMethod.HEAD)
-	public void checkAlive() {
-	    /* do nothing here - its just a HEAD request */
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "check/alive", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public String checkAlive() {
+		/* empty result, only HTTP STATUS 200 OK is of interest */
+	    return "";
 	}
 	/* @formatter:on */
 }
