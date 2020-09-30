@@ -1,1 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="102px" preserveAspectRatio="none" style="width:456px;height:102px;" version="1.1" viewBox="0 0 456 102" width="456px" zoomAndPan="magnify"><defs/><g><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="178" x="12" y="22.9951">Communication details</text><line style="stroke: #000000; stroke-width: 1.0;" x1="12" x2="190" y1="24.9951" y2="24.9951"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="16" x="200" y="22.9951">of</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="234" x="221" y="22.9951">message SCAN_ABANDONDED</text><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="233.5" x2="233.5" y1="81.5938" y2="101.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="66" x="197.5" y="78.292">EventBus</text><ellipse cx="233.5" cy="49.2969" fill="#FEFECE" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="229.5,37.2969,235.5,32.2969,233.5,37.2969,235.5,42.2969,229.5,37.2969" style="stroke: #A80036; stroke-width: 1.0;"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="113px" preserveAspectRatio="none" style="width:467px;height:113px;" version="1.1" viewBox="0 0 467 113" width="467px" zoomAndPan="magnify"><defs/><g><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="178" x="12" y="22.9951">Communication details</text><line style="stroke: #000000; stroke-width: 1.0;" x1="12" x2="190" y1="24.9951" y2="24.9951"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="16" x="200" y="22.9951">of</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="234" x="221" y="22.9951">message SCAN_ABANDONDED</text><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="233.5" x2="233.5" y1="81.5938" y2="101.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="66" x="197.5" y="78.292">EventBus</text><ellipse cx="233.5" cy="49.2969" fill="#FEFECE" rx="12" ry="12" style="stroke: #A80036; stroke-width: 2.0;"/><polygon fill="#A80036" points="229.5,37.2969,235.5,32.2969,233.5,37.2969,235.5,42.2969,229.5,37.2969" style="stroke: #A80036; stroke-width: 1.0;"/><!--
+@startuml
+
+
+title __Communication details __ of **message SCAN_ABANDONDED**
+skinparam style strictuml
+
+
+control EventBus
+box "scan" #C8C8CF
+end box
+box "schedule" #F8F8FF
+end box
+box "authorization" #C8C8CF
+end box
+box "notification" #F8F8FF
+end box
+box "administration" #C8C8CF
+end box
+
+
+@enduml
+
+PlantUML version 1.2018.13(Mon Nov 26 18:11:51 CET 2018)
+(APACHE source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_265-8u265-b01-0ubuntu2~20.04-b01
+Operating System: Linux
+OS Version: 5.4.0-48-generic
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
