@@ -1,3 +1,5 @@
+! SPDX-License-Identifier: MIT
+
 program hello
   ! NOSECHUB
   implicit none
