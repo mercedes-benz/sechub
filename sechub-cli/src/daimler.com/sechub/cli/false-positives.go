@@ -231,7 +231,7 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 	for _, finding := range report.Result.Findings {
 		printFinding(&finding)
 
-		input, err := sechubutil.ReadAllowedItemFromConsole("Is this a false positive?", ExpectedInputs)
+		input, err := sechubutil.ReadAllowedItemFromConsole("Add this as false positive?", ExpectedInputs)
 		HandleError(err)
 		if input == "y" {
 			// append finding to list

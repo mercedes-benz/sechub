@@ -32,7 +32,7 @@ func CreateTestDirectory(dir string, mode os.FileMode, t *testing.T) {
 	if err != nil {
 		t.Fatalf("Cannot create folder. Error: %q", err)
 	}
-	log.Printf("Folder created: %q", dir)
+	fmt.Printf("Folder created: %q", dir)
 }
 
 // CreateTestFile - create a regular file with text content in testing context
