@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.daimler.sechub.domain.scan.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.SecHubResultService;
 import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 @Service
 public class CreateScanReportService {

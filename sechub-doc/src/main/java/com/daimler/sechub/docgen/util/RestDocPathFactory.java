@@ -51,9 +51,9 @@ public class RestDocPathFactory {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(UC_RESTDOC);
-		sb.append("/");
+		sb.append("-");
 		sb.append(createIdentifier(useCase));
-		sb.append("/");
+		sb.append("-");
 		if (variant == null || variant.isEmpty()) {
 			sb.append(UseCaseRestDoc.DEFAULT_VARIANT);
 		} else {

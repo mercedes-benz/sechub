@@ -27,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
 import com.daimler.sechub.domain.scan.report.CreateScanReportService;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
@@ -35,7 +36,6 @@ import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.test.TestPortProvider;
 
 

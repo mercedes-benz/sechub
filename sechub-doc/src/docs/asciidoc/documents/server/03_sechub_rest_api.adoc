@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 [[section-sechub-rest-api]]
-
 == SecHub REST API
 
 [TIP]

@@ -15,8 +15,8 @@ public class FixedTestUser extends TestUser{
         this.fixedUserId=userId;
     }
 
-    public FixedTestUser(String userIdPart, String apiToken) {
-        super(userIdPart, apiToken);
+    public FixedTestUser(String userId, String apiToken) {
+        this(userId, apiToken,null);
     }
 
     @Override

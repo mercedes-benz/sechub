@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject sechub-client-java
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+ 
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile library.slf4j
+    compile library.jackson_core
+    compile library.jackson_databind
+    
+    compile project(':sechub-commons-model')
+    
+    compile library.apache_httpcomponents_client
+
+    testCompile library.junit
+    testCompile library.mockito
+    testCompile library.hamcrest
+}
+
+// see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
+apply plugin: 'org.openapi.generator'
+
+def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
+def generatedSourcesDir = "$buildDir/generated/openapi"
+
+openApiValidate {
+    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+}
+
+openApiGenerate {
+    generatorName = "java"
+    
+    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "org.openapi.example.api"
+    invokerPackage = "org.openapi.example.invoker"
+    modelPackage = "org.openapi.example.model"
+    modelFilesConstrainedTo = [
+            "Error"
+    ]
+    systemProperties = [
+            validateSpec   : "true",
+            modelDocs      : "false",
+            models         : "",
+            apis           : "",
+            supportingFiles: "false"
+    ]
+    configOptions = [
+            useOptional          : "true",
+            swaggerDocketConfig  : "false",
+            performBeanValidation: "false",
+            useBeanValidation    : "false",
+            useTags              : "true",
+            singleContentTypes   : "true",
+            basePackage          : "com.daimler.sechub.client.java.api",
+            configPackage        : "com.daimler.sechub.client.java.api",
+            title                : rootProject.name,
+            java8                : "true",
+            dateLibrary          : "java8",
+            serializableModel    : "true",
+            artifactId           : rootProject.name,
+            apiPackage           : "com.daimler.sechub.client.java.api",
+            modelPackage         : "com.daimler.sechub.client.java.api.model",
+            invokerPackage       : "com.daimler.sechub.client.java.api",
+            interfaceOnly        : "true"
+    ]
+}
+
+tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
+}
+
+// let's generate always java open api parts before compile:
+//compileJava.dependsOn tasks.openApiGenerate
+
+/**
+ * Custom gradle task to build a "fatJar".
+ */
+task buildJavaClientAll(type: Jar) {
+	group 'sechub'
+    description 'This creates java client library jar containing all libraries.'
+    baseName = 'sechub-java-client-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
+
+

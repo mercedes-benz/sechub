@@ -13,13 +13,13 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.sharedkernel.SharedKernelTestFileSupport;
 import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.ScriptEntry;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
-import com.daimler.sechub.sharedkernel.util.JSONConverter;
 import com.daimler.sechub.test.PojoTester;
 
 public class SecHubConfigurationTest {

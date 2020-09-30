@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
@@ -23,7 +24,6 @@ import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
-import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.storage.core.JobStorage;

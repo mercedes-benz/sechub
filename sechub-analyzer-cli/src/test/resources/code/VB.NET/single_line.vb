@@ -1,3 +1,5 @@
+' SPDX-License-Identifier: MIT
+
 Module HelloWorld
     Sub Main()
         ' NOSECHUB

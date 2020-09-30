@@ -6,10 +6,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
-import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
+import com.daimler.sechub.test.TestFileSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -36,7 +36,7 @@ public class AssertSecHubReport {
         if (!file.exists()) {
             fail("No report file found:"+file.getAbsolutePath()+"\nLast output line was:" + lastOutputLIne);
         }
-        String json = IntegrationTestFileSupport.getTestfileSupport().loadTextFile(file, "\n");
+        String json = TestFileSupport.loadTextFile(file, "\n");
         return assertSecHubReport(json);
     }
 

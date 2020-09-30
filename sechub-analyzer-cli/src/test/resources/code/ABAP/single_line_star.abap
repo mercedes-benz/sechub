@@ -1,3 +1,5 @@
+* SPDX-License-Identifier: MIT
+
 REPORT ZHELLO_WORLD.
 
 START-OF-SELECTION.

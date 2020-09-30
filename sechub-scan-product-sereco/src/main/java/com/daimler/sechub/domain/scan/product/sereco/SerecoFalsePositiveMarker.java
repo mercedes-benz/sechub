@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.FalsePositiveEntry;
 import com.daimler.sechub.domain.scan.project.FalsePositiveJobData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
@@ -18,7 +19,6 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfig;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigID;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * Marks given vulnerabilities as false positives, if identifieable by false positive configuration

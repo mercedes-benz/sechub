@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.storage.core.SharedVolumeSetup;
 import com.daimler.sechub.storage.core.StorageException;
 

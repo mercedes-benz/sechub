@@ -8,11 +8,11 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.daimler.sechub.domain.scan.SecHubResult;
+import com.daimler.sechub.commons.model.JSONConverterException;
+import com.daimler.sechub.commons.model.JSONable;
+import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
-import com.daimler.sechub.sharedkernel.util.JSONConverterException;
-import com.daimler.sechub.sharedkernel.util.JSONable;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

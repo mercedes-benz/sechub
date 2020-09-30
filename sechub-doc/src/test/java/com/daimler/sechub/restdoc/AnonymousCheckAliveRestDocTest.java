@@ -2,8 +2,8 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Test;
@@ -42,8 +42,8 @@ public class AnonymousCheckAliveRestDocTest {
 	private MockMvc mockMvc;
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class)
-	public void calling_check_alive_returns_HTTP_200() throws Exception {
+	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "HEAD")
+	public void calling_check_alive_head_returns_HTTP_200() throws Exception {
 
 		/* execute */
 		/* @formatter:off */
@@ -51,7 +51,22 @@ public class AnonymousCheckAliveRestDocTest {
         			head(https(PORT_USED).buildCheckIsAliveUrl())
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class)));
+        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "HEAD")));
+
+        /* @formatter:on */
+	}
+	
+	@Test
+	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "GET")
+	public void calling_check_alive_get_returns_HTTP_200() throws Exception {
+
+		/* execute */
+		/* @formatter:off */
+        this.mockMvc.perform(
+        			get(https(PORT_USED).buildCheckIsAliveUrl())
+        		).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "GET")));
 
         /* @formatter:on */
 	}

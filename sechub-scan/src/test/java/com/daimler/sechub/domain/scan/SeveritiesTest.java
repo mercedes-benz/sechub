@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.Severities;
+import com.daimler.sechub.commons.model.Severity;
+
 public class SeveritiesTest {
 
 	@Test

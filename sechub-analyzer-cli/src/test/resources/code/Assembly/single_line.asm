@@ -1,3 +1,5 @@
+; SPDX-License-Identifier: MIT
+
 section	.text
    global _start     ;must be declared for linker (ld)
 	

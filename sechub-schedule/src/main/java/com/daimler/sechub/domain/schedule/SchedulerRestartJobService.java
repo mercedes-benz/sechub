@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.domain.schedule.batch.SchedulerCancelBatchJobService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
@@ -29,7 +30,6 @@ import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
-import com.daimler.sechub.sharedkernel.util.SecHubRuntimeException;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service

@@ -49,7 +49,7 @@ TIP: The is the most preferred scan action for builds - you only have to make on
 **Minimum call syntax**
 
 Prerequisite is a configuration file `sechub.json` in current directory. +
-See here for details: <<Configuration file>>
+See here for details: <<section-client-configuration-file,Configuration file>>
 ----
 SECHUB_APITOKEN=${apitoken}
 sechub scan
@@ -96,11 +96,13 @@ SECHUB_APITOKEN=${apitoken}
 sechub -jobUUID ${jobUUID} getReport
 ----
 
+
 [[section-client-false-positives-mark]]
 ===== markFalsePositives
-Read your report carefully and check which of the findings are really so called "false positives".
-After this create an json file containing jobUUID and ID of finding you decided to be an FP. If 
+Read your report carefully and check which of the findings are really "false positives" (FP).
+After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If 
 you like you can add an optional comment, describing your decision to mark this as FP.
+Select this file by the `-file` argument and start action `markFalsePositives`.
 
 *Example JSON:*
 
@@ -116,7 +118,8 @@ include::../../shared/concepts/false-positive-handling/false-positive-REST-API-c
 
 
 ===== getFalsePositives
-This will fetch the false positive list of your project as JSON - format is same as for `markFalsePositives`
+This will fetch the false positives list of your project as JSON - format is same as for `markFalsePositives`
+
 
 [[section-client-false-positives-unmark]]
 ===== unmarkFalsePositives
@@ -131,7 +134,40 @@ action `unmarkFalsePositives`
 include::sechub_client_falsepositve_list_example_unmark.json[]
 ----
 
-==== Options
+===== interactiveMarkFalsePositives
+Instead of creating a json file to mark false positives, you can also do this interactively:
+Go to the project directory containing `sechub.json` and a report file from a recent scan and run `sechub interactiveMarkFalsePositives`.
+
+You can select the report file using the `-file` option of the client. Otherwise the latest report file in the current directory is automatically selected.
+
+For each finding in the reports file, you are prompted: `"Add this as false positive?"`
+Your choices are:
+
+- `y` Yes - Mark as false positive. You are prompted for an optional comment line which can help to understand later why this has been marked.
+- `n` No - Do nothing and go to next item.
+- `s` Skip following findings - End the asking here and add the marked items to the false positives list on the sechub server.
+- `c` Cancel - Quit and upload nothing
+
+You can download and view your current false positives list with <<section-client-getFalsePositives,getFalsePositives>>
+
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+
+===== interactiveUnmarkFalsePositives
+Instead of creating a json file to unmark false positives, you can also do this interactively:
+Go to the project directory containing `sechub.json` and run `sechub interactiveUnmarkFalsePositives`
+
+{sechub} client will download the current false posisitves list and interactively ask each entry: `"Do you want to remove this false positive?"`
+Your choices are:
+
+- `y` Yes - Unmark this false positive.
+- `n` No - Do nothing and go to next item.
+- `s` Skip the rest - End the asking here and remove the marked items from the false positives list on the sechub server.
+- `c` Cancel - Quit and change nothing
+
+See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
+
+
+==== Commandline Options
 
 - `-apitoken <string>` +
   The api token. Although you can pass it as a runtime option, it is recommended for security reasons to define the environment variable `SECHUB_APITOKEN` (see: <<Environment variables>>) and not to use this option.
@@ -167,6 +203,8 @@ Additionally to above cmdline options, you can set some values also via environm
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
+
+[[section-client-configuration-file]]
 
 === Client configuration file
 If not defined, secHub client will load `sechub.json` file from current directory
@@ -235,7 +273,7 @@ sechub scan
 with corresponding 'sechub.json' config file:
 see <<sechub-config-example-webscan-anonymous,web scan example (anonymous)>>
 
-==== Start a infra scan
+==== Start an infra scan
 
 [source, bash]
 ----
@@ -260,3 +298,74 @@ sechub -f mark-fp.json unmarkFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
 
+[[section-client-interactiveMarkFalsePositives-mark]]
+===== interactiveMarkFalsePositives
+[source, shell]
+```
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub interactiveMarkFalsePositives
+
+/  ___|         | | | |     | |    
+\ `--.  ___  ___| |_| |_   _| |__  
+ `--. \/ _ \/ __|  _  | | | | '_ \ 
+/\__/ /  __/ (__| | | | |_| | |_) |
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+
+Using latest report file "sechub_report_0a84899f-1305-41e0-a2d5-e7c31d6185fd.json".
+------------------------------------------------------------------
+1: Side Channel Data Leakage, severity: HIGH
+src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java, line 651 column 17
+        Invoice creditNote = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
+------------------------------------------------------------------
+Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' Cancel) y
+Please add a single line comment:
+Can be ignored in our case
+------------------------------------------------------------------
+2: Unsafe Object Binding, severity: MEDIUM
+src/main/java/com/example/testapp/api/ServiceOrderController.java, line 33 column 59
+    public void saveAttachment(@RequestBody AttachmentDto attachmentDto){
+------------------------------------------------------------------
+Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' Cancel) n
+------------------------------------------------------------------
+3: Unsafe Object Binding, severity: MEDIUM
+src/main/java/com/example/testapp/api/CouponController.java, line 30 column 78
+    public CouponVerifyResponseDto couponVerify(@RequestBody CouponVerifyDto couponVerifyDto) {
+------------------------------------------------------------------
+Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' Cancel) s
+- Successfully uploaded SecHub false-positives list for project "mytestproject" to server.
+```
+
+[[section-client-interactiveUnmarkFalsePositives-mark]]
+===== interactiveUnmarkFalsePositives
+[source, shell]
+```
+SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
+sechub interactiveUnmarkFalsePositives
+ _____           _   _       _
+/  ___|         | | | |     | |
+\ `--.  ___  ___| |_| |_   _| |__
+ `--. \/ _ \/ __|  _  | | | | '_ \
+/\__/ /  __/ (__| | | | |_| | |_) |
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.20.0-b78
+
+- Fetching false-positives list for project "mytestproject".
+------------------------------------------------------------------
+Side Channel Data Leakage, codeScan severity: HIGH
+  Origin: Finding ID 1 in job 0a84899f-1305-41e0-a2d5-e7c31d6185fd
+  File: src/main/java/com/example/testapp/invoice/application/InvoiceApplicationService.java
+  Code:         Invoice creditNote = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
+(Added by testuser at 2020-08-20 12:43:03; comment: "Can be ignored in our case")
+------------------------------------------------------------------
+Do you want to remove this false positive? ('y' Yes, 'n' No, 's' Skip the rest, 'c' Cancel) y
+------------------------------------------------------------------
+Side Channel Data Leakage, codeScan severity: HIGH
+  Origin: Finding ID 2 in job 0c86134c-2305-41e0-a2d5-e7c31df45d15
+  File: src/main/java/com/daimler/otr/invoice/application/ApplicationService.java
+  Code:         Invoice invoice = getInvoice(invoiceId).orElseThrow(InvoiceNotFoundException::new);
+(Added by testuser at 2020-08-20 12:43:03; comment: "Another explanation example")
+------------------------------------------------------------------
+Do you want to remove this false positive? ('y' Yes, 'n' No, 's' Skip the rest, 'c' Cancel) s
+Applying false-positives to be removed for project "vpc_cn":
+- JobUUID 0a84899f-1305-41e0-a2d5-e7c31d6185fd: finding #1
+Transfer completed
+```
