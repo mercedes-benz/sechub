@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 import static com.daimler.sechub.test.TestURLBuilder.*;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
@@ -28,13 +28,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.daimler.sechub.test.ExampleConstants;

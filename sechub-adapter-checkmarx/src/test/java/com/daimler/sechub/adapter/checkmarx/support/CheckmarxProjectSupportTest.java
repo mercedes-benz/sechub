@@ -1,28 +1,24 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.checkmarx.support;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import com.daimler.sechub.adapter.AdapterException;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig.CheckmarxConfigBuilder;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxEngineConfiguration;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxSastScanSettings;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxSessionData;
 import com.daimler.sechub.adapter.checkmarx.support.CheckmarxProjectSupport.InternalUpdateContext;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig.CheckmarxConfigBuilder;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxEngineConfiguration;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxConstants;
-import com.daimler.sechub.adapter.checkmarx.CheckmarxSastScanSettings;
 
 public class CheckmarxProjectSupportTest {
 	private CheckmarxProjectSupport supportToTest;

@@ -4,8 +4,8 @@ package com.daimler.sechub.domain.scan.project;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
-import com.daimler.sechub.sharedkernel.util.JSONable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

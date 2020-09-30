@@ -12,7 +12,10 @@
 ext {
 
    libraryVersion= [
-      springBoot:   "2.2.6.RELEASE"
+      springBoot:   "2.2.6.RELEASE",
+      
+      // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
+      restDocsApiSpec: "0.10.0"
    ]
 
    library = [
@@ -56,13 +59,20 @@ ext {
          database_h2:                           "com.h2database:h2", //:1.4.196",
          database_postgres:                     "org.postgresql:postgresql:42.2.2",
 
-         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+         /* jackson libraries - please keep in sync with used ones by spring boot!*/
+         jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.3",
+         // https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
+         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.11.0",
+         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.10.1",
+         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.10.1",
 
          webjars_jquery:                        "org.webjars:jquery:2.2.4",
          webjars_bootstrap:                     "org.webjars:bootstrap:3.3.7",
 
+         /* apache commons */
          apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.9",
-         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.5",
+         // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.10",
          apache_commons_validator:              "commons-validator:commons-validator:1.6",
          apache_commons_io:                     "commons-io:commons-io:2.6",
          apache_commons_cli:					"commons-cli:commons-cli:1.4",
@@ -71,6 +81,9 @@ ext {
 
          flyway:                                "org.flywaydb:flyway-core:5.2.1",
 
+         /* logback */
+         // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+         logback_classic:                       "ch.qos.logback:logback-classic:1.2.3",
          logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.2",
 
          // JDK 10 build problems handling
@@ -78,6 +91,20 @@ ext {
          jdk_missing_jaxb_api:                  "javax.xml.bind:jaxb-api:2.3.1",
          jdk_missing_activation:                "javax.activation:activation:1.1.1",
          jdk_missing_jaxb_impl:                 "javax.xml.bind:com.springsource.javax.xml.bind:2.2.0",
+         
+         /*
+          * RE2 
+          * is a regular expression engine that runs in time linear in the size of the input.
+          * RE2 is the default RegularExpression engine of Go
+          * 
+          * Link: https://github.com/google/re2j
+          */
+         // https://mvnrepository.com/artifact/com.google.re2j/re2j
+         google_re2j:                           "com.google.re2j:re2j:1.4",
+         
+         /* epages - see https://github.com/ePages-de/restdocs-api-spec */
+         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}"
+         
    ]
 
 }

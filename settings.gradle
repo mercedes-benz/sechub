@@ -3,6 +3,10 @@ include 'sechub-cli',
 /* documentation */
 'sechub-doc',
 
+/* commons */
+'sechub-commons-core',
+'sechub-commons-model',
+
 /* server POD area */
 'sechub-server',       // executable spring boot jar
 'sechub-server-core',  // core project for test compile dependencies and more
@@ -56,8 +60,10 @@ include 'sechub-cli',
 'sechub-developertools',
 
 // Analyzer CLI
-'sechub-analyzer-cli'
+'sechub-analyzer-cli',
 
+// java client library
+ 'sechub-client-java'
 
 
 buildCache {

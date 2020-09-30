@@ -18,10 +18,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import com.daimler.sechub.sharedkernel.type.TrafficLight;
 
 
 @Component
@@ -69,7 +71,7 @@ public class HTMLScanResultReportModelBuilder {
 
 		Map<Integer,List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
 		for (SecHubFinding finding: result.getFindings()) {
-			codeScanEntries.put(finding.id, codeScanSupport.buildEntries(finding));
+			codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
 		}
 
 		Map<String, Object> model = new HashMap<>();

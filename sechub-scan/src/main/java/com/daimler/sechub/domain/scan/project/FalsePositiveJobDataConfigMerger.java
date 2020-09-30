@@ -5,13 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.daimler.sechub.domain.scan.SecHubCodeCallStack;
-import com.daimler.sechub.domain.scan.SecHubFinding;
-import com.daimler.sechub.domain.scan.SecHubResult;
+import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubCodeCallStack;
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * Merges job based false positive data, meta data from origin report into

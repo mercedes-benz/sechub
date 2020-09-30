@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-==== Product delegation server
+=== Product delegation server
 
-===== General
+==== General
 There are many open source clients available having no server component inside so lacking:
 
 - REST access
@@ -25,13 +25,14 @@ need to provide a `ProductDelegationServer` (in short form `PDS`).
   available as environment variables at runtime 
 - a standard way to integrate any product into {sechub} in a scalable and easy way 
 
-===== Handling of resources
+==== Handling of resources
 - PDS server provides `auto unzipping` of uploaded resources when configured  - see <<section-pds-server-config-file,PDS server configuration file>>
 - When a PDS job fails or is done the resources inside job workspace location are *automatically removed*
 
-===== Big picture
+==== Big picture
 plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 
+==== SecHub integration
 ===== Executors and Adapters
 ====== Executors
 With `PDS` there is a default `REST` `API` available. 
@@ -45,7 +46,7 @@ The Adapter will always be the same, but filled with other necessary parameters.
 NOTE: So there will be no need to write any adapter or executor when using PDS! 
 
 
-===== HowTo integrate a new product via PDS
+=== HowTo integrate a new product via PDS
 
 Having new security product XYZ but being a command line tool, we 
 

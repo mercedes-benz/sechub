@@ -3,6 +3,8 @@ package com.daimler.sechub.adapter;
 
 import javax.crypto.SealedObject;
 
+import com.daimler.sechub.commons.core.security.CryptoAccess;
+
 public class LoginScriptStep {
 
 	String type;

@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.test.SechubTestComponent;
 
 @SechubTestComponent
@@ -40,111 +43,111 @@ public class AssertSecHubResult {
 		}
 
 		public AssertSecHubFinding hasDescription(String description) {
-			assertThat(value.description, is(equalTo(description)));
+			assertThat(value.getDescription(), is(equalTo(description)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasMethod(String method) {
-			assertThat(value.method, is(equalTo(method)));
+			assertThat(value.getMethod(), is(equalTo(method)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasName(String name) {
-			assertThat(value.name, is(equalTo(name)));
+			assertThat(value.getName(), is(equalTo(name)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasParameters(String parameters) {
-			assertThat(value.parameters, is(equalTo(parameters)));
+			assertThat(value.getParameterName(), is(equalTo(parameters)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasPath(String path) {
-			assertThat(value.path, is(equalTo(path)));
+			assertThat(value.getPath(), is(equalTo(path)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasParameterName(String pname) {
-			assertThat(value.parameterName, is(equalTo(pname)));
+			assertThat(value.getParameterName(), is(equalTo(pname)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasQuery(String query) {
-			assertThat(value.query, is(equalTo(query)));
+			assertThat(value.getQuery(), is(equalTo(query)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasNoRefs() {
-			assertNotNull(value.references);
-			assertEquals(0, value.references.size());
+			assertNotNull(value.getReferences());
+			assertEquals(0, value.getReferences().size());
 			return this;
 		}
 
 		public AssertSecHubFinding hasRefs(String... refs) {
-			assertNotNull(value.references);
-			assertThat(value.references.toArray(new String[value.references.size()]), is(arrayContaining(refs)));
+			assertNotNull(value.getReferences());
+			assertThat(value.getReferences().toArray(new String[value.getReferences().size()]), is(arrayContaining(refs)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasRequest(String request) {
-			assertThat(value.request, is(equalTo(request)));
+			assertThat(value.getRequest(), is(equalTo(request)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasResolution(String resolution) {
-			assertThat(value.resolution, is(equalTo(resolution)));
+			assertThat(value.getResolution(), is(equalTo(resolution)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasResponse(String response) {
-			assertThat(value.response, is(equalTo(response)));
+			assertThat(value.getResponse(), is(equalTo(response)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasService(String service) {
-			assertThat(value.service, is(equalTo(service)));
+			assertThat(value.getService(), is(equalTo(service)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasSeverity(Severity severity) {
-			assertThat(value.severity, is(equalTo(severity)));
+			assertThat(value.getSeverity(), is(equalTo(severity)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasTarget(String target) {
-			assertThat(value.target, is(equalTo(target)));
+			assertThat(value.getTarget(), is(equalTo(target)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasWebsite(String website) {
-			assertThat(value.website, is(equalTo(website)));
+			assertThat(value.getWebsite(), is(equalTo(website)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasCreator(String creator) {
-			assertThat(value.createdBy, is(equalTo(creator)));
+			assertThat(value.getCreatedBy(), is(equalTo(creator)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasCreatorDate(Date creationTime) {
-			assertThat(value.created, is(equalTo(creationTime)));
+			assertThat(value.getCreated(), is(equalTo(creationTime)));
 			return this;
 		}
 
 		public AssertSecHubFinding hasNoHostnames() {
-			assertNotNull(value.hostnames);
-			assertEquals(0, value.hostnames.size());
+			assertNotNull(value.getHostnames());
+			assertEquals(0, value.getHostnames().size());
 			return this;
 		}
 
 		public AssertSecHubFinding hasHostNames(String... hostnames) {
-			assertNotNull("Hostnames are null!", value.hostnames);
-			assertEquals("Amount of hostnames differs!", value.hostnames.size(), hostnames.length);
+			assertNotNull("Hostnames are null!", value.getHostnames());
+			assertEquals("Amount of hostnames differs!", value.getHostnames().size(), hostnames.length);
 
 			List<String> hostnamesAsList = Arrays.asList(hostnames);
-			if (!value.hostnames.containsAll(hostnamesAsList)) {
+			if (!value.getHostnames().containsAll(hostnamesAsList)) {
 				fail("Hostname count same, but hostnames not as expected!\nExpected: " + hostnamesAsList + "\nResulted:"
-						+ value.hostnames);
+						+ value.getHostnames());
 			}
 
 			return this;
@@ -155,7 +158,7 @@ public class AssertSecHubResult {
 	public AssertSecHubFinding hasFindingWithId(int id) {
 		List<SecHubFinding> vulnerabilities = result.getFindings();
 		for (SecHubFinding v : vulnerabilities) {
-			if (v.id == id) {
+			if (v.getId() == id) {
 				return new AssertSecHubFinding(v);
 			}
 		}

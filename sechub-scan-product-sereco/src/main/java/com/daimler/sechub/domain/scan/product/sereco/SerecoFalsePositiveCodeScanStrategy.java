@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodeMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.daimler.sechub.sharedkernel.type.ScanType;
 
 /**
  * Strategy to check if a code scan vulnerability identified by a product is
