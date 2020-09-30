@@ -31,8 +31,8 @@ public class FileProcessorTest {
     @Test
     public void process_pair() throws IOException {
         /* prepare */
-        Marker start = new Marker(MarkerType.START, 3, 3);
-        Marker end = new Marker(MarkerType.END, 9, 3);
+        Marker start = new Marker(MarkerType.START, 5, 3);
+        Marker end = new Marker(MarkerType.END, 11, 3);
         MarkerPair pair = new MarkerPair();
         pair.setEnd(end);
         pair.setStart(start);
@@ -53,20 +53,20 @@ public class FileProcessorTest {
         /* prepare */
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
-        Marker start = new Marker(MarkerType.START, 4, 4);
-        Marker end = new Marker(MarkerType.END, 7, 5);
+        Marker start = new Marker(MarkerType.START, 6, 4);
+        Marker end = new Marker(MarkerType.END, 9, 5);
         MarkerPair pair = new MarkerPair();
         pair.setEnd(end);
         pair.setStart(start);
         
-        Marker start2 = new Marker(MarkerType.START, 10, 9);
-        Marker end2 = new Marker(MarkerType.END, 12, 3);
+        Marker start2 = new Marker(MarkerType.START, 12, 9);
+        Marker end2 = new Marker(MarkerType.END, 14, 3);
         MarkerPair pair2 = new MarkerPair();
         pair2.setEnd(end2);
         pair2.setStart(start2);
         
-        Marker start3 = new Marker(MarkerType.START, 15, 3);
-        Marker end3 = new Marker(MarkerType.END, 18, 3);
+        Marker start3 = new Marker(MarkerType.START, 17, 3);
+        Marker end3 = new Marker(MarkerType.END, 20, 3);
         MarkerPair pair3 = new MarkerPair();
         pair3.setEnd(end3);
         pair3.setStart(start3);
@@ -115,8 +115,8 @@ public class FileProcessorTest {
     @Test
     public void process_two_ends() throws IOException {
         /* prepare */
-        Marker start = new Marker(MarkerType.START, 3, 3);
-        Marker end = new Marker(MarkerType.END, 9, 3);
+        Marker start = new Marker(MarkerType.START, 5, 3);
+        Marker end = new Marker(MarkerType.END, 11, 3);
         MarkerPair pair = new MarkerPair();
         pair.setEnd(end);
         pair.setStart(start);
@@ -135,8 +135,8 @@ public class FileProcessorTest {
     @Test
     public void process_two_starts() throws IOException {
         /* prepare */
-        Marker start = new Marker(MarkerType.START, 3, 3);
-        Marker end = new Marker(MarkerType.END, 15, 2);
+        Marker start = new Marker(MarkerType.START, 5, 3);
+        Marker end = new Marker(MarkerType.END, 17, 2);
         MarkerPair pair = new MarkerPair();
         pair.setEnd(end);
         pair.setStart(start);
@@ -157,7 +157,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/C/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 6, 5);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 5, 8, 5);
         
         File file = new File(codePath + "single_line.c");
         
@@ -173,7 +173,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/C/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 5, 8, 5);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 5, 10, 5);
         
         File file = new File(codePath + "multi_line.c");
         
@@ -253,7 +253,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/ABAP/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 6, 6, 6);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 6, 8, 6);
         
         File file = new File(codePath + "single_line_star.abap");
         
@@ -269,7 +269,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/VB.NET/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 10, 5, 10);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(5, 10, 7, 10);
         
         File file = new File(codePath + "single_line.vb");
         
@@ -285,7 +285,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/ADA/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 6, 6, 6);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 6, 8, 6);
         
         File file = new File(codePath + "single_line.adb");
         
@@ -301,7 +301,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Assembly/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(9, 5, 11, 5);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(11, 5, 13, 5);
         
         File file = new File(codePath + "single_line.asm");
         
@@ -317,7 +317,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Batch/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 3, 4, 3);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 3, 6, 3);
         
         File file = new File(codePath + "single_line_double_colon.bat");
         
@@ -333,7 +333,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Batch/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 4, 4, 4);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
         
         File file = new File(codePath + "single_line_REM.bat");
         
@@ -349,7 +349,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Fortran/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 4, 5, 4);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 7, 4);
         
         File file = new File(codePath + "single_line.f90");
         
@@ -365,7 +365,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/OCaml/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 3, 3, 3);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 3, 5, 3);
         
         File file = new File(codePath + "single_line.ml");
         
@@ -381,7 +381,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Pascal/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 6, 5, 6);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(5, 6, 7, 6);
         
         File file = new File(codePath + "single_line.p");
         
@@ -398,7 +398,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Python/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 4, 8, 4);
         
         File file = new File(codePath + "single_line_comment.py");
         
@@ -416,8 +416,8 @@ public class FileProcessorTest {
         
         List<MarkerPair> expectedPairs = new LinkedList<>();
         
-        List<MarkerPair> pair = createMarkerPairsOf(5, 4, 7, 4);
-        List<MarkerPair> pair2 = createMarkerPairsOf(11, 8, 13, 4);
+        List<MarkerPair> pair = createMarkerPairsOf(7, 4, 9, 4);
+        List<MarkerPair> pair2 = createMarkerPairsOf(13, 8, 15, 4);
         
         expectedPairs.addAll(pair);
         expectedPairs.addAll(pair2);
@@ -453,7 +453,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Ruby/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 4, 5, 4);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
         
         File file = new File(codePath + "single_line_comment.rb");
         
@@ -470,7 +470,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Scheme/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 2, 3, 2);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 2, 5, 2);
         
         File file = new File(codePath + "single_line_comment.scm");
         
@@ -486,7 +486,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Shell/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(4, 4, 6, 4);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(6, 4, 8, 4);
         
         File file = new File(codePath + "single_line_comment.sh");
         
@@ -502,7 +502,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/SQL/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(2, 3, 4, 3);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 3, 5, 3);
         
         File file = new File(codePath + "single_line_comment.sql");
         
@@ -518,7 +518,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/Tcl/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(1, 2, 3, 2);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(3, 2, 5, 2);
         
         File file = new File(codePath + "single_line_comment.tcl");
         
@@ -534,7 +534,7 @@ public class FileProcessorTest {
         /* prepare */
         String codePath = path + "code/XML/";
         
-        List<MarkerPair> expectedPairs = createMarkerPairsOf(11, 8, 16, 8);
+        List<MarkerPair> expectedPairs = createMarkerPairsOf(13, 8, 18, 8);
         
         File file = new File(codePath + "single_line_comment.xml");
         
