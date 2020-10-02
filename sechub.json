@@ -3,25 +3,25 @@
 
      "codeScan": {
         "fileSystem": {
-            "folders": ["sechub-adapter/src/main/java",
-                        "sechub-adapter-checkmarx/src/main/java",
-                        "sechub-adapter-nessus/src/main/java",
-                        "sechub-adapter-netsparker/src/main/java",
-                        "sechub-administration/src/main/java",
-                        "sechub-authorization/src/main/java",
-                        "sechub-cli/src",
-                        "sechub-notification/src/main/java",
-                        "sechub-scan/src/main/java",
-                        "sechub-scan-product-checkmarx/src/main/java",
-                        "sechub-scan-product-nessus/src/main/java",
-                        "sechub-scan-product-netsparker/src/main/java",
-                        "sechub-scan-product-sereco/src/main/java",
-                        "sechub-schedule/src/main/java",
-                        "sechub-sereco/src/main/java",
-                        "sechub-server/src/main/java",
-                        "sechub-shared-kernel/src/main/java"
-                       ]
-        }
+            "folders": ["."]
+        },
+        "excludes": [
+            "*/.project",
+            "*/bin/*",
+            "*/build/*",
+            "./.gradle/*",
+            "./buildSrc/*",
+            "./gradle*",
+            "./sechub*.json",
+            "./sechub-developertools/*",
+            "./sechub-doc/*",
+            "./sechub-integrationtest/*",
+            "./sechub-other/*",
+            "./sechub-scan-testframework/*",
+            "./sechub-shared-kernel-testframework/*",
+            "./sechub-test/*",
+            "./sechub-testframework/*"
+        ]
      }
 
 }
