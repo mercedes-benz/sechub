@@ -80,7 +80,7 @@ def buildVersionFiles(){
     def reducedPDSVersion = simplifiedVersion(pdsVersion);
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+reducedPDSVersion+"\n:longrevnumber: PDS "+serverVersion+"\n")
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+reducedPDSVersion+"\n:longrevnumber: PDS "+pdsVersion+"\n")
 
     /* we use a simplified version for build artifacts-reason:
      * there were multiple problems. E.g. a user downloading
