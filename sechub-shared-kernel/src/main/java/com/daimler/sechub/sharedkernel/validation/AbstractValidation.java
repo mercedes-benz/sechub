@@ -86,6 +86,16 @@ public abstract class AbstractValidation<T> implements Validation<T> {
         }
         addErrorMessage(context,name + " may not be larger than " + maximum);
     }
+    
+    protected void validateMinLength(ValidationContext<?> context, String toInspect, int minimum, String name) {
+        if (toInspect == null) {
+            return;
+        }
+        if (toInspect.length() >= minimum) {
+            return;
+        }
+        addErrorMessage(context,name + " may not be smaller than " + minimum);
+    }
 
     @SuppressWarnings("unchecked")
     protected <X> void validateContainsExpectedOnly(ValidationContext<?> context, String failureMessage, X toInspect, X... allowed) {

@@ -14,7 +14,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAddsExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationSetup;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -30,7 +30,7 @@ public class FetchProductExecutorConfigSetupService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorAddsExecutorConfiguration(
+    @UseCaseAdministratorFetchesExecutorConfigurationSetup(
             @Step(number = 1, 
             name = "Service call", 
             description = "Service reads setup information for an existing product executor configuration"))

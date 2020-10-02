@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.CONFIGURATION,
 		title="Admin fetches executor configuration",
 		description="An administrator fetches one explicit executor configuration by its uuid.")
-public @interface UseCaseAdministratorFetchesExecutorConfiguration{
+public @interface UseCaseAdministratorFetchesExecutorConfigurationSetup{
 
 	Step value();
 }

@@ -29,7 +29,7 @@ import ch.qos.logback.classic.Level;
 public class IntegrationTestSetup implements TestRule {
 
     private static final String SECHUB_INTEGRATIONTEST_LONG_RUNNING = "sechub.integrationtest.longrunning";
-    private static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
+    static final String SECHUB_INTEGRATIONTEST_RUNNING = "sechub.integrationtest.running";
     private static final String SECHUB_INTEGRATIONTEST_CLIENT_DEBUG = "sechub.integrationtest.client.debug";
     private static final String SECHUB_INTEGRATIONTEST_ENABLE_HTTP_DEBUG_LOGGING = "sechub.integrationtest.enable.http.debug";
 
@@ -147,7 +147,7 @@ public class IntegrationTestSetup implements TestRule {
                     Assume.assumeTrue(message, false);
                 }
             } else {
-                integrationTestEnabled = Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
+                integrationTestEnabled = LocalDeveloperFileSetupSupport.INSTANCE.isAlwaysSecHubIntegrationTestRunning() || Boolean.getBoolean(SECHUB_INTEGRATIONTEST_RUNNING);
                 if (!integrationTestEnabled) {
                     String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                             + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";

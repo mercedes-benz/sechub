@@ -3,9 +3,6 @@ package com.daimler.sechub.domain.scan.product.config;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +22,8 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @ActiveProfiles(Profiles.TEST)
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes = { ProductExecutorConfig.class, PDSJobRepositoryDBTest.SimpleTestConfiguration.class })
-public class PDSJobRepositoryDBTest {
+@ContextConfiguration(classes = { ProductExecutorConfig.class, ProductExecutorConfigRepositoryDBTest.SimpleTestConfiguration.class })
+public class ProductExecutorConfigRepositoryDBTest {
 	
     @Autowired
 	private TestEntityManager entityManager;

@@ -3,7 +3,7 @@ package com.daimler.sechub.domain.scan.product.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.daimler.sechub.sharedkernel.util.JSONable;
+import com.daimler.sechub.commons.model.JSONable;
 
 public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfigSetup> {
     private static final ProductExecutorConfigSetup IMPORTER = new ProductExecutorConfigSetup();

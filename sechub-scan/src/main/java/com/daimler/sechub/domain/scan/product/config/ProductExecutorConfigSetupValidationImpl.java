@@ -28,11 +28,13 @@ public class ProductExecutorConfigSetupValidationImpl extends AbstractValidation
         
         ProductExecutorConfigSetupCredentials credentials = config.getCredentials();
         validateNotNull(context, credentials, "credentials");
-        String user = credentials.getUser();
-        String password = credentials.getPassword();
-
-        validateMaxLength(context, user, 40,"credentials.user");
-        validateMaxLength(context, password, 40,"credentials.pwd");
+        if (credentials!=null) {
+            String user = credentials.getUser();
+            String password = credentials.getPassword();
+            
+            validateMaxLength(context, user, 40,"credentials.user");
+            validateMaxLength(context, password, 40,"credentials.pwd");
+        }
     }
 
 }

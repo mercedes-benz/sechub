@@ -1,5 +1,7 @@
 package com.daimler.sechub.domain.scan.product.config;
 
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
+
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -10,13 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAddsExecutorConfiguration;
-import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -40,14 +40,16 @@ public class CreateProductExecutorConfigService {
             name = "Service call", 
             description = "Service creates a new product executor configuration with empty setup and being not enabled"))
     /* @formatter:on */
-    public UUID createProductExecutorConfig(ProductIdentifier productIdentifier, Integer executorVersion) {
-        auditLogService.log("Wants to create product execution configuration for executor:{}, V{}", productIdentifier, executorVersion);
+    public UUID createProductExecutorConfig(ProductExecutorConfig configFromUser) {
+        
+        auditLogService.log("Wants to create product execution configuration '{}' for executor:{}, V{}", configFromUser.getName(), configFromUser.getProductIdentifier(), configFromUser.getExecutorVersion());
         
         ProductExecutorConfig config = new ProductExecutorConfig();
         config.setEnabled(false); // must be done later when also setup is configured etc.
-        config.setExecutorVersion(executorVersion);
-        config.setProductIdentifier(productIdentifier);
-
+        config.setExecutorVersion(configFromUser.getExecutorVersion());
+        config.setProductIdentifier(configFromUser.getProductIdentifier());
+        config.setName(configFromUser.getName());
+        
         prepareInitialSetup(config);
         
         assertValid(config, validation);
@@ -56,7 +58,7 @@ public class CreateProductExecutorConfigService {
         ProductExecutorConfig stored = repository.save(config);
         UUID uuid = stored.getUUID();
 
-        LOG.info("Created product execution configuration {} for executor:{}, V{}", uuid, productIdentifier, executorVersion);
+        LOG.info("Created product execution configuration '{}' with uuidD={} for executor:{}, V{}", stored.getName(), uuid, stored.getProductIdentifier(),stored.getExecutorVersion());
 
         return uuid;
 
@@ -73,5 +75,6 @@ public class CreateProductExecutorConfigService {
         config.setSetup(setup.toJSON());
 
     }
+
 
 }

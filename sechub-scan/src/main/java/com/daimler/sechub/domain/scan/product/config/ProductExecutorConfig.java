@@ -19,8 +19,6 @@ import org.hibernate.annotations.Type;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Represents a product executor configuration
@@ -38,6 +36,7 @@ public class ProductExecutorConfig {
     public static final String TABLE_NAME = "SCAN_PRODUCT_EXECUTOR_CONFIG";
 
     public static final String COLUMN_UUID = "UUID";
+    public static final String COLUMN_NAME = "NAME";
     public static final String COLUMN_EXECUTOR_VERSION = "EXECUTOR_VERSION";
     public static final String COLUMN_PRODUCT_IDENTIFIER = "PRODUCT_ID";
     public static final String COLUMN_SETUP = "SETUP";
@@ -48,9 +47,6 @@ public class ProductExecutorConfig {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = ProductExecutorConfig.class.getSimpleName();
 
-    public static final String PROPERTY_SECHUB_JOB_UUID = "secHubJobUUID";
-    public static final String PROPERTY_PRODUCT_IDENTIFIER = "productIdentifier";
-
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -58,6 +54,8 @@ public class ProductExecutorConfig {
     @JsonProperty("uuid")
     UUID uUID;
 
+    @Column(name = COLUMN_NAME)
+    private String name;
     /**
      * The type of the product. Just to identify result content
      */
@@ -68,7 +66,8 @@ public class ProductExecutorConfig {
     @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
                          // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
     @Column(name = COLUMN_SETUP)
-    @JsonIgnore
+    @JsonIgnore // we use json ignore because we do not want it automatically in lists. To get
+                // setup we provide another way
     private String setup;
 
     @Version
@@ -110,10 +109,11 @@ public class ProductExecutorConfig {
     public void setExecutorVersion(Integer executorVersion) {
         this.executorVersion = executorVersion;
     }
+
     public Integer getExecutorVersion() {
         return executorVersion;
     }
-    
+
     public Boolean getEnabled() {
         return enabled;
     }
@@ -128,6 +128,14 @@ public class ProductExecutorConfig {
 
     public String getSetup() {
         return setup;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

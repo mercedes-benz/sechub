@@ -388,6 +388,12 @@ public class TestURLBuilder {
     public String buildAdminRevokesSuperAdminRightsFrom(String targetUser) {
         return buildUrl(API_ADMIN_USER, targetUser, "revoke", "superadmin");
     }
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin/config..............................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public String buildAdminCreatesProductExecutorConfig() {
+        return buildUrl(API_ADMIN_CONFIG,"executor");
+    }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ integration test special (anonymous) .....+ */
@@ -548,6 +554,7 @@ public class TestURLBuilder {
     public String buildIntegrationTestCountProductResults(UUID sechubJobUUID) {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults-count");
     }
+
 
  
 

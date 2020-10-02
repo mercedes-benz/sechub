@@ -167,6 +167,27 @@ public class AsUser {
         getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
 
     }
+    
+    public UUID createProductExecutorConfig(TestExecutorProductIdentifier productIdentifier, int version, String name) {
+        String url = getUrlBuilder().buildAdminCreatesProductExecutorConfig();
+        /* @formatter:off */
+        StringBuilder json = new StringBuilder();
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+     
+        json.append("{ \"name\" : \"PDS-gosec-1\",\n" + 
+                "        \n" + 
+                "        \"productIdentifier\" : \"PDS_CODESCAN\",\n" + 
+                "        \n" + 
+                "        \"executorVersion\" : 1" + 
+                "        \n" + 
+                "        ");
+
+        json.append("}\n");
+        jsonHelper.assertValidJson(json.toString());
+        String result= getRestHelper().postJSon(url, json.toString());
+        /* @formatter:on */
+        return UUID.fromString(result);
+    }
 
     public String getServerURL() {
         return getUrlBuilder().buildServerURL();
@@ -733,4 +754,6 @@ public class AsUser {
             return this;
         }
     }
+
+    
 }
