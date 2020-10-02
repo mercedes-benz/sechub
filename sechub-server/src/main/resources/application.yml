@@ -62,3 +62,20 @@ server:
     enabled:
       true # alwasy enabled
 # keystore, alias etc. must be defined outside
+
+management:
+  server:
+    port: 10250
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health"
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
