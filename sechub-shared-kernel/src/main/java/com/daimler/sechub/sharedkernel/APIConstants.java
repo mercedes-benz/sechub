@@ -45,5 +45,10 @@ public class APIConstants {
 	 * API starting with this is accessible by users for their projects
 	 */
 	public static final String API_PROJECT = "/api/project/";
+	
+	/**
+	 * Actuator endpoints are available anonymous
+	 */
+	public static final String ACTUATOR = "/actuator/";
 
 }

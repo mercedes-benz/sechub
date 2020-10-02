@@ -65,7 +65,11 @@ server:
 
 management:
   server:
-    port: 10250
+    port:
+       10250
+    ssl:
+      enabled:
+         false
   endpoints:
     web:
       exposure:
