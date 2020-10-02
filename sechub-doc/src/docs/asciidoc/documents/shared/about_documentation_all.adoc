@@ -11,4 +11,4 @@ This documentation is part of `{secHub}`.
 |LICENSE   |MIT License  | Please look at https://github.com/Daimler/sechub/blob/master/LICENSE
 |===
 
-
+Documentation version: `{longrevnumber}`

@@ -7,6 +7,7 @@
 
 // Disable last updated text.
 :last-update-label!:
+:version-label!:
 
 // where are images located?
 :imagesdir: ./images
