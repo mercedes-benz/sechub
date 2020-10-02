@@ -3,6 +3,8 @@
 # --------------------------------------------------
 #  Start / Stop script for integartion test server
 # --------------------------------------------------
+cd `dirname $0`
+
 function usage(){
     echo "usage: integrationtest-server <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {<serverVersion>}|{<serverPort>}"
     echo "       (server version is only necessary for start command"
@@ -226,7 +228,3 @@ case "$SERVER_COMMAND" in
     status) status ;;
     *) usage ;;
 esac
-
-
-
-

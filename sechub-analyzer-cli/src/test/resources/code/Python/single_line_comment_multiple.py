@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# SPDX-License-Identifier: MIT
+
 # Use NOSECHUB and NOSECHUB-END to mark code fragments
 def hello():
   # NOSECHUB

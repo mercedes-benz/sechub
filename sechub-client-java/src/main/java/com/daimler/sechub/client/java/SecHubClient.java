@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.client.java;
 
 import java.io.File;
