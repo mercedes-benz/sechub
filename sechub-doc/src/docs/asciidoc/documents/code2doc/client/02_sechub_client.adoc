@@ -214,9 +214,9 @@ The environment values may be either a complete URL or a "host[:port]", in which
 
 Examples (Linux/Mac):
 
-`export http_proxy=http://proxy.example.org:3128`
+`export http_proxy=http://scott:tiger@proxy.example.org:3128`
 
-`export http_proxy=http://scott:tiger@authproxy.example.org:3128`
+`export http_proxy=http://localhost:3128` (e.g. when using a local CNTLM proxy)
 
 [[section-client-configuration-file]]
 
