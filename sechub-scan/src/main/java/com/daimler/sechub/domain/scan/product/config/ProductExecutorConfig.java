@@ -3,18 +3,24 @@ package com.daimler.sechub.domain.scan.product.config;
 
 import static javax.persistence.EnumType.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,12 +41,15 @@ public class ProductExecutorConfig {
     /* +-----------------------------------------------------------------------+ */
     public static final String TABLE_NAME = "SCAN_PRODUCT_EXECUTOR_CONFIG";
 
-    public static final String COLUMN_UUID = "UUID";
-    public static final String COLUMN_NAME = "NAME";
-    public static final String COLUMN_EXECUTOR_VERSION = "EXECUTOR_VERSION";
-    public static final String COLUMN_PRODUCT_IDENTIFIER = "PRODUCT_ID";
-    public static final String COLUMN_SETUP = "SETUP";
-    public static final String COLUMN_ENABLED = "ENABLED";
+    public static final String COLUMN_UUID = "CONFIG_UUID";
+    public static final String COLUMN_NAME = "CONFIG_NAME";
+    public static final String COLUMN_EXECUTOR_VERSION = "CONFIG_EXECUTOR_VERSION";
+    public static final String COLUMN_PRODUCT_IDENTIFIER = "CONFIG_PRODUCT_ID";
+    public static final String COLUMN_SETUP = "CONFIG_SETUP";
+    public static final String COLUMN_ENABLED = "CONFIG_ENABLED";
+    
+    public static final String COLUMN_PROFILES= "PROFILES_PROFILE_ID";
+    
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -63,12 +72,10 @@ public class ProductExecutorConfig {
     @Column(name = COLUMN_PRODUCT_IDENTIFIER, nullable = false)
     private ProductIdentifier productIdentifier;
 
-    @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
-                         // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
-    @Column(name = COLUMN_SETUP)
-    @JsonIgnore // we use json ignore because we do not want it automatically in lists. To get
-                // setup we provide another way
-    private String setup;
+    @Column(name = COLUMN_SETUP,columnDefinition = "text")
+    @Convert(converter = ProductExecutorConfigSetupJpaConverter.class)
+    @Basic(fetch = FetchType.EAGER)
+    private ProductExecutorConfigSetup setup;
 
     @Version
     @Column(name = "VERSION")
@@ -80,17 +87,22 @@ public class ProductExecutorConfig {
 
     @Column(name = COLUMN_ENABLED)
     Boolean enabled;
+    
+    @Column(name = COLUMN_PROFILES, nullable = false)
+    @ManyToMany(cascade=CascadeType.REFRESH, mappedBy=ProductExecutionProfile.PROPERTY_CONFIGURATIONS, fetch=FetchType.EAGER)
+    Set<ProductExecutionProfile> profiles = new HashSet<>();
+
 
     ProductExecutorConfig() {
         // jpa only
     }
 
-    public ProductExecutorConfig(ProductIdentifier productIdentifier, String setupAsJSON) {
+    public ProductExecutorConfig(ProductIdentifier productIdentifier, ProductExecutorConfigSetup setup) {
         if (productIdentifier == null) {
             throw new IllegalArgumentException("Product identifier not be null!");
         }
         this.productIdentifier = productIdentifier;
-        this.setup = setupAsJSON;
+        this.setup = setup;
 
     }
 
@@ -122,11 +134,11 @@ public class ProductExecutorConfig {
         this.enabled = enabled;
     }
 
-    public void setSetup(String result) {
-        this.setup = result;
+    public void setSetup(ProductExecutorConfigSetup setup) {
+        this.setup = setup;
     }
 
-    public String getSetup() {
+    public ProductExecutorConfigSetup getSetup() {
         return setup;
     }
 

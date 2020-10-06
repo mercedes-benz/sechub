@@ -38,7 +38,7 @@ public class ProductExecutorConfigValidationImpl extends AbstractValidation<Prod
         validateMaxLength(context,name, 20, "name");
         validateMinLength(context,name, 3, "name");
         
-        String setup = config.getSetup();
+        ProductExecutorConfigSetup setup = config.getSetup();
         validateNotNull(context, setup,"setup");
         if (setup==null) {
             LOG.error("setup null - not valid");
@@ -46,8 +46,7 @@ public class ProductExecutorConfigValidationImpl extends AbstractValidation<Prod
         }
         /* just check if can be transformed to json */
         try {
-            ProductExecutorConfigSetup setupObj = ProductExecutorConfigSetup.fromJSONString(setup);
-            ValidationResult setupResult = setupValidation.validate(setupObj);
+            ValidationResult setupResult = setupValidation.validate(setup);
             context.addErrors(setupResult);
             
         } catch (JSONConverterException e) {

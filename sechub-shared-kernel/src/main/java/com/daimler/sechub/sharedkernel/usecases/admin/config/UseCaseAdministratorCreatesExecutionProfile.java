@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_DISABLES_EXECUTOR_CONFIGURATION,
+		id=UseCaseIdentifier.UC_ADMIN_CREATES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin disables executor configuration",
-		description="An administrator disables an existing executor configuration. So this executor will NOT be used for scanning any longer")
-public @interface UseCaseAdministratorDisablesExecutorConfiguration{
+		title="Admin creates an execution proflie",
+		description="An administrator creates an execution profile")
+public @interface UseCaseAdministratorCreatesExecutionProfile{
 
 	Step value();
 }

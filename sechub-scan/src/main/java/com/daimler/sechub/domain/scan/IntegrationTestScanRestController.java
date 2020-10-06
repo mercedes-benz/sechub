@@ -28,6 +28,7 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
+import com.daimler.sechub.domain.scan.product.config.IntegrationTestDeleteAllProductExecutorConfigService;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -75,6 +76,15 @@ public class IntegrationTestScanRestController {
     @Autowired
     ProductResultRepository productResultRepository;
     
+    @Autowired
+    IntegrationTestDeleteAllProductExecutorConfigService deleteAllProductExecutorConfigService;
+    
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/executors", method = RequestMethod.DELETE, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void removeAllExecutorConfigurations() {
+        deleteAllProductExecutorConfigService.deleteAllProductExecutorConfigurations();
+    }
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long countProjectAccess(@PathVariable("projectId") String projectId) {

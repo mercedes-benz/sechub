@@ -24,6 +24,7 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
@@ -33,6 +34,9 @@ import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfileList;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -167,26 +171,66 @@ public class AsUser {
         getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
 
     }
-    
-    public UUID createProductExecutorConfig(TestExecutorProductIdentifier productIdentifier, int version, String name) {
-        String url = getUrlBuilder().buildAdminCreatesProductExecutorConfig();
-        /* @formatter:off */
-        StringBuilder json = new StringBuilder();
-        TestJSONHelper jsonHelper = TestJSONHelper.get();
-     
-        json.append("{ \"name\" : \"PDS-gosec-1\",\n" + 
-                "        \n" + 
-                "        \"productIdentifier\" : \"PDS_CODESCAN\",\n" + 
-                "        \n" + 
-                "        \"executorVersion\" : 1" + 
-                "        \n" + 
-                "        ");
 
-        json.append("}\n");
-        jsonHelper.assertValidJson(json.toString());
-        String result= getRestHelper().postJSon(url, json.toString());
-        /* @formatter:on */
+    
+    public void createProductExecutionProfile(String profileId, TestExecutionProfile profile) {
+        String url = getUrlBuilder().buildAdminCreatesProductExecutionProfile(profileId);
+        String json = JSONConverter.get().toJSON(profile);
+        getRestHelper().postJSon(url, json);
+    }
+    
+    public void updateProductExecutionProfile(String profileId, TestExecutionProfile profile) {
+        String url = getUrlBuilder().buildAdminUpdatesProductExecutionProfile(profileId);
+        String json = JSONConverter.get().toJSON(profile);
+        getRestHelper().putJSon(url, json);
+    }
+    
+    public TestExecutionProfile fetchProductExecutionProfile(String profileId) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
+        String json = getRestHelper().getJSon(url);
+        return JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
+    }
+    
+    
+    public TestExecutionProfileList fetchProductExecutionProfiles() {
+        String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionProfiles();
+        String json = getRestHelper().getJSon(url);
+        return JSONConverter.get().fromJSON(TestExecutionProfileList.class, json);
+    }
+    
+    public void  deleteProductExecutionProfile(String profileId) {
+        String url = getUrlBuilder().buildAdminDeletesProductExecutionProfile(profileId);
+        getRestHelper().delete(url);
+    }
+    
+    public UUID createProductExecutorConfig(TestExecutorConfig config) {
+        String url = getUrlBuilder().buildAdminCreatesProductExecutorConfig();
+        String json = JSONConverter.get().toJSON(config);
+        String result = getRestHelper().postJSon(url, json);
         return UUID.fromString(result);
+    }
+
+    public String fetchProductExecutorConfigAsJSON(UUID uuid) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
+        return getRestHelper().getJSon(url);
+    }
+
+    public TestExecutorConfig fetchProductExecutorConfig(UUID uuid) {
+        String json = fetchProductExecutorConfigAsJSON(uuid);
+        TestExecutorConfig result = JSONConverter.get().fromJSON(TestExecutorConfig.class, json);
+        return result;
+    }
+    
+    public void updateProdcutExecutorConfig(UUID uuid, TestExecutorConfig config) {
+        String url = getUrlBuilder().buildAdminUpdatesProductExecutorConfig(uuid);
+        String json = JSONConverter.get().toJSON(config);
+        getRestHelper().putJSon(url, json);
+    }
+
+    
+    public void deleteProductExecutorConfig(UUID uuid) {
+        String url = getUrlBuilder().buildAdminDeletesProductExecutorConfig(uuid);
+        getRestHelper().delete(url);
     }
 
     public String getServerURL() {
@@ -549,7 +593,7 @@ public class AsUser {
         String url = getUrlBuilder().buildGetFalsePositiveConfigurationOfProject(project.getProjectId());
         String json = getRestHelper().getJSon(url);
 
-        return create(project,json);
+        return create(project, json);
 
     }
 
@@ -600,8 +644,8 @@ public class AsUser {
         try {
             JsonNode jsonNode = jsonTestSupport.fromJson(json);
             ArrayNode falsePositives = (ArrayNode) jsonNode.get("falsePositives");
-            if (falsePositives==null) {
-                fail("No false positives found in json:"+json);
+            if (falsePositives == null) {
+                fail("No false positives found in json:" + json);
             }
             for (JsonNode falsePositive : falsePositives) {
                 JsonNode jobData = falsePositive.get("jobData");
@@ -622,7 +666,7 @@ public class AsUser {
         }
         return def;
     }
-    
+
     public class ProjectFalsePositivesDefinition {
 
         private TestProject project;
@@ -636,16 +680,15 @@ public class AsUser {
         private List<JobData> jobData = new ArrayList<>();
         private WithSecHubClient withSechubClient;
         private IntegrationTestJSONLocation location;
-        
+
         public ProjectFalsePositivesDefinition(TestProject project) {
             this(project, null, null);
         }
 
-
         public ProjectFalsePositivesDefinition(TestProject project, WithSecHubClient withSechubClient, IntegrationTestJSONLocation location) {
             this.project = project;
             this.withSechubClient = withSechubClient;
-            this.location=location;
+            this.location = location;
         }
 
         public boolean isContaining(int findingId, UUID jobUUID) {
@@ -684,7 +727,7 @@ public class AsUser {
             File file = testfileSupport.createTempFile("mark_as_false_positive", ".json");
             testfileSupport.writeTextFile(file, json);
 
-            withSechubClient.markAsFalsePositive(project,location, file.getAbsolutePath());
+            withSechubClient.markAsFalsePositive(project, location, file.getAbsolutePath());
 
         }
 
@@ -755,5 +798,9 @@ public class AsUser {
         }
     }
 
+
+
     
+    
+
 }

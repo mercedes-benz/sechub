@@ -6,6 +6,7 @@ import java.util.List;
 import com.daimler.sechub.commons.model.JSONable;
 
 public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfigSetup> {
+    
     private static final ProductExecutorConfigSetup IMPORTER = new ProductExecutorConfigSetup();
     private String baseURL;
 

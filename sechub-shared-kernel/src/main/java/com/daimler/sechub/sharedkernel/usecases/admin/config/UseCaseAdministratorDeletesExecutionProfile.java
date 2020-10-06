@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTOR_CONFIGURATION_SETUP,
+		id=UseCaseIdentifier.UC_ADMIN_DELETES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin fetches executor configuration",
-		description="An administrator fetches one explicit executor configuration by its uuid.")
-public @interface UseCaseAdministratorFetchesExecutorConfigurationSetup{
+		title="Admin deletes execution profile",
+		description="An administrator deletes execution profile")
+public @interface UseCaseAdministratorDeletesExecutionProfile{
 
 	Step value();
 }

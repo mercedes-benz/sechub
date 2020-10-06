@@ -30,7 +30,7 @@ public class CreateProductExecutorConfigService {
 
     @Autowired
     ProductExecutorConfigValidation validation;
-    
+
     @Autowired
     AuditLogService auditLogService;
 
@@ -38,43 +38,30 @@ public class CreateProductExecutorConfigService {
     @UseCaseAdministratorAddsExecutorConfiguration(
             @Step(number = 1, 
             name = "Service call", 
-            description = "Service creates a new product executor configuration with empty setup and being not enabled"))
+            description = "Service creates a new product executor configuration"))
     /* @formatter:on */
-    public UUID createProductExecutorConfig(ProductExecutorConfig configFromUser) {
-        
-        auditLogService.log("Wants to create product execution configuration '{}' for executor:{}, V{}", configFromUser.getName(), configFromUser.getProductIdentifier(), configFromUser.getExecutorVersion());
-        
-        ProductExecutorConfig config = new ProductExecutorConfig();
-        config.setEnabled(false); // must be done later when also setup is configured etc.
-        config.setExecutorVersion(configFromUser.getExecutorVersion());
-        config.setProductIdentifier(configFromUser.getProductIdentifier());
-        config.setName(configFromUser.getName());
-        
-        prepareInitialSetup(config);
-        
-        assertValid(config, validation);
-        
+    public String createProductExecutorConfig(ProductExecutorConfig configFromUser) {
 
-        ProductExecutorConfig stored = repository.save(config);
+        auditLogService.log("Wants to create product execution configuration '{}', enabled: {} for executor:{}, V{}", configFromUser.getName(),
+                configFromUser.getEnabled(), configFromUser.getProductIdentifier(), configFromUser.getExecutorVersion());
+
+        resetFieldsNeverFromUser(configFromUser);
+
+        assertValid(configFromUser, validation);
+
+        ProductExecutorConfig stored = repository.save(configFromUser);
         UUID uuid = stored.getUUID();
 
-        LOG.info("Created product execution configuration '{}' with uuidD={} for executor:{}, V{}", stored.getName(), uuid, stored.getProductIdentifier(),stored.getExecutorVersion());
+        LOG.info("Created product execution configuration '{}', enabled={}, with uuidD={} for executor:{}, V{}", stored.getName(), configFromUser.getEnabled(),
+                uuid, stored.getProductIdentifier(), stored.getExecutorVersion());
 
-        return uuid;
-
-    }
-
-    private void prepareInitialSetup(ProductExecutorConfig config) {
-        /*
-         * TODO Albert Tregnaghi, 2020-07-23: maybe later we could directly ask products
-         * about mandatory parts when supported (like PDS does)
-         */
-
-        /* create a simple empty setup */
-        ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
-        config.setSetup(setup.toJSON());
+        return uuid.toString();
 
     }
 
+    private void resetFieldsNeverFromUser(ProductExecutorConfig configFromUser) {
+        configFromUser.uUID = null;
+        configFromUser.version = null;
+    }
 
 }

@@ -122,7 +122,7 @@ public class ProductExecutorConfigValidationImplTest {
         when(config.getName()).thenReturn(name);
         when(config.getProductIdentifier()).thenReturn(ProductIdentifier.PDS_CODESCAN);
         when(config.getUUID()).thenReturn(UUID.randomUUID());
-        when(config.getSetup()).thenReturn("{}");
+        when(config.getSetup()).thenReturn(new ProductExecutorConfigSetup());
     }
 
 }

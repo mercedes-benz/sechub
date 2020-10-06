@@ -17,14 +17,11 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrato
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
 @Service
-public class FetchProductExecutorConfigListService {
+public class FetchProductExecutionProfileListService {
 
     @Autowired
-    ProductExecutorConfigRepository repository;
+    ProductExecutionProfileRepository repository;
 
-    @Autowired
-    ProductExecutorConfigValidation validation;
-    
     @Autowired
     AuditLogService auditLogService;
 
@@ -32,23 +29,21 @@ public class FetchProductExecutorConfigListService {
     @UseCaseAdministratorFetchesExecutorConfigList(
             @Step(number = 1, 
             name = "Service call", 
-            description = "Service fetches data and creates a list containing all executor configurations"))
+            description = "Service fetches data and creates a list containing all executor profiles"))
     /* @formatter:on */
-    public ProductExecutorConfigList fetchProductExecutorConfigList() {
-        auditLogService.log("Wants to fetch list of product execution configurations");
+    public ProductExecutionProfilesList fetchProductExecutorConfigList() {
+        auditLogService.log("Wants to fetch list of product execution profiles");
         
-        ProductExecutorConfigList configList = new ProductExecutorConfigList();
+        ProductExecutionProfilesList configList = new ProductExecutionProfilesList();
         
-        List<ProductExecutorConfig> data =  repository.findAll();
-        for (ProductExecutorConfig config : data) {
+        List<ProductExecutionProfile> data =  repository.findAll();
+        for (ProductExecutionProfile config : data) {
             
-            ProductExecutorConfigListEntry entry = new ProductExecutorConfigListEntry();
+            ProductExecutionProfileListEntry entry = new ProductExecutionProfileListEntry();
+            entry.profileId = config.getId();
+            entry.description=config.getDescription();
             
-            entry.enabled=config.getEnabled();
-            entry.name=config.getName();
-            entry.uuid=config.getUUID();
-            
-            configList.getExecutorConfigurations().add(entry);
+            configList.getExecutionProfiles().add(entry);
         }
         
         return configList;

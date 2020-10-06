@@ -9,7 +9,7 @@ public class ProductExecutorConfigList implements JSONable<ProductExecutorConfig
     
     private static final ProductExecutorConfigList IMPORTER = new ProductExecutorConfigList();
 
-    private List<ProductExecutorConfig> executorConfigurations = new ArrayList<>();
+    private List<ProductExecutorConfigListEntry> executorConfigurations = new ArrayList<>();
 
     private String type = "executorConfigurationList";
     
@@ -21,11 +21,11 @@ public class ProductExecutorConfigList implements JSONable<ProductExecutorConfig
         this.type = type;
     }
     
-    public List<ProductExecutorConfig> getExecutorConfigurations() {
+    public List<ProductExecutorConfigListEntry> getExecutorConfigurations() {
         return executorConfigurations;
     }
 
-    public void setExecutorConfigurations(List<ProductExecutorConfig> executorConfigurations) {
+    public void setExecutorConfigurations(List<ProductExecutorConfigListEntry> executorConfigurations) {
         this.executorConfigurations = executorConfigurations;
     }
 

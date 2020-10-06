@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.config;
 
-import java.util.UUID;
-
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +21,10 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAddsExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigList;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorRemovesExecutorConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
 
 /**
@@ -40,48 +38,48 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrato
 @EnableAutoConfiguration
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
-public class ProductExecutorConfigRestController {
+public class ProductExecutionProfileRestController {
 
     @Autowired
-    CreateProductExecutorConfigService createService;
+    CreateProductExecutionProfileService createService;
 
     @Autowired
-    DeleteProductExecutorConfigService deleteService;
+    DeleteProductExecutionProfileService deleteService;
 
     @Autowired
-    FetchProductExecutorConfigListService fetchListService;
+    FetchProductExecutionProfileListService fetchListService;
 
     @Autowired
-    UpdateProductExecutorConfigService updateService;
+    UpdateProductExecutionProfileService updateService;
 
     @Autowired
-    FetchProductExecutorConfigService fetchService;
+    FetchProductExecutionProfileService fetchService;
 
     /* @formatter:off */
-	@UseCaseAdministratorAddsExecutorConfiguration(
+	@UseCaseAdministratorCreatesExecutionProfile(
 			@Step(
 				number=1,
 				name="Rest call",
 				needsRestDoc=true,
-				description="Administrator adds a new product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor", method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+				description="Administrator adds a new product execution profile by calling REST API"))
+	@RequestMapping(path="execution/profile/{id}",method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
-	public String addProductExecutorConfig(@RequestBody ProductExecutorConfig configFromUser) {
-	    return createService.createProductExecutorConfig(configFromUser);
+	public void createProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profileFromuser) {
+	    createService.createProductExecutionProfile(profileId,profileFromuser);
 		/* @formatter:on */
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorRemovesExecutorConfiguration(
+	@UseCaseAdministratorDeletesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator deletes an existing product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor/{uuid}", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
+	                description="Administrator deletes an existing product execution profile by calling REST API"))
+	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public void removeProductExecutorConfig(@PathVariable("uuid")UUID uuid) {
-	    deleteService.deleteProductExecutorConfig(uuid);
+	public void deleteProfile(@PathVariable("id")String profileId) {
+	    deleteService.deleteProductExecutionProfile(profileId);
 	    /* @formatter:on */
     }
 
@@ -92,10 +90,10 @@ public class ProductExecutorConfigRestController {
 	                name="Rest call",
 	                needsRestDoc=true,
 	                description="Administrator updates setup for an existing product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor/{uuid}", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public void updateProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid, @RequestBody ProductExecutorConfig setup) {
-	    updateService.updateProductExecutorSetup(uuid,setup);
+	public void udpateProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profile) {
+	    updateService.updateProductExecutorSetup(profileId,profile);
 	    /* @formatter:on */
     }
 
@@ -106,9 +104,9 @@ public class ProductExecutorConfigRestController {
 	                name="Rest call",
 	                needsRestDoc=true,
 	                description="Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information"))
-	@RequestMapping(path = "executors", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "execution/profiles", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfigList fechProductExecutorConfiguraitonsAsList() {
+	public ProductExecutionProfilesList fetchProfileList() {
 	    return fetchListService.fetchProductExecutorConfigList();
 	    /* @formatter:on */
     }
@@ -120,10 +118,10 @@ public class ProductExecutorConfigRestController {
 	                name="Rest call",
 	                needsRestDoc=true,
 	                description="Administrator fetches setup of an existing product executor configuration by calling REST API"))
-	@RequestMapping(path = "executor/{uuid}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public ProductExecutorConfig fechProductExecutorConfigSetup(@PathVariable("uuid")UUID uuid) {
-	    return fetchService.fetchProductExecutorConfig(uuid);
+	public ProductExecutionProfile fechProductExecutorConfigSetup(@PathVariable("id")String profileId) {
+	    return fetchService.fetchProductExecutorConfig(profileId);
 	    /* @formatter:on */
     }
 

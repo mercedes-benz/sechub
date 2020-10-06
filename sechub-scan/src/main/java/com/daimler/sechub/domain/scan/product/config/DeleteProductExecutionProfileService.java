@@ -21,13 +21,13 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrato
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
 @Service
-public class DeleteProductExecutorConfigService {
+public class DeleteProductExecutionProfileService {
 
 
-private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutorConfigService.class);
+private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutionProfileService.class);
 
     @Autowired
-    ProductExecutorConfigRepository repository;
+    ProductExecutionProfileRepository repository;
     
     @Autowired
     AuditLogService auditLogService;
@@ -37,23 +37,27 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecutorC
             @Step(
                 number=2,
                 name="Service call",
-                description="Service deletes an existing product executor configuration by its UUID"))
-    public void deleteProductExecutorConfig(UUID uuid) {
-        auditLogService.log("Wants to removed product execution {}",uuid);
+                description="Service deletes an existing product execution profile by its profile id"))
+    public void deleteProductExecutionProfile(String profileId) {
+        auditLogService.log("Wants to removed product execution profile {}",profileId);
 
-        Optional<ProductExecutorConfig> opt = repository.findById(uuid);
+        Optional<ProductExecutionProfile> opt = repository.findById(profileId);
         if (!opt.isPresent()) {
-            LOG.info("Delete canceled, because executor config with uuid {} did not exist",uuid);;
+            LOG.info("Delete canceled, because execution profile with id {} did not exist",profileId);;
             return;
         }
-        ProductExecutorConfig found = opt.get();
-        String name = found.getName();
-        ProductIdentifier productIdentifier = found.getProductIdentifier();
-        Integer executorVersion = found.getExecutorVersion();
+        ProductExecutionProfile found = opt.get();
+        String description = found.getDescription(); 
         
-        repository.deleteById(uuid);
+        LOG.debug("Start removing configurations and project ids from profile:{}",profileId);
+        found.getConfigurations().clear();
+        found.getProjectIds().clear();
+        repository.saveAndFlush(found);
         
-        LOG.info("Removed product execution config uuid:{}, name:{} which was for product:{} V{}",uuid, name, productIdentifier,executorVersion);
+        LOG.debug("Start delete of profile:{}",profileId);
+        repository.deleteById(profileId);
+        
+        LOG.info("Removed product execution profile id:{}, description:{}",profileId, description);
     }
 
     /* @formatter:on */    

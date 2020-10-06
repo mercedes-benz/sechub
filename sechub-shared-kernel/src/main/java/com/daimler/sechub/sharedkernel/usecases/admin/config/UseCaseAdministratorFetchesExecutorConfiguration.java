@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_ENABLES_EXECUTOR_CONFIGURATION,
+		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin enables executor configuration",
-		description="An administrator enables an existing executor configuration. So this executor will be used for scanning.")
-public @interface UseCaseAdministratorEnablesExecutorConfiguration{
+		title="Admin fetches executor configuration",
+		description="An administrator fetches one explicit executor configuration by its uuid.")
+public @interface UseCaseAdministratorFetchesExecutorConfiguration{
 
 	Step value();
 }
