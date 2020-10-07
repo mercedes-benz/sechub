@@ -13,8 +13,8 @@ public class ProfileDescriptionValidationImpl extends AbstractSimpleStringValida
 
     @Override
     protected void validate(ValidationContext<String> context) {
-        validateNotNull(context);
-        if (context.isInValid()) {
+        if (getObjectToValidate(context)==null) {
+            /* we accept null*/
             return;
         }
         validateMaxLength(context);

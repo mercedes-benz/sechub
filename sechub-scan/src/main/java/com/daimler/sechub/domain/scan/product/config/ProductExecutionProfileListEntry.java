@@ -8,12 +8,12 @@ package com.daimler.sechub.domain.scan.product.config;
  */
 public class ProductExecutionProfileListEntry {
 
-    String profileId;
+    String id;
 
     String description;
     
-    public String getProfileId() {
-        return profileId;
+    public String getId() {
+        return id;
     }
     
     public String getDescription() {

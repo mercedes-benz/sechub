@@ -47,14 +47,22 @@ public class ProductExecutorConfig {
     public static final String COLUMN_PRODUCT_IDENTIFIER = "CONFIG_PRODUCT_ID";
     public static final String COLUMN_SETUP = "CONFIG_SETUP";
     public static final String COLUMN_ENABLED = "CONFIG_ENABLED";
-    
     public static final String COLUMN_PROFILES= "PROFILES_PROFILE_ID";
     
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String CLASS_NAME = ProductExecutorConfig.class.getSimpleName();
+    public static final String CLASS_NAME = "ProductExecutorConfig";
+    
+    public static final String PROPERTY_UUID="uuid";
+    public static final String PROPERTY_NAME="name";
+    public static final String PROPERTY_PRODUCTIDENTIFIER="productIdentifier";
+    public static final String PROPERTY_SETUP="setup";
+    public static final String PROPERTY_EXECUTORVERSION="executorVersion";
+    public static final String PROPERTY_ENABLED="enabled";
+    public static final String PROPERTY_PROFILES="profiles";
+    
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -64,18 +72,18 @@ public class ProductExecutorConfig {
     UUID uUID;
 
     @Column(name = COLUMN_NAME)
-    private String name;
+    String name;
     /**
      * The type of the product. Just to identify result content
      */
     @Enumerated(STRING)
     @Column(name = COLUMN_PRODUCT_IDENTIFIER, nullable = false)
-    private ProductIdentifier productIdentifier;
+    ProductIdentifier productIdentifier;
 
     @Column(name = COLUMN_SETUP,columnDefinition = "text")
     @Convert(converter = ProductExecutorConfigSetupJpaConverter.class)
     @Basic(fetch = FetchType.EAGER)
-    private ProductExecutorConfigSetup setup;
+    ProductExecutorConfigSetup setup;
 
     @Version
     @Column(name = "VERSION")
@@ -114,14 +122,6 @@ public class ProductExecutorConfig {
         return productIdentifier;
     }
 
-    public void setProductIdentifier(ProductIdentifier productIdentifier) {
-        this.productIdentifier = productIdentifier;
-    }
-
-    public void setExecutorVersion(Integer executorVersion) {
-        this.executorVersion = executorVersion;
-    }
-
     public Integer getExecutorVersion() {
         return executorVersion;
     }
@@ -130,20 +130,8 @@ public class ProductExecutorConfig {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setSetup(ProductExecutorConfigSetup setup) {
-        this.setup = setup;
-    }
-
     public ProductExecutorConfigSetup getSetup() {
         return setup;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -173,6 +161,13 @@ public class ProductExecutorConfig {
         } else if (!uUID.equals(other.uUID))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductExecutorConfig [" + (uUID != null ? "uUID=" + uUID + ", " : "") + (name != null ? "name=" + name + ", " : "")
+                + (productIdentifier != null ? "productIdentifier=" + productIdentifier + ", " : "")
+                + (executorVersion != null ? "executorVersion=" + executorVersion + ", " : "") + (enabled != null ? "enabled=" + enabled : "") + "]";
     }
 
 }

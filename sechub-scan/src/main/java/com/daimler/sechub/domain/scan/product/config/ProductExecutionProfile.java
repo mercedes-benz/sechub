@@ -48,6 +48,8 @@ public class ProductExecutionProfile {
     public static final String ASSOCIATE_PROFILE_TO_CONFIG_ID = "PROFILES_PROFILE_ID";
     public static final String ASSOCIATE_PROFILE_TO_PROJECT_ID = "PROJECTS_PROJECT_ID";
     public static final String PROPERTY_CONFIGURATIONS = "configurations";
+    public static final String PROPERTY_PROJECT_IDS = "projectIds";
+    public static final String PROPERTY_ENABLED = "enabled";
 
     @Id
     @Column(name = COLUMN_PROFILE_ID)
@@ -108,7 +110,10 @@ public class ProductExecutionProfile {
         ProductExecutionProfile other = (ProductExecutionProfile) obj;
         return Objects.equals(id, other.id);
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "ProductExecutionProfile [" + (id != null ? "id=" + id + ", " : "") + (enabled != null ? "enabled=" + enabled : "") + "]";
+    }
     
 }

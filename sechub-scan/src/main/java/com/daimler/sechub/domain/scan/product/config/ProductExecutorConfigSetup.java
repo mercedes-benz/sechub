@@ -8,6 +8,11 @@ import com.daimler.sechub.commons.model.JSONable;
 public class ProductExecutorConfigSetup implements JSONable<ProductExecutorConfigSetup> {
     
     private static final ProductExecutorConfigSetup IMPORTER = new ProductExecutorConfigSetup();
+    
+    public static final String PROPERTY_BASEURL = "baseURL";
+    public static final String PROPERTY_JOBPARAMETERS = "jobParameters";
+    public static final String PROPERTY_CREDENTIALS= "credentials";
+    
     private String baseURL;
 
     private ProductExecutorConfigSetupCredentials credentials = new ProductExecutorConfigSetupCredentials();

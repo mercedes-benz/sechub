@@ -42,9 +42,9 @@ public class ProductExecutorConfigRepositoryDBTest {
     public void can_store_pds_codescan_config_with_bigger_config_setup_and_stored_part_has_uuuid() {
         /* prepare */
         ProductExecutorConfig config = new ProductExecutorConfig();
-        config.setEnabled(true);
-        config.setProductIdentifier(ProductIdentifier.PDS_CODESCAN);
-        config.setExecutorVersion(1);
+        config.enabled=true;
+        config.productIdentifier=ProductIdentifier.PDS_CODESCAN;
+        config.executorVersion=1;
         ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
         setup.getCredentials().setPassword(createPseudostring(255, 'p'));
         setup.getCredentials().setUser(createPseudostring(20, 'u'));
@@ -57,7 +57,7 @@ public class ProductExecutorConfigRepositoryDBTest {
             params.add(param);
         }
         setup.setBaseURL("https://www.example.com/somewhere/very/special/target");
-        config.setSetup(setup);
+        config.setup=setup;
 
         assertNull(config.getUUID());
 

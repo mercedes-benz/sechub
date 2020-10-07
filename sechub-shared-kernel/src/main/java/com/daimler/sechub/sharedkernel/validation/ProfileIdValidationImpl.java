@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProfileIdValidationImpl extends AbstractSimpleStringValidation implements ProfileIdValidation {
 
-    public static final int PROJECTID_LENGTH_MIN = 2;
-    public static final int PROJECTID_LENGTH_MAX = 20;
+    public static final int PROJECTID_LENGTH_MIN = 3;
+    public static final int PROJECTID_LENGTH_MAX = 30;
 
     @Override
     protected void setup(ValidationConfig config) {

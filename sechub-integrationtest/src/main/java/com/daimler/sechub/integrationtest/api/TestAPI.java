@@ -32,7 +32,6 @@ import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
-import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -733,6 +732,11 @@ public class TestAPI {
     public static void deleteAllProductExecutorConfigurations() {
         String url = getURLBuilder().buildintegrationTestDeleteAllProductExecutorConfigurations();
         getSuperAdminRestHelper().delete(url); 
+    }
+
+    public static boolean isExecutionProfileExisting(String profileId) {
+        String url = getURLBuilder().buildintegrationTestIsExecutionProfileExisting(profileId);
+        return getSuperAdminRestHelper().getBooleanFromURL(url);
     }
 
 }

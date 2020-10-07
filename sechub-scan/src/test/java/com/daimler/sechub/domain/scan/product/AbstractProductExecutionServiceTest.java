@@ -66,7 +66,7 @@ public class AbstractProductExecutionServiceTest {
 		serviceToTest.productExecutorContextFactory=productExecutorContextFactory;
 		
 		productExecutorContext= mock(ProductExecutorContext.class);
-		when(productExecutorContextFactory.create(any(), any(), any())).thenReturn(productExecutorContext);
+		when(productExecutorContextFactory.create(any(),any(), any(), any())).thenReturn(productExecutorContext);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(eq(context),any())).thenReturn(null);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository, never()).save(any());
@@ -91,7 +91,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(eq(context),executorContext.capture())).thenReturn(Collections.singletonList(result));
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
@@ -108,7 +108,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
@@ -132,7 +132,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productExecutorContext).persist(productResultCaptor.capture());
@@ -158,13 +158,15 @@ public class AbstractProductExecutionServiceTest {
 		doThrow(new RuntimeException("save-failed")).when(productExecutorContext).persist(result);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 	}
 
 	private class TestImplAbstractProductExecutionService extends AbstractProductExecutionService{
 
-		@Override
+		private List<ProductExecutor> list = new ArrayList<>();
+
+        @Override
 		protected boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID,
 				SecHubConfiguration configuration) {
 			return true;
@@ -174,6 +176,11 @@ public class AbstractProductExecutionServiceTest {
 		Logger getMockableLog() {
 			return logger;
 		}
+
+        @Override
+        protected List<ProductExecutor> getProductExecutors() {
+            return list;
+        }
 
 	}
 }

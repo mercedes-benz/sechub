@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario7;
 
+import static com.daimler.sechub.integrationtest.api.AssertExecutorConfig.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
-import static com.daimler.sechub.integrationtest.api.AssertExecutorConfig.*;
+
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;

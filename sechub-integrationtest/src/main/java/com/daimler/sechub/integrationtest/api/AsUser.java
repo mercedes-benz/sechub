@@ -226,13 +226,26 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         getRestHelper().putJSon(url, json);
     }
-
     
     public void deleteProductExecutorConfig(UUID uuid) {
         String url = getUrlBuilder().buildAdminDeletesProductExecutorConfig(uuid);
         getRestHelper().delete(url);
     }
 
+    public void addProjectToProfile(String profileId, TestProject ... projects) {
+        /* currently we do this by calling update REST - maybe later we got a dedicated REST method */
+        TestExecutionProfile loadedProfile = fetchProductExecutionProfile(profileId);
+        for (TestProject project: projects) {
+            loadedProfile.projectIds.add(project.getProjectId());
+        }
+        updateProductExecutionProfile(profileId, loadedProfile);
+    }
+    
+    
+    
+    
+    
+    
     public String getServerURL() {
         return getUrlBuilder().buildServerURL();
     }
@@ -797,9 +810,6 @@ public class AsUser {
             return this;
         }
     }
-
-
-
     
     
 

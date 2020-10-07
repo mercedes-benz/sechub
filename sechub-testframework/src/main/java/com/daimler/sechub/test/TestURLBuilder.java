@@ -593,6 +593,10 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/executors");
     }
 
+    public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/"+profileId+"/exists");
+    }
+
 
  
 

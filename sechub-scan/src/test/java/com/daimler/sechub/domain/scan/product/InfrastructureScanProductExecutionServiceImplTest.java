@@ -58,7 +58,7 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 		productExecutorContextFactory = mock(ProductExecutorContextFactory.class);
 		serviceToTest.productExecutorContextFactory = productExecutorContextFactory;
 
-		when(productExecutorContextFactory.create(any(), any(), any())).thenReturn(productExecutorContext);
+		when(productExecutorContextFactory.create(any(),any(), any(), any())).thenReturn(productExecutorContext);
 		
 	}
 

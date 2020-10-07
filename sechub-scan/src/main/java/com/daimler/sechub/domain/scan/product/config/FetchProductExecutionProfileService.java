@@ -1,7 +1,6 @@
 package com.daimler.sechub.domain.scan.product.config;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
 

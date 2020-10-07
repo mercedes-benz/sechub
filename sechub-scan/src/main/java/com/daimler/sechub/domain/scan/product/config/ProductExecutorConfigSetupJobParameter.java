@@ -2,6 +2,9 @@ package com.daimler.sechub.domain.scan.product.config;
 
 public class ProductExecutorConfigSetupJobParameter {
 
+    public static final String PROPERTY_KEY= "key";
+    public static final String PROPERTY_VALUE= "value";
+    
     private String key;
 
     private String value;

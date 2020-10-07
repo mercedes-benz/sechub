@@ -29,6 +29,7 @@ import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.domain.scan.product.config.IntegrationTestDeleteAllProductExecutorConfigService;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -77,8 +78,16 @@ public class IntegrationTestScanRestController {
     ProductResultRepository productResultRepository;
     
     @Autowired
+    ProductExecutionProfileRepository profileRepository;
+    
+    @Autowired
     IntegrationTestDeleteAllProductExecutorConfigService deleteAllProductExecutorConfigService;
     
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/execution/profile/{profileId}/exists", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
+    public String executionProfileExists(@PathVariable("profileId") String profileId) {
+        return ""+profileRepository.existsById(profileId);
+    }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/executors", method = RequestMethod.DELETE, produces = {
             MediaType.APPLICATION_JSON_VALUE })

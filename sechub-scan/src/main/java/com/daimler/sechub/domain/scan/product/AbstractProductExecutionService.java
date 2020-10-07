@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -28,23 +30,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractProductExecutionService.class);
 
-	private List<ProductExecutor> productExecutors = new ArrayList<>();
-
 	@Autowired
 	ProductResultRepository productResultRepository;
 	
-	
+	@Autowired
+	ProductExecutorConfigRepository repository;
+	    
 	@Autowired
 	ProductExecutorContextFactory productExecutorContextFactory;
-
-	/**
-	 * Registers given product executors which shall be executed
-	 *
-	 * @param productExecutors
-	 */
-	protected void register(List<? extends ProductExecutor> productExecutors) {
-		this.productExecutors.addAll(productExecutors);
-	}
 
 	/**
 	 * Executes product executors and stores results. If a result of an executor is
@@ -67,12 +60,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
 				LOG.debug("{} NO execution necessary by {}", traceLogID, getClass().getSimpleName());
 				return;
 			}
-			executeAndPersistResults(productExecutors, context, traceLogID);
+			runOnAllAvailableExecutors(getProductExecutors(), context, traceLogID);
 		} catch (RuntimeException e) {
 			/* catch runtime errors and move and wrapt in SecHubExecutionException */
 			throw new SecHubExecutionException("Product execution + store failed unexpected", e);
 		}
 	}
+	
+	protected abstract List<? extends ProductExecutor> getProductExecutors();
 
 	protected abstract boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration);
 
@@ -107,7 +102,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 	 * @param context
 	 * @param traceLogID
 	 */
-	protected void executeAndPersistResults(List<? extends ProductExecutor> executors, SecHubExecutionContext context, UUIDTraceLogID traceLogID) {
+	protected void runOnAllAvailableExecutors(List<? extends ProductExecutor> executors, SecHubExecutionContext context, UUIDTraceLogID traceLogID) {
 		SecHubConfiguration configuration = context.getConfiguration();
 		requireNonNull(configuration, "Configuration must be set");
 
@@ -118,44 +113,55 @@ public abstract class AbstractProductExecutionService implements ProductExection
 		    if (context.isCanceledOrAbandonded()) {
                 return;
             }
-		    /* find former results - necessary for restart, contains necessary meta data for restart*/
-		    List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
-		    ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults,context, productExecutor);
-		            
-			List<ProductResult> productResults = null;
-			try {
-				productResults = execute(productExecutor, executorContext, context, traceLogID);
-				if (context.isCanceledOrAbandonded()) {
-	                return;
-	            }
-				if (productResults == null) {
-					getMockableLog().error("Product executor {} returned null as results {}", productExecutor.getIdentifier(), traceLogID);
-					continue;
-				}
-			} catch (Exception e) {
-				getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
-
-				productResults = new ArrayList<ProductResult>();
-				ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
-				productResults.add(fallbackResult);
-			}
-			if (context.isCanceledOrAbandonded()) {
+		    List<ProductExecutorConfig> executorConfigurations = repository.findExecutableConfigurationsForProject(projectId,productExecutor.getIdentifier(),productExecutor.getVersion());
+		    if (executorConfigurations.isEmpty()) {
+		        LOG.debug("no config found for project {} so skipping executor={}, version={}" , projectId, productExecutor.getIdentifier(), productExecutor.getVersion());
+		        continue;
+		    }
+		    for (ProductExecutorConfig executorConfiguration: executorConfigurations) {
+		        runOnExecutorWithOneConfiguration(executorConfiguration, productExecutor,context,projectId, traceLogID);
+		    }
+		}
+	}
+	
+	private void runOnExecutorWithOneConfiguration(ProductExecutorConfig executorConfiguration, ProductExecutor productExecutor, SecHubExecutionContext context, String projectId, UUIDTraceLogID traceLogID) {
+        /* find former results - necessary for restart, contains necessary meta data for restart*/
+        List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
+        ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults,context, productExecutor,executorConfiguration);
+                
+        List<ProductResult> productResults = null;
+        try {
+            productResults = execute(productExecutor, executorContext, context, traceLogID);
+            if (context.isCanceledOrAbandonded()) {
                 return;
             }
-			/* execution was successful - so persist new results */
-			for (ProductResult productResult : productResults) {
-			    executorContext.persist(productResult);
-			}
-			
-			/* we drop former results which are duplicates */
-            for(ProductResult oldResult: formerResults) {
-                if (productResults.contains(oldResult)) {
-                    /* reused - so ignore */
-                    continue;
-                }
-                productResultRepository.delete(oldResult);
+            if (productResults == null) {
+                getMockableLog().error("Product executor {} returned null as results {}", productExecutor.getIdentifier(), traceLogID);
+                return;
             }
-		}
+        } catch (Exception e) {
+            getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
+
+            productResults = new ArrayList<ProductResult>();
+            ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
+            productResults.add(fallbackResult);
+        }
+        if (context.isCanceledOrAbandonded()) {
+            return;
+        }
+        /* execution was successful - so persist new results */
+        for (ProductResult productResult : productResults) {
+            executorContext.persist(productResult);
+        }
+        
+        /* we drop former results which are duplicates */
+        for(ProductResult oldResult: formerResults) {
+            if (productResults.contains(oldResult)) {
+                /* reused - so ignore */
+                continue;
+            }
+            productResultRepository.delete(oldResult);
+        }
 	}
 
     /**

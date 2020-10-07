@@ -52,11 +52,11 @@ public class UpdateProductExecutorConfigService {
 
         ProductExecutorConfig stored = opt.get();
 
-        stored.setName(configFromUser.getName());
-        stored.setExecutorVersion(configFromUser.getExecutorVersion());
-        stored.setProductIdentifier(configFromUser.getProductIdentifier());
-        stored.setEnabled(configFromUser.getEnabled());
-        stored.setSetup(configFromUser.getSetup()); // full replacement of setup - is stored in DB as JSON string
+        stored.name=configFromUser.getName();
+        stored.executorVersion=configFromUser.getExecutorVersion();
+        stored.productIdentifier=configFromUser.getProductIdentifier();
+        stored.enabled=configFromUser.getEnabled();
+        stored.setup=configFromUser.getSetup(); // full replacement of setup - is stored in DB as JSON string
 
         repository.save(stored);
         

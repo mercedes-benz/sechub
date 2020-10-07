@@ -35,7 +35,7 @@ public class ProductExecutorConfigValidationImpl extends AbstractValidation<Prod
         ProductExecutorConfig config = getObjectToValidate(context);
         String name = config.getName();
         validateNotNull(context,name, "name");
-        validateMaxLength(context,name, 20, "name");
+        validateMaxLength(context,name, 30, "name");
         validateMinLength(context,name, 3, "name");
         
         ProductExecutorConfigSetup setup = config.getSetup();

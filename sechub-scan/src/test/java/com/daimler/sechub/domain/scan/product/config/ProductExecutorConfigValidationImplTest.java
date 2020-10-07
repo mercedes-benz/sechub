@@ -59,8 +59,8 @@ public class ProductExecutorConfigValidationImplTest {
     public void when_all_parts_correct_set_but_name_length_is_21_one_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
-        String name = "name56789012345678901";
-        assertEquals(21,name.length());
+        String name = "name567890123456789012345678901";
+        assertEquals(31,name.length());
         when(config.getName()).thenReturn(name);
         
         /* execute */
@@ -117,8 +117,8 @@ public class ProductExecutorConfigValidationImplTest {
 
     private void mockConfigWithValidValues() {
         when(config.getExecutorVersion()).thenReturn(Integer.valueOf(1));
-        String name = "name5678901234567890";
-        assertEquals(20,name.length());
+        String name = "name5678901234567-901234567_90";
+        assertEquals(30,name.length());
         when(config.getName()).thenReturn(name);
         when(config.getProductIdentifier()).thenReturn(ProductIdentifier.PDS_CODESCAN);
         when(config.getUUID()).thenReturn(UUID.randomUUID());

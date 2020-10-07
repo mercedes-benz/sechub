@@ -1,7 +1,7 @@
 CREATE TABLE scan_product_executor_config
 (
    config_uuid uuid not null,
-   config_name varchar(60) not null, -- we accept 60 (3 x 20) see ProductExecutorConfigValidation 
+   config_name varchar(90) not null, -- we accept 90 (3 x 30) see ProductExecutorConfigValidation 
    config_executor_version integer,
    config_product_id varchar(30) not null, -- enum value, max:30
    
@@ -16,7 +16,7 @@ CREATE TABLE scan_product_executor_config
 
 CREATE TABLE scan_product_execution_profile
 (
-   profile_id varchar(60) not null, -- we accept 60 (3x20), see ProfileIdIdValidation
+   profile_id varchar(90) not null, -- we accept 90 (3x30), see ProfileIdIdValidation
    profile_description varchar(512), -- description fields always 512 chars
    profile_enabled boolean,
    

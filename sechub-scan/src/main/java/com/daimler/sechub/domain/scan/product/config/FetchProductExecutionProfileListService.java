@@ -40,7 +40,7 @@ public class FetchProductExecutionProfileListService {
         for (ProductExecutionProfile config : data) {
             
             ProductExecutionProfileListEntry entry = new ProductExecutionProfileListEntry();
-            entry.profileId = config.getId();
+            entry.id = config.getId();
             entry.description=config.getDescription();
             
             configList.getExecutionProfiles().add(entry);
