@@ -60,7 +60,7 @@ public class Scenario7 extends AbstractGrowingSecHubServerTestScenario {
 
     @Override
     public String getPrefixMainId() {
-        return "s02";
+        return "s07";
     }
 	
 	

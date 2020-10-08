@@ -10,6 +10,7 @@ public class IntegrationTestDefaultProfiles {
         profile.configurations.add(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
         profile.configurations.add(IntegrationTestDefaultExecutorConfigurations.NESSUS_V1);
         profile.id="inttest-default-profile1";
+        profile.enabled=true;
         return profile;
     }
     
