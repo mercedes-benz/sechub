@@ -23,10 +23,10 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAddsExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationList;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorRemovesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutorConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
 
 /**
@@ -58,7 +58,7 @@ public class ProductExecutorConfigRestController {
     FetchProductExecutorConfigService fetchService;
 
     /* @formatter:off */
-	@UseCaseAdministratorAddsExecutorConfiguration(
+	@UseCaseAdministratorCreatesExecutorConfiguration(
 			@Step(
 				number=1,
 				name="Rest call",
@@ -72,7 +72,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorRemovesExecutorConfiguration(
+	@UseCaseAdministratorDeletesExecutorConfiguration(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -100,7 +100,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutorConfigList(
+	@UseCaseAdministratorFetchesExecutorConfigurationList(
 	        @Step(
 	                number=1,
 	                name="Rest call",

@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -26,22 +26,23 @@ public class FetchProductExecutionProfileListService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorFetchesExecutorConfigList(
+    @UseCaseAdministratorFetchesExecutionProfileList(
             @Step(number = 1, 
             name = "Service call", 
             description = "Service fetches data and creates a list containing all executor profiles"))
     /* @formatter:on */
-    public ProductExecutionProfilesList fetchProductExecutorConfigList() {
+    public ProductExecutionProfilesList fetchProductExecutionProfileList() {
         auditLogService.log("Wants to fetch list of product execution profiles");
         
         ProductExecutionProfilesList configList = new ProductExecutionProfilesList();
         
         List<ProductExecutionProfile> data =  repository.findAll();
-        for (ProductExecutionProfile config : data) {
+        for (ProductExecutionProfile profile : data) {
             
             ProductExecutionProfileListEntry entry = new ProductExecutionProfileListEntry();
-            entry.id = config.getId();
-            entry.description=config.getDescription();
+            entry.id = profile.getId();
+            entry.description=profile.getDescription();
+            entry.enabled=profile.enabled;
             
             configList.getExecutionProfiles().add(entry);
         }

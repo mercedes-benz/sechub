@@ -50,6 +50,7 @@ public class ProductExecutionProfile {
     public static final String PROPERTY_CONFIGURATIONS = "configurations";
     public static final String PROPERTY_PROJECT_IDS = "projectIds";
     public static final String PROPERTY_ENABLED = "enabled";
+    public static final String PROPERTY_DESCRIPTION= "description";
 
     @Id
     @Column(name = COLUMN_PROFILE_ID)

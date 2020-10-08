@@ -424,6 +424,10 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG,"executor",uuid);
     }
     
+    public String buildAdminFetchesListOfProductExecutionConfigurations() {
+        return buildUrl(API_ADMIN_CONFIG,"executors");
+    }
+    
     public String buildAdminDeletesProductExecutorConfig(UUID uuid) {
         return buildUrl(API_ADMIN_CONFIG,"executor",uuid);
     }
@@ -596,6 +600,8 @@ public class TestURLBuilder {
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/"+profileId+"/exists");
     }
+
+   
 
 
  

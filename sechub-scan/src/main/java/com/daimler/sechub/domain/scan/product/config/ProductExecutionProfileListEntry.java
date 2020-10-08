@@ -12,6 +12,8 @@ public class ProductExecutionProfileListEntry {
 
     String description;
     
+    Boolean enabled;
+    
     public String getId() {
         return id;
     }
@@ -20,5 +22,8 @@ public class ProductExecutionProfileListEntry {
         return description;
     }
     
+    public Boolean getEnabled() {
+        return enabled;
+    }
 
 }

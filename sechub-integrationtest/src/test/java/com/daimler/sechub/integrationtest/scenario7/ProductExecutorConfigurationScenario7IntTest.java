@@ -11,9 +11,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfigList;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfigListEntry;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class ProductExecutorConfigurationScenario7IntTest {
@@ -131,6 +134,46 @@ public class ProductExecutorConfigurationScenario7IntTest {
         
         /* test */
         assertConfigDoesNotExist(uuid);
+    }
+    
+    @Test
+    public void an_admin_can_fetch_product_configuration_list() {
+        
+        /* prepare */
+        TestExecutorConfig config = new TestExecutorConfig();
+        config.productIdentifier=TestExecutorProductIdentifier.PDS_CODESCAN.name();
+        config.name="pds gosec-forlist-check";
+        config.executorVersion=1;
+        config.enabled=true;
+        config.setup.baseURL="https://baseurl.product.example.com/start";
+        
+        UUID uuid = as(SUPER_ADMIN).
+                createProductExecutorConfig(config);
+        assertNotNull(uuid);
+        
+        /* execute */
+        TestExecutorConfigList result = as(SUPER_ADMIN).fetchProductExecutorConfigList();
+        
+        /* test */
+        TestExecutorConfigListEntry found = resolveEntry(uuid, result);
+        if (found==null) {
+            fail("Did not found an config list entry with uuid:"+uuid+"\n"+JSONConverter.get().toJSON(result,true));
+            
+        }
+        assertEquals("pds gosec-forlist-check",found.name);
+        assertTrue(found.enabled);
+        
+    }
+
+    private TestExecutorConfigListEntry resolveEntry(UUID uuid, TestExecutorConfigList result) {
+        TestExecutorConfigListEntry found = null;
+        for (TestExecutorConfigListEntry entry: result.executorConfigurations) {
+            if (entry.uuid.equals(uuid)) {
+                found = entry;
+                break;
+            }
+        }
+        return found;
     }
 
 }

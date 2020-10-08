@@ -14,7 +14,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorRemovesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -31,7 +31,7 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecution
     AuditLogService auditLogService;
     
     /* @formatter:off */
-    @UseCaseAdministratorRemovesExecutorConfiguration(
+    @UseCaseAdministratorDeletesExecutionProfile(
             @Step(
                 number=2,
                 name="Service call",

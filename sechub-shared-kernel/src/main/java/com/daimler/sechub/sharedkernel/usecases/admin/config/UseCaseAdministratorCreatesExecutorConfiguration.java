@@ -15,11 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTOR_CONFIGURATION_LIST,
+		id=UseCaseIdentifier.UC_ADMIN_CREATES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin fetches executor configuration list",
-		description="An administrator fetches executor configuration list which contains all executor configurations")
-public @interface UseCaseAdministratorFetchesExecutorConfigList{
+		title="Admin creates an executor configuration",
+		description="An administrator creates an executor a new configuration entry.")
+public @interface UseCaseAdministratorCreatesExecutorConfiguration{
 
 	Step value();
 }

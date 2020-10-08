@@ -6,5 +6,7 @@ public class TestExecutionProfileListEntry {
     
     public String description;
     
+    public boolean enabled;
+    
 
 }

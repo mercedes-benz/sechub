@@ -23,9 +23,9 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigList;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile;
 
 /**
  * The REST API for project executor config done by a super admin.
@@ -84,12 +84,12 @@ public class ProductExecutionProfileRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorUpdatesExecutorConfig(
+	@UseCaseAdministratorUpdatesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator updates setup for an existing product executor configuration by calling REST API"))
+	                description="Administrator updates existing profile by calling REST API"))
 	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void udpateProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profile) {
@@ -98,21 +98,21 @@ public class ProductExecutionProfileRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutorConfigList(
+	@UseCaseAdministratorFetchesExecutionProfileList(
 	        @Step(
 	                number=1,
 	                name="Rest call",
 	                needsRestDoc=true,
-	                description="Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information"))
+	                description="Administrator fetches lsit of all available execution profiles by calling REST API"))
 	@RequestMapping(path = "execution/profiles", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public ProductExecutionProfilesList fetchProfileList() {
-	    return fetchListService.fetchProductExecutorConfigList();
+	    return fetchListService.fetchProductExecutionProfileList();
 	    /* @formatter:on */
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutorConfiguration(
+	@UseCaseAdministratorFetchesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",

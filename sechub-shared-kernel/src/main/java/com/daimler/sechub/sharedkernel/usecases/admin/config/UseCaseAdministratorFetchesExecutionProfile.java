@@ -15,12 +15,11 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_ADDS_EXECUTOR_CONFIGURATION,
+		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin adds executor configuration",
-		description="An administrator adds an executor by adding a new configuration entry. "+
-		"The user can definess product identifier and versions of executors. Some executors can be added multiple times (e.g. PDS executors)")
-public @interface UseCaseAdministratorAddsExecutorConfiguration{
+		title="Admin fetches execution profile",
+		description="An administrator fetches details about an execution profile")
+public @interface UseCaseAdministratorFetchesExecutionProfile{
 
 	Step value();
 }

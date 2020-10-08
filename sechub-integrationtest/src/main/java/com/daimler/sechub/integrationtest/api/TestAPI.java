@@ -729,11 +729,6 @@ public class TestAPI {
         getSuperAdminRestHelper().delete(url); 
     }
 
-    public static void deleteAllProductExecutorConfigurations() {
-        String url = getURLBuilder().buildintegrationTestDeleteAllProductExecutorConfigurations();
-        getSuperAdminRestHelper().delete(url); 
-    }
-
     public static boolean isExecutionProfileExisting(String profileId) {
         String url = getURLBuilder().buildintegrationTestIsExecutionProfileExisting(profileId);
         return getSuperAdminRestHelper().getBooleanFromURL(url);

@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAddsExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutorConfiguration;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -35,7 +35,7 @@ public class CreateProductExecutorConfigService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorAddsExecutorConfiguration(
+    @UseCaseAdministratorCreatesExecutorConfiguration(
             @Step(number = 1, 
             name = "Service call", 
             description = "Service creates a new product executor configuration"))

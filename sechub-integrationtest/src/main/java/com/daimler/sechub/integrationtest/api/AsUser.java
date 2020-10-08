@@ -37,6 +37,7 @@ import com.daimler.sechub.test.TestUtil;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfileList;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfigList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -208,6 +209,12 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         String result = getRestHelper().postJSon(url, json);
         return UUID.fromString(result);
+    }
+    
+    public TestExecutorConfigList fetchProductExecutorConfigList() {
+        String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionConfigurations();
+        String json = getRestHelper().getJSon(url);
+        return JSONConverter.get().fromJSON(TestExecutorConfigList.class, json);
     }
 
     public String fetchProductExecutorConfigAsJSON(UUID uuid) {
@@ -810,7 +817,5 @@ public class AsUser {
             return this;
         }
     }
-    
-    
 
 }
