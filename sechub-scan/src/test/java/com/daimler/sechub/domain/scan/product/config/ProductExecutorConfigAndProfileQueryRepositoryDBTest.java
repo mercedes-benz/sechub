@@ -26,8 +26,8 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ContextConfiguration(classes = { ProductExecutorConfig.class, ProductExecutionProfile.class,
-        ProductExecutorConfigAndQueryRepositoryDBTest.SimpleTestConfiguration.class })
-public class ProductExecutorConfigAndQueryRepositoryDBTest {
+        ProductExecutorConfigAndProfileQueryRepositoryDBTest.SimpleTestConfiguration.class })
+public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -100,6 +100,9 @@ public class ProductExecutorConfigAndQueryRepositoryDBTest {
         test__project_1_parts();
 
         test__project_1_to_5_parts();
+        
+        
+        test__delete_all_project_1_relations();
 
     }
 
@@ -175,6 +178,23 @@ public class ProductExecutorConfigAndQueryRepositoryDBTest {
         searchInfra.assertFound(config2);
     }
 
+    private void test__delete_all_project_1_relations() {
+        
+        AssertSearch searchCode = searchingFor().project("project1").executor(ProductIdentifier.PDS_CODESCAN, 1);
+        AssertSearch searchInfra = searchingFor().project("project1").executor(ProductIdentifier.PDS_INFRASCAN, 1);
+        AssertSearch searchCode2 = searchingFor().project("project_1_to_5").executor(ProductIdentifier.PDS_CODESCAN, 1);
+        
+        searchCode.assertFound(config1);
+        searchCode2.assertFound(config1);
+        searchInfra.assertFound(config2);
+        
+        profileRepository.deleteAllProfileRelationsForProject("project1");
+        
+        searchCode.assertNothingFound();
+        searchInfra.assertNothingFound();
+        searchCode2.assertFound(config1);
+    }
+    
     protected void test__project_0_parts() {
         AssertSearch search = searchingFor().project("project0").executor(ProductIdentifier.PDS_CODESCAN, 1);
         /* enable / disable on config 0 */

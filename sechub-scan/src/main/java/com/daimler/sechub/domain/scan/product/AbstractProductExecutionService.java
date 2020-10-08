@@ -38,7 +38,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
     ProductResultRepository productResultRepository;
 
     @Autowired
-    ProductExecutorConfigRepository repository;
+    ProductExecutorConfigRepository productExecutorConfigRepository;
 
     @Autowired
     ProductExecutorContextFactory productExecutorContextFactory;
@@ -73,7 +73,7 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
     private static ProductExecutorConfig createFallbackExecutorConfigForSereco() {
         ProductExecutorConfigSetup setup = new ProductExecutorConfigSetup();
-        ProductExecutorConfig executorConfiguration = new ProductExecutorConfig(ProductIdentifier.SERECO, setup);
+        ProductExecutorConfig executorConfiguration = new ProductExecutorConfig(ProductIdentifier.SERECO, 1, setup);
         executorConfiguration.getSetup().setBaseURL("embedded");
         return executorConfiguration;
     }
@@ -129,18 +129,21 @@ public abstract class AbstractProductExecutionService implements ProductExection
             if (context.isCanceledOrAbandonded()) {
                 return;
             }
-            switch (productExecutor.getIdentifier()) {
+            ProductIdentifier productIdentifier = productExecutor.getIdentifier();
+            int executorVersion = productExecutor.getVersion();
+            
+            switch (productIdentifier) {
 
             case SERECO:
                 serecoProductExecutor=productExecutor;
                 /* fall through */
             default:
-                LOG.debug("serach config for project={}, executor={}, version={}", projectId, productExecutor.getIdentifier(), productExecutor.getVersion());
-                List<ProductExecutorConfig> executorConfigurations = repository.findExecutableConfigurationsForProject(projectId,
-                        productExecutor.getIdentifier(), productExecutor.getVersion());
+                LOG.debug("search config for project={}, executor={}, version={}", projectId, productIdentifier, executorVersion);
+                List<ProductExecutorConfig> executorConfigurations = productExecutorConfigRepository.findExecutableConfigurationsForProject(projectId,
+                        productIdentifier, executorVersion);
                 if (executorConfigurations.isEmpty()) {
-                    LOG.debug("no config found for project={} so skipping executor={}, version={}", projectId, productExecutor.getIdentifier(),
-                            productExecutor.getVersion());
+                    LOG.debug("no config found for project={} so skipping executor={}, version={}", projectId, productIdentifier,
+                            executorVersion);
                     continue;
                 }
                 for (ProductExecutorConfig executorConfiguration : executorConfigurations) {

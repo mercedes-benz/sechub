@@ -176,7 +176,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	
 	@Test
     @UseCaseRestDoc(useCase = UseCaseAdministratorFetchesExecutionProfile.class)
-    public void restdoc_admin_fetches_executor_config() throws Exception {
+    public void restdoc_admin_fetches_profile() throws Exception {
         /* prepare */
 	    /* prepare */
         String profileId="existing-profile-1";
@@ -215,6 +215,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfile.class),
                                 responseFields(
+                                        fieldWithPath(PROPERTY_ID).optional().ignored(),
                                         fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                         fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_UUID).description("uuid of configuration"),

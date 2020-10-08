@@ -105,11 +105,12 @@ public class ProductExecutorConfig {
         // jpa only
     }
 
-    public ProductExecutorConfig(ProductIdentifier productIdentifier, ProductExecutorConfigSetup setup) {
+    public ProductExecutorConfig(ProductIdentifier productIdentifier, int executorVersion, ProductExecutorConfigSetup setup) {
         if (productIdentifier == null) {
             throw new IllegalArgumentException("Product identifier not be null!");
         }
         this.productIdentifier = productIdentifier;
+        this.executorVersion=executorVersion;
         this.setup = setup;
 
     }
