@@ -102,6 +102,34 @@ public class ProductExecutorConfigValidationImplTest {
     }
     
     @Test
+    public void when_all_parts_correct_set_but_productIdentifier_is_null_one_validation_problems() {
+        /* prepare */
+        mockConfigWithValidValues();
+        when(config.getProductIdentifier()).thenReturn(null);
+        
+        /* execute */
+        ValidationResult result = validationToTest.validate(config);
+
+        /* test */
+        assertFalse(result.isValid());
+        assertEquals(1, result.getErrors().size());
+    }
+    
+    @Test
+    public void when_all_parts_correct_set_but_executorVersion_is_null_one_validation_problems() {
+        /* prepare */
+        mockConfigWithValidValues();
+        when(config.getExecutorVersion()).thenReturn(null);
+        
+        /* execute */
+        ValidationResult result = validationToTest.validate(config);
+
+        /* test */
+        assertFalse(result.isValid());
+        assertEquals(1, result.getErrors().size());
+    }
+    
+    @Test
     public void when_all_parts_correct_set_but_name_length_is_3_no_validation_problems() {
         /* prepare */
         mockConfigWithValidValues();
@@ -114,6 +142,8 @@ public class ProductExecutorConfigValidationImplTest {
         /* test */
         assertTrue(result.isValid());
     }
+    
+    
 
     private void mockConfigWithValidValues() {
         when(config.getExecutorVersion()).thenReturn(Integer.valueOf(1));

@@ -28,7 +28,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 
 	private static Map<Class<? extends AbstractSecHubServerTestScenario>, List<TestUser>> createdTestUsersMap = new HashMap<>();
 	private static Map<Class<? extends AbstractSecHubServerTestScenario>, List<TestProject>> createdTestProjectsMap = new HashMap<>();
-
+	private int tempIdCounter;
 	/**
 	 * Create a test project <b>instance</b> inside a scenario. But will not create
 	 * the real project on database etc. This is only the definition for a scenario.
@@ -195,6 +195,22 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 	@Override
 	public final void prepare(String testClass, String testMethod) {
 		prepareImpl();
+	}
+	
+	@Override
+	public TestProject newTestProject(String projectIdPart) {
+	    if (this instanceof StaticTestScenario) {
+	        throw new IllegalStateException("A static test scenario does not have temp projects! static means 'does not change' ...");
+	    }
+	    TestProject project = createTestProject(getClass(), projectIdPart);
+	    project.prepare(this);
+	    return project;
+	}
+	
+	@Override
+	public TestProject newTestProject() {
+	    tempIdCounter++;
+	    return newTestProject("tmp_"+tempIdCounter);
 	}
 	
 	protected final void prepareImpl() {

@@ -29,6 +29,7 @@ import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
@@ -67,6 +68,12 @@ public class AsUser {
 		    		buildUploadSourceCodeUrl(project.getProjectId(),jobUUID),file,checkSum);
 		/* @formatter:on */
         return this;
+    }
+    
+    public List<String> listAllUserIds(){
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminListsUsersUrl());
+        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class,json);
+        return list;
     }
 
     /**
@@ -134,15 +141,15 @@ public class AsUser {
     }
 
     /**
-     * Tries to create the project
+     * User trigger create of project
      *
      * @param project
      * @throws RestClientException
      */
-    public void createProject(TestProject project, String ownerName) {
-        if (ownerName == null) {
+    public AsUser createProject(TestProject project, String ownerUserId) {
+        if (ownerUserId == null) {
             // we use always the user how creates the project as owner when not explicit set
-            ownerName = this.user.getUserId();
+            ownerUserId = this.user.getUserId();
         }
         /* @formatter:off */
 		StringBuilder json = new StringBuilder();
@@ -150,7 +157,7 @@ public class AsUser {
 		json.append("{\n" +
 				" \"apiVersion\":\"1.0\",\n" +
 				" \"name\":\""+project.getProjectId()+"\",\n" +
-				" \"owner\":\""+ownerName+"\",\n" +
+				" \"owner\":\""+ownerUserId+"\",\n" +
 				" \"description\":\""+project.getDescription()+"\"");
 		if (! project.getWhiteListUrls().isEmpty()) {
 			json.append(",\n \"whiteList\" : {\"uris\":[");
@@ -170,20 +177,22 @@ public class AsUser {
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
         getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
-
+        return this;
     }
 
     
-    public void createProductExecutionProfile(String profileId, TestExecutionProfile profile) {
+    public AsUser createProductExecutionProfile(String profileId, TestExecutionProfile profile) {
         String url = getUrlBuilder().buildAdminCreatesProductExecutionProfile(profileId);
         String json = JSONConverter.get().toJSON(profile);
         getRestHelper().postJSon(url, json);
+        return this;
     }
     
-    public void updateProductExecutionProfile(String profileId, TestExecutionProfile profile) {
+    public AsUser updateProductExecutionProfile(String profileId, TestExecutionProfile profile) {
         String url = getUrlBuilder().buildAdminUpdatesProductExecutionProfile(profileId);
         String json = JSONConverter.get().toJSON(profile);
         getRestHelper().putJSon(url, json);
+        return this;
     }
     
     public TestExecutionProfile fetchProductExecutionProfile(String profileId) {
@@ -200,6 +209,7 @@ public class AsUser {
     }
     
     public void  deleteProductExecutionProfile(String profileId) {
+        TestAPI.assertNoDefaultProfileId(profileId);
         String url = getUrlBuilder().buildAdminDeletesProductExecutionProfile(profileId);
         getRestHelper().delete(url);
     }
@@ -209,6 +219,45 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         String result = getRestHelper().postJSon(url, json);
         return UUID.fromString(result);
+    }
+    
+    public AsUser addConfigurationToProfile(String profileId, UUID ... uuids) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
+        String json = getRestHelper().getJSon(url);
+        TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
+        
+        for (UUID uuid: uuids) {
+            TestExecutorConfig config = new TestExecutorConfig(uuid);
+            // we do not need to load, because update service does only need uuids, other parts are ignored*/
+            profile.configurations.add(config);
+        }
+
+        return updateProductExecutionProfile(profileId, profile);
+    }
+    
+    public AsUser removeConfigurationFromProfile(String profileId, UUID ...uuids) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
+        String json = getRestHelper().getJSon(url);
+        TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
+        
+        for (UUID uuid: uuids) {
+            TestExecutorConfig config = new TestExecutorConfig(uuid);
+            // we do not need to load, because update service does only need uuids, other parts are ignored*/
+            profile.configurations.remove(config);// equals implemented with uuid, so works..
+        }
+
+        return updateProductExecutionProfile(profileId, profile);
+    }
+    
+    
+    public AsUser removeProjectIdsFromProfile(String profileId, String ... projectIds) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
+        String json = getRestHelper().getJSon(url);
+        TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
+        for (String projectId: projectIds) {
+            profile.projectIds.remove(projectId);
+        }
+        return updateProductExecutionProfile(profileId, profile);
     }
     
     public TestExecutorConfigList fetchProductExecutorConfigList() {
@@ -234,24 +283,29 @@ public class AsUser {
         getRestHelper().putJSon(url, json);
     }
     
-    public void deleteProductExecutorConfig(UUID uuid) {
+    public AsUser deleteProductExecutorConfig(UUID uuid) {
         String url = getUrlBuilder().buildAdminDeletesProductExecutorConfig(uuid);
         getRestHelper().delete(url);
+        return this;
     }
-
-    public void addProjectToProfile(String profileId, TestProject ... projects) {
+    
+    public AsUser addProjectsToProfile(String profileId, TestProject ... projects) {
+        List<String> projectIds = new ArrayList<>(); 
+        for (TestProject project: projects) {
+            projectIds.add(project.getProjectId());
+        }
+        return addProjectIdsToProfile(profileId, projectIds.toArray(new String[projectIds.size()]));
+    }
+    
+    public AsUser addProjectIdsToProfile(String profileId, String ...projectIds) {
         /* currently we do this by calling update REST - maybe later we got a dedicated REST method */
         TestExecutionProfile loadedProfile = fetchProductExecutionProfile(profileId);
-        for (TestProject project: projects) {
-            loadedProfile.projectIds.add(project.getProjectId());
+        for (String projectId: projectIds) {
+            loadedProfile.projectIds.add(projectId);
         }
         updateProductExecutionProfile(profileId, loadedProfile);
+        return this;
     }
-    
-    
-    
-    
-    
     
     public String getServerURL() {
         return getUrlBuilder().buildServerURL();
@@ -658,7 +712,7 @@ public class AsUser {
         return uuid;
     }
 
-    public ProjectFalsePositivesDefinition create(TestProject project, String json) {
+    ProjectFalsePositivesDefinition create(TestProject project, String json) {
         ProjectFalsePositivesDefinition def = new ProjectFalsePositivesDefinition(project);
 
         try {
@@ -817,5 +871,8 @@ public class AsUser {
             return this;
         }
     }
+
+   
+   
 
 }

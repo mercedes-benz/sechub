@@ -12,6 +12,7 @@ import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTe
  * <pre>
  * USER_1, is automatically registrated, created and ready to go... but not assigned to any project
  * PROJECT_1_ is automatically created
+ * OWNER_1, is automatically registrated, created and ready to go... and owner of project1
  * </pre>
  *
  * @author Albert Tregnaghi
@@ -62,7 +63,5 @@ public class Scenario7 extends AbstractGrowingSecHubServerTestScenario {
     public String getPrefixMainId() {
         return "s07";
     }
-	
-	
 
 }

@@ -89,6 +89,9 @@ public class IntegrationTestSetup implements TestRule {
         this.scenario = scenario;
     }
 
+    public TestScenario getScenario() {
+        return scenario;
+    }
     /**
      * Marks this test setup as a long running variant. Means you have to define
      * additional SECHUB_INTEGRATIONTEST_LONG_RUNNING system property as true, to

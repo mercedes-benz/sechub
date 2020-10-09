@@ -29,7 +29,7 @@ public class ScenarioInitializer {
 	}
 
 	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_1(TestProject ...projects) {
-	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID,projects);
+	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID,projects);
 	    return this;
 	}
 	

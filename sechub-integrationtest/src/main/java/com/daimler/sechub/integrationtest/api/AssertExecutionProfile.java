@@ -11,7 +11,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
-
+import static com.daimler.sechub.integrationtest.internal.RetryAssertionErrorRunner.*;
 public class AssertExecutionProfile {
 
     public static AssertExecutionProfile assertProfile(String profileId) {
@@ -59,17 +59,26 @@ public class AssertExecutionProfile {
         return this;
     }
 
+    /**
+     * Asserts this profile has EXACTLY given project id relations (count + ids)
+     * @param projectIds
+     * @return
+     */
     public AssertExecutionProfile hasProjectIds(String ...projectIds) {
-        for (String projectId: projectIds) {
-            assertTrue("project did not contain project id:"+projectId, config.projectIds.contains(projectId));
-        }
-        if (projectIds.length!=config.projectIds.size()) {
-            fail("Expected project ids found, but there are additional ones:\nexpected:"+Arrays.asList(projectIds)+"\nfound:"+config.projectIds);
-        }
+        runWithRetries(5, ()->{
+            for (String projectId: projectIds) {
+                assertTrue("project did not contain project id:"+projectId, config.projectIds.contains(projectId));
+            }
+            if (projectIds.length!=config.projectIds.size()) {
+                fail("Expected project ids found, but there are additional ones:\nexpected:"+Arrays.asList(projectIds)+"\nfound:"+config.projectIds);
+            }
+        });
         return this;
     }
 
     public AssertExecutionProfile hasConfigurations(UUID ...uuids) {
+        
+        runWithRetries(5, ()->{
         for (UUID uuid: uuids) {
             TestExecutorConfig found = null;
             for (TestExecutorConfig config: config.configurations) {
@@ -81,8 +90,18 @@ public class AssertExecutionProfile {
             assertNotNull("project did not contain configuration with uuid :"+uuid, found);
         }
         assertEquals("Expected configurations found, but there are additional ones", uuids.length, config.configurations.size());
+        }
+        );
         return this;
         
+    }
+
+    public AssertExecutionProfile hasNoProjectIds() {
+        return hasProjectIds();
+    }
+
+    public AssertExecutionProfile hasNoConfigurations() {
+        return hasConfigurations();
     }
 
 

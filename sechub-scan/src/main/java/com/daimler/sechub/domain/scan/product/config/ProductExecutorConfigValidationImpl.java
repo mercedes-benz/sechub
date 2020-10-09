@@ -38,6 +38,9 @@ public class ProductExecutorConfigValidationImpl extends AbstractValidation<Prod
         validateMaxLength(context,name, 30, "name");
         validateMinLength(context,name, 3, "name");
         
+        validateNotNull(context,config.getProductIdentifier(),"productIdentifier");
+        validateNotNull(context,config.getExecutorVersion(),"executorVersion");
+        
         ProductExecutorConfigSetup setup = config.getSetup();
         validateNotNull(context, setup,"setup");
         if (setup==null) {
