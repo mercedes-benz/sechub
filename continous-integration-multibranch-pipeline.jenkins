@@ -174,14 +174,10 @@ void callGradleWrapper(String gradleCommand) {
 
 void executeSecHubScan() {
 
-     apiToken = env.SECHUB_APITOKEN
-     userid= env.SECHUB_USERID
-     server= env.SECHUB_SERVER
-
      if (isUnix()) {
-         sh "sechub -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         sh "sechub -project sechub scan"
      } else {
-         bat "sechub.exe -project sechub -apitoken ${apiToken} -user ${userid} -server ${server} scan"
+         bat "sechub.exe -project sechub scan"
      }
 }
 
