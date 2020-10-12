@@ -18,6 +18,14 @@ import javax.swing.SwingUtilities;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.DeleteConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.DeleteProfileAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.EditConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.EditExecutionProfileAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.ListExecutionProfilesAction;
+import com.daimler.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
@@ -162,6 +170,7 @@ public class CommandUI {
         createIntegrationTestServerMenu();
         createMassOperationsMenu();
 
+        createConfigMenu();
         createAdapterMenu();
         createPDSMenu();
         createSecHubClientMenu();
@@ -180,6 +189,23 @@ public class CommandUI {
 
         add(menu, new ShowAdapterDialogAction(context, "Checkmarx", MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
                 MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+    }
+    
+    public void createConfigMenu() {
+        JMenu menu = new JMenu("Config");
+        menuBar.add(menu);
+
+        add(menu, new CreateExecutorConfigAction(context));
+        add(menu, new ListExecutorConfigurationsAction(context));
+        add(menu, new EditConfigurationAction(context));
+        add(menu, new DeleteConfigurationAction(context));
+
+        menu.addSeparator();
+        
+        add(menu, new CreateExecutionProfileAction(context));
+        add(menu, new ListExecutionProfilesAction(context));
+        add(menu, new EditExecutionProfileAction(context));
+        add(menu, new DeleteProfileAction(context));
     }
 
     public void createPDSMenu() {

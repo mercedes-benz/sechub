@@ -109,6 +109,7 @@ public class ProductExecutorConfigurationScenario7IntTest {
         /* test */
         assertConfig(uuid).
             hasBaseURL("https://baseurl.product-changed.example.com/start").
+            hasName("pds gosec-1-renamed").
             hasJobParameters(1).
             isEnabled().
             hasJobParameter("key3", "value3");

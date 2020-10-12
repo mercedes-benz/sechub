@@ -4,6 +4,8 @@ package com.daimler.sechub.integrationtest.internal;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 
 public class ScenarioInitializer {
@@ -41,13 +44,20 @@ public class ScenarioInitializer {
 	    if (TestAPI.isExecutionProfileExisting(profile.id)) {
 	        return this;
 	    }
-	    /* define configurations */
-	    for (TestExecutorConfig config: profile.configurations) {
+	    Set<TestExecutorConfig> realConfigurations = new LinkedHashSet<>();
+
+	    /* we iterate over initial list, where all defaults are insdie - but UUID is null...*/
+	    for (TestExecutorConfig config: profile.initialConfigurationsWithoutUUID) {
 	        UUID uuid = TestAPI.as(SUPER_ADMIN).createProductExecutorConfig(config);
 	        config.uuid=uuid; // set uuid from service to this so available 
+	        realConfigurations.add(config);
 	    }
 	    /* define profile */
 	    TestAPI.as(TestAPI.SUPER_ADMIN).createProductExecutionProfile(profile.id, profile);
+	    TestExecutionProfile realProfile = TestAPI.as(TestAPI.SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
+	    /* now we create real configurations having correct uuids etc. */
+	    realProfile.configurations.addAll(realConfigurations);
+	    TestAPI.as(TestAPI.SUPER_ADMIN).updateProductExecutionProfile(profile.id, realProfile);
 	    return this;
 	}
 	

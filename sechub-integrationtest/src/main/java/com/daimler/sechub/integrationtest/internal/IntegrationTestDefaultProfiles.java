@@ -12,9 +12,9 @@ public class IntegrationTestDefaultProfiles {
     private static DoNotChangeTestExecutionProfile defineProfile1() {
 
         DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
-        profile.configurations.add(IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1);
-        profile.configurations.add(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
-        profile.configurations.add(IntegrationTestDefaultExecutorConfigurations.NESSUS_V1);
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1);
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.NESSUS_V1);
         profile.id = "inttest-default-profile1";
         profile.enabled = true;
         return profile;

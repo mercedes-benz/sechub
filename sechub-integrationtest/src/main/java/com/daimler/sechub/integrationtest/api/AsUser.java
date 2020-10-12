@@ -203,13 +203,23 @@ public class AsUser {
     
     
     public TestExecutionProfileList fetchProductExecutionProfiles() {
-        String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionProfiles();
-        String json = getRestHelper().getJSon(url);
+        String json = fetchProductExecutionProfilesAsJSON();
         return JSONConverter.get().fromJSON(TestExecutionProfileList.class, json);
     }
-    
+
+    public String fetchProductExecutionProfilesAsJSON() {
+        String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionProfiles();
+        String json = getRestHelper().getJSon(url);
+        return json;
+    }
     public void  deleteProductExecutionProfile(String profileId) {
-        TestAPI.assertNoDefaultProfileId(profileId);
+        deleteProductExecutionProfile(profileId,true);
+    }
+    
+    void  deleteProductExecutionProfile(String profileId, boolean protectDefaultProfiles) {
+        if (protectDefaultProfiles) {
+            TestAPI.assertNoDefaultProfileId(profileId);
+        }
         String url = getUrlBuilder().buildAdminDeletesProductExecutionProfile(profileId);
         getRestHelper().delete(url);
     }
@@ -261,9 +271,14 @@ public class AsUser {
     }
     
     public TestExecutorConfigList fetchProductExecutorConfigList() {
+        String json = fetchProductExecutorConfigListAsJSON();
+        return JSONConverter.get().fromJSON(TestExecutorConfigList.class, json);
+    }
+
+    public String fetchProductExecutorConfigListAsJSON() {
         String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionConfigurations();
         String json = getRestHelper().getJSon(url);
-        return JSONConverter.get().fromJSON(TestExecutorConfigList.class, json);
+        return json;
     }
 
     public String fetchProductExecutorConfigAsJSON(UUID uuid) {

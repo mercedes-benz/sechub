@@ -87,8 +87,6 @@ public class AssertExecutorConfig {
             }
         }
         assertNotNull("Did not found job parameter with key:" + key, found);
-        ;
-
         assertEquals("Value of job paramater not as expected!", value, found.value);
         return this;
     }
