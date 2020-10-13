@@ -171,7 +171,6 @@ public class CommandUI {
         createMassOperationsMenu();
 
         createConfigMenu();
-        createAdapterMenu();
         createPDSMenu();
         createSecHubClientMenu();
     }
@@ -183,29 +182,33 @@ public class CommandUI {
         menuBar.add(mainMenu);
     }
 
-    public void createAdapterMenu() {
-        JMenu menu = new JMenu("Adapter");
-        menuBar.add(menu);
-
-        add(menu, new ShowAdapterDialogAction(context, "Checkmarx", MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
-                MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
-    }
     
     public void createConfigMenu() {
         JMenu menu = new JMenu("Config");
         menuBar.add(menu);
+        
+        JMenu executorMenu = new JMenu("Executors");
+        menu.add(executorMenu);
 
-        add(menu, new CreateExecutorConfigAction(context));
-        add(menu, new ListExecutorConfigurationsAction(context));
-        add(menu, new EditConfigurationAction(context));
-        add(menu, new DeleteConfigurationAction(context));
+        add(executorMenu, new CreateExecutorConfigAction(context));
+        add(executorMenu, new EditConfigurationAction(context));
+        add(executorMenu, new DeleteConfigurationAction(context));
+        add(executorMenu, new ListExecutorConfigurationsAction(context));
 
         menu.addSeparator();
+        JMenu profileMenu = new JMenu("Profiles");
+        menu.add(profileMenu);
         
-        add(menu, new CreateExecutionProfileAction(context));
-        add(menu, new ListExecutionProfilesAction(context));
-        add(menu, new EditExecutionProfileAction(context));
-        add(menu, new DeleteProfileAction(context));
+        add(profileMenu, new CreateExecutionProfileAction(context));
+        add(profileMenu, new EditExecutionProfileAction(context));
+        add(profileMenu, new DeleteProfileAction(context));
+        add(profileMenu, new ListExecutionProfilesAction(context));
+        menu.addSeparator();
+        
+        JMenu mappingsMenu = new JMenu("Mappings");
+        menu.add(mappingsMenu);
+        add(mappingsMenu, new ShowAdapterDialogAction(context, "Checkmarx", MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
+                MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
     }
 
     public void createPDSMenu() {

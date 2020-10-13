@@ -27,7 +27,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.CHECKMARX.name();
-        config.name=INTTEST_NAME_PREFIX+"Checkmarx V2";
+        config.name=INTTEST_NAME_PREFIX+"Checkmarx V1";
         config.setup.baseURL="https://checkmarx.example.com";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;
@@ -38,7 +38,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.NESSUS.name();
-        config.name=INTTEST_NAME_PREFIX+"Checkmarx V3";
+        config.name=INTTEST_NAME_PREFIX+"Nessus V1";
         config.setup.baseURL="https://nessus.example.com";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;

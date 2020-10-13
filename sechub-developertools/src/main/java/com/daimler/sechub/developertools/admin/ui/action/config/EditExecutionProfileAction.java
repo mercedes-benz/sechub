@@ -2,12 +2,14 @@
 package com.daimler.sechub.developertools.admin.ui.action.config;
 
 import java.awt.event.ActionEvent;
-import java.util.Optional;
+
+import javax.swing.Action;
+import javax.swing.ImageIcon;
 
 import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
-import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 
 public class EditExecutionProfileAction extends AbstractUIAction {
@@ -15,33 +17,49 @@ public class EditExecutionProfileAction extends AbstractUIAction {
 
     public EditExecutionProfileAction(UIContext context) {
         super("Edit execution profile", context);
+        putValue(Action.SMALL_ICON, new ImageIcon(getClass().getResource("/icons/material-io/twotone_edit_road_black_18dp.png")));
     }
 
     @Override
-	public void execute(ActionEvent e) {
-	    Optional<String> opt = getUserInput("Please enter profileId for profile to show", InputCacheIdentifier.EXECUTION_PROFILE_ID);
-        if (!opt.isPresent()) {
+    public void execute(ActionEvent e) {
+        ListExecutionProfilesDialogUI listProfilesDialog = new ListExecutionProfilesDialogUI(getContext(), "Select the profile you want to edit");
+        listProfilesDialog.showDialog();
+
+        if (!listProfilesDialog.isOkPressed()) {
             return;
         }
-        String profileId=opt.get().trim();
-        
-        TestExecutionProfile profile = getContext().getAdministration().fetchExecutionProfile(profileId);
-        
+        String profileId = listProfilesDialog.getSelectedValue();
+        if (profileId == null) {
+            /* ok pressed, but no selection */
+            getContext().getOutputUI().output("No profile selected, so canceled");
+            return;
+        }
+
+        /* --------------------- */
+        /* Edit selected profile: */
+        /* --------------------- */
+        DeveloperAdministration administration = getContext().getAdministration();
+        TestExecutionProfile profile = administration.fetchExecutionProfile(profileId);
+
         /* dump to output */
-        outputAsTextOnSuccess("Profile:"+profileId+" ass JSON:\n"+JSONConverter.get().toJSON(profile,true));
-        
-        
-        ExecutionProfileDialogUI dialogUI = new ExecutionProfileDialogUI(getContext(),"Edit execution profile",false,profile);
-	    
-	    dialogUI.showDialog();
-	    
-	    if (!dialogUI.isOkPressed()) {
-	        return; 
-	    }
-	    TestExecutionProfile updatedProfile = dialogUI.getUpdatedProfile();
-	    getContext().getAdministration().updateExecutionProfile(updatedProfile);
-        
-		outputAsBeautifiedJSONOnSuccess("Updated execution profile:\n"+JSONConverter.get().toJSON(updatedProfile,true));
-	}
+        outputAsTextOnSuccess("Profile:" + profileId + " ass JSON:\n" + JSONConverter.get().toJSON(profile, true));
+
+        ExecutionProfileDialogUI dialogUI = new ExecutionProfileDialogUI(getContext(), "Edit execution profile", false, profile);
+        dialogUI.setTextForOKButton("Update profile");
+        dialogUI.showDialog();
+
+        if (!dialogUI.isOkPressed()) {
+            return;
+        }
+        /* ------------------------ */
+        /* Update as wished by user: */
+        /* ------------------------ */
+        TestExecutionProfile updatedProfile = dialogUI.getUpdatedProfile();
+        administration.updateExecutionProfile(updatedProfile);
+
+        outputAsBeautifiedJSONOnSuccess("Updated execution profile:\n" + JSONConverter.get().toJSON(updatedProfile, true));
+    }
+    
+   
 
 }

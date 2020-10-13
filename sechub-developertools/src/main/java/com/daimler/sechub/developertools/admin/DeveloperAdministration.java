@@ -33,6 +33,7 @@ import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfileList;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfigList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -226,6 +227,10 @@ public class DeveloperAdministration {
     
     public String fetchExecutorConfigurations() {
         return asTestUser().fetchProductExecutorConfigListAsJSON();
+    }
+    
+    public TestExecutorConfigList fetchExecutorConfigurationList() {
+        return asTestUser().fetchProductExecutorConfigList();
     }
 
     public String deletExecutionConfig(UUID uuid) {

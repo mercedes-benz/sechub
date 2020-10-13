@@ -2,7 +2,6 @@
 package com.daimler.sechub.developertools.admin.ui.action.config;
 
 import java.awt.event.ActionEvent;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
-import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class DeleteConfigurationAction extends AbstractUIAction {
 
@@ -24,18 +22,22 @@ public class DeleteConfigurationAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        Optional<String> opt = getUserInput("Please enter uuid for config to DELETE", InputCacheIdentifier.EXECUTOR_CONFIG_UUID);
-        if (!opt.isPresent()) {
+        ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to delete");
+        dialogUI.showDialog();
+        if (!dialogUI.isOkPressed()) {
             return;
         }
-        String configUUIDAsString=opt.get().trim();
-        if (!confirm("Do you really want to\nDELETE\nconfig " + configUUIDAsString + "?")) {
+        UUID uuid = dialogUI.getSelectedValue();
+        if (uuid==null) {
+            return;
+        }
+        if (!confirm("Do you really want to\nDELETE\nconfig " + uuid + "?")) {
             outputAsTextOnSuccess("CANCELED - delete");
-            LOG.info("canceled delete of config {}", configUUIDAsString);
+            LOG.info("canceled delete of config {}", uuid);
             return;
         }
-        LOG.info("start delete of config {}", configUUIDAsString);
-        String infoMessage = getContext().getAdministration().deletExecutionConfig(UUID.fromString(configUUIDAsString));
+        LOG.info("start delete of config {}", uuid);
+        String infoMessage = getContext().getAdministration().deletExecutionConfig(uuid);
         outputAsTextOnSuccess(infoMessage);
     }
 

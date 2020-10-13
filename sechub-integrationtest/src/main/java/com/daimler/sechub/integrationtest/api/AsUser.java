@@ -859,6 +859,17 @@ public class AsUser {
             Iterator<JobData> it = jobData.iterator();
             while (it.hasNext()) {
                 JobData data = it.next();
+                /* handle strange failure output of github actions build (happens occasionally)*/
+                if (data==null) {
+                    String json = JSONConverter.get().toJSON(jobData);
+                    LOG.error("Job data list contains a job data object being null, see JSON:\n{}",json);
+                    fail("job data list contains entry being null!");
+                }
+                if (data.jobUUID==null) {
+                    String json = JSONConverter.get().toJSON(jobData);
+                    LOG.error("Job data list contains a job data object having no job uuid, see JSON:\n{}",json);
+                    fail("Job data list contains at least one job data without a jobuuid! see logs for output, finding id is :"+data.findingId);
+                }
                 if (data.comment == null) {
                     content += "{\"jobUUID\":\"" + data.jobUUID.toString() + "\",\"findingId\":" + data.findingId + "}";
                 } else {

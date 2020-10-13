@@ -2,14 +2,12 @@
 package com.daimler.sechub.developertools.admin.ui.action.config;
 
 import java.awt.event.ActionEvent;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
-import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
 public class DeleteProfileAction extends AbstractUIAction {
 
@@ -23,11 +21,18 @@ public class DeleteProfileAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        Optional<String> opt = getUserInput("Please enter profileId for profile to DELETE", InputCacheIdentifier.EXECUTION_PROFILE_ID);
-        if (!opt.isPresent()) {
+        ListExecutionProfilesDialogUI listProfilesDialog = new ListExecutionProfilesDialogUI(getContext(), "Select the profile you want to delete");
+        listProfilesDialog.showDialog();
+
+        if (!listProfilesDialog.isOkPressed()) {
             return;
         }
-        String profileId=opt.get().trim();
+        String profileId = listProfilesDialog.getSelectedValue();
+        if (profileId == null) {
+            /* ok pressed, but no selection */
+            getContext().getOutputUI().output("No profile selected, so canceled");
+            return;
+        }
         if (!confirm("Do you really want to\nDELETE\nprofile " + profileId + "?")) {
             outputAsTextOnSuccess("CANCELED - delete");
             LOG.info("canceled delete of profile {}", profileId);

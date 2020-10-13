@@ -6,14 +6,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.peer.ButtonPeer;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -31,12 +26,12 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.Border;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
+import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraintsFactory.*;
 
 public class ExecutorConfigDialogUI {
 
@@ -52,11 +47,12 @@ public class ExecutorConfigDialogUI {
     private JTextArea jobParametersTextArea;
     private JCheckBox enabledCheckBox;
     private JButton buttonOk;
-    
-    private boolean okPressed=false;
+
+    private boolean okPressed = false;
     private JPanel buttonPanel;
     private String title;
     private JTextField uuidTextField;
+    private String buttonOkText;
 
     public ExecutorConfigDialogUI(UIContext context, String title) {
         this(context, title, createExampleConfig());
@@ -65,7 +61,8 @@ public class ExecutorConfigDialogUI {
     public ExecutorConfigDialogUI(UIContext context, String title, TestExecutorConfig config) {
         this.context = context;
         this.config = config;
-        this.title=title;
+        this.title = title;
+        this.buttonOkText="Ok";
     }
 
     UIContext getContext() {
@@ -75,7 +72,7 @@ public class ExecutorConfigDialogUI {
     public boolean isOkPressed() {
         return okPressed;
     }
-    
+
     public static TestExecutorConfig createExampleConfig() {
         TestExecutorConfig config = new TestExecutorConfig();
         config.setup.baseURL = "https://newproduct.example.com";
@@ -99,7 +96,7 @@ public class ExecutorConfigDialogUI {
 
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
-        
+
         dialog.setTitle(title);
         dialog.setModal(true);
         dialog.setSize(new Dimension(600, 400));
@@ -111,14 +108,14 @@ public class ExecutorConfigDialogUI {
     private void createButtonPanel(JDialog dialog) {
         buttonPanel = new JPanel(new GridBagLayout());
 
-        buttonOk = new JButton("Ok");
-        buttonOk.addActionListener((event)-> {
-            okPressed=true;
+        buttonOk = new JButton(buttonOkText);
+        buttonOk.addActionListener((event) -> {
+            okPressed = true;
             dialog.setVisible(false);
             dialog.dispose();
         });
-        
-        buttonPanel.add(buttonOk,createLabelConstraint(0));
+
+        buttonPanel.add(buttonOk, createLabelConstraint(0));
     }
 
     private void createMainPanel() {
@@ -136,9 +133,9 @@ public class ExecutorConfigDialogUI {
         enabledCheckBox = new JCheckBox("", config.enabled);
         mainPanel.add(new JLabel("Enabled"), createLabelConstraint(row));
         mainPanel.add(enabledCheckBox, createComponentConstraint(row++));
-        
-        /* UUID readonly*/
-        uuidTextField = new JTextField(config.uuid!=null ? ""+config.uuid : null);
+
+        /* UUID readonly */
+        uuidTextField = new JTextField(config.uuid != null ? "" + config.uuid : null);
         uuidTextField.setEditable(false);
         mainPanel.add(new JLabel("UUID"), createLabelConstraint(row));
         mainPanel.add(uuidTextField, createComponentConstraint(row++));
@@ -156,7 +153,7 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(new JLabel("Executor version"), createLabelConstraint(row));
         mainPanel.add(executorVersionTextField, createComponentConstraint(row++));
 
-        /* base url*/
+        /* base url */
         baseURLTextField = new JTextField(config.setup.baseURL);
         mainPanel.add(new JLabel("Product base url"), createLabelConstraint(row));
         mainPanel.add(baseURLTextField, createComponentConstraint(row++));
@@ -174,10 +171,14 @@ public class ExecutorConfigDialogUI {
         jobParametersTextArea = new JTextArea(convertJobParamsToString());
         mainPanel.add(new JLabel("Job parameters:"), createLabelConstraint(row));
         GridBagConstraints jobParameterGridDataConstraints = createComponentConstraint(row++);
-        jobParameterGridDataConstraints.weighty=0.0;
+        jobParameterGridDataConstraints.weighty = 0.0;
         mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);
     }
 
+    public void setTextForOKButton(String text) {
+        buttonOkText=text;
+    }
+    
     private String convertJobParamsToString() {
         Properties p = new Properties();
         for (TestExecutorSetupJobParam param : config.setup.jobParameters) {
@@ -193,20 +194,21 @@ public class ExecutorConfigDialogUI {
     }
 
     public TestExecutorConfig getUpdatedConfig() {
-        Integer execVersionObj = (Integer)executorVersionTextField.getValue();;
+        Integer execVersionObj = (Integer) executorVersionTextField.getValue();
+        ;
 
-        config.productIdentifier=productIdentifierCombobox.getSelectedItem().toString();
-        config.enabled=enabledCheckBox.isSelected();
-        config.name=nameTextField.getText();
-        config.executorVersion= execVersionObj.intValue();
+        config.productIdentifier = productIdentifierCombobox.getSelectedItem().toString();
+        config.enabled = enabledCheckBox.isSelected();
+        config.name = nameTextField.getText();
+        config.executorVersion = execVersionObj.intValue();
         // config.uuid - is read only and just for view...
-        
+
         /* setup changes */
-        config.setup.baseURL=baseURLTextField.getText();
-        config.setup.credentials.user=userTextField.getText();
-        config.setup.credentials.password=pwdTextField.getText();
+        config.setup.baseURL = baseURLTextField.getText();
+        config.setup.credentials.user = userTextField.getText();
+        config.setup.credentials.password = pwdTextField.getText();
         writeJobParamsStringBackToConfig();
-        
+
         return config;
     }
 
@@ -232,28 +234,4 @@ public class ExecutorConfigDialogUI {
         }
     }
 
-    private GridBagConstraints createComponentConstraint(int row) {
-        GridBagConstraints gc = createConstraint(row, 1);
-        gc.ipady = 5;
-        gc.gridwidth = 3;
-        gc.weightx = 0.5;
-        return gc;
-    }
-
-    private GridBagConstraints createLabelConstraint(int row) {
-        GridBagConstraints gc = createConstraint(row, 0);
-        gc.ipady = 15;
-        gc.weightx = 0.0;
-        return gc;
-
-    }
-
-    private GridBagConstraints createConstraint(int row, int column) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = column;
-        c.gridy = row;
-        c.ipadx=15;
-        return c;
-    }
 }
