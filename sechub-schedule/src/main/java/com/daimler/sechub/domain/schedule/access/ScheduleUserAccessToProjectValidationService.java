@@ -37,7 +37,6 @@ public class ScheduleUserAccessToProjectValidationService {
 		if (userContextService.isSuperAdmin()) {
 			/* a super admin has always access to existing projects */
 			
-			
 			if(!accessRepository.hasProjectUserAccess(projectId)) {
 				throw new NotFoundException("Project " + projectId + " does not exist, or you have no access.");
 			}
