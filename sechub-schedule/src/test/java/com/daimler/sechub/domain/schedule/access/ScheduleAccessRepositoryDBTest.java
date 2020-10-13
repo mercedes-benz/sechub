@@ -66,7 +66,7 @@ public class ScheduleAccessRepositoryDBTest {
 		assertNotNull(repository.findById(access2.getKey()));
 
 		/* execute */
-		repository.deleteAcessForUserAtAll("user1");
+		repository.deleteAccessForUserAtAll("user1");
 
 		/* test */
 		assertEquals(1, repository.count());
