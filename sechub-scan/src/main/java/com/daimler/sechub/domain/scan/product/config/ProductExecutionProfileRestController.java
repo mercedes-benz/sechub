@@ -21,10 +21,12 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile;
 
 /**
@@ -82,8 +84,7 @@ public class ProductExecutionProfileRestController {
 	    deleteService.deleteProductExecutionProfile(profileId);
 	    /* @formatter:on */
     }
-
-    /* @formatter:off */
+	
 	@UseCaseAdministratorUpdatesExecutionProfile(
 	        @Step(
 	                number=1,
@@ -95,6 +96,32 @@ public class ProductExecutionProfileRestController {
 	public void udpateProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profile) {
 	    updateService.updateProductExecutorSetup(profileId,profile);
 	    /* @formatter:on */
+    }
+	
+	@UseCaseAdministratorAssignsExecutionProfileToProject(
+            @Step(
+                    number=1,
+                    name="Rest call",
+                    needsRestDoc=true,
+                    description="Administrator adds profile relation to project by calling REST API"))
+    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addProjectToProfile(@PathVariable("profileId")String profileId, @PathVariable("projectId")String projectId) {
+        updateService.addProjectToProfileRelation(profileId,projectId);
+        /* @formatter:on */
+    }
+	
+	@UseCaseAdministratorUnassignsExecutionProfileFromProject(
+            @Step(
+                    number=1,
+                    name="Rest call",
+                    needsRestDoc=true,
+                    description="Administrator removes profile relation to project by calling REST API"))
+    @RequestMapping(path = "execution/profile/{profileId}/project/{projectId}", method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.OK)
+    public void removeProjectFromProfile(@PathVariable("profileId")String profileId, @PathVariable("projectId")String projectId) {
+        updateService.removeProjectToProfileRelation(profileId,projectId);
+        /* @formatter:on */
     }
 
     /* @formatter:off */

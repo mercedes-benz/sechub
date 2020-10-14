@@ -4,7 +4,7 @@ package com.daimler.sechub.sharedkernel.validation;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProfileIdValidationImpl extends AbstractSimpleStringValidation implements ProfileIdValidation {
+public class ProductExecutionProfileIdValidationImpl extends AbstractSimpleStringValidation implements ProductExecutionProfileIdValidation {
 
     public static final int PROJECTID_LENGTH_MIN = 3;
     public static final int PROJECTID_LENGTH_MAX = 30;

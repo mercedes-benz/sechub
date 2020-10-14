@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,11 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -38,15 +43,24 @@ public class UpdateProductExecutionProfileService {
     ProductExecutionProfileValidation validation;
     
     @Autowired
+    ProductExecutionProfileIdValidation profileIdValidation;
+    
+    @Autowired
+    ProjectIdValidation projectIdValidation;
+    
+    @Autowired
     AuditLogService auditLogService;
 
     /* @formatter:off */
     @UseCaseAdministratorUpdatesExecutorConfig(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service updates existing executor configuration"))
     /* @formatter:on */
     public void updateProductExecutorSetup(String profileId, ProductExecutionProfile profileFromUser) {
+        profileFromUser.id=profileId;
+        assertValid(profileFromUser, validation);
+
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", profileId);
         
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);
@@ -54,7 +68,6 @@ public class UpdateProductExecutionProfileService {
             throw new NotFoundException("No profile found with id:"+profileId);
         }
         profileFromUser.id=profileId;
-        assertValid(profileFromUser, validation);
 
         ProductExecutionProfile stored = mergeFromUserIntoEntity(profileId, profileFromUser, opt);
         
@@ -66,6 +79,7 @@ public class UpdateProductExecutionProfileService {
     }
 
     private ProductExecutionProfile mergeFromUserIntoEntity(String profileId, ProductExecutionProfile profileFromUser, Optional<ProductExecutionProfile> opt) {
+        
         ProductExecutionProfile stored = opt.get();
         stored.description=profileFromUser.description;
         stored.enabled=profileFromUser.enabled;
@@ -86,6 +100,40 @@ public class UpdateProductExecutionProfileService {
              stored.configurations.add(found.get());
         }
         return stored;
+    }
+
+    @Transactional
+    @UseCaseAdministratorAssignsExecutionProfileToProject(
+            @Step(
+                    number=2,
+                    name = "Service call", 
+                    description="Services creates a new association between project id and profile"))
+    public void addProjectToProfileRelation(String profileId, String projectId) {
+        assertValid(profileId, profileIdValidation);
+        assertValid(projectId, projectIdValidation);
+        
+        auditLogService.log("Wants to add association between project {} and profile {}", projectId, profileId);
+        
+        int count = repository.countRelationShipEntries(profileId, projectId);
+        if (count!=0) {
+            LOG.debug("project {} is already added to profile {} - so just skip", projectId, profileId);
+            return;
+        }
+        repository.createProfileRelationToProject(profileId,projectId);
+        LOG.info("project {} added to profile {}", projectId, profileId);
+    }
+
+    @Transactional
+    @UseCaseAdministratorUnassignsExecutionProfileFromProject(
+            @Step(
+                    number=2,
+                    name = "Service call", 
+                    description="Services deletes an existing association between project id and profile"))
+    public void removeProjectToProfileRelation(String profileId, String projectId) {
+        assertValid(profileId, profileIdValidation);
+        assertValid(projectId, projectIdValidation);
+        
+        repository.deleteProfileRelationToProject(profileId,projectId);
     }
 
 }

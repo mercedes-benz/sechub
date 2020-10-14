@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.validation.AbstractValidation;
 import com.daimler.sechub.sharedkernel.validation.ProfileDescriptionValidation;
-import com.daimler.sechub.sharedkernel.validation.ProfileIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 
@@ -14,7 +14,7 @@ import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 public class ProductExecutionrProfileValidationImpl extends AbstractValidation<ProductExecutionProfile> implements ProductExecutionProfileValidation {
 
     @Autowired
-    ProfileIdValidation profileIdValidation;
+    ProductExecutionProfileIdValidation profileIdValidation;
     
     @Autowired
     ProjectIdValidation projectIdValidation;

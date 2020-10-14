@@ -51,6 +51,8 @@ import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringS
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileToAllProjectsAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileToProjectsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.CreateOverviewCSVExportAction;
@@ -65,6 +67,8 @@ import com.daimler.sechub.developertools.admin.ui.action.project.SetProjectMockD
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectListAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.ShowProjectsScanLogsAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnassignProfileFromAllProjectsAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UnassignProfileFromProjectsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnmarkProjectFalsePositiveAction;
@@ -266,19 +270,33 @@ public class CommandUI {
         add(menu, new DeleteProjectAction(context));
         add(menu, new ShowProjectDetailAction(context));
         add(menu, new ShowProjectsScanLogsAction(context));
+        
         menu.addSeparator();
         add(menu, new AssignUserToProjectAction(context));
         add(menu, new UnassignUserFromProjectAction(context));
+        
         menu.addSeparator();
         add(menu, new ShowProjectListAction(context));
+        
         menu.addSeparator();
         add(menu, new UpdateProjectWhitelistAction(context));
+        
+        menu.addSeparator();
+        JMenu profiles = new JMenu("Execution profiles");
+        add(profiles, new AssignProfileToProjectsAction(context));
+        add(profiles, new UnassignProfileFromProjectsAction(context));
+        profiles.addSeparator();
+        add(profiles, new UnassignProfileFromAllProjectsAction(context));
+        add(profiles, new AssignProfileToAllProjectsAction(context));
+        menu.add(profiles);
+
         menu.addSeparator();
         JMenu falsePositives = new JMenu("False positives");
         add(falsePositives, new FetchProjectFalsePositiveConfigurationAction(context));
         add(falsePositives, new UnmarkProjectFalsePositiveAction(context));
         add(falsePositives, new MarkProjectFalsePositiveAction(context));
         menu.add(falsePositives);
+
 
         JMenu projectMockData = new JMenu("Mockdata");
         menu.add(projectMockData);
@@ -287,6 +305,7 @@ public class CommandUI {
         add(projectMockData, new GetProjectMockConfigurationAction(context));
 
     }
+    
 
     private void createStatusMenu() {
         JMenu menu = new JMenu("Status");

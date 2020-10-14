@@ -50,6 +50,8 @@ public class CreateProductExecutionProfileService {
             description = "Service creates a new product executor configuration"))
     /* @formatter:on */
     public void createProductExecutionProfile(String profileId, ProductExecutionProfile profileFromUser) {
+        profileFromUser.id=profileId;
+        assertValid(profileFromUser, validation);
 
         auditLogService.log("Wants to create product execution profile'{}'",profileId);
 
@@ -60,7 +62,6 @@ public class CreateProductExecutionProfileService {
         resetFieldsNeverFromUser(profileFromUser);
         profileFromUser.id=profileId;
         
-        assertValid(profileFromUser, validation);
         
         List<ProductExecutorConfig> existingConfigurations = fetchExistingConfigurations(profileId, profileFromUser);
         

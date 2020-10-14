@@ -29,6 +29,36 @@ public class ProductExecutionProfileScenario7IntTest {
 
     /* @formatter:off */
     @Test
+    public void an_admin_can_add_and_also_remove_project_relations() {
+        /* prepare */
+        String profileId = "test-profile-to-delete10";
+        dropExecutionProfileIfExisting(profileId);
+        
+        TestProject tempProject = setup.getScenario().newTestProject();
+        String tempProjectProjectId = tempProject.getProjectId();
+        
+        TestProject tempProject2 = setup.getScenario().newTestProject();
+        String tempProjectProject2Id = tempProject2.getProjectId();
+        
+        as(SUPER_ADMIN).
+            createProductExecutionProfile(profileId,  new TestExecutionProfile()).
+            createProject(tempProject,Scenario7.OWNER_1.getUserId()).
+            addProjectsToProfile(profileId, tempProject,tempProject2);
+        
+        /* check precondition */
+        assertProfile(profileId).hasProjectIds(tempProjectProjectId,tempProjectProject2Id);
+        
+        /* execute */
+        as(SUPER_ADMIN).removeProjectIdsFromProfile(profileId, tempProjectProjectId);
+
+        /* test */
+        assertProfile(profileId).hasProjectIds(tempProjectProject2Id);
+    }
+    /* @formatter:on */
+    
+
+    /* @formatter:off */
+    @Test
     public void an_admin_deletes_a_project__automatically_removes_project_from_profile() {
         /* prepare */
         String profileId = "test-profile-to-delete1";

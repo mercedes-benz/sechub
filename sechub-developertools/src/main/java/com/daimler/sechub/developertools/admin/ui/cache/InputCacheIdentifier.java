@@ -38,7 +38,9 @@ public enum InputCacheIdentifier{
 	/* runtime configuration */
 	EXECUTOR_CONFIG_UUID,
 	
-	EXECUTION_PROFILE_ID,
+	EXECUTION_PROFILE_ID, 
+	
+	PROJECT_IDS,
 	
 	
 }

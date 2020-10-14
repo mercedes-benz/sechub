@@ -43,12 +43,13 @@ public class UpdateProductExecutorConfigService {
             description = "Service updates existing executor configuration"))
     /* @formatter:on */
     public UUID updateProductExecutorSetup(UUID uuid, ProductExecutorConfig configFromUser) {
+        assertValid(configFromUser, validation);
+
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", uuid);
         Optional<ProductExecutorConfig> opt = repository.findById(uuid);
         if (! opt.isPresent()) {
             throw new NotFoundException("No config found with uuid:"+uuid);
         }
-        assertValid(configFromUser, validation);
 
         ProductExecutorConfig stored = opt.get();
 

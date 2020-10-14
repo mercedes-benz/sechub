@@ -110,6 +110,11 @@ public class ExecutorConfigDialogUI {
 
         buttonOk = new JButton(buttonOkText);
         buttonOk.addActionListener((event) -> {
+            String name = getNameFromUI();
+            if (name==null || name.isEmpty()) {
+                nameTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
+                return;
+            }
             okPressed = true;
             dialog.setVisible(false);
             dialog.dispose();
@@ -199,7 +204,7 @@ public class ExecutorConfigDialogUI {
 
         config.productIdentifier = productIdentifierCombobox.getSelectedItem().toString();
         config.enabled = enabledCheckBox.isSelected();
-        config.name = nameTextField.getText();
+        config.name = getNameFromUI();
         config.executorVersion = execVersionObj.intValue();
         // config.uuid - is read only and just for view...
 
@@ -210,6 +215,10 @@ public class ExecutorConfigDialogUI {
         writeJobParamsStringBackToConfig();
 
         return config;
+    }
+
+    private String getNameFromUI() {
+        return nameTextField.getText().trim();
     }
 
     private void writeJobParamsStringBackToConfig() {

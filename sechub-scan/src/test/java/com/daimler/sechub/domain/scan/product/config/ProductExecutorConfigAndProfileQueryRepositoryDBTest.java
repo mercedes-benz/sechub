@@ -188,7 +188,7 @@ public class ProductExecutorConfigAndProfileQueryRepositoryDBTest {
         searchCode2.assertFound(config1);
         searchInfra.assertFound(config2);
         
-        profileRepository.deleteAllProfileRelationsForProject("project1");
+        profileRepository.deleteAllProfileRelationsToProject("project1");
         
         searchCode.assertNothingFound();
         searchInfra.assertNothingFound();

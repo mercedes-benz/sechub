@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.sharedkernel.validation.ProfileDescriptionValidation;
-import com.daimler.sechub.sharedkernel.validation.ProfileIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
@@ -21,7 +21,7 @@ public class ProductExecutionrProfileValidationImplTest {
     @Before
     public void before() throws Exception {
         validationToTest = new ProductExecutionrProfileValidationImpl();
-        validationToTest.profileIdValidation=mock(ProfileIdValidation.class);
+        validationToTest.profileIdValidation=mock(ProductExecutionProfileIdValidation.class);
         validationToTest.descriptionValidation=mock(ProfileDescriptionValidation.class);
         validationToTest.projectIdValidation=mock(ProjectIdValidation.class);
         

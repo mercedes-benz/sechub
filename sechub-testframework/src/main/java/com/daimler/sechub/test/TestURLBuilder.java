@@ -18,6 +18,7 @@ public class TestURLBuilder {
         JOB_UUID("jobUUID"),
 
         PROJECT_ID("projectId"),
+        
 
         USER_ID("userId"),
 
@@ -29,6 +30,7 @@ public class TestURLBuilder {
 
         FINDING_ID("findingId"),
 
+        PROFILE_ID("profileId"),
         ;
 
         private String restDocName;
@@ -400,6 +402,14 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_CONFIG,"execution/profile",profileId);
     }
     
+    public String buildAdminAddsProjectToExecutionProfile(String profileId, String projectId) {
+        return buildUrl(API_ADMIN_CONFIG,"execution/profile",profileId,"project",projectId);
+    }
+    
+    public String buildAdminRemovesProjectFromExecutionProfile(String profileId, String projectId) {
+        return buildUrl(API_ADMIN_CONFIG,"execution/profile",profileId,"project",projectId);
+    }
+    
     public String buildAdminFetchesProductExecutionProfile(String profileId) {
         return buildUrl(API_ADMIN_CONFIG,"execution/profile",profileId);
     }
@@ -600,6 +610,8 @@ public class TestURLBuilder {
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/"+profileId+"/exists");
     }
+
+    
 
    
 

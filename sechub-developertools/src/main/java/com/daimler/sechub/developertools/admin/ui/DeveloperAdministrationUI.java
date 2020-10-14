@@ -84,9 +84,9 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
         Container contentPane = frame.getContentPane();
 
         credentialUI = new CredentialUI();
-        administration = new DeveloperAdministration(this, this);
-        commandPanelUI = new CommandUI(this);
         outputPanelUI = new OutputUI();
+        administration = new DeveloperAdministration(this, this,this);
+        commandPanelUI = new CommandUI(this);
         glassPaneUI = new GlassPaneUI(this, frame);
         dialogUI = new DialogUI(frame);
         pdsConfigurationUI = new PDSConfigurationUI(this);

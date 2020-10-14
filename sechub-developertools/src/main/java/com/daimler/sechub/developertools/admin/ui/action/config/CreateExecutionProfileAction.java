@@ -24,6 +24,7 @@ public class CreateExecutionProfileAction extends AbstractUIAction {
 	        return; 
 	    }
 	    TestExecutionProfile profile = dialogUI.getUpdatedProfile();
+	    
 	    getContext().getAdministration().createExecutionProfile(profile);
         
 		String data = getContext().getAdministration().fetchExecutionProfiles();

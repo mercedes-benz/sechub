@@ -3,10 +3,12 @@ package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.domain.scan.product.config.ProductExecutionProfile.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
@@ -49,10 +51,12 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
@@ -169,6 +173,56 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                         )
 
                                 )
+                );
+
+        /* @formatter:on */
+    }
+	
+	@Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorAssignsExecutionProfileToProject.class)
+    public void restdoc_admin_assigns_executionprofile_to_project() throws Exception {
+        /* prepare */
+        String profileId="profile-1";
+        String projectId="project-1";
+
+        
+                
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
+                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                )./*andDo(print()).*/
+                    andExpect(status().isCreated()).
+                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsExecutionProfileToProject.class),
+                            pathParameters(
+                               parameterWithName(PROJECT_ID.paramName()).description("The project id "),
+                               parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                            )
+                    )
+                );
+
+        /* @formatter:on */
+    }
+	
+	@Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorUnassignsExecutionProfileFromProject.class)
+    public void restdoc_admin_unassigns_executionprofile_from_project() throws Exception {
+        /* prepare */
+        String profileId="profile-1";
+        String projectId="project-1";
+                
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
+                    contentType(MediaType.APPLICATION_JSON_VALUE)
+                )./*andDo(print()).*/
+                    andExpect(status().isCreated()).
+                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsExecutionProfileFromProject.class),
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The project id "),
+                                    parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                            )
+                    )
                 );
 
         /* @formatter:on */

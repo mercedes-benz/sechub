@@ -261,13 +261,10 @@ public class AsUser {
     
     
     public AsUser removeProjectIdsFromProfile(String profileId, String ... projectIds) {
-        String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
-        TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
         for (String projectId: projectIds) {
-            profile.projectIds.remove(projectId);
+            getRestHelper().delete(getUrlBuilder().buildAdminRemovesProjectFromExecutionProfile(profileId, projectId));
         }
-        return updateProductExecutionProfile(profileId, profile);
+        return this;
     }
     
     public TestExecutorConfigList fetchProductExecutorConfigList() {
@@ -313,12 +310,9 @@ public class AsUser {
     }
     
     public AsUser addProjectIdsToProfile(String profileId, String ...projectIds) {
-        /* currently we do this by calling update REST - maybe later we got a dedicated REST method */
-        TestExecutionProfile loadedProfile = fetchProductExecutionProfile(profileId);
         for (String projectId: projectIds) {
-            loadedProfile.projectIds.add(projectId);
+            getRestHelper().post(getUrlBuilder().buildAdminAddsProjectToExecutionProfile(profileId, projectId));
         }
-        updateProductExecutionProfile(profileId, loadedProfile);
         return this;
     }
     

@@ -22,23 +22,26 @@ public class DeleteConfigurationAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to delete");
-        dialogUI.showDialog();
-        if (!dialogUI.isOkPressed()) {
-            return;
+        while(true) {
+            ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to delete");
+            dialogUI.setOkButtonText("Delete configuration");
+            dialogUI.showDialog();
+            if (!dialogUI.isOkPressed()) {
+                return;
+            }
+            UUID uuid = dialogUI.getSelectedValue();
+            if (uuid==null) {
+                return;
+            }
+            if (!confirm("Do you really want to\nDELETE\nconfig " + uuid + "?")) {
+                outputAsTextOnSuccess("CANCELED - delete");
+                LOG.info("canceled delete of config {}", uuid);
+                return;
+            }
+            LOG.info("start delete of config {}", uuid);
+            String infoMessage = getContext().getAdministration().deletExecutionConfig(uuid);
+            outputAsTextOnSuccess(infoMessage);
         }
-        UUID uuid = dialogUI.getSelectedValue();
-        if (uuid==null) {
-            return;
-        }
-        if (!confirm("Do you really want to\nDELETE\nconfig " + uuid + "?")) {
-            outputAsTextOnSuccess("CANCELED - delete");
-            LOG.info("canceled delete of config {}", uuid);
-            return;
-        }
-        LOG.info("start delete of config {}", uuid);
-        String infoMessage = getContext().getAdministration().deletExecutionConfig(uuid);
-        outputAsTextOnSuccess(infoMessage);
     }
 
 }

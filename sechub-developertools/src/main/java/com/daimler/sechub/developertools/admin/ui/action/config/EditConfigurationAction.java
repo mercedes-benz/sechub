@@ -22,16 +22,19 @@ public class EditConfigurationAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-	    ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to edit");
-	    dialogUI.showDialog();
-	    if (!dialogUI.isOkPressed()) {
-	        return;
+	    while(true) {
+	        ListExecutorConfigurationDialogUI dialogUI = new ListExecutorConfigurationDialogUI(getContext(), "Select configuration you want to edit");
+	        dialogUI.setOkButtonText("Edit configuration");
+	        dialogUI.showDialog();
+	        if (!dialogUI.isOkPressed()) {
+	            return;
+	        }
+	        UUID uuid = dialogUI.getSelectedValue();
+	        if (uuid==null) {
+	            continue;
+	        }
+	        executeDirectly(uuid);
 	    }
-	    UUID uuid = dialogUI.getSelectedValue();
-		if (uuid==null) {
-		    return;
-		}
-        executeDirectly(uuid);
 	}
 
 	/**

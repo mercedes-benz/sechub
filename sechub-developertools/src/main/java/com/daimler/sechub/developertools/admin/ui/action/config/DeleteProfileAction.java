@@ -21,26 +21,29 @@ public class DeleteProfileAction extends AbstractUIAction {
 
     @Override
     public void execute(ActionEvent e) {
-        ListExecutionProfilesDialogUI listProfilesDialog = new ListExecutionProfilesDialogUI(getContext(), "Select the profile you want to delete");
-        listProfilesDialog.showDialog();
-
-        if (!listProfilesDialog.isOkPressed()) {
-            return;
+        while(true) {
+            ListExecutionProfilesDialogUI listProfilesDialog = new ListExecutionProfilesDialogUI(getContext(), "Select the profile you want to delete");
+            listProfilesDialog.setOkButtonText("Delete profile");
+            listProfilesDialog.showDialog();
+            
+            if (!listProfilesDialog.isOkPressed()) {
+                return;
+            }
+            String profileId = listProfilesDialog.getSelectedValue();
+            if (profileId == null) {
+                /* ok pressed, but no selection */
+                getContext().getOutputUI().output("No profile selected, so canceled");
+                return;
+            }
+            if (!confirm("Do you really want to\nDELETE\nprofile " + profileId + "?")) {
+                outputAsTextOnSuccess("CANCELED - delete");
+                LOG.info("canceled delete of profile {}", profileId);
+                return;
+            }
+            LOG.info("start delete of profile {}", profileId);
+            String infoMessage = getContext().getAdministration().deletExecutionProfile(profileId);
+            outputAsTextOnSuccess(infoMessage);
         }
-        String profileId = listProfilesDialog.getSelectedValue();
-        if (profileId == null) {
-            /* ok pressed, but no selection */
-            getContext().getOutputUI().output("No profile selected, so canceled");
-            return;
-        }
-        if (!confirm("Do you really want to\nDELETE\nprofile " + profileId + "?")) {
-            outputAsTextOnSuccess("CANCELED - delete");
-            LOG.info("canceled delete of profile {}", profileId);
-            return;
-        }
-        LOG.info("start delete of profile {}", profileId);
-        String infoMessage = getContext().getAdministration().deletExecutionProfile(profileId);
-        outputAsTextOnSuccess(infoMessage);
     }
 
 }

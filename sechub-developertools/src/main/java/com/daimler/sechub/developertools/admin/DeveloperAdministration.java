@@ -17,7 +17,9 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
+import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.AsUser;
 import com.daimler.sechub.integrationtest.api.FixedTestUser;
@@ -26,6 +28,7 @@ import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient;
+import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
@@ -44,14 +47,20 @@ public class DeveloperAdministration {
     private TestRestHelper restHelper;
     private TestURLBuilder urlBuilder;
     private ErrorHandler errorHandler;
+    private UIContext uiContext;
 
-    public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
+    public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler,UIContext uiContext) {
         this.provider = provider;
         this.errorHandler = errorHandler;
         this.userContext = new AdminUserContext();
+        this.uiContext=uiContext;
         this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
     }
 
+    public UIContext getUiContext() {
+        return uiContext;
+    }
+    
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
         return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
     }
@@ -277,6 +286,12 @@ public class DeveloperAdministration {
 
     public String fetchProjectList() {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsProjectsUrl());
+    }
+    
+    public List<String> fetchProjectIdList() {
+        String json = fetchProjectList();
+        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
+        return list;
     }
 
     public String fetchProjectInfo(String projectId) {
@@ -523,6 +538,21 @@ public class DeveloperAdministration {
 
     public TestExecutionProfileList fetchExecutionProfileList() {
         return asTestUser().fetchProductExecutionProfiles();
-        
+    }
+
+    public void addProjectIdsToProfile(String profileId, String ... projectIds) {
+        asTestUser().addProjectIdsToProfile(profileId, projectIds);
+    }
+    
+    public void removeProjectIdsFromProfile(String profileId, String ...projectIds) {
+        asTestUser().removeProjectIdsFromProfile(profileId, projectIds);
+    }
+
+    public void addProjectIdsToProfile(String profileId, List<String> list) {
+       addProjectIdsToProfile(profileId, list.toArray(new String[list.size()]));
+    }
+
+    public void removeProjectIdsFromProfile(String profileId, List<String> list) {
+       removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
     }
 }

@@ -59,7 +59,7 @@ public class ExecutionProfileDialogUI {
     private EditConfigurationAction editConfigurationAction;
     private JLabel projectIdsLabel;
     private String buttonOkText;
-
+    
     public ExecutionProfileDialogUI(UIContext context, String title) {
         this(context, title, true, createExampleProfile());
     }
@@ -115,6 +115,11 @@ public class ExecutionProfileDialogUI {
 
         buttonOk = new JButton(buttonOkText);
         buttonOk.addActionListener((event) -> {
+            String profileId = fetchProfileIdFromUI();
+            if (profileId==null || profileId.isEmpty()) {
+                idTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
+                return;
+            }
             okPressed = true;
             dialog.setVisible(false);
             dialog.dispose();
@@ -230,6 +235,7 @@ public class ExecutionProfileDialogUI {
         /* text area for project ids */
         projectIdsTextArea = new JTextArea();
         projectIdsTextArea.setLineWrap(true);
+        projectIdsTextArea.setEditable(false);
         projectIdsTextArea.setColumns(200);
         GridBagConstraints textAreaConstraint = createComponentConstraint(row++);
         textAreaConstraint.gridx = 0;
@@ -376,15 +382,19 @@ public class ExecutionProfileDialogUI {
     public TestExecutionProfile getUpdatedProfile() {
         profile.enabled = enabledCheckBox.isSelected();
         if (idEditAllowed) {
-            profile.id = idTextField.getName();
+            profile.id = fetchProfileIdFromUI();
         }
         profile.description = descriptionTextArea.getText();
-        String text = projectIdsTextArea.getText();
+        String text = projectIdsTextArea.getText().toLowerCase();//projecti ds area allowed only with lower letters, so mitigate problem
         SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, text);
         profile.projectIds.clear();
         profile.projectIds.addAll(list);
 
         return profile;
+    }
+
+    private String fetchProfileIdFromUI() {
+        return idTextField.getText().trim().toLowerCase();
     }
 
 }

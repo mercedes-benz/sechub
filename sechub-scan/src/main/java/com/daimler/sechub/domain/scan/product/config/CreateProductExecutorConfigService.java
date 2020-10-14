@@ -41,13 +41,13 @@ public class CreateProductExecutorConfigService {
             description = "Service creates a new product executor configuration"))
     /* @formatter:on */
     public String createProductExecutorConfig(ProductExecutorConfig configFromUser) {
+        assertValid(configFromUser, validation);
 
         auditLogService.log("Wants to create product execution configuration '{}', enabled: {} for executor:{}, V{}", configFromUser.getName(),
                 configFromUser.getEnabled(), configFromUser.getProductIdentifier(), configFromUser.getExecutorVersion());
 
         resetFieldsNeverFromUser(configFromUser);
 
-        assertValid(configFromUser, validation);
 
         ProductExecutorConfig stored = repository.save(configFromUser);
         UUID uuid = stored.getUUID();

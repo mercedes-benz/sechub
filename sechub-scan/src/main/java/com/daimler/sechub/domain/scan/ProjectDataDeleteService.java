@@ -59,7 +59,7 @@ public class ProjectDataDeleteService {
 		scanReportRepository.deleteAllReportsForProject(projectId);
 		scanLogRepository.deleteAllLogDataForProject(projectId);
 		scanProjectConfigRepository.deleteAllConfigurationsForProject(projectId);
-		profileRepository.deleteAllProfileRelationsForProject(projectId);
+		profileRepository.deleteAllProfileRelationsToProject(projectId);
 		
 		LOG.info("Deleted all data (results,reports, scanlogs,profile-relations) for project:{}",logSanitizer.sanitize(projectId, 30));
 	}

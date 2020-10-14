@@ -36,10 +36,12 @@ public abstract class AbstractListDialogUI<T> {
     private Object selectedValue;
     private JDialog dialog;
     private UserApprovesSelectionAction approveAction;
+    private String okButtonText;
 
     public AbstractListDialogUI(UIContext context, String title) {
         this.context = context;
         this.title = title;
+        this.okButtonText="Ok";
         this.approveAction= new UserApprovesSelectionAction();
     }
 
@@ -86,7 +88,7 @@ public abstract class AbstractListDialogUI<T> {
         private static final long serialVersionUID = -1550027561125909572L;
         
         private UserApprovesSelectionAction() {
-            putValue(Action.NAME, "OK");
+            putValue(Action.NAME, okButtonText);
         }
 
         @Override
@@ -151,6 +153,11 @@ public abstract class AbstractListDialogUI<T> {
     @SuppressWarnings("unchecked")
     public T getSelectedValue() {
         return (T) selectedValue;
+    }
+    
+    public void setOkButtonText(String okButtonText) {
+        this.okButtonText=okButtonText;
+        approveAction.putValue(Action.NAME, okButtonText);
     }
 
     protected abstract List<Object[]> createTableContent();

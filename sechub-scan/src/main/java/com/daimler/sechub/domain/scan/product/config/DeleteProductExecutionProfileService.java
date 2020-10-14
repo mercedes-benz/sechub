@@ -1,5 +1,7 @@
 package com.daimler.sechub.domain.scan.product.config;
 
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
+
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
@@ -15,6 +17,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -28,6 +31,9 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecution
     ProductExecutionProfileRepository repository;
     
     @Autowired
+    ProductExecutionProfileIdValidation profileIdValidation;
+
+    @Autowired
     AuditLogService auditLogService;
     
     /* @formatter:off */
@@ -37,6 +43,8 @@ private static final Logger LOG = LoggerFactory.getLogger(DeleteProductExecution
                 name="Service call",
                 description="Service deletes an existing product execution profile by its profile id"))
     public void deleteProductExecutionProfile(String profileId) {
+        assertValid(profileId, profileIdValidation);
+        
         auditLogService.log("Wants to removed product execution profile {}",profileId);
 
         Optional<ProductExecutionProfile> opt = repository.findById(profileId);

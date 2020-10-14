@@ -37,16 +37,17 @@ public class ProductExecutionProfile {
     public static final String COLUMN_PROFILE_ID = "PROFILE_ID";
     public static final String COLUMN_PROFILE_DESCRIPTION = "PROFILE_DESCRIPTION";
     public static final String COLUMN_PROFILE_ENABLED = "PROFILE_ENABLED";
-    public static final String COLUMN_PROJECT_IDS= "PROJECTS_PROJECT_ID";
-
+    
+    public static final String PROFILE_TO_PROJECT__COLUMN_PROJECT_ID= "PROJECTS_PROJECT_ID";
+    public static final String PROFILE_TO_PROJECT__COLUMN_PROFILE_ID= "PRODUCT_EXECUTION_PROFILE_PROFILE_ID";
+    
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
-    public static final String CLASS_NAME = ProductExecutionProfile.class.getSimpleName();
+    public static final String CLASS_NAME = "ProductExecutionProfile";
 
     public static final String PROPERTY_ID = "id";
-    public static final String ASSOCIATE_PROFILE_TO_CONFIG_ID = "PROFILES_PROFILE_ID";
-    public static final String ASSOCIATE_PROFILE_TO_PROJECT_ID = "PROJECTS_PROJECT_ID";
     public static final String PROPERTY_CONFIGURATIONS = "configurations";
     public static final String PROPERTY_PROJECT_IDS = "projectIds";
     public static final String PROPERTY_ENABLED = "enabled";
@@ -70,7 +71,7 @@ public class ProductExecutionProfile {
     @JoinTable(name = TABLE_NAME_PROFILE_TO_CONFIG)
     Set<ProductExecutorConfig> configurations = new HashSet<>();
     
-    @Column(name = COLUMN_PROJECT_IDS, nullable = false)
+    @Column(name = PROFILE_TO_PROJECT__COLUMN_PROJECT_ID, nullable = false)
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @CollectionTable(name = TABLE_NAME_PROFILE_TO_PROJECT)
     Set<String> projectIds = new HashSet<>();

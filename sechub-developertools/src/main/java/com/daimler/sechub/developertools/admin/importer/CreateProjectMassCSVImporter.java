@@ -11,36 +11,56 @@ import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 
 public class CreateProjectMassCSVImporter {
 
-	private SimpleCSVImporter csvImporter = new SimpleCSVImporter();
-	private DeveloperAdministration administration;
+    private SimpleCSVImporter csvImporter = new SimpleCSVImporter();
+    private DeveloperAdministration administration;
 
+    public CreateProjectMassCSVImporter(DeveloperAdministration administration) {
+        this.administration = administration;
+    }
 
-	public CreateProjectMassCSVImporter(DeveloperAdministration administration) {
-		this.administration=administration;
-	}
+    public void importProjectsAndRelationsByCSV(File file) throws IOException {
+        List<CSVRow> rows = csvImporter.importCSVFile(file, 4, 1, false);
 
-	public void importProjectsAndRelationsByCSV(File file) throws IOException {
-		List<CSVRow> rows = csvImporter.importCSVFile(file, 3, 1);
+        int rowNumber = 2;
+        for (CSVRow row : rows) {
+            administration.getUiContext().getOutputUI().output("starting import of CSV row:"+rowNumber);
+            importRow(row, rowNumber++);
+        }
 
-		for (CSVRow row: rows) {
-			importRow(row);
-		}
+    }
 
-	}
-
-	private void importRow(CSVRow row) {
-		Iterator<CSVColumn> it = row.columns.iterator();
-		String projectId = it.next().cell.trim();
-		String owner = it.next().cell.trim();
-		String users = it.next().cell.trim();
-
-		administration.createProject(projectId, "Project "+projectId, owner, Collections.emptyList());
-		if (users.isEmpty()) {
-			return;
-		}
-		for (String userId: users.split(",")) {
-			administration.assignUserToProject(userId.trim(), projectId);
-		}
-	}
+    private void importRow(CSVRow row, int rowNumber) {
+        int size = row.columns.size();
+        Iterator<CSVColumn> it = row.columns.iterator();
+        if (size < 2) {
+            throw new IllegalStateException("At least project id and owner must be given! But did happen in row:" + rowNumber);
+        }
+        CSVColumn projectColumn = it.next();
+        String projectId =projectColumn.cell.trim();
+        if (projectId.isEmpty()) {
+            throw new IllegalStateException("A project id must be not empty! But did happen in row:" + rowNumber);
+        }
+        String owner = it.next().cell.trim();
+        administration.createProject(projectId, "Project " + projectId, owner.trim().toLowerCase(), Collections.emptyList());
+        if (size == 2) {
+            return;
+        }
+        CSVColumn userColumn = it.next();
+        String users = userColumn.cell.trim();
+        if (!users.isEmpty()) {
+            for (String userId : users.split(",")) {
+                administration.assignUserToProject(userId.trim().toLowerCase(), projectId.trim().toLowerCase());
+            }
+        }
+        if (size == 3) {
+            return;
+        }
+        String profiles = it.next().cell.trim();
+        if (!profiles.isEmpty()) {
+            for (String profileId : profiles.split(",")) {
+                administration.addProjectIdsToProfile(profileId.trim().toLowerCase(), projectId.trim().toLowerCase());
+            }
+        }
+    }
 
 }
