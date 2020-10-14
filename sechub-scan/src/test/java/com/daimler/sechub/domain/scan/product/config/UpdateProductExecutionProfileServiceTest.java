@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class UpdateProductExecutionProfileServiceTest {
 
@@ -16,6 +19,11 @@ public class UpdateProductExecutionProfileServiceTest {
     public void before() throws Exception {
         serviceToTest=new UpdateProductExecutionProfileService();
 
+        serviceToTest.profileIdValidation=mock(ProductExecutionProfileIdValidation.class);
+        serviceToTest.projectIdValidation=mock(ProjectIdValidation.class);
+        ValidationResult validResult = new ValidationResult();
+        when(serviceToTest.profileIdValidation.validate(any())).thenReturn(validResult);        
+        when(serviceToTest.projectIdValidation.validate(any())).thenReturn(validResult);        
         repository=mock(ProductExecutionProfileRepository.class);
         serviceToTest.auditLogService=mock(AuditLogService.class);
         serviceToTest.repository=repository;
