@@ -14,6 +14,9 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
+
+import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -22,6 +25,9 @@ public class FetchProductExecutionProfileService {
 
     @Autowired
     ProductExecutionProfileRepository repository;
+
+    @Autowired
+    ProductExecutionProfileIdValidation profileIdValidation;
 
     @Autowired
     AuditLogService auditLogService;
@@ -33,6 +39,8 @@ public class FetchProductExecutionProfileService {
             description = "Service reads setup information for an existing product executor configuration"))
     /* @formatter:on */
     public ProductExecutionProfile fetchProductExecutorConfig(String profileId) {
+        assertValid(profileId,profileIdValidation);
+        
         auditLogService.log("Reads setup for executor configuration:{}", profileId);
         
         Optional<ProductExecutionProfile> config = repository.findById(profileId);
