@@ -29,7 +29,7 @@ public class FetchProductExecutorConfigService {
 
     /* @formatter:off */
     @UseCaseAdministratorFetchesExecutorConfiguration(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service reads setup information for an existing product executor configuration"))
     /* @formatter:on */

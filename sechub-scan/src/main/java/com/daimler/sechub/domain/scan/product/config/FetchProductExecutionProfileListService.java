@@ -27,7 +27,7 @@ public class FetchProductExecutionProfileListService {
 
     /* @formatter:off */
     @UseCaseAdministratorFetchesExecutionProfileList(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service fetches data and creates a list containing all executor profiles"))
     /* @formatter:on */

@@ -36,7 +36,7 @@ public class CreateProductExecutorConfigService {
 
     /* @formatter:off */
     @UseCaseAdministratorCreatesExecutorConfiguration(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service creates a new product executor configuration"))
     /* @formatter:on */

@@ -30,7 +30,7 @@ public class FetchProductExecutorConfigListService {
 
     /* @formatter:off */
     @UseCaseAdministratorFetchesExecutorConfigurationList(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service fetches data and creates a list containing all executor configurations"))
     /* @formatter:on */

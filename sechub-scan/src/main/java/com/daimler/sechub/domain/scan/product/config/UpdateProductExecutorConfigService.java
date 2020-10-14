@@ -38,7 +38,7 @@ public class UpdateProductExecutorConfigService {
 
     /* @formatter:off */
     @UseCaseAdministratorUpdatesExecutorConfig(
-            @Step(number = 1, 
+            @Step(number = 2, 
             name = "Service call", 
             description = "Service updates existing executor configuration"))
     /* @formatter:on */
