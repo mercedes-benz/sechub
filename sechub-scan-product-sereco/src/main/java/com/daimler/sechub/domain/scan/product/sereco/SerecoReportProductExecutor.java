@@ -109,4 +109,9 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		return new ProductIdentifier[] { ProductIdentifier.NESSUS, ProductIdentifier.NETSPARKER, ProductIdentifier.CHECKMARX };
 	}
 
+	
+	@Override
+    public int getVersion() {
+        return 1;
+    }
 }

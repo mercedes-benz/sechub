@@ -33,7 +33,14 @@ public enum InputCacheIdentifier{
 	PDS_JOB_PARAMS,
 	
 	/* test full scan */
-	CLIENT_SCAN_TARGETFOLDER,
+	CLIENT_SCAN_TARGETFOLDER, 
+	
+	/* runtime configuration */
+	EXECUTOR_CONFIG_UUID,
+	
+	EXECUTION_PROFILE_ID, 
+	
+	PROJECT_IDS,
 	
 	
 }

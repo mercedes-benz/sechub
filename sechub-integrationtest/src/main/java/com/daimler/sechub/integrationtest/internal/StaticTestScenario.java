@@ -28,4 +28,5 @@ public interface StaticTestScenario extends TestScenario {
     default boolean isEventResetNecessary() {
         return true;
     }
+   
 }

@@ -36,7 +36,12 @@ public class Scenario1 extends AbstractGrowingSecHubServerTestScenario {
 
     @Override
     protected void initializeTestData() {
-        initializer().createUser(OWNER_1);
+        /* @formatter:off */
+        initializer().
+            ensureDefaultExecutionProfile_1().
+            createUser(OWNER_1).
+            addProjectIdsToDefaultExecutionProfile_1(PROJECT_1);
+        /* @formatter:on */
 
     }
 

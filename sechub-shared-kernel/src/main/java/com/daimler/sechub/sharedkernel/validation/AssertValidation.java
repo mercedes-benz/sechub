@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 
 public class AssertValidation {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(AssertValidation.class);
 
+    
     /**
      * Asserts target is valid. Otherwise a {@link NotAcceptableException} will be
      * thrown with result description as message
@@ -32,6 +38,7 @@ public class AssertValidation {
             sb.append(errorMessage).append(". ");
         }
         sb.append(result.getErrorDescription());
+        LOG.error("Validation failed , result was {}", result.getErrorDescription());
         throw new NotAcceptableException(sb.toString());
     }
 

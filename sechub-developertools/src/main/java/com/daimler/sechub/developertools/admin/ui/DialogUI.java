@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +22,18 @@ import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class DialogUI {
+    
+
+    private static final Logger LOG = LoggerFactory.getLogger(DialogUI.class);
+
 
     private JFrame frame;
     private JFileChooser fileChooser = new JFileChooser();
@@ -65,14 +74,24 @@ public class DialogUI {
                 }
             }
         }
+        DialogState state = new DialogState();
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                state.result = fileChooser.showOpenDialog(frame);
 
-        System.out.println("frame="+frame);
-        int result = fileChooser.showOpenDialog(frame);
-        if (result != JFileChooser.APPROVE_OPTION) {
+            });
+        } catch (InvocationTargetException | InterruptedException e) {
+            LOG.error("Filechooser selection failed",e);
+        }
+        if (state.result != JFileChooser.APPROVE_OPTION) {
             return null;
         }
         return fileChooser.getSelectedFile();
 
+    }
+    
+    private class DialogState{
+        int result;
     }
 
     /**
@@ -107,7 +126,7 @@ public class DialogUI {
         if (option == 0) {
             char[] password = passwordField.getPassword();
             return Optional.ofNullable(new String(password));
-        }else {
+        } else {
             return Optional.empty();
         }
     }

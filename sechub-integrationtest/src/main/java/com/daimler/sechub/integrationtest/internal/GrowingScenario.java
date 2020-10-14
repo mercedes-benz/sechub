@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.internal;
 
+import com.daimler.sechub.integrationtest.api.TestProject;
+
 /**
  * Those scenarios will NOT cleanup their data!
  * @author Albert Tregnaghi
@@ -30,4 +32,9 @@ public interface GrowingScenario extends TestScenario {
     public default String getName() {
         return getPrefixMainId()+"_"+getGrowId();
     }
+    
+    default TestProject newTestProject() {
+        throw new IllegalStateException("A static test scenario does not have temp projects! static means 'does not change' ...");
+    }
+    
 }

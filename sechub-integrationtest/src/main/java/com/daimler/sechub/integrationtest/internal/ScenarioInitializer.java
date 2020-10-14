@@ -4,25 +4,63 @@ package com.daimler.sechub.integrationtest.internal;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static org.junit.Assert.*;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.integrationtest.api.AbstractTestExecutable;
+import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 
 public class ScenarioInitializer {
 
 	private static final int DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION = 3;
 	private static final Logger LOG = LoggerFactory.getLogger(ScenarioInitializer.class);
+	
 
 	public ScenarioInitializer createProject(TestProject project, TestUser owner) {
 		TestAPI.as(TestAPI.SUPER_ADMIN).createProject(project,owner.getUserId());
 		return this;
 	}
 
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_1(TestProject ...projects) {
+	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID,projects);
+	    return this;
+	}
+	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
+	    return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_1);
+	}
+	
+	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
+	    if (TestAPI.isExecutionProfileExisting(profile.id)) {
+	        return this;
+	    }
+	    Set<TestExecutorConfig> realConfigurations = new LinkedHashSet<>();
+
+	    /* we iterate over initial list, where all defaults are insdie - but UUID is null...*/
+	    for (TestExecutorConfig config: profile.initialConfigurationsWithoutUUID) {
+	        UUID uuid = TestAPI.as(SUPER_ADMIN).createProductExecutorConfig(config);
+	        config.uuid=uuid; // set uuid from service to this so available 
+	        realConfigurations.add(config);
+	    }
+	    /* define profile */
+	    TestAPI.as(TestAPI.SUPER_ADMIN).createProductExecutionProfile(profile.id, profile);
+	    TestExecutionProfile realProfile = TestAPI.as(TestAPI.SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
+	    /* now we create real configurations having correct uuids etc. */
+	    realProfile.configurations.addAll(realConfigurations);
+	    TestAPI.as(TestAPI.SUPER_ADMIN).updateProductExecutionProfile(profile.id, realProfile);
+	    return this;
+	}
+	
 	/**
 	 * Creates an user, updates the token
 	 *
@@ -111,8 +149,9 @@ public class ScenarioInitializer {
 		return this;
 	}
 
-	public void assignUserToProject(TestProject project, TestUser targetUser) {
+	public ScenarioInitializer assignUserToProject(TestProject project, TestUser targetUser) {
 		TestAPI.as(SUPER_ADMIN).assignUserToProject(targetUser, project);
+		return this;
 	}
 
 }

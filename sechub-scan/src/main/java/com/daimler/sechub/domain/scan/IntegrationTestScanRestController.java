@@ -28,6 +28,7 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -74,6 +75,15 @@ public class IntegrationTestScanRestController {
 
     @Autowired
     ProductResultRepository productResultRepository;
+    
+    @Autowired
+    ProductExecutionProfileRepository profileRepository;
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/execution/profile/{profileId}/exists", method = RequestMethod.GET, produces = {
+            MediaType.TEXT_PLAIN_VALUE })
+    public String executionProfileExists(@PathVariable("profileId") String profileId) {
+        return ""+profileRepository.existsById(profileId);
+    }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })

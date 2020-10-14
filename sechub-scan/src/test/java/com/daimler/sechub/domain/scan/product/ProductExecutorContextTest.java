@@ -11,23 +11,26 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.adapter.AdapterMetaData;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 
 public class ProductExecutorContextTest {
     ProductExecutorContext contextToTest;
     List<ProductResult> formerResults;
     ProductExecutorCallback callback;
     AdapterMetaDataConverter converter = new AdapterMetaDataConverter();
+    private ProductExecutorConfig config;
     @Before
     public void before() {
         formerResults = new ArrayList<ProductResult>();
         callback = mock(ProductExecutorCallback.class);
+        config = mock(ProductExecutorConfig.class);
         when(callback.getMetaDataConverter()).thenReturn(converter);
     }
 
     @Test
     public void inital_ProductExecutorContext_does_call_setCurrentProductResult_with_null_when_no_former_results_available() {
         /* execute */
-        contextToTest = new ProductExecutorContext(formerResults, callback);
+        contextToTest = new ProductExecutorContext(config,formerResults, callback);
         
         /* test */
         verify(callback).setCurrentProductResult(null);
@@ -41,7 +44,7 @@ public class ProductExecutorContextTest {
         formerResults.add(result1);
         formerResults.add(result2);
         /* execute */
-        contextToTest = new ProductExecutorContext(formerResults, callback);
+        contextToTest = new ProductExecutorContext(config,formerResults, callback);
 
         /* test */
         verify(callback).setCurrentProductResult(result1);
@@ -52,7 +55,7 @@ public class ProductExecutorContextTest {
         /* prepare */
         AdapterMetaData metaData = new AdapterMetaData();
         
-        contextToTest = new ProductExecutorContext(formerResults, callback);
+        contextToTest = new ProductExecutorContext(config,formerResults, callback);
         when(callback.getMetaDataOrNull()).thenReturn(metaData);
         
         /* execute */
@@ -82,7 +85,7 @@ public class ProductExecutorContextTest {
         result2.setMetaData(null);
         result3.setMetaData(converter.convertToJSONOrNull(metaData2));
         
-        contextToTest = new ProductExecutorContext(formerResults, callback);
+        contextToTest = new ProductExecutorContext(config,formerResults, callback);
         verify(callback,times(1)).setCurrentProductResult(result3); // by constructor...
         
         /* execute */

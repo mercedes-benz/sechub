@@ -224,10 +224,14 @@ public class TestRestHelper {
 	}
 
 
-	public long getLongFromURL(String link) {
-		String dataAsString = getStringFromURL(link);
+	public long getLongFromURL(String url) {
+		String dataAsString = getStringFromURL(url);
 		return Long.parseLong(dataAsString);
 	}
+	public boolean getBooleanFromURL(String url) {
+        String dataAsString = getStringFromURL(url);
+        return Boolean.parseBoolean(dataAsString);
+    }
 	
 	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
