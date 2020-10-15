@@ -115,7 +115,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAdminCreatesProductExecutionProfile(profileId)).
+	    		post(https(PORT_USED).buildAdminCreatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(profile))
 	    		)./*andDo(print()).*/
@@ -126,7 +126,10 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 										fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
 										fieldWithPath(PROPERTY_CONFIGURATIONS+"[]").description("Configurations can be linked at creation time as well - see update description").optional(),
 										fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids at creation time as well - see update description").optional()
-										)
+										),
+	    						 pathParameters(
+	    	                            parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+	    	                            )
 
 	    						)
 	    		);
@@ -154,7 +157,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminUpdatesProductExecutionProfile(profileId)).
+                put(https(PORT_USED).buildAdminUpdatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(profile))
                 )./*andDo(print()).*/
@@ -170,8 +173,10 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS).ignored(),
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored(),
                                         fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
+                                        ),
+                                pathParameters(
+                                         parameterWithName(PROFILE_ID.paramName()).description("The profile id")
                                         )
-
                                 )
                 );
 
@@ -263,7 +268,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildAdminFetchesProductExecutionProfile(profileId)).
+                get(https(PORT_USED).buildAdminFetchesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
@@ -283,6 +288,9 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).ignored(),
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).ignored(),
                                         fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
+                                        ),
+                                pathParameters(
+                                        parameterWithName(PROFILE_ID.paramName()).description("The profile id")
                                         )
 
                                 )
@@ -299,11 +307,15 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    /* execute + test @formatter:off */
 	    String profileId= "profile-to-delete-1";
 	    this.mockMvc.perform(
-                delete(https(PORT_USED).buildAdminDeletesProductExecutionProfile(profileId)).
+                delete(https(PORT_USED).buildAdminDeletesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class))
+                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class),
+                            pathParameters(
+                                    parameterWithName(PROFILE_ID.paramName()).description("The profile id")
+                                    )
+)
                 );
 
         /* @formatter:on */
