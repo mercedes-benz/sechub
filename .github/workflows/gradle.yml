@@ -24,7 +24,9 @@ jobs:
     - name: Build CLI
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
     - name: Build Server
-      run: ./gradlew ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
+      run: ./gradlew ensureLocalhostCertificate build openapi3 -x :sechub-integrationtest:test -x :sechub-cli:build
+    - name: Build Generate OpenAPI Java client
+      run: ./gradlew :sechub-client-java:openApiGenerate
     - name: Integration test
       run: ./gradlew integrationtest
     - name: Create combined test report
