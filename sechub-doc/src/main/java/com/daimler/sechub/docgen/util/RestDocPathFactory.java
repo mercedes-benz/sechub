@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
+import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
@@ -51,9 +53,9 @@ public class RestDocPathFactory {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(UC_RESTDOC);
-		sb.append("-");
+		sb.append("_");
 		sb.append(createIdentifier(useCase));
-		sb.append("-");
+		sb.append("_");
 		if (variant == null || variant.isEmpty()) {
 			sb.append(UseCaseRestDoc.DEFAULT_VARIANT);
 		} else {
@@ -69,7 +71,15 @@ public class RestDocPathFactory {
 	}
 
 	public static String createIdentifier(Class<? extends Annotation> useCase) {
-		return useCase.getSimpleName().toLowerCase();
+        UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
+        if (usecaseAnnotation==null){
+             throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :"+useCase);
+        }
+        UseCaseIdentifier usecaseIdentifier = usecaseAnnotation.id();
+        if (usecaseIdentifier==null) {
+            throw new IllegalArgumentException("use case annotation of class does not contain id:"+useCase);
+        }
+		return usecaseIdentifier.uniqueId().toLowerCase();
 	}
 
 	
