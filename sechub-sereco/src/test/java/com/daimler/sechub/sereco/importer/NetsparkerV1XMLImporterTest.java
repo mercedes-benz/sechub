@@ -153,6 +153,20 @@ public class NetsparkerV1XMLImporterTest {
                     and().
                 withDescriptionContaining("<p>Netsparker Enterprise identified an invalid SSL certificate.</p>\n" + 
                         "<p>An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.</p>").
+                isContained().
+               
+           vulnerability().
+                enableTrace().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withURL("http://app.example.org:8082/").
+                withType("InsecureHttpUsage").
+                classifiedBy().
+                    owasp("A5").
+                    wasc("4").
+                    and().
+                withDescriptionContaining("<p>Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.</p>\n" + 
+                        "<p>HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.</p>\n" + 
+                        "<p>For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS. </p>").
                 isContained();
         /* @formatter:on */
 
