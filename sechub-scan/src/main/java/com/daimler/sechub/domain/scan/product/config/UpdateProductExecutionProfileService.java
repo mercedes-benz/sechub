@@ -40,7 +40,7 @@ public class UpdateProductExecutionProfileService {
     ProductExecutorConfigRepository configRepository;
 
     @Autowired
-    ProductExecutionProfileValidation validation;
+    ProductExecutionProfileValidation profileValidation;
     
     @Autowired
     ProductExecutionProfileIdValidation profileIdValidation;
@@ -57,9 +57,9 @@ public class UpdateProductExecutionProfileService {
             name = "Service call", 
             description = "Service updates existing executor configuration"))
     /* @formatter:on */
-    public void updateProductExecutorSetup(String profileId, ProductExecutionProfile profileFromUser) {
+    public void updateExecutionProfile(String profileId, ProductExecutionProfile profileFromUser) {
         profileFromUser.id=profileId;
-        assertValid(profileFromUser, validation);
+        assertValid(profileFromUser, profileValidation);
 
         auditLogService.log("Wants to update product execution configuration setup for executor:{}", profileId);
         
@@ -69,7 +69,7 @@ public class UpdateProductExecutionProfileService {
         }
         profileFromUser.id=profileId;
 
-        ProductExecutionProfile stored = mergeFromUserIntoEntity(profileId, profileFromUser, opt);
+        ProductExecutionProfile stored = mergeFromUserProfileIntoEntity(profileId, profileFromUser, opt);
         
         repository.save(stored);
         
@@ -78,15 +78,16 @@ public class UpdateProductExecutionProfileService {
         
     }
 
-    private ProductExecutionProfile mergeFromUserIntoEntity(String profileId, ProductExecutionProfile profileFromUser, Optional<ProductExecutionProfile> opt) {
+    private ProductExecutionProfile mergeFromUserProfileIntoEntity(String profileId, ProductExecutionProfile profileFromUser, Optional<ProductExecutionProfile> opt) {
         
         ProductExecutionProfile stored = opt.get();
         stored.description=profileFromUser.description;
         stored.enabled=profileFromUser.enabled;
+
         
-        stored.projectIds.clear();
-        stored.projectIds.addAll(profileFromUser.getProjectIds());
+        /* we change no profile associations with project ids*/
         
+        /* update configurations by given ids */
         stored.configurations.clear();
         
         Set<ProductExecutorConfig> configurationsFromUser = profileFromUser.getConfigurations();

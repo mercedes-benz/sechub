@@ -152,8 +152,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         configFromUser.uuid=randomUUID;
         
         profile.configurations.add(configFromUser);
-        profile.projectIds.add("project-1");
-        profile.projectIds.add("project-2");
+        profile.projectIds=null;
                 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -171,8 +170,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_ENABLED).ignored(),
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_EXECUTORVERSION).ignored(),
                                         fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS).ignored(),
-                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored(),
-                                        fieldWithPath(PROPERTY_PROJECT_IDS+"[]").description("Projects can be linked by their ids here")
+                                        fieldWithPath(PROPERTY_CONFIGURATIONS+"[]."+ProductExecutorConfig.PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS).ignored()
                                         ),
                                 pathParameters(
                                          parameterWithName(PROFILE_ID.paramName()).description("The profile id")
