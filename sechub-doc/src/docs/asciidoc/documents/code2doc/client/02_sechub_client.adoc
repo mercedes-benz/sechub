@@ -302,7 +302,7 @@ This is done by inspecting the filename ending. The accepted defaults are shown 
 
 NOTE: But of course you can also define additional source file endings - see <<sechub-config-example-sourcescan,config file example>> .
 
-#include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
+include::../../gen/client/gen_table_default_zip_allowed_file_patterns.adoc[]
 
 include::../../shared/configuration/sechub_config.adoc[]
 
