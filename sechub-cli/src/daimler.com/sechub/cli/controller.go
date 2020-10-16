@@ -132,7 +132,7 @@ func downloadSechubReport(context *Context) string {
 	if context.config.reportFormat == "html" {
 		fileEnding = ".html"
 	}
-	fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
+	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileEnding
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)
