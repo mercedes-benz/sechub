@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<netsparker-enterprise generated="13/10/2020 11:57 AM">
+	<target>
+		<scan-id>c64f2d501005493f1584ac5301d906e7</scan-id>
+		<url>https://app.example.org:8082/</url>
+		<initiated>13/10/2020 10:36 AM</initiated>
+		<duration>00:05:31.7187659</duration>
+	</target>
+	<vulnerabilities>
+			<vulnerability>
+				<LookupId>4b0e515e-5992-4677-1192-ac4e02cf7865</LookupId>
+				<url>https://app.example.org:8082/</url>
+				<type>InvalidSslCertificate</type>
+				<name>Invalid SSL Certificate</name>
+				<severity>Medium</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+				<state>Present</state>
+				<FirstSeenDate>08.10.2020 15:05:51 +02:00</FirstSeenDate>
+				<LastSeenDate>13.10.2020 10:37:11 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A6</owasp>
+					<wasc>4</wasc>
+					<cwe>295</cwe>
+					<capec>459</capec>
+					<pci32>6.5.4</pci32>
+					<hipaa></hipaa>
+					<owasppc></owasppc>
+					<iso27001>A.14.1.3</iso27001>
+
+
+						<cvss>
+							<vector>CVSS:3.0/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss>
+
+
+
+						<cvss31>
+							<vector>CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss31>
+				</classification>
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[[NETSPARKER] SSL Connection]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>1</duration>
+							<content><![CDATA[[NETSPARKER] SSL Connection]]></content>
+						</http-response>
+									<extra-information>
+							<info name="List&amp;#32;of&amp;#32;Problems" value="The&amp;#32;Name&amp;#32;on&amp;#32;the&amp;#32;security&amp;#32;certificate&amp;#32;does&amp;#32;not&amp;#32;match&amp;#32;the&amp;#32;name&amp;#32;of&amp;#32;the&amp;#32;site&amp;#32;-&amp;#32;CN=localhost,&amp;#32;OU=ID,&amp;#32;The&amp;#32;certificate&amp;#32;is&amp;#32;not&amp;#32;signed&amp;#32;by&amp;#32;a&amp;#32;trusted&amp;#32;authority&amp;#32;-&amp;#32;" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Enterprise identified an invalid SSL certificate.</p>
+<p>An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.</p>]]></description>
+				<impact><![CDATA[<div>Attackers can perform man-in-the-middle attacks and observe the encryption traffic between your website and its visitors.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Fix the problem with your SSL certificate to provide secure communication between your website and its visitors.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://wiki.owasp.org/index.php/Insecure_Configuration_Management'><i class='icon-external-link'></i>OWASP - Insecure Configuration Management</a></li><li><a target='_blank' href='https://www.owasp.org/index.php/Top_10-2017_A3-Sensitive_Data_Exposure'><i class='icon-external-link'></i>OWASP Top 10-2017 A3-Sensitive Data Exposure</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+			<vulnerability>
+				<LookupId>0b0c2a7e-91ee-454f-1674-ac4e02d07daf</LookupId>
+				<url>https://app.example.org:8082/</url>
+				<type>WeakCiphersDetected</type>
+				<name>Weak Ciphers Enabled</name>
+				<severity>Medium</severity>
+				<certainty>100</certainty>
+				<confirmed>True</confirmed>
+				<state>Present</state>
+				<FirstSeenDate>08.10.2020 15:06:58 +02:00</FirstSeenDate>
+				<LastSeenDate>13.10.2020 10:37:23 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A6</owasp>
+					<wasc>4</wasc>
+					<cwe>327</cwe>
+					<capec>217</capec>
+					<pci32>6.5.4</pci32>
+					<hipaa></hipaa>
+					<owasppc></owasppc>
+					<iso27001>A.14.1.3</iso27001>
+
+
+						<cvss>
+							<vector>CVSS:3.0/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss>
+
+
+
+						<cvss31>
+							<vector>CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.8</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss31>
+				</classification>
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[[NETSPARKER] SSL Connection]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>1</duration>
+							<content><![CDATA[[NETSPARKER] SSL Connection]]></content>
+						</http-response>
+									<extra-information>
+							<info name="List&amp;#32;of&amp;#32;Supported&amp;#32;Weak&amp;#32;Ciphers" value="TLS_DHE_RSA_WITH_AES_128_CBC_SHA&amp;#32;(0x0033),&amp;#32;TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA&amp;#32;(0xC013),&amp;#32;TLS_DHE_RSA_WITH_AES_128_CBC_SHA256&amp;#32;(0x0067),&amp;#32;TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256&amp;#32;(0xC027)" />
+					</extra-information>
+
+				<description><![CDATA[<p>Netsparker Enterprise detected that weak ciphers are enabled during secure communication (SSL).</p>
+<p>You should allow only strong ciphers on your web server to protect secure communication with your visitors. </p>]]></description>
+				<impact><![CDATA[<div>Attackers might decrypt SSL traffic between your server and your visitors.</div>]]></impact>
+				<remedial-actions><![CDATA[<div>
+<ol>
+<li>For Apache, you should modify the SSLCipherSuite directive in the <code>httpd.conf</code>.
+<pre class="xml code">SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4</pre>
+</li>
+<li>Lighttpd:
+<pre id="lighttpdconfig" class="pre-trans">ssl.honor-cipher-order = "enable"
+ssl.cipher-list = "EECDH+AESGCM:EDH+AESGCM"</pre>
+</li>
+<li><span style="font-weight: 400;"> For Microsoft IIS, you should make some changes to the system registry. <strong><span dir="auto">Incorrectly editing the registry may severely damage your system. Before making changes to the registry, you should back up any valued data on your computer.</span></strong><br /><br /></span><span style="font-weight: 400;"><strong>a.</strong> Click Start, click Run, type <code>regedt32</code> or type <code>regedit</code>, and then click OK.</span><br /><strong>b.</strong> <span style="font-weight: 400;">In Registry Editor, locate the following registry key: <code>HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders</code></span><br /><strong>c.</strong> <span style="font-weight: 400;">Set "Enabled" DWORD to "0x0" for the following registry keys:</span><span style="font-weight: 400;"><span style="font-weight: 400;"><br /></span></span>
+<pre class="xml code">SCHANNEL\Ciphers\DES 56/56<br />SCHANNEL\Ciphers\RC4 64/128<br />SCHANNEL\Ciphers\RC4 40/128<br />SCHANNEL\Ciphers\RC2 56/128<br />SCHANNEL\Ciphers\RC2 40/128<br />SCHANNEL\Ciphers\NULL <br />SCHANNEL\Hashes\MD5</pre>
+</li>
+</ol>
+</div>]]></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>Configure your web server to disallow using weak ciphers.</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://wiki.owasp.org/index.php/Insecure_Configuration_Management'><i class='icon-external-link'></i>OWASP - Insecure Configuration Management</a></li><li><a target='_blank' href='https://www.owasp.org/index.php/Top_10-2017_A3-Sensitive_Data_Exposure'><i class='icon-external-link'></i>OWASP Top 10-2017 A3-Sensitive Data Exposure</a></li><li><a target='_blank' href='https://www.tripwire.com/state-of-security/vulnerability-management/zombie-poodle-goldendoodle/'><i class='icon-external-link'></i>Zombie Poodle - Golden Doodle (CBC)</a></li><li><a target='_blank' href='https://ssl-config.mozilla.org/'><i class='icon-external-link'></i>Mozilla SSL Configuration Generator</a></li><li><a target='_blank' href='https://cipherli.st/'><i class='icon-external-link'></i>Strong Ciphers for Apache, Nginx and Lighttpd</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+			<vulnerability>
+				<LookupId>72cb4c5d-7251-4cc8-15d5-ac4e02d07c28</LookupId>
+				<url>http://app.example.org:8082/</url>
+				<type>InsecureHttpUsage</type>
+				<name>Insecure HTTP Usage</name>
+				<severity>Medium</severity>
+				<certainty>95</certainty>
+				<confirmed>False</confirmed>
+				<state>Present</state>
+				<FirstSeenDate>08.10.2020 15:06:57 +02:00</FirstSeenDate>
+				<LastSeenDate>13.10.2020 10:37:23 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>4</wasc>
+					<cwe></cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+					<owasppc></owasppc>
+					<iso27001>A.14.1.3</iso27001>
+
+
+						<cvss>
+							<vector>CVSS:3.0/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss>
+
+
+
+						<cvss31>
+							<vector>CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N</vector>
+
+							<score>
+								<type>Base</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Temporal</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+							<score>
+								<type>Environmental</type>
+								<value>6.5</value>
+								<severity>Medium</severity>
+							</score>
+
+						</cvss31>
+				</classification>
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET / HTTP/1.1
+Host: app.example.org:8082
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.0 Safari/537.36
+X-Scanner: Netsparker Enterprise
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>400</status-code>
+							<duration>20,8152</duration>
+							<content><![CDATA[HTTP/1.1 400 
+Connection: close
+Content-Type: text/plain; charset=ISO-8859-1
+
+Bad Request
+This combination of host and port requires TLS.
+]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.</p>
+<p>HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.</p>
+<p>For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS. </p>]]></description>
+				<impact><![CDATA[<div>Users will not be able to take advantage of HSTS which almost renders the HSTS implementation useless. Not having HSTS will make MITM attacks easier for attackers.</div>
+<div>If there is a client side redirect to HTTPS version of the website (via JavaScript or Meta tags) then you can ignore this vulnerability.</div>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<div>
+<p>Configure your webserver to redirect HTTP requests to HTTPS.</p>
+<p>i.e for Apache, you should have modification in the httpd.conf. For more configurations, please refer to External References section.</p>
+<pre class="xml code"># redirect all HTTP to HTTPS
+&lt;VirtualHost *:80&gt;
+       ServerAlias *
+       RewriteEngine On
+       RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [redirect=301]
+&lt;/VirtualHost&gt;
+</pre>
+</div>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security#Implementation'><i class='icon-external-link'></i>Wikipedia - HTTP Strict Transport Security Implementation</a></li><li><a target='_blank' href='https://ssl-config.mozilla.org/'><i class='icon-external-link'></i>Mozilla SSL Configuration Generator</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+			<vulnerability>
+				<LookupId>a0535c20-51c3-4620-15f8-ac4e02d07c95</LookupId>
+				<url>https://app.example.org:8082/</url>
+				<type>HstsErrors</type>
+				<name>HTTP Strict Transport Security (HSTS) Errors and Warnings</name>
+				<severity>Medium</severity>
+				<certainty>95</certainty>
+				<confirmed>False</confirmed>
+				<state>Present</state>
+				<FirstSeenDate>08.10.2020 15:06:57 +02:00</FirstSeenDate>
+				<LastSeenDate>13.10.2020 10:37:23 +02:00</LastSeenDate>
+				<classification>
+					<owasp>A5</owasp>
+					<wasc>15</wasc>
+					<cwe>16</cwe>
+					<capec></capec>
+					<pci32></pci32>
+					<hipaa></hipaa>
+					<owasppc></owasppc>
+					<iso27001>A.14.1.2</iso27001>
+
+
+
+
+
+				</classification>
+					<http-request>
+						<method>GET</method>
+						<content><![CDATA[GET / HTTP/1.1
+Host: app.example.org:8082
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Language: en-us,en;q=0.5
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Windows NT 10.0; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.0 Safari/537.36
+X-Scanner: Netsparker Enterprise
+
+]]></content>
+					</http-request>
+						<http-response>
+							<status-code>200</status-code>
+							<duration>31,5215</duration>
+							<content><![CDATA[HTTP/1.1 200 
+Set-Cookie: locale=de; HttpOnly; SameSite=strict
+Expires: 0
+X-Content-Type-Options: nosniff
+Pragma: no-cache
+X-XSS-Protection: 1; mode=block
+Content-Security-Policy: script-src 'self'
+X-Frame-Options: DENY
+Content-Language: en-US
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+Referrer-Policy: no-referrer
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Date: Tue, 13 Oct 2020 08:37:23 GMT
+Cache-Control: no-store, must-revalidate, no-cache, max-age=0
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Vulnerable web demo application</title>
+    </head>
+    <body>
+        <h1>Attention! This web page has multiple failures inside and is only designed to test web scanners!</h1>
+        <p>But vulnerabilities are only available after login...</p>
+
+        <p>Click <a href="/hello">here</a> to see a XSS.</p>
+    </body>
+</html>]]></content>
+						</http-response>
+				
+				<description><![CDATA[<p>Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.</p><table class="kb-table" width="30%">
+<tr>
+<td><b>Error</b></td>
+<td><b>Resolution</b></td>
+</tr>
+<tr>
+<td nowrap>preload directive not present</td>
+<td nowrap>Submit domain for inclusion in browsers&#39; HTTP Strict Transport Security (HSTS) preload list.</td>
+</tr>
+</table>
+]]></description>
+				<impact><![CDATA[<p>The HSTS Warning and Error may allow attackers to bypass HSTS, effectively allowing them to read and modify your communication with the website. </p>]]></impact>
+				<remedial-actions></remedial-actions>
+				<exploitation-skills></exploitation-skills>
+				<remedial-procedure><![CDATA[<p><span style="font-weight: 400;">Ideally, after fixing the errors and warnings, you should consider adding your domain to the the HSTS preload list. This will ensure that browsers automatically connect your website by using HTTPS, actively preventing users from visiting your site using HTTP. Since this list is hardcoded in users' browsers, it will enable HSTS even before they visit your page for the first time, eliminating the need for Trust On First Use (TOFU) with its associated risks and disadvantages. Unless you fix the errors and warnings your website won't meet the conditions required to enter the browser's preload list.</span></p>
+<p><span style="font-weight: 400;">Browser vendors declared:</span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Serve a valid certificate</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">If you are listening on port 80, redirect all domains from HTTP to HTTPS on the same host. Serve all subdomains over HTTPS:</span></li>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">In particular, you must support HTTPS for the </span><span style="font-weight: 400;">www </span><span style="font-weight: 400;">subdomain if a DNS record for that subdomain exists</span></li>
+</ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">Serve an HSTS header on the base domain for HTTPS requests:</span></li>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;">The <code>max-age</code> must be at least 31536000 seconds (1 year)</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">The <code>includeSubDomains</code> directive must be specified</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">The <code>preload</code> directive must be specified</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">If you are serving an additional redirect from your HTTPS site, that redirect must have the HSTS header (rather than the page it redirects to)</span></li>
+</ul>
+</ul>]]></remedial-procedure>
+				<remedy-references></remedy-references>
+				<external-references><![CDATA[<div><ul><li><a target='_blank' href='https://www.netsparker.com/whitepaper-http-security-headers/#HTTPStrictTransportSecurityHSTSHTTPHeader'><i class='icon-external-link'></i>HTTP Strict Transport Security (HSTS) HTTP Header</a></li><li><a target='_blank' href='https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security#Implementation'><i class='icon-external-link'></i>Wikipedia - HTTP Strict Transport Security Implementation</a></li><li><a target='_blank' href='https://hstspreload.org/'><i class='icon-external-link'></i>Check HSTS Preload status and eligibility</a></li></ul></div>]]></external-references>
+				<proof-of-concept></proof-of-concept>
+			</vulnerability>
+	</vulnerabilities>
+</netsparker-enterprise>
