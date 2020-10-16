@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.internal;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -127,10 +128,21 @@ public class SecHubClientExecutor {
                 fail("No job uuid found - last output line was:" + lastOutputLine);
             }
             String jobUUIDString = jobUUID.toString();
-            File outputFile = new File(getOutputFolder(), "sechub_report_" + jobUUIDString + ".json");
-            return outputFile;
+            /* at this point, we have no information about the project - but job uuid is unique. so we just check the output 
+             * directory for sechub report files with this job uuid. 
+             */
+            FilenameFilter filter = new SecHubReportFileNameFilter(jobUUID);
+            File[] files = getOutputFolder().listFiles(filter);
+            if (files.length>1) {
+                throw new IllegalStateException("There exist multiple report files with same job uuid?!?! This should never happen!");
+            }
+            if (files.length==1) {
+                return files[0]; // found it
+            }
+            /* we return this file when not found at all*/
+            return new File(getOutputFolder(), "fallback_not_existing__sechub_report_ANY_PROJECTID_" + jobUUIDString + ".json");
         }
-
+        
         public TrafficLight getTrafficLight() {
 
             String last = getLastOutputLine().trim().toUpperCase();
