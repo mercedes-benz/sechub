@@ -5,6 +5,10 @@
 :toc-title: Table of contents
 :toclevels: 5
 
+// Disable last updated text.
+:last-update-label!:
+:version-label!:
+
 // where are images located?
 :imagesdir: ./images
 :mailToAdmin: sechub@example.org

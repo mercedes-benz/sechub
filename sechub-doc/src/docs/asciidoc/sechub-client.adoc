@@ -2,6 +2,9 @@
 // ====================================
 // SecHub Client Documentation
 // ====================================
+
+include::documents/gen/client-version.adoc[]
+
 include::documents/config.adoc[]
 
 = image:sechub-logo.png[sechub] SecHub Client Documentation
@@ -9,8 +12,7 @@ include::documents/config.adoc[]
 == About
 include::documents/shared/about_sechub.adoc[]
 
-include::documents/shared/about_documentation_client.adoc[]
-
+include::documents/shared/about_documentation_all.adoc[]
 
 // horizontal line
 ***
