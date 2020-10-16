@@ -296,7 +296,7 @@ public class ProductExecutionProfileScenario7IntTest {
     }
 
     @Test
-    public void an_admin_can_update_a_profile_containing__a_configuration_and_define_another_projects() {
+    public void an_admin_can_NOT_update_a_profile_containing__a_configuration_and_define_another_projects() {
         /* prepare */
         String profileId = "test-profile-to-delete8";
         dropExecutionProfileIfExisting(profileId);
@@ -333,7 +333,7 @@ public class ProductExecutionProfileScenario7IntTest {
             isEnabled().
             hasDescritpion("changed description").
             hasConfigurations(uuid).
-            hasProjectIds("project2","project3");
+            hasProjectIds("project1");
         /* @formatter:on */
 
     }

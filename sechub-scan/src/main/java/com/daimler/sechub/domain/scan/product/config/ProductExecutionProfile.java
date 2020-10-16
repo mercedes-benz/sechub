@@ -17,6 +17,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Represents a product execution profile
  *
@@ -25,6 +28,7 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = ProductExecutionProfile.TABLE_NAME)
+@JsonInclude(Include.NON_NULL)
 public class ProductExecutionProfile {
 
     /* +-----------------------------------------------------------------------+ */

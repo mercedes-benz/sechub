@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.swing.Action;
@@ -33,9 +32,6 @@ import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.developertools.admin.ui.TableRendersupport;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.FailsafeAction;
-import com.daimler.sechub.developertools.admin.ui.cache.InputCache;
-import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
-import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 
@@ -246,13 +242,6 @@ public class ExecutionProfileDialogUI {
         mainPanel.add(textAreaScrollPane, textAreaConstraint);
         
         updateProjectIdsAtUI();
-
-        JPanel buttonPanel2 = new JPanel();
-        buttonPanel2.setLayout(new FlowLayout());
-        buttonPanel2.add(new JButton(new AddProjectIdAction()));
-        buttonPanel2.add(new JButton(new RemoveProjectIdAction()));
-
-        mainPanel.add(buttonPanel2, createComponentConstraint(row++));
         
     }
 
@@ -268,52 +257,6 @@ public class ExecutionProfileDialogUI {
         /* name, enabled, uuid */
         for (TestExecutorConfig config : profile.configurations) {
             model.addRow(new Object[] { config.name, config.enabled, config.uuid });
-        }
-
-    }
-
-    private class AddProjectIdAction extends FailsafeAction {
-
-        private static final long serialVersionUID = -7451653578286573056L;
-
-        public AddProjectIdAction() {
-            putValue(Action.SMALL_ICON, new ImageIcon(getClass().getClassLoader().getResource("icons/material-io/twotone_add_circle_black_18dp.png")));
-            putValue(Action.NAME, "Add");
-        }
-
-        @Override
-        protected void safeActionPerformed(ActionEvent e) {
-            Optional<String> opt = getContext().getDialogUI().getUserInput("Please enter project id to add",
-                    InputCache.DEFAULT.get(InputCacheIdentifier.PROJECT_ID));
-            if (!opt.isPresent()) {
-                return;
-            }
-            String projectId = opt.get().trim();
-            profile.projectIds.add(projectId);
-            updateProjectIdsAtUI();
-        }
-
-    }
-
-    private class RemoveProjectIdAction extends FailsafeAction {
-
-        private static final long serialVersionUID = -7451653578286573056L;
-
-        public RemoveProjectIdAction() {
-            putValue(Action.SMALL_ICON, new ImageIcon(getClass().getClassLoader().getResource("icons/material-io/twotone_remove_circle_black_18dp.png")));
-            putValue(Action.NAME, "Remove");
-        }
-
-        @Override
-        protected void safeActionPerformed(ActionEvent e) {
-            Optional<String> opt = getContext().getDialogUI().getUserInput("Please enter project id to remove",
-                    InputCache.DEFAULT.get(InputCacheIdentifier.PROJECT_ID));
-            if (!opt.isPresent()) {
-                return;
-            }
-            String projectId = opt.get().trim();
-            profile.projectIds.remove(projectId);
-            updateProjectIdsAtUI();
         }
 
     }
@@ -385,11 +328,7 @@ public class ExecutionProfileDialogUI {
             profile.id = fetchProfileIdFromUI();
         }
         profile.description = descriptionTextArea.getText();
-        String text = projectIdsTextArea.getText().toLowerCase();//projecti ds area allowed only with lower letters, so mitigate problem
-        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, text);
-        profile.projectIds.clear();
-        profile.projectIds.addAll(list);
-
+        profile.projectIds=null; // set explicit to null, we cannot update this, and we do not want it inside output json... 
         return profile;
     }
 

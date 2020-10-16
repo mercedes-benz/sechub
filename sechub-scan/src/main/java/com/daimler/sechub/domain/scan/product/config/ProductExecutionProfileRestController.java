@@ -94,7 +94,7 @@ public class ProductExecutionProfileRestController {
 	@RequestMapping(path = "execution/profile/{id}", method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void udpateProfile(@PathVariable("id")String profileId, @RequestBody ProductExecutionProfile profile) {
-	    updateService.updateProductExecutorSetup(profileId,profile);
+	    updateService.updateExecutionProfile(profileId,profile);
 	    /* @formatter:on */
     }
 	
