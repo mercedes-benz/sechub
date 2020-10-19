@@ -22,6 +22,10 @@ dependencies {
 }
 
 def targetAsciiDocGenFolder="${project.projectDir}/src/docs/asciidoc/documents/gen"
+def asciidocBuildDir="$buildDir/docs/asciidoc";
+def imagesBuildDir="$buildDir/docs/asciidoc/images";
+def convertedHTMLFolder = "${rootProject.projectDir}/build/sechubpages"
+def docsLatestFolder = "${rootProject.projectDir}/docs/latest"
 
 task dropOldGeneratedAsciidoc(dependsOn: 'test'){
     doFirst {
@@ -57,7 +61,7 @@ asciidoctor.doFirst {
          */
 
         from file('src/docs/asciidoc/images')
-        into file("$buildDir/asciidoc/images")
+        into file("${imagesBuildDir}")
         include '*.*'
         include 'gen/**'
     }
@@ -94,7 +98,7 @@ asciidoctor {
 
     attributes \
         'sourcedir': file('src/docs'),
-        'imagesdir': "$buildDir/asciidoc/images"
+        'imagesdir': "${imagesBuildDir}"
 
     sources {
         include 'sechub-techdoc.adoc',
@@ -161,6 +165,8 @@ task buildDoc(type: Exec){
          
 }
 
+
+
 task convertSecHubPages(type: Copy){
 
      /* Albert: Why those replace pattern stuff ?
@@ -174,7 +180,7 @@ task convertSecHubPages(type: Copy){
       * So this is a workaround - we render with absolute pathes. so getting correct pdf. For html files used here on website
       * the absolute pathes are converted back to relative ones. Simplest way to provide this.
       */
-     def originAbsPath = "${rootProject.projectDir}/sechub-doc/build/asciidoc"
+     def originAbsPath = "${asciidocBuildDir}"
      def replacePattern = originAbsPath.replaceAll("\\\\", "/")
      if (! replacePattern.endsWith("/")){
         replacePattern+="/"
@@ -186,12 +192,10 @@ task convertSecHubPages(type: Copy){
          // remove absolute path...
          filter { line -> line.replaceAll("${replacePattern}", '') }
      }
-     into 'build/sechubpages'
+     into "${convertedHTMLFolder}"
 
      includeEmptyDirs = false
 }
-
-def sechubPagesTargetBaseFolder = "${rootProject.projectDir}/docs/latest"
 
 task docToPages(type: Copy){
      group 'sechub'
@@ -199,13 +203,13 @@ task docToPages(type: Copy){
 
      dependsOn 'convertSecHubPages'
 
-     into sechubPagesTargetBaseFolder
-     from ("${rootProject.projectDir}/sechub-doc/build/sechubpages/"){
+     into docsLatestFolder
+     from ("${convertedHTMLFolder}"){
         include '*.html'
      }
 
      into ("images") {
-         from ("${rootProject.projectDir}/sechub-doc/build/asciidoc/images") {
+         from ("${imagesBuildDir}") {
             exclude '**/*.md', '**/*.xml'
          }
      }
