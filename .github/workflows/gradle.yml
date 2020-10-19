@@ -41,7 +41,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v1
       with:
-          name: combined-sechub-testreport-$GITHUB_RUN_NUMBER
+          name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
     
@@ -55,7 +55,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v2
       with:
-          name: sechub-docs-latest-$GITHUB_RUN_NUMBER
+          name: sechub-docs-latest
           path: docs/latest
           retention-days: 14
     
