@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,25 +23,30 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
  *
  */
 @Service
-public class CodeScanProductExecutionServiceImpl extends AbstractProductExecutionService
-		implements CodeScanProductExecutionService {
+public class CodeScanProductExecutionServiceImpl extends AbstractProductExecutionService implements CodeScanProductExecutionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CodeScanProductExecutionServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CodeScanProductExecutionServiceImpl.class);
 
-	@Autowired
-	public CodeScanProductExecutionServiceImpl(List<CodeScanProductExecutor> codescanExecutors) {
-		register(codescanExecutors);
-	}
+    private List<CodeScanProductExecutor> codescanExecutors = new ArrayList<>();
 
-	public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID,
-			SecHubConfiguration configuration) {
-		Optional<SecHubCodeScanConfiguration> codeScanOption = configuration.getCodeScan();
-		if (!codeScanOption.isPresent()) {
-			LOG.debug("No codescan options found for {}", traceLogID);
-			return false;
-		}
-		LOG.debug("Code scan options found {}", traceLogID);
-		return true;
-	}
+    @Autowired
+    public CodeScanProductExecutionServiceImpl(List<CodeScanProductExecutor> codescanExecutors) {
+        this.codescanExecutors.addAll(codescanExecutors);
+    }
+
+    @Override
+    protected List<CodeScanProductExecutor> getProductExecutors() {
+        return codescanExecutors;
+    }
+
+    public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID, SecHubConfiguration configuration) {
+        Optional<SecHubCodeScanConfiguration> codeScanOption = configuration.getCodeScan();
+        if (!codeScanOption.isPresent()) {
+            LOG.debug("No codescan options found for {}", traceLogID);
+            return false;
+        }
+        LOG.debug("Code scan options found {}", traceLogID);
+        return true;
+    }
 
 }

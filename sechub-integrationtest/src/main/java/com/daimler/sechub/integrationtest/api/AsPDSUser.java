@@ -106,7 +106,7 @@ public class AsPDSUser {
         return this;
     }
 
-    public String createJobFor(UUID sechubJobUUID, PDSIntProductIdentifier identifier) {
+    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier) {
         Map<String, String> params = new LinkedHashMap<>();
 
         /* create default params */
@@ -124,7 +124,7 @@ public class AsPDSUser {
         return createJobFor(sechubJobUUID, identifier, params);
     }
 
-    public String createJobFor(UUID sechubJobUUID, PDSIntProductIdentifier identifier, Map<String, String> params) {
+    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier, Map<String, String> params) {
         String productId = identifier.getId();
         TestRestHelper restHelper = getRestHelper();
         TestURLBuilder urlBuilder = getUrlBuilder();

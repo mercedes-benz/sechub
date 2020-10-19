@@ -3,10 +3,12 @@
 // including all help texts
 //
 // ====================================
-= image:sechub-logo.png[sechub] SecHub Architecture
 
-// configure EN settings for asciidoc
+include::documents/gen/server-version.adoc[]
+
 include::documents/config.adoc[]
+
+= image:sechub-logo.png[sechub] SecHub Architecture
 
 include::documents/shared/about_sechub.adoc[]
 

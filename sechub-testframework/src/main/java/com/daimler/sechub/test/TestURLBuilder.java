@@ -29,7 +29,9 @@ public class TestURLBuilder {
 
         FINDING_ID("findingId"),
 
-        ;
+        PROFILE_ID("profileId"),
+
+        UUID_PARAMETER("uuid"),;
 
         private String restDocName;
         private String urlPart;
@@ -74,8 +76,7 @@ public class TestURLBuilder {
     private static final String API_ADMIN_CONFIG = API_ADMIN + "/config";
     private static final String API_ADMIN_CONFIG_MAPPING = API_ADMIN_CONFIG + "/mapping";
     private static final String API_PROJECT = "/api/project";
-    
-    
+
     private String protocol;
     private String hostname;
     private int port;
@@ -100,15 +101,16 @@ public class TestURLBuilder {
 
     /**
      * Special url builder - only for PDS parts
+     * 
      * @author Albert Tregnaghi
      *
      */
-    public class ProductDelegationServerUrlsBuilder{
-        
-        private static final String API_PDS_JOB="/api/job";
-        private static final String API_PDS_ANONYMOUS="/api/anonymous";
-        private static final String API_PDS_ADMIN="/api/admin";
-        
+    public class ProductDelegationServerUrlsBuilder {
+
+        private static final String API_PDS_JOB = "/api/job";
+        private static final String API_PDS_ANONYMOUS = "/api/anonymous";
+        private static final String API_PDS_ADMIN = "/api/admin";
+
         public String buildCreateJob() {
             return buildUrl(API_PDS_JOB, "create");
         }
@@ -122,7 +124,7 @@ public class TestURLBuilder {
         }
 
         public String buildUpload(UUID jobUUID, String fileName) {
-            return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload",fileName);
+            return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload", fileName);
         }
 
         public String buildMarkJobReadyToStart(UUID jobUUID) {
@@ -132,7 +134,7 @@ public class TestURLBuilder {
         public String buildCancelJob(UUID jobUUID) {
             return buildUrl(API_PDS_JOB, jobUUID.toString(), "cancel");
         }
-        
+
         public String buildAdminGetMonitoringStatus() {
             return buildUrl(API_PDS_ADMIN, "monitoring/status");
         }
@@ -142,18 +144,18 @@ public class TestURLBuilder {
         }
 
         public String buildGetJobResultOrErrorText(UUID jobUUID) {
-            return buildUrl(API_PDS_ADMIN, "job",jobUUID,"result");
+            return buildUrl(API_PDS_ADMIN, "job", jobUUID, "result");
         }
 
         public String buildAdminGetServerConfiguration() {
             return buildUrl(API_PDS_ADMIN, "config/server");
         }
     }
-    
+
     public ProductDelegationServerUrlsBuilder pds() {
         return new ProductDelegationServerUrlsBuilder();
     }
-    
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ common ...................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -203,7 +205,7 @@ public class TestURLBuilder {
     public String buildUserRemovesFalsePositiveEntryFromProject(String projectId, String jobUUID, String findingId) {
         return buildUrl(API_PROJECT, projectId, "false-positive", jobUUID, findingId);
     }
-    
+
     public String buildUserFetchesFalsePositiveConfigurationOfProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
@@ -327,11 +329,10 @@ public class TestURLBuilder {
     public String buildFetchJobStatus(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "job", jobUUID);
     }
-    
+
     public String buildGetFalsePositiveConfigurationOfProject(String projectId) {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
-    
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/jobs ...............................+ */
@@ -387,6 +388,69 @@ public class TestURLBuilder {
 
     public String buildAdminRevokesSuperAdminRightsFrom(String targetUser) {
         return buildUrl(API_ADMIN_USER, targetUser, "revoke", "superadmin");
+    }
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin/config..............................+ */
+    /* +-----------------------------------------------------------------------+ */
+
+    public String buildAdminCreatesProductExecutionProfile(String profileId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId);
+    }
+
+    public String buildAdminUpdatesProductExecutionProfile(String profileId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId);
+    }
+
+    public String buildAdminAddsProjectToExecutionProfile(String profileId, String projectId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId, "project", projectId);
+    }
+
+    public String buildAdminRemovesProjectFromExecutionProfile(String profileId, String projectId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId, "project", projectId);
+    }
+
+    public String buildAdminFetchesProductExecutionProfile(String profileId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId);
+    }
+
+    public String buildAdminDeletesProductExecutionProfile(String profileId) {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profile", profileId);
+    }
+
+    public String buildAdminFetchesListOfProductExecutionProfiles() {
+        return buildUrl(API_ADMIN_CONFIG, "execution/profiles");
+    }
+
+    public String buildAdminCreatesProductExecutorConfig() {
+        return buildUrl(API_ADMIN_CONFIG, "executor");
+    }
+
+    public String buildAdminFetchesProductExecutorConfig(String uuid) {
+        return buildUrl(API_ADMIN_CONFIG, "executor", uuid);
+    }
+
+    public String buildAdminFetchesProductExecutorConfig(UUID uuid) {
+        return buildAdminFetchesProductExecutorConfig(uuid.toString());
+    }
+
+    public String buildAdminUpdatesProductExecutorConfig(String uuid) {
+        return buildUrl(API_ADMIN_CONFIG, "executor", uuid);
+    }
+
+    public String buildAdminUpdatesProductExecutorConfig(UUID uuid) {
+        return buildAdminUpdatesProductExecutorConfig(uuid.toString());
+    }
+
+    public String buildAdminFetchesListOfProductExecutionConfigurations() {
+        return buildUrl(API_ADMIN_CONFIG, "executors");
+    }
+
+    public String buildAdminDeletesProductExecutorConfig(String uuid) {
+        return buildUrl(API_ADMIN_CONFIG, "executor", uuid);
+    }
+
+    public String buildAdminDeletesProductExecutorConfig(UUID uuid) {
+        return buildAdminDeletesProductExecutorConfig(uuid.toString());
     }
 
     /* +-----------------------------------------------------------------------+ */
@@ -549,6 +613,12 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/job/" + sechubJobUUID + "/productresults-count");
     }
 
- 
+    public String buildintegrationTestDeleteAllProductExecutorConfigurations() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/executors");
+    }
+
+    public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
+    }
 
 }

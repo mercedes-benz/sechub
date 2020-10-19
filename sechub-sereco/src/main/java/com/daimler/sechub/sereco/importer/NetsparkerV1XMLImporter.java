@@ -72,7 +72,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 								builder().
 									productId("Netsparker").
 									mustBeXML().
-									contentIdentifiedBy("<netsparker-cloud").
+									contentIdentifiedBy("<netsparker-").
 									build();
 			/* @formatter:on */
 	}

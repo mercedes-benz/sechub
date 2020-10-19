@@ -64,7 +64,11 @@ func showHelpAndExit() {
 	os.Exit(0)
 }
 
-func showVersionInfoAndExit() {
+func showVersionInfo() {
 	printLogoWithVersion(os.Stdout)
+}
+
+func showVersionInfoAndExit() {
+	showVersionInfo()
 	os.Exit(0)
 }

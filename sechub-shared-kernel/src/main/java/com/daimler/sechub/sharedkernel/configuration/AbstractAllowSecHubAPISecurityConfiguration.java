@@ -50,6 +50,8 @@ public abstract class AbstractAllowSecHubAPISecurityConfiguration extends WebSec
 
  				antMatchers(APIConstants.API_ANONYMOUS+"**").
  					permitAll().
+ 				antMatchers(APIConstants.ACTUATOR+"**").
+ 					permitAll().
  				/* to prevent configuration failures - I had this issue before -
  				 * all other matchers do deny all. So if not correct
  				 * configured nobody has access - please keep the denyAll parts

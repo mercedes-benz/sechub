@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.log.ProjectScanLogRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRepository;
 import com.daimler.sechub.domain.scan.project.ScanProjectConfigRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
@@ -20,6 +21,7 @@ public class ProjectDataDeleteServiceTest {
 	private ProductResultRepository productResultRepository;
 	private ScanReportRepository scanReportRepository;
 	private ScanProjectConfigRepository scanProjectConfigRepository;
+    private ProductExecutionProfileRepository profileRepository;
 
 	@Before
 	public void before() {
@@ -27,6 +29,7 @@ public class ProjectDataDeleteServiceTest {
 		productResultRepository = mock(ProductResultRepository.class);
 		scanReportRepository = mock(ScanReportRepository.class);
 		scanProjectConfigRepository = mock(ScanProjectConfigRepository.class);
+		profileRepository=mock(ProductExecutionProfileRepository.class);
 		
 		serviceToTest = new ProjectDataDeleteService();
 		serviceToTest.logSanitizer=mock(LogSanitizer.class);
@@ -36,6 +39,7 @@ public class ProjectDataDeleteServiceTest {
 		serviceToTest.productResultRepository=productResultRepository;
 		serviceToTest.scanReportRepository=scanReportRepository;
 		serviceToTest.scanProjectConfigRepository=scanProjectConfigRepository;
+        serviceToTest.profileRepository=profileRepository;
 	}
 
 	@Test

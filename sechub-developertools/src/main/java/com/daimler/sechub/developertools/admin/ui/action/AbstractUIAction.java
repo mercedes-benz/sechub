@@ -80,7 +80,6 @@ public abstract class AbstractUIAction extends AbstractAction {
 
             output("");
             output("[EXECUTE] " + actionName);
-
             safeExecute(event, actionName);
 
             context.getCommandUI().stopActionProgress(actionName);

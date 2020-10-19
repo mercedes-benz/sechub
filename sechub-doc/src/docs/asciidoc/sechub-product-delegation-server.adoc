@@ -2,6 +2,9 @@
 // ====================================
 // SecHub Client Documentation
 // ====================================
+
+include::documents/gen/pds-version.adoc[]
+
 include::documents/config.adoc[]
 
 = image:sechub-logo.png[sechub] SecHub PDS Documentation
@@ -9,7 +12,7 @@ include::documents/config.adoc[]
 == About
 include::documents/shared/about_sechub.adoc[]
 
-include::documents/pds/about_documentation_pds.adoc[]
+include::documents/shared/about_documentation_all.adoc[]
 
 include::documents/pds/about_pds.adoc[]
 

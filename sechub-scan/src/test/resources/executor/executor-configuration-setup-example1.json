@@ -1,0 +1,22 @@
+{
+    /* baseurl for server */
+    "baseURL": "https://pds-server1.example.com",
+    "credentials": {
+        "user": "mytechuser",
+        "password": "env:MY_TECHUSER_PWD"
+    },
+    "jobParameters": [
+        {
+            "key": "pds.product1.level",
+            "value": "1"
+        },
+        {
+            "key": "pds.product1.qualitycheck",
+            "value": "env:MY_SPECIAL_ENV_VARIABLE_FOR_QUALITY_CHECK"
+        },
+        {
+            "key": "pds.product1.qualitycheck",
+            "value": "projectNameMappingId:pds.product1.mapping1"
+        }
+    ]
+}

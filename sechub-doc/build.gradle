@@ -49,7 +49,6 @@ task generateAsciidoc(type: JavaExec, dependsOn: 'dropOldGeneratedAsciidoc') {
 }
 
 asciidoctor.doFirst {
-
     // pre-process
     copy {
         /* Why do we do this here ? Because PDF converter does read the images
@@ -67,16 +66,16 @@ asciidoctor.doFirst {
         include 'gen/**'
     }
 
-}
+    }
 
 asciidoctor {
 
     outputOptions {
         backends "html5", "pdf"
     
-        separateOutputDirs = false
+    separateOutputDirs = false
     }
-    
+
     baseDir 'src/docs/asciidoc'
 
     attributes 'build-gradle': file('build.gradle'),
@@ -142,8 +141,6 @@ asciidoctorj {
        diagram.version '1.5.16' 
     }
 }
-
-
 
 /* collector task for all documentation parts - but does NOT build anything, so suitable for build chain - for a documentation build from scratch
    there exists another task: buildDoc which does all in one call*/
@@ -229,7 +226,6 @@ task "documentation-with-pages" {
      // see https://stackoverflow.com/questions/32907275/gradle-custom-task-which-runs-multiple-tasks
      tasks.findByName('docToPages').mustRunAfter 'documentation'
 }
-
 openapi3 {
     server = 'https://localhost'
     title = 'SecHub API'

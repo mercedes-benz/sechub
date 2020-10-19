@@ -17,18 +17,26 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
+import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
+import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.AsUser;
 import com.daimler.sechub.integrationtest.api.FixedTestUser;
+import com.daimler.sechub.integrationtest.api.InternalAccess;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient;
+import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
 import com.daimler.sechub.test.TestURLBuilder;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfileList;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
+import com.daimler.sechub.test.executorconfig.TestExecutorConfigList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -39,14 +47,20 @@ public class DeveloperAdministration {
     private TestRestHelper restHelper;
     private TestURLBuilder urlBuilder;
     private ErrorHandler errorHandler;
+    private UIContext uiContext;
 
-    public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler) {
+    public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler,UIContext uiContext) {
         this.provider = provider;
         this.errorHandler = errorHandler;
         this.userContext = new AdminUserContext();
+        this.uiContext=uiContext;
         this.restHelper = createTestRestHelperWithErrorHandling(errorHandler, userContext);
     }
 
+    public UIContext getUiContext() {
+        return uiContext;
+    }
+    
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
         return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
     }
@@ -120,8 +134,8 @@ public class DeveloperAdministration {
         return restHelper;
     }
 
-    public PDSAdministration pds(String hostname, int port,String userid, String apiToken) {
-        return new PDSAdministration(hostname, port,userid,apiToken);
+    public PDSAdministration pds(String hostname, int port, String userid, String apiToken) {
+        return new PDSAdministration(hostname, port, userid, apiToken);
     }
 
     public class PDSAdministration {
@@ -141,7 +155,6 @@ public class DeveloperAdministration {
         public String getServerAlive() {
             return restHelper.headStringFromURL(pdsUrlBuilder.pds().buildAnonymousCheckAlive());
         }
-        
 
         public String createPDSJob(UUID sechubJobUUID, String productId, Map<String, String> params) {
             return AsPDSUser.createJobFor(sechubJobUUID, params, productId, restHelper, pdsUrlBuilder);
@@ -154,19 +167,20 @@ public class DeveloperAdministration {
         public String getJobResultOrError(String jobUUID) {
             return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
         }
-        
+
         public String getJobStatus(String jobUUID) {
             return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
         }
 
         public String markJobAsReadyToStart(UUID jobUUID) {
-             AsPDSUser.markJobAsReadyToStart(jobUUID,restHelper,pdsUrlBuilder);
-             return "triggered";
+            AsPDSUser.markJobAsReadyToStart(jobUUID, restHelper, pdsUrlBuilder);
+            return "triggered";
         }
 
         public String upload(UUID pdsJobUUID, File file, String uploadName) {
-            AsPDSUser.upload(pdsUrlBuilder, restHelper, pdsJobUUID, uploadName, file);;
-            return "upload done - using uploadname:"+uploadName;
+            AsPDSUser.upload(pdsUrlBuilder, restHelper, pdsJobUUID, uploadName, file);
+            ;
+            return "upload done - using uploadname:" + uploadName;
         }
 
     }
@@ -175,6 +189,7 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminAcceptsUserSignUpUrl(userId));
         return "SENT";
     }
+
     public String declineSignup(String userId) {
         getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserSignUpUrl(userId));
         return "SENT";
@@ -206,6 +221,35 @@ public class DeveloperAdministration {
 
     public String fetchRunningJobsList() {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
+    }
+
+    /*
+     * --------------- Execution configuration ------------------------
+     */
+    public String fetchExecutionProfiles() {
+        return asTestUser().fetchProductExecutionProfilesAsJSON();
+    }
+
+    public TestExecutorConfig fetchExecutorConfiguration(UUID uuid) {
+        return asTestUser().fetchProductExecutorConfig(uuid);
+    }
+    
+    public String fetchExecutorConfigurations() {
+        return asTestUser().fetchProductExecutorConfigListAsJSON();
+    }
+    
+    public TestExecutorConfigList fetchExecutorConfigurationList() {
+        return asTestUser().fetchProductExecutorConfigList();
+    }
+
+    public String deletExecutionConfig(UUID uuid) {
+        asTestUser().deleteProductExecutorConfig(uuid);
+        return "Deleted product executor config:" + uuid;
+    }
+
+    public String deletExecutionProfile(String profileId) {
+        InternalAccess.forceDeleteOfProfileEvenDefaults(asTestUser(), profileId);
+        return "Deleted product execution profile:" + profileId;
     }
 
     public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
@@ -242,6 +286,12 @@ public class DeveloperAdministration {
 
     public String fetchProjectList() {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminListsProjectsUrl());
+    }
+    
+    public List<String> fetchProjectIdList() {
+        String json = fetchProjectList();
+        SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
+        return list;
     }
 
     public String fetchProjectInfo(String projectId) {
@@ -363,19 +413,21 @@ public class DeveloperAdministration {
         String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);
     }
-    
+
     /**
-     * Creates temporary test user object and provides direct access to integration test object: AsUser.
-     * So all things available in integration tests can be done directly without additional methods
+     * Creates temporary test user object and provides direct access to integration
+     * test object: AsUser. So all things available in integration tests can be done
+     * directly without additional methods
+     * 
      * @return asUser object
      */
     AsUser createAsUserTestObject() {
         String user = provider.getUser();
         String token = provider.getApiToken();
-        TestUser testUser = new FixedTestUser(user,token);
+        TestUser testUser = new FixedTestUser(user, token);
         return TestAPI.as(testUser);
     }
-    
+
     public WithSecHubClient withSecHubClientOnDefinedBinPath() {
         WithSecHubClient withSechubClient = createAsUserTestObject().withSecHubClient();
         String pathToBinaryparentFolder = ConfigurationSetup.SECHUB_PATH_TO_SECHUB_CLIENT_BINARY.getStringValue(null, false);
@@ -384,9 +436,9 @@ public class DeveloperAdministration {
             withSechubClient.denyTrustAll();
         }
         return withSechubClient;
-        
+
     }
-    
+
     public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
         String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);
@@ -441,6 +493,10 @@ public class DeveloperAdministration {
             return false;
         }
 
+        public TestUser toTestUser() {
+            return new FixedTestUser(getUserId(), getApiToken(), getEmail());
+        }
+
         @Override
         public void updateToken(String newToken) {
             /*
@@ -456,4 +512,47 @@ public class DeveloperAdministration {
 
     }
 
+    public UUID createExecutorConfig(TestExecutorConfig config) {
+       return asTestUser().createProductExecutorConfig(config);
+    }
+
+    public void updateExecutorConfiguration(TestExecutorConfig config) {
+       asTestUser().updateProdcutExecutorConfig(config.uuid, config);
+    }
+
+    public void createExecutionProfile(TestExecutionProfile profile) {
+        asTestUser().createProductExecutionProfile(profile.id, profile);
+    }
+
+    public TestExecutionProfile fetchExecutionProfile(String profileId) {
+        return asTestUser().fetchProductExecutionProfile(profileId);
+    }
+
+    public void updateExecutionProfile(TestExecutionProfile updatedProfile) {
+        asTestUser().updateProductExecutionProfile(updatedProfile.id, updatedProfile);
+    }
+
+    private AsUser asTestUser() {
+        return TestAPI.as(userContext.toTestUser());
+    }
+
+    public TestExecutionProfileList fetchExecutionProfileList() {
+        return asTestUser().fetchProductExecutionProfiles();
+    }
+
+    public void addProjectIdsToProfile(String profileId, String ... projectIds) {
+        asTestUser().addProjectIdsToProfile(profileId, projectIds);
+    }
+    
+    public void removeProjectIdsFromProfile(String profileId, String ...projectIds) {
+        asTestUser().removeProjectIdsFromProfile(profileId, projectIds);
+    }
+
+    public void addProjectIdsToProfile(String profileId, List<String> list) {
+       addProjectIdsToProfile(profileId, list.toArray(new String[list.size()]));
+    }
+
+    public void removeProjectIdsFromProfile(String profileId, List<String> list) {
+       removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
+    }
 }

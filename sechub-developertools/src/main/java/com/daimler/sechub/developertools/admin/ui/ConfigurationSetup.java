@@ -116,6 +116,7 @@ public enum ConfigurationSetup {
     public static boolean isTrustAllDenied() {
         return Boolean.getBoolean(ConfigurationSetup.SECHUB_TRUSTALL_DENIED.getSystemPropertyid());
     }
+    
     /**
      * Resolves string value of configuration and fails when not configured
      * 

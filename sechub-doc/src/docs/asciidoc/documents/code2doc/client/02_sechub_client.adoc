@@ -204,6 +204,20 @@ Additionally to above cmdline options, you can set some values also via environm
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
 
+==== Proxy support
+The environment variables `http_proxy`, `https_proxy` and `no_proxy` (or the uppercase versions thereof) can be set to use a proxy for accessing the `{sechub}` server.
+(`https_proxy` takes precedence over `http_proxy` for https requests.)
+
+Syntax: `[<scheme>://][<username>:<password>@]<proxy host>[:<proxy port>]`
+
+The environment values may be either a complete URL or a "host[:port]", in which case the "http" scheme is assumed.
+
+Examples (Linux/Mac):
+
+`export http_proxy=http://scott:tiger@proxy.example.org:3128`
+
+`export http_proxy=http://localhost:3128` (e.g. when using a local CNTLM proxy)
+
 [[section-client-configuration-file]]
 
 === Client configuration file

@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,9 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -40,6 +44,8 @@ public class AbstractProductExecutionServiceTest {
     private ProductExecutorContextFactory productExecutorContextFactory;
     private ProductExecutorContext productExecutorContext;
 
+    private int USED_PRODUCT_EXECUTOR_VERSION=1;
+
 	@Before
 	public void before() throws Exception {
 		SecHubConfiguration configuration = new SecHubConfiguration();
@@ -53,12 +59,19 @@ public class AbstractProductExecutionServiceTest {
 		executors = new ArrayList<>();
 		executor = mock(ProductExecutor.class);
 		when(executor.getIdentifier()).thenReturn(USED_PRODUCT_IDENTIFIER);
+		when(executor.getVersion()).thenReturn(USED_PRODUCT_EXECUTOR_VERSION);
 
 		executors.add(executor);
 		context = mock(SecHubExecutionContext.class);
 		when(context.getSechubJobUUID()).thenReturn(sechubJobUUID);
 		when(context.getConfiguration()).thenReturn(configuration);
 
+		ProductExecutorConfigRepository productExecutorConfigRepository = mock(ProductExecutorConfigRepository.class);
+        serviceToTest.productExecutorConfigRepository=productExecutorConfigRepository;
+		
+        ProductExecutorConfig config1 = new ProductExecutorConfig(USED_PRODUCT_IDENTIFIER, 0, new ProductExecutorConfigSetup());
+        when(productExecutorConfigRepository.findExecutableConfigurationsForProject(any(), eq(USED_PRODUCT_IDENTIFIER), eq(USED_PRODUCT_EXECUTOR_VERSION))).thenReturn(Arrays.asList(config1));
+        
 		productResultRepository=mock(ProductResultRepository.class);
 		serviceToTest.productResultRepository=productResultRepository;
 		
@@ -66,7 +79,7 @@ public class AbstractProductExecutionServiceTest {
 		serviceToTest.productExecutorContextFactory=productExecutorContextFactory;
 		
 		productExecutorContext= mock(ProductExecutorContext.class);
-		when(productExecutorContextFactory.create(any(), any(), any())).thenReturn(productExecutorContext);
+		when(productExecutorContextFactory.create(any(),any(), any(), any())).thenReturn(productExecutorContext);
 	}
 
 	@Test
@@ -75,7 +88,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(eq(context),any())).thenReturn(null);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository, never()).save(any());
@@ -91,7 +104,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(eq(context),executorContext.capture())).thenReturn(Collections.singletonList(result));
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
@@ -108,7 +121,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
@@ -132,7 +145,7 @@ public class AbstractProductExecutionServiceTest {
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
 		verify(productExecutorContext).persist(productResultCaptor.capture());
@@ -158,13 +171,15 @@ public class AbstractProductExecutionServiceTest {
 		doThrow(new RuntimeException("save-failed")).when(productExecutorContext).persist(result);
 
 		/* execute */
-		serviceToTest.executeAndPersistResults(executors, context, traceLogID);
+		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 	}
 
 	private class TestImplAbstractProductExecutionService extends AbstractProductExecutionService{
 
-		@Override
+		private List<ProductExecutor> list = new ArrayList<>();
+
+        @Override
 		protected boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID,
 				SecHubConfiguration configuration) {
 			return true;
@@ -174,6 +189,11 @@ public class AbstractProductExecutionServiceTest {
 		Logger getMockableLog() {
 			return logger;
 		}
+
+        @Override
+        protected List<ProductExecutor> getProductExecutors() {
+            return list;
+        }
 
 	}
 }

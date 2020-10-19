@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
@@ -58,7 +59,15 @@ public class AssertProject extends AbstractAssert {
     }
 
     public AssertProject doesExist() {
-        fetchProjectDetails();// will fail with http error when not available
+        try {
+            fetchProjectDetails();// will fail with http error when not available
+        }catch (HttpClientErrorException e) {
+            if (HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                fail("There is no project existing with id:"+project.getProjectId());
+            }else {
+                throw e;
+            }
+        }
         return this;
 
     }

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-= image:sechub-logo.png[sechub] SecHub Quickstart Guide
+include::documents/gen/server-version.adoc[]
 
-// configure EN settings for asciidoc
 include::documents/config.adoc[]
+
+= image:sechub-logo.png[sechub] SecHub Quickstart Guide
 
 include::documents/shared/about_sechub.adoc[]
 

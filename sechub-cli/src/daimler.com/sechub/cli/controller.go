@@ -21,9 +21,12 @@ type jobScheduleResult struct {
 
 // Execute starts sechub client
 func Execute() {
-	printLogoWithVersion(os.Stdout)
 
 	context := InitializeContext()
+
+	// print logo after context was build
+	// InitializeContext() can be escaping
+	printLogoWithVersion(os.Stdout)
 
 	switch context.config.action {
 	case ActionExecuteSynchron:

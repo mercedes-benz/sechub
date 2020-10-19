@@ -54,34 +54,33 @@ def buildVersionFiles(){
 
     // write version code for go client
     String clientGoVersionTemplate = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go.template').getText('UTF-8')
-    String clientVersion = buildVersionString(clientVersionCommitTag, hasChanged,buildNumber)
+    def clientVersion = buildVersionString(clientVersionCommitTag, hasChanged,buildNumber)
+    def reducedClientVersion = simplifiedVersion(clientVersion);
     String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersion)
     def clientVersionFile = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     /* write version info also as asciidoc file*/
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n"+clientVersion)
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+reducedClientVersion+"\n:longrevnumber: Client "+clientVersion+"\n")
 
     // ------------------------
     // - Server
     // ------------------------
     def serverVersion = buildVersionString(serverVersionCommitTag, hasChanged,buildNumber)
+    def reducedServerVersion = simplifiedVersion(serverVersion);
      /* write version info also as asciidoc file*/
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n"+serverVersion)
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+reducedServerVersion+"\n:longrevnumber: Server "+serverVersion+"\n")
 
     // ------------------------
     // - PDS
     // ------------------------
     def pdsVersion = buildVersionString(serverVersionCommitTag, hasChanged,buildNumber)
+    def reducedPDSVersion = simplifiedVersion(pdsVersion);
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n"+serverVersion)
-
-    def reducedServerVersion = simplifiedVersion(serverVersion);
-    def reducedClientVersion = simplifiedVersion(clientVersion);
-    def reducedPDSVersion = simplifiedVersion(pdsVersion);
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+reducedPDSVersion+"\n:longrevnumber: PDS "+pdsVersion+"\n")
 
     /* we use a simplified version for build artifacts-reason:
      * there were multiple problems. E.g. a user downloading
