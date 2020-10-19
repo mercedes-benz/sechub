@@ -129,6 +129,7 @@ func NewConfigByFlags() *Config {
 	config.reportFormat = *reportFormatPtr
 
 	if *helpPtr == true {
+		showVersionInfo()
 		showHelpAndExit()
 	}
 	if *versionPtr == true {

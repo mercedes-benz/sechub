@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +28,16 @@ public class InfrastructureScanProductExecutionServiceImpl extends AbstractProdu
 
 	private static final Logger LOG = LoggerFactory.getLogger(InfrastructureScanProductExecutionServiceImpl.class);
 
+	private List<InfrastructureScanProductExecutor> webscanExecutors = new ArrayList<>();
+	
 	@Autowired
 	public InfrastructureScanProductExecutionServiceImpl(List<InfrastructureScanProductExecutor> webscanExecutors) {
-		register(webscanExecutors);
+		this.webscanExecutors.addAll(webscanExecutors);
+	}
+	
+	@Override
+	protected List<InfrastructureScanProductExecutor> getProductExecutors() {
+	    return webscanExecutors;
 	}
 
 	public boolean isExecutionNecessary(SecHubExecutionContext context, UUIDTraceLogID traceLogID,

@@ -1,0 +1,36 @@
+{
+    "type" : "executorConfigurationList",
+    
+    "executorConfigurations" : [
+    {
+        
+        "uuid": "c2bc2b12-b8cc-46db-b954-f50d9e000df1",
+        
+        "name" : "pds SAT - gosec ",
+        
+        "enabled" : true
+    },
+    {
+        
+        /* another pds code scan */
+        
+        "uuid": "d8172c3f-7089-4b77-b5f7-1bb752c25f08",
+        
+        "name" : "pds SAST - gosec (temp)",
+        
+        "enabled" : false
+        
+    },
+    {
+        
+        "uuid": "21d9cfe6-a891-482b-847e-863d5e73d3a0",
+        
+        "name" : "checkmarx v9-int",
+        
+        "enabled" : true
+    }
+    
+    
+    ]
+    
+}

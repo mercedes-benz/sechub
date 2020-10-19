@@ -35,17 +35,9 @@ import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
-public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
+public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
 
-    /*
-     * FIXME Albert Tregnaghi, 2020-06-18:change/implement this to an abstract variant!
-     * different implementations - e.g. FindSecurityBugsExecutor should extends this
-     * one and have their own product identifier! We need product identifiers for sereco.
-     * Or we create here an absolute generic approach and the server will return the
-     * product identifier - in this case all variants( web, infra, codescan) must be supported 
-     * either by one executor or different ones.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(PDSProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSCodeScanProductExecutor.class);
 
     @Value("${sechub.adapter.PDS.scanresultcheck.period.minutes:-1}")
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
@@ -72,7 +64,7 @@ public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInsta
 
     ResilientActionExecutor<ProductResult> resilientActionExecutor;
 
-    public PDSProductExecutor() {
+    public PDSCodeScanProductExecutor() {
         /* we create here our own instance - only for this service! */
         this.resilientActionExecutor = new ResilientActionExecutor<>();
 
@@ -115,7 +107,7 @@ public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInsta
 					/* @formatter:on */
 
                 /* inspect */
-                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS.name());
+                MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_CODESCAN.name());
                 inspection.notice(MetaDataInspection.TRACE_ID, pDSConfig.getTraceID());
 //                inspection.notice("presetid", pDSConfig.getPresetIdForNewProjectsOrNull());
 //                inspection.notice("teamid", pDSConfig.getTeamIdForNewProjects());
@@ -142,7 +134,7 @@ public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInsta
 
     @Override
     public ProductIdentifier getIdentifier() {
-        return ProductIdentifier.PDS;
+        return ProductIdentifier.PDS_CODESCAN;
     }
 
     @Override
@@ -150,4 +142,8 @@ public class PDSProductExecutor extends AbstractCodeScanProductExecutor<PDSInsta
         return installSetup;
     }
 
+    @Override
+    public int getVersion() {
+        return 1;
+    }
 }

@@ -54,6 +54,7 @@ subprojects{
 
         environment 'SECHUB_TEST_WIREMOCK_HTTP_PORT', "$wireMockHttpPortValue"
         environment 'SECHUB_TEST_WIREMOCK_HTTPS_PORT', "$wireMockHttpsPortValue"
+        environment 'SECHUB_BUILD_GRADLE', 'true' // we can use this to check for gradle build inside java tests
 
 
         // add a collection to track failedTests

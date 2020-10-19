@@ -41,10 +41,10 @@ public class NetsparkerV1XMLImporterTest {
 	@Test
 	public void testfile1_contains_4_vulnerablities_which_exists_in_imported_metadata() throws Exception{
 		/* prepare */
-		String json = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
+		String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
 		/* execute */
-		SerecoMetaData result = importerToTest.importResult(json);
+		SerecoMetaData result = importerToTest.importResult(xml);
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
 		/* test */
@@ -55,15 +55,15 @@ public class NetsparkerV1XMLImporterTest {
 	@Test
 	public void testfile1_contains_ApacheVersionDisclosure_and_ApacheOutOfDate_in_imported_metadata() throws Exception{
 		/* prepare */
-		String json = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
+		String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_RESULT_XML_TESTFILE1);
 
 		/* execute */
-		SerecoMetaData result = importerToTest.importResult(json);
+		SerecoMetaData result = importerToTest.importResult(xml);
 		List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
 
 		/* test */
-		for (SerecoVulnerability v: vulnerabilities) {
-		    assertEquals(ScanType.WEB_SCAN,v.getScanType());
+		for (SerecoVulnerability vulnerability: vulnerabilities) {
+		    assertEquals(ScanType.WEB_SCAN, vulnerability.getScanType());
 		}
 		
 		/* @formatter:off */
@@ -94,6 +94,81 @@ public class NetsparkerV1XMLImporterTest {
 				isContained();
 		/* @formatter:on */
 
-	}
+    }
 
+    @Test
+    public void test_xml_import_netsparker_1_9_1_977_can_be_imported() throws Exception {
+        /* prepare */
+        String xml = SerecoTestFileSupport.INSTANCE.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+
+        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Netsparker").build();
+
+        /* execute */
+        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+
+        /* test */
+        assertEquals("Was not able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+    }
+    
+    @Test
+    public void test_xml_import_netsparker_1_9_1_977_contains_4_vulnerablities() throws Exception{
+        /* prepare */
+        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+
+        /* execute */
+        SerecoMetaData result = importerToTest.importResult(xml);
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        assertEquals(4,vulnerabilities.size());
+    }
+    
+    
+    @Test
+    public void test_xml_import_netsparker_1_9_1_977_contains_specific_vulnerability() throws Exception{
+        /* prepare */
+        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+
+        /* execute */
+        SerecoMetaData result = importerToTest.importResult(xml);
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        for (SerecoVulnerability vulnerability: vulnerabilities) {
+            assertEquals(ScanType.WEB_SCAN, vulnerability.getScanType());
+        }
+        
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            vulnerability().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withURL("https://app.example.org:8082/").
+                withType("InvalidSslCertificate").
+                classifiedBy().
+                    owasp("A6").
+                    wasc("4").
+                    cwe("295").
+                    capec("459").
+                    pci32("6.5.4").
+                    and().
+                withDescriptionContaining("<p>Netsparker Enterprise identified an invalid SSL certificate.</p>\n" + 
+                        "<p>An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.</p>").
+                isContained().
+               
+           vulnerability().
+                enableTrace().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withURL("http://app.example.org:8082/").
+                withType("InsecureHttpUsage").
+                classifiedBy().
+                    owasp("A5").
+                    wasc("4").
+                    and().
+                withDescriptionContaining("<p>Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.</p>\n" + 
+                        "<p>HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.</p>\n" + 
+                        "<p>For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS. </p>").
+                isContained();
+        /* @formatter:on */
+
+    }
 }

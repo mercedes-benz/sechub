@@ -4,6 +4,9 @@ package com.daimler.sechub.integrationtest.scenario2;
 import static com.daimler.sechub.integrationtest.api.AssertMail.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
+import static org.junit.Assert.*;
+
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,6 +38,16 @@ public class UserAdministrationScenario2IntTest {
 	}
 	/* @formatter:on */
 
+	@Test
+	public void superadmin_can_fetch_user_list_and_list_contains_user1_and_user2() {
+	    /* execute */
+	    List<String> list = as(SUPER_ADMIN).listAllUserIds();
+	    
+	    /* test */
+	    assertTrue(list.contains(USER_1.getUserId()));
+	    assertTrue(list.contains(USER_2.getUserId()));
+	}
+	
 
 	@Test
 	public void anynmouse_can_NOT_grant_user_admin_rights() {

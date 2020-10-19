@@ -29,36 +29,37 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 @Service
 public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSWebScanProductExecutor.class);
 
-	@Autowired
-	PDSAdapter netsparkerAdapter;
+    @Autowired
+    PDSAdapter netsparkerAdapter;
 
-	@Autowired
-	PDSInstallSetup installSetup;
+    @Autowired
+    PDSInstallSetup installSetup;
 
-	@Override
-	protected PDSInstallSetup getInstallSetup() {
-		return installSetup;
-	}
-	
-	@Override
-	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
-			TargetRegistryInfo info) throws Exception{
-		Set<URI> targetURIs = info.getURIs();
-		if (targetURIs.isEmpty()) {
-			/* no targets defined */
-			return Collections.emptyList();
-		}
-		TargetType targetType = info.getTargetType();
-		LOG.debug("Trigger netsparker adapter execution for target {} and setup {} ", targetType,setup);
+    @Override
+    protected PDSInstallSetup getInstallSetup() {
+        return installSetup;
+    }
 
-		List<ProductResult> results = new ArrayList<>();
-		/* NETSPARKER is not able to scan multiple targets, so we
-		 * start NETSPARKER multiple times for each target URI
-		 */
-		for (URI targetURI: targetURIs) {
-			/* @formatter:off */
+    @Override
+    protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
+            TargetRegistryInfo info) throws Exception {
+        Set<URI> targetURIs = info.getURIs();
+        if (targetURIs.isEmpty()) {
+            /* no targets defined */
+            return Collections.emptyList();
+        }
+        TargetType targetType = info.getTargetType();
+        LOG.debug("Trigger netsparker adapter execution for target {} and setup {} ", targetType, setup);
+
+        List<ProductResult> results = new ArrayList<>();
+        /*
+         * NETSPARKER is not able to scan multiple targets, so we start NETSPARKER
+         * multiple times for each target URI
+         */
+        for (URI targetURI : targetURIs) {
+            /* @formatter:off */
 		    
 		    /* special behavior, because having multiple results here, we must find former result corresponding to 
 		     * target URI.
@@ -79,21 +80,25 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 					setTargetURI(targetURI).build();
 			/* @formatter:on */
 
-			/* execute NETSPARKER by adapter and return product result */
-			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
-			
-			ProductResult currentProductResult = executorContext.getCurrentProductResult();
+            /* execute NETSPARKER by adapter and return product result */
+            String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
+
+            ProductResult currentProductResult = executorContext.getCurrentProductResult();
             currentProductResult.setResult(xml);
             results.add(currentProductResult);
-			
-		}
-		return results;
-	}
+
+        }
+        return results;
+    }
 
     @Override
-	public ProductIdentifier getIdentifier() {
-		return ProductIdentifier.NETSPARKER;
-	}
+    public ProductIdentifier getIdentifier() {
+        return ProductIdentifier.PDS_WEBSCAN;
+    }
 
+    @Override
+    public int getVersion() {
+        return 1;
+    }
 
 }

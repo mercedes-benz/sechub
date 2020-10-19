@@ -56,10 +56,12 @@ public class Scenario2 extends AbstractGrowingSecHubServerTestScenario {
 	protected void initializeTestData() {
 		/* @formatter:off */
 		initializer().
+		    ensureDefaultExecutionProfile_1().
 			createUser(OWNER_1).
 			createProject(PROJECT_1, OWNER_1).
 			createProject(PROJECT_2, OWNER_1).
 			createProject(PROJECT_3, OWNER_1).
+			addProjectIdsToDefaultExecutionProfile_1(PROJECT_1,PROJECT_2,PROJECT_3).
 			createUser(USER_1).
 			createUser(USER_2)
 			;
