@@ -13,7 +13,7 @@ import com.daimler.sechub.domain.schedule.access.ScheduleAccess.ProjectAccessCom
 public interface ScheduleAccessRepository extends JpaRepository<ScheduleAccess, ProjectAccessCompositeKey> {
 	
 	@Query(value="SELECT EXISTS(SELECT * FROM "+TABLE_NAME+" where "+COLUMN_PROJECT_ID+"=:projectId)",nativeQuery=true)
-	public Boolean hasProjectUserAccess(@Param("projectId") String projectId);
+	public boolean hasProjectUserAccess(@Param("projectId") String projectId);
 	
 	@Modifying
 	@Query(value="DELETE FROM "+TABLE_NAME+" where "+COLUMN_USER_ID+"=:userId",nativeQuery=true)
