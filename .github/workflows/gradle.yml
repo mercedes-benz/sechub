@@ -14,25 +14,48 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+        
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.12.9
         stable: true
+    
     - name: Gradle clean
       run: ./gradlew clean
+    
     - name: Build CLI
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
+      
     - name: Build Server
       run: ./gradlew ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
+      
     - name: Integration test
       run: ./gradlew integrationtest
+      
     - name: Create combined test report
       if: always()
       run: ./gradlew createCombinedTestReport
+      
     - name: Archive combined test report
       if: always()
       uses: actions/upload-artifact@v1
       with:
-          name: combined-sechub-testreport
+          name: combined-sechub-testreport-$GITHUB_RUN_NUMBER
           path: build/reports/combined-report
+          retention-days: 14
+    
+    - name: Install graphviz (asciidoc diagrams)
+      run: sudo apt-get install graphviz
+      
+    - name: Create documentation
+      run: ./gradlew documentation-with-pages
+      
+    - name: Archive documentation
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-docs-latest-$GITHUB_RUN_NUMBER
+          path: docs/latest
+          retention-days: 14
+    
