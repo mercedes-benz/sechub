@@ -12,14 +12,14 @@ administration ->> schedule : REQUEST_JOB_RESTART_HARD
 schedule ->> notification : JOB_RESTART_CANCELED
 @enduml
 
-PlantUML version 1.2018.13(Mon Nov 26 18:11:51 CET 2018)
+PlantUML version 1.2018.13(Mon Nov 26 17:11:51 UTC 2018)
 (APACHE source distribution)
 Java Runtime: OpenJDK Runtime Environment
 JVM: OpenJDK 64-Bit Server VM
-Java Version: 1.8.0_265-8u265-b01-0ubuntu2~20.04-b01
+Java Version: 1.8.0_265-b11
 Operating System: Linux
-OS Version: 5.4.0-48-generic
+OS Version: 5.4.0-1026-azure
 Default Encoding: UTF-8
 Language: en
-Country: US
+Country: 
 --></g></svg>
