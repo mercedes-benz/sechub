@@ -13,6 +13,8 @@ import javax.annotation.security.RolesAllowed;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -20,6 +22,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daimler.sechub.adapter.mock.AbstractMockedAdapter;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 
 import static org.junit.Assert.*;
@@ -27,7 +30,9 @@ import static org.junit.Assert.*;
 @SuppressWarnings("rawtypes")
 public class RoutesTest {
 	
-	private Map<Class, Map<String, ArrayList<String>>> classRoutesRolesMap = new HashMap<Class, Map<String, ArrayList<String>>>();
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractMockedAdapter.class);
+	
+	private Map<Class, Map<String, ArrayList<String>>> classRoutesRolesMap = new HashMap<>();
 	
 	@Before
 	public void before() {
@@ -45,27 +50,28 @@ public class RoutesTest {
 			
 			String clazzName = entry.getKey().getName();
 			Map<String, ArrayList<String>> routesEntries = entry.getValue();
-			
-			for (Entry<String, ArrayList<String>> routesEntry : routesEntries.entrySet()) {
-				String route = routesEntry.getKey();
-				String[] roles = routesEntry.getValue().toArray(new String[routesEntry.getValue().size()]);
+						
+			for (String route : routesEntries.keySet()) {
 				
-				if (!(route.contains("anonymous") || route.contains("actuator"))) {
-					assertTrue(clazzName + " with route " + route + " should contain roles.", roles.length > 0);
+				ArrayList<String> roles = routesEntries.get(route);
+				
+				if (!(route.contains("/api/anonymous/") || route.contains("/actuator/"))) {
+					assertTrue(clazzName + " with route " + route + " should contain roles.", roles.size() > 0);
 				}
 				
-				if (route.contains("anonymous") || route.contains("actuator")) {
-					assertTrue(clazzName + " with route " + route + " should not contain roles.", roles.length == 0);
+				if (route.contains("/api/anonymous/") || route.contains("/actuator/")) { 
+					assertTrue(clazzName + " with route " + route + " should not contain roles.", roles.size() == 0);
 				}
-				
-				if (route.contains("/api/admin")) {
-					assertTrue(clazzName + " with route " + route + " should only contain one role, ROLE_SUPERADMIN.", roles.length == 1);
-					assertTrue(clazzName + " with route " + route + " should contain ROLE_SUPERADMIN.", Arrays.asList(roles).contains(RoleConstants.ROLE_SUPERADMIN));
+				else if (route.contains("/api/admin")) {
+					assertTrue(clazzName + " with route " + route + " should only contain one role, ROLE_SUPERADMIN.", roles.size() == 1);
+					assertTrue(clazzName + " with route " + route + " should contain ROLE_SUPERADMIN.", roles.contains(RoleConstants.ROLE_SUPERADMIN));
 				}
-				
-				if (route.contains("/api/project") || route.contains("/api/job")) {
-					assertTrue(clazzName + " with route " + route + " should contain ROLE_USER.", Arrays.asList(roles).contains(RoleConstants.ROLE_USER));
-					assertTrue(clazzName + " with route " + route + " should contain ROLE_SUPERADMIN.", Arrays.asList(roles).contains(RoleConstants.ROLE_SUPERADMIN));
+				else if (route.contains("/api/project") || route.contains("/api/job")) {
+					assertTrue(clazzName + " with route " + route + " should contain ROLE_USER.", roles.contains(RoleConstants.ROLE_USER));
+					assertTrue(clazzName + " with route " + route + " should contain ROLE_SUPERADMIN.", roles.contains(RoleConstants.ROLE_SUPERADMIN));
+				}
+				else {
+					assertTrue(clazzName + " with route " + route + " should at least contain ROLE_USER.", roles.contains(RoleConstants.ROLE_USER));
 				}
 			}	
 		}
@@ -82,7 +88,7 @@ public class RoutesTest {
 					try {
 						return Class.forName(bean.getBeanClassName());
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOG.trace(e.getMessage());
 					}
 					return null;
 				})
@@ -92,7 +98,7 @@ public class RoutesTest {
 	private void getClassUserRolePaths(Class clazz) {
 		RequestMapping classMappings = AnnotationUtils.findAnnotation(clazz, RequestMapping.class);
 		
-		ArrayList<String> userRoles = new ArrayList<String>();
+		List<String> userRoles = new ArrayList<String>();
 		List<String> resultPaths = new ArrayList<String>();
 		
 		String basePath = "";
@@ -104,12 +110,9 @@ public class RoutesTest {
 				
 				String[] classRoles = getRoles(clazz);
 				
-				if (classRoutesRolesMap.get(clazz) == null) {
-					classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>());
-				}
-				if (classRoutesRolesMap.get(clazz).get(path) == null) {
-					classRoutesRolesMap.get(clazz).put(path, new ArrayList<String>());
-				}
+
+				classRoutesRolesMap.computeIfAbsent(clazz, key -> classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>()) );
+				classRoutesRolesMap.get(clazz).computeIfAbsent(path, key -> classRoutesRolesMap.get(clazz).put(path, new ArrayList<String>()));
 				
 				if (classRoles != null) {
 					userRoles.addAll(Arrays.asList(classRoles));
@@ -124,31 +127,31 @@ public class RoutesTest {
 			RequestMapping methodMapping = AnnotationUtils.findAnnotation(method, RequestMapping.class);
 			if (methodMapping != null) {
 				String[] paths = methodMapping.path();
-				if (paths != null) {
-					for (String path : paths) {
-						
-						String fullPath = basePath + path;
-						
-						resultPaths.add(basePath + path);
-						
-						String[] methodRoles = getRoles(method);
-						
-						if (classRoutesRolesMap.get(clazz) == null) {
-							classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>());
-						}
-						if (classRoutesRolesMap.get(clazz).get(fullPath) == null) {
-							classRoutesRolesMap.get(clazz).put(fullPath, new ArrayList<String>());
-						}
-						
-						if (methodRoles != null) {
-							userRoles.addAll(Arrays.asList(methodRoles));
-						}
-						classRoutesRolesMap.get(clazz).get(fullPath).addAll(userRoles);
+				if (paths == null) {
+					continue;
+				}			
+				
+				for (String path : paths) {
+					
+					String fullPath = basePath + path;
+					
+					resultPaths.add(basePath + path);
+					
+					String[] methodRoles = getRoles(method);
+					
+					classRoutesRolesMap.computeIfAbsent(clazz, key -> classRoutesRolesMap.put(clazz, new HashMap<String, ArrayList<String>>()));
+					classRoutesRolesMap.get(clazz).computeIfAbsent(fullPath, key -> classRoutesRolesMap.get(clazz).put(fullPath, new ArrayList<String>()));
+					
+					if (methodRoles != null) {
+						userRoles.addAll(Arrays.asList(methodRoles));
 					}
-				}					
+					classRoutesRolesMap.get(clazz).get(fullPath).addAll(userRoles);
+				}
 			}
 		}
 	}
+	
+	
 	
 	private String[] getRoles(Class clazz) {
 		
