@@ -5,10 +5,11 @@
 
 
 [[concept-false-positive-handling]]
+=== False-positive handling
 
 {sechub} must be able to handle false positives of used products.
 
-=== General
+==== General
 
 Normally every commercial security product is able to mark false positives, but maybe not every tool
 has got a REST API for this issue, or some command line tools do not have an API for this. 
@@ -101,6 +102,13 @@ and
 
 `NOSECHUB-END`
 
+[WARNING]
+====
+`CLI analyzer` is already implemented which contains logic for search etc, but currently
+{sechub} does not use it because there is a need for PDS execution. We also need a 
+special type of executions introduced: `AnalyzerProductExecutor`, which is not at this moment.
+====
+ 
 [NOTE]
 ====
 In future we could provide additional identifiers for `NOSECHUB` to define which kind of
@@ -110,7 +118,6 @@ E.g. something like `NOSECHUB:PATH_TRAVERSAL,PWD_UNSECURE` etc. But if we implem
 SecHub Sereco must map product names of vulnerability to common identifiers!
 
 ====
-
 
 ===== Java
 
@@ -237,7 +244,7 @@ We need
 ** batch job must call the CLi tool with parameters +
    Those parameters must be defined in adapter call
 
-=== Sereco
+==== Sereco
 We need to enhance Sereco to understand analyzer data and filter
 
 [NOTE]
