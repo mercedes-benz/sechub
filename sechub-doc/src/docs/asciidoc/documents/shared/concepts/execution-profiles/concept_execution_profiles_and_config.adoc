@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+=== Product execution profiles and executor configuration
+// see https://github.com/Daimler/sechub/issues/148 for issue details about executor config
+// see https://github.com/Daimler/sechub/issues/391 for issue details about execution profiles
+
+To have the possibility of using dedicated security products for different projects, to 
+disable/enable products on demand without server restart or just to test new products in one evaluation project but
+not for all other projects a runtime configuration is necessary.
+
+This is provided by execution profiles and and executor configurations.   
+
+==== Overview
+plantuml::diagrams/diagram_overview_execution_profiles_and_config.puml[format=svg, title="Overview profiles and configurations"]  
+
+==== Executor configuration
+An executor configuration represents a runtime configuration for product executors. The configuration
+has an enabled state. So it is possible to enable/disable product execution.
+
+==== Execution profile
+An execution profile can contain multiple executor configurations. The configurations can be shared 
+between multiple profiles. E.g. a config with name "pds-gosec-1" can be used in profiles "profileA"
+and also "profileB" at the same time. 
+
+Additionally a profile can be assigned to a project _(but technically we assign a projectId to a profile, because
+in domain `scan` we only know projectIds but no the `Project` entity...)_.
+
+The profile has also an enabled state - like executors. 
+
+==== How execution process uses profiles and configurations 
+`ScanService` is called by {sechub} batch operation from scheduler and contains the project id for the
+project to scan for. 
+
+When it comes to execution, `ProductExectionStoreService` fetches all enabled profiles related to the given
+project id and executes all enabled product executors for the wanted scan job - e.g. code scan product executors
+
+===== Results handling done by configured report executor or fallback
+All of the results returned by the dedicated product executors are stored in database. After this has been done,
+the configured report product executor(s) is (are) executed _(if none has been defined in at least one profile, the
+fallback will automatically use `Sereco` product executor version 1, which is embedded)_ 

@@ -7,3 +7,5 @@ include::../shared/configuration/mapping.adoc[]
 
 include::../shared/configuration/scan_config.adoc[]
 
+include::../shared/configuration/initial_profile_and_executor_config.adoc[]
+

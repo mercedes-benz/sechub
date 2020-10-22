@@ -1,0 +1,75 @@
+' SPDX-License-Identifier: MIT
+@startuml 
+
+' hide the class parts not wanted for the 
+hide circle
+hide methods
+hide fields
+
+package "Domain schedule" as domainScheduler {
+
+    entity "SecHub batch job" as scheduler {
+    }
+    
+}
+
+package "Domain product" as domainProduct{
+    entity "Product XYZ" as product {
+    
+    }
+    entity "Product adapter" as adapter {
+    }
+}
+
+package "Domain scan" as domainScan {
+
+    entity "Product execution store service" as execService{
+    }
+
+    entity "Product execution profile" as profile {
+    
+        * String **profileId**
+        String Description
+        Set<String> projectIds
+        Set<UUID> configurations
+    
+    }
+
+    entity "Product executor config " as config {
+        * UUID **uuid**
+        String name
+    }
+    
+    
+    entity "Scan service" as scanService {
+        
+    }
+    
+    entity "Product executor" as executor {
+        ProductIdentifier identifier
+        int version
+    }
+    
+}
+
+package "Domain administration" as domainAdministration{
+
+    entity "SecHub project" as project {
+    
+        * String **projectId**
+    
+    }
+}
+
+
+
+profile "1" --> "n" config : Profiles can\n reuse same config
+profile "1" ..> "n" project : Not direct related to project, only project id is known
+execService --> profile : knows
+execService --> executor : uses executor only \nwhen configured in profile\nand profile matches \nfor project to scan
+executor --> adapter: uses
+adapter --> product : calls
+scheduler .> scanService
+scanService -> execService
+'scheduler  ..> project
+@enduml 

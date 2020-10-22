@@ -4,6 +4,10 @@
 :checkmarx: Checkmarx
 == Security Products
 
+TIP: You must only setup those products you have listed inside your
+     profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>> 
+  
+
 === {checkmarx}
 
 ==== What does the adapter do?
