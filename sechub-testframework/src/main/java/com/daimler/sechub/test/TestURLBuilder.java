@@ -150,6 +150,10 @@ public class TestURLBuilder {
         public String buildAdminGetServerConfiguration() {
             return buildUrl(API_PDS_ADMIN, "config/server");
         }
+
+        public String buildBaseUrl() {
+            return buildUrl("");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {

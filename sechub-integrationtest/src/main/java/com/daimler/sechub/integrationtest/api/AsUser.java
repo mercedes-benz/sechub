@@ -433,10 +433,18 @@ public class AsUser {
 
     }
 
+    public String getJobStatus(TestProject project, UUID jobUUID) {
+        return getJobStatus(project.getProjectId(), jobUUID);
+    }
+    
     public String getJobStatus(String projectId, UUID jobUUID) {
         return getRestHelper().getJSon(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
     }
 
+    public String getJobReport(TestProject project, UUID jobUUID) {
+        return getJobReport(project.getProjectId(), jobUUID);
+    }
+    
     public String getJobReport(String projectId, UUID jobUUID) {
         long waitTimeInMillis = 1000;
         int count = 0;

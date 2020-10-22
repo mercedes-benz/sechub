@@ -50,7 +50,6 @@ public enum IntegrationTestMockMode {
 
 	NOT_PREDEFINED(null), 
 	
-
 	;
 
 	private String target;

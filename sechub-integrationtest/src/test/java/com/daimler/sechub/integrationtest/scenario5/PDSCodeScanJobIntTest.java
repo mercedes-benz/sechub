@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario5;
 
+import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario5.Scenario5.*;
+
+import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
@@ -28,10 +33,26 @@ public class PDSCodeScanJobIntTest {
 
 
     @Test
-    public void implement_me() {
-        // at the moment this test does only fail when no PDS server starts - thats all
-        /* TODO Albert Tregnaghi, 2020-07-17: implement this when starting to integrate PDS into SecHub server */
+    public void a_user_can_start_a_pds_scan_job_and_gets_result() {
+        /* @formatter:off */
+
+        /* prepare */
+        TestProject project = PROJECT_1;
+        UUID jobUUID = as(USER_1).createCodeScan(project,IntegrationTestMockMode.NOT_PREDEFINED);
+        
+        /* execute */
+        as(USER_1).
+            upload(project, jobUUID, "zipfile_contains_only_test1.txt.zip").
+            approveJob(project, jobUUID);
+        
+        waitForJobDone(project, jobUUID);
+        
+        /* test */
+        String report = as(USER_1).getJobReport(project, jobUUID);
+        assertJobReport(report).hasTrafficLight(TrafficLight.RED);// currently only set RED so this test fails
+        
     }
+    /* @formatter:on */
 
     
 }

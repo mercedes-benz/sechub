@@ -13,7 +13,6 @@ public class NessusConfig extends AbstractAdapterConfig implements NessusAdapter
 		return new NessusConfigBuilder();
 	}
 
-	/* FIXME Albert Tregnaghi, 2018-03-26: cleanup! it was copied from netsparker... */
 	public static class NessusConfigBuilder extends AbstractAdapterConfigBuilder<NessusConfigBuilder, NessusAdapterConfig>{
 
 		@Override

@@ -88,6 +88,10 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    public static AssertJobReport assertJobReport(String json) {
+        return new AssertJobReport(json);
+    }
+    
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
