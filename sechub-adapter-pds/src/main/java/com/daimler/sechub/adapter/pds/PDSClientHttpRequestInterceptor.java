@@ -27,7 +27,8 @@ public class PDSClientHttpRequestInterceptor implements ClientHttpRequestInterce
 		headers.remove("Authorization");
 
 		headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("Authorization", "Basic " + config.getPasswordOrAPITokenBase64Encoded());
+		headers.add("Authorization", "Basic " + config.getCredentialsBase64Encoded());
+		
 		return execution.execute(request, body);
 	}
 

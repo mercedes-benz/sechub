@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario5;
 
+import static com.daimler.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario5.Scenario5.*;
 
@@ -10,11 +11,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
-import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
+import static com.daimler.sechub.commons.model.TrafficLight.*;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
-
 /**
  * Integration tests between int test sechub server and integration test PDS server
  * 
@@ -38,18 +37,18 @@ public class PDSCodeScanJobIntTest {
 
         /* prepare */
         TestProject project = PROJECT_1;
-        UUID jobUUID = as(USER_1).createCodeScan(project,IntegrationTestMockMode.NOT_PREDEFINED);
+        UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);
         
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, "zipfile_contains_only_test1.txt.zip").
+            upload(project, jobUUID, "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip").
             approveJob(project, jobUUID);
         
         waitForJobDone(project, jobUUID);
         
         /* test */
         String report = as(USER_1).getJobReport(project, jobUUID);
-        assertJobReport(report).hasTrafficLight(TrafficLight.RED);// currently only set RED so this test fails
+        assertJobReport(report).hasTrafficLight(RED);
         
     }
     /* @formatter:on */

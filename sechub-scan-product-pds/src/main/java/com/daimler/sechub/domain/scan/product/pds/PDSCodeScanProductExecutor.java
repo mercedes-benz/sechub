@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,10 @@ import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
+
+    private static final String SOURCECODE_ZIP_CHECKSUM = "sourcecode.zip.checksum";
+
+    private static final String SOURCECODE_ZIP = "sourcecode.zip";
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSCodeScanProductExecutor.class);
 
@@ -74,7 +79,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
             TargetRegistryInfo info) throws Exception {
         LOG.debug("Trigger PDS adapter execution");
 
-        PDSExecutionConfigSuppport configSupport = new PDSExecutionConfigSuppport(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
         if (configSupport.isTargetTypeForbidden(info.getTargetType())){
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
@@ -89,6 +94,9 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
+            /* we reuse existing file upload checksum done by sechub */
+            String sourceZipFileChecksum=fetchFileUploadChecksumIfNecessary(storage, metaDataOrNull);
+            
             try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
@@ -96,11 +104,16 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS();
 					
                     PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
+                            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+                            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+                            setProductBaseUrl(configSupport.getProductBaseURL()).
+                            setSecHubJobUUID(context.getSechubJobUUID()).
 							configure(createAdapterOptionsStrategy(context)).
 							setTimeToWaitForNextCheckOperationInMinutes(configSupport.getScanResultCheckPeriodInMinutes(setup)).
 							setScanResultTimeOutInMinutes(configSupport.getScanResultCheckTimeoutInMinutes(setup)).
 							setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
 							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+							setSourceZipFileChecksum(sourceZipFileChecksum).
 							setUser(configSupport.getUser()).
 							setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
 							setProjectId(projectId).
@@ -130,7 +143,18 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
         if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             return null;
         }
-        return storage.fetch("sourcecode.zip");
+        return storage.fetch(SOURCECODE_ZIP);
+    }
+    
+    private String fetchFileUploadChecksumIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
+        if (metaData != null && metaData.hasValue(PDSMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
+            return null;
+        }
+        try(InputStream x = storage.fetch(SOURCECODE_ZIP_CHECKSUM);Scanner s = new Scanner(x)){
+            String result = s.hasNext() ? s.next() : "";
+            return result;
+        }
+        
     }
 
     @Override

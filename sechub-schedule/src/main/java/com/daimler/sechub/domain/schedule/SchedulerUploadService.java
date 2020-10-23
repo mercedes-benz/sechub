@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.util.StringInputStream;
 import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.sharedkernel.Step;
@@ -32,6 +33,7 @@ import com.daimler.sechub.storage.core.JobStorage;
 public class SchedulerUploadService {
 
 	static final String SOURCECODE_ZIP = "sourcecode.zip";
+	static final String SOURCECODE_ZIP_CHECKSUM = SOURCECODE_ZIP+".checksum";
 
 	private static final Logger LOG = LoggerFactory.getLogger(SchedulerUploadService.class);
 
@@ -88,6 +90,8 @@ public class SchedulerUploadService {
 			/* now store */
 			try {
 				jobStorage.store(SOURCECODE_ZIP, file.getInputStream());
+				// we also store new checksum - so not necessary to calculate at adapters again!
+				jobStorage.store(SOURCECODE_ZIP_CHECKSUM, new StringInputStream(checkSum));
 			} catch (IOException e) {
 				LOG.error("Was not able to store zipped sources! {}", traceLogID, e);
 				throw new SecHubRuntimeException("Was not able to upload sources");

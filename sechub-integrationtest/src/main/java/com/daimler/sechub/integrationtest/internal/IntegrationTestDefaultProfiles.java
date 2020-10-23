@@ -4,7 +4,11 @@ public class IntegrationTestDefaultProfiles {
     public static final DoNotChangeTestExecutionProfile PROFILE_1 = defineProfile1();
     public static final DoNotChangeTestExecutionProfile PROFILE_2_PDS_CODESCAN = defineProfile2();
 
-    private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] { PROFILE_1, PROFILE_2_PDS_CODESCAN };
+    private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] {
+
+            PROFILE_1,
+
+            PROFILE_2_PDS_CODESCAN };
 
     public static DoNotChangeTestExecutionProfile[] getAllDefaultProfiles() {
         return ALL_PROFILES;
@@ -20,7 +24,7 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
-    
+
     private static DoNotChangeTestExecutionProfile defineProfile2() {
 
         DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();

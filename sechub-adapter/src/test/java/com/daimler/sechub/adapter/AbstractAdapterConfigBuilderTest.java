@@ -292,7 +292,7 @@ public class AbstractAdapterConfigBuilderTest {
 		TestAdapterConfigInterface cf1 = validConfigAnd().setUser(user).setPasswordOrAPIToken(pwdOrApiToken).build();
 
 		/* test */
-		String base64Encoded = cf1.getPasswordOrAPITokenBase64Encoded();
+		String base64Encoded = cf1.getCredentialsBase64Encoded();
 		String base64Decoded = new String(Base64.getDecoder().decode(base64Encoded));
 		assertEquals(user+":"+pwdOrApiToken,base64Decoded);
 	}

@@ -3,8 +3,6 @@ package com.daimler.sechub.domain.scan.product.pds;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +28,7 @@ public class PDSExecutionConfigSuppportTest {
         when(setup.getCredentials()).thenReturn(credentialsInConfigSetup);
         
         systemEnvironment = mock(SystemEnvironment.class);
-        supportToTest=new PDSExecutionConfigSuppport(config,systemEnvironment);
+        supportToTest=PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
     }
 
     @Test

@@ -2,6 +2,8 @@ package com.daimler.sechub.domain.scan.product.pds;
 
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,39 +16,93 @@ import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
+import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.sharedkernel.validation.AssertValidation;
 
 public class PDSExecutionConfigSuppport {
 
+    private static final String ENV_PREFIX_ID = "env:";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionConfigSuppport.class);
 
-    private Map<String, String> parametersAsMap = new TreeMap<>();
     private ProductExecutorConfig config;
+    private Map<String, String> configuredExecutorParameters = new TreeMap<>();
     private SystemEnvironment systemEnvironment;
 
-    public PDSExecutionConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
+    private PDSProductExecutorMinimumConfigValidation validation;
+
+    /**
+     * Creates the configuration support and VALIDATE. This will fail when configuration data is not valid (e.g. mandatory keys missing)
+     * 
+     * @param config
+     * @param systemEnvironment
+     * @return support
+     * @throws NotAcceptableException when configuration is not valid
+     */
+    public static PDSExecutionConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
+        PDSExecutionConfigSuppport support = new PDSExecutionConfigSuppport(config, systemEnvironment);
+        support.assertValidConfiguration();
+        
+        return support;
+    }
+
+    private PDSExecutionConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
         notNull(config, "config may not be null!");
         notNull(systemEnvironment, "systemEnvironment may not be null!");
 
         this.config = config;
         this.systemEnvironment = systemEnvironment;
+        
+        validation = new PDSProductExecutorMinimumConfigValidation();
 
         List<ProductExecutorConfigSetupJobParameter> jobParameters = config.getSetup().getJobParameters();
         for (ProductExecutorConfigSetupJobParameter jobParameter : jobParameters) {
-            parametersAsMap.put(jobParameter.getKey(), jobParameter.getValue());
+            configuredExecutorParameters.put(jobParameter.getKey(), jobParameter.getValue());
         }
+
+    }
+    
+
+    public Map<String, String> createJobParametersToSendToPDS() {
+       
+        Map<String, String> parametersToSend = new TreeMap<>();
+        List<PDSSecHubConfigDataKeyProvider<?>> providers = new ArrayList<>();
+        providers.addAll(Arrays.asList(PDSInputKeys.values()));
+        providers.addAll(Arrays.asList(PDSOutputKeys.values()));
+        
+        for (String originKey  :configuredExecutorParameters.keySet()) {
+            PDSSecHubConfigDataKeyProvider<?> foundProvider = null;
+            for (PDSSecHubConfigDataKeyProvider<?> provider: providers) {
+                String key = provider.getKey().getId();
+                if (originKey.equalsIgnoreCase(key)) {
+                    foundProvider = provider;
+                    break;
+                }
+            }
+            /* either not special (so always sent to PDS) or special but must be sent*/
+            if (foundProvider==null || foundProvider.getKey().isSentToPDS()) {
+                parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
+            }
+        }
+        return parametersToSend;
+    }
+    
+    public String getPasswordOrAPIToken() {
+        ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
+        String pwd = credentials.getPassword();
+        return evaluateEnvironmentEntry(pwd);
     }
 
-    public int getScanResultCheckTimeoutInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSSecHubDataKeys.TIME_TO_WAIT_BEFORE_TIMEOUT);
-        if (value != -1) {
-            return value;
-        }
-        /* fallback to setup */
-        return setup.getDefaultScanResultCheckPeriodInMinutes();
+    public String getProductBaseURL() {
+        return config.getSetup().getBaseURL();
+    }
+    
+    public String getPDSProductIdentifier() {
+        return getParameter(PDSOutputKeys.PDS_PRODUCT_IDENTIFIER);
     }
 
     public int getScanResultCheckPeriodInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSSecHubDataKeys.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
+        int value = getParameterIntValue(PDSInputKeys.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
         if (value != -1) {
             return value;
         }
@@ -54,13 +110,32 @@ public class PDSExecutionConfigSuppport {
         return setup.getDefaultScanResultCheckPeriodInMinutes();
     }
 
+    public int getScanResultCheckTimeoutInMinutes(PDSInstallSetup setup) {
+        int value = getParameterIntValue(PDSInputKeys.TIME_TO_WAIT_BEFORE_TIMEOUT);
+        if (value != -1) {
+            return value;
+        }
+        /* fallback to setup */
+        return setup.getDefaultScanResultCheckPeriodInMinutes();
+    }
+
+    public String getUser() {
+        ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
+        String user = credentials.getUser();
+        return evaluateEnvironmentEntry(user);
+    }
+
+    public boolean isTrustAllCertificatesEnabled() {
+        return getParameterBooleanValue(PDSInputKeys.TRUST_ALL_CERTRIFICATES);
+    }
+    
     public boolean isTargetTypeForbidden(TargetType targetType) {
         boolean forbidden = false;
-        for (PDSSecHubDataKeys k : PDSSecHubDataKeys.values()) {
+        for (PDSInputKeys k : PDSInputKeys.values()) {
             if (forbidden) {
                 break;
             }
-            PDSSecHubConfigDataKey forbiddenKey = k.getKey();
+            PDSSecHubConfigDataKey<?> forbiddenKey = k.getKey();
             if (!(forbiddenKey instanceof PDSForbiddenTargetTypeInputKey)) {
                 continue;
             }
@@ -70,7 +145,34 @@ public class PDSExecutionConfigSuppport {
         return forbidden;
     }
 
-    private int getParameterIntValue(PDSSecHubDataKeys k) {
+    private void assertValidConfiguration() {
+        AssertValidation.assertValid(config, validation);
+    }
+
+    private String evaluateEnvironmentEntry(String data) {
+        if (data == null) {
+            return null;
+        }
+        if (!data.startsWith(ENV_PREFIX_ID)) {
+            return data;
+        }
+        String key = data.substring(ENV_PREFIX_ID.length());
+        String value = systemEnvironment.getEnv(key);
+        if (value == null) {
+            LOG.warn("No environment entry defined for variable:{}", key);
+        }
+        return value;
+    }
+
+    private String getParameter(PDSSecHubConfigDataKeyProvider<?> k) {
+        return getParameter(k.getKey());
+    }
+
+    private String getParameter(PDSSecHubConfigDataKey<?> key) {
+        return configuredExecutorParameters.get(key.getId());
+    }
+
+    private int getParameterIntValue(PDSInputKeys k) {
         String asText = getParameter(k);
         if (asText == null) {
             return -1;
@@ -81,46 +183,11 @@ public class PDSExecutionConfigSuppport {
             return -1;
         }
     }
-
-    private String getParameter(PDSSecHubDataKeys k) {
-        return getParameter(k.getKey());
-    }
-
-    private String getParameter(PDSSecHubConfigDataKey key) {
-        return parametersAsMap.get(key.getId());
-    }
-
-    public Map<String, String> createJobParametersToSendToPDS() {
-        Map<String, String> parametersToSend = new TreeMap<>();
-        parametersToSend.putAll(parametersAsMap); // just add all config values to result
-        return parametersToSend;
-    }
-
-    public String getUser() {
-        ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
-        String user = credentials.getUser();
-        return evaluateEnvironmentEntry(user);
-    }
-
-    public String getPasswordOrAPIToken() {
-        ProductExecutorConfigSetupCredentials credentials = config.getSetup().getCredentials();
-        String pwd = credentials.getPassword();
-        return evaluateEnvironmentEntry(pwd);
-    }
     
-    private String evaluateEnvironmentEntry(String data) {
-        if (data==null) {
-            return null;
-        }
-        if (!data.startsWith("env:")) {
-            return data;
-        }
-        String key = data.substring("env:".length());
-        String value = systemEnvironment.getEnv(key);
-        if (value==null) {
-            LOG.warn("No environment entry defined for variable:{}",key);
-        }
-        return value;
+    private boolean getParameterBooleanValue(PDSInputKeys k) {
+        String asText = getParameter(k);
+        return Boolean.parseBoolean(asText);
     }
 
+    
 }

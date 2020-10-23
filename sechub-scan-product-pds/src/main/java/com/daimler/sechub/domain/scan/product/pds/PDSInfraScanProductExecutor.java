@@ -56,7 +56,7 @@ public class PDSInfraScanProductExecutor extends AbstractWebScanProductExecutor<
             return Collections.emptyList();
         }
         TargetType targetType = info.getTargetType();
-        PDSExecutionConfigSuppport configSupport = new PDSExecutionConfigSuppport(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
@@ -76,6 +76,10 @@ public class PDSInfraScanProductExecutor extends AbstractWebScanProductExecutor<
 		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 		    
 		    PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
+		            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+		            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+		            setProductBaseUrl(configSupport.getProductBaseURL()).
+		            setSecHubJobUUID(context.getSechubJobUUID()).
 					configure(createAdapterOptionsStrategy(context)).
 				    configure(new WebLoginConfigBuilderStrategy(context)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).

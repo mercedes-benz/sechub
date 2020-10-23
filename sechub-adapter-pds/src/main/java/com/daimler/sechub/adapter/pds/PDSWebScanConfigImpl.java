@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
@@ -13,7 +14,10 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
     private String websiteName;
 
-    Map<String, String> jobParameters;
+    private Map<String, String> jobParameters;
+
+    private UUID sechubJobUUID;
+    private String pdsProductIdentifier;
 
     public String getWebsiteName() {
         return websiteName;
@@ -22,6 +26,10 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
     @Override
     public Map<String, String> getJobParameters() {
         return jobParameters;
+    }
+    
+    public String getPdsProductIdentifier() {
+        return pdsProductIdentifier;
     }
 
     private PDSWebScanConfigImpl() {
@@ -37,7 +45,9 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
         private String targetType;
         private Map<String, String> jobParameters;
-
+        private UUID sechubJobUUID;
+        private String pdsProductIdentifier;
+        
         private PDSWebScanConfigBuilder() {
         }
 
@@ -46,6 +56,15 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
             return this;
         }
         
+        public PDSWebScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
+            this.sechubJobUUID=sechubJobUUID;
+            return this;
+        }
+        
+        public PDSWebScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
+            this.pdsProductIdentifier=productIdentifier;
+            return this;
+        }
         /**
          * Set job parameters - mandatory
          *
@@ -59,8 +78,10 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
-            
+            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            config.pdsProductIdentifier=pdsProductIdentifier;
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
+            
             int size = config.getRootTargetURIs().size();
             if (size!=1) {
                 /* netsparker needs ONE root uri */
@@ -83,6 +104,7 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
                 }
 
                 config.websiteName= sb.toString().toLowerCase();
+                config.sechubJobUUID=sechubJobUUID;
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("website root url '"+websiteURLAsString+"' is not a valid URL!",e);
             }
@@ -92,10 +114,14 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         protected void customValidate() {
             assertUserSet();
             assertPasswordSet();
+            assertProjectIdSet();
             assertProductBaseURLSet();
             
             if (jobParameters==null) {
                 throw new IllegalStateException("job parameters not set!");
+            }
+            if (sechubJobUUID==null) {
+                throw new IllegalStateException("sechubJobUUID not set!");
             }
         }
 
@@ -104,6 +130,11 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
             return new PDSWebScanConfigImpl();
         }
 
+    }
+    
+    @Override
+    public UUID getSecHubJobUUID() {
+        return sechubJobUUID;
     }
 
 }

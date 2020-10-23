@@ -237,10 +237,13 @@ public class TestRestHelper {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
 		FileSystemResource resource = new FileSystemResource(file);
+		
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("file", resource);
 		body.add("checkSum", checkSum);
+		
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
 		markLastURL(buildUploadSourceCodeUrl);
@@ -255,9 +258,9 @@ public class TestRestHelper {
 			StringBuilder sb = new StringBuilder();
 			try(
 				BufferedReader br = new BufferedReader(new InputStreamReader(response.getBody()))) {
-				String x = null;
-				while ( (x=br.readLine())!=null) {
-					sb.append(x);
+				String line = null;
+				while ( (line=br.readLine())!=null) {
+					sb.append(line);
 					sb.append("\n");
 				}
 			}catch(Exception e){

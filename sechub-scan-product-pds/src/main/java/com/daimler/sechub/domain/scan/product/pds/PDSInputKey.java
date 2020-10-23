@@ -1,19 +1,16 @@
 package com.daimler.sechub.domain.scan.product.pds;
 
-public class PDSInputKey extends PDSSecHubConfigDataKey{
+/**
+ * This kind of keys will be used by sechub PDS executors to handle communication configuration.
+ * Those keys will be defined inside executor configurations
+ * @author Albert Tregnaghi
+ *
+ */
+public class PDSInputKey extends PDSSecHubConfigDataKey<PDSInputKey>{
 
+    
     PDSInputKey(String key, String description) {
         super(key, description);
-    }
-
-    @Override
-    public boolean isReadFromSecHubExecutor() {
-        return true;
-    }
-
-    @Override
-    public boolean isAlwaysSentToPDS() {
-        return false;
     }
 
 }

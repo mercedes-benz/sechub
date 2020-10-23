@@ -1,5 +1,8 @@
 package com.daimler.sechub.integrationtest.internal;
 
+import java.util.List;
+
+import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
 import com.daimler.sechub.test.TestPortProvider;
@@ -17,9 +20,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
     
     public static final String PDS_CODESCAN_VARIANT_A="a";
     public static final String PDS_CODESCAN_VARIANT_B="b";
+    public static final String PDS_CODESCAN_VARIANT_C="b";
     
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(PDS_CODESCAN_VARIANT_A,false);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSCodeScan(PDS_CODESCAN_VARIANT_B,true);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(PDS_CODESCAN_VARIANT_A,false,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSCodeScan(PDS_CODESCAN_VARIANT_B,true,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSCodeScan(PDS_CODESCAN_VARIANT_C,true,null);// no identifier set, will not work...
     
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID="TEST_PDS_TECHUSER_ID";
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN="TEST_PDS_TECHUSER_APITOKEN";
@@ -27,7 +32,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     
     public static final String JOBPARAM_PDS_KEY_FOR_VARIANTNAME = "pds.test.key.variantname";
     
-    private static TestExecutorConfig definePDSCodeScan(String variant, boolean credentialsAsEnvEntries) {
+    private static TestExecutorConfig definePDSCodeScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
         TestExecutorConfig config = new TestExecutorConfig();
         config.enabled=true;
         config.executorVersion=1;
@@ -35,7 +40,6 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.name=INTTEST_NAME_PREFIX+"pds_codescan_"+variant;
         config.setup.baseURL=TestURLBuilder.https(TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestPDSPort()).pds().buildBaseUrl();
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
-        
         if (credentialsAsEnvEntries) {
             config.setup.credentials.user="env:"+PDS_ENV_VARIABLENAME_TECHUSER_ID;
             config.setup.credentials.password="env:"+PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN;
@@ -44,8 +48,18 @@ public class IntegrationTestDefaultExecutorConfigurations {
             config.setup.credentials.password=TestAPI.PDS_TECH_USER.getApiToken();
         }
         
-        TestExecutorSetupJobParam param1 = new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME, variant);
-        config.setup.jobParameters.add(param1);
+        TestExecutorSetupJobParam param1 = new TestExecutorSetupJobParam("sechub2pds.called.pds.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing");
+        TestExecutorSetupJobParam param2 = new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant);
+        TestExecutorSetupJobParam param3 = new TestExecutorSetupJobParam("pds2sechub.trustall.certificates","true"); // accept for testing
+        TestExecutorSetupJobParam param4 = new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true"); // mandatory from PDS integration test server
+        TestExecutorSetupJobParam param5 = new TestExecutorSetupJobParam("product1.level","42"); // mandatory from PDS integration test server
+        
+        List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
+        jobParameters.add(param1);
+        jobParameters.add(param2);
+        jobParameters.add(param3);
+        jobParameters.add(param4);
+        jobParameters.add(param5);
         return config;
     }
     

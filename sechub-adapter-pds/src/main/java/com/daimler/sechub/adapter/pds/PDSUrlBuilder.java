@@ -2,20 +2,18 @@ package com.daimler.sechub.adapter.pds;
 
 import java.util.UUID;
 
-class PDSUrlBuilder{
-    
+class PDSUrlBuilder {
+
     private String baseURL;
 
-
-    PDSUrlBuilder(String baseURL){
-        this.baseURL=baseURL;
+    PDSUrlBuilder(String baseURL) {
+        this.baseURL = baseURL;
     }
-    
+
     private static final String API_PDS_JOB = "/api/job";
     private static final String API_PDS_ANONYMOUS = "/api/anonymous";
     private static final String API_PDS_ADMIN = "/api/admin";
 
-    
     public String buildCreateJob() {
         return buildUrl(API_PDS_JOB, "create");
     }
@@ -29,7 +27,11 @@ class PDSUrlBuilder{
     }
 
     public String buildUpload(UUID jobUUID, String fileName) {
-        return buildUrl(API_PDS_JOB, jobUUID.toString(), "upload", fileName);
+        return buildUpload(jobUUID.toString(), fileName);
+    }
+
+    public String buildUpload(String jobUUID, String fileName) {
+        return buildUrl(API_PDS_JOB, jobUUID, "upload", fileName);
     }
 
     public String buildMarkJobReadyToStart(UUID jobUUID) {
@@ -59,7 +61,7 @@ class PDSUrlBuilder{
     public String buildBaseUrl() {
         return baseURL;
     }
-    
+
     private String buildUrl(String custom, Object... parts) {
         StringBuilder sb = new StringBuilder();
         sb.append(buildBaseUrl());
@@ -70,5 +72,5 @@ class PDSUrlBuilder{
         }
         return sb.toString();
     }
-    
+
 }

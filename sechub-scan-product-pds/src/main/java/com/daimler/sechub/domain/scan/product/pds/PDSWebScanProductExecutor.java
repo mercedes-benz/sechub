@@ -49,8 +49,9 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     @Override
     protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
             TargetRegistryInfo info) throws Exception {
-        PDSExecutionConfigSuppport configSupport = new PDSExecutionConfigSuppport(executorContext.getExecutorConfig(),systemEnvironment);
-
+        
+        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
+        
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {
             /* no targets defined */
@@ -77,6 +78,10 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 		    
 			PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+			        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+			        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+			        setProductBaseUrl(configSupport.getProductBaseURL()).
+			        setSecHubJobUUID(context.getSechubJobUUID()).
 					configure(createAdapterOptionsStrategy(context)).
 				    configure(new WebLoginConfigBuilderStrategy(context)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
