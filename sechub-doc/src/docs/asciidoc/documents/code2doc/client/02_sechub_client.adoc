@@ -6,7 +6,7 @@
 The `{sechub}` client program is an executable binary which can be used from command
 line or in a build tool of your choice.
 
-It's very easy to use and using the client you have not to handle and REST-API calls by yourself.
+It's very easy to use and using the client you do not have handle REST-API calls by yourself.
 
 NOTE: Currently the client only supports only basic authentication, but of course always only over https.
 
@@ -167,6 +167,50 @@ Your choices are:
 See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
 
 
+==== Configuration overview
+Basically parameters can be passed to the `{sechub}` client in three ways:
+- commandline options (override below)
+- environment variables (override config file)
+- configuration file (default `sechub.json`)
+
+In below table, there is an overview of what can be defined where.
+|===
+| *parameter* | *cmdline option* | *environment variable* | *config json file*
+| api token | -apitoken _(!! not recommended !!)_ | SECHUB_APITOKEN |
+| code scan config ||| codeScan
+| configuration file | -configfile ||
+| file | -file ||
+| job uuid | -jobUUID ||
+| network timeout | -timeout||
+| output folder | -output ||
+| poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
+| project id | -project ||project
+| report format | -reportformat||
+| server url | -server | SECHUB_SERVER | server
+| stop on yellow | -stop-on-yellow||
+| user id | -user | SECHUB_USERID | user
+| web scan config ||| webScan
+|===
+
+
+==== Mandatory parameters
+Here is an overview of mandatory parameter for each `action`:
+|===
+| *action* | *mandatory parameters*
+| scan |server + user + api token + projectID + configFile 
+| scanAsync |server + user + api token + projectID + configFile 
+| getStatus |server + user + api token + projectID + secHubJobUUID 
+| getReport |server + user + api token + projectID + secHubJobUUID 
+| getFalsePositives |server + user + api token + projectID
+| markFalsePositives |server + user + api token + projectID + file 
+| unmarkFalsePositives |server + user + api token + projectID + file 
+| interactiveMarkFalsePositives |server + user + api token + projectID + (file only if no report file is in current dir)
+| interactiveUnmarkFalsePositives |server + user + apiToken + projectID 
+| help |
+| version |
+|===
+
+
 ==== Commandline Options
 
 - `-apitoken <string>` +
@@ -174,6 +218,8 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
   Can *NOT* be defined in config file
 - `-configfile <string>` +
   Path to `{sechub}` config file, if not defined `sechub.json` will be used in current directory
+- `-file <string>` +
+  Defines file to read from for actions `markFalsePositives` or `interactiveMarkFalsePositives` or `unmarkFalsePositives`
 - `-help` +
   Shows help and terminates
 - `-jobUUID <string>` +
@@ -186,23 +232,40 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
 - `-server <string>` +
   Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
+- `-stop-on-yellow` +
+  Makes a yellow traffic light in the scan result also break the build
+- `-timeout <integer>` +
+  Timeout for network communication in seconds. (default 120)
 - `-user <string>` +
   Username - mandatory, but can also be defined in config file or via environment variable.
 - `-version` +
   Shows version info and terminates
 - `-wait <integer>` + 
        wait time in seconds (default 60). 
-       Will be used for automatic status checks etc. when action=`scan`.
+       Will be used for periodic status checks when action=`scan`.
 
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
 
-- `SECHUB_USERID` +
-  The SecHub username. (same as `-user` option)
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
+- `SECHUB_USERID` +
+  The SecHub username. (same as `-user` option)
+- `SECHUB_TRUSTALL` +
+  When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
+
+Settings for debugging/client development:
+
+- `SECHUB_DEBUG` +
+  Log as much as possible.
+- `SECHUB_KEEP_TEMPFILES` +
+  .zip files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server
+- `SECHUB_WAITTIME_DEFAULT` +
+  Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
+  Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.
+
 
 ==== Proxy support
 The environment variables `http_proxy`, `https_proxy` and `no_proxy` (or the uppercase versions thereof) can be set to use a proxy for accessing the `{sechub}` server.
