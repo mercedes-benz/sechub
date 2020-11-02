@@ -10,8 +10,9 @@ public class ProductExecutorConfigSetupJobParameter {
     public ProductExecutorConfigSetupJobParameter() {
     }
     
-    public ProductExecutorConfigSetupJobParameter(String key) {
+    public ProductExecutorConfigSetupJobParameter(String key, String value) {
         this.key=key;
+        this.value=value;
     }
     
     private String key;

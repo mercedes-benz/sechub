@@ -92,17 +92,13 @@ public class PDSProductExecutorMinimumConfigValidationTest {
         for (PDSInputKeys k : PDSInputKeys.values()) {
             PDSInputKey key = k.getKey();
             if (key.isMandatory()) {
-                ProductExecutorConfigSetupJobParameter param = new ProductExecutorConfigSetupJobParameter(key.getId());
-                param.setValue(value);
-                params.add(param);
+                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }
         }
         for (PDSOutputKeys k : PDSOutputKeys.values()) {
             PDSOutputKey key = k.getKey();
             if (key.isMandatory()) {
-                ProductExecutorConfigSetupJobParameter param = new ProductExecutorConfigSetupJobParameter(key.getId());
-                param.setValue(value);
-                params.add(param);
+                params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }
         }
         return config;

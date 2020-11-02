@@ -3,12 +3,16 @@ package com.daimler.sechub.domain.scan.product.pds;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
 public class PDSExecutionConfigSuppportTest {
@@ -18,14 +22,21 @@ public class PDSExecutionConfigSuppportTest {
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
     private SystemEnvironment systemEnvironment;
+    private List<ProductExecutorConfigSetupJobParameter> jobParameters;
     
     @Before
     public void before() throws Exception {
         config = mock(ProductExecutorConfig.class);
         setup = mock(ProductExecutorConfigSetup.class);
+        
+        jobParameters=new ArrayList<>();
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSOutputKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId(),"something"));
+        
         when(config.getSetup()).thenReturn(setup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();
         when(setup.getCredentials()).thenReturn(credentialsInConfigSetup);
+        
+        when(setup.getJobParameters()).thenReturn(jobParameters);
         
         systemEnvironment = mock(SystemEnvironment.class);
         supportToTest=PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
