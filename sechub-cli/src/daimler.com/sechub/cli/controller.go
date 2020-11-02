@@ -22,37 +22,39 @@ type jobScheduleResult struct {
 // Execute starts sechub client
 func Execute() {
 
-	context := InitializeContext()
-
-	// print logo after context was build
-	// InitializeContext() can be escaping
 	printLogoWithVersion(os.Stdout)
 
+	context := InitializeContext()
+
 	switch context.config.action {
-	case ActionExecuteSynchron:
+	case scanAction:
 		{
 			commonWayToApprove(context)
 			waitForSecHubJobDoneAndFailOnTrafficLight(context)
 		}
-	case ActionExecuteAsynchron:
+	case scanAsynchronAction:
 		{
 			commonWayToApprove(context)
 			fmt.Println(context.config.secHubJobUUID)
 		}
-	case ActionExecuteGetStatus:
+	case getStatusAction:
 		fmt.Println(getSecHubJobState(context, true, false, false))
-	case ActionExecuteGetReport:
+	case getReportAction:
 		downloadSechubReport(context)
-	case ActionExecuteGetFalsePositives:
+	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
-	case ActionExecuteMarkFalsePositives:
+	case markFalsePositivesAction:
 		uploadFalsePositivesFromFile(context)
-	case ActionExecuteInteractiveMarkFalsePositives:
+	case interactiveMarkFalsePositivesAction:
 		interactiveMarkFalsePositives(context)
-	case ActionExecuteUnmarkFalsePositives:
+	case unmarkFalsePositivesAction:
 		unmarkFalsePositivesFromFile(context)
-	case ActionExecuteInteractiveUnmarkFalsePositives:
+	case interactiveUnmarkFalsePositivesAction:
 		interactiveUnmarkFalsePositives(context)
+	case showHelpAction:
+		PrintUsage(os.Stdout)
+	case showVersionAction:
+		// We show the version every time - so nothing more to do here
 	default:
 		{
 			fmt.Printf("Unknown action '%s'\n", context.config.action)

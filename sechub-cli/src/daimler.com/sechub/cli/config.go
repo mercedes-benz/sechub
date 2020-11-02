@@ -6,10 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"reflect"
 	"strconv"
-	"strings"
 	"time"
 
+	"daimler.com/sechub/util"
 	sechubUtil "daimler.com/sechub/util"
 )
 
@@ -18,6 +19,7 @@ type Config struct {
 	action             string
 	apiToken           string
 	configFilePath     string
+	configFileRead     bool
 	debug              bool
 	file               string
 	keepTempFiles      bool
@@ -29,122 +31,124 @@ type Config struct {
 	server             string
 	stopOnYellow       bool
 	timeOutNanoseconds int64
+	timeOutSeconds     int
 	trustAll           bool
 	user               string
 	waitNanoseconds    int64
+	waitSeconds        int
 }
 
-var apiTokenPtr *string
-var configFilePath *string
-var configFilePathPtr *string
-var filePtr *string
-var helpPtr *bool
-var outputFolderPathPtr *string
-var projectIDPtr *string
-var reportFormatPtr *string
-var secHubJobUUIDPtr *string
-var serverPtr *string
-var stopOnYellowPtr *bool
-var timeOutSecondsPtr *int
-var userPtr *string
-var versionPtr *bool
-var waitSecondsPtr *int
+// Initialize Config with default values
+var configFromInit Config = Config{
+	configFilePath: DefaultSecHubConfigFile,
+	reportFormat:   DefaultReportFormat,
+	timeOutSeconds: DefaultTimeoutInSeconds,
+	waitSeconds:    DefaultWaitTime,
+}
+
+var flagHelp bool
+var flagVersion bool
+
+var missingFieldHelpTexts = map[string]string{
+	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable SECHUB_SERVER or in config file.",
+	"user":           "User id is missing. Can be defined with option '-user' or in environment variable SECHUB_USERID or in config file.",
+	"apiToken":       "API Token is missing. Can be defined in environment variable SECHUB_APITOKEN.",
+	"projectID":      "Project id is missing. Can be defined with option '-project' or in config file.",
+	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
+	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
+}
 
 /* internal stuff - only necessary for development and testing*/
-var debug = os.Getenv("SECHUB_DEBUG") == "true"
 var ignoreDefaultExcludes = os.Getenv("SECHUB_IGNORE_DEFAULT_EXCLUDES") == "true" // make it possible to switch off default excludes
-var keepTempFiles = os.Getenv("SECHUB_KEEP_TEMPFILES") == "true"
-var quiet = os.Getenv("SECHUB_QUIET") == "true"
-var trustAll = os.Getenv("SECHUB_TRUSTALL") == "true"
-
-var defaultWaitTime = 60
-var defaultTimeoutInSeconds = 120
-
-var defaultWaitTimeEnv = os.Getenv("SECHUB_WAITTIME_DEFAULT")
 
 func init() {
-	if defaultWaitTimeEnv != "" {
-		defaultWaitTime, _ = strconv.Atoi(defaultWaitTimeEnv)
-	}
-
-	apiTokenPtr = flag.String(
-		"apitoken", "", "The api token. This is a mandatory option for every action. Can NOT be defined in config file")
-	configFilePathPtr = flag.String(
-		"configfile", DefaultSecHubConfigFile, "Path to sechub config file, if not defined './"+DefaultSecHubConfigFile+"' will be used")
-	filePtr = flag.String(
-		"file", "", "Defines file to read from for these actions: "+ActionExecuteMarkFalsePositives+" "+ActionExecuteInteractiveMarkFalsePositives+" "+ActionExecuteUnmarkFalsePositives)
-	helpPtr = flag.Bool(
-		"help", false, "Shows help and terminates")
-	secHubJobUUIDPtr = flag.String(
-		"jobUUID", "", "SecHub job uuid (mandatory when using '"+ActionExecuteGetStatus+"' or '"+ActionExecuteGetReport+"')")
-	outputFolderPathPtr = flag.String(
-		"output", ".", "Output folder for reports etc. per default current dir")
-	projectIDPtr = flag.String(
-		"project", "", "SecHub project id - mandatory, but can also be defined in config file")
-	reportFormatPtr = flag.String(
-		"reportformat", "json", "Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback.")
-	serverPtr = flag.String(
-		"server", "", "Server url of sechub server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file")
-	stopOnYellowPtr = flag.Bool(
-		"stop-on-yellow", false, "When enabled a yellow traffic light will also break the build")
-	timeOutSecondsPtr = flag.Int(
-		"timeout", defaultTimeoutInSeconds, "Timeout for network communication in seconds.")
-	userPtr = flag.String(
-		"user", "", "User id - mandatory, but can also be defined in config file")
-	versionPtr = flag.Bool(
-		"version", false, "Shows version info and terminates")
-	waitSecondsPtr = flag.Int(
-		"wait", defaultWaitTime, "Wait time in seconds. Will be used for automatic status checks etc. when action='"+ActionExecuteSynchron+"'.")
+	prepareOptionsFromCommandline(&configFromInit)
+	parseConfigFromEnvironment(&configFromInit)
 }
 
-// NewConfigByFlags creates a new configuration based on flag and environment variable settings
+func prepareOptionsFromCommandline(config *Config) {
+	flag.StringVar(&config.apiToken,
+		"apitoken", config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable SECHUB_APITOKEN instead!")
+	flag.StringVar(&config.configFilePath,
+		"configfile", config.configFilePath, "Path to sechub config file")
+	flag.StringVar(&config.file,
+		"file", "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
+	flag.BoolVar(&flagHelp,
+		"help", false, "Shows help and terminates")
+	flag.StringVar(&config.secHubJobUUID,
+		"jobUUID", "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+	flag.StringVar(&config.outputFolder,
+		"output", ".", "Output folder for reports etc.")
+	flag.StringVar(&config.projectID,
+		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined in config file")
+	flag.StringVar(&config.reportFormat,
+		"reportformat", config.reportFormat, "Output format for reports, supported currently: [html,json].")
+	flag.StringVar(&config.server,
+		"server", config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable SECHUB_SERVER or in config file")
+	flag.BoolVar(&config.stopOnYellow,
+		"stop-on-yellow", config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
+	flag.IntVar(&config.timeOutSeconds,
+		"timeout", config.timeOutSeconds, "Timeout for network communication in seconds.")
+	flag.StringVar(&config.user,
+		"user", config.user, "User id - Mandatory, but can also be defined in environment variable SECHUB_USERID or in config file")
+	flag.BoolVar(&flagVersion,
+		"version", false, "Shows version info and terminates")
+	flag.IntVar(&config.waitSeconds,
+		"wait", config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable SECHUB_WAITTIME_DEFAULT")
+}
+
+func parseConfigFromEnvironment(config *Config) {
+	apiTokenFromEnv :=
+		os.Getenv("SECHUB_APITOKEN")
+	config.debug =
+		os.Getenv("SECHUB_DEBUG") == "true"
+	config.keepTempFiles =
+		os.Getenv("SECHUB_KEEP_TEMPFILES") == "true"
+	config.quiet =
+		os.Getenv("SECHUB_QUIET") == "true"
+	serverFromEnv :=
+		os.Getenv("SECHUB_SERVER")
+	config.trustAll =
+		os.Getenv("SECHUB_TRUSTALL") == "true"
+	userFromEnv :=
+		os.Getenv("SECHUB_USERID")
+	waittimeFromEnv :=
+		os.Getenv("SECHUB_WAITTIME_DEFAULT")
+
+	if apiTokenFromEnv != "" {
+		config.apiToken = apiTokenFromEnv
+	}
+	if serverFromEnv != "" {
+		config.server = serverFromEnv
+	}
+	if userFromEnv != "" {
+		config.user = userFromEnv
+	}
+	if waittimeFromEnv != "" {
+		config.waitSeconds, _ = strconv.Atoi(waittimeFromEnv)
+	}
+}
+
+// NewConfigByFlags parses commandline flags which override environment variable settings or defaults defined in init()
 func NewConfigByFlags() *Config {
+	// Parse command line options
 	flag.Parse()
 
+	// We use the configFromInit struct already prefilled with defaults and from environment variables
 	oneSecond := 1 * time.Second
+	configFromInit.waitNanoseconds = int64(configFromInit.waitSeconds) * oneSecond.Nanoseconds()
+	configFromInit.timeOutNanoseconds = int64(configFromInit.timeOutSeconds) * oneSecond.Nanoseconds()
 
-	config := new(Config)
-
-	config.apiToken = *apiTokenPtr
-	if config.apiToken == "" { // read from environment variable if undefined on cmdline
-		config.apiToken = os.Getenv("SECHUB_APITOKEN")
+	if flagHelp {
+		configFromInit.action = showHelpAction
+	} else if flagVersion {
+		configFromInit.action = showVersionAction
 	} else {
-		sechubUtil.LogWarning("Avoid '-apitoken' parameter for security reasons. Please use environment variable $SECHUB_APITOKEN instead!")
-	}
-	config.user = *userPtr
-	if config.user == "" { // read from environment variable if undefined on cmdline
-		config.user = os.Getenv("SECHUB_USERID")
-	}
-	config.server = *serverPtr
-	if config.server == "" { // read from environment variable if undefined on cmdline
-		config.server = os.Getenv("SECHUB_SERVER")
-	}
-	config.projectID = *projectIDPtr
-	config.configFilePath = *configFilePathPtr
-	config.file = *filePtr
-	config.secHubJobUUID = *secHubJobUUIDPtr
-	config.waitNanoseconds = int64(*waitSecondsPtr) * oneSecond.Nanoseconds()
-	config.timeOutNanoseconds = int64(*timeOutSecondsPtr) * oneSecond.Nanoseconds()
-	config.outputFolder = *outputFolderPathPtr
-	config.reportFormat = *reportFormatPtr
-
-	if *helpPtr == true {
-		showVersionInfo()
-		showHelpAndExit()
-	}
-	if *versionPtr == true {
-		showVersionInfoAndExit()
+		// read action from commandline
+		configFromInit.action = flag.Arg(0)
 	}
 
-	config.trustAll = trustAll
-	config.quiet = quiet
-	config.debug = debug
-	config.keepTempFiles = keepTempFiles
-	config.stopOnYellow = *stopOnYellowPtr
-
-	config.action = flag.Arg(0)
-
-	return config
+	return &configFromInit
 }
 
 func assertValidConfig(configPtr *Config) {
@@ -154,67 +158,61 @@ func assertValidConfig(configPtr *Config) {
 		}
 	}
 
+	// -------------------------------------
+	//  Define mandatory fields for actions
+	// -------------------------------------
+	checklist := map[string][]string{
+		scanAction:                            {"server", "user", "apiToken", "projectID", "configFileRead"},
+		scanAsynchronAction:                   {"server", "user", "apiToken", "projectID", "configFileRead"},
+		getStatusAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
+		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
+		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
+		markFalsePositivesAction:              {"server", "user", "apiToken", "projectID", "file"},
+		unmarkFalsePositivesAction:            {"server", "user", "apiToken", "projectID", "file"},
+		interactiveMarkFalsePositivesAction:   {"server", "user", "apiToken", "projectID"},
+		interactiveUnmarkFalsePositivesAction: {"server", "user", "apiToken", "projectID"},
+		showHelpAction:                        {},
+		showVersionAction:                     {},
+	}
+
 	/* --------------------------------------------------
 	 * 					Validation
 	 * --------------------------------------------------
 	 */
-	if configPtr.user == "" {
-		fmt.Println("userid missing!")
-		os.Exit(ExitCodeMissingParameter)
-	}
-
-	if configPtr.apiToken == "" {
-		fmt.Println("api token missing!")
-		os.Exit(ExitCodeMissingParameter)
-	}
-
-	if configPtr.projectID == "" {
-		fmt.Println("project id missing!")
-		os.Exit(ExitCodeMissingParameter)
-	}
-
-	if configPtr.server == "" {
-		fmt.Println("sechub server not defined!")
-		os.Exit(ExitCodeMissingParameter)
-	} else {
-		// remove trailing / from url if present
-		configPtr.server = strings.TrimSuffix(configPtr.server, "/")
-	}
-
-	if configPtr.configFilePath == "" {
-		fmt.Println("sechub config file not set")
-		os.Exit(ExitCodeMissingParameter)
-	}
-
-	if configPtr.file == "" {
-		if configPtr.action == ActionExecuteMarkFalsePositives || configPtr.action == ActionExecuteUnmarkFalsePositives {
-			fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
-			fmt.Println("Please define input file with -file option.")
-			os.Exit(ExitCodeMissingParameter)
-		} else if configPtr.action == ActionExecuteInteractiveMarkFalsePositives {
-			// Let's try to find the latest report and take this as file
-			configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
-			if configPtr.file == "" {
-				fmt.Printf("Input file is not set but is needed for action %q.\n", configPtr.action)
-				fmt.Println("Please define input file with -file option.")
-				os.Exit(ExitCodeMissingParameter)
-			} else {
-				fmt.Printf("Using latest report file %q.\n", configPtr.file)
-			}
-		}
-	}
-
-	if configPtr.secHubJobUUID == "" {
-		if configPtr.action == ActionExecuteGetReport || configPtr.action == ActionExecuteGetStatus {
-			fmt.Printf("SecHub job UUID is not set but is needed for action %q.\n", configPtr.action)
-			fmt.Println("Please define job UUID with -jobUUID option.")
-			os.Exit(ExitCodeMissingParameter)
-		}
-	}
-
 	if configPtr.action == "" {
-		fmt.Println("sechub action not set")
+		util.LogError("sechub action not set")
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
+
+	errorsFound := false
+	if mandatoryFields, ok := checklist[configPtr.action]; ok {
+		for _, fieldname := range mandatoryFields {
+			if !isConfigFieldFilled(configPtr, fieldname) {
+				errorsFound = true
+			}
+		}
+	} else {
+		util.LogError("Unknown action: '" + configPtr.action + "'")
+		errorsFound = true
+	}
+
+	if errorsFound {
+		showHelpHint()
+		os.Exit(ExitCodeMissingParameter)
+	}
+
+	// For convenience: lowercase user id and project id if needed
+	configPtr.user = lowercaseOrWarning(configPtr.user, "user id")
+	configPtr.projectID = lowercaseOrWarning(configPtr.projectID, "project id")
+}
+
+// isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
+func isConfigFieldFilled(configPTR *Config, field string) bool {
+	value := fmt.Sprintf("%v", reflect.ValueOf(configPTR).Elem().FieldByName(field))
+	if value == "" || value == "false" {
+		util.LogError(missingFieldHelpTexts[field])
+		return false
+	}
+	return true
 }

@@ -9,6 +9,16 @@ const CurrentAPIVersion = "1.0"
 // used per default when no other set
 const DefaultSecHubConfigFile = "sechub.json"
 
+// DefaultReportFormat - Report format if not configured differently
+const DefaultReportFormat = "json"
+
+// DefaultWaitTime - Wait time in seconds.
+// Will be used for automatic status checks etc. when action=scan
+const DefaultWaitTime = 60
+
+// DefaultTimeoutInSeconds - Timeout for network communication in seconds
+const DefaultTimeoutInSeconds = 120
+
 // DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
 // code in directories named "test" is not considered to end up in the binary
 // also ignore .git directory
@@ -49,32 +59,38 @@ const ExitCodeInvalidConfigFile = 9
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
 
-// ActionExecuteSynchron name of synchron scan action
-const ActionExecuteSynchron = "scan"
+// scanAction name of synchron scan action
+const scanAction = "scan"
 
-// ActionExecuteAsynchron name of asynchron scan action
-const ActionExecuteAsynchron = "scanAsync"
+// scanAsynchronAction name of asynchron scan action
+const scanAsynchronAction = "scanAsync"
 
-// ActionExecuteGetStatus name of action to get status of Job
-const ActionExecuteGetStatus = "getStatus"
+// getStatusAction name of action to get status of Job
+const getStatusAction = "getStatus"
 
-// ActionExecuteGetReport name of action to get report (json/html) of job
-const ActionExecuteGetReport = "getReport"
+// getReportAction name of action to get report (json/html) of job
+const getReportAction = "getReport"
 
-// ActionExecuteGetFalsePositives name of action to download false-positives list (json) of project
-const ActionExecuteGetFalsePositives = "getFalsePositives"
+// getFalsePositivesAction name of action to download false-positives list (json) of project
+const getFalsePositivesAction = "getFalsePositives"
 
-// ActionExecuteMarkFalsePositives name of action to define false-positives of a project and upload it to SecHub server
-const ActionExecuteMarkFalsePositives = "markFalsePositives"
+// markFalsePositivesAction name of action to define false-positives of a project and upload it to SecHub server
+const markFalsePositivesAction = "markFalsePositives"
 
-// ActionExecuteInteractiveMarkFalsePositives name of action to interactively define false-positives of a project and upload it to SecHub server
-const ActionExecuteInteractiveMarkFalsePositives = "interactiveMarkFalsePositives"
+// interactiveMarkFalsePositivesAction name of action to interactively define false-positives of a project and upload it to SecHub server
+const interactiveMarkFalsePositivesAction = "interactiveMarkFalsePositives"
 
-// ActionExecuteUnmarkFalsePositives name of action to undefine false-positives of a project and upload it to SecHub server
-const ActionExecuteUnmarkFalsePositives = "unmarkFalsePositives"
+// unmarkFalsePositivesAction name of action to undefine false-positives of a project and upload it to SecHub server
+const unmarkFalsePositivesAction = "unmarkFalsePositives"
 
-// ActionExecuteInteractiveUnmarkFalsePositives name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
-const ActionExecuteInteractiveUnmarkFalsePositives = "interactiveUnmarkFalsePositives"
+// interactiveUnmarkFalsePositivesAction name of action to interactively remove items from false-positives list of a project and upload it to SecHub server
+const interactiveUnmarkFalsePositivesAction = "interactiveUnmarkFalsePositives"
+
+// showHelpAction - name of action to display SecHub client help
+const showHelpAction = "help"
+
+// showVersionAction - name of action to display SecHub client version
+const showVersionAction = "version"
 
 /* ---------------------------------- */
 /* -------- Status ------------------ */

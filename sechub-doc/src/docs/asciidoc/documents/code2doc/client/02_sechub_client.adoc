@@ -221,12 +221,13 @@ Examples (Linux/Mac):
 [[section-client-configuration-file]]
 
 === Client configuration file
-If not defined, secHub client will load `sechub.json` file from current directory
-and use it as sechub configuration. There must be always a valid configuration
-file - otherwise client will not work.
+If not defined by option `-configfile`, secHub client will attempt to load `sechub.json` file from current directory
+and use it as sechub configuration.
+
+For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.
 
 ==== Variables inside configuration files
-All environment variables are available inside your configuration file in go
+For advanced users: All environment variables are available inside your configuration file in go
 template syntax:
 
 `{{ .ENV_VARIABLE_NAME }}`

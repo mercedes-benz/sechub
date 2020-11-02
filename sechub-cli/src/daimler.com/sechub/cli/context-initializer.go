@@ -26,38 +26,39 @@ func InitializeContext() *Context {
 	return context
 }
 
-/**
-* Loads config file.
- */
 func loadConfigFile(context *Context) {
+	var configFromFile SecHubConfig
+
 	configPtr := context.config
-	filePath := configPtr.configFilePath
 
-	configFromFile := newSecHubConfigurationFromFile(context, filePath)
-
-	/* override if not set before */
-	if configPtr.server == "" {
-		debugNotDefinedAsOption(context, "server", configFromFile.Server)
-		configPtr.server = configFromFile.Server
-	}
-	if configPtr.user == "" {
-		debugNotDefinedAsOption(context, "user", configFromFile.User)
-		configPtr.user = configFromFile.User
-	}
-	if configPtr.projectID == "" {
-		debugNotDefinedAsOption(context, "projectID", configFromFile.ProjectID)
-		configPtr.projectID = configFromFile.ProjectID
-	}
-
-	lowercased := strings.ToLower(configPtr.user)
-	if lowercased != configPtr.user {
-		sechubUtil.LogWarning("Given user id did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending")
-		configPtr.user = lowercased
-	}
-
+	configFromFile, configPtr.configFileRead = newSecHubConfigurationFromFile(context, configPtr.configFilePath)
 	context.sechubConfig = &configFromFile
+
+	if configPtr.configFileRead {
+		/* override if not set by option or environment variable */
+		if configPtr.server == "" {
+			debugNotDefinedAsOption(context, "server", configFromFile.Server)
+			configPtr.server = configFromFile.Server
+		}
+		if configPtr.user == "" {
+			debugNotDefinedAsOption(context, "user", configFromFile.User)
+			configPtr.user = configFromFile.User
+		}
+		if configPtr.projectID == "" {
+			debugNotDefinedAsOption(context, "projectID", configFromFile.ProjectID)
+			configPtr.projectID = configFromFile.ProjectID
+		}
+	}
+}
+
+func lowercaseOrWarning(s string, name string) string {
+	lowercased := strings.ToLower(s)
+	if s != lowercased {
+		sechubUtil.LogWarning("Given " + name + " did contain uppercase characters which are not accepted by SecHub server - so changed to lowercase before sending")
+	}
+	return lowercased
 }
 
 func debugNotDefinedAsOption(context *Context, fieldName string, fieldValue string) {
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option - using entry from config file: '%s'", fieldName, fieldValue))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("'%s' not defined by option or environment variable - using entry from config file: '%s'", fieldName, fieldValue))
 }

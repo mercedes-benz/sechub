@@ -2,11 +2,14 @@
 
 package util
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // LogError - print unified error message
 func LogError(text string) {
-	fmt.Printf("ERROR: " + text + "\n")
+	fmt.Fprintln(os.Stderr, "ERROR:", text)
 }
 
 // LogWarning - print unified error message
