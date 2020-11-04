@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,7 +68,7 @@ public class ProjectCreationService {
 			name = "Create project",
 			description = "The service will create the project when not already existing with such name."))
 	/* @formatter:on */
-	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist) {
+	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull Map<String, String> metaData) {
 		LOG.info("Administrator {} triggers create of project:{}, having owner:{}",userContext.getUserId(),projectId,owner);
 
 		assertion.isValidProjectId(projectId);
@@ -98,7 +99,7 @@ public class ProjectCreationService {
 		/* store */
 		persistenceService.saveInOwnTransaction(project);
 
-		sendProjectCreatedEvent(projectId, whitelist);
+		sendProjectCreatedEvent(projectId, whitelist, metaData);
 		sendRefreshUserAuth(ownerUser);
 
 	}
@@ -109,11 +110,13 @@ public class ProjectCreationService {
 	}
 
 	@IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
-	private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
+	private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist, Map<String, String> metaData) {
 		DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
 		ProjectMessage message = new ProjectMessage();
 		message.setProjectId(projectId);
 		message.setWhitelist(whitelist);
+		message.setMetaData(metaData);
+		
 		request.set(MessageDataKeys.PROJECT_CREATION_DATA,message);
 
 		eventBus.sendAsynchron(request);

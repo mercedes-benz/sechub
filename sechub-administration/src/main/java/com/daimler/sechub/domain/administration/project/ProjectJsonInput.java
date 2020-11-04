@@ -4,6 +4,7 @@ package com.daimler.sechub.domain.administration.project;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.daimler.sechub.commons.model.JSONable;
@@ -27,6 +28,8 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	public static final String PROPERTY_DESCRIPTION = "description";
 	public static final String PROPERTY_WHITELIST = "whiteList";
 	public static final String PROPERTY_OWNER = "owner";
+	public static final String PROPERTY_METADATA = "metaData";
+	
 
 	private String apiVersion;
 	private String name;
@@ -34,6 +37,8 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	private String owner;
 
 	private Optional<ProjectWhiteList> whiteList = Optional.empty();
+	
+	private Optional<Map<String, String>> metaData = Optional.empty();
 
 	@Override
 	public Class<ProjectJsonInput> getJSONTargetClass() {
@@ -78,6 +83,14 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setMetaData(Optional<Map<String, String>> metaData) {
+		this.metaData = metaData;
+	}
+	
+	public Optional<Map<String, String>> getMetaData() {
+		return metaData;
 	}
 
 	public static class ProjectWhiteList {

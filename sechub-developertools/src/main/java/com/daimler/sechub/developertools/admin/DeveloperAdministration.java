@@ -252,7 +252,7 @@ public class DeveloperAdministration {
         return "Deleted product execution profile:" + profileId;
     }
 
-    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
+    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs, Map<String, String> metaData) {
         /* @formatter:off */
 		StringBuilder json = new StringBuilder();
 		if (description==null || description.isEmpty()) {
@@ -276,6 +276,22 @@ public class DeveloperAdministration {
 			}
 			json.append("]\n");
 			json.append("                 }\n");
+		}
+		
+		if (!metaData.isEmpty()) {
+			json.append(",\n \"metaData\" : {\n");
+			
+			for(Iterator<Map.Entry<String, String>> it = metaData.entrySet().iterator(); it.hasNext(); ) {
+				Map.Entry<String, String> pair = it.next();
+				String key = pair.getKey();
+				String value = pair.getValue();
+				json.append("\"" + key + "\":\"" + value + "\"");
+				if (it.hasNext()) {
+					json.append(",\n");
+				}
+			}
+			
+			json.append("\n}\n");
 		}
 
 		json.append("}\n");

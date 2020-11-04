@@ -2,7 +2,9 @@
 package com.daimler.sechub.sharedkernel.messaging;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.daimler.sechub.commons.model.JSONable;
@@ -22,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ProjectMessage implements JSONable<ProjectMessage> {
 
 	private Set<URI> whitelist = new LinkedHashSet<>();
+	
+	private Map<String, String> metaData = new HashMap<>();
 
 	private String projectId;
 
@@ -77,6 +81,14 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 
 	public Set<URI> getWhitelist() {
 		return whitelist;
+	}
+	
+	public void setMetaData(Map<String, String> metaData) {
+		this.metaData = metaData;
+	}
+	
+	public Map<String, String> getMetaData() {
+		return metaData;
 	}
 
 	public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
