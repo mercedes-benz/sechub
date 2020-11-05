@@ -15,7 +15,7 @@ import (
 // HandleHTTPError handler method for http errors
 func HandleHTTPError(err error) {
 	if err != nil {
-		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error %s\n", err))
+		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error '%s'", err))
 		os.Exit(ExitCodeHTTPError)
 	}
 }
@@ -28,11 +28,11 @@ func HandleError(err error) {
 	}
 }
 
-// HandleHTTPResponse handler method for http response. when not 200 a error log entry will be created and sechub client does exit
+// HandleHTTPResponse handler method for http response. when not 200 an error log entry will be created and sechub client does exit
 func HandleHTTPResponse(res *http.Response) {
 	if res.StatusCode != 200 {
 		b, _ := ioutil.ReadAll(res.Body)
-		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error %s\nbody=%s\n", res.Status, string(b)))
+		sechubUtil.LogError(fmt.Sprintf("The HTTP request failed with error '%s'\nbody=%s\n", res.Status, string(b)))
 		os.Exit(ExitCodeHTTPError)
 	}
 }

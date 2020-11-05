@@ -78,7 +78,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 	if _, err := os.Stat(filepathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + filepathAbs + ")")
 	}
-	fmt.Printf("Zipping folder: %s (%s)", folder, filepathAbs)
+	Log(fmt.Sprintf("Zipping folder: %s (%s)", folder, filepathAbs))
 
 	err = filepath.Walk(folder, func(filePath string, info os.FileInfo, err error) error {
 		if info == nil {

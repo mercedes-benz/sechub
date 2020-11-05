@@ -17,7 +17,7 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	fmt.Printf("- Creating new sechub job\n")
+	sechubUtil.Log("Creating new sechub job")
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -32,7 +32,7 @@ func createNewSecHubJob(context *Context) {
 
 // approveSecHubJob - Approve Job
 func approveSecHubJob(context *Context) {
-	fmt.Printf("- Approve sechub job\n")
+	sechubUtil.Log("Approve sechub job")
 	response := sendWithDefaultHeader("PUT", buildApproveSecHubJobAPICall(context), context)
 
 	_, err := ioutil.ReadAll(response.Body)
@@ -44,7 +44,6 @@ func waitForSecHubJobDoneAndFailOnTrafficLight(context *Context) string {
 }
 
 func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight bool, downloadReport bool) string {
-	fmt.Printf("- Waiting for job %s to be done", context.config.secHubJobUUID)
 	//    {
 	//    "jobUUID": "e21b13fc-591e-4abd-b119-755d473c5625",
 	//    "owner": "developer",
@@ -72,19 +71,15 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 
 	newLine := true
 	cursor := 0
-	/* PROGRESS bar ... 80 chars with dot, then next line... */
+
+	if checkOnlyOnce {
+		done = true
+	} else {
+		sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID))
+	}
+
 	for {
-		if newLine {
-			fmt.Print("\n  ")
-			newLine = false
-		}
-		done = checkOnlyOnce
-		fmt.Print(".")
-		cursor++
-		if cursor == 80 {
-			cursor = 0
-			newLine = true
-		}
+		// request SecHub job state from server
 		response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
 
 		data, err := ioutil.ReadAll(response.Body)
@@ -106,6 +101,17 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 			}
 			break
 		} else {
+			// PROGRESS bar ... 50 chars with dot, then next line...
+			if newLine {
+				fmt.Print("                             ")
+				newLine = false
+			}
+			fmt.Print(".")
+			if cursor++; cursor == 50 {
+				fmt.Println()
+				cursor = 0
+				newLine = true
+			}
 			time.Sleep(time.Duration(context.config.waitNanoseconds))
 		}
 	}

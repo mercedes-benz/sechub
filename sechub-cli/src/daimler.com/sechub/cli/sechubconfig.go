@@ -12,7 +12,6 @@ import (
 	"os"
 	"strings"
 
-	"daimler.com/sechub/util"
 	sechubUtil "daimler.com/sechub/util"
 )
 
@@ -62,7 +61,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &sechubConfig)
 	if err != nil {
-		util.LogError("SecHub confiuration json is not valid json")
+		sechubUtil.LogError("SecHub configuration json is not valid json")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -70,7 +69,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Fprintln(os.Stderr, "Hint: Call sechub with -help option to show usage and examples")
+	fmt.Fprintf(os.Stderr, "\n%v\n", "Hint: Call sechub with -help option to show usage and examples")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubConfig, bool) {

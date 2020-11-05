@@ -84,7 +84,7 @@ func handleCodeScanParts(context *Context) {
 	if !context.isUploadingSourceZip() {
 		return
 	}
-	fmt.Printf("- Uploading source zip file\n")
+	sechubUtil.Log("Uploading source zip file")
 	uploadSourceZipFile(context)
 }
 

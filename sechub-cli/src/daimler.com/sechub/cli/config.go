@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"time"
 
-	"daimler.com/sechub/util"
 	sechubUtil "daimler.com/sechub/util"
 )
 
@@ -185,7 +184,7 @@ func assertValidConfig(configPtr *Config) {
 	 * --------------------------------------------------
 	 */
 	if configPtr.action == "" {
-		util.LogError("sechub action not set")
+		sechubUtil.LogError("sechub action not set")
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
 	}
@@ -198,7 +197,7 @@ func assertValidConfig(configPtr *Config) {
 			}
 		}
 	} else {
-		util.LogError("Unknown action: '" + configPtr.action + "'")
+		sechubUtil.LogError("Unknown action: '" + configPtr.action + "'")
 		errorsFound = true
 	}
 
@@ -206,7 +205,7 @@ func assertValidConfig(configPtr *Config) {
 		// Let's try to find the latest report and take this as file
 		configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
 		if configPtr.file == "" {
-			util.LogError("Input file is not set but is needed for action " + interactiveMarkFalsePositivesAction + ".\nPlease define input file with -file option.")
+			sechubUtil.LogError("Input file is needed for action '" + interactiveMarkFalsePositivesAction + "'. Please define input file with -file option.")
 			errorsFound = true
 		} else {
 			fmt.Printf("Using latest report file %q.\n", configPtr.file)
@@ -227,7 +226,7 @@ func assertValidConfig(configPtr *Config) {
 func isConfigFieldFilled(configPTR *Config, field string) bool {
 	value := fmt.Sprintf("%v", reflect.ValueOf(configPTR).Elem().FieldByName(field))
 	if value == "" || value == "false" {
-		util.LogError(missingFieldHelpTexts[field])
+		sechubUtil.LogError(missingFieldHelpTexts[field])
 		return false
 	}
 	return true

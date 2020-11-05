@@ -80,7 +80,7 @@ func (list *FalsePositivesList) save(context *Context) {
 
 	sechubUtil.WriteContentToFile(filePath, content, "json")
 
-	fmt.Printf("- Project %q: false-positives list written to file %s\n", context.config.projectID, filePath)
+	sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath))
 }
 
 func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
@@ -96,7 +96,7 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 }
 
 func getFalsePositivesList(context *Context) []byte {
-	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectID)
+	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q.", context.config.projectID))
 
 	// we don't want to send content here
 	context.inputForContentProcessing = []byte(``)
@@ -140,8 +140,8 @@ func uploadFalsePositivesFromFile(context *Context) {
 func uploadFalsePositives(context *Context) {
 	// Send context.inputForContentProcessing to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
-	fmt.Printf("- Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectID)
 
+	sechubUtil.Log(fmt.Sprintf("Successfully uploaded SecHub false-positives list for project %q to server.", context.config.projectID))
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
