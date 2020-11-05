@@ -202,6 +202,17 @@ func assertValidConfig(configPtr *Config) {
 		errorsFound = true
 	}
 
+	if configPtr.action == interactiveMarkFalsePositivesAction && configPtr.file == "" {
+		// Let's try to find the latest report and take this as file
+		configPtr.file = sechubUtil.FindNewestMatchingFileInDir("sechub_report_.+\\.json$", configPtr.outputFolder)
+		if configPtr.file == "" {
+			util.LogError("Input file is not set but is needed for action " + interactiveMarkFalsePositivesAction + ".\nPlease define input file with -file option.")
+			errorsFound = true
+		} else {
+			fmt.Printf("Using latest report file %q.\n", configPtr.file)
+		}
+	}
+
 	if errorsFound {
 		showHelpHint()
 		os.Exit(ExitCodeMissingParameter)
