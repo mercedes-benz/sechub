@@ -53,7 +53,7 @@ var missingFieldHelpTexts = map[string]string{
 	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable SECHUB_SERVER or in config file.",
 	"user":           "User id is missing. Can be defined with option '-user' or in environment variable SECHUB_USERID or in config file.",
 	"apiToken":       "API Token is missing. Can be defined in environment variable SECHUB_APITOKEN.",
-	"projectID":      "Project id is missing. Can be defined with option '-project' or in config file.",
+	"projectID":      "Project id is missing. Can be defined with option '-project' or in environment variable SECHUB_PROJECT or in config file.",
 	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
 	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
 }
@@ -80,7 +80,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.outputFolder,
 		"output", ".", "Output folder for reports etc.")
 	flag.StringVar(&config.projectID,
-		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined in config file")
+		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined but can also be defined in environment variable SECHUB_PROJECT or in config file")
 	flag.StringVar(&config.reportFormat,
 		"reportformat", config.reportFormat, "Output format for reports, supported currently: [html,json].")
 	flag.StringVar(&config.server,
@@ -108,6 +108,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv("SECHUB_QUIET") == "true"
 	serverFromEnv :=
 		os.Getenv("SECHUB_SERVER")
+	projectFromEnv :=
+		os.Getenv("SECHUB_PROJECT")
 	config.trustAll =
 		os.Getenv("SECHUB_TRUSTALL") == "true"
 	userFromEnv :=
@@ -117,6 +119,9 @@ func parseConfigFromEnvironment(config *Config) {
 
 	if apiTokenFromEnv != "" {
 		config.apiToken = apiTokenFromEnv
+	}
+	if projectFromEnv != "" {
+		config.projectID = projectFromEnv
 	}
 	if serverFromEnv != "" {
 		config.server = serverFromEnv

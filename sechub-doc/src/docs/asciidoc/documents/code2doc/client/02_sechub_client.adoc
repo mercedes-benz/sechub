@@ -184,7 +184,7 @@ In below table, there is an overview of what can be defined where.
 | network timeout | -timeout||
 | output folder | -output ||
 | poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
-| project id | -project ||project
+| project id | -project | SECHUB_PROJECT |project
 | report format | -reportformat||
 | server url | -server | SECHUB_SERVER | server
 | stop on yellow | -stop-on-yellow||
@@ -227,7 +227,7 @@ Here is an overview of mandatory parameter for each `action`:
 - `-output <string>` +
   Output folder for reports etc. per default current dir
 - `-project <string>` +
-  Unique project id - mandatory, but can also be defined in config file
+  Unique project id - mandatory, but can also be defined in config file or via environment variable.
 - `-reportformat <string>` +
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
 - `-server <string>` +
@@ -249,6 +249,8 @@ Additionally to above cmdline options, you can set some values also via environm
 
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_PROJECT` +
+  The SecHub project id. (same as `-project` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
 - `SECHUB_USERID` +
