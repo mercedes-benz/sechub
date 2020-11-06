@@ -233,7 +233,7 @@ public class TestRestHelper {
         return Boolean.parseBoolean(dataAsString);
     }
 	
-	public String upload(String buildUploadSourceCodeUrl, File file, String checkSum) {
+	public String upload(String uploadSourceCodeUrl, File file, String checkSum) {
 		// see https://www.baeldung.com/spring-rest-template-multipart-upload
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -246,8 +246,8 @@ public class TestRestHelper {
 		
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-		markLastURL(buildUploadSourceCodeUrl);
-		ResponseEntity<String> response = template.postForEntity(buildUploadSourceCodeUrl, requestEntity, String.class);
+		markLastURL(uploadSourceCodeUrl);
+		ResponseEntity<String> response = template.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
 		return response.getBody();
 	}
 

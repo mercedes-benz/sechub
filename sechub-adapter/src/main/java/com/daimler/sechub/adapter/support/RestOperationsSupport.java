@@ -12,11 +12,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
 
 public class RestOperationsSupport {
-    
+
     private RestOperations restOperations;
 
     public RestOperationsSupport(RestOperations restOperations) {
-        this.restOperations=restOperations;
+        this.restOperations = restOperations;
     }
 
     public String postJSON(String url, String json) {
@@ -26,8 +26,7 @@ public class RestOperationsSupport {
 
         return restOperations.postForEntity(url, httpEntity, String.class).getBody();
     }
-    
-    
+
     public String upload(String uploadURL, File file, String checkSum) {
         // see https://www.baeldung.com/spring-rest-template-multipart-upload
         HttpHeaders headers = new HttpHeaders();
@@ -40,5 +39,9 @@ public class RestOperationsSupport {
 
         ResponseEntity<String> response = restOperations.postForEntity(uploadURL, requestEntity, String.class);
         return response.getBody();
+    }
+
+    public void put(String url) {
+        restOperations.put(url, null);
     }
 }

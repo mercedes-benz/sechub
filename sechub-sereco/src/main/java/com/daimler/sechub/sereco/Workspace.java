@@ -28,7 +28,7 @@ public class Workspace {
 	private SerecoMetaData workspaceMetaData = new SerecoMetaData();
 
 	@Autowired
-	private List<ProductResultImporter> importers;
+	private ImporterRegistry registry;
 
 	private String id;
 
@@ -57,9 +57,10 @@ public class Workspace {
 			return;
 		}
 		boolean atLeastOneImporterWasAbleToImport = false;
-		for (ProductResultImporter importer : importers) {
+		for (ProductResultImporter importer : registry.getImporters()) {
 			ProductImportAbility ableToImportForProduct = importer.isAbleToImportForProduct(param);
 			if (ProductImportAbility.PRODUCT_FAILED.equals(ableToImportForProduct)) {
+			    LOG.debug("Importer {} knows product, but recognized as product failure, so no import possible for {}",importer.getName(),param.getImportId());
 				/* means the importer would be able to import, but it is sure that the product failed,
 				 * so we add just a critical finding for the product itself
 				 */
@@ -70,6 +71,7 @@ public class Workspace {
 				break;
 			}
 			if (ProductImportAbility.ABLE_TO_IMPORT.equals(ableToImportForProduct)) {
+			    LOG.debug("Importer {} is able to import {}",importer.getName(),param.getImportId());
 				SerecoMetaData metaData = importer.importResult(param.getImportData());
 				if (metaData == null) {
 					LOG.error("Meta data was null for product={}, importer={}, importId={}", param.getProductId(),
@@ -78,12 +80,14 @@ public class Workspace {
 				}
 				mergeWithWorkspaceData(metaData);
 				atLeastOneImporterWasAbleToImport = true;
+			}else {
+			    LOG.debug("Importer {} is NOT able to import {}",importer.getName(),param.getImportId());
 			}
 		}
 		if (!atLeastOneImporterWasAbleToImport) {
 			StringBuilder importerNames = new StringBuilder();
 			importerNames.append("[");
-			for (ProductResultImporter importer : importers) {
+			for (ProductResultImporter importer : registry.getImporters()) {
 				importerNames.append(importer.getClass().getSimpleName());
 				importerNames.append(" ");
 			}

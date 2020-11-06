@@ -3,6 +3,7 @@ package com.daimler.sechub.pds.execution;
 
 import static com.daimler.sechub.pds.util.PDSAssert.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -226,24 +227,30 @@ public class PDSExecutionService {
 
             Optional<PDSJob> jobOption = repository.findById(jobUUID);
             if (!jobOption.isPresent()) {
-                LOG.error("job with uuid:{} does no longer exist, but result available! So remove from queue", jobUUID);
+                LOG.error("pds job with uuid:{} does no longer exist, but result available! So remove from queue", jobUUID);
                 return true;
             }
 
             try {
                 PDSJob job = jobOption.get();
+                // we use this moment of time for all, currently the easiest and central way 
+                job.setEnded(LocalDateTime.now());
+                
                 if (future.isCancelled()) {
                     job.setState(PDSJobStatusState.CANCELED);
                 } else {
                     PDSExecutionResult callResult;
                     try {
                         callResult = future.get();
+                        LOG.debug("Fetch job result from future, pds job uuid={}, state={}",job.getUUID(),job.getState());
                         job.setResult(callResult.result);
+                        
                         if (callResult.failed) {
                             job.setState(PDSJobStatusState.FAILED);
                         } else {
                             job.setState(PDSJobStatusState.DONE);
                         }
+                        
                     } catch (InterruptedException e) {
                         LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
                         job.setState(PDSJobStatusState.FAILED);
@@ -253,8 +260,10 @@ public class PDSExecutionService {
                         job.setState(PDSJobStatusState.FAILED);
                         job.setResult("Job execution failed");
                     }
+                    LOG.debug("Handled job result and state job uuid={}, state={}",job.getUUID(),job.getState());
                 }
                 repository.save(job);
+                LOG.debug("Stored job pds uuid={}, state={}",job.getUUID(),job.getState());
 
                 return true;
 

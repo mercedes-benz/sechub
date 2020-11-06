@@ -20,4 +20,6 @@ public abstract class AbstractProductResultImporter implements ProductResultImpo
 	public final ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
 		return importSupport.isAbleToImport(param);
 	}
+	
+	
 }

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.pds;
 
+import java.util.UUID;
+
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import com.daimler.sechub.adapter.AbstractSpringRestAdapterContext;
@@ -9,7 +11,7 @@ import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 import com.daimler.sechub.adapter.support.RestOperationsSupport;
 
 /**
- * Context for NETSPARKER execution.
+ * Context for PDS execution.
  * 
  * @author Albert Tregnaghi
  *
@@ -19,7 +21,7 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
     private PDSUrlBuilder urlBuilder;
     private JSONAdapterSupport jsonSupport;
     private RestOperationsSupport restSupport;
-    private String pdsJobUUID;
+    private UUID pdsJobUUID;
 
     public PDSContext(PDSAdapterConfig config, PDSAdapter adapter, AdapterRuntimeContext runtimeContext) {
         super(config, adapter, runtimeContext);
@@ -45,12 +47,17 @@ public class PDSContext extends AbstractSpringRestAdapterContext<PDSAdapterConfi
         return new PDSClientHttpRequestInterceptor(config);
     }
 
-    public void setPDSJobUUID(String jobUUID) {
+    public void setPDSJobUUID(UUID jobUUID) {
         this.pdsJobUUID = jobUUID;
     }
 
-    public String getPdsJobUUID() {
+    public UUID getPdsJobUUID() {
         return pdsJobUUID;
+    }
+    
+    @Override
+    protected boolean enableResourceHttpMessageConverterHandlingInputStream() {
+        return true;
     }
 
 }

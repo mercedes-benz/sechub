@@ -48,18 +48,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
             config.setup.credentials.password=TestAPI.PDS_TECH_USER.getApiToken();
         }
         
-        TestExecutorSetupJobParam param1 = new TestExecutorSetupJobParam("sechub2pds.called.pds.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing");
-        TestExecutorSetupJobParam param2 = new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant);
-        TestExecutorSetupJobParam param3 = new TestExecutorSetupJobParam("pds2sechub.trustall.certificates","true"); // accept for testing
-        TestExecutorSetupJobParam param4 = new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true"); // mandatory from PDS integration test server
-        TestExecutorSetupJobParam param5 = new TestExecutorSetupJobParam("product1.level","42"); // mandatory from PDS integration test server
-        
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
-        jobParameters.add(param1);
-        jobParameters.add(param2);
-        jobParameters.add(param3);
-        jobParameters.add(param4);
-        jobParameters.add(param5);
+        jobParameters.add(new TestExecutorSetupJobParam("sechub2pds.called.pds.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing"));
+        jobParameters.add(new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant));
+        jobParameters.add(new TestExecutorSetupJobParam("pds2sechub.trustall.certificates","true")); // accept for testing
+        jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true")); // mandatory from PDS integration test server
+        jobParameters.add(new TestExecutorSetupJobParam("product1.level","42")); // mandatory from PDS integration test server
+        jobParameters.add(new TestExecutorSetupJobParam("pds2sechub.timetowait.nextcheck.minutes","0")); // speed up tests...
         return config;
     }
     

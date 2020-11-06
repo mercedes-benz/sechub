@@ -15,5 +15,9 @@
 # 
 # TODO albert, 2020-07-06: use the parameters defined in server configuration to handle different
 #                          e.g. we coulde simulate failures etc.
-cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/data.txt" "$PDS_JOB_WORKSPACE_LOCATION/output/result.txt"
+TARGET="$PDS_JOB_WORKSPACE_LOCATION/output/result.txt"
+cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/data.txt" $TARGET
  
+# Now we add a "header" so identifyable by importer
+echo "#PDS_INTTEST_PRODUCT_CODESCAN
+$(cat $TARGET)" > $TARGET

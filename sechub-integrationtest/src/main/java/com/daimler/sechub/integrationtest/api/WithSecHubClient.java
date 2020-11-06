@@ -71,10 +71,10 @@ public class WithSecHubClient {
         return this;
     }
 
-    public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+    public AssertSecHubReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
         ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
         String report = reportLoader.loadReport();
-        return new AssertJobReport(report);
+        return TestAPI.assertSecHubReport(report);
     }
     
     private class ClientJobReportLoader {
