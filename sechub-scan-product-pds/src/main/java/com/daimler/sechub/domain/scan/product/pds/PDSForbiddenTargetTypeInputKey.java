@@ -2,7 +2,7 @@ package com.daimler.sechub.domain.scan.product.pds;
 
 import com.daimler.sechub.domain.scan.TargetType;
 
-public class PDSForbiddenTargetTypeInputKey extends PDSInputKey{
+public class PDSForbiddenTargetTypeInputKey extends PDSProductExecutorKey{
 
     private TargetType forbiddenTargetType;
     

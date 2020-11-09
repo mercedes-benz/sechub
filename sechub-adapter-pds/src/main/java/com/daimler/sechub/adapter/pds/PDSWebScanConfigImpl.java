@@ -43,7 +43,6 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
     public static class PDSWebScanConfigBuilder
             extends AbstractWebScanAdapterConfigBuilder<PDSWebScanConfigBuilder, PDSWebScanConfigImpl> {
 
-        private String targetType;
         private Map<String, String> jobParameters;
         private UUID sechubJobUUID;
         private String pdsProductIdentifier;
@@ -51,10 +50,6 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         private PDSWebScanConfigBuilder() {
         }
 
-        public PDSWebScanConfigBuilder setWebScanTargetType(String targetType) {
-            this.targetType = targetType;
-            return this;
-        }
         
         public PDSWebScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
             this.sechubJobUUID=sechubJobUUID;

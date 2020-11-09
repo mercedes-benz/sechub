@@ -70,7 +70,7 @@ public class PDSProductExecutorMinimumConfigValidationTest {
         assertFalse("Result may not be valid, but is!", result.isValid());
         boolean found = false;
         for (String error : result.getErrors()) {
-            if (error.indexOf(PDSOutputKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId()) == -1) {
+            if (error.indexOf(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId()) == -1) {
                 continue;
             }
             if (error.toLowerCase().indexOf("not set") == -1) {
@@ -89,14 +89,14 @@ public class PDSProductExecutorMinimumConfigValidationTest {
     private ProductExecutorConfig createConfigWithAllMandatoryParametersSetWith(String value) {
         ProductExecutorConfig config = createConfigWithNoParametersSet();
         List<ProductExecutorConfigSetupJobParameter> params = config.getSetup().getJobParameters();
-        for (PDSInputKeys k : PDSInputKeys.values()) {
-            PDSInputKey key = k.getKey();
+        for (PDSProductExecutorKeys k : PDSProductExecutorKeys.values()) {
+            PDSProductExecutorKey key = k.getKey();
             if (key.isMandatory()) {
                 params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }
         }
-        for (PDSOutputKeys k : PDSOutputKeys.values()) {
-            PDSOutputKey key = k.getKey();
+        for (PDSConfigDataKeys k : PDSConfigDataKeys.values()) {
+            PDSConfigDataKey key = k.getKey();
             if (key.isMandatory()) {
                 params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }

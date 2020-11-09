@@ -67,8 +67,8 @@ public class PDSExecutionConfigSuppport {
        
         Map<String, String> parametersToSend = new TreeMap<>();
         List<PDSSecHubConfigDataKeyProvider<?>> providers = new ArrayList<>();
-        providers.addAll(Arrays.asList(PDSInputKeys.values()));
-        providers.addAll(Arrays.asList(PDSOutputKeys.values()));
+        providers.addAll(Arrays.asList(PDSProductExecutorKeys.values()));
+        providers.addAll(Arrays.asList(PDSConfigDataKeys.values()));
         
         for (String originKey  :configuredExecutorParameters.keySet()) {
             PDSSecHubConfigDataKeyProvider<?> foundProvider = null;
@@ -98,11 +98,11 @@ public class PDSExecutionConfigSuppport {
     }
     
     public String getPDSProductIdentifier() {
-        return getParameter(PDSOutputKeys.PDS_PRODUCT_IDENTIFIER);
+        return getParameter(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER);
     }
 
     public int getScanResultCheckPeriodInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSInputKeys.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
+        int value = getParameterIntValue(PDSProductExecutorKeys.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
         if (value != -1) {
             return value;
         }
@@ -111,7 +111,7 @@ public class PDSExecutionConfigSuppport {
     }
 
     public int getScanResultCheckTimeoutInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSInputKeys.TIME_TO_WAIT_BEFORE_TIMEOUT);
+        int value = getParameterIntValue(PDSProductExecutorKeys.TIME_TO_WAIT_BEFORE_TIMEOUT);
         if (value != -1) {
             return value;
         }
@@ -126,12 +126,12 @@ public class PDSExecutionConfigSuppport {
     }
 
     public boolean isTrustAllCertificatesEnabled() {
-        return getParameterBooleanValue(PDSInputKeys.TRUST_ALL_CERTRIFICATES);
+        return getParameterBooleanValue(PDSProductExecutorKeys.TRUST_ALL_CERTRIFICATES);
     }
     
     public boolean isTargetTypeForbidden(TargetType targetType) {
         boolean forbidden = false;
-        for (PDSInputKeys k : PDSInputKeys.values()) {
+        for (PDSProductExecutorKeys k : PDSProductExecutorKeys.values()) {
             if (forbidden) {
                 break;
             }
@@ -172,7 +172,7 @@ public class PDSExecutionConfigSuppport {
         return configuredExecutorParameters.get(key.getId());
     }
 
-    private int getParameterIntValue(PDSInputKeys k) {
+    private int getParameterIntValue(PDSProductExecutorKeys k) {
         String asText = getParameter(k);
         if (asText == null) {
             return -1;
@@ -184,7 +184,7 @@ public class PDSExecutionConfigSuppport {
         }
     }
     
-    private boolean getParameterBooleanValue(PDSInputKeys k) {
+    private boolean getParameterBooleanValue(PDSProductExecutorKeys k) {
         String asText = getParameter(k);
         return Boolean.parseBoolean(asText);
     }

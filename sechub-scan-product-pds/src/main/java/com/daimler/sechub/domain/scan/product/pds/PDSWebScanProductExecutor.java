@@ -87,7 +87,6 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
 					setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
 					setTraceID(context.getTraceLogIdAsString()).
-					setWebScanTargetType(targetType.name()).
 					setJobParameters(jobParameters).
 					setTargetURI(targetURI).build();
 			/* @formatter:on */

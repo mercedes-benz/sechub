@@ -179,8 +179,13 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
         builder.redirectOutput(workspaceService.getSystemOutFile(jobUUID));
 
+        /*
+         * add parts from PDS job configuration - means data defined by caller before
+         * job was marked as ready to start
+         */
         Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
         builder.environment().putAll(buildEnvironmentMap);
+
         File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
         builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
         try {

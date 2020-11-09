@@ -30,7 +30,7 @@ public class PDSExecutionConfigSuppportTest {
         setup = mock(ProductExecutorConfigSetup.class);
         
         jobParameters=new ArrayList<>();
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSOutputKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId(),"something"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId(),"something"));
         
         when(config.getSetup()).thenReturn(setup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();

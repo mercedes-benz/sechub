@@ -6,10 +6,10 @@ package com.daimler.sechub.domain.scan.product.pds;
  * @author Albert Tregnaghi
  *
  */
-public class PDSInputKey extends PDSSecHubConfigDataKey<PDSInputKey>{
+public class PDSProductExecutorKey extends PDSSecHubConfigDataKey<PDSProductExecutorKey>{
 
     
-    PDSInputKey(String key, String description) {
+    PDSProductExecutorKey(String key, String description) {
         super(key, description);
     }
 

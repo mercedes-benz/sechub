@@ -625,4 +625,8 @@ public class TestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
     }
 
+    public String buildBaseURL() {
+        return buildUrl("");
+    }
+
 }

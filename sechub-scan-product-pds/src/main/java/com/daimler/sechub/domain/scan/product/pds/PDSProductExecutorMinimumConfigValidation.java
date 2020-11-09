@@ -29,8 +29,8 @@ public class PDSProductExecutorMinimumConfigValidation extends AbstractValidatio
 
         /* setup providers */
         dataKeyProviders = new ArrayList<>();
-        dataKeyProviders.addAll(Arrays.asList(PDSInputKeys.values()));
-        dataKeyProviders.addAll(Arrays.asList(PDSOutputKeys.values()));
+        dataKeyProviders.addAll(Arrays.asList(PDSProductExecutorKeys.values()));
+        dataKeyProviders.addAll(Arrays.asList(PDSConfigDataKeys.values()));
     }
 
     @Override

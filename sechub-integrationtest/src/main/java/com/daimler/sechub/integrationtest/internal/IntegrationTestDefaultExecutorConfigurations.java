@@ -12,6 +12,8 @@ import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class IntegrationTestDefaultExecutorConfigurations {
     
+    public static final String VALUE_PRODUCT_LEVEL = "42";
+
     private static final String INTTEST_NAME_PREFIX = "INTTEST_";
     
     public static final TestExecutorConfig NETSPARKER_V1 = defineNetsparkerConfig();
@@ -49,12 +51,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
         }
         
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
-        jobParameters.add(new TestExecutorSetupJobParam("sechub2pds.called.pds.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing"));
-        jobParameters.add(new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant));
-        jobParameters.add(new TestExecutorSetupJobParam("pds2sechub.trustall.certificates","true")); // accept for testing
+        jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing"));
+        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.trustall.certificates","true")); // accept for testing
+        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.minutes","0")); // speed up tests...
         jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true")); // mandatory from PDS integration test server
-        jobParameters.add(new TestExecutorSetupJobParam("product1.level","42")); // mandatory from PDS integration test server
-        jobParameters.add(new TestExecutorSetupJobParam("pds2sechub.timetowait.nextcheck.minutes","0")); // speed up tests...
+        jobParameters.add(new TestExecutorSetupJobParam("product1.level",VALUE_PRODUCT_LEVEL)); // mandatory from PDS integration test server
+        jobParameters.add(new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant));
         return config;
     }
     
