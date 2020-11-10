@@ -56,7 +56,7 @@ ext {
 
          wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.16.0",
 
-         database_h2:                           "com.h2database:h2", //:1.4.196",
+         database_h2:                           "com.h2database:h2:1.4.199", //:1.4.199 is supported by used spring boot release",
          database_postgres:                     "org.postgresql:postgresql:42.2.2",
 
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
@@ -79,7 +79,7 @@ ext {
 
          openjson:                              "com.github.openjson:openjson:1.0.10",
 
-         flyway:                                "org.flywaydb:flyway-core:5.2.1",
+         flyway:                                "org.flywaydb:flyway-core:6.0.8",
 
          /* logback */
          // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic

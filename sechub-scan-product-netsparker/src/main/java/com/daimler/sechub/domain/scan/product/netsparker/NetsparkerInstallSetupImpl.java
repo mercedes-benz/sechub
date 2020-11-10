@@ -92,7 +92,7 @@ public class NetsparkerInstallSetupImpl extends AbstractTargetIdentifyingOneInst
 	}
 
 	@Override
-	protected String getIdentifierWhenDaimlerIntranetTarget() {
+	protected String getIdentifierWhenIntranetTarget() {
 		return intranetAgentGroupName;
 	}
 

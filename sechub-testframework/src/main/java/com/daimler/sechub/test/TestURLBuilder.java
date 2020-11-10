@@ -150,6 +150,10 @@ public class TestURLBuilder {
         public String buildAdminGetServerConfiguration() {
             return buildUrl(API_PDS_ADMIN, "config/server");
         }
+
+        public String buildBaseUrl() {
+            return buildUrl("");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -619,6 +623,10 @@ public class TestURLBuilder {
 
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
+    }
+
+    public String buildBaseURL() {
+        return buildUrl("");
     }
 
 }

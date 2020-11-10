@@ -1,28 +1,25 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.pds;
 
-import static org.springframework.http.HttpStatus.*;
-
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.adapter.AbstractAdapter;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterProfiles;
 import com.daimler.sechub.adapter.AdapterRuntimeContext;
-import com.daimler.sechub.adapter.WaitForStateSupport;
-import com.daimler.sechub.adapter.support.JSONAdapterSupport;
+import com.daimler.sechub.adapter.pds.data.PDSJobCreateResult;
+import com.daimler.sechub.adapter.pds.data.PDSJobData;
+import com.daimler.sechub.adapter.pds.data.PDSJobParameterEntry;
+import com.daimler.sechub.adapter.pds.data.PDSJobStatus;
+import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
 
 /**
  * This component is able to handle PDS API V1
@@ -32,238 +29,187 @@ import com.daimler.sechub.adapter.support.JSONAdapterSupport;
  */
 @Component
 @Profile({ AdapterProfiles.REAL_PRODUCTS })
-public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig>
-		implements PDSAdapter {
-    /* FIXME Albert Tregnaghi, 2020-06-17:implement this correctl - currently more or less a copy from netsparker adapter */
-	private static final String POLICY_ID = "PolicyId";
-	private static final String TARGET_URI = "TargetUri";
-	private static final String AGENT_NAME = "AgentName";
-	private static final String AGENT_GROUP_NAME = "AgentGroupName";
-	private static final String PROPERTY_SCAN_ID = "Id";
-	private static final String APICALL_GET_WEBSITE = "websites/get?query=";
-	private static final String APICALL_CREATE_NEW_WEBSITE = "websites/new";
-	private static final String APICALL_CREATE_NEW_SCAN = "scans/new";
-	private static final String APICALL_GET_SCAN_STATUS = "scans/status/";
-	private static final String APICALL_GET_SCAN_REPORT = "scans/report/";
+public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterConfig> implements PDSAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSAdapterV1.class);
 
+    @Override
+    public int getAdapterVersion() {
+        return 1;
+    }
 
-	@Override
-	public String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
-		try {
-			PDSContext context = new PDSContext(config, this,runtimeContext);
-			NetsparkerWaitForStateSupport waitSupport = new NetsparkerWaitForStateSupport();
-			ensureNetsparkerWebsiteConfigurationExists(context);
+    @Override
+    protected String execute(PDSAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
+        assertNotInterrupted();
+        PDSContext context = new PDSContext(config, this, runtimeContext);
 
-			createNewScanAndFetchId(context);
-			waitSupport.waitForOK(context);
+        createNewPDSJOB(context);
+        assertNotInterrupted();
 
-			fetchReport(context);
+        uploadJobData(context);
+        assertNotInterrupted();
 
-			return context.getResult();
-		} catch (AdapterException e) {
-			throw e;
-		} catch (Exception e) {
-			throw asAdapterException("Was not able to perform scan!", e, config);
-		}
+        markJobAsReady(context);
+        assertNotInterrupted();
 
-	}
-	
-	@Override
-	public int getAdapterVersion() {
-		return 1;
-	}
+        waitForJobDone(context);
+        assertNotInterrupted();
 
-	@Override
-	protected String getAPIPrefix() {
-		return "api/1.0";
-	}
+        return fetchReport(context);
 
-	String extractIDFromScanResult(String body, PDSAdapterContext context)
-			throws AdapterException {
-		return context.json().fetchRootNode(body).fetchArrayElement(0).fetch(PROPERTY_SCAN_ID).asText();
-	}
+    }
 
-	void createWebsite(PDSContext context) throws AdapterException {
-		PDSAdapterConfig config = context.getConfig();
-		String jsonAsString = buildJsonForCreateWebsite(context.json(), config);
+    private void waitForJobDone(PDSContext context) throws AdapterException {
+        PDSAdapterConfig config = context.getConfig();
+        UUID jobUUID = config.getSecHubJobUUID();
+        UUID uuid = context.getPdsJobUUID();
 
-		MultiValueMap<String, String> headers = createHeader(config);
-		HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
+        int count = 0;
+        boolean jobEnded = false;
+        PDSJobStatus jobstatus = null;
 
-		String apiUrl = createAPIURL(APICALL_CREATE_NEW_WEBSITE, config);
-		try {
-			ResponseEntity<String> response = context.getRestOperations().postForEntity(apiUrl, request, String.class);
-			if (!CREATED.equals(response.getStatusCode())) {
-				throw new PSDRESTFailureException(response.getStatusCode(), response.getBody());
-			}
-		} catch (HttpClientErrorException e) {
-			LOG.error(e.getResponseBodyAsString());
-			throw e;
-		}
-	}
+        long started = getCurrentTimeMilliseconds();
 
-	void fetchReport(PDSAdapterContext context) {
-		String traceID = context.getConfig().getTraceID();
-		LOG.debug("{} try to fetch report", context.getConfig().getTraceID());
+        int timeToWaitForNextCheckOperationInMilliseconds = config.getTimeToWaitForNextCheckOperationInMilliseconds();
+        while (!jobEnded && isNotTimeout(config, started)) {
+            /* see PDSJobStatusState.java */
+            jobstatus = getJobStatus(context);
+            
+            PDSAdapterJobStatusState state = jobstatus.state;
+            switch(state) {
+            case DONE:
+            case FAILED:
+            case CANCELED:
+                jobEnded = true;
+                break;
+                default:
+                    //just do nothing else
+            }
+            assertNotInterrupted();
+            try {
+                Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
+            } catch (InterruptedException e) {
+                throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
+            }
+            count++;
 
-		String apiUrl = createAPIURL(
-				APICALL_GET_SCAN_REPORT + context.getProductContextId() + "?Type=Vulnerabilities&Format=Xml",
-				context.getConfig());
-		ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
-		if (!OK.equals(response.getStatusCode())) {
-			throw new PSDRESTFailureException(response.getStatusCode(), response.getBody());
-		}
-		String body = response.getBody();
-		context.setResult(body);
-		LOG.debug("{} calling fetch report with '{}'", traceID, apiUrl);
-	}
+        }
+        if (!jobEnded) {
+            long elapsedTimeInMilliseconds = calculateElapsedTime(started);
+            throw new IllegalStateException("Even after " + count + " retries, every waiting " + timeToWaitForNextCheckOperationInMilliseconds
+                    + " ms, no job report state acceppted as END was found.!\nElapsed time were"+elapsedTimeInMilliseconds+" ms.\nLAST fetched jobstatus for " + jobUUID + ", PDS job uuid: " + uuid + " was:\n"
+                    + jobstatus);
+        }
 
-	String buildJsonForCreateWebsite(JSONAdapterSupport jsonAdapterSupport, PDSAdapterConfig config) throws AdapterException {
-		String targetURL = config.getTargetAsString();
-		String name = config.getWebsiteName();
-		String traceID = config.getTraceID();
+    }
 
-		LOG.debug("{} try to create website with targetURL '{}' and name '{}'", traceID, targetURL, name);
+    private boolean isNotTimeout(PDSAdapterConfig config, long started) {
+        return calculateElapsedTime(started) < config.getTimeOutInMilliseconds();
+    }
 
-		Map<String, String> rootMap = new TreeMap<>();
-		rootMap.put("RootUrl", targetURL);
-		rootMap.put("Name", name);
-		rootMap.put("LicenseType", "Subscription");
-		rootMap.put("SubscriptionBasedProductLicenseId", config.getLicenseID());
+    private long calculateElapsedTime(long started) {
+        return getCurrentTimeMilliseconds() - started;
+    }
 
-		String jsonAsString = jsonAdapterSupport.toJSON(rootMap);
-		return jsonAsString;
-	}
+    private long getCurrentTimeMilliseconds() {
+        return System.currentTimeMillis();
+    }
 
-	String buildJsonForCreateNewScan(JSONAdapterSupport jsonAdapterSupport, PDSAdapterConfig config) throws AdapterException {
-		Map<String, Object> map = new TreeMap<>();
-		map.put(TARGET_URI, config.getTargetAsString());
-		if (config.hasAgentGroup()) {
-			map.put(AGENT_GROUP_NAME, config.getAgentGroupName());
-		} else {
-			map.put(AGENT_NAME, config.getAgentName());
-		}
-		map.put(POLICY_ID, config.getPolicyId());
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Fetch report.................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private String fetchReport(PDSContext context) throws AdapterException {
+        UUID pdsJobUUID = context.getPdsJobUUID();
+        String url = context.getUrlBuilder().buildGetJobResult(pdsJobUUID);
 
-//		webLoginSupport.addAuthorizationInfo(config, map);
+        ResponseEntity<String> response = context.getRestOperations().getForEntity(url, String.class);
 
-		String jsonAsString = jsonAdapterSupport.toJSON(map);
-		return jsonAsString;
-	}
+        return response.getBody();
+    }
 
-	private void createNewScanAndFetchId(PDSContext context) throws AdapterException {
-		PDSAdapterConfig config = context.getConfig();
-		String traceID = config.getTraceID();
-		AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        metaData.setValue(PDSMetaDataID.KEY_TARGET_URI, ""+context.getConfig().getTargetURI());
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Fetch status.................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private PDSJobStatus getJobStatus(PDSContext context) {
+        String url = context.getUrlBuilder().buildGetJobStatus(context.getPdsJobUUID());
+        
+        ResponseEntity<PDSJobStatus> response = context.getRestOperations().getForEntity(url, PDSJobStatus.class);
+        return response.getBody();
+    }
 
-		String jsonAsString = buildJsonForCreateNewScan(context.json(), config);
+    private void markJobAsReady(PDSContext context) {
+        UUID uuid = context.getPdsJobUUID();
+        String url = context.getUrlBuilder().buildMarkJobReadyToStart(uuid);
+        context.getRestSupport().put(url);
+    }
 
-		LOG.debug("{} request body will contain json:'{}'", traceID, jsonAsString);
-		HttpEntity<String> request = new HttpEntity<>(jsonAsString);
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Upload.......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private void uploadJobData(PDSContext context) throws AdapterException {
 
-		String apiUrl = createAPIURL(APICALL_CREATE_NEW_SCAN, config);
-		try {
-			LOG.debug("{} calling api url '{}'", traceID, apiUrl);
-			ResponseEntity<String> response = context.getRestOperations().postForEntity(apiUrl, request, String.class);
-			if (!CREATED.equals(response.getStatusCode())) {
-				throw new PSDRESTFailureException(response.getStatusCode(), response.getBody());
-			}
-			context.setProductContextId(extractIDFromScanResult(response.getBody(), context));
-			LOG.debug("{} created new scan and got netsparker ID '{}'", traceID, context.getProductContextId());
+        PDSAdapterConfig config = context.getConfig();
+        if (!(config instanceof PDSSourceZipConfig)) {
+            /* no upload necessary */
+            return;
+        }
+        PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
+        AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
+        if (!metaData.hasValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
+            /* upload source code */
+            PDSUploadSupport uploadSupport = new PDSUploadSupport();
+            uploadSupport.uploadZippedSourceCode(context, sourceZipConfig);
 
-		} catch (HttpClientErrorException e) {
-			throw new PSDRESTFailureException(e.getStatusCode(), e.getResponseBodyAsString());
-		}
+            /* after this - mark file upload done, so on a restart we don't need this */
+            metaData.setValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
+            context.getRuntimeContext().getCallback().persist(metaData);
+        } else {
+            LOG.info("Reuse existing upload for:{}", context.getTraceID());
+        }
+    }
 
-	}
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Create New Job.................. + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private void createNewPDSJOB(PDSContext context) throws AdapterException {
 
-	private void ensureNetsparkerWebsiteConfigurationExists(PDSContext context) throws AdapterException {
-		if (existsWebsiteInNetsparker(context)) {
-			return;
-		}
-		/* create the web site */
-		createWebsite(context);
+        String json = createJobDataJSON(context);
+        String url = context.getUrlBuilder().buildCreateJob();
 
-	}
+        String jsonResult = context.getRestSupport().postJSON(url, json);
+        PDSJobCreateResult result = context.getJsonSupport().fromJSON(PDSJobCreateResult.class, jsonResult);
+        context.setPDSJobUUID(UUID.fromString(result.jobUUID));
+    }
 
-	private boolean existsWebsiteInNetsparker(PDSContext context) {
-		PDSAdapterConfig config = context.getConfig();
-		String traceID = config.getTraceID();
+    private String createJobDataJSON(PDSContext context) throws AdapterException {
+        PDSJobData jobData = createJobData(context);
 
-		String websiteName = config.getWebsiteName();
-		String apiUrl = createAPIURL(APICALL_GET_WEBSITE + websiteName, config);
-		LOG.debug("{} check website existswith '{}'", traceID, apiUrl);
-		try {
-			ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
-			if (OK.equals(response.getStatusCode())) {
-				LOG.debug("{} Website:{} exists already with name:{}", traceID, config.getTargetAsString(),
-						websiteName);
-				return true;
-			}
-		} catch (HttpClientErrorException e) {
-			if (NOT_FOUND.equals(e.getStatusCode())) {
-				LOG.debug("{} Website:{} does not exists with name:{}", traceID, config.getTargetAsString(),
-						websiteName);
-				return false;
-			}
-			LOG.error(e.getResponseBodyAsString());
-			throw e;
-		}
-		return false;
-	}
+        String json = context.getJsonSupport().toJSON(jobData);
+        return json;
+    }
 
-	private MultiValueMap<String, String> createHeader(PDSAdapterConfig config) {
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		return headers;
-	}
+    private PDSJobData createJobData(PDSContext context) {
+        PDSAdapterConfig config = context.getConfig();
+        Map<String, String> parameters = config.getJobParameters();
 
-	private class NetsparkerWaitForStateSupport
-			extends WaitForStateSupport<PDSAdapterContext, PDSAdapterConfig> {
+        PDSJobData jobData = new PDSJobData();
+        for (String key : parameters.keySet()) {
+            PDSJobParameterEntry parameter = new PDSJobParameterEntry();
+            parameter.key = key;
+            parameter.value = parameters.get(key);
 
-		public NetsparkerWaitForStateSupport() {
-			super(PDSAdapterV1.this);
-		}
+            jobData.parameters.add(parameter);
+        }
 
-		@Override
-		protected boolean isWaitingForOKWhenInState(String state, PDSAdapterContext context) {
-			return !PDSState.isWellknown(state);
-		}
+        UUID secHubJobUUID = config.getSecHubJobUUID();
+        jobData.sechubJobUUID = secHubJobUUID.toString();
+        jobData.productId = config.getPdsProductIdentifier();
 
-		@Override
-		protected void handleNoLongerWaitingState(String state, PDSAdapterContext context)
-				throws Exception {
-			PDSAdapterConfig config = context.getConfig();
-			if (PDSState.COMPLETE.isRepresentedBy(state)) {
-				LOG.debug("{}  completed", getAdapterLogId(config));
-				return;
-			}
-			if (PDSState.CANCELED.isRepresentedBy(state)) {
-				LOG.debug("{} canceled", getAdapterLogId(config));
-				throw asAdapterCanceledByUserException(config);
-			}
-			if (PDSState.FAILED.isRepresentedBy(state)) {
-				LOG.debug("{} failed", getAdapterLogId(config));
-				throw asAdapterException("Execution failed, see log files in netsparker for details", config);
-			}
-			throw asAdapterException(state + " is wellknown but not handled by adapter!", config);
+        return jobData;
+    }
 
-		}
-
-		protected String getCurrentState(PDSAdapterContext context) throws AdapterException {
-			String traceID = context.getConfig().getTraceID();
-			String apiUrl = createAPIURL(APICALL_GET_SCAN_STATUS + context.getProductContextId(), context.getConfig());
-			LOG.debug("{} calling get state with '{}'", traceID, apiUrl);
-
-			ResponseEntity<String> response = context.getRestOperations().getForEntity(apiUrl, String.class);
-			if (!OK.equals(response.getStatusCode())) {
-				throw new PSDRESTFailureException(response.getStatusCode(), response.getBody());
-			}
-			String state = context.json().fetch("State", response).asText();
-			LOG.debug("{} state is '{}'", traceID, state);
-			return state;
-		}
-	}
+    @Override
+    protected String getAPIPrefix() {
+        return "/api/";
+    }
 }

@@ -1,23 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.pds;
 
-import com.daimler.sechub.domain.scan.TargetIdentifiyingOneInstallSetup;
+import com.daimler.sechub.domain.scan.InstallSetup;
 
-public interface PDSInstallSetup extends TargetIdentifiyingOneInstallSetup {
+public interface PDSInstallSetup extends InstallSetup {
 
-	public int getScanResultCheckPeriodInMinutes();
+	public int getDefaultScanResultCheckPeriodInMinutes();
 
 	public int getScanResultCheckTimeOutInMinutes();
-
-	public String getAgentName();
-
-	public String getDefaultPolicyId();
-
-	public String getInternetAgentGroupName();
-
-	public String getIntranetAgentGroupName();
-
-	public String getNetsparkerLicenseId();
-	
 
 }

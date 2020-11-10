@@ -31,7 +31,7 @@ public class AbstractProductExecutionServiceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
-	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.FARRADAY;
+	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.NESSUS;
 	private AbstractProductExecutionService serviceToTest;
 	private UUIDTraceLogID traceLogID;
 	private SecHubExecutionContext context;

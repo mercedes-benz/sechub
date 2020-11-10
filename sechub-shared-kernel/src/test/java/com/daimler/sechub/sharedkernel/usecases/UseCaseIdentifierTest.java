@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.usecases;
 
 import static org.junit.Assert.*;

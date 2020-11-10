@@ -92,7 +92,7 @@ public class OneInstallSetupTest {
 		}
 
 		@Override
-		protected String getIdentifierWhenDaimlerIntranetTarget() {
+		protected String getIdentifierWhenIntranetTarget() {
 			return identifierIntranetTarget;
 		}
 

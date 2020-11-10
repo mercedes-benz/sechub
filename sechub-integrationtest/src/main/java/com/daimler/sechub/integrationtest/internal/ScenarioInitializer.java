@@ -36,9 +36,18 @@ public class ScenarioInitializer {
 	    return this;
 	}
 	
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_2_PDS(TestProject ...projects) {
+        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_2_ID,projects);
+        return this;
+    }
+	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
 	    return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_1);
 	}
+	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_2_PDS_codescan() {
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN);
+    }
 	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
 	    if (TestAPI.isExecutionProfileExisting(profile.id)) {
@@ -55,6 +64,7 @@ public class ScenarioInitializer {
 	    /* define profile */
 	    TestAPI.as(TestAPI.SUPER_ADMIN).createProductExecutionProfile(profile.id, profile);
 	    TestExecutionProfile realProfile = TestAPI.as(TestAPI.SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
+	    
 	    /* now we create real configurations having correct uuids etc. */
 	    realProfile.configurations.addAll(realConfigurations);
 	    TestAPI.as(TestAPI.SUPER_ADMIN).updateProductExecutionProfile(profile.id, realProfile);

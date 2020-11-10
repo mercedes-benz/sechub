@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
@@ -13,6 +14,13 @@ public class ExecutionConstants {
      * scenarios (1-6) will have automatically this profile assigned to projects!  
      * 
      */
-    public static final String DEFAULT_PROFILE_1_ID = IntegrationTestDefaultProfiles.PROFILE_1.id;  
+    public static final String DEFAULT_PROFILE_1_ID = IntegrationTestDefaultProfiles.PROFILE_1.id;
+    
+    /**
+     * Id for default profile 2 - please NEVER CHANGE THIS PROFILE! Create your own execution
+     * profiles. This profile contains executors of PDS integration test in version V1.
+     * 
+     */
+    public static final String DEFAULT_PROFILE_2_ID = IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN.id;  
     
 }

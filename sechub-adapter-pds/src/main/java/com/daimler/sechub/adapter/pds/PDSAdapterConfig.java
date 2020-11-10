@@ -1,20 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.pds;
 
-import com.daimler.sechub.adapter.WebScanAdapterConfig;
+import java.util.Map;
+import java.util.UUID;
 
-public interface PDSAdapterConfig extends WebScanAdapterConfig{
+import com.daimler.sechub.adapter.AdapterConfig;
 
-	String getLicenseID();
+public interface PDSAdapterConfig extends AdapterConfig {
 
-	String getWebsiteName();
+    Map<String, String> getJobParameters();
 
-	String getAgentName();
+    UUID getSecHubJobUUID();
 
-	String getAgentGroupName();
-
-	boolean hasAgentGroup();
-
+    String getPdsProductIdentifier();
 
 
 }
