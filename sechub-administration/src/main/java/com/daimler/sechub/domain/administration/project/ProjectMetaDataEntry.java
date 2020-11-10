@@ -31,7 +31,7 @@ public class ProjectMetaDataEntry {
 		// jpa only
 	}
 	
-	ProjectMetaDataEntry(String projectId, String key, String value) {
+	public ProjectMetaDataEntry(String projectId, String key, String value) {
 		this.projectId = projectId;
 		this.key = key;
 		this.value = value;

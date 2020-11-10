@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.net.URI;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -42,6 +43,7 @@ import com.daimler.sechub.domain.administration.project.ProjectDetailInformation
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformationService;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
+import com.daimler.sechub.domain.administration.project.ProjectMetaDataEntry;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
@@ -224,6 +226,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		Set<URI> whiteList = new LinkedHashSet<>();
 		whiteList.add(new URI("http://www.sechub.example.org"));
 		when(project.getWhiteList()).thenReturn(whiteList);
+		
+		Set<ProjectMetaDataEntry> metaData = new LinkedHashSet<>();
+		ProjectMetaDataEntry entry = new ProjectMetaDataEntry("projectId1", "key1", "value1");
+		metaData.add(entry);
+		
+		when(project.getMetaData()).thenReturn(metaData);
+		
 		ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
 
 		when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
@@ -245,7 +254,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
 							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("A list of metadata key value pairs.")
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
 						)
 					)
 				);

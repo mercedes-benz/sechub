@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ public class ProjectDetailInformation {
 		
 		project.getWhiteList().forEach(uri -> this.whitelist.add(uri.toASCIIString()));
 		
-		project.metaData.forEach(entry -> this.metaData.put(entry.key, entry.value));
+		project.getMetaData().forEach(entry -> this.metaData.put(entry.key, entry.value));
 		
 		this.owner= project.getOwner().getName();
 	}
