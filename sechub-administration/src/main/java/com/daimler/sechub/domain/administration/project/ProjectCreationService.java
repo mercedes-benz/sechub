@@ -2,9 +2,11 @@
 package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
@@ -68,7 +70,7 @@ public class ProjectCreationService {
 			name = "Create project",
 			description = "The service will create the project when not already existing with such name."))
 	/* @formatter:on */
-	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull Map<String, String> metaData) {
+	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull List<ProjectMetaData> metaData) {
 		LOG.info("Administrator {} triggers create of project:{}, having owner:{}",userContext.getUserId(),projectId,owner);
 
 		assertion.isValidProjectId(projectId);
@@ -95,11 +97,16 @@ public class ProjectCreationService {
 		project.owner=ownerUser;
 		/** add only accepted/valid URIs - sanitize */
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
+		
+		
+		metaData.stream().forEach(entry -> project.metaData.add(new ProjectMetaDataEntry(entry.getProjectId(), entry.getKey(), entry.getValue())));
 
+		Map<String, String> messageMetaDataMap = metaData.stream().collect(Collectors.toMap(key -> key.getKey(), value -> value.getValue()));
+		
 		/* store */
 		persistenceService.saveInOwnTransaction(project);
 
-		sendProjectCreatedEvent(projectId, whitelist, metaData);
+		sendProjectCreatedEvent(projectId, whitelist, messageMetaDataMap);
 		sendRefreshUserAuth(ownerUser);
 
 	}

@@ -21,7 +21,7 @@ public class ShowProjectDetailAction extends AbstractUIAction {
 
 	@Override
 	public void execute(ActionEvent e) {
-		Optional<String> opt = getUserInput("Please enter project ID/name",InputCacheIdentifier.PROJECT_ID);
+		Optional<String> opt = getUserInput("Please enter project ID/name", InputCacheIdentifier.PROJECT_ID);
 		if (! opt.isPresent()) {
 			return;
 		}

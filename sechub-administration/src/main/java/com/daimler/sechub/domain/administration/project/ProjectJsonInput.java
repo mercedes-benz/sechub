@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
@@ -38,7 +39,7 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 
 	private Optional<ProjectWhiteList> whiteList = Optional.empty();
 	
-	private Optional<Map<String, String>> metaData = Optional.empty();
+	private Optional<List<ProjectMetaData>> metaData = Optional.empty();
 
 	@Override
 	public Class<ProjectJsonInput> getJSONTargetClass() {
@@ -86,10 +87,17 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	}
 	
 	public void setMetaData(Optional<Map<String, String>> metaData) {
-		this.metaData = metaData;
+		
+		if (!metaData.isPresent()) {
+			return;
+		}
+		
+		List<ProjectMetaData> metaDataArray = metaData.get().entrySet().stream().map(entry -> new ProjectMetaData(name, entry.getKey(), entry.getValue())).collect(Collectors.toList());
+		
+		this.metaData = Optional.of(metaDataArray);
 	}
 	
-	public Optional<Map<String, String>> getMetaData() {
+	public Optional<List<ProjectMetaData>> getMetaData() {
 		return metaData;
 	}
 

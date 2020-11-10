@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
-public interface ProjectRepository extends JpaRepository<Project,String>, ProjectRepositoryCustom{
+public interface ProjectRepository extends JpaRepository<Project,String>, ProjectRepositoryCustom {
 
 	public default Project findOrFailProject(String projectId) {
 		Optional<Project> found = findById(projectId);
