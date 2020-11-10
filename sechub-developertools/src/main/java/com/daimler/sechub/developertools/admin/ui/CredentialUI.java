@@ -74,8 +74,10 @@ public class CredentialUI {
 		panel.add(passwordField);
 
 		
+		/* bridge to TEST API ... we need server and user data available by test api*/
 		DeveloperAdministration administration = context.getAdministration();
         administration.updateTestAPIServerConnection(server, portNumber);
+        administration.updateTestAPISuperAdmin(userId,apiToken);
         
 		/*
 		 * currently there is a bug - changes are not handled . So we disable edit

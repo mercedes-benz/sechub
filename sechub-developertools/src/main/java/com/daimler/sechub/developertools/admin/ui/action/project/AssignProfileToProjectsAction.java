@@ -21,6 +21,14 @@ public class AssignProfileToProjectsAction extends AbstractUIAction {
 
 	@Override
     public void execute(ActionEvent e) {
+        ListExecutionProfilesDialogUI dialogUI = new ListExecutionProfilesDialogUI(getContext(), "Select profile to assign to projects");
+        dialogUI.setOkButtonText("Assign to projects");
+        dialogUI.showDialog();
+        
+        if(! dialogUI.isOkPressed()) {
+            return;
+        }
+        
         Optional<String> projectId = getUserInput("Please enter comma separated project IDs",InputCacheIdentifier.PROJECT_IDS);
         if (! projectId.isPresent()) {
             return;
@@ -29,13 +37,7 @@ public class AssignProfileToProjectsAction extends AbstractUIAction {
         for (String id: projectIds) {
             TestAPI.assertProject(new TestProject(id)).doesExist();
         }
-        ListExecutionProfilesDialogUI dialogUI = new ListExecutionProfilesDialogUI(getContext(), "Select profile to assign to projects");
-        dialogUI.setOkButtonText("Assign to projects");
-        dialogUI.showDialog();
         
-        if(! dialogUI.isOkPressed()) {
-            return;
-        }
         String profileId = dialogUI.getSelectedValue();
         if (profileId==null) {
             return;
