@@ -1,9 +1,9 @@
 # About
-Inside this folder lay the zipfiles used for pds integration testing (direct + integrated with
+Inside this folder are zipfiles used for pds integration testing (direct + integrated with
 SecHub).
 
 # Is this stuff used in real?
-No its only for testing. At integration test time there is a special importer available being able 
+No, its only for testing. At integration test time there is a special importer available being able 
 to import this. But will not be available at production level.
 
 # Format

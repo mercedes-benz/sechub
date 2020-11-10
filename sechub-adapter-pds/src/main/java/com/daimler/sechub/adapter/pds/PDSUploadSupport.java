@@ -42,7 +42,6 @@ public class PDSUploadSupport {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(uploadSourceCodeUrl, requestEntity, String.class);
-//        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             throw context.asAdapterException("Response HTTP status not 'OK' as expected but: " + response.getStatusCode());

@@ -29,6 +29,7 @@ import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.api.UserContext;
 import com.daimler.sechub.integrationtest.api.WithSecHubClient;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
@@ -67,6 +68,15 @@ public class DeveloperAdministration {
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
         return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
+    }
+    
+    /* will update test api server connection data - makes it possible to use directly test API methods without
+     * writing duplicates for developer admin ui (faster development)*/
+    public void updateTestAPIServerConnection(String server, int portNumber) {
+        IntegrationTestContext integrationTestContext = IntegrationTestContext.get();
+        integrationTestContext.setHostname(server);
+        integrationTestContext.setPort(portNumber);
+        integrationTestContext.rebuild();
     }
 
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {

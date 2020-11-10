@@ -35,6 +35,13 @@ public class IntegrationTestContext {
 	public static IntegrationTestContext get() {
 		return testContext;
 	}
+	
+	public void rebuild() {
+	    /* force recration of builders */
+	    urlBuilder=null;
+	    pdsUrlBuilder=null;
+	    restHelperMap.clear();
+	}
 
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
