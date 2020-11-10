@@ -19,8 +19,7 @@ import com.daimler.sechub.adapter.pds.PDSInfraScanConfigImpl;
 import com.daimler.sechub.adapter.pds.PDSMetaDataID;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
-import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
-import com.daimler.sechub.domain.scan.product.AbstractWebScanProductExecutor;
+import com.daimler.sechub.domain.scan.product.AbstractInfrastructureScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
@@ -28,7 +27,7 @@ import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
-public class PDSInfraScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
+public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProductExecutor<PDSInstallSetup> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSInfraScanProductExecutor.class);
 
@@ -76,16 +75,23 @@ public class PDSInfraScanProductExecutor extends AbstractWebScanProductExecutor<
 		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 		    
 		    PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
+		            configure(createAdapterOptionsStrategy(context)).
+
+		            setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
+		            setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
+
+
+		            setTraceID(context.getTraceLogIdAsString()).
+		            
+		            setTargetIPs(info.getIPs()).
+		            setTargetURIs(info.getURIs()).
+		            
 		            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
 		            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
 		            setProductBaseUrl(configSupport.getProductBaseURL()).
 		            setSecHubJobUUID(context.getSechubJobUUID()).
-					configure(createAdapterOptionsStrategy(context)).
-				    configure(new WebLoginConfigBuilderStrategy(context)).
-					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
-					setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
-					setTraceID(context.getTraceLogIdAsString()).
 					setJobParameters(jobParameters).
+					
 					build();
 			/* @formatter:on */
 
