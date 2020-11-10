@@ -33,6 +33,8 @@ public class WebScanProductExecutionServiceImpl extends AbstractProductExecution
 	@Autowired
 	public WebScanProductExecutionServiceImpl(List<WebScanProductExecutor> webscanExecutors) {
 		this.webscanExecutors.addAll(webscanExecutors);
+		
+		 LOG.info("Registered web scan executors:{}",webscanExecutors);
 	}
 	
 	@Override

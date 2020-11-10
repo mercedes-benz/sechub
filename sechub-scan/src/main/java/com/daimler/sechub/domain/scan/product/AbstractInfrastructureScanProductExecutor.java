@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,18 @@ public abstract class AbstractInfrastructureScanProductExecutor<S extends Instal
 		}
 		return uris;
 	}
+	
+	@Override
+    protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
+        if (config == null) {
+            return Collections.emptyList();
+        }
+        Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
+        if (!infraScan.isPresent()) {
+            return Collections.emptyList();
+        }
+        return infraScan.get().getIps();
+    }
 	
 
 	@Override

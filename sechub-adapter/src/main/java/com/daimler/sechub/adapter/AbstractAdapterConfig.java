@@ -127,7 +127,7 @@ public abstract class AbstractAdapterConfig implements AdapterConfig {
 	}
 
 	@Override
-	public final String getPasswordOrAPITokenBase64Encoded() {
+	public final String getCredentialsBase64Encoded() {
 		if (passwordOrAPIToken==null) {
 			return null;
 		}

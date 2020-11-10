@@ -26,7 +26,7 @@ public class WebScanProductExecutionServiceImplTest {
 
 	private static final String PROJECT_ID1 = "projectid1";
     private static final ProductIdentifier PRODUCT_IDENTIFIER_2 = ProductIdentifier.NETSPARKER;
-    private static final ProductIdentifier PRODUCT_IDENTIFIER_1 = ProductIdentifier.FARRADAY;
+    private static final ProductIdentifier PRODUCT_IDENTIFIER_1 = ProductIdentifier.PDS_CODESCAN;
     private WebScanProductExecutionServiceImpl serviceToTest;
 	private SecHubExecutionContext context;
 	private SecHubConfiguration configuration;

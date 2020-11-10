@@ -13,7 +13,7 @@ public class FetchPDSConfigurationAction extends AbstractPDSAction {
 
     @Override
     protected void executePDS(PDSAdministration pds) {
-        String configuration = pds.getServerConfiguration();
+        String configuration = pds.fetchServerConfigurationAsString();
         outputAsBeautifiedJSONOnSuccess(configuration);
 
     }

@@ -45,8 +45,10 @@ import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionActio
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
@@ -222,8 +224,11 @@ public class CommandUI {
         add(menu, new ShowPDSConfigurationDialogAction(context));
         menu.addSeparator();
         add(menu, new FetchPDSConfigurationAction(context));
-        add(menu, new CheckPDSAliveAction(context));
+        add(menu, new FetchPDSJobParameterExampleAction(context));
         menu.addSeparator();
+        add(menu, new CreateNewPDSExecutionConfigurationAction(context));
+        menu.addSeparator();
+        add(menu, new CheckPDSAliveAction(context));
         add(menu, new FetchPDSMonitoringStatusAction(context));
         menu.addSeparator();
         add(menu, new CreatePDSJobAction(context));

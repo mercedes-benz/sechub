@@ -4,7 +4,6 @@ package com.daimler.sechub.domain.scan.product.nessus;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 @Service
@@ -72,14 +70,13 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 				setProxyHostname(proxyHostname).
 				setProxyPort(proxyPort).
 				setTraceID(context.getTraceLogIdAsString()).
-				/* TODO Albert Tregnaghi, 2018-02-13:policy id - always default id - what about config.getPoliciyID() ?!?! */
 				setPolicyID(setup.getDefaultPolicyId()).
 				setTargetIPs(data.getIPs()).
 				setTargetURIs(data.getURIs()).build();
 		/* @formatter:on */
         String projectId = context.getConfiguration().getProjectId();
 
-        /* execute nessus by adapter and return product result */
+        /* execute NESSUS by adapter and return product result */
         String xml = nessusAdapter.start(nessusConfig, executorContext.getCallBack());
         ProductResult result = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
         return Collections.singletonList(result);
@@ -94,18 +91,11 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
     protected NessusInstallSetup getInstallSetup() {
         return installSetup;
     }
-
-    @Override
+    
     protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
-        if (config == null) {
-            return Collections.emptyList();
-        }
-        Optional<SecHubInfrastructureScanConfiguration> infraScan = config.getInfraScan();
-        if (!infraScan.isPresent()) {
-            return Collections.emptyList();
-        }
-        return infraScan.get().getIps();
+        return super.resolveInetAdressForTarget(config);
     }
+
 
     @Override
     public int getVersion() {
