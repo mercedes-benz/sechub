@@ -2,6 +2,8 @@
 package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +90,7 @@ public class ProjectAdministrationRestController {
 			whiteListedURIs.addAll(whiteList.getUris());
 		}
 		
-		List<ProjectMetaData> metaData = List.of();
+		List<ProjectMetaData> metaData = Arrays.asList();
 		if (input.getMetaData().isPresent()) {
 			metaData = input.getMetaData().get();
 		}
