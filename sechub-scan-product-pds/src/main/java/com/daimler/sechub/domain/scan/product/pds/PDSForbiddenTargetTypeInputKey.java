@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.pds;
 
 import com.daimler.sechub.domain.scan.TargetType;

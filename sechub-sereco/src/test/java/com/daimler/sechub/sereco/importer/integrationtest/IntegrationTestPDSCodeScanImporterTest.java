@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.importer.integrationtest;
 
 import static org.junit.Assert.*;

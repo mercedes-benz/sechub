@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # About
 Inside this folder are zipfiles used for pds integration testing (direct + integrated with
 SecHub).
