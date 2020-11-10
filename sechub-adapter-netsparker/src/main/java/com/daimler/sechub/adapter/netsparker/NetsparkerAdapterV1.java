@@ -40,6 +40,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	private static final String AGENT_NAME = "AgentName";
 	private static final String AGENT_GROUP_NAME = "AgentGroupName";
 	private static final String PROPERTY_SCAN_ID = "Id";
+	private static final String EXCLUDE_AUTHENTICATION_PAGES = "ExcludeAuthenticationPages";
 	private static final String APICALL_GET_WEBSITE = "websites/get?query=";
 	private static final String APICALL_CREATE_NEW_WEBSITE = "websites/new";
 	private static final String APICALL_CREATE_NEW_SCAN = "scans/new";
@@ -147,6 +148,12 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 			map.put(AGENT_NAME, config.getAgentName());
 		}
 		map.put(POLICY_ID, config.getPolicyId());
+		
+		// This parameter is not configurable, because without it the 
+		// form authentication and script authentication does not work.
+		// In addition, the basic authentication takes twice as much time.
+		// This problem exists in version Netsparker version: 1.9.0.x, 1.9.1.x and 1.9.2.x
+		map.put(EXCLUDE_AUTHENTICATION_PAGES, "true");
 
 		webLoginSupport.addAuthorizationInfo(config, map);
 
