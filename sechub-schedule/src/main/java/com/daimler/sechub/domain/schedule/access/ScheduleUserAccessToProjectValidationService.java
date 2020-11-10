@@ -33,8 +33,14 @@ public class ScheduleUserAccessToProjectValidationService {
 	 * @param projectId
 	 */
 	public void assertUserHasAccessToProject(String projectId) {
+				
 		if (userContextService.isSuperAdmin()) {
-			/* a super admin has always access */
+			/* a super admin has always access to existing projects */
+			
+			if(!accessRepository.hasProjectUserAccess(projectId)) {
+				throw new NotFoundException("Project " + projectId + " does not exist, or no user has access at all.");
+			}
+			
 			return;
 		}
 		String userId = userContextService.getUserId();

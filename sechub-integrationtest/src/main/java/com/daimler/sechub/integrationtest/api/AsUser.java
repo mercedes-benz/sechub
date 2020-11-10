@@ -500,7 +500,31 @@ public class AsUser {
      * @return uuid for created job
      */
     public UUID createWebScan(TestProject project) {
-        return createWebScan(project, null);
+        return createWebScan(project, null, true);
+    }
+    
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     * 
+     * @param project
+     * @param useLongRunningButGreen
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode) {
+    	return createWebScan(project, runMode, true);
+    }
+    
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     * 
+     * @param project
+     * @param checkExists
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, boolean checkExists) {
+    	return createWebScan(project, null, checkExists);
     }
 
     /**
@@ -509,10 +533,15 @@ public class AsUser {
      * 
      * @param project
      * @param useLongRunningButGreen
-     * @return
+     * @param checkExists
+     * @return uuid for created job
      */
-    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode) {
-        assertProject(project).doesExist();
+    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode, boolean checkExists) {
+        
+    	if (checkExists) {
+    		assertProject(project).doesExist();
+    	}       
+        
         if (runMode == null) {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
         }

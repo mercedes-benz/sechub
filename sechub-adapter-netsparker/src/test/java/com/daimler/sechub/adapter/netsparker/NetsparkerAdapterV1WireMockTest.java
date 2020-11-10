@@ -129,6 +129,7 @@ public class NetsparkerAdapterV1WireMockTest {
     	}else {
     		newScanBodyJSON.put("AgentName", "agentName");
     	}
+    	newScanBodyJSON.put("ExcludeAuthenticationPages", "true");
     	newScanBodyJSON.put("PolicyId", POLICY_ID);
 
     	String newScanBodyJSONString = newScanBodyJSON.toString();

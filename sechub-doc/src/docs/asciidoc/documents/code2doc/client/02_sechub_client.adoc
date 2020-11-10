@@ -16,6 +16,52 @@ You will have no dependencies, just place the single binary file to a location i
 
 The latest releases can be found at {projectSite}/wiki/releases . For documentation please look at {webPage}[{secHub} web page] .
 
+=== Supported Platforms
+
+The SecHub Client is available for a number of platforms. A platform is a combination of an operating system and a CPU architecture.
+
+.Supported platforms
+|===
+|Name |OS |CPU Architecture |Description
+
+|darwin-amd64
+|macOS
+|AMD and Intel 64-bit
+|The **macOS client**.
+
+|linux-386
+|Linux
+|AMD and Intel 32-bit
+|For old hardware running Linux as operating system.
+
+|linux-amd64
+|Linux
+|AMD and Intel 64-bit
+|The **Linux client**, unless you are using older hardware or an ARM system.
+
+|linux-arm
+|Linux
+|ARM 32-bit
+|For ARM 32-bit systems. For example, single board computers such as the Raspberry PIs, older Nvidia Jetson boards and many more.
+
+|linux-arm64
+|Linux
+|ARM 64-bit
+|For ARM 64-bit systems, such as ARM based servers and some single board computers. Examples include newer models of the Nvidia Jetson series, newer Raspberry PI models, servers from the Marvell ThunderX series and Amazon AWS EC2 A1, T4g, M6g, C6g, and R6g instances.
+
+|windows-386
+|Windows
+|AMD and Intel 32-bit
+|For older hardware running Windows as operating system.
+
+|windows-amd64
+|Windows
+|AMD and Intel 64-bit
+|The **Windows client**, unless you are using older 32-bit hardware.
+|===
+
+In case your platform is not included in the table, you might be able to compile the SecHub Client for your platform. The SecHub Client is written in the Go programming language. Go supports more platforms. For a full list of supported platforms have a look at the Go documentation: https://golang.org/doc/install/source#environment[Optional environment variables].
+
 === Usage
 
 ==== Show help

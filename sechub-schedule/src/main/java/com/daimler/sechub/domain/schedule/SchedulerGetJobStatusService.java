@@ -22,7 +22,7 @@ public class SchedulerGetJobStatusService {
 	UserInputAssertion assertion;
 
 	@Validated
-	@UseCaseUserChecksJobStatus(@Step(number = 2, name = "Try to find project annd fail or return job status"))
+	@UseCaseUserChecksJobStatus(@Step(number = 2, name = "Try to find project and fail or return job status"))
 	public ScheduleJobStatus getJobStatus(String projectId, UUID jobUUID) {
 		assertion.isValidProjectId(projectId);
 		assertion.isValidJobUUID(jobUUID);
