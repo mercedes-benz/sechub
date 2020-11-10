@@ -2,6 +2,7 @@ package com.daimler.sechub.domain.administration.project;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -48,4 +49,32 @@ public class ProjectMetaDataEntry {
 	@Column(name = COLUMN_METADATA_VALUE)
 	String value;
 	
+	@Version
+	@Column(name = "VERSION")
+	Integer version;
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ProjectMetaDataEntry other = (ProjectMetaDataEntry) obj;
+		
+		return other.projectId.equals(projectId) && other.key.equals(key) && other.value.equals(value);  
+	}
 }
