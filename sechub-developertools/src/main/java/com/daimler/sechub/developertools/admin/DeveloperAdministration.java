@@ -79,6 +79,12 @@ public class DeveloperAdministration {
         integrationTestContext.rebuild();
     }
 
+    public void updateTestAPISuperAdmin(String userId, String apiToken) {
+        IntegrationTestContext integrationTestContext = IntegrationTestContext.get();
+        integrationTestContext.setSuperAdminUser(new FixedTestUser(userId, apiToken));
+        integrationTestContext.rebuild();
+    }
+    
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {
         return new TestRestHelper(user, restHelperTarget) {
 
@@ -637,4 +643,6 @@ public class DeveloperAdministration {
     public void removeProjectIdsFromProfile(String profileId, List<String> list) {
         removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
     }
+
+
 }
