@@ -72,6 +72,7 @@ import com.daimler.sechub.developertools.admin.ui.action.project.UnassignProfile
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnassignUserFromProjectMassCSVImportAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UnmarkProjectFalsePositiveAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectMetaDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.UpdateProjectWhitelistAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.DisableSchedulerJobProcessingAction;
 import com.daimler.sechub.developertools.admin.ui.action.scheduler.EnableSchedulerJobProcessingAction;
@@ -280,6 +281,7 @@ public class CommandUI {
         
         menu.addSeparator();
         add(menu, new UpdateProjectWhitelistAction(context));
+        add(menu, new UpdateProjectMetaDataAction(context));
         
         menu.addSeparator();
         JMenu profiles = new JMenu("Execution profiles");

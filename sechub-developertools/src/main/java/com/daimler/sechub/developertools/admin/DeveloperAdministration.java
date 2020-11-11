@@ -335,6 +335,15 @@ public class DeveloperAdministration {
 
         return result;
     }
+    
+    public String fetchProjectMetaData(String projectId) {
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(json);
+        JsonNode metaData = jsonNode.get("metaData");
+
+        return metaData.toPrettyString();
+    }
 
     public String fetchProjectScanLogs(String projectId) {
         String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
@@ -365,6 +374,19 @@ public class DeveloperAdministration {
         sb.append("]}}");
 
         getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+    }
+    
+    public void updateProjectMetaData(String projectId, String result) {
+    	
+    	TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(result);
+        
+        
+    	
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
+
+//        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
     }
 
     public String assignUserToProject(String userId, String projectId) {
