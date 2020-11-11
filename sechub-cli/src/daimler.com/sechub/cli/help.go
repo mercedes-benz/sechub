@@ -14,17 +14,12 @@ func PrintUsage(w io.Writer) {
 	flag.CommandLine.SetOutput(w)
 
 	info := "Usage of " + os.Args[0] + `:
+
 sechub [options] action
 
-You can also define some of the options via environment variables or inside your config file.
-But commandline arguments will override environment variables; Environment variables will override config file.
-
-Options:
-`
-	action := `
 action
   Following actions are supported:
-   ` + scanAction + ` - start scan, wait for job done, download result report to output folder
+   ` + scanAction + ` - start scan, wait for job done, download resulting report to output folder
    ` + scanAsynchronAction + ` - just trigger scan and return job id as last output line
    ` + getStatusAction + ` - fetch current job status and return result as json
    ` + getReportAction + ` - fetch report as json (result will only exist when job is done)
@@ -33,31 +28,38 @@ action
    ` + unmarkFalsePositivesAction + ` - remove items from project's false-positives list as defined in json file
    ` + interactiveMarkFalsePositivesAction + ` - interactively define false-positives depending on a json report file
    ` + interactiveUnmarkFalsePositivesAction + ` - interactively remove items from project's false-positives list
+
+Options:
 `
+
+	optionsFooter := `
+You can also define some of the options via environment variables or inside your config file.
+But commandline arguments will override environment variables; Environment variables will override config file.
+`
+
 	example := `
 Example for starting a scan which will wait until results are availabe and download the report:
-SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub scan
+  export SECHUB_USERID=myUserName
+  export SECHUB_APITOKEN=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE
+  export SECHUB_SERVER=https://sechub.example.com:8443
+  sechub scan
 
-Example 'sechub.json' config file which will configure a webscan and also a code scan:
-
-	{
-		"apiVersion": "1.0",
-		"project"   : "gamechanger",
-		"server"    : "https://sechub.example.com:8443",
-		"user"      : "alice",
-		"codeScan"  : {
-			"fileSystem": { "folders": ["gamechanger-android/src", "gamechanger-server/src/main/java"] }
-		},
-		"webScan"   : {
-			"uris": ["https://my-test-gamechanger-server/"]
-		}
-	}
+Example 'sechub.json' config file which will configure a code scan and also a webscan:
+  {
+    "apiVersion": "1.0",
+    "project": "my_project",
+    "codeScan": {
+      "fileSystem": { "folders": ["src-server/", "src-client/"] }
+    }
+    "webScan"  : {
+      "uris": ["https://www.myproject"]
+    }
+  }
 
 Please also look into 'sechub-client.pdf' for detailed help, more examples, etc.
 `
 	fmt.Fprintf(w, info)
 	flag.PrintDefaults()
-	fmt.Fprintf(w, action)
+	fmt.Fprintf(w, optionsFooter)
 	fmt.Fprintf(w, example)
 }
