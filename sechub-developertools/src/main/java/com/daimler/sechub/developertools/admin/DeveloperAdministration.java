@@ -381,12 +381,10 @@ public class DeveloperAdministration {
     	TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(result);
         
-        
-    	
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
 
-//        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
     public String assignUserToProject(String userId, String projectId) {

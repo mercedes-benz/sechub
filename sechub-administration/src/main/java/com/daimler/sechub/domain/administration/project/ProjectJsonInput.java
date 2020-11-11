@@ -92,7 +92,7 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 			return;
 		}
 		
-		List<ProjectMetaData> metaDataArray = metaData.get().entrySet().stream().map(entry -> new ProjectMetaData(name, entry.getKey(), entry.getValue())).collect(Collectors.toList());
+		List<ProjectMetaData> metaDataArray = metaData.get().entrySet().stream().map(entry -> new ProjectMetaData(entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		
 		this.metaData = Optional.of(metaDataArray);
 	}

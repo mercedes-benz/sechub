@@ -44,11 +44,16 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
+	private static final String projectId = "projectid1";
+	
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
 	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
+	
+	@MockBean
+	ProjectUpdateMetaDataService mockedProjectUpdateMetaDataService;
 
 	@MockBean
 	UpdateProjectInputValidator mockedValidator;
@@ -66,7 +71,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl("projectId1")).
+        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(projectId)).
         		contentType(MediaType.APPLICATION_JSON_VALUE).
         		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
         		)./*andDo(print()).*/
@@ -74,7 +79,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
         		);
 
 		verify(mockedProjectUpdateWhiteListService).
-			updateProjectWhitelist("projectId1",
+			updateProjectWhitelist(projectId,
 				Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2")));
 		/* @formatter:on */
 	}
@@ -93,7 +98,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 		/* execute + test @formatter:off */
 		  this.mockMvc.perform(
-	        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl("projectId1")).
+	        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(projectId)).
 	        		contentType(MediaType.APPLICATION_JSON_VALUE).
 	        		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
 	        		)./*andDo(print()).*/
@@ -104,6 +109,49 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 		  verifyNoInteractions(mockedProjectUpdateWhiteListService);
 		/* @formatter:on */
 	}
+	
+	@Test
+	public void when_validator_marks_no_errors___calling_update_project_metadata_calls_update_service_and_returns_http_200() throws Exception {
+
+		/* execute + test @formatter:off */
+        this.mockMvc.perform(
+        		post(https(PORT_USED).buildUpdateProjectMetaData(projectId)).
+        		contentType(MediaType.APPLICATION_JSON_VALUE).
+        		content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
+        		)./*andDo(print()).*/
+        			andExpect(status().isOk()
+        		);
+
+		verify(mockedProjectUpdateMetaDataService).
+			updateProjectMetaData(projectId,
+				Arrays.asList(new ProjectMetaData("key1", "value1"), new ProjectMetaData("key2", "value2")));
+		/* @formatter:on */
+	}
+
+	@Test
+	public void when_validator_marks_errors___calling_update_project_metadata_never_calls_update_service_but_returns_http_400() throws Exception {
+		/* prepare */
+		doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Errors errors = invocation.getArgument(1);
+                errors.reject("testerror");
+                return null;
+            }
+        }).when(mockedValidator).validate(any(ProjectJsonInput.class), any(Errors.class));
+
+
+		/* execute + test @formatter:off */
+		  this.mockMvc.perform(
+	        		post(https(PORT_USED).buildUpdateProjectMetaData("projectId1")).
+	        		contentType(MediaType.APPLICATION_JSON_VALUE).
+	        		content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
+	        		)./*andDo(print()).*/
+	        			andExpect(status().isBadRequest()
+	        		);
+
+		  verifyNoInteractions(mockedProjectUpdateMetaDataService);
+		/* @formatter:on */
+	}
 
 	@TestConfiguration
 	@Profile(Profiles.TEST)
@@ -112,4 +160,5 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 	}
 
+	
 }

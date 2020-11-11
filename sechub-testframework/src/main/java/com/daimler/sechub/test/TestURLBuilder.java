@@ -313,6 +313,10 @@ public class TestURLBuilder {
     public String buildUpdateProjectWhiteListUrl(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
     }
+    
+    public String buildUpdateProjectMetaData(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
+    }
 
     public String buildAdminDeletesProject(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId);

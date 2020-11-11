@@ -26,6 +26,7 @@ import com.daimler.sechub.domain.administration.project.ProjectJsonInput.Project
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectMetaData;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseUpdateProjectWhitelist;
 
 /**
@@ -48,6 +49,9 @@ public class ProjectUpdateAdministrationRestController {
 
 	@Autowired
 	private ProjectUpdateWhitelistService updateProjectWhitelistService;
+	
+	@Autowired
+	private ProjectUpdateMetaDataService updateProjectMetaDataService;
 
 	/* @formatter:off */
 	@UseCaseUpdateProjectWhitelist(@Step(number=1,name="Rest call",description="White list will be updated",needsRestDoc=true))
@@ -65,6 +69,19 @@ public class ProjectUpdateAdministrationRestController {
 		updateProjectWhitelistService.updateProjectWhitelist(projectId,whiteList);
 	}
 
+	@UseCaseUpdateProjectMetaData(@Step(number=1,name="Rest call",description="MetaData will be updated",needsRestDoc=true))
+	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_METADATA, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+	public void updateProjectMetaData(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name="projectId") String projectId) {
+		/* @formatter:on */
+		Optional<List<ProjectMetaData>> projectMetaData = input.getMetaData();
+		if (!projectMetaData.isPresent()) {
+			return;
+		}
+		
+		List<ProjectMetaData> metaData = projectMetaData.get();
+		
+		updateProjectMetaDataService.updateProjectMetaData(projectId, metaData);
+	}	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

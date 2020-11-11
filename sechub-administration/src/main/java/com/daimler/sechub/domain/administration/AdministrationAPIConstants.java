@@ -88,6 +88,7 @@ public class AdministrationAPIConstants{
 	public static final String API_SHOW_PROJECT_DETAILS = API_ADMINISTRATION+"project/{projectId}";
 	public static final String API_DELETE_PROJECT= API_ADMINISTRATION+"project/{projectId}";
 	public static final String API_UPDATE_PROJECT_WHITELIST=API_ADMINISTRATION+"project/{projectId}/whitelist";
+	public static final String API_UPDATE_PROJECT_METADATA=API_ADMINISTRATION+"project/{projectId}/metadata";
 
 	public static final String API_LIST_JOBS_RUNNING = API_ADMINISTRATION+"jobs/running";
 	

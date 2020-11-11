@@ -24,8 +24,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class ProjectMessage implements JSONable<ProjectMessage> {
 
 	private Set<URI> whitelist = new LinkedHashSet<>();
-	
-	private Map<String, String> metaData = new HashMap<>();
 
 	private String projectId;
 
@@ -83,14 +81,6 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 		return whitelist;
 	}
 	
-	public void setMetaData(Map<String, String> metaData) {
-		this.metaData = metaData;
-	}
-	
-	public Map<String, String> getMetaData() {
-		return metaData;
-	}
-
 	public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
 		this.projectActionTriggeredBy = projectActionTriggeredBy;
 	}

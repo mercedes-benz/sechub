@@ -6,7 +6,6 @@ public class ProjectMetaData implements Serializable {
 
 	private static final long serialVersionUID = -721445637539759118L;
 	
-	private String projectId;
 	private String key;
 	private String value;
 	
@@ -14,14 +13,9 @@ public class ProjectMetaData implements Serializable {
 		// jpa only
 	}
 	
-	public ProjectMetaData(String projectId, String key, String value) {
-		this.projectId = projectId;
+	public ProjectMetaData(String key, String value) {
 		this.key = key;
 		this.value = value;
-	}
-	
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
 	}
 	
 	public void setKey(String key) {
@@ -30,10 +24,6 @@ public class ProjectMetaData implements Serializable {
 	
 	public void setValue(String value) {
 		this.value = value;
-	}
-	
-	public String getProjectId() {
-		return projectId;
 	}
 	
 	public String getKey() {
@@ -67,7 +57,16 @@ public class ProjectMetaData implements Serializable {
 		
 		ProjectMetaData other = (ProjectMetaData) obj;
 		
-		return other.projectId.equals(projectId) && other.key.equals(key) && other.value.equals(value);  
+		if (other.key == null || other.value == null) {
+			return false;
+		}
+		
+		return other.key.equals(key) && other.value.equals(value);  
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectMetaData [key=" + key + ", value=" + value + "]";
 	}
 
 }

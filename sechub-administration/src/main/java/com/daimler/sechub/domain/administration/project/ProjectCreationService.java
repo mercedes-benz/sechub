@@ -99,14 +99,14 @@ public class ProjectCreationService {
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 		
 		
-		metaData.stream().forEach(entry -> project.metaData.add(new ProjectMetaDataEntry(entry.getProjectId(), entry.getKey(), entry.getValue())));
+		metaData.stream().forEach(entry -> project.metaData.add(new ProjectMetaDataEntry(project.id, entry.getKey(), entry.getValue())));
 
 		Map<String, String> messageMetaDataMap = metaData.stream().collect(Collectors.toMap(key -> key.getKey(), value -> value.getValue()));
 		
 		/* store */
 		persistenceService.saveInOwnTransaction(project);
 
-		sendProjectCreatedEvent(projectId, whitelist, messageMetaDataMap);
+		sendProjectCreatedEvent(projectId, whitelist);
 		sendRefreshUserAuth(ownerUser);
 
 	}
@@ -117,12 +117,11 @@ public class ProjectCreationService {
 	}
 
 	@IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
-	private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist, Map<String, String> metaData) {
+	private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
 		DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
 		ProjectMessage message = new ProjectMessage();
 		message.setProjectId(projectId);
 		message.setWhitelist(whitelist);
-		message.setMetaData(metaData);
 		
 		request.set(MessageDataKeys.PROJECT_CREATION_DATA,message);
 
