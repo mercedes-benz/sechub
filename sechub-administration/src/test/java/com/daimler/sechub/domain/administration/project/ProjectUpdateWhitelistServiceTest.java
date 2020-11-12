@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -38,6 +41,8 @@ public class ProjectUpdateWhitelistServiceTest {
 	private Project project;
 	private DomainMessageService eventBus;
 	private URIValidation uriValidation;
+	
+	private final String projectId = "projectId";
 
 	@Before
 	public void before() throws Exception {
@@ -47,15 +52,15 @@ public class ProjectUpdateWhitelistServiceTest {
 		eventBus = mock(DomainMessageService.class);
 		uriValidation = mock(URIValidation.class);
 
-		serviceToTest.repository=repository;
-		serviceToTest.auditLog=mock(AuditLogService.class);
-		serviceToTest.assertion=mock(UserInputAssertion.class);
-		serviceToTest.eventBus=eventBus;
-		serviceToTest.uriValidation=uriValidation;
-		serviceToTest.logSanitizer=mock(LogSanitizer.class);
+		serviceToTest.repository = repository;
+		serviceToTest.auditLog = mock(AuditLogService.class);
+		serviceToTest.assertion = mock(UserInputAssertion.class);
+		serviceToTest.eventBus = eventBus;
+		serviceToTest.uriValidation = uriValidation;
+		serviceToTest.logSanitizer = mock(LogSanitizer.class);
 
 		project = mock(Project.class);
-		whitelist=new LinkedHashSet<>();
+		whitelist = new LinkedHashSet<>();
 		whitelist.add(new URI("127.0.0.1"));
 		when(project.getWhiteList()).thenReturn(whitelist);
 		when(uriValidation.validate(any())).thenReturn(new ValidationResult());
@@ -68,20 +73,20 @@ public class ProjectUpdateWhitelistServiceTest {
 		expectedException.expect(NotFoundException.class);
 
 		/* prepare*/
-		when(repository.findById("projectId")).thenReturn(Optional.empty());
+		when(repository.findById(projectId)).thenReturn(Optional.empty());
 
 		/* execute */
-		serviceToTest.updateProjectWhitelist("projectId", null);
+		serviceToTest.updateProjectWhitelist(projectId, null);
 
 	}
 
 	@Test
 	public void project_found__but_uris_empty_updates_with_empty_list() {
 		/* prepare*/
-		when(repository.findById("projectId")).thenReturn(Optional.of(project));
+		when(repository.findById(projectId)).thenReturn(Optional.of(project));
 
 		/* execute */
-		serviceToTest.updateProjectWhitelist("projectId", Collections.emptyList());
+		serviceToTest.updateProjectWhitelist(projectId, Collections.emptyList());
 
 		/* test */
 		verify(repository).save(project);
@@ -93,11 +98,11 @@ public class ProjectUpdateWhitelistServiceTest {
 		/* prepare*/
 		URI uri1 = new URI("http://www.example.org");
 		URI uri2 = new URI("http://www.example.com");
-		when(repository.findById("projectId")).thenReturn(Optional.of(project));
+		when(repository.findById(projectId)).thenReturn(Optional.of(project));
 		List<URI> uris = Arrays.asList(uri1,uri2);
 
 		/* execute */
-		serviceToTest.updateProjectWhitelist("projectId", uris);
+		serviceToTest.updateProjectWhitelist(projectId, uris);
 
 		/* test */
 		verify(repository).save(project);

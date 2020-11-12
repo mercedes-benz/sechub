@@ -3,10 +3,8 @@ package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
@@ -100,8 +98,6 @@ public class ProjectCreationService {
 		
 		
 		metaData.stream().forEach(entry -> project.metaData.add(new ProjectMetaDataEntry(project.id, entry.getKey(), entry.getValue())));
-
-		Map<String, String> messageMetaDataMap = metaData.stream().collect(Collectors.toMap(key -> key.getKey(), value -> value.getValue()));
 		
 		/* store */
 		persistenceService.saveInOwnTransaction(project);
