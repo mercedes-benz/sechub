@@ -80,23 +80,23 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(PROJECT_ID.pathElement()),"projectId1").
-        		contentType(MediaType.APPLICATION_JSON_VALUE).
-        		content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
-        		)./*andDo(print()).*/
+        		post(https(PORT_USED).
+        				buildUpdateProjectWhiteListUrl(PROJECT_ID.pathElement()),"projectId1").
+        				contentType(MediaType.APPLICATION_JSON_VALUE).
+        				content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
+        		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUpdateProjectWhitelist.class),
-        					pathParameters(
-									parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
-								),
-        					requestFields(
-									fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-									fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!")
-									)
-
-        					)
-
-        		);
+        			andDo(
+        				document(RestDocPathFactory.createPath(UseCaseUpdateProjectWhitelist.class),
+	        				pathParameters(
+								parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
+							),
+	    					requestFields(
+	    						fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+								fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!")
+							)
+        				)
+        			);
 
 		/* @formatter:on */
 	}
@@ -107,24 +107,24 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildUpdateProjectMetaData(PROJECT_ID.pathElement()),"projectId1").
-        		contentType(MediaType.APPLICATION_JSON_VALUE).
-        		content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
-        		)./*andDo(print()).*/
+        		post(https(PORT_USED).
+        				buildUpdateProjectMetaData(PROJECT_ID.pathElement()),"projectId1").
+        				contentType(MediaType.APPLICATION_JSON_VALUE).
+        				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
+        		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUpdateProjectMetaData.class),
-        					pathParameters(
-									parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
-								),
-        					requestFields(
-									fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-									fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("Metadata object. Contains key-value pairs."),
-									fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key.")
-									)
-
-        					)
-
-        		);
+        			andDo(
+        				document(RestDocPathFactory.createPath(UseCaseUpdateProjectMetaData.class),
+	        				pathParameters(
+	        					parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
+	        				),
+	        				requestFields(
+								fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+								fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("Metadata object. Contains key-value pairs."),
+								fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key.")
+							)
+        				)
+        			);
 
 		/* @formatter:on */
 	}

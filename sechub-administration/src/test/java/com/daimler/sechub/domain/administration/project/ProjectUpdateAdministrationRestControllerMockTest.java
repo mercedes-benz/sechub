@@ -74,14 +74,15 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(projectId)).
-        		contentType(MediaType.APPLICATION_JSON_VALUE).
-        		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
-        		)./*andDo(print()).*/
+        		post(https(PORT_USED).
+        				buildUpdateProjectWhiteListUrl(projectId)).
+        				contentType(MediaType.APPLICATION_JSON_VALUE).
+        				content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
+        		).
         			andExpect(status().isOk()
         		);
 
-		verify(mockedProjectUpdateWhiteListService).
+        verify(mockedProjectUpdateWhiteListService).
 			updateProjectWhitelist(projectId,
 				Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2")));
 		/* @formatter:on */
@@ -100,16 +101,16 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 
 
 		/* execute + test @formatter:off */
-		  this.mockMvc.perform(
-	        		post(https(PORT_USED).buildUpdateProjectWhiteListUrl(projectId)).
-	        		contentType(MediaType.APPLICATION_JSON_VALUE).
-	        		content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
-	        		)./*andDo(print()).*/
-	        			andExpect(status().isBadRequest()
-	        		);
-
-
-		  verifyNoInteractions(mockedProjectUpdateWhiteListService);
+		  
+		this.mockMvc.perform(
+				post(https(PORT_USED).
+						buildUpdateProjectWhiteListUrl(projectId)).
+	        			contentType(MediaType.APPLICATION_JSON_VALUE).
+	        			content("{\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
+	        	).
+					andExpect(status().isBadRequest());
+  
+		verifyNoInteractions(mockedProjectUpdateWhiteListService);
 		/* @formatter:on */
 	}
 	
@@ -117,17 +118,17 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 	public void when_validator_marks_no_errors___calling_update_project_metadata_calls_update_service_and_returns_http_200() throws Exception {
 
 		/* execute + test @formatter:off */
-        this.mockMvc.perform(
-        		post(https(PORT_USED).buildUpdateProjectMetaData(projectId)).
-        		contentType(MediaType.APPLICATION_JSON_VALUE).
-        		content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
-        		)./*andDo(print()).*/
-        			andExpect(status().isOk()
-        		);
+		this.mockMvc.perform(
+				post(https(PORT_USED).
+						buildUpdateProjectMetaData(projectId)).
+						contentType(MediaType.APPLICATION_JSON_VALUE).
+						content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
+        		).
+					andExpect(status().isOk());
 
 		verify(mockedProjectUpdateMetaDataService).
 			updateProjectMetaData(projectId,
-				Arrays.asList(new ProjectMetaData("key1", "value1"), new ProjectMetaData("key2", "value2")));
+					Arrays.asList(new ProjectMetaData("key1", "value1"), new ProjectMetaData("key2", "value2")));
 		/* @formatter:on */
 	}
 
@@ -142,17 +143,16 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
             }
         }).when(mockedValidator).validate(any(ProjectJsonInput.class), any(Errors.class));
 
-
 		/* execute + test @formatter:off */
-		  this.mockMvc.perform(
-	        		post(https(PORT_USED).buildUpdateProjectMetaData("projectId1")).
-	        		contentType(MediaType.APPLICATION_JSON_VALUE).
-	        		content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
-	        		)./*andDo(print()).*/
-	        			andExpect(status().isBadRequest()
-	        		);
+		this.mockMvc.perform(
+				post(https(PORT_USED).
+						buildUpdateProjectMetaData("projectId1")).
+	        			contentType(MediaType.APPLICATION_JSON_VALUE).
+	        			content("{\"metaData\":{\"key1\":\"value1\",\"key2\":\"value2\"}}")
+	        	).
+					andExpect(status().isBadRequest());
 
-		  verifyNoInteractions(mockedProjectUpdateMetaDataService);
+		verifyNoInteractions(mockedProjectUpdateMetaDataService);
 		/* @formatter:on */
 	}
 
