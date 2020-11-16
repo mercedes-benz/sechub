@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber">version 0.0.0</span>
+<span id="revnumber"> Server 0.0.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -882,6 +882,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#section-usecase-UC_044">10.4.45. UC_044-User marks false positives for finished sechub job</a></li>
 <li><a href="#section-usecase-UC_045">10.4.46. UC_045-User unmarks existing false positive definitons</a></li>
 <li><a href="#section-usecase-UC_046">10.4.47. UC_046-User fetches false positive configuration of project</a></li>
+<li><a href="#section-usecase-UC_047">10.4.48. UC_047-Admin creates an executor configuration</a></li>
+<li><a href="#section-usecase-UC_048">10.4.49. UC_048-Admin deletes executor configuration</a></li>
+<li><a href="#section-usecase-UC_049">10.4.50. UC_049-Admin fetches executor configuration list</a></li>
+<li><a href="#section-usecase-UC_050">10.4.51. UC_050-Admin fetches executor configuration</a></li>
+<li><a href="#section-usecase-UC_051">10.4.52. UC_051-Admin updates executor configuration setup</a></li>
+<li><a href="#section-usecase-UC_052">10.4.53. UC_052-Admin creates an execution proflie</a></li>
+<li><a href="#section-usecase-UC_053">10.4.54. UC_053-Admin deletes execution profile</a></li>
+<li><a href="#section-usecase-UC_054">10.4.55. UC_054-Admin updates execution profile</a></li>
+<li><a href="#section-usecase-UC_055">10.4.56. UC_055-Admin fetches execution profile</a></li>
+<li><a href="#section-usecase-UC_056">10.4.57. UC_056-Admin fetches execution proflie list</a></li>
+<li><a href="#section-usecase-UC_057">10.4.58. UC_057-Admin assigns execution profile to project</a></li>
+<li><a href="#section-usecase-UC_058">10.4.59. UC_058-Admin unassigns execution profile from project</a></li>
 </ul>
 </li>
 </ul>
@@ -961,11 +973,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.37. User retrieves mock data configuration for project</a></li>
 <li><a href="#admin-updates-mapping-configuration">11.1.38. Admin updates mapping configuration</a></li>
 <li><a href="#admin-fetches-mapping-configuration">11.1.39. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.40. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.41. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.42. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.43. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">11.1.44. Admin checks server version</a></li>
+<li><a href="#admin-creates-an-executor-configuration">11.1.40. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">11.1.41. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">11.1.42. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">11.1.43. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">11.1.44. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-proflie">11.1.45. Admin creates an execution proflie</a></li>
+<li><a href="#admin-deletes-execution-profile">11.1.46. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">11.1.47. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">11.1.48. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-proflie-list">11.1.49. Admin fetches execution proflie list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">11.1.50. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">11.1.51. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.52. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.53. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.54. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.55. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">11.1.56. Admin checks server version</a></li>
 </ul>
 </li>
 </ul>
@@ -1117,6 +1141,9 @@ build pipeline / contionus integration (CI) and helps to provide
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Documentation version: <code>Server 0.0.0-af0db00-dirty-20201116145809</code></p>
+</div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
 </div>
@@ -1641,7 +1668,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2420" height="230">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="720" height="496">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1669,7 +1696,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-prod.svg" alt="gen springprofiles prod" width="881" height="151">
+<img src="images/gen_springprofiles-prod.svg" alt="gen springprofiles prod" width="731" height="496">
 </div>
 <div class="title">Figure 2. Spring profile prod and its explicit/implicit included parts</div>
 </div>
@@ -1678,7 +1705,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1227" height="251">
+<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="731" height="496">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -1691,7 +1718,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">3.1.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1391" height="258">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="706" height="496">
 </div>
 <div class="title">Figure 4. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -2176,8 +2203,55 @@ The system properties described here are <strong>automatically</strong>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Scope 'p'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter check operation is called next. When -1 value is 1 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 's'</caption>
+<caption class="title">Table 11. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2219,7 +2293,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'scan'</caption>
+<caption class="title">Table 12. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2251,7 +2325,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'scheduler'</caption>
+<caption class="title">Table 13. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2293,7 +2367,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'sec'</caption>
+<caption class="title">Table 14. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2315,7 +2389,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'server'</caption>
+<caption class="title">Table 15. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2332,12 +2406,12 @@ The system properties described here are <strong>automatically</strong>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.debug</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contains stacktraces.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contain stacktraces.</p></td>
 </tr>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'storage'</caption>
+<caption class="title">Table 16. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2379,7 +2453,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'system'</caption>
+<caption class="title">Table 17. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2411,7 +2485,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'target'</caption>
+<caption class="title">Table 18. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2457,7 +2531,7 @@ The schedule setup described here is <a href="#section-documentation-in-code">ge
 </table>
 </div>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'scheduler'</caption>
+<caption class="title">Table 19. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -2493,7 +2567,7 @@ The system properties described here are <strong>automatically</strong>
 </table>
 </div>
 <table id="section-gen-config-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'abstract'</caption>
+<caption class="title">Table 20. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2515,7 +2589,7 @@ The system properties described here are <strong>automatically</strong>
 </tbody>
 </table>
 <table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'mocked'</caption>
+<caption class="title">Table 21. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4183,7 +4257,7 @@ listed inside generated messaging diagram(s) <code>gen_domain_messaging_overview
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3063">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging" width="1024" height="3082">
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -4600,7 +4674,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <div class="sect3">
 <h4 id="rest-api">10.1.1. REST API</h4>
 <div class="paragraph">
-<p>Configuration is always done by REST API.</p>
+<p>Configuration can be done by REST API.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4966,7 +5040,7 @@ one domain calls another one.</p>
 <h6 id="diagram">10.3.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="783" height="3063">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="852" height="3082">
 </div>
 </div>
 </div>
@@ -5108,7 +5182,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-batch_job_status">10.3.2.2. Message BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="464" height="116">
+<img src="images/gen_domain_messaging_batch_job_status.svg" alt="Sequence diagram of messaging BATCH_JOB_STATUS" width="437" height="117">
 </div>
 </div>
 </div>
@@ -5116,7 +5190,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_canceled">10.3.2.3. Message JOB_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="782" height="204">
+<img src="images/gen_domain_messaging_job_canceled.svg" alt="Sequence diagram of messaging JOB_CANCELED" width="775" height="205">
 </div>
 </div>
 </div>
@@ -5124,7 +5198,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_done">10.3.2.4. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="530" height="174">
+<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="524" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5156,7 +5230,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_failed">10.3.2.5. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="530" height="174">
+<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="524" height="175">
 </div>
 </div>
 </div>
@@ -5164,7 +5238,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_restart_canceled">10.3.2.6. Message JOB_RESTART_CANCELED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="576" height="174">
+<img src="images/gen_domain_messaging_job_restart_canceled.svg" alt="Sequence diagram of messaging JOB_RESTART_CANCELED" width="567" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5196,7 +5270,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_restart_triggered">10.3.2.7. Message JOB_RESTART_TRIGGERED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="578" height="174">
+<img src="images/gen_domain_messaging_job_restart_triggered.svg" alt="Sequence diagram of messaging JOB_RESTART_TRIGGERED" width="569" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5228,7 +5302,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_results_purged">10.3.2.8. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="541" height="174">
+<img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="526" height="175">
 </div>
 </div>
 </div>
@@ -5236,7 +5310,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_result_purge_done">10.3.2.9. Message JOB_RESULT_PURGE_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="510" height="116">
+<img src="images/gen_domain_messaging_job_result_purge_done.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_DONE" width="481" height="117">
 </div>
 </div>
 </div>
@@ -5244,7 +5318,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_result_purge_failed">10.3.2.10. Message JOB_RESULT_PURGE_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="520" height="116">
+<img src="images/gen_domain_messaging_job_result_purge_failed.svg" alt="Sequence diagram of messaging JOB_RESULT_PURGE_FAILED" width="489" height="117">
 </div>
 </div>
 </div>
@@ -5252,7 +5326,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_started">10.3.2.11. Message JOB_STARTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="578" height="174">
+<img src="images/gen_domain_messaging_job_started.svg" alt="Sequence diagram of messaging JOB_STARTED" width="570" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5284,7 +5358,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-mapping_configuration_changed">10.3.2.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="606" height="174">
+<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="596" height="175">
 </div>
 </div>
 </div>
@@ -5292,7 +5366,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_created">10.3.2.13. Message PROJECT_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="505" height="174">
+<img src="images/gen_domain_messaging_project_created.svg" alt="Sequence diagram of messaging PROJECT_CREATED" width="484" height="175">
 </div>
 </div>
 </div>
@@ -5300,7 +5374,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_deleted">10.3.2.14. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="885" height="233">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="851" height="234">
 </div>
 </div>
 </div>
@@ -5308,7 +5382,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_whitelist_updated">10.3.2.15. Message PROJECT_WHITELIST_UPDATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="605" height="174">
+<img src="images/gen_domain_messaging_project_whitelist_updated.svg" alt="Sequence diagram of messaging PROJECT_WHITELIST_UPDATED" width="607" height="175">
 </div>
 </div>
 </div>
@@ -5316,7 +5390,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_batch_job_status">10.3.2.16. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="686" height="233">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="598" height="234">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5348,7 +5422,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_job_cancelation">10.3.2.17. Message REQUEST_JOB_CANCELATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="554" height="174">
+<img src="images/gen_domain_messaging_request_job_cancelation.svg" alt="Sequence diagram of messaging REQUEST_JOB_CANCELATION" width="511" height="175">
 </div>
 </div>
 </div>
@@ -5356,7 +5430,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_job_restart">10.3.2.18. Message REQUEST_JOB_RESTART</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="550" height="174">
+<img src="images/gen_domain_messaging_request_job_restart.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART" width="531" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5385,7 +5459,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_job_restart_hard">10.3.2.19. Message REQUEST_JOB_RESTART_HARD</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="594" height="174">
+<img src="images/gen_domain_messaging_request_job_restart_hard.svg" alt="Sequence diagram of messaging REQUEST_JOB_RESTART_HARD" width="575" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5414,7 +5488,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_purge_job_results">10.3.2.20. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="613" height="308">
+<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="575" height="310">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5443,7 +5517,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_scheduler_disable_job_processing">10.3.2.21. Message REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="767" height="174">
+<img src="images/gen_domain_messaging_request_scheduler_disable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_DISABLE_JOB_PROCESSING" width="776" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5472,7 +5546,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_scheduler_enable_job_processing">10.3.2.22. Message REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="763" height="174">
+<img src="images/gen_domain_messaging_request_scheduler_enable_job_processing.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_ENABLE_JOB_PROCESSING" width="772" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5501,7 +5575,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_scheduler_status_update">10.3.2.23. Message REQUEST_SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="704" height="174">
+<img src="images/gen_domain_messaging_request_scheduler_status_update.svg" alt="Sequence diagram of messaging REQUEST_SCHEDULER_STATUS_UPDATE" width="722" height="175">
 </div>
 </div>
 </div>
@@ -5509,7 +5583,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">10.3.2.24. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2069" height="349">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="1977" height="351">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5544,7 +5618,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scan_abandonded">10.3.2.25. Message SCAN_ABANDONDED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="467" height="113">
+<img src="images/gen_domain_messaging_scan_abandonded.svg" alt="Sequence diagram of messaging SCAN_ABANDONDED" width="440" height="113">
 </div>
 </div>
 </div>
@@ -5552,7 +5626,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scan_done">10.3.2.26. Message SCAN_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="402" height="116">
+<img src="images/gen_domain_messaging_scan_done.svg" alt="Sequence diagram of messaging SCAN_DONE" width="378" height="117">
 </div>
 </div>
 </div>
@@ -5560,7 +5634,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scan_failed">10.3.2.27. Message SCAN_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="412" height="116">
+<img src="images/gen_domain_messaging_scan_failed.svg" alt="Sequence diagram of messaging SCAN_FAILED" width="386" height="117">
 </div>
 </div>
 </div>
@@ -5568,7 +5642,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_disabled">10.3.2.28. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="920" height="204">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="959" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5597,7 +5671,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scheduler_job_processing_enabled">10.3.2.29. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="916" height="204">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="955" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5626,7 +5700,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scheduler_started">10.3.2.30. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="540" height="174">
+<img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="531" height="175">
 </div>
 </div>
 </div>
@@ -5634,7 +5708,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scheduler_status_update">10.3.2.31. Message SCHEDULER_STATUS_UPDATE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="629" height="174">
+<img src="images/gen_domain_messaging_scheduler_status_update.svg" alt="Sequence diagram of messaging SCHEDULER_STATUS_UPDATE" width="672" height="175">
 </div>
 </div>
 </div>
@@ -5642,7 +5716,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">10.3.2.32. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="424" height="308">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="389" height="310">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5674,7 +5748,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-unsupported_operation">10.3.2.33. Message UNSUPPORTED_OPERATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="520" height="113">
+<img src="images/gen_domain_messaging_unsupported_operation.svg" alt="Sequence diagram of messaging UNSUPPORTED_OPERATION" width="492" height="113">
 </div>
 </div>
 </div>
@@ -5682,7 +5756,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">10.3.2.34. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="204">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="722" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5711,7 +5785,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">10.3.2.35. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1171" height="233">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1132" height="234">
 </div>
 </div>
 </div>
@@ -5719,7 +5793,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_becomes_superadmin">10.3.2.36. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="642" height="174">
+<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="650" height="175">
 </div>
 </div>
 </div>
@@ -5727,7 +5801,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">10.3.2.37. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="633" height="204">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="629" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5756,7 +5830,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">10.3.2.38. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1024" height="262">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="990" height="263">
 </div>
 </div>
 </div>
@@ -5764,7 +5838,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">10.3.2.39. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="879" height="204">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="923" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5793,7 +5867,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_no_longer_superadmin">10.3.2.40. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="665" height="174">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="681" height="175">
 </div>
 </div>
 </div>
@@ -5801,7 +5875,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">10.3.2.41. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="204">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="772" height="205">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5830,7 +5904,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_roles_changed">10.3.2.42. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="546" height="174">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="511" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5865,7 +5939,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_signup_requested">10.3.2.43. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="609" height="174">
+<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="607" height="175">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6132,6 +6206,42 @@ The complete documentation about use cases is generated. If you want to change c
 <li>
 <p><a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration</a></p>
 </li>
+<li>
+<p><a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_052">UC_052-Admin creates an execution proflie</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_054">UC_054-Admin updates execution profile</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_056">UC_056-Admin fetches execution proflie list</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -6181,7 +6291,7 @@ is persisted.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_signup.svg" alt="&quot;Overview of events happening at usecase UC_SIGNUP" width="425" height="215">
+<img src="images/event_overview_uc_signup.svg" alt="&quot;Overview of events happening at usecase UC_SIGNUP" width="413" height="216">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6318,7 +6428,7 @@ is persisted.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_accepts_signup.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ACCEPTS_SIGNUP" width="737" height="432">
+<img src="images/event_overview_uc_admin_accepts_signup.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ACCEPTS_SIGNUP" width="731" height="434">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6774,7 +6884,7 @@ The work itself is triggered/executed here by asynchronous batch operation.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Try to find project annd fail or return job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to find project and fail or return job status</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.daimler.sechub.domain.schedule.SchedulerGetJobStatusService`</em></p></td>
@@ -6940,17 +7050,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanReportResultJSON</code> in class `com.daimler.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanReportResultJSON</code> in class `com.daimler.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -7148,7 +7258,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_assigns_user_to_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ASSIGNS_USER_TO_PROJECT" width="853" height="402">
+<img src="images/event_overview_uc_admin_assigns_user_to_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ASSIGNS_USER_TO_PROJECT" width="836" height="403">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7209,18 +7319,18 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p>
-<p class="tableblock"><em>This step is defined at method <code>assignUserToProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectAssignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user to the project. If user does not have ROLE_USER it will obtain it</p>
+<p class="tableblock"><em>This step is defined at method <code>assignUserToProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectAssignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -7259,7 +7369,7 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_unassigns_user_from_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT" width="894" height="402">
+<img src="images/event_overview_uc_admin_unassigns_user_from_project.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT" width="876" height="403">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7323,22 +7433,22 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
 <p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7477,14 +7587,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -8240,7 +8350,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_disables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING" width="915" height="317">
+<img src="images/event_overview_uc_admin_disables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING" width="888" height="318">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -8301,16 +8411,16 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
-<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
-<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -8349,7 +8459,7 @@ user signup is accepted by admin.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_enables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING" width="907" height="317">
+<img src="images/event_overview_uc_admin_enables_scheduler_job_processing.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING" width="880" height="318">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9086,7 +9196,7 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: accidently restart because job has already finished" width="623" height="287">
+<img src="images/event_overview_uc_admin_restarts_job-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: accidently restart because job has already finished" width="618" height="289">
 </div>
 </div>
 <div class="paragraph">
@@ -9094,7 +9204,7 @@ by the ID, etc. etc. But exact resilience behaviour depends on adapter implement
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="741" height="577">
+<img src="images/event_overview_uc_admin_restarts_job-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB - variant: crashed jvm with product result" width="732" height="579">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9280,7 +9390,7 @@ results because such information was formerly deleted</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job_hard-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: accidently restart because job has already finished" width="670" height="287">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_accidently_restart_because_job_has_already_finished.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: accidently restart because job has already finished" width="664" height="289">
 </div>
 </div>
 <div class="paragraph">
@@ -9288,7 +9398,7 @@ results because such information was formerly deleted</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="795" height="649">
+<img src="images/event_overview_uc_admin_restarts_job_hard-variant_crashed_jvm_with_product_result.svg" alt="&quot;Overview of events happening at usecase UC_ADMIN_RESTARTS_JOB_HARD - variant: crashed jvm with product result" width="780" height="652">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9620,6 +9730,654 @@ This will NOT change any former job report where the false positive to unmark ha
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_046">REST API documentation for usecase UC_046-User fetches false positive configuration of project </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_047">10.4.48. UC_047-Admin creates an executor configuration</h4>
+<div class="paragraph">
+<p>An administrator creates an executor a new configuration entry.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutorConfiguration</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator adds a new product executor configuration by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>addProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service creates a new product executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>createProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.CreateProductExecutorConfigService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_047">REST API documentation for usecase UC_047-Admin creates an executor configuration </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_048">10.4.49. UC_048-Admin deletes executor configuration</h4>
+<div class="paragraph">
+<p>An administrator deletes an executor by removing the configuration entry identified by its uuid</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutorConfiguration</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator deletes an existing product executor configuration by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>removeProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service deletes an existing product executor configuration by its UUID</p>
+<p class="tableblock"><em>This step is defined at method <code>deleteProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.DeleteProductExecutorConfigService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_048">REST API documentation for usecase UC_048-Admin deletes executor configuration </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_049">10.4.50. UC_049-Admin fetches executor configuration list</h4>
+<div class="paragraph">
+<p>An administrator fetches executor configuration list which contains all executor configurations</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationList</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches lsit of existing product executor configurations by calling REST API, will not contain setup information</p>
+<p class="tableblock"><em>This step is defined at method <code>fechProductExecutorConfiguraitonsAsList</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service fetches data and creates a list containing all executor configurations</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchProductExecutorConfigList</code> in class `com.daimler.sechub.domain.scan.product.config.FetchProductExecutorConfigListService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_049">REST API documentation for usecase UC_049-Admin fetches executor configuration list </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_050">10.4.51. UC_050-Admin fetches executor configuration</h4>
+<div class="paragraph">
+<p>An administrator fetches one explicit executor configuration by its uuid.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches setup of an existing product executor configuration by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>fechProductExecutorConfigSetup</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service reads setup information for an existing product executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.FetchProductExecutorConfigService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_050">REST API documentation for usecase UC_050-Admin fetches executor configuration </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_051">10.4.52. UC_051-Admin updates executor configuration setup</h4>
+<div class="paragraph">
+<p>An administrator updateds dedicated executor configuration. The update does change description, enabled state and also used executors, but Will NOT change any associations between profile and projects.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator updates setup for an existing product executor configuration by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorConfigSetup</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_051">REST API documentation for usecase UC_051-Admin updates executor configuration setup </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_052">10.4.53. UC_052-Admin creates an execution proflie</h4>
+<div class="paragraph">
+<p>An administrator creates an execution profile</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator adds a new product execution profile by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>createProfile</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service creates a new product executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>createProductExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.CreateProductExecutionProfileService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_052">REST API documentation for usecase UC_052-Admin creates an execution proflie </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_053">10.4.54. UC_053-Admin deletes execution profile</h4>
+<div class="paragraph">
+<p>An administrator deletes execution profile</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator deletes an existing product execution profile by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>deleteProfile</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service deletes an existing product execution profile by its profile id</p>
+<p class="tableblock"><em>This step is defined at method <code>deleteProductExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.DeleteProductExecutionProfileService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_053">REST API documentation for usecase UC_053-Admin deletes execution profile </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_054">10.4.55. UC_054-Admin updates execution profile</h4>
+<div class="paragraph">
+<p>An administrator updateds dedicated execution profile</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator updates existing profile by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>udpateProfile</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_054">REST API documentation for usecase UC_054-Admin updates execution profile </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_055">10.4.56. UC_055-Admin fetches execution profile</h4>
+<div class="paragraph">
+<p>An administrator fetches details about an execution profile</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches setup of an existing product executor configuration by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>fechProductExecutorConfigSetup</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service reads setup information for an existing product executor configuration</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchProductExecutorConfig</code> in class `com.daimler.sechub.domain.scan.product.config.FetchProductExecutionProfileService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_055">REST API documentation for usecase UC_055-Admin fetches execution profile </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_056">10.4.57. UC_056-Admin fetches execution proflie list</h4>
+<div class="paragraph">
+<p>An administrator fetches execution profile list</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches lsit of all available execution profiles by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchProfileList</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service fetches data and creates a list containing all executor profiles</p>
+<p class="tableblock"><em>This step is defined at method <code>fetchProductExecutionProfileList</code> in class `com.daimler.sechub.domain.scan.product.config.FetchProductExecutionProfileListService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_056">REST API documentation for usecase UC_056-Admin fetches execution proflie list </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_057">10.4.58. UC_057-Admin assigns execution profile to project</h4>
+<div class="paragraph">
+<p>An administrator assigns an execution profile to an existing project</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator adds profile relation to project by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>addProjectToProfile</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Services creates a new association between project id and profile</p>
+<p class="tableblock"><em>This step is defined at method <code>addProjectToProfileRelation</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_057">REST API documentation for usecase UC_057-Admin assigns execution profile to project </a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_058">10.4.59. UC_058-Admin unassigns execution profile from project</h4>
+<div class="paragraph">
+<p>An administrator unassigns an execution profile from a projects.</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator removes profile relation to project by calling REST API</p>
+<p class="tableblock"><em>This step is defined at method <code>removeProjectFromProfile</code> in class `com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Services deletes an existing association between project id and profile</p>
+<p class="tableblock"><em>This step is defined at method <code>removeProjectToProfileRelation</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_058">REST API documentation for usecase UC_058-Admin unassigns execution profile from project </a></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -9849,6 +10607,42 @@ The complete documentation about REST API is generated. If you want to change co
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_038">REST API for UC_038-Admin fetches mapping configuration </a></p>
 </li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_047">REST API for UC_047-Admin creates an executor configuration </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_048">REST API for UC_048-Admin deletes executor configuration </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_049">REST API for UC_049-Admin fetches executor configuration list </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_050">REST API for UC_050-Admin fetches executor configuration </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_051">REST API for UC_051-Admin updates executor configuration setup </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_052">REST API for UC_052-Admin creates an execution proflie </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_053">REST API for UC_053-Admin deletes execution profile </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_054">REST API for UC_054-Admin updates execution profile </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_055">REST API for UC_055-Admin fetches execution profile </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_056">REST API for UC_056-Admin fetches execution proflie list </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_057">REST API for UC_057-Admin assigns execution profile to project </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_058">REST API for UC_058-Admin unassigns execution profile from project </a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -9929,7 +10723,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 22. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9956,7 +10750,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/userId1/membership/projectId1' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/membership/userId1' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -9970,7 +10764,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
+<caption class="title">Table 23. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9997,7 +10791,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/userId1/membership/projectId1' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/membership/userId1' -i -X DELETE \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -10011,7 +10805,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 24. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10091,7 +10885,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. https://localhost:8081/api/admin/user/{userId}</caption>
+<caption class="title">Table 25. https://localhost:8081/api/admin/user/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10127,7 +10921,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 26. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10204,7 +10998,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/f9e2f2cc-3c58-47c3-b362-ad1124222670' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/78de2efa-4988-46b2-bf5c-9d4c69a8df5d' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -10218,7 +11012,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
+<caption class="title">Table 27. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10254,7 +11048,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
+<caption class="title">Table 28. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10369,7 +11163,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 29. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10406,7 +11200,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
+<caption class="title">Table 30. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10537,7 +11331,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
+<caption class="title">Table 31. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10576,7 +11370,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 32. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10669,7 +11463,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 33. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10767,7 +11561,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 34. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10860,7 +11654,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -10978,7 +11772,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11101,7 +11895,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 37. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11233,7 +12027,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 38. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11260,7 +12054,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d0cbed52-c6ee-49bb-8ea7-0db245fbee87/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/cf3d92a4-06f1-4ca9-bd52-dc59e76db888/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -11279,7 +12073,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 39. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11306,7 +12100,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a11df2fa-09ad-44e2-8eb9-f66d5ee72b50/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/4b5e1b24-a5d1-4109-b64c-f295a13da7af/approve' -i -X PUT \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -11320,7 +12114,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 40. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11406,7 +12200,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3f33866f-97c2-41cd-a788-a2fcc572af62' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/7546739d-5855-4e19-803a-cf1e4c6a4af9' -i -X GET \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -11423,7 +12217,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/b12bd28e-acd1-45df-860d-5415538a8981' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/16d7a99a-b1a1-421d-acdd-af9f9065c655' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -11436,7 +12230,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/a7d434ce-1674-4291-80ef-6cbecc207dc1' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/29b7a7fe-e19d-4972-9996-c758a865e445' -i -X GET \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -11452,7 +12246,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 41. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11539,7 +12333,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 42. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11583,7 +12377,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 43. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11817,7 +12611,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 44. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11853,7 +12647,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 45. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11889,7 +12683,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 46. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11991,7 +12785,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/30a551bb-6573-443f-8587-9d1689ee27d6' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/67f9d06f-7c78-48f0-b1fd-0b4f34853e1e' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -12006,7 +12800,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/f008f822-261d-432b-9780-6cd7ec0c2853' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/65c76942-d77e-46f7-8589-deb6324db409' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -12021,7 +12815,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/5e5d88e9-ed5c-4c42-a337-8c8fb227dba4' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/25729cb3-04d8-4cf7-9953-5c30b3589c10' -i -X POST \
     -H 'Content-Type: application/json'</code></pre>
 </div>
 </div>
@@ -12068,7 +12862,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 47. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12181,7 +12975,804 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.40. Admin disables job processing in scheduler</h4>
+<h4 id="admin-creates-an-executor-configuration">11.1.40. Admin creates an executor configuration</h4>
+<div id="section-ucrestdoc-uc-UC_047" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
+</div>
+<div id="section-ucrestdoc-UC_047-default" class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A name for this configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor, per default false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;name&quot;:&quot;PDS gosec config 1&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productXYZ.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value&quot;},{&quot;key&quot;:&quot;example.key2&quot;,&quot;value&quot;:&quot;Another value&quot;}]}}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-deletes-executor-configuration">11.1.41. Admin deletes executor configuration</h4>
+<div id="section-ucrestdoc-uc-UC_048" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
+</div>
+<div id="section-ucrestdoc-UC_048-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 48. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/38314cb2-1373-4bda-8fd8-e020b02d5201' -i -X DELETE \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-executor-configuration-list">11.1.42. Admin fetches executor configuration list</h4>
+<div id="section-ucrestdoc-uc-UC_049" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
+</div>
+<div id="section-ucrestdoc-UC_049-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>executorConfigurationList</code> as an identifier for the list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of the configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of configuration</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executors' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-executor-configuration">11.1.43. Admin fetches executor configuration</h4>
+<div id="section-ucrestdoc-uc-UC_050" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
+</div>
+<div id="section-ucrestdoc-UC_050-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 49. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of this configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bcd3fe18-915a-4a2c-802b-788547e1b3a4' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-updates-executor-configuration-setup">11.1.44. Admin updates executor configuration setup</h4>
+<div id="section-ucrestdoc-uc-UC_051" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
+</div>
+<div id="section-ucrestdoc-UC_051-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 50. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor, per default false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/46a99af8-2515-4a66-9c79-a1cdfe7b9c39' -i -X PUT \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-creates-an-execution-proflie">11.1.45. Admin creates an execution proflie</h4>
+<div id="section-ucrestdoc-uc-UC_052" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution proflie </a></p>
+</div>
+<div id="section-ucrestdoc-UC_052-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 51. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configurations can be linked at creation time as well - see update description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectIds[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Projects can be linked by their ids at creation time as well - see update description</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/new-profile-1' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;description&quot;:&quot;a short description for profile&quot;,&quot;configurations&quot;:[],&quot;projectIds&quot;:[],&quot;enabled&quot;:false}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-deletes-execution-profile">11.1.46. Admin deletes execution profile</h4>
+<div id="section-ucrestdoc-uc-UC_053" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
+</div>
+<div id="section-ucrestdoc-UC_053-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 52. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-to-delete-1' -i -X DELETE \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-updates-execution-profile">11.1.47. Admin updates execution profile</h4>
+<div id="section-ucrestdoc-uc-UC_054" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
+</div>
+<div id="section-ucrestdoc-UC_054-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 53. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add uuid for configuration to use here</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
+    -H 'Content-Type: application/json' \
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;8e99418e-eeb1-45ac-b3f2-275287c8dbd0&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-execution-profile">11.1.48. Admin fetches execution profile</h4>
+<div id="section-ucrestdoc-uc-UC_055" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
+</div>
+<div id="section-ucrestdoc-UC_055-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 54. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].uuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">uuid of configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled state of this config</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].productIdentifier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">executed product</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].executorVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">executor version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectIds[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Projects can be linked by their ids here</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-fetches-execution-proflie-list">11.1.49. Admin fetches execution proflie list</h4>
+<div id="section-ucrestdoc-uc-UC_056" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution proflie list </a></p>
+</div>
+<div id="section-ucrestdoc-UC_056-default" class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>executorProfileList</code> as an identifier for the list</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A profile description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profiles' -i -X GET \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-assigns-execution-profile-to-project">11.1.50. Admin assigns execution profile to project</h4>
+<div id="section-ucrestdoc-uc-UC_057" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_057-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 55. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X POST \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-unassigns-execution-profile-from-project">11.1.51. Admin unassigns execution profile from project</h4>
+<div id="section-ucrestdoc-uc-UC_058" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_058-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 56. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X POST \
+    -H 'Content-Type: application/json'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.52. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -12196,7 +13787,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.41. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.53. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -12211,7 +13802,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.42. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.54. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -12226,7 +13817,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.43. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.55. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -12270,7 +13861,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">11.1.44. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">11.1.56. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -12993,8 +14584,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.0<br>
-Last updated 2020-10-19 13:02:21 UTC
+ Server 0.0.0<br>
 </div>
 </div>
 <style>

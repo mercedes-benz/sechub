@@ -1,65 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="213px" preserveAspectRatio="none" style="width:285px;height:213px;background:#000000;" version="1.1" viewBox="0 0 285 213" width="285px" zoomAndPan="magnify"><defs/><g><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="252" x="5" y="18.5352">Dot Executable: /opt/local/bin/dot</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="134" x="5" y="35.0234">File does not exist</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="268" x="5" y="51.5117">Cannot find Graphviz. You should try</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="68"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="74" x="5" y="84.4883">@startuml</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="52" x="5" y="100.9766">testdot</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="66" x="5" y="117.4648">@enduml</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="133.9531"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="15" x="10" y="150.4414">or</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="166.9297"/><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="220" x="5" y="183.418">java -jar plantuml.jar -testdot</text><text fill="#33FF02" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="0" x="10" y="199.9063"/><!--
 @startuml
 
-abstract class AbstractInstallSetupProductExecutor{
-   # <I extends InstallSetup> I getInstallSetup()
-}
-interface ProductExecutor
-interface InstallSetup{
-    + boolean isAbleToScan(TargetType targetType)
-}
-interface TargetResolver
-class TargetRegistry
-class SecHubWebScanConfiguration
-class SecHubInfrastuctureScanConfiguration
+hide circle
+hide methods
+hide fields
 
-class Target{
-  + getURI()
-  + getIP()
-  + TargetType getType()
-}
-class TargetData{
-    + TargetType getTargetType()
-    + Set<URI> getTargetURIs()
-    + Set<InetAddress> getTargetIPs()
-}
-enum TargetType {
-  INTERNET
-  INTRANET
-  CODE_UPLOAD
-  ILLEGAL
-  UNKNOWN
+package "Domain schedule" as domainScheduler {
+
+    entity "SecHub batch job" as scheduler {
+    }
+
 }
 
-ProductExecutor <|- - AbstractInstallSetupProductExecutor
-AbstractInstallSetupProductExecutor o- - TargetResolver : uses
-AbstractInstallSetupProductExecutor o- - AbstractAdapterConfigBuilder: uses
-AbstractInstallSetupProductExecutor o- - Adapter: calls the adapter with created config
-AbstractInstallSetupProductExecutor "1" - "1" InstallSetup : implementation will \nhave this injected
-AbstractInstallSetupProductExecutor - -> InstallSetup : reads
-AbstractInstallSetupProductExecutor *- - TargetRegistry: creates and uses
+package "Domain product" as domainProduct{
+    entity "Product XYZ" as product {
 
-TargetRegistry "1" *- - "n" Target : contains
-TargetRegistry - -> TargetData : provides
-TargetResolver "creates" - -> Target
-Target *- - TargetType
-Target "1" *- - "0..1" URI
-Target "1" *- - "0..1" InetAdress
-AbstractInstallSetupProductExecutor - -> SecHubConfiguration : reads
+    }
+    entity "Product adapter" as adapter {
+    }
+}
 
-SecHubConfiguration *- - SecHubWebScanConfiguration
-SecHubConfiguration *- - SecHubInfrastuctureScanConfiguration
-SecHubConfiguration *- - SecHubCodeScanConfiguration
+package "Domain scan" as domainScan {
 
-SecHubWebScanConfiguration "1" *- - "n" URI
-SecHubInfrastuctureScanConfiguration "1" *- - "n" URI
-SecHubInfrastuctureScanConfiguration "1" *- - "n" InetAdress
+    entity "Product execution store service" as execService{
+    }
 
-note top of TargetResolver: Resolves information on given IP or URI.\nDetermines also the TargetType.\nSo dedicated installation setup can be used
-note bottom of TargetData: Contains information for a \ndedicated TargetType which\ncan be used to call the adapter
+    entity "Product execution profile" as profile {
 
-note top of AbstractInstallSetupProductExecutor: This abstract implementation is able to automatically call\nadapter for multiple targets with correct setup data.\n\nE.g.a netsparker product executor uses its injected\nNetsparkerInstallationSetup and differs Intranet and \nIntranet by different agentgroups
-note top of InstallSetup : The install setup contains the information about \nservers, usernames, passwords etc. for the\ncalling of the adaper
+        * String **profileId**
+        String Description
+        Set<String> projectIds
+        Set<UUID> configurations
+
+    }
+
+    entity "Product executor config " as config {
+        * UUID **uuid**
+        String name
+    }
+
+
+    entity "Scan service" as scanService {
+
+    }
+
+    entity "Product executor" as executor {
+        ProductIdentifier identifier
+        int version
+    }
+
+}
+
+package "Domain administration" as domainAdministration{
+
+    entity "SecHub project" as project {
+
+        * String **projectId**
+
+    }
+}
+
+
+
+profile "1" - -> "n" config : Profiles can\n reuse same config
+profile "1" ..> "n" project : Not direct related to project, only project id is known
+execService - -> profile : knows
+execService - -> executor : uses executor only \nwhen configured in profile\nand profile matches \nfor project to scan
+executor - -> adapter: uses
+adapter - -> product : calls
+scheduler .> scanService
+scanService -> execService
 @enduml
 
 PlantUML version 1.2018.13(Mon Nov 26 18:11:51 CET 2018)
