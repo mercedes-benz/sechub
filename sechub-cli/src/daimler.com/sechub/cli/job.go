@@ -21,11 +21,11 @@ func createNewSecHubJob(context *Context) {
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
-	HandleError(err)
+	sechubUtil.HandleError(err, ExitCodeFailed)
 
 	var result jobScheduleResult
 	jsonErr := json.Unmarshal(data, &result)
-	HandleError(jsonErr)
+	sechubUtil.HandleError(jsonErr, ExitCodeFailed)
 
 	context.config.secHubJobUUID = result.JobID
 }
@@ -36,7 +36,7 @@ func approveSecHubJob(context *Context) {
 	response := sendWithDefaultHeader("PUT", buildApproveSecHubJobAPICall(context), context)
 
 	_, err := ioutil.ReadAll(response.Body)
-	HandleError(err)
+	sechubUtil.HandleError(err, ExitCodeFailed)
 }
 
 func waitForSecHubJobDoneAndFailOnTrafficLight(context *Context) string {
@@ -83,14 +83,14 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
 
 		data, err := ioutil.ReadAll(response.Body)
-		HandleHTTPError(err)
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 		if context.config.debug {
 			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */
 		err = json.Unmarshal(data, &status)
-		HandleHTTPError(err)
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
 		if status.State == ExecutionStateEnded {
 			done = true

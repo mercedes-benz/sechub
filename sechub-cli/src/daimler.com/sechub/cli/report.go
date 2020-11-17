@@ -89,7 +89,7 @@ func getSecHubJobReport(context *Context) []byte {
 	response := sendWithHeader("GET", buildGetSecHubJobReportAPICall(context), context, header)
 
 	data, err := ioutil.ReadAll(response.Body)
-	HandleHTTPError(err)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub job report: %s", string(data)))
 	return data
