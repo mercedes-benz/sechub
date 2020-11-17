@@ -440,7 +440,7 @@ public class DeveloperAdministration {
     }
 
     public String assignUserToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(userId, projectId));
+        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
     }
 
