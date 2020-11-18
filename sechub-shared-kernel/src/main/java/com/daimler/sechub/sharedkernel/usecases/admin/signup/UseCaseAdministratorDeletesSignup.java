@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_SIGNUP, 
 		group=UseCaseGroup.SIGN_UP,
+		apiName="administratorDeletesSignup",
 		title="Admin deletes user signup", 
 		description="In this usecase the administrator will not accept the self registration done by an user but delete the entry.")
 public @interface UseCaseAdministratorDeletesSignup {

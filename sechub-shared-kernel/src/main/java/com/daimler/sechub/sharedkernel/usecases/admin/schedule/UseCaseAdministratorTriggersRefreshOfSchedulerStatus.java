@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_TRIGGERS_REFRESH_SCHEDULER_STATUS,
 		group=UseCaseGroup.OTHER,
+		apiName="administratorTriggersRefreshOfSchedulerStatus",
 		title="Admin get scheduler status",
 		description="An administrator wants to update information about scheduler status")
 public @interface UseCaseAdministratorTriggersRefreshOfSchedulerStatus {

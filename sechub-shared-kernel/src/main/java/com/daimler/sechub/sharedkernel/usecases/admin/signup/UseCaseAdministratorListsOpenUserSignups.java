@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_LISTS_OPEN_USER_SIGNUPS,
 		group=UseCaseGroup.SIGN_UP,
+		apiName="administratorListsOpenUserSignups",
 		title="Admin lists open user signups", 
 		description="In this usecase the administrator will list the currently unapplied user self registrations/signups.")
 public @interface UseCaseAdministratorListsOpenUserSignups {

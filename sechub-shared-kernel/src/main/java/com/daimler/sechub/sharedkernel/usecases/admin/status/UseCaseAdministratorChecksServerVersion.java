@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CHECKS_SERVER_VERSION,
 		group=UseCaseGroup.OTHER,
+		apiName="adminChecksServerVersion",
 		title="Admin checks server version",
 		description="An administrator checks the current SecHub server version. Only administrators are able to check the server version, because knowing the exact server version makes it easier for penetration tester or attacker to attack the system.")
 public @interface UseCaseAdministratorChecksServerVersion {

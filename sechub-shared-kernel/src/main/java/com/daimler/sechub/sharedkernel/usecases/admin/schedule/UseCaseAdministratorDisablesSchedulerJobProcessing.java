@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DISABLES_SCHEDULER_JOB_PROCESSING,
 		group=UseCaseGroup.OTHER,
+		apiName="administratorDisablesSchedulerJobProcessing",
 		title="Admin disables job processing in scheduler",
 		description="An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster")
 public @interface UseCaseAdministratorDisablesSchedulerJobProcessing {

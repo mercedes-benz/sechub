@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorDeletesExecutorConfiguration",
 		title="Admin deletes executor configuration",
 		description="An administrator deletes an executor by removing the configuration entry identified by its uuid")
 public @interface UseCaseAdministratorDeletesExecutorConfiguration{

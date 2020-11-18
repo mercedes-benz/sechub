@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_LIST_STATUS_INFORMATION,
 		group=UseCaseGroup.OTHER,
+		apiName="adminListsStatusInformation",
 		title="Admin lists status information",
 		description="An administrator fetches current known status information about sechub")
 public @interface UseCaseAdministratorListsStatusInformation {

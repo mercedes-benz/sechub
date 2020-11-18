@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_FETCHES_MAPPING_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorFetchesMappingConfiguration",
 		title="Admin fetches mapping configuration",
 		description="An administrator fetches mapping configuration by its ID.")
 public @interface UseCaseAdministratorFetchesMappingConfiguration{

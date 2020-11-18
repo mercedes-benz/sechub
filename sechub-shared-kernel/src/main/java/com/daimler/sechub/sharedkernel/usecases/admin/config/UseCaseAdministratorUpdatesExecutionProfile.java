@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_UPDATES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorUpdatesExecutionProfile",
 		title="Admin updates execution profile",
 		description="An administrator updateds dedicated execution profile")
 public @interface UseCaseAdministratorUpdatesExecutionProfile{

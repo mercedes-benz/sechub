@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_RECEIVES_NOTIFICATOIN_ABOUT_CLUSTER_MEMBER_START,
 		group=UseCaseGroup.TECHNICAL,
+		apiName="adminReceivesSchedulerStartNotification", //TODO: Rename
 		title="Admin receives notification about start of a new scheduler instance",
 		description="admin/notification_about_scheduler_start.adoc")
 public @interface UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart {

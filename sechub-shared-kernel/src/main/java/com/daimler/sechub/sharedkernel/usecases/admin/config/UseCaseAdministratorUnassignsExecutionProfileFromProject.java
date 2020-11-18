@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_UNASSIGNS_EXECUTION_PROFILE_FROM_PROJECT,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorUnassignsExecutionProfileFromProject",
 		title="Admin unassigns execution profile from project",
 		description="An administrator unassigns an execution profile from a projects.")
 public @interface UseCaseAdministratorUnassignsExecutionProfileFromProject{

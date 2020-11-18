@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_USER,
 		group=UseCaseGroup.USER_ADMINISTRATION,
+		apiName="adminDeletesUser",
 		title="Admin deletes a user",
 		description="admin/deleteUser.adoc")
 public @interface UseCaseAdministratorDeletesUser {

@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CREATES_PROJECT, 
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="administratorCreatesProject",
 		title="Admin creates a project", 
 		description="project/admin_creates_project.adoc")
 public @interface UseCaseAdministratorCreatesProject {

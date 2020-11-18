@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_GRANTS_ADMIN_RIGHT_TO_ANOTHER_USER,
 		group=UseCaseGroup.USER_ADMINISTRATION,
+		apiName="adminGrantsAdminRightsToUser",
 		title="Admin grants admin rights to user",
 		description="An administrator grants admin rights to another user. So this user will become also an administrator.")
 public @interface UseCaseAdministratorGrantsAdminRightsToUser {

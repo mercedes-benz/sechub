@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_LISTS_ALL_RUNNING_JOBS,
 		group=UseCaseGroup.JOB_ADMINISTRATION,
+		apiName="adminListsAllRunningJobs",
 		title="Admin lists all running jobs",
 		description="job/admin_lists_all_running_jobs.adoc")
 public @interface UseCaseAdministratorListsAllRunningJobs {

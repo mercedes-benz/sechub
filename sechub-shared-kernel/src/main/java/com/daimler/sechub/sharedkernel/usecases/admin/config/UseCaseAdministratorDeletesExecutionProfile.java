@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorDeletesExecutionProfile",
 		title="Admin deletes execution profile",
 		description="An administrator deletes execution profile")
 public @interface UseCaseAdministratorDeletesExecutionProfile{

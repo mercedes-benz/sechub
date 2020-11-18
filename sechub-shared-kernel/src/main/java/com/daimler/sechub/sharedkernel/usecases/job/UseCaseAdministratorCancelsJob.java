@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CANCELS_JOB,
 		group=UseCaseGroup.JOB_ADMINISTRATION,
+		apiName="adminCancelsJob",
 		title="Admin cancels a job",
 		description="Administrator does cancel a job by its Job UUID")
 public @interface UseCaseAdministratorCancelsJob {

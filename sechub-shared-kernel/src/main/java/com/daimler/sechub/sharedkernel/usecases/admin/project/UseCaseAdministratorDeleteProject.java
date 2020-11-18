@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DELETES_PROJECT, 
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="administratorDeleteProject",
 		title="Admin deletes a project", 
 		description="project/admin_deletes_project.adoc")
 public @interface UseCaseAdministratorDeleteProject {

@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_UPDATES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorUpdatesExecutorConfig",
 		title="Admin updates executor configuration setup",
 		description="An administrator updateds dedicated executor configuration. The update does change description, enabled state and also used executors, but Will NOT change any associations between profile and projects.")
 public @interface UseCaseAdministratorUpdatesExecutorConfig{

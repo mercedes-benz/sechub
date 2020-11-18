@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_LISTS_ALL_PROJECTS, 
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="administratorListsAllProjects",
 		title="Admin lists all projects", 
 		description="An administrator downloads a json file containing all project ids")
 public @interface UseCaseAdministratorListsAllProjects {

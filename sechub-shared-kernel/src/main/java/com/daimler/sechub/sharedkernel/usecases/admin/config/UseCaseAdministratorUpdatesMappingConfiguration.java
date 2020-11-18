@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_UPDATES_MAPPING_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorUpdatesMappingConfiguration",
 		title="Admin updates mapping configuration",
 		description="An administrator changes mapping configuration. Mappings represents a generic mechanism to replace a given string, matched by configured regular expression pattern with a replacement string. Some of the mappings are used for adapter behaviour")
 public @interface UseCaseAdministratorUpdatesMappingConfiguration{

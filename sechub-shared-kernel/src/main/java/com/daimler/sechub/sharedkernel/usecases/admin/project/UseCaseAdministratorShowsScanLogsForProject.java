@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_USER_SHOWS_PROJECT_SCAN_INFO,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="administratorShowsScanLogsForProject",
 		title="Admin shows scan logs for project",
 		description="An admin downloads a json file containing log for scans of project"
 					)

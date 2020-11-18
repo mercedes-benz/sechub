@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_ENABLES_SCHEDULER_JOB_PROCESSING,
 		group=UseCaseGroup.OTHER,
+		apiName="administratorEnablesSchedulerJobProcessing",
 		title="Admin enables scheduler job processing",
 		description="An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.")
 public @interface UseCaseAdministratorEnablesSchedulerJobProcessing {

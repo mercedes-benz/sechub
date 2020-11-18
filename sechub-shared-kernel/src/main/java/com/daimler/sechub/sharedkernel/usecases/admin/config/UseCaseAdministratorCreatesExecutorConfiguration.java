@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CREATES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorCreatesExecutorConfiguration",
 		title="Admin creates an executor configuration",
 		description="An administrator creates an executor a new configuration entry.")
 public @interface UseCaseAdministratorCreatesExecutorConfiguration{

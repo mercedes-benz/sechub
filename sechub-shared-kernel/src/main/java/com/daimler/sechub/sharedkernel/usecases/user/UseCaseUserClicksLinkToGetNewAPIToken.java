@@ -18,6 +18,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_CLICKS_LINK_TO_GET_NEW_API_TOKEN,
 		group=UseCaseGroup.USER_PROFILE,
+		apiName="userGetNewAPIToken",
 		title="User clicks link to get new api token",
 		description="user/clicks_link_to_get_new_api_token.adoc")
 public @interface UseCaseUserClicksLinkToGetNewAPIToken {

@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_DOWNLOADS_FULL_DETAILS_ABOUT_SCAN_JOB,
 		group=UseCaseGroup.USER_ADMINISTRATION,
+		apiName="administratorDownloadsFullScanDataForJob",
 		title="Admin downloads all details about a scan job",
 		description="An administrator downloads a zip file containing full details of a scan. "+
 		"Main reason for this use case is for debugging when there are problems with security products."+

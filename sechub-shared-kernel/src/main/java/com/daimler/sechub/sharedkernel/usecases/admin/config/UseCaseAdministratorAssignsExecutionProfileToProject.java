@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_EXECUTION_PROFILE_TO_PROJECT,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorAssignsExecutionProfileToProject",
 		title="Admin assigns execution profile to project",
 		description="An administrator assigns an execution profile to an existing project")
 public @interface UseCaseAdministratorAssignsExecutionProfileToProject{

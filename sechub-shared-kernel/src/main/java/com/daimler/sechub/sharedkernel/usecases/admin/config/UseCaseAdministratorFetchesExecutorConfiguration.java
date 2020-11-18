@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTOR_CONFIGURATION,
 		group=UseCaseGroup.CONFIGURATION,
+		apiName="administratorFetchesExecutorConfiguration",
 		title="Admin fetches executor configuration",
 		description="An administrator fetches one explicit executor configuration by its uuid.")
 public @interface UseCaseAdministratorFetchesExecutorConfiguration{

@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_LISTS_ALL_ACCEPTED_USERS,
 		group=UseCaseGroup.USER_ADMINISTRATION,
+		apiName="adminListsAllUsers",
 		title="Admin lists all users", 
 		description="An administrator downloads a json file containing all user ids")
 public @interface UseCaseAdministratorListsAllUsers {

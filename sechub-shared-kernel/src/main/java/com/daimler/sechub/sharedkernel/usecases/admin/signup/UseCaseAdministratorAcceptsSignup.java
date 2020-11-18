@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 id = UseCaseIdentifier.UC_ADMIN_ACCEPTS_SIGNUP,
 group = UseCaseGroup.SIGN_UP,
+apiName = "administratorAcceptsSignup",
 title = "Admin applies self registration", 
 description = "In this usecase the administrator will accept the self registration done by an user.")
 public @interface UseCaseAdministratorAcceptsSignup {

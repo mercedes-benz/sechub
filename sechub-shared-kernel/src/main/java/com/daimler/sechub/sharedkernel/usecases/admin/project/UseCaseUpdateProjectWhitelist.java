@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_UPDATE_PROJECT_WHITELIST, 
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="updateProjectWhitelist",
 		title="Update project whitelist", 
 		description="project/admin_creates_project.adoc")
 public @interface UseCaseUpdateProjectWhitelist {

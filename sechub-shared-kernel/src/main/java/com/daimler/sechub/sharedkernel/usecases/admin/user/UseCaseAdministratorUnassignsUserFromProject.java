@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT,
 		group= {UseCaseGroup.USER_ADMINISTRATION,UseCaseGroup.PROJECT_ADMINISTRATION},
+		apiName="adminUnassignsUserFromProject",
 		title="Admin unassigns user from project", 
 		description="An administrator unassigns an user from a sechub project.")
 public @interface UseCaseAdministratorUnassignsUserFromProject {
