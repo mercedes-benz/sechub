@@ -47,7 +47,7 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 head(https(PORT_USED).pds().buildAnonymousCheckAlive())
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()
                 );
 

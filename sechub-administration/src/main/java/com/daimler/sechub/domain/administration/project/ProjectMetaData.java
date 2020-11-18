@@ -9,7 +9,7 @@ public class ProjectMetaData implements Serializable {
 	private String key;
 	private String value;
 	
-	public ProjectMetaData() {
+	ProjectMetaData() {
 		// jpa only
 	}
 	

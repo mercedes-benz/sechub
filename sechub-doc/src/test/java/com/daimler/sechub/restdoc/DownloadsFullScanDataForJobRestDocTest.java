@@ -89,7 +89,7 @@ public class DownloadsFullScanDataForJobRestDocTest {
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID)).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class)));
 

@@ -132,7 +132,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 	    		post(https(PORT_USED).buildAdminCreatesProductExecutorConfig()).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(configFromUser))
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesExecutorConfiguration.class),
@@ -178,7 +178,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                 put(https(PORT_USED).buildAdminUpdatesProductExecutorConfig(UUID_PARAMETER.pathElement()),randomUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(configFromUser))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesExecutorConfig.class),
                                 requestFields(
@@ -230,7 +230,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildAdminFetchesProductExecutorConfig(UUID_PARAMETER.pathElement()),uuid).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutorConfiguration.class),
                                 responseFields(
@@ -266,7 +266,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 delete(https(PORT_USED).buildAdminDeletesProductExecutorConfig(UUID_PARAMETER.pathElement()),configUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutorConfiguration.class),
                     
@@ -298,7 +298,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildAdminFetchesListOfProductExecutionConfigurations()).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutorConfigurationList.class),
                             responseFields(

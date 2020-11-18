@@ -72,7 +72,7 @@ public class SignupAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsOpenUserSignups.class)
         		)
@@ -89,7 +89,7 @@ public class SignupAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(https(PORT_USED).buildAdminDeletesUserSignUpUrl(USER_ID.pathElement()),"userId1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesSignup.class),
         					pathParameters(

@@ -28,7 +28,7 @@ public class ProjectMetaDataEntry {
 	/* +-----------------------------------------------------------------------+ */
 	public static final String CLASS_NAME = ProjectMetaDataEntry.class.getSimpleName();
 	
-	public ProjectMetaDataEntry() {
+	ProjectMetaDataEntry() {
 		// jpa only
 	}
 	

@@ -79,7 +79,7 @@ public class UserAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(https(PORT_USED).buildAdminDeletesUserUrl("user1"))
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()
         		);
 
@@ -105,7 +105,7 @@ public class UserAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminShowsUserDetailsUrl("user1"))
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.userId", equalTo("user1"))).
         			andExpect(jsonPath("$.email", equalTo("user1@example.org"))).
@@ -127,7 +127,7 @@ public class UserAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUsersUrl())
-        		)./*andDo(print()).*/
+        		).
         			andExpect(jsonPath("$.[0]", equalTo("name1"))).
         			andExpect(jsonPath("$.[1]", equalTo("name2"))).
         			andExpect(status().isOk()
@@ -148,7 +148,7 @@ public class UserAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAdminAcceptsUserSignUpUrl("user1"))
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isCreated()
         		);
 

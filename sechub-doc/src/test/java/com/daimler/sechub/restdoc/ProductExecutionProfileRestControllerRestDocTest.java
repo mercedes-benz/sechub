@@ -118,7 +118,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    		post(https(PORT_USED).buildAdminCreatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(profile))
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isCreated()).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesExecutionProfile.class),
 	    						requestFields(
@@ -159,7 +159,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                 put(https(PORT_USED).buildAdminUpdatesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(profile))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesExecutionProfile.class),
                                 requestFields(
@@ -194,7 +194,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isCreated()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsExecutionProfileToProject.class),
                             pathParameters(
@@ -218,7 +218,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isCreated()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsExecutionProfileFromProject.class),
                             pathParameters(
@@ -268,7 +268,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildAdminFetchesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfile.class),
                                 responseFields(
@@ -307,7 +307,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    this.mockMvc.perform(
                 delete(https(PORT_USED).buildAdminDeletesProductExecutionProfile(PROFILE_ID.pathElement()),profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class),
                             pathParameters(
@@ -345,7 +345,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(https(PORT_USED).buildAdminFetchesListOfProductExecutionProfiles()).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfileList.class),
                             responseFields(

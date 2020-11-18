@@ -126,7 +126,7 @@ public class FalsePositiveRestControllerRestDocTest {
 		contentType(MediaType.APPLICATION_JSON_VALUE).
         content(content)).
 		andExpect(status().isOk()).
-		/*andDo(print()).*/
+		
 		andDo(document(RestDocPathFactory.createPath(UseCaseUserMarksFalsePositivesForJob.class),
 				pathParameters(
 					parameterWithName(PROJECT_ID.paramName()).description("The projectId of the project where users adds false positives for")
@@ -158,7 +158,7 @@ public class FalsePositiveRestControllerRestDocTest {
                 delete(https(PORT_USED).buildUserRemovesFalsePositiveEntryFromProject(PROJECT_ID.pathElement(),JOB_UUID.pathElement(),FINDING_ID.pathElement()),PROJECT1_ID,jobUUID,findingId)
         ).
         andExpect(status().isOk()).
-        /*andDo(print()).*/
+        
         andDo(document(RestDocPathFactory.createPath(UseCaseUserUnmarksFalsePositives.class),
                 pathParameters(
                     parameterWithName(PROJECT_ID.paramName()).description("The project id"),
@@ -225,7 +225,7 @@ public class FalsePositiveRestControllerRestDocTest {
                 get(https(PORT_USED).buildUserFetchesFalsePositiveConfigurationOfProject(PROJECT_ID.pathElement()),PROJECT1_ID)
         ).
         andExpect(status().isOk()).
-        /*andDo(print()).*/
+        
         andDo(document(RestDocPathFactory.createPath(UseCaseUserFetchesFalsePositiveConfigurationOfProject.class),
                 pathParameters(
                     parameterWithName(PROJECT_ID.paramName()).description("The project id")

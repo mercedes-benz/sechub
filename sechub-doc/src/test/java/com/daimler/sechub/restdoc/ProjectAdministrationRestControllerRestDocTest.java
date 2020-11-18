@@ -113,7 +113,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				post(https(PORT_USED).buildAdminCreatesProjectUrl()).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
 				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesProject.class),
 				requestFields(
@@ -136,7 +136,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
-        		/*andDo(print()).*/
+        		
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllProjects.class))).
         			andExpect(status().isOk()
         		);
@@ -153,7 +153,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeleteProject.class),
 				pathParameters(
@@ -172,7 +172,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
 				pathParameters(
@@ -192,7 +192,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsUserFromProject.class),
 				pathParameters(
