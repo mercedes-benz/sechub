@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
@@ -29,7 +30,7 @@ public class ProjectUpdateMetaDataServiceTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private Set<ProjectMetaDataEntry> metaData = new HashSet<>();
+	private Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 	private Project project;
 	
 	private final String projectId = "projectid1";
@@ -49,8 +50,8 @@ public class ProjectUpdateMetaDataServiceTest {
 
 		project = mock(Project.class);
 				
-		metaData.add(new ProjectMetaDataEntry(projectId, "key1", "value1"));
-		metaData.add(new ProjectMetaDataEntry(projectId, "key2", "value2"));
+		metaData.add(new ProjectMetaDataEntity(projectId, "key1", "value1"));
+		metaData.add(new ProjectMetaDataEntity(projectId, "key2", "value2"));
 		
 		when(project.getMetaData()).thenReturn(metaData);
 	}
@@ -72,11 +73,11 @@ public class ProjectUpdateMetaDataServiceTest {
 		/* prepare*/
 		when(repository.findById(projectId)).thenReturn(Optional.of(project));
 
-		List<ProjectMetaData> emptyMetaDataList = Collections.emptyList();
-		List<ProjectMetaDataEntry> emptyMetaDataEntryList = Collections.emptyList();
+		ProjectMetaData emptyMetaData = new ProjectMetaData();
+		List<ProjectMetaDataEntity> emptyMetaDataEntryList = Collections.emptyList();
 		
 		/* execute */
-		serviceToTest.updateProjectMetaData(projectId, emptyMetaDataList);
+		serviceToTest.updateProjectMetaData(projectId, emptyMetaData);
 
 		/* test */
 		verify(metaDataRepository).deleteAll(metaData);
@@ -88,11 +89,14 @@ public class ProjectUpdateMetaDataServiceTest {
 		/* prepare*/
 		when(repository.findById(projectId)).thenReturn(Optional.of(project));
 
-		List<ProjectMetaData> newMetaDataList = Arrays.asList( new ProjectMetaData("key3", "value3"), new ProjectMetaData("key4", "value4"));
-		List<ProjectMetaDataEntry> newMetaDataEntryList = Arrays.asList( new ProjectMetaDataEntry(projectId, "key3", "value3"), new ProjectMetaDataEntry(projectId, "key4", "value4"));
+		ProjectMetaData newMetaData = new ProjectMetaData();
+		newMetaData.getMetaDataMap().put("key3", "value3");
+		newMetaData.getMetaDataMap().put("key4", "value4");
+		
+		List<ProjectMetaDataEntity> newMetaDataEntryList = Arrays.asList( new ProjectMetaDataEntity(projectId, "key3", "value3"), new ProjectMetaDataEntity(projectId, "key4", "value4"));
 		
 		/* execute */
-		serviceToTest.updateProjectMetaData(projectId, newMetaDataList);
+		serviceToTest.updateProjectMetaData(projectId, newMetaData);
 		/* test */
 		verify(metaDataRepository).deleteAll(metaData);
 		verify(metaDataRepository).saveAll(newMetaDataEntryList);

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -89,7 +90,7 @@ public class ProjectAdministrationRestController {
 			whiteListedURIs.addAll(whiteList.getUris());
 		}
 		
-		List<ProjectMetaData> metaData = Arrays.asList();
+		ProjectMetaData metaData = new ProjectMetaData();
 		if (input.getMetaData().isPresent()) {
 			metaData = input.getMetaData().get();
 		}

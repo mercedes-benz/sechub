@@ -43,7 +43,7 @@ import com.daimler.sechub.domain.administration.project.ProjectDetailInformation
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformationService;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
-import com.daimler.sechub.domain.administration.project.ProjectMetaDataEntry;
+import com.daimler.sechub.domain.administration.project.ProjectMetaDataEntity;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
@@ -227,8 +227,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		whiteList.add(new URI("http://www.sechub.example.org"));
 		when(project.getWhiteList()).thenReturn(whiteList);
 		
-		Set<ProjectMetaDataEntry> metaData = new LinkedHashSet<>();
-		ProjectMetaDataEntry entry = new ProjectMetaDataEntry("projectId1", "key1", "value1");
+		Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
+		ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
 		metaData.add(entry);
 		
 		when(project.getMetaData()).thenReturn(metaData);

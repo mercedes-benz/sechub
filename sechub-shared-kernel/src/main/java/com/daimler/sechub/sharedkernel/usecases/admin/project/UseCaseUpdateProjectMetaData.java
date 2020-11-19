@@ -14,10 +14,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_UPDATE_PROJECT_METADATA, 
-		group=UseCaseGroup.PROJECT_ADMINISTRATION,
-		title="Update project metadata", 
-		description="project/admin_creates_project.adoc")
+		id = UseCaseIdentifier.UC_ADMIN_UPDATES_PROJECT_METADATA, 
+		group = UseCaseGroup.PROJECT_ADMINISTRATION,
+		title = "Update project metadata", 
+		description = "project/admin_creates_project.adoc")
 public @interface UseCaseUpdateProjectMetaData {
 	
 	Step value();

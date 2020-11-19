@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
@@ -46,17 +47,17 @@ public class ProjectUpdateMetaDataService {
 			name = "Update project",
 			description = "The service will update the <<section-shared-project, Project metadata>>."))
 	/* @formatter:on */
-	public void updateProjectMetaData(String projectId, @NotNull List<ProjectMetaData> metaData) {
+	public void updateProjectMetaData(String projectId, @NotNull ProjectMetaData metaData) {
 		auditLog.log("triggers update of metadata for project {}. Updated metadata shall be {}", logSanitizer.sanitize(projectId, 30), metaData);
 
 		assertion.isValidProjectId(projectId);
 
 		Optional<Project> found = repository.findById(projectId);
 		if (!found.isPresent()) {
-			throw new NotFoundException("Project '" + projectId + "' does not exist or you have now ");
+			throw new NotFoundException("Project '" + projectId + "' does not exist.");
 		}
 		/*
-		 * TODO Albert Tregnaghi, 2018-09-06: currently we check only role SUPER_ADMIN.
+		 * Currently we check only role SUPER_ADMIN.
 		 * Because super admin is the only role having access. But when we got a project
 		 * owner, the access to this project must be checked too! Here we should use
 		 * permissions instead of roles then
@@ -66,8 +67,8 @@ public class ProjectUpdateMetaDataService {
 		// update is currently a replace action
 		metaDataRepository.deleteAll(project.getMetaData());
 		
-		List<ProjectMetaDataEntry> metaDataEntries = metaData.stream().map(entry -> new ProjectMetaDataEntry(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
+		List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream().map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		
-		metaDataRepository.saveAll(metaDataEntries);
+		metaDataRepository.saveAll(metaDataEntities);
 	}
 }

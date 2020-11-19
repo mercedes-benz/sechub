@@ -32,6 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -126,9 +127,11 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
         		).
 					andExpect(status().isOk());
 
-		verify(mockedProjectUpdateMetaDataService).
-			updateProjectMetaData(projectId,
-					Arrays.asList(new ProjectMetaData("key1", "value1"), new ProjectMetaData("key2", "value2")));
+		ProjectMetaData metaData = new ProjectMetaData();
+		metaData.getMetaDataMap().put("key1", "value1");
+		metaData.getMetaDataMap().put("key2", "value2");
+		
+		verify(mockedProjectUpdateMetaDataService).updateProjectMetaData(projectId, metaData);
 		/* @formatter:on */
 	}
 

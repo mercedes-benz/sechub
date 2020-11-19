@@ -80,7 +80,7 @@ public class Project {
 	Set<URI> whiteList = new HashSet<>();
 
 	@OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = "projectId")
-	Set<ProjectMetaDataEntry> metaData = new HashSet<>();
+	Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 
 	@Version
 	@Column(name = "VERSION")
@@ -97,7 +97,7 @@ public class Project {
 		return whiteList;
 	}
 	
-	public Set<ProjectMetaDataEntry> getMetaData() {
+	public Set<ProjectMetaDataEntity> getMetaData() {
 		return metaData;
 	}
 

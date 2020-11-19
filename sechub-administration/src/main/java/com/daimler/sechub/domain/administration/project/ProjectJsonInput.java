@@ -3,11 +3,10 @@ package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,7 +38,7 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 
 	private Optional<ProjectWhiteList> whiteList = Optional.empty();
 	
-	private Optional<List<ProjectMetaData>> metaData = Optional.empty();
+	private Optional<ProjectMetaData> metaData = Optional.empty();
 
 	@Override
 	public Class<ProjectJsonInput> getJSONTargetClass() {
@@ -88,16 +87,19 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	
 	public void setMetaData(Optional<Map<String, String>> metaData) {
 		
+		
 		if (!metaData.isPresent()) {
 			return;
 		}
 		
-		List<ProjectMetaData> metaDataArray = metaData.get().entrySet().stream().map(entry -> new ProjectMetaData(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+		ProjectMetaData tmpMetaData = new ProjectMetaData();
 		
-		this.metaData = Optional.of(metaDataArray);
+		metaData.get().entrySet().stream().forEach(entry -> tmpMetaData.getMetaDataMap().put(entry.getKey(), entry.getValue()));
+		
+		this.metaData = Optional.ofNullable(tmpMetaData);
 	}
 	
-	public Optional<List<ProjectMetaData>> getMetaData() {
+	public Optional<ProjectMetaData> getMetaData() {
 		return metaData;
 	}
 
@@ -110,5 +112,19 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 			return uris;
 		}
 
+	}
+	
+	public static class ProjectMetaData {
+		
+		private Map<String, String> metaDataMap = new HashMap<>();
+
+		public Map<String, String> getMetaDataMap() {
+			return metaDataMap;
+		}
+
+		@Override
+		public String toString() {
+			return "ProjectMetaData [metaDataMap=" + metaDataMap + "]";
+		}
 	}
 }

@@ -1,18 +1,20 @@
 package com.daimler.sechub.domain.administration.project;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Version;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Column;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
-@IdClass(ProjectMetaData.class)
-@Table(name = ProjectMetaDataEntry.TABLE_NAME)
-public class ProjectMetaDataEntry {
+@IdClass(ProjectMetaDataEntityId.class)
+@Table(name = ProjectMetaDataEntity.TABLE_NAME)
+public class ProjectMetaDataEntity implements Serializable {
+
+	private static final long serialVersionUID = -4875263434537107537L;
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ SQL ......................................+ */
@@ -26,13 +28,13 @@ public class ProjectMetaDataEntry {
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
 	/* +-----------------------------------------------------------------------+ */
-	public static final String CLASS_NAME = ProjectMetaDataEntry.class.getSimpleName();
+	public static final String CLASS_NAME = ProjectMetaDataEntity.class.getSimpleName();
 	
-	ProjectMetaDataEntry() {
+	ProjectMetaDataEntity() {
 		// jpa only
 	}
 	
-	public ProjectMetaDataEntry(String projectId, String key, String value) {
+	public ProjectMetaDataEntity(String projectId, String key, String value) {
 		this.projectId = projectId;
 		this.key = key;
 		this.value = value;
@@ -73,7 +75,7 @@ public class ProjectMetaDataEntry {
 			return false;
 		}
 		
-		ProjectMetaDataEntry other = (ProjectMetaDataEntry) obj;
+		ProjectMetaDataEntity other = (ProjectMetaDataEntity) obj;
 		
 		return other.projectId.equals(projectId) && other.key.equals(key) && other.value.equals(value);  
 	}

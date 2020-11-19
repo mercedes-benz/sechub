@@ -208,7 +208,7 @@ public class DeveloperAdministration {
     public String createNewUserSignup(String name, String email) {
 
         String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-        return getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+        return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
     public String fetchUserList() {
@@ -297,7 +297,7 @@ public class DeveloperAdministration {
 		json.append("}\n");
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
-        return getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
+        return getRestHelper().postJson(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
     }
 
     public String fetchProjectList() {
@@ -373,7 +373,7 @@ public class DeveloperAdministration {
         }
         sb.append("]}}");
 
-        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
     }
     
     public void updateProjectMetaData(String projectId, String result) {
@@ -384,7 +384,7 @@ public class DeveloperAdministration {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
 
-        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
     public String assignUserToProject(String userId, String projectId) {

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.domain.administration.user.UserRepository;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -68,7 +70,7 @@ public class ProjectCreationService {
 			name = "Create project",
 			description = "The service will create the project when not already existing with such name."))
 	/* @formatter:on */
-	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull List<ProjectMetaData> metaData) {
+	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull ProjectMetaData metaData) {
 		LOG.info("Administrator {} triggers create of project:{}, having owner:{}",userContext.getUserId(),projectId,owner);
 
 		assertion.isValidProjectId(projectId);
@@ -96,8 +98,9 @@ public class ProjectCreationService {
 		/** add only accepted/valid URIs - sanitize */
 		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 		
+		List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream().map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		
-		metaData.stream().forEach(entry -> project.metaData.add(new ProjectMetaDataEntry(project.id, entry.getKey(), entry.getValue())));
+		project.metaData.addAll(metaDataEntities);
 		
 		/* store */
 		persistenceService.saveInOwnTransaction(project);

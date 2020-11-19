@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -73,12 +74,12 @@ public class ProjectUpdateAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_UPDATE_PROJECT_METADATA, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void updateProjectMetaData(@Validated @RequestBody ProjectJsonInput input, @PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		Optional<List<ProjectMetaData>> projectMetaData = input.getMetaData();
+		Optional<ProjectMetaData> projectMetaData = input.getMetaData();
 		if (!projectMetaData.isPresent()) {
 			return;
 		}
 		
-		List<ProjectMetaData> metaData = projectMetaData.get();
+		ProjectMetaData metaData = projectMetaData.get();
 		
 		updateProjectMetaDataService.updateProjectMetaData(projectId, metaData);
 	}	

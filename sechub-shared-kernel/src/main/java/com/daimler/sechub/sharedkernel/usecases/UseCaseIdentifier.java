@@ -133,7 +133,7 @@ public enum UseCaseIdentifier {
     UC_ADMIN_UNASSIGNS_EXECUTION_PROFILE_FROM_PROJECT(58),
 
     /* project administration */
-    UC_UPDATE_PROJECT_METADATA(59),
+    UC_ADMIN_UPDATES_PROJECT_METADATA(59),
     ;
 
     /* +-----------------------------------------------------------------------+ */

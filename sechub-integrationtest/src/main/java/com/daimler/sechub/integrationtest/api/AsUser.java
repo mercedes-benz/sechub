@@ -122,13 +122,13 @@ public class AsUser {
 
         String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + user.getUserId() + "\",\r\n" + "		\"emailAdress\":\"" + user.getEmail()
                 + "\"}";
-        getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+        getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
         return this;
 
     }
 
     public AsUser requestNewApiTokenFor(String emailAddress) {
-        getRestHelper().postJSon(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress), "");
+        getRestHelper().postJson(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress), "");
         return this;
     }
 
@@ -176,7 +176,7 @@ public class AsUser {
 		json.append("}\n");
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
-        getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
+        getRestHelper().postJson(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
         return this;
     }
 
@@ -184,7 +184,7 @@ public class AsUser {
     public AsUser createProductExecutionProfile(String profileId, TestExecutionProfile profile) {
         String url = getUrlBuilder().buildAdminCreatesProductExecutionProfile(profileId);
         String json = JSONConverter.get().toJSON(profile);
-        getRestHelper().postJSon(url, json);
+        getRestHelper().postJson(url, json);
         return this;
     }
     
@@ -227,7 +227,7 @@ public class AsUser {
     public UUID createProductExecutorConfig(TestExecutorConfig config) {
         String url = getUrlBuilder().buildAdminCreatesProductExecutorConfig();
         String json = JSONConverter.get().toJSON(config);
-        String result = getRestHelper().postJSon(url, json);
+        String result = getRestHelper().postJson(url, json);
         return UUID.fromString(result);
     }
     
@@ -333,7 +333,7 @@ public class AsUser {
      */
     public AsUser assignUserToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning user:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJSon(getUrlBuilder().buildAdminAssignsUserToProjectUrl(targetUser.getUserId(), project.getProjectId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsUserToProjectUrl(targetUser.getUserId(), project.getProjectId()), "");
         return this;
     }
 
@@ -366,7 +366,7 @@ public class AsUser {
 
         json = json.replaceAll("__folder__", folder);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
-        return getRestHelper().postJSon(url, json);
+        return getRestHelper().postJson(url, json);
     }
 
     private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {
@@ -379,7 +379,7 @@ public class AsUser {
 
         json = json.replaceAll("__acceptedUri1__", acceptedURI1);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
-        return getRestHelper().postJSon(url, json);
+        return getRestHelper().postJson(url, json);
     }
 
     /**
@@ -428,7 +428,7 @@ public class AsUser {
             }
         }
         json = json.replaceAll("__acceptedUris__", sb.toString());
-        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(project.getProjectId()), json);
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(project.getProjectId()), json);
         return this;
 
     }
