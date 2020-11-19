@@ -215,8 +215,9 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 
 ==== Configuration overview
 Basically parameters can be passed to the `{sechub}` client in three ways:
-- commandline options (override below)
-- environment variables (override config file)
+
+- commandline options (overrides below)
+- environment variables (overrides config file)
 - configuration file (default `sechub.json`)
 
 In below table, there is an overview of what can be defined where.
