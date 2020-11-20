@@ -96,7 +96,7 @@ func handleCodeScan(context *Context) {
 	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
 
 	// add default exclude patterns to exclude list
-	if !ignoreDefaultExcludes {
+	if !context.config.ignoreDefaultExcludes {
 		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
 	}
 

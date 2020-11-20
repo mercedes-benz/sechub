@@ -15,26 +15,27 @@ import (
 
 // Config for internal CLI calls
 type Config struct {
-	action             string
-	apiToken           string
-	configFilePath     string
-	configFileRead     bool
-	debug              bool
-	file               string
-	keepTempFiles      bool
-	outputFolder       string
-	projectID          string
-	quiet              bool
-	reportFormat       string
-	secHubJobUUID      string
-	server             string
-	stopOnYellow       bool
-	timeOutNanoseconds int64
-	timeOutSeconds     int
-	trustAll           bool
-	user               string
-	waitNanoseconds    int64
-	waitSeconds        int
+	action                string
+	apiToken              string
+	configFilePath        string
+	configFileRead        bool
+	debug                 bool
+	file                  string
+	ignoreDefaultExcludes bool
+	keepTempFiles         bool
+	outputFolder          string
+	projectID             string
+	quiet                 bool
+	reportFormat          string
+	secHubJobUUID         string
+	server                string
+	stopOnYellow          bool
+	timeOutNanoseconds    int64
+	timeOutSeconds        int
+	trustAll              bool
+	user                  string
+	waitNanoseconds       int64
+	waitSeconds           int
 }
 
 // Initialize Config with default values
@@ -56,9 +57,6 @@ var missingFieldHelpTexts = map[string]string{
 	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
 	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
 }
-
-/* internal stuff - only necessary for development and testing*/
-var ignoreDefaultExcludes = os.Getenv("SECHUB_IGNORE_DEFAULT_EXCLUDES") == "true" // make it possible to switch off default excludes
 
 func init() {
 	prepareOptionsFromCommandline(&configFromInit)
@@ -101,6 +99,8 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubApitokenEnvVar)
 	config.debug =
 		os.Getenv(SechubDebugEnvVar) == "true"
+	config.ignoreDefaultExcludes =
+		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =
 		os.Getenv(SechubKeepTempfilesEnvVar) == "true"
 	config.quiet =

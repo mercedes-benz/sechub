@@ -308,9 +308,11 @@ Additionally to above cmdline options, you can set some values also via environm
 Settings for debugging/client development:
 
 - `SECHUB_DEBUG` +
-  Log as much as possible.
+  When set to `true` then log as much as possible
+- `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
+  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
 - `SECHUB_KEEP_TEMPFILES` +
-  .zip files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server
+  When set to `true` then .zip files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server
 - `SECHUB_WAITTIME_DEFAULT` +
   Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
   Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.

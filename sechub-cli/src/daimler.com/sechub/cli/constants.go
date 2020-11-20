@@ -102,6 +102,9 @@ const SechubApitokenEnvVar = "SECHUB_APITOKEN"
 // SechubDebugEnvVar - environment variable to enable debug output
 const SechubDebugEnvVar = "SECHUB_DEBUG"
 
+// SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultZipExcludeDirPatterns)
+const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"
+
 // SechubKeepTempfilesEnvVar - environment variable to keep temporary files
 const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
 
