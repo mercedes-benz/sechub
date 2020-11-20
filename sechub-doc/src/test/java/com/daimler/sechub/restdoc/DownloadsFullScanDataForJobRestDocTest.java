@@ -2,9 +2,12 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
@@ -61,11 +64,11 @@ public class DownloadsFullScanDataForJobRestDocTest {
 	@MockBean
 	AuditLogService auditLogService;
 
-	private UUID sechubJobUUID;
+	private UUID jobUUID;
 
 	@Before
 	public void before() {
-		sechubJobUUID = UUID.randomUUID();
+		jobUUID = UUID.randomUUID();
 		FullScanData data = new FullScanData();
 		ScanData d = new ScanData();
 		d.productId="productX";
@@ -74,10 +77,10 @@ public class DownloadsFullScanDataForJobRestDocTest {
 		data.allScanData.add(d);
 
 		String config="{}";
-		ProjectScanLog log =new ProjectScanLog("theProject", sechubJobUUID, "spartakus", config);
+		ProjectScanLog log =new ProjectScanLog("theProject", jobUUID, "spartakus", config);
 		data.allScanLogs.add(log);
 
-		when(fullScanDataService.getFullScanData(sechubJobUUID)).thenReturn(data);
+		when(fullScanDataService.getFullScanData(jobUUID)).thenReturn(data);
 	}
 
 	@Test
@@ -87,11 +90,16 @@ public class DownloadsFullScanDataForJobRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID)).
+				get(https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(JOB_UUID.pathElement()),jobUUID).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class)));
+		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class),
+                            pathParameters(
+                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                            )
+		              )
+		     );
 
 		/* @formatter:on */
 	}

@@ -2,11 +2,15 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
+
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -83,22 +87,25 @@ public class AdminshowsScanLogsForProjectRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminFetchesScanLogsForProject(PROJECT1)).
+				get(https(PORT_USED).buildAdminFetchesScanLogsForProject(PROJECT_ID.pathElement()),PROJECT1).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsScanLogsForProject.class),
 				/* we do not document more, because its binary / zip file...*/
-					responseFields(
-							 	fieldWithPath("[]").description("An array of scan log summary entries"),
-							 	fieldWithPath("[].executedBy").description("The user id of the user which executed the scan"),
-					            fieldWithPath("[].started").description("The timestamp when the scan was started"),
-					            fieldWithPath("[].ended").description("The timestamp when the scan was ended"),
-					            fieldWithPath("[].status").description("A status field about scan situation"),
-					            fieldWithPath("[].sechubJobUUID").description("The uuid of corresponding sechub Job.")
-
-							)
-				)
+    					responseFields(
+    							 	fieldWithPath("[]").description("An array of scan log summary entries"),
+    							 	fieldWithPath("[].executedBy").description("The user id of the user which executed the scan"),
+    					            fieldWithPath("[].started").description("The timestamp when the scan was started"),
+    					            fieldWithPath("[].ended").description("The timestamp when the scan was ended"),
+    					            fieldWithPath("[].status").description("A status field about scan situation"),
+    					            fieldWithPath("[].sechubJobUUID").description("The uuid of corresponding sechub Job.")
+    
+    					),
+                        pathParameters(
+                                parameterWithName(PROJECT_ID.paramName()).description("The project Id")
+                        )
+				    )
 
 				);
 

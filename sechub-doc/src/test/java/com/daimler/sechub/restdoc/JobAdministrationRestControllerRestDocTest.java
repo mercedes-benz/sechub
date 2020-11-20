@@ -2,10 +2,13 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -127,15 +130,19 @@ public class JobAdministrationRestControllerRestDocTest {
 		UUID jobUUID = UUID.randomUUID();
 
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminCancelsJob(jobUUID)).
+				post(https(PORT_USED).buildAdminCancelsJob(JOB_UUID.pathElement()),jobUUID).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCancelsJob.class))
+		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCancelsJob.class),
+                    pathParameters(
+                        parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                    )
+		        )
 
-				);
+			);
 
 		/* @formatter:on */
 	}
@@ -148,15 +155,18 @@ public class JobAdministrationRestControllerRestDocTest {
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminRestartsJob(jobUUID)).
+                post(https(PORT_USED).buildAdminRestartsJob(JOB_UUID.pathElement()),jobUUID).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJob.class))
-
-                );
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJob.class),
+                    pathParameters(
+                            parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                    )
+                )
+             );
 
         /* @formatter:on */
     }
@@ -169,15 +179,19 @@ public class JobAdministrationRestControllerRestDocTest {
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminRestartsJobHard(jobUUID)).
+                post(https(PORT_USED).buildAdminRestartsJobHard(JOB_UUID.pathElement()),jobUUID).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJobHard.class))
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJobHard.class),
+                        pathParameters(
+                                parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                        )
+                      )
 
-                );
+             );
 
         /* @formatter:on */
     }

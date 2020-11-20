@@ -187,6 +187,10 @@ public class TestURLBuilder {
     }
 
     public String buildGetJobReportUrl(String projectId, UUID jobUUID) {
+        return buildGetJobReportUrl(projectId, jobUUID.toString());
+    }
+    
+    public String buildGetJobReportUrl(String projectId, String jobUUID) {
         return buildUrl(API_PROJECT, projectId, "report", jobUUID);
     }
 
@@ -341,19 +345,35 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_JOBS, "running");
     }
 
-    public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID sechubJobUUID) {
-        return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
+    public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID jobUUID) {
+        return buildAdminDownloadsZipFileContainingFullScanDataFor(jobUUID.toString());
+    }
+    
+    public String buildAdminDownloadsZipFileContainingFullScanDataFor(String jobUUID) {
+        return buildUrl(API_ADMIN_SCAN, "download", jobUUID);
     }
 
     public String buildAdminCancelsJob(UUID jobUUID) {
+        return buildAdminCancelsJob(jobUUID.toString());
+    }
+    
+    public String buildAdminCancelsJob(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "cancel", jobUUID);
     }
 
     public String buildAdminRestartsJob(UUID jobUUID) {
+        return buildAdminRestartsJob(jobUUID.toString());
+    }
+    
+    public String buildAdminRestartsJob(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart", jobUUID);
     }
 
     public String buildAdminRestartsJobHard(UUID jobUUID) {
+        return buildAdminRestartsJobHard(jobUUID.toString());
+    }
+    
+    public String buildAdminRestartsJobHard(String jobUUID) {
         return buildUrl(API_ADMIN_JOBS, "restart-hard", jobUUID);
     }
 
@@ -620,5 +640,4 @@ public class TestURLBuilder {
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
     }
-
 }

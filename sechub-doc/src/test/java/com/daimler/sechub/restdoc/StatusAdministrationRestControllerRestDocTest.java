@@ -82,18 +82,21 @@ public class StatusAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildGetMapping(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId())).
+				get(https(PORT_USED).buildGetMapping(MAPPING_ID.pathElement()), MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesMappingConfiguration.class),
-				responseFields(
-							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
-							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
-							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-						)
+    				responseFields(
+    							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
+    							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
+    							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
+    						),
+                    pathParameters(
+                            parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
+                        )
 					)
 				);
 
