@@ -92,6 +92,37 @@ const showHelpAction = "help"
 // showVersionAction - name of action to display SecHub client version
 const showVersionAction = "version"
 
+/* ----------------------------------------- */
+/* -------- Environment variable names ----- */
+/* ----------------------------------------- */
+
+// SechubApitokenEnvVar - environment variable to set the SecHub api token
+const SechubApitokenEnvVar = "SECHUB_APITOKEN"
+
+// SechubDebugEnvVar - environment variable to enable debug output
+const SechubDebugEnvVar = "SECHUB_DEBUG"
+
+// SechubKeepTempfilesEnvVar - environment variable to keep temporary files
+const SechubKeepTempfilesEnvVar = "SECHUB_KEEP_TEMPFILES"
+
+// SechubQuietEnvVar - environment variable to set quiet mode
+const SechubQuietEnvVar = "SECHUB_QUIET"
+
+// SechubServerEnvVar - environment variable to set the SecHub server url
+const SechubServerEnvVar = "SECHUB_SERVER"
+
+// SechubProjectEnvVar - environment variable to set the project ID
+const SechubProjectEnvVar = "SECHUB_PROJECT"
+
+// SechubTrustAllEnvVar - environment variable to disable ssl certificate checking
+const SechubTrustAllEnvVar = "SECHUB_TRUSTALL"
+
+// SechubUserIDEnvVar - environment variable to set the SecHub user ID
+const SechubUserIDEnvVar = "SECHUB_USERID"
+
+// SechubWaittimeDefaultEnvVar - environment variable to set poll interval for synchronous scans
+const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
+
 /* ---------------------------------- */
 /* -------- Status ------------------ */
 /* ---------------------------------- */

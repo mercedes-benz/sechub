@@ -49,10 +49,10 @@ var flagHelp bool
 var flagVersion bool
 
 var missingFieldHelpTexts = map[string]string{
-	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable SECHUB_SERVER or in config file.",
-	"user":           "User id is missing. Can be defined with option '-user' or in environment variable SECHUB_USERID or in config file.",
-	"apiToken":       "API Token is missing. Can be defined in environment variable SECHUB_APITOKEN.",
-	"projectID":      "Project id is missing. Can be defined with option '-project' or in environment variable SECHUB_PROJECT or in config file.",
+	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable " + SechubServerEnvVar + " or in config file.",
+	"user":           "User id is missing. Can be defined with option '-user' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
+	"apiToken":       "API Token is missing. Can be defined in environment variable " + SechubApitokenEnvVar + ".",
+	"projectID":      "Project id is missing. Can be defined with option '-project' or in environment variable " + SechubProjectEnvVar + " or in config file.",
 	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
 	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
 }
@@ -67,7 +67,7 @@ func init() {
 
 func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.apiToken,
-		"apitoken", config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable SECHUB_APITOKEN instead!")
+		"apitoken", config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
 	flag.StringVar(&config.configFilePath,
 		"configfile", config.configFilePath, "Path to sechub config file")
 	flag.StringVar(&config.file,
@@ -79,42 +79,42 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.outputFolder,
 		"output", ".", "Output folder for reports etc.")
 	flag.StringVar(&config.projectID,
-		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined but can also be defined in environment variable SECHUB_PROJECT or in config file")
+		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined but can also be defined in environment variable "+SechubProjectEnvVar+" or in config file")
 	flag.StringVar(&config.reportFormat,
 		"reportformat", config.reportFormat, "Output format for reports, supported currently: [html,json].")
 	flag.StringVar(&config.server,
-		"server", config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable SECHUB_SERVER or in config file")
+		"server", config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
 		"stop-on-yellow", config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
 	flag.IntVar(&config.timeOutSeconds,
 		"timeout", config.timeOutSeconds, "Timeout for network communication in seconds.")
 	flag.StringVar(&config.user,
-		"user", config.user, "User id - Mandatory, but can also be defined in environment variable SECHUB_USERID or in config file")
+		"user", config.user, "User id - Mandatory, but can also be defined in environment variable "+SechubUserIDEnvVar+" or in config file")
 	flag.BoolVar(&flagVersion,
 		"version", false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		"wait", config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable SECHUB_WAITTIME_DEFAULT")
+		"wait", config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
 	apiTokenFromEnv :=
-		os.Getenv("SECHUB_APITOKEN")
+		os.Getenv(SechubApitokenEnvVar)
 	config.debug =
-		os.Getenv("SECHUB_DEBUG") == "true"
+		os.Getenv(SechubDebugEnvVar) == "true"
 	config.keepTempFiles =
-		os.Getenv("SECHUB_KEEP_TEMPFILES") == "true"
+		os.Getenv(SechubKeepTempfilesEnvVar) == "true"
 	config.quiet =
-		os.Getenv("SECHUB_QUIET") == "true"
+		os.Getenv(SechubQuietEnvVar) == "true"
 	serverFromEnv :=
-		os.Getenv("SECHUB_SERVER")
+		os.Getenv(SechubServerEnvVar)
 	projectFromEnv :=
-		os.Getenv("SECHUB_PROJECT")
+		os.Getenv(SechubProjectEnvVar)
 	config.trustAll =
-		os.Getenv("SECHUB_TRUSTALL") == "true"
+		os.Getenv(SechubTrustAllEnvVar) == "true"
 	userFromEnv :=
-		os.Getenv("SECHUB_USERID")
+		os.Getenv(SechubUserIDEnvVar)
 	waittimeFromEnv :=
-		os.Getenv("SECHUB_WAITTIME_DEFAULT")
+		os.Getenv(SechubWaittimeDefaultEnvVar)
 
 	if apiTokenFromEnv != "" {
 		config.apiToken = apiTokenFromEnv

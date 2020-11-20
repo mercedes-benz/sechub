@@ -131,21 +131,4 @@ func TestNewSecHubReportFromFile(t *testing.T) {
 	sechubTestUtil.AssertEquals(28, result.Result.Findings[0].Code.Line, t)
 	sechubTestUtil.AssertEquals("Race Condition Format Flaw", result.Result.Findings[1].Name, t)
 	sechubTestUtil.AssertEquals(362, result.Result.Findings[1].CweID, t)
-	fmt.Println(result.JobUUID)
-	fmt.Println(result.TrafficLight)
-	fmt.Println(result.Result.Count)
-	fmt.Println(result.Result.Findings[0].Severity)
-	fmt.Println(result.Result.Findings[0].Type)
-	fmt.Println(result.Result.Findings[0].Code.Line)
-	fmt.Println(result.Result.Findings[1].Name)
-	fmt.Println(result.Result.Findings[1].CweID)
-	// Output:
-	// d9822de2-3415-4b54-8448-bb1635be917e
-	// RED
-	// 0
-	// HIGH
-	// codeScan
-	// 28
-	// Race Condition Format Flaw
-	// 362
 }

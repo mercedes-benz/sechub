@@ -19,23 +19,23 @@ func Example_parseConfigFromEnvironmentVerification() {
 	// PREPARE
 	config := NewConfigByFlags()
 	config.apiToken = "old-apitoken"
-	os.Setenv("SECHUB_APITOKEN", "apitoken-from-environment")
+	os.Setenv(SechubApitokenEnvVar, "apitoken-from-environment")
 	config.debug = false
-	os.Setenv("SECHUB_DEBUG", "true")
+	os.Setenv(SechubDebugEnvVar, "true")
 	config.keepTempFiles = false
-	os.Setenv("SECHUB_KEEP_TEMPFILES", "true")
+	os.Setenv(SechubKeepTempfilesEnvVar, "true")
 	config.quiet = false
-	os.Setenv("SECHUB_QUIET", "true")
+	os.Setenv(SechubQuietEnvVar, "true")
 	config.server = "old-server"
-	os.Setenv("SECHUB_SERVER", "server-from-environment")
+	os.Setenv(SechubServerEnvVar, "server-from-environment")
 	config.projectID = "old.projectID"
-	os.Setenv("SECHUB_PROJECT", "project-from-environment")
+	os.Setenv(SechubProjectEnvVar, "project-from-environment")
 	config.trustAll = false
-	os.Setenv("SECHUB_TRUSTALL", "true")
+	os.Setenv(SechubTrustAllEnvVar, "true")
 	config.user = "old-userID"
-	os.Setenv("SECHUB_USERID", "user-from-environment")
+	os.Setenv(SechubUserIDEnvVar, "user-from-environment")
 	config.waitSeconds = 0
-	os.Setenv("SECHUB_WAITTIME_DEFAULT", "777")
+	os.Setenv(SechubWaittimeDefaultEnvVar, "777")
 	// EXECUTE
 	parseConfigFromEnvironment(config)
 	// TEST

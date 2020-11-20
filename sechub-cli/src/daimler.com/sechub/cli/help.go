@@ -39,9 +39,9 @@ But commandline arguments will override environment variables; Environment varia
 
 	example := `
 Example for starting a scan which will wait until results are availabe and download the report:
-  export SECHUB_USERID=myUserName
-  export SECHUB_APITOKEN=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE
-  export SECHUB_SERVER=https://sechub.example.com:8443
+  export ` + SechubUserIDEnvVar + `=myUserName
+  export ` + SechubApitokenEnvVar + `=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE
+  export ` + SechubServerEnvVar + `=https://sechub.example.com:8443
   sechub scan
 
 Example 'sechub.json' config file which will configure a code scan and also a webscan:

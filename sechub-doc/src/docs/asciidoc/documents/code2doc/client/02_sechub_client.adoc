@@ -6,9 +6,9 @@
 The `{sechub}` client program is an executable binary which can be used from command
 line or in a build tool of your choice.
 
-It's very easy to use and using the client you do not have handle REST-API calls by yourself.
+It's very easy to use and you do not have to handle all the REST-API calls by yourself.
 
-NOTE: Currently the client only supports only basic authentication, but of course always only over https.
+NOTE: Currently the client only supports basic authentication, but of course always only over https.
 
 === Download
 Download the binary for your operating system where you want to trigger `{sechub}` scanning.
