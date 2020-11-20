@@ -10,59 +10,59 @@ public class LoginScriptStepTest {
 	@Test
 	public void step_input_getter_check() {
 		/* prepare */
-		String type = "input";
+		LoginScriptStepAction action = LoginScriptStepAction.INPUT;
 
 		/* test */
-		assertTrue(step(type).isInput());
+		assertTrue(step(action).isInput());
 
-		assertFalse(step(type).isClick());
-		assertFalse(step(type).isPassword());
-		assertFalse(step(type).isUserName());
+		assertFalse(step(action).isClick());
+		assertFalse(step(action).isPassword());
+		assertFalse(step(action).isUserName());
 	}
 
 	@Test
 	public void step_username_getter_check() {
 		/* prepare */
-		String type = "username";
+		LoginScriptStepAction action = LoginScriptStepAction.USERNAME;
 
 		/* test */
-		assertTrue(step(type).isUserName());
+		assertTrue(step(action).isUserName());
 
-		assertFalse(step(type).isClick());
-		assertFalse(step(type).isPassword());
-		assertFalse(step(type).isInput());
+		assertFalse(step(action).isClick());
+		assertFalse(step(action).isPassword());
+		assertFalse(step(action).isInput());
 	}
 
 	@Test
 	public void step_password_getter_check() {
 		/* prepare */
-		String type = "password";
+		LoginScriptStepAction action = LoginScriptStepAction.PASSWORD;
 
 		/* test */
-		assertTrue(step(type).isPassword());
+		assertTrue(step(action).isPassword());
 
-		assertFalse(step(type).isClick());
-		assertFalse(step(type).isInput());
-		assertFalse(step(type).isUserName());
+		assertFalse(step(action).isClick());
+		assertFalse(step(action).isInput());
+		assertFalse(step(action).isUserName());
 	}
 
 	@Test
 	public void step_click_getter_check() {
 		/* prepare */
-		String type = "click";
+		LoginScriptStepAction action = LoginScriptStepAction.CLICK;
 
 		/* test */
-		assertTrue(step(type).isClick());
+		assertTrue(step(action).isClick());
 
-		assertFalse(step(type).isPassword());
-		assertFalse(step(type).isInput());
-		assertFalse(step(type).isUserName());
+		assertFalse(step(action).isPassword());
+		assertFalse(step(action).isInput());
+		assertFalse(step(action).isUserName());
 	}
 
 
-	private LoginScriptStep step(String type) {
+	private LoginScriptStep step(LoginScriptStepAction action) {
 		LoginScriptStep step = new LoginScriptStep();
-		step.type=type;
+		step.action=action;
 		return step;
 	}
 }

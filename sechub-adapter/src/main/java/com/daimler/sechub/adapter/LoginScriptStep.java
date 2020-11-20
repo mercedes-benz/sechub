@@ -7,9 +7,11 @@ import com.daimler.sechub.commons.core.security.CryptoAccess;
 
 public class LoginScriptStep {
 
-	String type;
+	LoginScriptStepAction action;
 	String selector;
-	SealedObject value;
+	String description;
+
+    SealedObject value;
 
 	public String getSelector() {
 		return selector;
@@ -19,23 +21,31 @@ public class LoginScriptStep {
 		return CryptoAccess.CRYPTO_STRING.unseal(value);
 	}
 
-	public String getType() {
-		return type;
+	public LoginScriptStepAction getAction() {
+		return action;
 	}
 
 	public boolean isInput() {
-		return "input".equalsIgnoreCase(type);
+		return "input".equalsIgnoreCase(action.name());
 	}
 
 	public boolean isUserName() {
-		return "username".equalsIgnoreCase(type);
+		return "username".equalsIgnoreCase(action.name());
 	}
 
 	public boolean isPassword() {
-		return "password".equalsIgnoreCase(type);
+		return "password".equalsIgnoreCase(action.name());
 	}
 
 	public boolean isClick() {
-		return "click".equalsIgnoreCase(type);
+		return "click".equalsIgnoreCase(action.name());
 	}
+	
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

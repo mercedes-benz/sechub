@@ -47,8 +47,9 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 			private FormScriptLoginConfig formScriptLoginConfig = new FormScriptLoginConfig();
 
-			public FormScriptLoginStepBuilder addStep(String type) {
-				return new FormScriptLoginStepBuilder(type);
+			public FormScriptLoginStepBuilder addStep(String action) {
+			    
+				return new FormScriptLoginStepBuilder(LoginScriptStepAction.valueOfIgnoreCase(action));
 			}
 
 			@SuppressWarnings("unchecked")
@@ -62,8 +63,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 				private LoginScriptStep step = new LoginScriptStep();
 
-				public FormScriptLoginStepBuilder(String type) {
-					step.type=type;
+				public FormScriptLoginStepBuilder(LoginScriptStepAction action) {
+					step.action=action;
 				}
 
 				public FormScriptLoginStepBuilder select(String css) {

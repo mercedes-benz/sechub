@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.adapter.LoginScriptStep;
+import com.daimler.sechub.adapter.LoginScriptStepAction;
 
 
 
@@ -113,7 +114,7 @@ public class NetsparkerLoginScriptGeneratorTest {
 		when(step2.isPassword()).thenReturn(true);
 
 
-		when(step3.getType()).thenReturn("click");
+		when(step3.getAction()).thenReturn(LoginScriptStepAction.CLICK);
 		when(step3.getSelector()).thenReturn("#buttonfield");
 		when(step3.isClick()).thenReturn(true);
 

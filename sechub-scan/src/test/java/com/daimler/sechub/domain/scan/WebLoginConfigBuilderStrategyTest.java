@@ -76,17 +76,17 @@ public class WebLoginConfigBuilderStrategyTest {
 		Iterator<LoginScriptStep> it = steps.iterator();
 
 		LoginScriptStep step = it.next();
-		assertEquals("input",step.getType());
+		assertEquals("input",step.getAction().toString());
 		assertEquals("#example_login_userid",step.getSelector());
 		assertEquals("user2", step.getValue());
 
 		step = it.next();
-		assertEquals("input",step.getType());
+		assertEquals("input",step.getAction().toString());
 		assertEquals("#example_login_pwd",step.getSelector());
 		assertEquals("pwd2", step.getValue());
 
 		step = it.next();
-		assertEquals("click",step.getType());
+		assertEquals("click",step.getAction().toSt));
 		assertEquals("#example_login_login_button",step.getSelector());
 		assertEquals(null, step.getValue());
 	}
