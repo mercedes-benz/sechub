@@ -22,6 +22,8 @@ func Example_parseConfigFromEnvironmentVerification() {
 	os.Setenv(SechubApitokenEnvVar, "apitoken-from-environment")
 	config.debug = false
 	os.Setenv(SechubDebugEnvVar, "true")
+	config.ignoreDefaultExcludes = false
+	os.Setenv(SechubIgnoreDefaultExcludesEnvVar, "true")
 	config.keepTempFiles = false
 	os.Setenv(SechubKeepTempfilesEnvVar, "true")
 	config.quiet = false
@@ -41,6 +43,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	// TEST
 	fmt.Println(config.apiToken)
 	fmt.Println(config.debug)
+	fmt.Println(config.ignoreDefaultExcludes)
 	fmt.Println(config.keepTempFiles)
 	fmt.Println(config.quiet)
 	fmt.Println(config.server)
@@ -50,6 +53,7 @@ func Example_parseConfigFromEnvironmentVerification() {
 	fmt.Println(config.waitSeconds)
 	// Output:
 	// apitoken-from-environment
+	// true
 	// true
 	// true
 	// true

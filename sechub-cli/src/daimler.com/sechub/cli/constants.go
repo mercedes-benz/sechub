@@ -92,6 +92,25 @@ const showHelpAction = "help"
 // showVersionAction - name of action to display SecHub client version
 const showVersionAction = "version"
 
+/* -------------------------------------- */
+/* -------- Command line options -------- */
+/* -------------------------------------- */
+
+const apitokenOption = "apitoken"
+const configfileOption = "configfile"
+const fileOption = "file"
+const helpOption = "help"
+const jobUUIDOption = "jobUUID"
+const outputOption = "output"
+const projectOption = "project"
+const reportformatOption = "reportformat"
+const serverOption = "server"
+const stopOnYellowOption = "stop-on-yellow"
+const timeoutOption = "timeout"
+const userOption = "user"
+const versionOption = "version"
+const waitOption = "wait"
+
 /* ----------------------------------------- */
 /* -------- Environment variable names ----- */
 /* ----------------------------------------- */

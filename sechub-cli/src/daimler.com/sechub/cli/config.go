@@ -65,33 +65,33 @@ func init() {
 
 func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.apiToken,
-		"apitoken", config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
+		apitokenOption, config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
 	flag.StringVar(&config.configFilePath,
-		"configfile", config.configFilePath, "Path to sechub config file")
+		configfileOption, config.configFilePath, "Path to sechub config file")
 	flag.StringVar(&config.file,
-		"file", "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
+		fileOption, "", "Defines file to read from for actions '"+markFalsePositivesAction+"' or '"+interactiveMarkFalsePositivesAction+"' or '"+unmarkFalsePositivesAction+"'")
 	flag.BoolVar(&flagHelp,
-		"help", false, "Shows help and terminates")
+		helpOption, false, "Shows help and terminates")
 	flag.StringVar(&config.secHubJobUUID,
-		"jobUUID", "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
+		jobUUIDOption, "", "SecHub job uuid - Mandatory for actions '"+getStatusAction+"' or '"+getReportAction+"'")
 	flag.StringVar(&config.outputFolder,
-		"output", ".", "Output folder for reports etc.")
+		outputOption, ".", "Output folder for reports etc.")
 	flag.StringVar(&config.projectID,
-		"project", config.projectID, "SecHub project id - Mandatory, but can also be defined but can also be defined in environment variable "+SechubProjectEnvVar+" or in config file")
+		projectOption, config.projectID, "SecHub project id - Mandatory, but can also be defined but can also be defined in environment variable "+SechubProjectEnvVar+" or in config file")
 	flag.StringVar(&config.reportFormat,
-		"reportformat", config.reportFormat, "Output format for reports, supported currently: [html,json].")
+		reportformatOption, config.reportFormat, "Output format for reports, supported currently: [html,json].")
 	flag.StringVar(&config.server,
-		"server", config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
+		serverOption, config.server, "Server url of sechub server to use - e.g. 'https://sechub.example.com:8443'. Mandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
 	flag.BoolVar(&config.stopOnYellow,
-		"stop-on-yellow", config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
+		stopOnYellowOption, config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
 	flag.IntVar(&config.timeOutSeconds,
-		"timeout", config.timeOutSeconds, "Timeout for network communication in seconds.")
+		timeoutOption, config.timeOutSeconds, "Timeout for network communication in seconds.")
 	flag.StringVar(&config.user,
-		"user", config.user, "User id - Mandatory, but can also be defined in environment variable "+SechubUserIDEnvVar+" or in config file")
+		userOption, config.user, "User id - Mandatory, but can also be defined in environment variable "+SechubUserIDEnvVar+" or in config file")
 	flag.BoolVar(&flagVersion,
-		"version", false, "Shows version info and terminates")
+		versionOption, false, "Shows version info and terminates")
 	flag.IntVar(&config.waitSeconds,
-		"wait", config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
+		waitOption, config.waitSeconds, "Wait time in seconds - Will be used for periodic status checks when action='"+scanAction+"'. Can also be defined in environment variable "+SechubWaittimeDefaultEnvVar)
 }
 
 func parseConfigFromEnvironment(config *Config) {
