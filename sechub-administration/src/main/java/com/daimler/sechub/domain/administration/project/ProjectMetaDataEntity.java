@@ -79,4 +79,9 @@ public class ProjectMetaDataEntity implements Serializable {
 		
 		return other.projectId.equals(projectId) && other.key.equals(key) && other.value.equals(value);  
 	}
+
+    @Override
+    public String toString() {
+        return "ProjectMetaDataEntity [projectId=" + projectId + ", key=" + key + ", value=" + value + ", version=" + version + "]";
+    }	
 }

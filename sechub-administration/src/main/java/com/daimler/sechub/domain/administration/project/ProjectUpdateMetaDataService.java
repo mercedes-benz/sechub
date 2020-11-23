@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
@@ -70,5 +68,5 @@ public class ProjectUpdateMetaDataService {
 		List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream().map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		
 		metaDataRepository.saveAll(metaDataEntities);
-	}
+	}	
 }

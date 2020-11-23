@@ -126,5 +126,32 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 		public String toString() {
 			return "ProjectMetaData [metaDataMap=" + metaDataMap + "]";
 		}
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((metaDataMap == null) ? 0 : metaDataMap.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ProjectMetaData other = (ProjectMetaData) obj;
+            if (metaDataMap == null) {
+                if (other.metaDataMap != null)
+                    return false;
+            } else if (!metaDataMap.equals(other.metaDataMap))
+                return false;
+            return true;
+        }
+		
+		
 	}
 }

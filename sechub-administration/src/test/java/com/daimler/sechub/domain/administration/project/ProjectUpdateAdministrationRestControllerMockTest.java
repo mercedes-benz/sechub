@@ -165,6 +165,4 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
 	}
-
-	
 }
