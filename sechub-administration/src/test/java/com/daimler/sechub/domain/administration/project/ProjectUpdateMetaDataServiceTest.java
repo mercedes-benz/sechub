@@ -23,9 +23,9 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 public class ProjectUpdateMetaDataServiceTest {
 
-	private ProjectUpdateMetaDataService serviceToTest;
+	private ProjectUpdateMetaDataEntityService serviceToTest;
 	private ProjectRepository repository;
-	private ProjectMetaDataRepository metaDataRepository;
+	private ProjectMetaDataEntityRepository metaDataRepository;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -37,10 +37,10 @@ public class ProjectUpdateMetaDataServiceTest {
 
 	@Before
 	public void before() throws Exception {
-		serviceToTest = new ProjectUpdateMetaDataService();
+		serviceToTest = new ProjectUpdateMetaDataEntityService();
 
 		repository = mock(ProjectRepository.class);
-		metaDataRepository = mock(ProjectMetaDataRepository.class);
+		metaDataRepository = mock(ProjectMetaDataEntityRepository.class);
 
 		serviceToTest.repository = repository;
 		serviceToTest.metaDataRepository = metaDataRepository;

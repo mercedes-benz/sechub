@@ -57,7 +57,7 @@ public class ProjectUpdateAdministrationRestControllerMockTest {
 	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 	
 	@MockBean
-	ProjectUpdateMetaDataService mockedProjectUpdateMetaDataService;
+	ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
 
 	@MockBean
 	UpdateProjectInputValidator mockedValidator;

@@ -22,7 +22,7 @@ public class ProjectTransactionService {
 	ProjectRepository projectRepository;
 	
 	@Autowired
-	ProjectMetaDataRepository metaDataRepository;
+	ProjectMetaDataEntityRepository metaDataRepository;
 
 	@Autowired
 	UserRepository userRepository;

@@ -22,7 +22,7 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class ProjectUpdateMetaDataService {
+public class ProjectUpdateMetaDataEntityService {
 
 	@Autowired
 	AuditLogService auditLog;
@@ -31,7 +31,7 @@ public class ProjectUpdateMetaDataService {
 	ProjectRepository repository;
 	
 	@Autowired
-	ProjectMetaDataRepository metaDataRepository;
+	ProjectMetaDataEntityRepository metaDataRepository;
 
 	@Autowired
 	LogSanitizer logSanitizer;
@@ -54,12 +54,7 @@ public class ProjectUpdateMetaDataService {
 		if (!found.isPresent()) {
 			throw new NotFoundException("Project '" + projectId + "' does not exist.");
 		}
-		/*
-		 * Currently we check only role SUPER_ADMIN.
-		 * Because super admin is the only role having access. But when we got a project
-		 * owner, the access to this project must be checked too! Here we should use
-		 * permissions instead of roles then
-		 */
+		
 		Project project = found.get();
 		
 		// update is currently a replace action

@@ -31,7 +31,7 @@ import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateAdministrationRestController;
-import com.daimler.sechub.domain.administration.project.ProjectUpdateMetaDataService;
+import com.daimler.sechub.domain.administration.project.ProjectUpdateMetaDataEntityService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
 import com.daimler.sechub.domain.administration.project.UpdateProjectInputValidator;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -61,7 +61,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 	
 	@MockBean
-	ProjectUpdateMetaDataService mockedProjectUpdateMetaDataService;
+	ProjectUpdateMetaDataEntityService mockedProjectUpdateMetaDataService;
 
 	@MockBean
 	UpdateProjectInputValidator mockedValidator;

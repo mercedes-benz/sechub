@@ -52,7 +52,7 @@ public class ProjectUpdateAdministrationRestController {
 	private ProjectUpdateWhitelistService updateProjectWhitelistService;
 	
 	@Autowired
-	private ProjectUpdateMetaDataService updateProjectMetaDataService;
+	private ProjectUpdateMetaDataEntityService updateProjectMetaDataService;
 
 	/* @formatter:off */
 	@UseCaseUpdateProjectWhitelist(@Step(number=1,name="Rest call",description="White list will be updated",needsRestDoc=true))
