@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD,
 		group=UseCaseGroup.JOB_ADMINISTRATION,
-		apiName="adminRestartsJobHard",
+		apiName="administratorRestartsJobHard",
 		title="Admin restarts a job (hard)",
 		description="job/admin_restarts_job_hard.adoc")
 public @interface UseCaseAdministratorRestartsJobHard {

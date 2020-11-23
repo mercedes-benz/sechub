@@ -17,7 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_REVOKES_ADMIN_RIGHTS_FROM_ANOTHER_ADMIN,
 		group=UseCaseGroup.USER_ADMINISTRATION,
-		apiName="adminRevokesAdminRightsFromAdmin",
+		apiName="administratorRevokesAdminRightsFromAdmin",
 		title="Admin revokes admin rights from an admin",
 		description="An administrator revokes existing admin rights from another administrator.")
 public @interface UseCaseAdministratorRevokesAdminRightsFromAdmin {

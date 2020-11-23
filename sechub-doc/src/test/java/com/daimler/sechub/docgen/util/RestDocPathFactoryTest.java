@@ -29,21 +29,21 @@ public class RestDocPathFactoryTest {
 	    assertEquals("anonymousCheckAlive", identifier);
 	}
     
-    @Test
-    public void create_path__anonymous_check_alive() {      
-        /* execute */
-        String path = RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "Get");
-        
-        /* test */
-        assertEquals("anonymousCheckAlive_get", path);
-    }
-    
-    @Test
-    public void create_path__user_creates_new_job() {      
-        /* execute */
-        String path = RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class, "Code Scan");
-        
-        /* test */
-        assertEquals("userCreatesNewJob_code-scan", path);
-    }
+//    @Test
+//    public void create_path__anonymous_check_alive() {      
+//        /* execute */
+//        String path = RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "Get");
+//        
+//        /* test */
+//        assertEquals("anonymousCheckAlive_get", path);
+//    }
+//    
+//    @Test
+//    public void create_path__user_creates_new_job() {      
+//        /* execute */
+//        String path = RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class, "Code Scan");
+//        
+//        /* test */
+//        assertEquals("userCreatesNewJob_code-scan", path);
+//    }
 }

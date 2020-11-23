@@ -28,14 +28,14 @@ def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
 def generatedSourcesDir = "$buildDir/generated/openapi"
 
 openApiValidate {
-    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    inputSpec = "$specFilePath".toString() //$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
 }
 
 openApiGenerate {
     generatorName = "java"
     
-    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
-    outputDir = "$buildDir/generated".toString()
+    inputSpec = "$specFilePath".toString() //"$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    outputDir = "$rootDir/sechub-client/src/main/java-gen" //.toString()
     apiPackage = "org.openapi.example.api"
     invokerPackage = "org.openapi.example.invoker"
     modelPackage = "org.openapi.example.model"
@@ -88,6 +88,29 @@ task buildJavaClientAll(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+
+sourceSets {
+    main{
+        java {
+           srcDirs 'src/main/java/','src/main/java-gen'   
+        }
+
+    }
+
+}
+
+/**
+ * Create folder for genareted sources
+ */
+tasks.eclipse.dependsOn << {
+  	String sourceFolder = "src/main/java-gen"
+  	def resourceDir = new File(project.projectDir, sourceFolder)
+  		
+  	if( !resourceDir.exists() && ! resourceDir.mkdirs() ) {
+  		logger.info("Not able to create eclipse resource dir: %1",resourceDir);
+  	}
+}
+
 
 
 
