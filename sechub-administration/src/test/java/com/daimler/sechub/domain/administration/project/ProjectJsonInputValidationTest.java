@@ -17,148 +17,144 @@ import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
 public class ProjectJsonInputValidationTest {
 
-	private ProjectJsonInputValidation toTest;
-	private ProjectJsonInput input;
-	private Errors errors;
-	private ApiVersionValidationFactory apiVersionValidationFactory;
-	private ApiVersionValidation apiValidation;
-	private ProjectIdValidation projectIdValidation;
-	private UserIdValidation userIdValidation;
-	private ValidationResult okResult;
-	private ValidationResult failedResult;
-	
+    private ProjectJsonInputValidation toTest;
+    private ProjectJsonInput input;
+    private Errors errors;
+    private ApiVersionValidationFactory apiVersionValidationFactory;
+    private ApiVersionValidation apiValidation;
+    private ProjectIdValidation projectIdValidation;
+    private UserIdValidation userIdValidation;
+    private ValidationResult okResult;
+    private ValidationResult failedResult;
 
-	@Before
-	public void before() throws Exception {
-	    apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
-		apiValidation= mock(ApiVersionValidation.class);
-		projectIdValidation=mock(ProjectIdValidation.class);
-		userIdValidation=mock(UserIdValidation.class);
+    @Before
+    public void before() throws Exception {
+        apiVersionValidationFactory = mock(ApiVersionValidationFactory.class);
+        apiValidation = mock(ApiVersionValidation.class);
+        projectIdValidation = mock(ProjectIdValidation.class);
+        userIdValidation = mock(UserIdValidation.class);
 
-		toTest = new ProjectJsonInputValidation();
-		toTest.apiVersionValidationFactory=apiVersionValidationFactory;
-		when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
-		toTest.projectIdValidation=projectIdValidation;
-		toTest.userIdValidation=userIdValidation;
+        toTest = new ProjectJsonInputValidation();
+        toTest.apiVersionValidationFactory = apiVersionValidationFactory;
+        when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
+        toTest.projectIdValidation = projectIdValidation;
+        toTest.userIdValidation = userIdValidation;
 
-		input = mock(ProjectJsonInput.class);
-		errors = mock(Errors.class);
+        input = mock(ProjectJsonInput.class);
+        errors = mock(Errors.class);
 
-		okResult = mock(ValidationResult.class);
-		when(okResult.isValid()).thenReturn(true);
+        okResult = mock(ValidationResult.class);
+        when(okResult.isValid()).thenReturn(true);
 
-		failedResult = mock(ValidationResult.class);
-		when(failedResult.isValid()).thenReturn(false);
-		
-		toTest.postConstruct();// simulate post construct...
-	}
+        failedResult = mock(ValidationResult.class);
+        when(failedResult.isValid()).thenReturn(false);
 
-	@Test
-	public void asInput_returns_object() {
-		assertEquals(input, toTest.asInput(input));
-	}
+        toTest.postConstruct();// simulate post construct...
+    }
 
-	@Test
-	public void when_useridvaluation_invalid_api_error() {
-		/* prepare */
-		when(userIdValidation.validate(any())).thenReturn(failedResult);
+    @Test
+    public void asInput_returns_object() {
+        assertEquals(input, toTest.asInput(input));
+    }
 
-		/* execute */
-		toTest.checkOwnerUserId(errors, input);
+    @Test
+    public void when_useridvaluation_invalid_api_error() {
+        /* prepare */
+        when(userIdValidation.validate(any())).thenReturn(failedResult);
 
-		/* test */
-		verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_OWNER), eq("api.error.userid.invalid"), any());
-	}
+        /* execute */
+        toTest.checkOwnerUserId(errors, input);
 
-	@Test
-	public void when_useridvaluation_valid_no_api_error() {
-		/* prepare */
-		when(userIdValidation.validate(any())).thenReturn(okResult);
+        /* test */
+        verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_OWNER), eq("api.error.userid.invalid"), any());
+    }
 
-		/* execute */
-		toTest.checkOwnerUserId(errors, input);
+    @Test
+    public void when_useridvaluation_valid_no_api_error() {
+        /* prepare */
+        when(userIdValidation.validate(any())).thenReturn(okResult);
 
-		/* test */
-		verify(errors,never()).rejectValue(eq(ProjectJsonInput.PROPERTY_OWNER), eq("api.error.userid.invalid"), any());
-	}
+        /* execute */
+        toTest.checkOwnerUserId(errors, input);
 
-	@Test
-	public void when_projectidvaluation_invalid_api_error() {
-		/* prepare */
-		when(projectIdValidation.validate(any())).thenReturn(failedResult);
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_OWNER), eq("api.error.userid.invalid"), any());
+    }
 
-		/* execute */
-		toTest.checkProjectId(errors, input);
+    @Test
+    public void when_projectidvaluation_invalid_api_error() {
+        /* prepare */
+        when(projectIdValidation.validate(any())).thenReturn(failedResult);
 
-		/* test */
-		verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
-	}
+        /* execute */
+        toTest.checkProjectId(errors, input);
 
-	@Test
-	public void when_projectidvaluation_valid_no_api_error() {
-		/* prepare */
-		when(projectIdValidation.validate(any())).thenReturn(okResult);
+        /* test */
+        verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
+    }
 
-		/* execute */
-		toTest.checkProjectId(errors, input);
+    @Test
+    public void when_projectidvaluation_valid_no_api_error() {
+        /* prepare */
+        when(projectIdValidation.validate(any())).thenReturn(okResult);
 
-		/* test */
-		verify(errors,never()).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
-	}
+        /* execute */
+        toTest.checkProjectId(errors, input);
 
-	@Test
-	public void when_apivalidation_invalid_api_error() {
-		/* prepare */
-		when(input.getApiVersion()).thenReturn("x");
-		when(apiValidation.validate(any())).thenReturn(failedResult);
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
+    }
 
-		/* execute */
-		toTest.checkApiVersion(errors, input);
+    @Test
+    public void when_apivalidation_invalid_api_error() {
+        /* prepare */
+        when(input.getApiVersion()).thenReturn("x");
+        when(apiValidation.validate(any())).thenReturn(failedResult);
 
-		/* test */
-		verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("api.error.unsupported.version"), any());
-	}
+        /* execute */
+        toTest.checkApiVersion(errors, input);
 
-	@Test
-	public void when_apivalidation_null_required_field_api_error() {
-		/* prepare */
-		when(input.getApiVersion()).thenReturn(null);
-		when(apiValidation.validate(any())).thenReturn(okResult);
+        /* test */
+        verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("api.error.unsupported.version"), any());
+    }
 
-		/* execute */
-		toTest.checkApiVersion(errors, input);
+    @Test
+    public void when_apivalidation_null_required_field_api_error() {
+        /* prepare */
+        when(input.getApiVersion()).thenReturn(null);
+        when(apiValidation.validate(any())).thenReturn(okResult);
 
-		/* test */
-		verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("field.required"), any(),any());
-	}
+        /* execute */
+        toTest.checkApiVersion(errors, input);
 
-	@Test
-	public void when_apivalidation_empty_required_field_api_error() {
-		/* prepare */
-		when(input.getApiVersion()).thenReturn("");
-		when(apiValidation.validate(any())).thenReturn(okResult);
+        /* test */
+        verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("field.required"), any(), any());
+    }
 
-		/* execute */
-		toTest.checkApiVersion(errors, input);
+    @Test
+    public void when_apivalidation_empty_required_field_api_error() {
+        /* prepare */
+        when(input.getApiVersion()).thenReturn("");
+        when(apiValidation.validate(any())).thenReturn(okResult);
 
-		/* test */
-		verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("field.required"), any(),any());
-	}
+        /* execute */
+        toTest.checkApiVersion(errors, input);
 
-	@Test
-	public void when_apivalidation_valid_no_api_error() {
-		/* prepare */
-		when(apiValidation.validate(any())).thenReturn(okResult);
+        /* test */
+        verify(errors).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), eq("field.required"), any(), any());
+    }
 
-		/* execute */
-		toTest.checkApiVersion(errors, input);
+    @Test
+    public void when_apivalidation_valid_no_api_error() {
+        /* prepare */
+        when(apiValidation.validate(any())).thenReturn(okResult);
 
-		/* test */
-		verify(errors,never()).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
-		verify(errors,never()).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), any(), any());
-	}
+        /* execute */
+        toTest.checkApiVersion(errors, input);
 
-
-
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), any(), any());
+    }
 
 }
