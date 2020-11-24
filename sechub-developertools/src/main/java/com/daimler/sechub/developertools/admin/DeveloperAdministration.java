@@ -328,9 +328,10 @@ public class DeveloperAdministration {
             ArrayNode arrayNode = (ArrayNode) whitelist;
             for (JsonNode node : arrayNode) {
                 String uriText = node.textValue();
-                result.add(uriText);
+                if (!uriText.trim().isEmpty()) {
+                    result.add(uriText);
+                }
             }
-
         }
 
         return result;
@@ -363,11 +364,16 @@ public class DeveloperAdministration {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
         for (Iterator<String> it = result.iterator(); it.hasNext();) {
-            sb.append("\"");
-            sb.append(it.next());
-            sb.append("\"");
-            if (it.hasNext()) {
-                sb.append(",");
+            
+            String uri = it.next();
+            
+            if (!uri.trim().isEmpty()) {
+                sb.append("\"");
+                sb.append(it.next());
+                sb.append("\"");
+                if (it.hasNext()) {
+                    sb.append(",");
+                }
             }
 
         }

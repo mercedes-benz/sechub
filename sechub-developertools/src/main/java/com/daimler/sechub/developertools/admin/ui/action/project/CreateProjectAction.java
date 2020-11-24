@@ -51,7 +51,7 @@ public class CreateProjectAction extends AbstractUIAction {
 				return;
 			}
 
-			if (uri.hasValue() && uri.isAdded()) {
+			if (uri.hasValue() && uri.isAdded() && !uri.getValue().trim().isEmpty()) {
 				// only increase counter if value is not empty
 				i++;
 				whiteListURLs.add(uri.getValue());
