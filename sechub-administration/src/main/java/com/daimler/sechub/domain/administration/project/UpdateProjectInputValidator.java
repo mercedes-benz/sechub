@@ -31,5 +31,4 @@ public class UpdateProjectInputValidator implements Validator{
 		validation.checkWhitelist(errors, validation.asInput(target));
 		validation.checkMetaData(errors, validation.asInput(target));
 	}
-
 }

@@ -138,7 +138,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 	}
 
 	@Test
-	public void a_project_having_a_whitelist_containing_only_empty_string_but_no_problems_can_be_executed_as_codescan_and_results_green() {
+	public void a_project_having_no_problems_can_be_executed_as_codescan_and_results_green() {
 		/* @formatter:off */
 
 		/* prepare */
@@ -148,7 +148,6 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		assertProject(project).hasNoWhiteListEntries();
 
 		List<String> list = new ArrayList<>();
-		list.add("");
 		as(SUPER_ADMIN).
 			updateWhiteListForProject(project, list).
 			assignUserToProject(user, project);
@@ -186,7 +185,6 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		assertProject(project).hasNoWhiteListEntries();
 
 		List<String> list = new ArrayList<>();
-		list.add("");
 		as(SUPER_ADMIN).
 			updateWhiteListForProject(project, list).
 			assignUserToProject(user, project);
@@ -207,7 +205,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		waitForJobDone(project, jobUUID);
 
-		/* why test green result ? Bcause we set test folders in a way we
+		/* why test green result ? Because we set test folders in a way we
 		 * will expect green traffic light - which is only the case when
 		 * we have an explicit path set by the environment entry inside
 		 * template... We could also rely on server validation of version
