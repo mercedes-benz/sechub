@@ -5,13 +5,22 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
+
+import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.Errors;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProjectMetaDataValidation;
+import com.daimler.sechub.sharedkernel.validation.URIValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
@@ -24,6 +33,8 @@ public class ProjectJsonInputValidationTest {
     private ApiVersionValidation apiValidation;
     private ProjectIdValidation projectIdValidation;
     private UserIdValidation userIdValidation;
+    private URIValidation whiteListValidation;
+    private ProjectMetaDataValidation metaDataValidation;
     private ValidationResult okResult;
     private ValidationResult failedResult;
 
@@ -33,12 +44,16 @@ public class ProjectJsonInputValidationTest {
         apiValidation = mock(ApiVersionValidation.class);
         projectIdValidation = mock(ProjectIdValidation.class);
         userIdValidation = mock(UserIdValidation.class);
+        whiteListValidation = mock(URIValidation.class);
+        metaDataValidation = mock(ProjectMetaDataValidation.class);
 
         toTest = new ProjectJsonInputValidation();
         toTest.apiVersionValidationFactory = apiVersionValidationFactory;
         when(apiVersionValidationFactory.createValidationAccepting(any())).thenReturn(apiValidation);
         toTest.projectIdValidation = projectIdValidation;
         toTest.userIdValidation = userIdValidation;
+        toTest.whitelistValidation = whiteListValidation;
+        toTest.metaDataValidation = metaDataValidation;
 
         input = mock(ProjectJsonInput.class);
         errors = mock(Errors.class);
@@ -155,6 +170,83 @@ public class ProjectJsonInputValidationTest {
         /* test */
         verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_NAME), eq("api.error.projectid.invalid"), any());
         verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_API_VERSION), any(), any());
+    }
+    
+    @Test
+    public void when_whitelisturivalidation_valid_no_api_error() throws URISyntaxException {
+        /* prepare */
+        when(whiteListValidation.validate(any())).thenReturn(okResult);
+        
+        /* execute */
+        toTest.checkWhitelist(errors, input);
+        
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_WHITELIST), eq("api.error.whitelist.invalid"), any());
+    }
+    
+    @Test
+    public void when_whitelisturivalidation_with_empty_uri_invalid_api_error() throws URISyntaxException {
+        /* prepare */
+        ProjectWhiteList whiteList = new ProjectWhiteList();
+        whiteList.getUris().add(URI.create(""));
+        
+        when(input.getWhiteList()).thenReturn(Optional.of(whiteList));
+        when(whiteListValidation.validate(any())).thenReturn(failedResult);
+        
+        /* execute */
+        toTest.checkWhitelist(errors, input);
+        
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_WHITELIST), eq("api.error.whitelist.invalid"), any());
+        
+    }
+    
+    @Test
+    public void when_metadatavalidation_valid_no_api_error() throws URISyntaxException {
+        /* prepare */
+        when(metaDataValidation.validate(any())).thenReturn(okResult);
+        
+        /* execute */
+        toTest.checkMetaData(errors, input);
+        
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_METADATA), eq("api.error.metadata.invalid"), any());
+    }
+    
+    @Test
+    public void when_metadatavalidation_with_too_long_key_invalid_api_error() {
+        /* prepare */
+        String key = RandomString.make(61);
+        ProjectMetaData metaData = new ProjectMetaData();
+        metaData.getMetaDataMap().put(key, "value");
+        
+        when(input.getMetaData()).thenReturn(Optional.of(metaData));
+        when(metaDataValidation.validate(any())).thenReturn(failedResult);
+        
+        /* execute */
+        toTest.checkWhitelist(errors, input);
+        
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_METADATA), eq("api.error.metadata.invalid"), any());
+        
+    }
+    
+    @Test
+    public void when_metadatavalidation_with_too_long_value_invalid_api_error() {
+        /* prepare */
+        String value = RandomString.make(260);
+        ProjectMetaData metaData = new ProjectMetaData();
+        metaData.getMetaDataMap().put("key", value);
+        
+        when(input.getMetaData()).thenReturn(Optional.of(metaData));
+        when(metaDataValidation.validate(any())).thenReturn(failedResult);
+        
+        /* execute */
+        toTest.checkWhitelist(errors, input);
+        
+        /* test */
+        verify(errors, never()).rejectValue(eq(ProjectJsonInput.PROPERTY_METADATA), eq("api.error.metadata.invalid"), any());
+        
     }
 
 }
