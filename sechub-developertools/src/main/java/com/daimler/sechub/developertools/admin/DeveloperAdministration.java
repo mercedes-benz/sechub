@@ -445,7 +445,7 @@ public class DeveloperAdministration {
     }
 
     public String unassignUserFromProject(String userId, String projectId) {
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(userId, projectId));
+        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(projectId, userId));
         return "unassigned " + userId + " to project " + projectId;
     }
 
