@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 
 	sechubUtil "daimler.com/sechub/util"
-	sechubutil "daimler.com/sechub/util"
 )
 
 // Keyword for false-posisitves json file
@@ -74,13 +73,13 @@ type FalsePositiveDefinitionCodeLocation struct {
 
 func (list *FalsePositivesList) save(context *Context) {
 	filePath := list.createFilePath(false)
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Saving to filepath %q", filePath))
 
 	content := append(list.serverResult, []byte("\n")...) // add newline to the end
 
 	sechubUtil.WriteContentToFile(filePath, content, "json")
 
-	fmt.Printf("- Project %q: false-positives list written to file %s\n", context.config.projectID, filePath)
+	sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath))
 }
 
 func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
@@ -96,7 +95,7 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 }
 
 func getFalsePositivesList(context *Context) []byte {
-	fmt.Printf("- Fetching false-positives list for project %q.\n", context.config.projectID)
+	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q.", context.config.projectID))
 
 	// we don't want to send content here
 	context.inputForContentProcessing = []byte(``)
@@ -105,9 +104,9 @@ func getFalsePositivesList(context *Context) []byte {
 	response := sendWithDefaultHeader("GET", buildFalsePositivesAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
-	HandleHTTPError(err)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("SecHub false-positives list: %s", string(data)))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("SecHub false-positives list: %s", string(data)))
 	return data
 }
 
@@ -117,17 +116,17 @@ func processContent(context *Context) {
 }
 
 func uploadFalsePositivesFromFile(context *Context) {
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: uploading file: %s\n", context.config.action, context.config.file))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
 	defer jsonFile.Close()
-	failed := sechubutil.HandleIOError(err)
+	failed := sechubUtil.HandleIOError(err)
 
 	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
 	processContent(context)
 
-	failed = sechubutil.HandleIOError(err)
+	failed = sechubUtil.HandleIOError(err)
 
 	if failed {
 		showHelpHint()
@@ -140,22 +139,22 @@ func uploadFalsePositivesFromFile(context *Context) {
 func uploadFalsePositives(context *Context) {
 	// Send context.inputForContentProcessing to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
-	fmt.Printf("- Successfully uploaded SecHub false-positives list for project %q to server.\n", context.config.projectID)
 
+	sechubUtil.Log(fmt.Sprintf("Successfully uploaded SecHub false-positives list for project %q to server.", context.config.projectID))
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Action %q: remove false positives - read from file: %s", context.config.action, context.config.file))
 
 	/* open file and check exists */
 	jsonFile, err := os.Open(context.config.file)
 	defer jsonFile.Close()
-	failed := sechubutil.HandleIOError(err)
+	failed := sechubUtil.HandleIOError(err)
 
 	context.inputForContentProcessing, err = ioutil.ReadAll(jsonFile)
 	processContent(context)
 
-	failed = sechubutil.HandleIOError(err)
+	failed = sechubUtil.HandleIOError(err)
 
 	if failed {
 		showHelpHint()
@@ -164,7 +163,7 @@ func unmarkFalsePositivesFromFile(context *Context) {
 
 	// read json into go struct
 	removeFalsePositivesList := newFalsePositivesListFromBytes(context.inputForContentProcessing)
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False positives to be removed: %+v", removeFalsePositivesList))
 
 	unmarkFalsePositives(context, &removeFalsePositivesList)
 }
@@ -193,20 +192,20 @@ func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
 	err := json.Unmarshal(bytes, &list)
 	if err != nil {
 		fmt.Println("Encoding is no valid json")
-		HandleError(err)
+		sechubUtil.HandleError(err, ExitCodeFailed)
 	}
 	return list
 }
 
 func interactiveMarkFalsePositives(context *Context) {
 	FalsePositivesList := newFalsePositivesListFromConsole(context)
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
 
 	// ToDo: Are you sure?
 
 	// upload to server
 	jsonBlob, err := json.Marshal(FalsePositivesList)
-	HandleError(err)
+	sechubUtil.HandleError(err, ExitCodeFailed)
 	context.inputForContentProcessing = jsonBlob
 	processContent(context)
 	uploadFalsePositives(context)
@@ -220,7 +219,7 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 
 	// ToDo: sort report by severity,finding id
 
-	var ExpectedInputs = []sechubutil.ConsoleInputItem{
+	var ExpectedInputs = []sechubUtil.ConsoleInputItem{
 		{Input: "y", ShortDescription: "Yes"},
 		{Input: "n", ShortDescription: "No"},
 		{Input: "s", ShortDescription: "Skip following findings"},
@@ -231,12 +230,12 @@ func newFalsePositivesListFromConsole(context *Context) (list FalsePositivesConf
 	for _, finding := range report.Result.Findings {
 		printFinding(&finding)
 
-		input, err := sechubutil.ReadAllowedItemFromConsole("Add this as false positive?", ExpectedInputs)
-		HandleError(err)
+		input, err := sechubUtil.ReadAllowedItemFromConsole("Add this as false positive?", ExpectedInputs)
+		sechubUtil.HandleError(err, ExitCodeFailed)
 		if input == "y" {
 			// append finding to list
 			fmt.Println("Please add a single line comment:")
-			comment, _ := sechubutil.ReadFromConsole()
+			comment, _ := sechubUtil.ReadFromConsole()
 			var listEntry = FalsePositivesJobData{report.JobUUID, finding.ID, comment}
 			list.JobData = append(list.JobData, listEntry)
 		} else if input == "c" {
@@ -256,16 +255,16 @@ func printFinding(finding *SecHubReportFindings) {
 	// java/com/daimler/sechub/docgen/AsciidocGenerator.java, line:28, column:35:
 	//       public static void main(String[] args) throws Exception {
 	// ---------------------------------------------------------------------------
-	sechubutil.PrintDashedLine()
+	sechubUtil.PrintDashedLine()
 	fmt.Printf("%d: %s, severity: %s\n", finding.ID, finding.Name, finding.Severity)
 	fmt.Printf("%s, line %d column %d\n", finding.Code.Location, finding.Code.Line, finding.Code.Column)
 	fmt.Printf("%s\n", finding.Code.Source)
-	sechubutil.PrintDashedLine()
+	sechubUtil.PrintDashedLine()
 }
 
 func interactiveUnmarkFalsePositives(context *Context) {
 	FalsePositivesList := newUnmarkFalsePositivesListFromConsole(context)
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives unmark list for upload:\n%+v", FalsePositivesList))
 
 	// ToDo: Are you sure?
 
@@ -282,13 +281,13 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 
 	var list FalsePositivesDefinition
 	err := json.Unmarshal(jsonBlob.serverResult, &list)
-	HandleError(err)
-	sechubutil.LogDebug(context.config.debug, fmt.Sprintf("Read from Server:\n%+v", list))
+	sechubUtil.HandleError(err, ExitCodeFailed)
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Read from Server:\n%+v", list))
 
 	// ToDo: sort report by severity,finding id
 
 	// iterate over entries and ask which to unmark
-	var ExpectedInputs = []sechubutil.ConsoleInputItem{
+	var ExpectedInputs = []sechubUtil.ConsoleInputItem{
 		{Input: "y", ShortDescription: "Yes"},
 		{Input: "n", ShortDescription: "No"},
 		{Input: "s", ShortDescription: "Skip the rest"},
@@ -297,8 +296,8 @@ func newUnmarkFalsePositivesListFromConsole(context *Context) (result FalsePosit
 	for _, falsepositive := range list.Items {
 		printFalsePositiveDefinition(&falsepositive)
 
-		input, err := sechubutil.ReadAllowedItemFromConsole("Do you want to remove this false positive?", ExpectedInputs)
-		HandleError(err)
+		input, err := sechubUtil.ReadAllowedItemFromConsole("Do you want to remove this false positive?", ExpectedInputs)
+		sechubUtil.HandleError(err, ExitCodeFailed)
 		if input == "y" {
 			// append finding to list
 			var listEntry = FalsePositivesJobData{falsepositive.JobData.JobUUID, falsepositive.JobData.FindingID, ""}
@@ -322,7 +321,7 @@ func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
 	//   Code:                 File secHubServer = new File("./sechub-server");
 	// (Added by admin at 2020-07-10 13:41:06; comment: "Only temporary directory")
 	// ------------------------------------------------------------------
-	sechubutil.PrintDashedLine()
+	sechubUtil.PrintDashedLine()
 	fmt.Printf("%s, %s severity: %s\n", falsepositive.MetaData.Name, falsepositive.MetaData.ScanType, falsepositive.MetaData.Severity)
 	fmt.Printf("  Origin: Finding ID %d in job %s\n", falsepositive.JobData.FindingID, falsepositive.JobData.JobUUID)
 	// would be cool to have line and column in source code location
@@ -330,5 +329,5 @@ func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
 	fmt.Printf("  Code: %s\n", falsepositive.MetaData.Code.Start.SourceCode)
 	fmt.Printf("(Added by %s at %s; comment: %q)\n", falsepositive.Author, falsepositive.Created, falsepositive.JobData.Comment)
 	// added by name at date
-	sechubutil.PrintDashedLine()
+	sechubUtil.PrintDashedLine()
 }
