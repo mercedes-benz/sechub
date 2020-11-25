@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
 
 /**
@@ -42,7 +42,7 @@ public class MappingAdministrationRestController {
     UpdateMappingService updateMappingService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorFetchesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to fetch a mapping configuration",needsRestDoc=true))
+	@UseCaseAdminFetchesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to fetch a mapping configuration",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_CONFIG_MAPPING, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public MappingData fetchMappingData(@PathVariable(name="mappingId") String mappingId) {

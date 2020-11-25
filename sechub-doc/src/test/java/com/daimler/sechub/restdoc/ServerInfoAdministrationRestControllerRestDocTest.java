@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.server.core.InfoService;
 import com.daimler.sechub.server.core.ServerInfoAdministrationRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -65,7 +65,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)).
-					andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChecksServerVersion.class))
+					andDo(document(RestDocFactory.createPath(UseCaseAdministratorChecksServerVersion.class))
 				);
 		/* @formatter:on */
 	}

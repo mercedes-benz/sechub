@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.user.AnonymousUserRequestNewApiTokenRestController;
 import com.daimler.sechub.domain.administration.user.AnonymousUserRequestsNewApiTokenService;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -63,7 +63,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest {
         		contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).andDo(
-        					document(RestDocPathFactory.createPath(UseCaseUserRequestsNewApiToken.class),
+        					document(RestDocFactory.createPath(UseCaseUserRequestsNewApiToken.class),
         							pathParameters(
         									parameterWithName(EMAIL_ADDRESS.paramName()).description("Email address for user where api token shall be refreshed.")
         									)

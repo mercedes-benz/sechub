@@ -28,7 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.scan.admin.FullScanData;
 import com.daimler.sechub.domain.scan.admin.FullScanDataRestController;
@@ -94,7 +94,7 @@ public class DownloadsFullScanDataForJobRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class),
                             pathParameters(
                                     parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                             )

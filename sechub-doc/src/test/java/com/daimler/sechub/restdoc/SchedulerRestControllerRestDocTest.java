@@ -6,6 +6,7 @@ import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurat
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -38,7 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.docgen.util.RestDocTestFileSupport;
 import com.daimler.sechub.domain.schedule.ExecutionResult;
 import com.daimler.sechub.domain.schedule.ExecutionState;
@@ -63,6 +64,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfigurati
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
@@ -70,6 +72,7 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesN
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SchedulerRestController.class)
@@ -133,7 +136,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Code Scan"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Code Scan"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -175,7 +178,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Infrastructure scan"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Infrastructure scan"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -217,7 +220,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan anonymous"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan anonymous"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -259,7 +262,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login basic"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login basic"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -306,7 +309,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form auto dection"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form auto dection"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -359,7 +362,7 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form scripted"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form scripted"),
 	    						pathParameters(
 										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
 	    									),
@@ -416,7 +419,7 @@ public class SchedulerRestControllerRestDocTest {
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
-        					andDo(document(RestDocPathFactory.createPath(UseCaseUserUploadsSourceCode.class),
+        					andDo(document(RestDocFactory.createPath(UseCaseUserUploadsSourceCode.class),
         							requestParts(partWithName("file").description("The sourcecode as zipfile to upload")),
         							requestParameters(
         									parameterWithName("checkSum").description("A sha256 checksum for file upload validation")),
@@ -457,7 +460,7 @@ public class SchedulerRestControllerRestDocTest {
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
-	    					andDo(document(RestDocPathFactory.createPath(UseCaseUserApprovesJob.class),
+	    					andDo(document(RestDocFactory.createPath(UseCaseUserApprovesJob.class),
 	    							pathParameters(
 	    										parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
 	    										parameterWithName("jobUUID").description("The jobUUID for sechub job")
@@ -472,6 +475,7 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserChecksJobStatus.class)
 	public void restDoc_userChecksJobState() throws Exception {
 		/* prepare */
+	    UseCaseDefinition usecaseAnnotation = UseCaseUserChecksJobStatus.class.getAnnotation(UseCaseDefinition.class);
 
 		ScheduleSecHubJob job = new ScheduleSecHubJob() {
 			public UUID getUUID() {
@@ -496,23 +500,28 @@ public class SchedulerRestControllerRestDocTest {
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
-        					andDo(document(RestDocPathFactory.createPath(UseCaseUserChecksJobStatus.class),
-        							pathParameters(
-        										parameterWithName("projectId").description("The id of the project where sechub job was started for"),
-        										parameterWithName("jobUUID").description("The jobUUID for sechub job")
-        									),
-
-        							responseFields(
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_JOBUUID).description("The job uuid"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_CREATED).description("Creation timestamp of job"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_STARTED).description("Start timestamp of job execution"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_ENDED).description("End timestamp of job execution"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_OWNER).description("Owner / initiator of job"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_STATE).description("State of job"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_RESULT).description("Result of job"),
-        									fieldWithPath(ScheduleJobStatus.PROPERTY_TRAFFICLIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
-
-        									)
+        					andDo(document(RestDocFactory.createPath(UseCaseUserChecksJobStatus.class),
+                                  resource(
+                                      ResourceSnippetParameters.builder().
+                                          description(usecaseAnnotation.title()).
+                                          tag("job").
+                                          responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
+                                          pathParameters(
+                                            parameterWithName("projectId").description("The id of the project where sechub job was started for"),
+                                            parameterWithName("jobUUID").description("The jobUUID for sechub job")
+                                          ).
+                                          responseFields(
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_JOBUUID).description("The job uuid"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_CREATED).description("Creation timestamp of job"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_STARTED).description("Start timestamp of job execution"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_ENDED).description("End timestamp of job execution"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_OWNER).description("Owner / initiator of job"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_STATE).description("State of job"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_RESULT).description("Result of job"),
+                                            fieldWithPath(ScheduleJobStatus.PROPERTY_TRAFFICLIGHT).description("Trafficlight of job - but only available when job has been done. Possible states are "+StringUtils.arrayToDelimitedString(TrafficLight.values(),", "))
+                                            ).
+                                          build()
+                                       )
         							)
         		);
 

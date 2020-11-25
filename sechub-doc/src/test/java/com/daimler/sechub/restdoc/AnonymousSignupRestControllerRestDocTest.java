@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.signup.AnonymousSignupCreateService;
 import com.daimler.sechub.domain.administration.signup.AnonymousSignupRestController;
 import com.daimler.sechub.domain.administration.signup.SignupJsonInputValidator;
@@ -72,7 +72,7 @@ public class AnonymousSignupRestControllerRestDocTest {
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).andDo(
-        					document(RestDocPathFactory.createPath(UseCaseUserSignup.class),
+        					document(RestDocFactory.createPath(UseCaseUserSignup.class),
         							requestFields(
         									fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
         									fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),

@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.scheduler.SchedulerAdministrationRestController;
 import com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService;
 import com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService;
@@ -69,7 +69,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isAccepted()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorTriggersRefreshOfSchedulerStatus.class))
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorTriggersRefreshOfSchedulerStatus.class))
 				/* we do not document more, because its only a trigger*/
 				);
 		/* @formatter:on */
@@ -85,7 +85,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isAccepted()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDisablesSchedulerJobProcessing.class))
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorDisablesSchedulerJobProcessing.class))
 				/* we do not document more, because its only a trigger*/
 				);
 		/* @formatter:on */
@@ -101,7 +101,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isAccepted()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorEnablesSchedulerJobProcessing.class))
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorEnablesSchedulerJobProcessing.class))
 				/* we do not document more, because its only a trigger*/
 				);
 		/* @formatter:on */

@@ -26,7 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.signup.SignupAdministrationRestController;
 import com.daimler.sechub.domain.administration.signup.SignupDeleteService;
 import com.daimler.sechub.domain.administration.signup.SignupRepository;
@@ -74,7 +74,7 @@ public class SignupAdministrationRestControllerRestDocTest {
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsOpenUserSignups.class)
+        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsOpenUserSignups.class)
         		)
 
         	    );
@@ -91,7 +91,7 @@ public class SignupAdministrationRestControllerRestDocTest {
         		delete(https(PORT_USED).buildAdminDeletesUserSignUpUrl(USER_ID.pathElement()),"userId1")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesSignup.class),
+        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesSignup.class),
         					pathParameters(
 									parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
 								)

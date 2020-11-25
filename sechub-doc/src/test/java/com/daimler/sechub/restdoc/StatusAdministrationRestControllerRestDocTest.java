@@ -13,6 +13,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.lang.annotation.Annotation;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.mapping.FetchMappingService;
 import com.daimler.sechub.domain.administration.mapping.MappingAdministrationRestController;
 import com.daimler.sechub.domain.administration.mapping.UpdateMappingService;
@@ -39,15 +41,13 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
-import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.epages.restdocs.apispec.Schema;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(MappingAdministrationRestController.class)
@@ -70,8 +70,6 @@ public class StatusAdministrationRestControllerRestDocTest {
 	UpdateMappingService updateMappingService;
 
     private MappingData mappingDataTeam;
-    
-    private Schema mappingConfiguration = new Schema("MappingConfiguration");
 
 	@Before
 	public void before() {
@@ -83,78 +81,78 @@ public class StatusAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorFetchesMappingConfiguration.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminFetchesMappingConfiguration.class)
 	public void restdoc_admin_fetches_mapping_configuration() throws Exception {
-		/*  prepare */
-	    UseCaseDefinition usecaseAnnotation = UseCaseAdministratorFetchesMappingConfiguration.class.getAnnotation(UseCaseDefinition.class);
+	    /* prepare */
+	    String apiEndpoint = https(PORT_USED).buildGetMapping(MAPPING_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesMappingConfiguration.class;
 	    
 		/* execute + test @formatter:off */
+
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildGetMapping(MAPPING_ID.pathElement()), MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
+				get(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesMappingConfiguration.class),
-        		           resource(
-        		                ResourceSnippetParameters.builder()
-        		                .summary(usecaseAnnotation.title())
-        		                .description(usecaseAnnotation.description())
-        		                .tag("admin")
-        		                .responseSchema(mappingConfiguration)
-        		                .build()
-        		            ),
-            				responseFields(
-            							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
-            							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
-            							fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
-            				),
+		andDo(document(RestDocFactory.createPath(useCase),
+		        resource(
+		                ResourceSnippetParameters.builder().
+		                    summary(RestDocFactory.createSummary(useCase)).
+		                    description(RestDocFactory.createDescription(useCase)).
+		                    tag(RestDocFactory.extractTag(apiEndpoint)).
+        		            responseSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
                             pathParameters(
                                     parameterWithName(MAPPING_ID.paramName()).description("The mapping Id")
-                            )
-					    )
-				);
+                            ).
+                            responseFields(
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
+                            ).
+                            build()
+        		        )
+		        ));
 
-		/* @formatter:on */
+	      /* @formatter:on */
 	}
 	
 	@Test
     @UseCaseRestDoc(useCase=UseCaseAdministratorUpdatesMappingConfiguration.class)
     public void restdoc_admin_updates_mapping_configuration() throws Exception {
-        /*  prepare */
-	    UseCaseDefinition usecaseAnnotation = UseCaseAdministratorUpdatesMappingConfiguration.class.getAnnotation(UseCaseDefinition.class);
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUpdateMapping(RestDocPathParameter.MAPPING_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdministratorUpdatesMappingConfiguration.class;
+        
+        
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildUpdateMapping(RestDocPathParameter.MAPPING_ID.pathElement()),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
+                put(apiEndpoint, MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 content(mappingDataTeam.toJSON())
                 )./*
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesMappingConfiguration.class),
+        andDo(document(RestDocFactory.createPath(useCase),
                 resource(
-                        ResourceSnippetParameters.builder()
-                        .summary(usecaseAnnotation.title())
-                        .description(usecaseAnnotation.description())
-                        .tag("admin")
-                        .responseSchema(mappingConfiguration)
-                        .requestSchema(mappingConfiguration)
-                        .build()
-                    ),
-                pathParameters(
-                        parameterWithName(MAPPING_ID.paramName()).description("The mappingID , identifiying which mapping shall be updated")
-                    )
-                ,
-                requestFields(
-                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
-                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
-                        fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(MAPPING_ID.paramName()).description("The mappingID, identifiying which mapping shall be updated")
+                                ).
+                            requestFields(
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_PATTERN).description("Pattern"),
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_REPLACEMENT).description("Replacement"),
+                                    fieldWithPath(MappingData.PROPERTY_ENTRIES+".[]."+MappingEntry.PROPERTY_COMMENT).description("Comment")
+                            ).
+                            requestSchema(OpenApiSchema.MAPPING_CONFIGURATION.getSchema()).
+                            build()
                         )
-                    )
-                );
+                ));
 
         /* @formatter:on */
     }
@@ -164,5 +162,4 @@ public class StatusAdministrationRestControllerRestDocTest {
 	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
 	}
-
 }

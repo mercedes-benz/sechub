@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.validation.MappingDataValidation;
 import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 
@@ -26,7 +26,7 @@ public class FetchMappingService {
     @Autowired
     MappingDataValidation mappingDataValidation;
 
-    @UseCaseAdministratorFetchesMappingConfiguration(@Step(number = 2, name = "Service call", description = "Services fetches data from database, if not set an empty mapping data result will be returned"))
+    @UseCaseAdminFetchesMappingConfiguration(@Step(number = 2, name = "Service call", description = "Services fetches data from database, if not set an empty mapping data result will be returned"))
     public MappingData fetchMappingData(String mappingId) {
         assertValid(mappingIdValidation.validate(mappingId), "Mapping ID invalid");
 

@@ -32,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
@@ -85,7 +85,7 @@ public class ScanReportRestControllerRestDocTest {
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
 
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserDownloadsJobReport.class, "JSON"),
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserDownloadsJobReport.class, "JSON"),
                                         pathParameters(
                                                 parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
@@ -121,7 +121,7 @@ public class ScanReportRestControllerRestDocTest {
         			andExpect(content().string(containsString(jobUUID.toString()))).
         			andExpect(content().string(containsString("theRedStyle"))).
 
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUserDownloadsJobReport.class, "HTML"),
+        			andDo(document(RestDocFactory.createPath(UseCaseUserDownloadsJobReport.class, "HTML"),
                                     pathParameters(
                                             parameterWithName(PROJECT_ID.paramName()).description("The project Id"),
                                             parameterWithName(JOB_UUID.paramName()).description("The job UUID")

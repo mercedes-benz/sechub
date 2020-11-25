@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.project.ScanMockData;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfiguration;
 import com.daimler.sechub.domain.scan.project.ScanProjectMockDataConfigurationService;
@@ -73,7 +73,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	    			content(config.toJSON())
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserDefinesProjectMockdata.class))
+	    			andDo(document(RestDocFactory.createPath(UseCaseUserDefinesProjectMockdata.class))
 
 	    					);
 	    /* @formatter:on */
@@ -103,7 +103,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         			andExpect(jsonPath("$.webScan.result").value("YELLOW")).
         			andExpect(jsonPath("$.infraScan.result").value("GREEN")).
 
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUserRetrievesProjectMockdata.class))
+        			andDo(document(RestDocFactory.createPath(UseCaseUserRetrievesProjectMockdata.class))
 
         		);
 

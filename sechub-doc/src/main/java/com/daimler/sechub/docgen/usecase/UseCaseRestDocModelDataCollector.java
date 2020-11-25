@@ -20,7 +20,7 @@ import org.springframework.util.FileSystemUtils;
 
 import com.daimler.sechub.docgen.reflections.Reflections;
 import com.daimler.sechub.docgen.usecase.UseCaseModel.UseCaseEntry;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 
 /**
@@ -110,12 +110,12 @@ public class UseCaseRestDocModelDataCollector {
 			/* create and prepare rest doc entry */
 			UseCaseRestDocEntry restDocEntry = new UseCaseRestDocEntry();
 			restDocEntry.variantOriginValue = restDoc.variant();
-			restDocEntry.variantId = RestDocPathFactory.createVariantId(restDocEntry.variantOriginValue);
+			restDocEntry.variantId = RestDocFactory.createVariantId(restDocEntry.variantOriginValue);
 			
 			restDocEntry.usecaseEntry = useCaseEntry;
-			String path = RestDocPathFactory.createPath(useCaseClass, restDocEntry.variantId);
+			String path = RestDocFactory.createPath(useCaseClass, restDocEntry.variantId);
 			
-			restDocEntry.identifier=RestDocPathFactory.createIdentifier(useCaseClass);
+			restDocEntry.identifier=RestDocFactory.createIdentifier(useCaseClass);
 			restDocEntry.path = path;
 			
 			File projectRestDocGenFolder = scanForSpringRestDocGenFolder(restDocEntry);

@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.CreateProjectInputValidator;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
@@ -113,7 +113,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
 				)./*andDo(print()).*/
 		andExpect(status().isCreated()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesProject.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorCreatesProject.class),
 				requestFields(
 						fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 						fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!"),
@@ -135,7 +135,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
         		/*andDo(print()).*/
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllProjects.class))).
+        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsAllProjects.class))).
         			andExpect(status().isOk()
         		);
 
@@ -153,7 +153,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeleteProject.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeleteProject.class),
 				pathParameters(
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
 						)
@@ -172,7 +172,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isCreated()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
 				pathParameters(
 						parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
 						parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
@@ -192,7 +192,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsUserFromProject.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorUnassignsUserFromProject.class),
 				pathParameters(
 						parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
 						parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
@@ -236,7 +236,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsProjectDetails.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorShowsProjectDetails.class),
 				pathParameters(
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
 						),

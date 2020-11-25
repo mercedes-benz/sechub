@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.user.AnonymousUserGetAPITokenByOneTimeTokenService;
 import com.daimler.sechub.domain.administration.user.AnonymousUserGetApiTokenByOneTimeTokenRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -67,7 +67,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseUserClicksLinkToGetNewAPIToken.class),
+		andDo(document(RestDocFactory.createPath(UseCaseUserClicksLinkToGetNewAPIToken.class),
 				pathParameters(
 						parameterWithName(ONE_TIME_TOKEN.paramName()).description("A one time token the user has got by a previous mail from sechub server")
 						)

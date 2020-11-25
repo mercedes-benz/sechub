@@ -31,7 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.JSONConverter;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.config.CreateProductExecutorConfigService;
 import com.daimler.sechub.domain.scan.product.config.DeleteProductExecutorConfigService;
@@ -135,7 +135,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesExecutorConfiguration.class),
+	    			andDo(document(RestDocFactory.createPath(UseCaseAdministratorCreatesExecutorConfiguration.class),
 	    						requestFields(
 										fieldWithPath(PROPERTY_NAME).description("A name for this configuration"),
 										fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
@@ -180,7 +180,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     content(JSONConverter.get().toJSON(configFromUser))
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesExecutorConfig.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorUpdatesExecutorConfig.class),
                                 requestFields(
                                         fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
                                         fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
@@ -232,7 +232,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutorConfiguration.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutorConfiguration.class),
                                 responseFields(
                                         fieldWithPath(PROPERTY_UUID).description("The uuid of this configuration"),
                                         fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
@@ -268,7 +268,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutorConfiguration.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesExecutorConfiguration.class),
                     
 
                             pathParameters(
@@ -300,7 +300,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutorConfigurationList.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutorConfigurationList.class),
                             responseFields(
                                     fieldWithPath("type").description("Always `executorConfigurationList` as an identifier for the list"),
                                     fieldWithPath("executorConfigurations[]."+PROPERTY_UUID).description("The uuid of the configuration"),

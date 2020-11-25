@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.JSONConverter;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.config.CreateProductExecutionProfileService;
 import com.daimler.sechub.domain.scan.product.config.DeleteProductExecutionProfileService;
@@ -120,7 +120,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    			content(JSONConverter.get().toJSON(profile))
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isCreated()).
-	    			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesExecutionProfile.class),
+	    			andDo(document(RestDocFactory.createPath(UseCaseAdministratorCreatesExecutionProfile.class),
 	    						requestFields(
 										fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
 										fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
@@ -161,7 +161,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     content(JSONConverter.get().toJSON(profile))
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUpdatesExecutionProfile.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorUpdatesExecutionProfile.class),
                                 requestFields(
                                         fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
                                         fieldWithPath(PROPERTY_ENABLED).description("Enabled state of profile, default is false").optional(),
@@ -188,15 +188,13 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         String profileId="profile-1";
         String projectId="project-1";
 
-        
-                
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isCreated()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsExecutionProfileToProject.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorAssignsExecutionProfileToProject.class),
                             pathParameters(
                                parameterWithName(PROJECT_ID.paramName()).description("The project id "),
                                parameterWithName(PROFILE_ID.paramName()).description("The profile id")
@@ -216,11 +214,11 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminAddsProjectToExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
+                delete(https(PORT_USED).buildAdminRemovesProjectFromExecutionProfile(PROFILE_ID.pathElement(),PROJECT_ID.pathElement()),profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
-                    andExpect(status().isCreated()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsExecutionProfileFromProject.class),
+                    andExpect(status().isOk()).
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorUnassignsExecutionProfileFromProject.class),
                             pathParameters(
                                     parameterWithName(PROJECT_ID.paramName()).description("The project id "),
                                     parameterWithName(PROFILE_ID.paramName()).description("The profile id")
@@ -270,7 +268,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfile.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutionProfile.class),
                                 responseFields(
                                         fieldWithPath(PROPERTY_ID).optional().ignored(),
                                         fieldWithPath(PROPERTY_DESCRIPTION).description("A short description for the profile"),
@@ -309,7 +307,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesExecutionProfile.class),
                             pathParameters(
                                     parameterWithName(PROFILE_ID.paramName()).description("The profile id")
                                     )
@@ -347,7 +345,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorFetchesExecutionProfileList.class),
+                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutionProfileList.class),
                             responseFields(
                                     fieldWithPath("type").description("Always `executorProfileList` as an identifier for the list"),
                                     fieldWithPath("executionProfiles[]."+PROPERTY_ID).description("The profile id"),

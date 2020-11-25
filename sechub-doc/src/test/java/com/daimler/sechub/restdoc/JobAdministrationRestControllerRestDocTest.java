@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.job.JobAdministrationRestController;
 import com.daimler.sechub.domain.administration.job.JobCancelService;
 import com.daimler.sechub.domain.administration.job.JobInformation;
@@ -100,7 +100,7 @@ public class JobAdministrationRestControllerRestDocTest {
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllRunningJobs.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsAllRunningJobs.class),
 //				requestFields(
 //						fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
 //						fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!"),
@@ -136,7 +136,7 @@ public class JobAdministrationRestControllerRestDocTest {
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCancelsJob.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorCancelsJob.class),
                     pathParameters(
                         parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                     )
@@ -161,7 +161,7 @@ public class JobAdministrationRestControllerRestDocTest {
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJob.class),
+        andDo(document(RestDocFactory.createPath(UseCaseAdministratorRestartsJob.class),
                     pathParameters(
                             parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                     )
@@ -185,7 +185,7 @@ public class JobAdministrationRestControllerRestDocTest {
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJobHard.class),
+        andDo(document(RestDocFactory.createPath(UseCaseAdministratorRestartsJobHard.class),
                         pathParameters(
                                 parameterWithName(JOB_UUID.paramName()).description("The job UUID")
                         )

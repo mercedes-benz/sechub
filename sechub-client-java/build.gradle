@@ -24,18 +24,17 @@ dependencies {
 // see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
 apply plugin: 'org.openapi.generator'
 
-def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
-def generatedSourcesDir = "$buildDir/generated/openapi"
+def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
 
 openApiValidate {
-    inputSpec = "$specFilePath".toString() //$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    inputSpec = "$specFilePath"
 }
 
 openApiGenerate {
     generatorName = "java"
     
-    inputSpec = "$specFilePath".toString() //"$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
-    outputDir = "$rootDir/sechub-client/src/main/java-gen" //.toString()
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-client-java/src/main/java-gen"
     apiPackage = "org.openapi.example.api"
     invokerPackage = "org.openapi.example.invoker"
     modelPackage = "org.openapi.example.model"

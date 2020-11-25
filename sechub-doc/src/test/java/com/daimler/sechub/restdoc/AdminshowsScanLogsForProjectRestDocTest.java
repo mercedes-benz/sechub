@@ -34,7 +34,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.scan.log.ProjectScanLog;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
@@ -91,7 +91,7 @@ public class AdminshowsScanLogsForProjectRestDocTest {
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsScanLogsForProject.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorShowsScanLogsForProject.class),
 				/* we do not document more, because its binary / zip file...*/
     					responseFields(
     							 	fieldWithPath("[]").description("An array of scan log summary entries"),

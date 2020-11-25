@@ -28,7 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.scheduler.SchedulerStatusEntryKeys;
 import com.daimler.sechub.domain.administration.status.ListStatusService;
 import com.daimler.sechub.domain.administration.status.StatusAdministrationRestController;
@@ -94,7 +94,7 @@ public class MappingAdministrationRestControllerRestDocTest {
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsStatusInformation.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsStatusInformation.class),
 				responseFields(
 							fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
 							fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")

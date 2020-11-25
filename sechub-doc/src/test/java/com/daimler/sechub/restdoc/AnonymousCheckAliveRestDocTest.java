@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.server.core.AnonymousCheckAliveRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -51,7 +51,7 @@ public class AnonymousCheckAliveRestDocTest {
         			head(https(PORT_USED).buildCheckIsAliveUrl())
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "HEAD")));
+        andDo(document(RestDocFactory.createPath(UseCaseAnonymousCheckAlive.class, "HEAD")));
 
         /* @formatter:on */
 	}
@@ -66,7 +66,7 @@ public class AnonymousCheckAliveRestDocTest {
         			get(https(PORT_USED).buildCheckIsAliveUrl())
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "GET")));
+        andDo(document(RestDocFactory.createPath(UseCaseAnonymousCheckAlive.class, "GET")));
 
         /* @formatter:on */
 	}

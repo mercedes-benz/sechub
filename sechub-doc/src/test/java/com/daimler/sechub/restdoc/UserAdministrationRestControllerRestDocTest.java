@@ -27,7 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.signup.SignupRepository;
 import com.daimler.sechub.domain.administration.user.User;
@@ -101,7 +101,7 @@ public class UserAdministrationRestControllerRestDocTest {
 				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorGrantsAdminRightsToUser.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorGrantsAdminRightsToUser.class),
 				pathParameters(
 					parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
 					)
@@ -117,10 +117,10 @@ public class UserAdministrationRestControllerRestDocTest {
 	public void restdoc_revoke_admin_rights_from_user() throws Exception {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
+				post(https(PORT_USED).buildAdminRevokesSuperAdminRightsFrom(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRevokesAdminRightsFromAdmin.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorRevokesAdminRightsFromAdmin.class),
 				pathParameters(
 					parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
 					)
@@ -139,7 +139,7 @@ public class UserAdministrationRestControllerRestDocTest {
 				delete(https(PORT_USED).buildAdminDeletesUserUrl(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesUser.class),
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesUser.class),
 				pathParameters(
 					parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
 					)
@@ -158,7 +158,7 @@ public class UserAdministrationRestControllerRestDocTest {
         		post(https(PORT_USED).buildAdminAcceptsUserSignUpUrl(USER_ID.pathElement()),"user1")
         		)./*andDo(print()).*/
         			andExpect(status().isCreated()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAcceptsSignup.class),
+        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorAcceptsSignup.class),
         					pathParameters(
 									parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
 								)
@@ -178,7 +178,7 @@ public class UserAdministrationRestControllerRestDocTest {
 				get(https(PORT_USED).buildAdminListsUsersUrl())
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllUsers.class))
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsAllUsers.class))
 
 				);
 
@@ -194,7 +194,7 @@ public class UserAdministrationRestControllerRestDocTest {
 				get(https(PORT_USED).buildAdminListsAdminsUrl())
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllAdmins.class))
+		andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsAllAdmins.class))
 
 				);
 
@@ -222,7 +222,7 @@ public class UserAdministrationRestControllerRestDocTest {
         		get(https(PORT_USED).buildAdminShowsUserDetailsUrl(USER_ID.pathElement()),"user1")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsUserDetails.class),
+        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorShowsUserDetails.class),
         					pathParameters(
         							parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")),
         					responseFields(

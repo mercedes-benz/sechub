@@ -4,6 +4,7 @@ package com.daimler.sechub.docgen.util;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
@@ -14,16 +15,17 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
  * @author Albert Tregnaghi
  *
  */
-public class RestDocPathFactory {
+public class RestDocFactory {
 	public static final String UC_RESTDOC = "uc_restdoc";
 
 	private static Set<String> alreadyCreatedPathes = new HashSet<>();
 	private static Pattern P_VARIANT_NAME_TO_ID= Pattern.compile(" ");
+	private static Pattern TAG_PATTERN = Pattern.compile("api/[\\w-_]*/");
 	
 	public static String createVariantId(String variantName) {
 		return P_VARIANT_NAME_TO_ID.matcher(variantName).replaceAll("-").toLowerCase();
 	}
-	private RestDocPathFactory() {
+	private RestDocFactory() {
 
 	}
 
@@ -50,13 +52,8 @@ public class RestDocPathFactory {
     public static String createPath(Class<? extends Annotation> useCase, String variant) {
         StringBuilder sb = new StringBuilder();
 
-//        sb.append(useCase.);
-//        sb.append("_");
         sb.append(createIdentifier(useCase));
-        //sb.append("_");
-        if (variant == null || variant.isEmpty()) {
-            //sb.append(UseCaseRestDoc.DEFAULT_VARIANT);
-        } else {
+        if (variant != null && !variant.isEmpty()) {
             sb.append("_");
             sb.append(createVariantId(variant));
         }
@@ -78,6 +75,49 @@ public class RestDocPathFactory {
         if (usecaseIdentifier == null) {
             throw new IllegalArgumentException("use case annotation of class does not contain id:" + useCase);
         }
-        return usecaseIdentifier; // usecaseIdentifier.uniqueId().toLowerCase();
-    }	
+        return usecaseIdentifier;
+    }
+    
+    public static String createSummary(Class<? extends Annotation> useCase) {
+        UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
+        
+        StringBuilder sb = new StringBuilder();
+        if (usecaseAnnotation == null) {
+            throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :" + useCase);
+        } else {
+            sb.append(usecaseAnnotation.title());
+        }
+
+        return sb.toString();
+    }
+
+    public static String createDescription(Class<? extends Annotation> useCase) {
+        UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
+        
+        StringBuilder sb = new StringBuilder();
+        if (usecaseAnnotation == null) {
+            throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :" + useCase);
+        } else {
+            String description = usecaseAnnotation.description();
+            if (description.contains(".adoc")) {
+                sb.append(usecaseAnnotation.title());
+            } else {
+                sb.append(description);
+            }
+        }
+        
+        return sb.toString();
+    }
+    
+    public static String extractTag(String apiEndpoint) {
+        String tag = null;
+        Matcher matcher = TAG_PATTERN.matcher(apiEndpoint);
+        
+        if (matcher.find()) {
+            tag = matcher.group();
+            tag = tag.substring("api/".length(), tag.length() - "/".length());
+        }
+                
+        return tag;
+    }
 }

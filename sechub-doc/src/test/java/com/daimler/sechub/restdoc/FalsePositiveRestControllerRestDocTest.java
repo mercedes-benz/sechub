@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.Severity;
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.scan.ScanAssertService;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodeMetaData;
 import com.daimler.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
@@ -127,7 +127,7 @@ public class FalsePositiveRestControllerRestDocTest {
         content(content)).
 		andExpect(status().isOk()).
 		/*andDo(print()).*/
-		andDo(document(RestDocPathFactory.createPath(UseCaseUserMarksFalsePositivesForJob.class),
+		andDo(document(RestDocFactory.createPath(UseCaseUserMarksFalsePositivesForJob.class),
 				pathParameters(
 					parameterWithName(PROJECT_ID.paramName()).description("The projectId of the project where users adds false positives for")
 				),
@@ -159,7 +159,7 @@ public class FalsePositiveRestControllerRestDocTest {
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
-        andDo(document(RestDocPathFactory.createPath(UseCaseUserUnmarksFalsePositives.class),
+        andDo(document(RestDocFactory.createPath(UseCaseUserUnmarksFalsePositives.class),
                 pathParameters(
                     parameterWithName(PROJECT_ID.paramName()).description("The project id"),
                     parameterWithName(JOB_UUID.paramName()).description("Job uuid"),
@@ -226,7 +226,7 @@ public class FalsePositiveRestControllerRestDocTest {
         ).
         andExpect(status().isOk()).
         /*andDo(print()).*/
-        andDo(document(RestDocPathFactory.createPath(UseCaseUserFetchesFalsePositiveConfigurationOfProject.class),
+        andDo(document(RestDocFactory.createPath(UseCaseUserFetchesFalsePositiveConfigurationOfProject.class),
                 pathParameters(
                     parameterWithName(PROJECT_ID.paramName()).description("The project id")
                 ),

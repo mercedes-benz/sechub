@@ -26,7 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
@@ -80,7 +80,7 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
         		content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseUpdateProjectWhitelist.class),
+        			andDo(document(RestDocFactory.createPath(UseCaseUpdateProjectWhitelist.class),
         					pathParameters(
 									parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which whitelist shall be updated")
 								),
