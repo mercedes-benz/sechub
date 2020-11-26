@@ -186,8 +186,8 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         assertProject(project).hasMetaData(metaData);
         
         as(SUPER_ADMIN).
-            assignUserToProject(user, project)
-            .updateMetaDataForProject(project, metaData);
+            assignUserToProject(user, project).
+            updateMetaDataForProject(project, metaData);
 
         /* execute */
         IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;

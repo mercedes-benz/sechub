@@ -444,10 +444,10 @@ public class AsUser {
             sb.append("\\\"");
             sb.append(entry.getKey());
             sb.append("\\\":");
-            sb.append("\\\"");
             sb.append(entry.getValue());
+            sb.append("\\\"");
             if (iterator.hasNext()) {
-                sb.append("\\\",");
+                sb.append(",");
             }
         });
                 
