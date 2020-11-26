@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -431,6 +433,27 @@ public class AsUser {
         getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(project.getProjectId()), json);
         return this;
 
+    }
+    
+    public AsUser updateMetaDataForProject(TestProject project, Map<String, String> metaData) {
+        String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-updatemetadata.json");
+        StringBuilder sb = new StringBuilder();
+        
+        Iterator<Entry<String, String>> iterator = metaData.entrySet().iterator();
+        iterator.forEachRemaining(entry -> {
+            sb.append("\\\"");
+            sb.append(entry.getKey());
+            sb.append("\\\":");
+            sb.append("\\\"");
+            sb.append(entry.getValue());
+            if (iterator.hasNext()) {
+                sb.append("\\\",");
+            }
+        });
+                
+        json = json.replaceAll("__metaData__", sb.toString());
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(project.getProjectId()), json);
+        return this;
     }
 
     public String getJobStatus(String projectId, UUID jobUUID) {

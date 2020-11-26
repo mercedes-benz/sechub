@@ -8,6 +8,7 @@ import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
 import static java.util.Arrays.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,9 +135,81 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 			;
 		/* @formatter:on */
-
 	}
+	
+	
+    @Test
+    public void a_project_having_no_metadata_but_no_problems_can_be_executed_as_codescan_and_results_green() {
+        /* @formatter:off */
 
+        /* prepare */
+        TestProject project = PROJECT_3;
+        TestUser user = USER_1;
+
+        assertProject(project).hasNoMetaData();
+
+        as(SUPER_ADMIN).
+            assignUserToProject(user, project);
+
+        /* execute */
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        UUID jobUUID =
+        as(user).
+            withSecHubClient().
+            startAsynchronScanFor(project, location).
+            assertFileUploaded(project).
+            assertJobTriggered().
+            getJobUUID();
+
+        waitForJobDone(project, jobUUID);
+
+        as(user).
+            withSecHubClient().
+            startDownloadJobReport(project, jobUUID, location).
+            hasTrafficLight(TrafficLight.GREEN)
+
+            ;
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void a_project_having_metadata_no_problems_can_be_executed_as_codescan_and_results_green() {
+        /* @formatter:off */
+
+        /* prepare */
+        TestProject project = PROJECT_3;
+        TestUser user = USER_1;
+
+        assertProject(project).hasNoMetaData();
+
+        Map<String, String> metaData = new HashMap<>();
+        metaData.put("key1", "value1");
+        
+        as(SUPER_ADMIN).
+            assignUserToProject(user, project)
+            .updateMetaDataForProject(project, metaData);
+
+        /* execute */
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        UUID jobUUID =
+        as(user).
+            withSecHubClient().
+            startAsynchronScanFor(project, location).
+            assertFileUploaded(project).
+            assertJobTriggered().
+            getJobUUID();
+
+        waitForJobDone(project, jobUUID);
+
+        as(user).
+            withSecHubClient().
+            startDownloadJobReport(project, jobUUID, location).
+            hasTrafficLight(TrafficLight.GREEN)
+
+            ;
+        /* @formatter:on */
+    }
+	   
 	@Test
 	public void a_project_having_no_problems_can_be_executed_as_codescan_and_results_green() {
 		/* @formatter:off */
@@ -435,5 +508,4 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* @formatter:on */
 
 	}
-
 }
