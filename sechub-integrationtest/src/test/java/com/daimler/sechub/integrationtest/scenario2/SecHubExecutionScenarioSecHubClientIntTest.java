@@ -180,14 +180,16 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         TestProject project = PROJECT_3;
         TestUser user = USER_1;
 
+        assertProject(project).hasNoMetaData();
+        
         Map<String, String> metaData = new HashMap<>();
         metaData.put("key1", "value1");
-        
-        assertProject(project).hasMetaData(metaData);
         
         as(SUPER_ADMIN).
             assignUserToProject(user, project).
             updateMetaDataForProject(project, metaData);
+        
+        assertProject(project).hasMetaData(metaData);
 
         /* execute */
         IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
