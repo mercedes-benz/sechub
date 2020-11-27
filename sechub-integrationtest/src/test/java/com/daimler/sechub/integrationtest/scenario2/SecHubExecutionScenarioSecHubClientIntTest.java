@@ -28,15 +28,13 @@ import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.Executio
 
 public class SecHubExecutionScenarioSecHubClientIntTest {
 
+    @Rule
+    public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
-	@Rule
-	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
+    @Rule
+    public Timeout timeOut = Timeout.seconds(60 * 5);
 
-	@Rule
-	public Timeout timeOut = Timeout.seconds(60 * 5);
-
-	
-	@Test
+    @Test
     public void sechub_client_is_able_to_trigger_sourcescan_asynchronous_even_when_user_name_is_uppercased() {
         /* @formatter:off */
 
@@ -57,10 +55,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         /* @formatter:on */
 
     }
-	
-	@Test
-	public void sechub_client_is_able_to_trigger_sourcescan_asynchronous() {
-		/* @formatter:off */
+
+    @Test
+    public void sechub_client_is_able_to_trigger_sourcescan_asynchronous() {
+        /* @formatter:off */
 
 		/* prepare */
 		as(SUPER_ADMIN).
@@ -78,11 +76,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_trigger_infrascan_asynchronous() {
-		/* @formatter:off */
+    @Test
+    public void sechub_client_is_able_to_trigger_infrascan_asynchronous() {
+        /* @formatter:off */
 
 		/* prepare */
 		as(SUPER_ADMIN).
@@ -101,11 +99,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void a_project_having_no_white_list_entries_but_no_problems_can_be_executed_as_codescan_and_results_green() {
-		/* @formatter:off */
+    @Test
+    public void a_project_having_no_white_list_entries_but_no_problems_can_be_executed_as_codescan_and_results_green() {
+        /* @formatter:off */
 
 		/* prepare */
 		TestProject project = PROJECT_3;
@@ -135,9 +133,8 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 			;
 		/* @formatter:on */
-	}
-	
-	
+    }
+
     @Test
     public void a_project_having_no_metadata_but_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -171,7 +168,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             ;
         /* @formatter:on */
     }
-    
+
     @Test
     public void a_project_having_metadata_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -211,10 +208,76 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
             ;
         /* @formatter:on */
     }
-	   
-	@Test
-	public void a_project_having_no_problems_can_be_executed_as_codescan_and_results_green() {
-		/* @formatter:off */
+
+    @Test
+    public void a_project_having_metadata_updated_no_problems_can_be_executed_as_codescan_and_results_green() {
+        /* @formatter:off */
+
+        /* prepare */
+        TestProject project = PROJECT_3;
+        TestUser user = USER_1;
+
+        assertProject(project).hasNoMetaData();
+        
+        Map<String, String> metaData = new HashMap<>();
+        metaData.put("key1", "value1");
+        
+        // add first metaDataEntry
+        as(SUPER_ADMIN).
+            assignUserToProject(user, project).
+            updateMetaDataForProject(project, metaData);
+        
+        assertProject(project).hasMetaData(metaData);
+        
+        // add additional entry
+        metaData.put("key2", "value2");
+        as(SUPER_ADMIN).
+        assignUserToProject(user, project).
+        updateMetaDataForProject(project, metaData);
+    
+        assertProject(project).hasMetaData(metaData);
+        
+        // update one entry
+        metaData.put("key1", "updatedValue");
+        
+        as(SUPER_ADMIN).
+        assignUserToProject(user, project).
+        updateMetaDataForProject(project, metaData);
+    
+        assertProject(project).hasMetaData(metaData);
+        
+        // remove all entries
+        metaData.clear();
+        as(SUPER_ADMIN).
+        assignUserToProject(user, project).
+        updateMetaDataForProject(project, metaData);
+    
+        assertProject(project).hasMetaData(metaData);
+
+        /* execute */
+        IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
+        UUID jobUUID =
+        as(user).
+            withSecHubClient().
+            startAsynchronScanFor(project, location).
+            assertFileUploaded(project).
+            assertJobTriggered().
+            getJobUUID();
+
+        waitForJobDone(project, jobUUID);
+
+        as(user).
+            withSecHubClient().
+            startDownloadJobReport(project, jobUUID, location).
+            hasTrafficLight(TrafficLight.GREEN)
+
+            ;
+        /* @formatter:on */
+    }
+
+    @Test
+    public void a_project_having_no_problems_can_be_executed_as_codescan_and_results_green() {
+        /* @formatter:off */
 
 		/* prepare */
 		TestProject project = PROJECT_3;
@@ -247,11 +310,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			;
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
-		/* @formatter:off */
+    @Test
+    public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
+        /* @formatter:off */
 
 		/* prepare */
 		TestProject project = PROJECT_3;
@@ -295,11 +358,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			;
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void a_project_having_no_white_list_entries_but_some_problems_can_be_executed_as_codescan_and_results_yellow() {
-		/* @formatter:off */
+    @Test
+    public void a_project_having_no_white_list_entries_but_some_problems_can_be_executed_as_codescan_and_results_yellow() {
+        /* @formatter:off */
 
 		/* prepare */
 		TestProject project = PROJECT_3;
@@ -331,11 +394,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			;
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_asynchronous_and_file_is_uploaded() {
-		/* @formatter:off */
+    @Test
+    public void sechub_client_is_able_to_handle_asynchronous_and_file_is_uploaded() {
+        /* @formatter:off */
 
 		/* prepare */
 		as(SUPER_ADMIN).
@@ -353,11 +416,11 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_asynchronous_and_file_is_uploaded_and_excludes_handled() {
-		/* @formatter:off */
+    @Test
+    public void sechub_client_is_able_to_handle_asynchronous_and_file_is_uploaded_and_excludes_handled() {
+        /* @formatter:off */
 
 		/* prepare */
 		as(SUPER_ADMIN).
@@ -384,15 +447,15 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_green() {
+    @Test
+    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_green() {
 
-		/* prepare */
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
 			isAssignedToProject(PROJECT_1);
@@ -408,15 +471,15 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_yellow_pe_default_exitcode0() {
+    @Test
+    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_yellow_pe_default_exitcode0() {
 
-		/* prepare */
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
 			isAssignedToProject(PROJECT_1);
@@ -433,15 +496,15 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_yellow_stop_on_yellow_active_so_exit_code1() {
+    @Test
+    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_yellow_stop_on_yellow_active_so_exit_code1() {
 
-		/* prepare */
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
 			isAssignedToProject(PROJECT_1);
@@ -459,12 +522,12 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_red() {
+    @Test
+    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_red() {
 
-		/* @formatter:off */
+        /* @formatter:off */
 		/* prepare */
 		as(SUPER_ADMIN).
 			assignUserToProject(USER_1, PROJECT_1);
@@ -485,15 +548,15 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 
-	@Test
-	public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_green_when_config_is_extreme_big() {
+    @Test
+    public void sechub_client_is_able_to_handle_synchronous_and_result_has_trafficlight_green_when_config_is_extreme_big() {
 
-		/* prepare */
-		as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
+        /* prepare */
+        as(SUPER_ADMIN).assignUserToProject(USER_1, PROJECT_1);
 
-		/* @formatter:off */
+        /* @formatter:off */
 		assertUser(USER_1).
 			doesExist().
 			isAssignedToProject(PROJECT_1);
@@ -509,5 +572,5 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
 		/* @formatter:on */
 
-	}
+    }
 }
