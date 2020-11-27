@@ -232,8 +232,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         // add additional entry
         metaData.put("key2", "value2");
         as(SUPER_ADMIN).
-        assignUserToProject(user, project).
-        updateMetaDataForProject(project, metaData);
+            updateMetaDataForProject(project, metaData);
     
         assertProject(project).hasMetaData(metaData);
         
@@ -241,18 +240,16 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         metaData.put("key1", "updatedValue");
         
         as(SUPER_ADMIN).
-        assignUserToProject(user, project).
-        updateMetaDataForProject(project, metaData);
+            updateMetaDataForProject(project, metaData);
     
         assertProject(project).hasMetaData(metaData);
         
         // remove all entries
         metaData.clear();
         as(SUPER_ADMIN).
-        assignUserToProject(user, project).
-        updateMetaDataForProject(project, metaData);
+            updateMetaDataForProject(project, metaData);
     
-        assertProject(project).hasMetaData(metaData);
+        assertProject(project).hasNoMetaData();
 
         /* execute */
         IntegrationTestJSONLocation location = CLIENT_JSON_SOURCESCAN_GREEN;
