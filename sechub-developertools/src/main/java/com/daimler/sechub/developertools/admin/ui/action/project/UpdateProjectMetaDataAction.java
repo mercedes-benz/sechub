@@ -2,7 +2,6 @@
 package com.daimler.sechub.developertools.admin.ui.action.project;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.Optional;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;

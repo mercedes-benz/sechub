@@ -2,9 +2,7 @@
 package com.daimler.sechub.sharedkernel.messaging;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.daimler.sechub.commons.model.JSONable;
