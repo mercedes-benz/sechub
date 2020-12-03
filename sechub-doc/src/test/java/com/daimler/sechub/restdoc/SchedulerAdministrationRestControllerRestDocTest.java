@@ -67,7 +67,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminTriggersRefreshOfSchedulerStatus()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorTriggersRefreshOfSchedulerStatus.class))
 				/* we do not document more, because its only a trigger*/
@@ -83,7 +83,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminDisablesSchedulerJobProcessing()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDisablesSchedulerJobProcessing.class))
 				/* we do not document more, because its only a trigger*/
@@ -99,7 +99,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminEnablesSchedulerJobProcessing()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorEnablesSchedulerJobProcessing.class))
 				/* we do not document more, because its only a trigger*/

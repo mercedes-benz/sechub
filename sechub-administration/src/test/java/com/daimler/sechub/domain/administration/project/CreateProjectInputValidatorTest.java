@@ -55,5 +55,22 @@ public class CreateProjectInputValidatorTest {
 		verify(validation).checkProjectId(errors, input);
 	}
 
+	@Test
+    public void checkWhiteList_is_called_on_validation() {
+        /* execute */
+        validatorToTest.validate(input, errors);
+
+        /* test */
+        verify(validation).checkWhitelist(errors, input);
+    }
+	
+	@Test
+    public void checkMetaData_is_called_on_validation() {
+        /* execute */
+        validatorToTest.validate(input, errors);
+
+        /* test */
+        verify(validation).checkMetaData(errors, input);
+    }
 
 }

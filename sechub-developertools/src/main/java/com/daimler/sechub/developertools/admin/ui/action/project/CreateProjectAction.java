@@ -3,7 +3,9 @@ package com.daimler.sechub.developertools.admin.ui.action.project;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.daimler.sechub.developertools.admin.ui.ThreeButtonDialogResult;
@@ -49,12 +51,29 @@ public class CreateProjectAction extends AbstractUIAction {
 				return;
 			}
 
-			if (uri.hasValue() && uri.isAdded()) {
+			if (uri.hasValue() && uri.isAdded() && !uri.getValue().trim().isEmpty()) {
 				// only increase counter if value is not empty
 				i++;
 				whiteListURLs.add(uri.getValue());
 			}
 		} while (!uri.isFinished()); // continue until finished is pressed
+		
+		Map<String, String> metaData = new HashMap<>();
+		ThreeButtonDialogResult<String> keyValue;
+		do {
+			keyValue = getUserInputFromField("(Optional) key=value pairs for metadata:");
+			
+			if(keyValue.isCanceled()) {
+				return;
+			}
+			
+			if (keyValue.hasValue() && keyValue.isAdded() && keyValue.getValue().contains("=")) {
+				String[] elements = keyValue.getValue().split("=");
+				String key = elements[0];
+				String value = elements[1];
+				metaData.put(key, value);
+			}
+		} while(!keyValue.isFinished());
 
 		if (!confirm("Do you really want to create project ID/name " + projectId.get() + " with owner " + owner.get())) {
 		    return;
@@ -62,7 +81,7 @@ public class CreateProjectAction extends AbstractUIAction {
 		
 		// build and send request to server over HTTP
 		String postResult = getContext().getAdministration().createProject(asSecHubId(projectId.get()), description.orElse(null),
-				owner.get().toLowerCase().trim(), whiteListURLs);
+				owner.get().toLowerCase().trim(), whiteListURLs, metaData);
 		outputAsBeautifiedJSONOnSuccess(postResult);
 		outputAsTextOnSuccess("project created:" + projectId);
 	}

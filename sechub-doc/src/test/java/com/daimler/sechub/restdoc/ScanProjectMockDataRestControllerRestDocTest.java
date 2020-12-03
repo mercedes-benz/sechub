@@ -71,7 +71,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(config.toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserDefinesProjectMockdata.class))
 
@@ -97,7 +97,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         		get(https(PORT_USED).buildGetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement()),PROJECT1_ID).
         			accept(MediaType.APPLICATION_JSON_VALUE).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  /*andDo(print()).*/
+        		).  
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.codeScan.result").value("RED")).
         			andExpect(jsonPath("$.webScan.result").value("YELLOW")).

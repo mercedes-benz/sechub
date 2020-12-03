@@ -70,7 +70,7 @@ public class AnonymousSignupRestControllerRestDocTest {
         		post(https(PORT_USED).buildUserSignUpUrl()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).andDo(
         					document(RestDocPathFactory.createPath(UseCaseUserSignup.class),
         							requestFields(

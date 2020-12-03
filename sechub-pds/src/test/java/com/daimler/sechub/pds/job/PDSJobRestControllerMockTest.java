@@ -83,7 +83,7 @@ public class PDSJobRestControllerMockTest {
         		post(https(PORT_USED).pds().buildCreateJob()).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"sechubJobUUID\":\""+sechubJobUUID.toString()+"\"}")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()
         		);
 
@@ -116,7 +116,7 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).pds().buildGetJobStatus(jobUUID))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().json(status.toJSON(),true)
                 );
@@ -137,7 +137,7 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).pds().buildGetJobResult(jobUUID))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().string(result)
                 );
@@ -155,7 +155,7 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 put(https(PORT_USED).pds().buildMarkJobReadyToStart(jobUUID))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()
                 );
 
@@ -174,7 +174,7 @@ public class PDSJobRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 put(https(PORT_USED).pds().buildCancelJob(jobUUID))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()
                 );
 
@@ -200,7 +200,7 @@ public class PDSJobRestControllerMockTest {
                 file(multiPart).
                 
                 param("checkSum", "mychecksum")
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()
                 );
 

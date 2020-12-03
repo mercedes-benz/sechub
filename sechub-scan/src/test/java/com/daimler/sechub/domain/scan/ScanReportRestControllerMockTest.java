@@ -96,7 +96,7 @@ public class ScanReportRestControllerMockTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_PDF).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isNotAcceptable()
         		);
 
@@ -129,7 +129,7 @@ public class ScanReportRestControllerMockTest {
 	    this.mockMvc.perform(
 	    		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
 	    		);

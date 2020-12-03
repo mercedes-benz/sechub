@@ -20,6 +20,9 @@ public class ProjectTransactionService {
 
 	@Autowired
 	ProjectRepository projectRepository;
+	
+	@Autowired
+	ProjectMetaDataEntityRepository metaDataRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -30,6 +33,9 @@ public class ProjectTransactionService {
 
 		/* store */
 		Project result = projectRepository.save(project);
+		
+		metaDataRepository.saveAll(project.metaData);
+		
 		LOG.debug("Saved project:{}", result.getId());
 		return result;
 	}
@@ -44,6 +50,9 @@ public class ProjectTransactionService {
 		LOG.debug("Saved project:{}", result.getId());
 		userRepository.save(user);
 		LOG.debug("Saved user:{}", result.getId());
+		
+		metaDataRepository.saveAll(project.metaData);
+		
 		return result;
 	}
 

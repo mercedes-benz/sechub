@@ -93,7 +93,7 @@ public class TestRestHelper {
 	 * @return result
 	 * @throws RestClientException
 	 */
-	public String postJSon(String url, String json) {
+	public String postJson(String url, String json) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> httpEntity = new HttpEntity<>(json, headers);

@@ -77,7 +77,7 @@ public class ScanReportRestControllerRestDocTest {
 	    this.mockMvc.perform(
 	    		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
 
@@ -104,7 +104,7 @@ public class ScanReportRestControllerRestDocTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(MediaType.APPLICATION_XHTML_XML).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  /*andDo(print()).*/
+        		).  
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).

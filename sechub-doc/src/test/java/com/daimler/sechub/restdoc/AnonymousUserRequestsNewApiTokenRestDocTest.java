@@ -61,7 +61,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest {
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAnonymousRequestNewApiToken(EMAIL_ADDRESS.pathElement()),"emailAdress@test.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).andDo(
         					document(RestDocPathFactory.createPath(UseCaseUserRequestsNewApiToken.class),
         							pathParameters(

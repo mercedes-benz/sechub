@@ -296,7 +296,7 @@ public class DeveloperAdministration {
     public String createNewUserSignup(String name, String email) {
 
         String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-        return getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+        return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
     public String fetchUserList() {
@@ -340,7 +340,7 @@ public class DeveloperAdministration {
         return "Deleted product execution profile:" + profileId;
     }
 
-    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
+    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs, Map<String, String> metaData) {
         /* @formatter:off */
 		StringBuilder json = new StringBuilder();
 		if (description==null || description.isEmpty()) {
@@ -365,11 +365,27 @@ public class DeveloperAdministration {
 			json.append("]\n");
 			json.append("                 }\n");
 		}
+		
+		if (!metaData.isEmpty()) {
+			json.append(",\n \"metaData\" : {\n");
+			
+			for(Iterator<Map.Entry<String, String>> it = metaData.entrySet().iterator(); it.hasNext(); ) {
+				Map.Entry<String, String> pair = it.next();
+				String key = pair.getKey();
+				String value = pair.getValue();
+				json.append("\"" + key + "\":\"" + value + "\"");
+				if (it.hasNext()) {
+					json.append(",\n");
+				}
+			}
+			
+			json.append("\n}\n");
+		}
 
 		json.append("}\n");
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
-        return getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
+        return getRestHelper().postJson(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
     }
 
     public String fetchProjectList() {
@@ -400,12 +416,22 @@ public class DeveloperAdministration {
             ArrayNode arrayNode = (ArrayNode) whitelist;
             for (JsonNode node : arrayNode) {
                 String uriText = node.textValue();
-                result.add(uriText);
+                if (!uriText.trim().isEmpty()) {
+                    result.add(uriText);
+                }
             }
-
         }
 
         return result;
+    }
+    
+    public String fetchProjectMetaData(String projectId) {
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(json);
+        JsonNode metaData = jsonNode.get("metaData");
+
+        return metaData.toPrettyString();
     }
 
     public String fetchProjectScanLogs(String projectId) {
@@ -426,17 +452,33 @@ public class DeveloperAdministration {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
         for (Iterator<String> it = result.iterator(); it.hasNext();) {
-            sb.append("\"");
-            sb.append(it.next());
-            sb.append("\"");
-            if (it.hasNext()) {
-                sb.append(",");
+            
+            String uri = it.next();
+            
+            if (!uri.trim().isEmpty()) {
+                sb.append("\"");
+                sb.append(it.next());
+                sb.append("\"");
+                if (it.hasNext()) {
+                    sb.append(",");
+                }
             }
 
         }
         sb.append("]}}");
 
-        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+    }
+    
+    public void updateProjectMetaData(String projectId, String result) {
+    	
+    	TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(result);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
+
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
     public String assignUserToProject(String userId, String projectId) {
