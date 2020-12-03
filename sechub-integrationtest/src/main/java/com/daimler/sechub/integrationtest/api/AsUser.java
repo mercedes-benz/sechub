@@ -335,7 +335,7 @@ public class AsUser {
      */
     public AsUser assignUserToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning user:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsUserToProjectUrl(targetUser.getUserId(), project.getProjectId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsUserToProjectUrl(project.getProjectId(),targetUser.getUserId()), "");
         return this;
     }
 
