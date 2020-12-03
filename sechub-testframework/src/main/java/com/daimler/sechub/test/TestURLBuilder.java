@@ -302,11 +302,11 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
 
-    public String buildAdminAssignsUserToProjectUrl(String userId, String projectId) {
+    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 
-    public String buildAdminUnassignsUserFromProjectUrl(String userId, String projectId) {
+    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 

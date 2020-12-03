@@ -168,7 +168,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isCreated()).
@@ -188,7 +188,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
