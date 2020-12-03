@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +16,14 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
 import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
+
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
  * 
@@ -30,6 +33,7 @@ import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionCallable.class);
+    private static final int MAXIMUM_RETRIES_ON_OPTIMISTIC_LOCKS = 2;
 
     private PDSJobTransactionService jobTransactionService;
     private Process process;
@@ -43,7 +47,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
             PDSExecutionEnvironmentService environmentService) {
         notNull(jobUUID, "jobUUID may not be null!");
-        notNull(jobUUID, "jobUUID may not be null!");
+        notNull(jobTransactionService, "jobTransactionService may not be null!");
+        notNull(workspaceService, "workspaceService may not be null!");
+
         this.jobUUID = jobUUID;
         this.jobTransactionService = jobTransactionService;
         this.workspaceService = workspaceService;
@@ -52,8 +58,11 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     @Override
     public PDSExecutionResult call() throws Exception {
+        LOG.debug("Start execution of job with uuid:{}", jobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
         try {
+            updateWithRetriesOnOptimisticLocks(UpdateState.RUNNING);
+
             String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
 
             PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
@@ -62,6 +71,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                 throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
             }
 
+            LOG.debug("Handle source upload for job with uuid:{}", jobUUID);
             workspaceService.unzipUploadsWhenConfigured(jobUUID, config);
             String path = workspaceService.getProductPathFor(config);
             if (path == null) {
@@ -71,7 +81,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             createProcess(jobUUID, config, path);
 
             waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult);
-
         } catch (Exception e) {
             LOG.error("Execution of job uuid:{} failed", jobUUID, e);
             result.failed = true;
@@ -82,9 +91,40 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         return result;
     }
 
+    private enum UpdateState {
+        RUNNING,
+    }
+
+    private void updateWithRetriesOnOptimisticLocks(UpdateState state) {
+
+        int retries = 0;
+        while (true) {
+            try {
+                if (state == UpdateState.RUNNING) {
+                    jobTransactionService.markJobAsRunningInOwnTransaction(jobUUID);
+                }
+                break;
+
+            } catch (ObjectOptimisticLockingFailureException e) {
+
+                /* we just retry - to avoid any optimistic locks */
+                if (retries > MAXIMUM_RETRIES_ON_OPTIMISTIC_LOCKS) {
+                    throw new IllegalStateException("Still having optimistic lock problems - event after " + retries + " retries", e);
+                }
+                retries++;
+                LOG.info("Had optimistic lock problem on update for job {} - do retry nr.{}", jobUUID, retries);
+            }
+        }
+    }
+
     private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)
             throws InterruptedException, IOException {
+        LOG.debug("Wait for process of job with uuid:{}, will wait {} minutes for result from product with id:{}", jobUUID, minutesToWaitForResult,
+                config.getProductId());
+        long started = System.currentTimeMillis();
+
         boolean exitDoneInTime = process.waitFor(minutesToWaitForResult, TimeUnit.MINUTES);
+        long timeElapsedInMilliseconds = System.currentTimeMillis() - started;
 
         if (!exitDoneInTime) {
             LOG.error("Job {} failed - product id:{} time out reached.", jobUUID, config.getProductId());
@@ -97,11 +137,16 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         result.exitCode = process.exitValue();
         result.result = "";
+        LOG.debug("Process of job with uuid:{} ended after {} ms - for product with id:{}", jobUUID, timeElapsedInMilliseconds, config.getProductId());
+
         File file = workspaceService.getResultFile(jobUUID);
         String encoding = workspaceService.getFileEncoding(jobUUID);
+
         if (file.exists()) {
+            LOG.debug("Result file found - will read data and set as result");
             result.result = FileUtils.readFileToString(file, encoding);
         } else {
+            LOG.debug("Result file NOT found - will fetch system out and and err and use this as to set result");
             /*
              * no result file available - so snap error and system out and paste as result
              */
@@ -134,10 +179,17 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
         builder.redirectOutput(workspaceService.getSystemOutFile(jobUUID));
 
-        builder.environment().putAll(environmentService.buildEnvironmentMap(config));
+        /*
+         * add parts from PDS job configuration - means data defined by caller before
+         * job was marked as ready to start
+         */
+        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
+        builder.environment().putAll(buildEnvironmentMap);
+
         File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
         builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
         try {
+            LOG.debug("Create process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
             process = builder.start();
         } catch (IOException e) {
             LOG.error("Process start failed for jobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
@@ -150,7 +202,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
      * 
      * @param mayInterruptIfRunning
      */
-    @UseCaseUserCancelsJob(@PDSStep(name="process cancelation",description = "process created by job will be destroyed",number=4))
+    @UseCaseUserCancelsJob(@PDSStep(name = "process cancelation", description = "process created by job will be destroyed", number = 4))
     void prepareForCancel(boolean mayInterruptIfRunning) {
         if (process == null || !process.isAlive()) {
             return;
@@ -171,6 +223,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         }
         try {
             workspaceService.cleanup(jobUUID);
+            LOG.debug("workspace cleanup done for job:{}", jobUUID);
         } catch (IOException e) {
             LOG.error("workspace cleanup failed for job:{}!", jobUUID);
         }

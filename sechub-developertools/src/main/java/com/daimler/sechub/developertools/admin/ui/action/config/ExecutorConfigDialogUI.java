@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui.action.config;
 
+import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraintsFactory.*;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
@@ -31,7 +32,6 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
-import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraintsFactory.*;
 
 public class ExecutorConfigDialogUI {
 
@@ -62,7 +62,7 @@ public class ExecutorConfigDialogUI {
         this.context = context;
         this.config = config;
         this.title = title;
-        this.buttonOkText="Ok";
+        this.buttonOkText = "Ok";
     }
 
     UIContext getContext() {
@@ -99,10 +99,10 @@ public class ExecutorConfigDialogUI {
 
         dialog.setTitle(title);
         dialog.setModal(true);
-        dialog.setSize(new Dimension(600, 400));
         dialog.setLocationRelativeTo(context.getFrame());
-        dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        dialog.pack();
+        dialog.setVisible(true);
     }
 
     private void createButtonPanel(JDialog dialog) {
@@ -111,7 +111,7 @@ public class ExecutorConfigDialogUI {
         buttonOk = new JButton(buttonOkText);
         buttonOk.addActionListener((event) -> {
             String name = getNameFromUI();
-            if (name==null || name.isEmpty()) {
+            if (name == null || name.isEmpty()) {
                 nameTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
                 return;
             }
@@ -173,18 +173,21 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
 
         /* job parameters */
-        jobParametersTextArea = new JTextArea(convertJobParamsToString());
+        jobParametersTextArea = new JTextArea(resolveInitialJobParamsAsString());
         mainPanel.add(new JLabel("Job parameters:"), createLabelConstraint(row));
         GridBagConstraints jobParameterGridDataConstraints = createComponentConstraint(row++);
+        jobParameterGridDataConstraints.gridheight = 10;
         jobParameterGridDataConstraints.weighty = 0.0;
+        jobParameterGridDataConstraints.fill = GridBagConstraints.BOTH;
         mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);
+
     }
 
     public void setTextForOKButton(String text) {
-        buttonOkText=text;
+        buttonOkText = text;
     }
-    
-    private String convertJobParamsToString() {
+
+    protected String resolveInitialJobParamsAsString() {
         Properties p = new Properties();
         for (TestExecutorSetupJobParam param : config.setup.jobParameters) {
             p.put(param.key, param.value);

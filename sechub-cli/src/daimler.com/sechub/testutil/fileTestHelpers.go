@@ -36,14 +36,13 @@ func CreateTestDirectory(dir string, mode os.FileMode, t *testing.T) {
 }
 
 // CreateTestFile - create a regular file with text content in testing context
-func CreateTestFile(file string, mode os.FileMode, t *testing.T) {
+func CreateTestFile(file string, mode os.FileMode, content []byte, t *testing.T) {
 	_, err := os.Stat(file)
 	if !os.IsNotExist(err) {
 		fmt.Printf("File already exists: %q\n", file)
 		return
 	}
 
-	content := []byte("Hello world!\n")
 	err = ioutil.WriteFile(file, content, mode)
 	Check(err, t)
 

@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -45,8 +46,10 @@ import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionActio
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
@@ -95,6 +98,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CommandUI {
+    private static final ImageIcon EDIT_ROAD_BLACK_ICON = new ImageIcon(CommandUI.class.getResource("/icons/material-io/twotone_edit_road_black_18dp.png"));
     private JPanel panel;
     private JMenuBar menuBar;
     private TrafficLightComponent statusTrafficLight;
@@ -202,6 +206,8 @@ public class CommandUI {
 
         menu.addSeparator();
         JMenu profileMenu = new JMenu("Profiles");
+       
+        profileMenu.setIcon(EDIT_ROAD_BLACK_ICON);
         menu.add(profileMenu);
         
         add(profileMenu, new CreateExecutionProfileAction(context));
@@ -223,8 +229,11 @@ public class CommandUI {
         add(menu, new ShowPDSConfigurationDialogAction(context));
         menu.addSeparator();
         add(menu, new FetchPDSConfigurationAction(context));
-        add(menu, new CheckPDSAliveAction(context));
+        add(menu, new FetchPDSJobParameterExampleAction(context));
         menu.addSeparator();
+        add(menu, new CreateNewPDSExecutionConfigurationAction(context));
+        menu.addSeparator();
+        add(menu, new CheckPDSAliveAction(context));
         add(menu, new FetchPDSMonitoringStatusAction(context));
         menu.addSeparator();
         add(menu, new CreatePDSJobAction(context));
@@ -285,6 +294,7 @@ public class CommandUI {
         
         menu.addSeparator();
         JMenu profiles = new JMenu("Execution profiles");
+        profiles.setIcon(EDIT_ROAD_BLACK_ICON);
         add(profiles, new AssignProfileToProjectsAction(context));
         add(profiles, new UnassignProfileFromProjectsAction(context));
         profiles.addSeparator();

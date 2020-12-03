@@ -178,4 +178,5 @@ public class CheckmarxV1XMLImporter extends AbstractProductResultImporter {
 								build();
 		/* @formatter:on */
 	}
+
 }

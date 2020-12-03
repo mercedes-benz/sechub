@@ -77,7 +77,7 @@ public class ProductResultRepositoryDBTest {
 		/* prepare */
 
 		/* execute */
-		List<ProductResult> results = repositoryToTest.findProductResults(UUID.randomUUID(), NETSPARKER, FARRADAY);
+		List<ProductResult> results = repositoryToTest.findProductResults(UUID.randomUUID(), NETSPARKER, PDS_WEBSCAN);
 
 		/* test */
 		assertNotNull(results);
@@ -91,11 +91,11 @@ public class ProductResultRepositoryDBTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID,"project1",  ProductIdentifier.FARRADAY, "result");
+		ProductResult result1 = new ProductResult(secHubJobUUID,"project1",  ProductIdentifier.PDS_WEBSCAN, "result");
 		entityManager.persistAndFlush(result1);
 
 		/* execute */
-		List<ProductResult> results = repositoryToTest.findProductResults(secHubJobUUID, NETSPARKER, FARRADAY);
+		List<ProductResult> results = repositoryToTest.findProductResults(secHubJobUUID, NETSPARKER, PDS_WEBSCAN);
 
 		/* test */
 		assertNotNull(results);
@@ -109,11 +109,11 @@ public class ProductResultRepositoryDBTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.PDS_WEBSCAN, "result");
 		entityManager.persistAndFlush(result1);
 
 		/* execute */
-		List<ProductResult> results = repositoryToTest.findProductResults(secHubJobUUID, FARRADAY);
+		List<ProductResult> results = repositoryToTest.findProductResults(secHubJobUUID, PDS_WEBSCAN);
 
 		/* test */
 		assertNotNull(results);
@@ -127,7 +127,7 @@ public class ProductResultRepositoryDBTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.FARRADAY, "result");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.PDS_WEBSCAN, "result");
 		entityManager.persistAndFlush(result1);
 
 		/* execute */

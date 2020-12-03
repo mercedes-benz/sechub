@@ -29,7 +29,7 @@ public class ScheduleRevokeUserAccessAtAllService {
 	public void revokeUserAccess(String userId) {
 		assertion.isValidUserId(userId);
 
-		repository.deleteAcessForUserAtAll(userId);
+		repository.deleteAccessForUserAtAll(userId);
 
 		LOG.info("Revoked access at all for user:{}",userId);
 	}

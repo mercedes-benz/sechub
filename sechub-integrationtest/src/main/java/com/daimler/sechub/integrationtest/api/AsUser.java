@@ -348,7 +348,7 @@ public class AsUser {
      */
     public AsUser unassignUserFromProject(TestUser targetUser, TestProject project) {
         LOG.debug("unassigning user:{} from project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(targetUser.getUserId(), project.getProjectId()));
+        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(project.getProjectId(), targetUser.getUserId()));
         return this;
     }
 
@@ -457,10 +457,18 @@ public class AsUser {
         return this;
     }
 
+    public String getJobStatus(TestProject project, UUID jobUUID) {
+        return getJobStatus(project.getProjectId(), jobUUID);
+    }
+    
     public String getJobStatus(String projectId, UUID jobUUID) {
         return getRestHelper().getJSon(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
     }
 
+    public String getJobReport(TestProject project, UUID jobUUID) {
+        return getJobReport(project.getProjectId(), jobUUID);
+    }
+    
     public String getJobReport(String projectId, UUID jobUUID) {
         long waitTimeInMillis = 1000;
         int count = 0;
@@ -516,7 +524,31 @@ public class AsUser {
      * @return uuid for created job
      */
     public UUID createWebScan(TestProject project) {
-        return createWebScan(project, null);
+        return createWebScan(project, null, true);
+    }
+    
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     * 
+     * @param project
+     * @param useLongRunningButGreen
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode) {
+    	return createWebScan(project, runMode, true);
+    }
+    
+    /**
+     * Creates a webscan job for project (but job is not approved, so will not be
+     * started)
+     * 
+     * @param project
+     * @param checkExists
+     * @return uuid for created job
+     */
+    public UUID createWebScan(TestProject project, boolean checkExists) {
+    	return createWebScan(project, null, checkExists);
     }
 
     /**
@@ -525,10 +557,15 @@ public class AsUser {
      * 
      * @param project
      * @param useLongRunningButGreen
-     * @return
+     * @param checkExists
+     * @return uuid for created job
      */
-    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode) {
-        assertProject(project).doesExist();
+    public UUID createWebScan(TestProject project, IntegrationTestMockMode runMode, boolean checkExists) {
+        
+    	if (checkExists) {
+    		assertProject(project).doesExist();
+    	}       
+        
         if (runMode == null) {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
         }

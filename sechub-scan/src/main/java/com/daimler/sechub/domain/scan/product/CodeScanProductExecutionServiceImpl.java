@@ -32,6 +32,9 @@ public class CodeScanProductExecutionServiceImpl extends AbstractProductExecutio
     @Autowired
     public CodeScanProductExecutionServiceImpl(List<CodeScanProductExecutor> codescanExecutors) {
         this.codescanExecutors.addAll(codescanExecutors);
+        
+        LOG.info("Registered code scan executors:{}",codescanExecutors);
+        
     }
 
     @Override

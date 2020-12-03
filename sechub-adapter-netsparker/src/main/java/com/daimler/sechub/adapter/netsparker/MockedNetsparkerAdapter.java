@@ -23,8 +23,8 @@ public class MockedNetsparkerAdapter extends AbstractMockedAdapter<NetsparkerAda
 		 * the token is for the apiToken'netsparker-api-token' and user id
 		 * 'netsparker-user-id' from application-mock.yml!
 		 */
-		if (!"bmV0c3Bhcmtlci11c2VyLWlkOm5ldHNwYXJrZXItYXBpLXRva2Vu".equals(config.getPasswordOrAPITokenBase64Encoded())) {
-		    handleSanityFailure("pwd not as expected"+config.getPasswordOrAPITokenBase64Encoded());
+		if (!"bmV0c3Bhcmtlci11c2VyLWlkOm5ldHNwYXJrZXItYXBpLXRva2Vu".equals(config.getCredentialsBase64Encoded())) {
+		    handleSanityFailure("pwd not as expected"+config.getCredentialsBase64Encoded());
 		}
 		if (!"netsparker-default-policiy-id".equals(config.getPolicyId())) {
 		    handleSanityFailure("Netsparker policy not as expected:" + config.getPolicyId());

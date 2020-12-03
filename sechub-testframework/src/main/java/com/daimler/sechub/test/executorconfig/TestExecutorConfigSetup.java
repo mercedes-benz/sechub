@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.test.executorconfig;
 
 import java.util.ArrayList;

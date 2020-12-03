@@ -46,6 +46,11 @@ public class DialogUI {
         int x = JOptionPane.showConfirmDialog(frame, message, "Please confirm", JOptionPane.OK_OPTION);
         return x == JOptionPane.OK_OPTION;
     }
+    
+    public void inform(String message) {
+        JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.INFORMATION_MESSAGE);
+        
+    }
 
     public void warn(String message) {
         JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.WARNING_MESSAGE);
@@ -249,4 +254,6 @@ public class DialogUI {
             return null;
         }
     }
+
+    
 }

@@ -22,7 +22,7 @@ public class ServerErrorController implements ErrorController {
 
     private static final String PATH = "/error";	// NOSONAR
 
-    @MustBeDocumented("When debug flag is set, rest call reponse error messages do also contains stacktraces.")
+    @MustBeDocumented("When debug flag is set, rest call reponse error messages do also contain stacktraces.")
     @Value("${sechub.server.debug:false}")
     private boolean debug;
 

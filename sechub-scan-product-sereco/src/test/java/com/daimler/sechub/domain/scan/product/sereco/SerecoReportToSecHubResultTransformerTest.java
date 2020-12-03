@@ -47,7 +47,7 @@ public class SerecoReportToSecHubResultTransformerTest {
     }
 
     private ProductResult createProductResult(String converted) {
-        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", ProductIdentifier.FARRADAY, converted);
+        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", ProductIdentifier.PDS_WEBSCAN, converted);
         return r;
     }
 

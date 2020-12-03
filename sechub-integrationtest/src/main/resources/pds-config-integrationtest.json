@@ -24,6 +24,10 @@
                     {
                         "key": "product1.add.tipoftheday",
                         "description": "add tip of the day as info"
+                    },
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
                     }
                 ]
             }
@@ -31,7 +35,7 @@
         {
             "id": "PDS_INTTEST_PRODUCT_WEBSCAN",
             "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",
-            "scanType": "codeScan",
+            "scanType": "webScan",
             "description": "This is only a fake web scan - used by integration tests.",
             "parameters": {
                 "mandatory": [
@@ -45,7 +49,7 @@
         {
             "id": "PDS_INTTEST_PRODUCT_INFRASCAN",
             "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-infrascan.sh",
-            "scanType": "codeScan",
+            "scanType": "infraScan",
             "description": "This is only a fake infra scan - used by integration tests."
         }
     ]

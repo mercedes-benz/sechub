@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.integrationtest.scenario1;
+package com.daimler.sechub.integrationtest.scenario3;
 
 import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
