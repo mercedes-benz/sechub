@@ -55,7 +55,7 @@ ext {
          springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
          springframework_security_test:         "org.springframework.security:spring-security-test",
 
-         wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.16.0",
+         wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.27.2",
 
          database_h2:                           "com.h2database:h2:1.4.199", //:1.4.199 is supported by used spring boot release",
          database_postgres:                     "org.postgresql:postgresql:42.2.2",
