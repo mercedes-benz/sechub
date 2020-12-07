@@ -1,15 +1,20 @@
 // SPDX-License-Identifier: MIT
 
 subprojects {
-
     if (! projectType.springBootProjects.contains(project)){
 		return;
     }
+    apply plugin: 'io.spring.dependency-management'
+    dependencyManagement {
+         imports {
+             mavenBom "$springBootMavenBomCoordinates"
+         }
+    }
+    
     ext['junit-jupiter.version'] = '5.6.0'
 
     logger.info("found spring boot relevant project:$project")
-	apply plugin: "org.springframework.boot"
-	// see https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.0-Migration-Guide
+    
 	apply plugin: 'io.spring.dependency-management'
 
 	dependencies {
@@ -17,10 +22,6 @@ subprojects {
         testCompile(library.springboot_starter_test)
         testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
         compile(library.springboot_starter_json)
-
-// only when using JDK >=10:
-//        compile(library.jdk_missing_jaxb_api)
-//        compile(library.jdk_missing_activation)
 
 	    if (projectType.springBootAdapterProjects.contains(project)){
             // next line: compile only, because spring boot does add android-json on test compile as lightweight imp
@@ -69,16 +70,5 @@ subprojects {
        if (projectType.springDocProjects.contains(project)){
             compile(library.springboot_starter_web)
        }
-       if (projectType.bootableSpringApplicationProjects.contains(project)){
-            bootJar.enabled = true
-            bootRun.enabled = true
-            springBoot.buildInfo() // create build.properties in META-INF
-           // println ("boot jar enabled for $project")
-       }else{
-            bootJar.enabled = false // https://spring.io/blog/2017/04/05/spring-boot-s-new-gradle-plugin
-            bootRun.enabled = false
-            //println ("boot jar NOT enabled for $project.name")
-            jar.enabled = true
-       }
-	}
+    }
 }

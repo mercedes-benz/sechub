@@ -18,7 +18,6 @@ buildscript{
 
 	dependencies{
 		classpath gradleApi()
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:${libraryVersion.springBoot}"
 		classpath "org.ajoberstar.grgit:grgit-gradle:4.0.1" // necessary for version calculation
 		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
 
@@ -28,7 +27,10 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.1.0'
     id 'org.asciidoctor.jvm.pdf' version '3.1.0'
     id 'org.openapi.generator' version '4.2.3'
+    id 'org.springframework.boot' version '2.4.0' apply false
 }
+
+ext.springBootMavenBomCoordinates = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 ext {
     git = org.ajoberstar.grgit.Grgit.open(currentDir: project.rootDir) // necessary for version calculation

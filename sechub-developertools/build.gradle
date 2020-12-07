@@ -40,12 +40,8 @@ task buildDeveloperAdminUI(type: Jar) {
     
     
     from { 
-        configurations.productionRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
     }
 
     with jar
-}
-
-springBoot {
-    mainClassName = 'com.daimler.sechub.developertools.admin.ui.DeveloperAdministrationUI'
 }
