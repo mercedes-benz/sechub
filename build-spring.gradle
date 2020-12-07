@@ -42,6 +42,7 @@ subprojects {
 
         if (projectType.springBootSecHubServerProjects.contains(project)){
             compile(library.springboot_starter_web)
+            compile(library.springboot_starter_validation)
             testCompile project(':sechub-testframework')
 
             /* when not the kernel project we add kernel testframework as test dependency */
