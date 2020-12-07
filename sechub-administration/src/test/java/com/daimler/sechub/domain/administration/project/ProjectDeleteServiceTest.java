@@ -23,6 +23,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectDeleteServiceTest {
 
@@ -33,7 +34,7 @@ public class ProjectDeleteServiceTest {
 	private ProjectTransactionService transactionService;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	private AuditLogService auditLogService;
 
 	@Before

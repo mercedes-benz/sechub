@@ -28,6 +28,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectUpdateWhitelistServiceTest {
 
@@ -35,7 +36,7 @@ public class ProjectUpdateWhitelistServiceTest {
 	private ProjectRepository repository;
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
 	private Set<URI> whitelist;
 	private Project project;

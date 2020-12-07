@@ -2,7 +2,9 @@
 package com.daimler.sechub.adapter.checkmarx.support;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -107,7 +109,7 @@ public class CheckmarxProjectSupportTest {
         List<CheckmarxEngineConfiguration> engineConfigurations = supportToTest.extractEngineConfigurationsFromGet(json_data, JSONAdapterSupport.FOR_UNKNOWN_ADAPTER);
         
         /* test */
-        assertThat(engineConfigurations, notNullValue());
+        assertThat((Object)engineConfigurations, notNullValue());
         assertThat(engineConfigurations, not(empty()));
         assertThat(engineConfigurations, hasSize(4));
         assertThat(engineConfigurations, hasItem(multiLanguageScanConfiguration));

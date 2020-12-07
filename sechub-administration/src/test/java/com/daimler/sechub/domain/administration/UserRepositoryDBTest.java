@@ -26,6 +26,7 @@ import com.daimler.sechub.domain.administration.user.TestUserCreationFactory;
 import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.domain.administration.user.UserRepository;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -42,7 +43,7 @@ public class UserRepositoryDBTest {
 	private UserRepository userRepository;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private User user1;
 

@@ -20,6 +20,7 @@ import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectUpdateMetaDataServiceTest {
 
@@ -28,7 +29,7 @@ public class ProjectUpdateMetaDataServiceTest {
 	private ProjectMetaDataEntityRepository metaDataRepository;
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
 	private Set<ProjectMetaDataEntity> metaData = new HashSet<>();
 	private Project project;

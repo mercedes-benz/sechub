@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
-import org.springframework.util.StringUtils;
+import static com.daimler.sechub.commons.core.util.SimpleStringUtils.*;
 
 /**
  * Abstract base class for scans where INTERNET and INTRANET scans will be done by complete different installations
@@ -12,23 +12,20 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	@Override
 	protected void init(ScanInfo info) {
-		boolean canScanDaimlerIntranet = notEmpty(getBaseURLWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getUsernameWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getPasswordWhenDaimlerIntranetTarget());
+		boolean canScanDaimlerIntranet = isNotEmpty(getBaseURLWhenDaimlerIntranetTarget());
+		canScanDaimlerIntranet=canScanDaimlerIntranet && isNotEmpty(getUsernameWhenDaimlerIntranetTarget());
+		canScanDaimlerIntranet=canScanDaimlerIntranet && isNotEmpty(getPasswordWhenDaimlerIntranetTarget());
 		
 		info.canScanIntranet=canScanDaimlerIntranet;
 		
-		boolean canScanInternet = notEmpty(getBaseURLWhenInternetTarget());
-		canScanInternet=canScanInternet && notEmpty(getUsernameWhenInternetTarget());
-		canScanInternet=canScanInternet && notEmpty(getPasswordWhenInternetTarget());
+		boolean canScanInternet = isNotEmpty(getBaseURLWhenInternetTarget());
+		canScanInternet=canScanInternet && isNotEmpty(getUsernameWhenInternetTarget());
+		canScanInternet=canScanInternet && isNotEmpty(getPasswordWhenInternetTarget());
 		
 		info.canScanInternet=canScanInternet;
 		
 	}
 	
-	private boolean notEmpty(Object object) {
-		return ! StringUtils.isEmpty(object);
-	}
 	
 	@Override
 	public final String getBaseURL(TargetType type) {

@@ -15,12 +15,13 @@ import com.daimler.sechub.pds.config.PDSProductIdentifierValidator;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSProdutParameterDefinition;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSJobConfigurationValidatorTest {
     private static final String CONFIGURED_SERVER_PRODUCT_ID = "productid1";
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
    
     private PDSJobConfigurationValidator validatorToTest;
 

@@ -12,13 +12,14 @@ import org.junit.rules.ExpectedException;
 import org.springframework.batch.core.JobParameters;
 
 import com.daimler.sechub.domain.schedule.SchedulingConstants;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SecHubBatchJobParameterBuilderTest {
 
     SecHubBatchJobParameterBuilder builderToTest;
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
     @Before
     public void before() {

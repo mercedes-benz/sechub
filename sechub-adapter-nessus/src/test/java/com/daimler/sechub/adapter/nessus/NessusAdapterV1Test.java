@@ -13,6 +13,7 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class NessusAdapterV1Test {
 
@@ -24,7 +25,7 @@ public class NessusAdapterV1Test {
 	}
 	
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	private NessusAdapterContext context;
 	private NessusAdapterConfig config;
 
