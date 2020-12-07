@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.pds.PDSShutdownService;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSServerConfigurationServiceTest {
 
@@ -21,7 +22,7 @@ public class PDSServerConfigurationServiceTest {
     private PDSServerConfigurationValidator serverConfigurationValidator;
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     private PDSShutdownService shutdownService;
 
 

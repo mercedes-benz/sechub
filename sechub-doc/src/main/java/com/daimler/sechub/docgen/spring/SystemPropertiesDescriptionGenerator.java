@@ -7,8 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.springframework.util.StringUtils;
-
+import com.daimler.sechub.commons.core.util.SimpleStringUtils;
 import com.daimler.sechub.docgen.DocAnnotationData;
 import com.daimler.sechub.docgen.Generator;
 import com.daimler.sechub.docgen.spring.SpringValueExtractor.SpringValue;
@@ -33,7 +32,7 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
 		StringBuilder sb = new StringBuilder();
 		Map<String, SortedSet<TableRow>> rowMap = new TreeMap<>();
 		for (DocAnnotationData data : list) {
-			if (StringUtils.isEmpty(data.springValue)) {
+			if (SimpleStringUtils.isEmpty(data.springValue)) {
 				continue;
 			}
 			SpringValue extracted = springValueExtractor.extract(data.springValue);

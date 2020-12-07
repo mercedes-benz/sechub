@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.LogConstants;
 
-public class SecHubServerMDCAsyncHandlerInterceptor extends HandlerInterceptorAdapter {
+public class SecHubServerMDCAsyncHandlerInterceptor implements AsyncHandlerInterceptor{
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubServerMDCAsyncHandlerInterceptor.class);
 
@@ -28,7 +28,7 @@ public class SecHubServerMDCAsyncHandlerInterceptor extends HandlerInterceptorAd
         } catch (Exception e) {
             LOG.error("Handle routing information failed - so continue without new MDC settings", e);
         }
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
     void handleRoutingInformation(HttpServletRequest request) {

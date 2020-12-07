@@ -13,13 +13,14 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.developertools.DeveloperToolsTestFileSupport;
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class DeleteProjectMassCSVImporterTest {
 
 	private DeleteProjectMassCSVImporter importerToTest;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private DeveloperAdministration administration;
 

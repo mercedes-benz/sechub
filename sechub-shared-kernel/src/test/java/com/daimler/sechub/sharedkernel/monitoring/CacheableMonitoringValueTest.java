@@ -7,10 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
+
 public class CacheableMonitoringValueTest {
 
     private CacheableMonitoringValue valueToTest;
-    public ExpectedException expected = ExpectedException.none(); 
+    public ExpectedException expected = ExpectedExceptionFactory.none();
    
 
     @Before

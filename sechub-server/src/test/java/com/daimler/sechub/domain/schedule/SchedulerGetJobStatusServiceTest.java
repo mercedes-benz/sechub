@@ -25,6 +25,7 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,7 +59,7 @@ public class SchedulerGetJobStatusServiceTest {
 	private String projectUUID="projectId1";
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
 	@Before
 	public void before() {
