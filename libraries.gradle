@@ -12,8 +12,6 @@
 ext {
 
    libraryVersion= [
-      springBoot:   "2.2.6.RELEASE",
-      
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
       restDocsApiSpec: "0.10.0"
    ]
@@ -22,15 +20,15 @@ ext {
         hsqldb: "org.hsqldb:hsqldb:2.4.0",
       /* autark parts, with same versions like current used spring boot version (2.1.19*/
         // https://mvnrepository.com/artifact/junit/junit
-        junit: "junit:junit:4.13",
+        junit: "junit:junit:4.13.1",
 //      currently we are not using junit5 tests, but if we need refer to
 //      https://github.com/junit-team/junit5-samples/tree/master/junit5-migration-gradle        
         
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
-        mockito: "org.mockito:mockito-core:3.1.0", //IMPORTANT: keep this at same level as used in Spring BOOT version
+        mockito: "org.mockito:mockito-core:3.6.0", //IMPORTANT: keep this at same level as used in Spring BOOT version
 
         // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library
-        hamcrest: "org.hamcrest:hamcrest-library:1.3", //IMPORTANT: keep this at same level as used in Spring BOOT version
+        hamcrest: "org.hamcrest:hamcrest-library:2.2", //IMPORTANT: keep this at same level as used in Spring BOOT version
 
         // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
         slf4j: "org.slf4j:slf4j-api:1.7.30", //IMPORTANT: keep this at same level as used in Spring BOOT version
@@ -50,13 +48,14 @@ ext {
          springboot_starter_json:               "org.springframework.boot:spring-boot-starter-json",
          springboot_starter_actuator:           "org.springframework.boot:spring-boot-starter-actuator",
          springboot_starter_mail:               "org.springframework.boot:spring-boot-starter-mail",
+         springboot_starter_validation:         "org.springframework.boot:spring-boot-starter-validation",
 
          springframework_restdocs:              "org.springframework.restdocs:spring-restdocs-mockmvc",
          springframework_security_test:         "org.springframework.security:spring-security-test",
 
-         wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.16.0",
+         wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.27.2",
 
-         database_h2:                           "com.h2database:h2", //:1.4.196",
+         database_h2:                           "com.h2database:h2:1.4.199", //:1.4.199 is supported by used spring boot release",
          database_postgres:                     "org.postgresql:postgresql:42.2.2",
 
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
@@ -79,7 +78,7 @@ ext {
 
          openjson:                              "com.github.openjson:openjson:1.0.10",
 
-         flyway:                                "org.flywaydb:flyway-core:5.2.1",
+         flyway:                                "org.flywaydb:flyway-core:6.0.8",
 
          /* logback */
          // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic

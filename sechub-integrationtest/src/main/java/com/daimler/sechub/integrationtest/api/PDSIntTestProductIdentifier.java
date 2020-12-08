@@ -23,7 +23,7 @@ public enum PDSIntTestProductIdentifier {
         this.id=id;
     }
     
-    String getId() {
+    public String getId() {
         return id;
     }
 }

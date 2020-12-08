@@ -14,6 +14,7 @@ import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class UserDeleteServiceTest {
 
@@ -25,7 +26,7 @@ public class UserDeleteServiceTest {
 	private UserRepository userRepository;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	private AuditLogService auditLogService;
 
 

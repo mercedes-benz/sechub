@@ -26,6 +26,25 @@ public class ScheduleAccessRepositoryDBTest {
 	public void before() {
 
 	}
+	
+	@Test
+	public void given_1_stored_access_and_one_unknown_project_check_for_existing_user_access() {
+		/* prepare */
+		String project1 = "project1";
+		String project2 = "project2";
+		
+		ScheduleAccess access1 = new ScheduleAccess("user1", project1);
+				
+		repository.save(access1);
+		
+		/* check preconditions*/
+		assertEquals(1, repository.count());
+		assertNotNull(repository.findById(access1.getKey()));
+
+		/* execute & test */
+		assertTrue(repository.hasProjectUserAccess(project1));
+		assertFalse(repository.hasProjectUserAccess(project2));
+	}
 
 	@Test
 	public void given_3_stored_access_objects_2_for_project1_1_for_project2_a_delete_all_for_project1_does_only_delete_project1_parts() throws Exception {
@@ -66,7 +85,7 @@ public class ScheduleAccessRepositoryDBTest {
 		assertNotNull(repository.findById(access2.getKey()));
 
 		/* execute */
-		repository.deleteAcessForUserAtAll("user1");
+		repository.deleteAccessForUserAtAll("user1");
 
 		/* test */
 		assertEquals(1, repository.count());

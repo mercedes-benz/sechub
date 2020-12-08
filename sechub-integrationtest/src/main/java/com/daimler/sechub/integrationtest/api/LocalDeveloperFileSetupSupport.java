@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
 import java.io.File;
@@ -27,43 +28,55 @@ public class LocalDeveloperFileSetupSupport {
     private boolean alwaysSecHubIntegrationTestRunning;
 
     private LocalDeveloperFileSetupSupport() {
-        
-        try {
-            LOG.info("Local developer support initializing");
-            File userHome = new File(System.getProperty("user.home"));
-            File sechubHidden = new File(userHome, ".sechub");
-            File sechubDevConfig = new File(sechubHidden, "sechub-developer.properties");
 
-            String buildGradleEnv = System.getenv("SECHUB_BUILD_GRADLE");
-            if (Boolean.parseBoolean(buildGradleEnv)) {
-                LOG.info("Recognized gradle build, skip check for :{}", sechubDevConfig);
-                return;
-            }
+        logInfo("Local developer support initializing");
+        File userHome = new File(System.getProperty("user.home"));
+        File sechubHidden = new File(userHome, ".sechub");
+        File sechubDevConfig = new File(sechubHidden, "sechub-developer.properties");
 
-            if (!sechubDevConfig.exists()) {
-                return;
-            }
-            Properties properties = new Properties();
-            try (FileInputStream fis = new FileInputStream(sechubDevConfig)) {
-                properties.load(fis);
-                alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSetup.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
-                LOG.info("Local developer support has been initialized");
-            } catch (Exception e) {
-                LOG.error("Was not able to load developer config file", e);
-            }
-        } catch (RuntimeException e) {
-            if (LOG==null) {
-                System.err.println("FATAL - no LOG instance available!");
-            }else {
-                LOG.error("Unexpected error happend", e);
-            }
+        String buildGradleEnv = System.getenv("SECHUB_BUILD_GRADLE");
+        if (Boolean.parseBoolean(buildGradleEnv)) {
+            logInfo("Recognized gradle build, skip check for :" + sechubDevConfig.getAbsolutePath());
+            return;
+        }
+
+        if (!sechubDevConfig.exists()) {
+            return;
+        }
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(sechubDevConfig)) {
+            properties.load(fis);
+            alwaysSecHubIntegrationTestRunning = Boolean.parseBoolean(properties.getProperty(IntegrationTestSetup.SECHUB_INTEGRATIONTEST_RUNNING, "false"));
+            logInfo("Local developer support has been initialized");
+        } catch (Exception e) {
+            logError("Was not able to load developer config file", e);
         }
     }
 
     public boolean isAlwaysSecHubIntegrationTestRunning() {
         return alwaysSecHubIntegrationTestRunning;
     }
+
     public static void main(String[] args) {
         new LocalDeveloperFileSetupSupport().toString();
+    }
+
+    private void logInfo(String message) {
+        if (LOG == null) {
+            // as some unclear reasons this can happen in IDEs when executing junit tests - so fallback necessary
+            System.out.println("NO_LOG (info):" + message);
+            return;
+        }
+        LOG.info(message);
+    }
+
+    private void logError(String message, Throwable t) {
+        if (LOG == null) {
+            // as some unclear reasons this can happen in IDEs when executing junit tests - so fallback necessarys
+            System.err.println("NO_LOG (error):" + message);
+            t.printStackTrace();
+            return;
+        }
+        LOG.error(message, t);
     }
 }

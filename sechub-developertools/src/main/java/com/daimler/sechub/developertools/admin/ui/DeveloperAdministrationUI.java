@@ -23,6 +23,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     private static final Logger LOG = LoggerFactory.getLogger(DeveloperAdministrationUI.class);
 
     public static void main(String[] args) {
+        
         new DeveloperAdministrationUI().start(args);
     }
 
@@ -72,6 +73,7 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
     }
 
     private void start(String[] args) {
+        administration = new DeveloperAdministration(this, this,this);
 
         useNimbusLookAndFeel();
         String env = ConfigurationSetup.SECHUB_ADMIN_ENVIRONMENT.getStringValueOrFail();
@@ -83,9 +85,8 @@ public class DeveloperAdministrationUI implements ConfigProvider, ErrorHandler, 
 
         Container contentPane = frame.getContentPane();
 
-        credentialUI = new CredentialUI();
+        credentialUI = new CredentialUI(this);
         outputPanelUI = new OutputUI();
-        administration = new DeveloperAdministration(this, this,this);
         commandPanelUI = new CommandUI(this);
         glassPaneUI = new GlassPaneUI(this, frame);
         dialogUI = new DialogUI(frame);

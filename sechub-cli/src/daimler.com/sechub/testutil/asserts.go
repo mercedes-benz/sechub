@@ -76,18 +76,17 @@ func AssertJSONEquals(expected string, given string, t *testing.T) {
 	AssertJSONEqualsBytes(a, b, t)
 }
 
-// AssertEquals checks expected string equals given
-func AssertEquals(expected string, given string, t *testing.T) {
+// AssertEquals checks expected value equals given value (any type possible like string, int, ...)
+func AssertEquals(expected interface{}, given interface{}, t *testing.T) {
 	if expected != given {
-
-		t.Fatalf("Strings differ:\nExpected:\n-----\n%s\n-----\nGot        :\n-----\n%s\n-----\n", expected, given)
+		t.Fatalf("Values differ:\n  Expected: %#v (type %T)\n  Got     : %#v (type %T)\n", expected, expected, given, given)
 	}
 }
 
-// AssertNotEquals checks notExpected string equals given
-func AssertNotEquals(notExpected string, given string, t *testing.T) {
+// AssertNotEquals checks notExpected value equals given value
+func AssertNotEquals(notExpected interface{}, given interface{}, t *testing.T) {
 	if notExpected == given {
-		t.Fatalf("Strings do NOT differ:\nUnexpected:%s\nGot     :%s", notExpected, given)
+		t.Fatalf("Values do NOT differ:\n  Unexpected: %#v (type %T)\n  Got       : %#v (type %T)\n", notExpected, notExpected, given, given)
 	}
 }
 

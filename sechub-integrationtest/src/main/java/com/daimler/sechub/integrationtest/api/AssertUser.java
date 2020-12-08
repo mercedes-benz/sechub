@@ -305,7 +305,7 @@ public class AssertUser extends AbstractAssert {
      * @return uuid for created job
      */
     public UUID canCreateWebScan(TestProject project, IntegrationTestMockMode runMode) {
-        return TestAPI.as(user).createWebScan(project, runMode);
+        return TestAPI.as(user).createWebScan(project, runMode, true);
     }
 
     public AssertUser canNotCreateWebScan(TestProject project, HttpStatus expectedError) {

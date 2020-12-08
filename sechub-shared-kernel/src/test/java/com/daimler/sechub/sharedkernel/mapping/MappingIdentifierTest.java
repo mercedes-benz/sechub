@@ -9,11 +9,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class MappingIdentifierTest {
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     
     @Test
     public void identifiers_are_constructed_without_initialization_failures() {

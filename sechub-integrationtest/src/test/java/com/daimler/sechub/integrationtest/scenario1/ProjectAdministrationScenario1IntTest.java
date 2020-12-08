@@ -20,7 +20,7 @@ public class ProjectAdministrationScenario1IntTest {
 
 	@Test
 	public void a_superadmin_is_able_to_create_a_project() {
-		assertUser(SUPER_ADMIN).canCreateProject(Scenario1.PROJECT_1,Scenario1.OWNER_1.getUserId());
+		assertUser(SUPER_ADMIN).canCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId());
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class ProjectAdministrationScenario1IntTest {
 
 	@Test
 	public void a_user_is_not_able_to_create_a_project() {
-		assertUser(ONLY_USER).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(),HttpStatus.FORBIDDEN);
+		assertUser(ONLY_USER).cannotCreateProject(Scenario1.PROJECT_1, Scenario1.OWNER_1.getUserId(), HttpStatus.FORBIDDEN);
 	}
 
 	@Test

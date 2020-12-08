@@ -130,7 +130,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						setFileSystemFolders("testproject1/src/main/java","testproject2/src/main/java").
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Code Scan"),
@@ -172,7 +172,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						addIP("127.0.0.1").
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Infrastructure scan"),
@@ -214,7 +214,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						addURI("https://localhost/mywebapp/login").
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan anonymous"),
@@ -256,7 +256,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						login("https://localhost/mywebapp/login").basic("username1","password1").
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login basic"),
@@ -303,7 +303,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						login("https://localhost/mywebapp/login").formAuto("username1","password1").
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form auto dection"),
@@ -356,7 +356,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						  done().
 	    					build().
 	    					toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    			andDo(document(RestDocPathFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form scripted"),
@@ -413,7 +413,7 @@ public class SchedulerRestControllerRestDocTest {
         this.mockMvc.perform(
         		fileUpload(https(PORT_USED).buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()) ,PROJECT1_ID,randomUUID).
         			file(file1).param("checkSum", "mychecksum")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
         					andDo(document(RestDocPathFactory.createPath(UseCaseUserUploadsSourceCode.class),
@@ -455,7 +455,7 @@ public class SchedulerRestControllerRestDocTest {
 	    this.mockMvc.perform(
 	    		put(https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    					andDo(document(RestDocPathFactory.createPath(UseCaseUserApprovesJob.class),
 	    							pathParameters(
@@ -493,7 +493,7 @@ public class SchedulerRestControllerRestDocTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
         					andDo(document(RestDocPathFactory.createPath(UseCaseUserChecksJobStatus.class),

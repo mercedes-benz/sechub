@@ -8,10 +8,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
+
 public class SecHubExecutionExceptionTest {
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	@Test
 	public void throwAsSecHubExecutionException_throws_adapter_exception_when_exception_is_runtime_exception()

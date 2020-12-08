@@ -36,6 +36,18 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 	@Autowired
 	Sereco sechubReportCollector;
 
+	/* @formatter:off */
+    private static ProductIdentifier[] supportedProductIdentifiers = new ProductIdentifier[] { 
+            ProductIdentifier.NESSUS, 
+            ProductIdentifier.NETSPARKER, 
+            ProductIdentifier.CHECKMARX,
+            
+            ProductIdentifier.PDS_CODESCAN,
+            ProductIdentifier.PDS_WEBSCAN,
+            ProductIdentifier.PDS_INFRASCAN};
+    /* @formatter:on */
+    
+
 	@Override
 	public ProductIdentifier getIdentifier() {
 		return ProductIdentifier.SERECO;
@@ -105,9 +117,11 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		/* @formatter:on */
 	}
 
+	/* @formatter:off */
 	private ProductIdentifier[] getSupportedProducts() {
-		return new ProductIdentifier[] { ProductIdentifier.NESSUS, ProductIdentifier.NETSPARKER, ProductIdentifier.CHECKMARX };
+	    return supportedProductIdentifiers;
 	}
+	/* @formatter:on */
 
 	
 	@Override

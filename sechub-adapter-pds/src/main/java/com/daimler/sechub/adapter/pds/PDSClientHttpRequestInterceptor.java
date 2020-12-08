@@ -23,11 +23,16 @@ public class PDSClientHttpRequestInterceptor implements ClientHttpRequestInterce
 			throws IOException {
 
 		HttpHeaders headers = request.getHeaders();
-		headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
 		headers.remove("Authorization");
+		headers.add("Authorization", "Basic " + config.getCredentialsBase64Encoded());
+		
+		MediaType originContentType = headers.getContentType();
+		if (originContentType == null || MediaType.TEXT_PLAIN.equals(originContentType)) {
+		    headers.remove("Content-Type"); // strange, but sometimes there was a content-type (plain-text already added)
+		    headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+		}
 
-		headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("Authorization", "Basic " + config.getPasswordOrAPITokenBase64Encoded());
+		
 		return execution.execute(request, body);
 	}
 

@@ -7,10 +7,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
+
 public class AssertValidResultTest {
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     
     @Test
     public void valid_result_no_exception_thrown() {

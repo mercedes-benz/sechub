@@ -26,7 +26,7 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 	private static final String PROJECT_ID1 = "projectid1";
     private static final ProductIdentifier INFRASCANNER2_PRODUCT_IDENTIFIER = ProductIdentifier.NESSUS;
-    private static final ProductIdentifier INFRASCANNER1_PRODUCT_IDENTIFIER = ProductIdentifier.FARRADAY;
+    private static final ProductIdentifier INFRASCANNER1_PRODUCT_IDENTIFIER = ProductIdentifier.PDS_INFRASCAN;
     private InfrastructureScanProductExecutionServiceImpl serviceToTest;
 	private SecHubExecutionContext context;
 	private SecHubConfiguration configuration;

@@ -46,6 +46,11 @@ public class DialogUI {
         int x = JOptionPane.showConfirmDialog(frame, message, "Please confirm", JOptionPane.OK_OPTION);
         return x == JOptionPane.OK_OPTION;
     }
+    
+    public void inform(String message) {
+        JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.INFORMATION_MESSAGE);
+        
+    }
 
     public void warn(String message) {
         JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.WARNING_MESSAGE);
@@ -137,7 +142,7 @@ public class DialogUI {
         dialog.setToolTip("Use this text as multi line editor");
         dialog.setVisible(true);
 
-        if (!dialog.isOkPresssed()) {
+        if (!dialog.isOkPressed()) {
             return Optional.empty();/* NOSONAR */
         }
         return Optional.ofNullable(dialog.getText());
@@ -152,7 +157,7 @@ public class DialogUI {
 
         return options;
     }
-
+    
     public List<String> editList(String title, List<String> list) {
         SimpleTextDialog dialog = new SimpleTextDialog(title);
         StringBuilder sb = new StringBuilder();
@@ -164,7 +169,7 @@ public class DialogUI {
         dialog.setToolTip("Each line represents a list entry!");
         dialog.setVisible(true);
 
-        if (!dialog.isOkPresssed()) {
+        if (!dialog.isOkPressed()) {
             return null;/* NOSONAR */
         }
 
@@ -181,6 +186,20 @@ public class DialogUI {
             }
         }
         return result;
+    }
+    
+    public String editString(String title, String inputString) {
+        SimpleTextDialog dialog = new SimpleTextDialog(title);
+        
+        dialog.setText(inputString);
+        dialog.setToolTip("Each line represents a list entry!");
+        dialog.setVisible(true);
+
+        if (!dialog.isOkPressed()) {
+            return null;/* NOSONAR */
+        }
+
+        return dialog.getText();
     }
 
     private class SimpleTextDialog /* NOSONAR */extends JDialog {
@@ -217,7 +236,7 @@ public class DialogUI {
             textArea.setToolTipText(text);
         }
 
-        public boolean isOkPresssed() {
+        public boolean isOkPressed() {
             return okPresssed;
         }
 
@@ -235,4 +254,6 @@ public class DialogUI {
             return null;
         }
     }
+
+    
 }

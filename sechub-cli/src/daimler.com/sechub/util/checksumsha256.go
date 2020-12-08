@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io"
-	"log"
 	"os"
 )
 
@@ -15,15 +14,11 @@ func CreateChecksum(filename string) string {
 	hasher := sha256.New()
 
 	f, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
+	HandleError(err, 1)
 	defer f.Close()
-	if _, err := io.Copy(hasher, f); err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
+
+	_, err = io.Copy(hasher, f)
+	HandleError(err, 1)
 
 	return hex.EncodeToString(hasher.Sum(nil))
 }

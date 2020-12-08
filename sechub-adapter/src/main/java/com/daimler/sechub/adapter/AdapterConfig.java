@@ -56,7 +56,7 @@ public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
 	 *
 	 * @return a base 64 encoded token containing "USERID:APITOKEN" inside
 	 */
-	String getPasswordOrAPITokenBase64Encoded();
+	String getCredentialsBase64Encoded();
 
 	String getUser();
 

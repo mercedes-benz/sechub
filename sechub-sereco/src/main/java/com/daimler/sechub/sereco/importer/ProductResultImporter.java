@@ -8,7 +8,11 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 
 public interface ProductResultImporter {
 
-	public SerecoMetaData importResult(String json) throws IOException;
+	public SerecoMetaData importResult(String data) throws IOException;
 
 	public ProductImportAbility isAbleToImportForProduct(ImportParameter param);
+	
+    public default String getName() {
+        return getClass().getSimpleName();
+    }
 }

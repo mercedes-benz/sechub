@@ -14,10 +14,11 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.PDSNotFoundException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSGetJobResultServiceTest {
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     
     private PDSGetJobResultService serviceToTest;
     private UUID jobUUID;

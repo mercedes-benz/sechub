@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestAPI;
+import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 
 public class SecHubExecutionScenario2IntTest {
@@ -36,6 +37,34 @@ public class SecHubExecutionScenario2IntTest {
 			isNotAssignedToProject(PROJECT_1).
 			canNotCreateWebScan(PROJECT_1, HttpStatus.NOT_FOUND);// we use not found because for user1 it is not existent...
 		/* @formatter:on */
+	}
+	
+	@Test
+	public void admin_is_able_to_start_scan_when_project_exists() {
+		/* prepare*/
+		/* @formatter:off */
+
+		as(SUPER_ADMIN).
+			assignUserToProject(USER_1, PROJECT_1);
+		
+		assertUser(USER_1).
+			isAssignedToProject(PROJECT_1);
+		
+		/* test */
+		assertUser(SUPER_ADMIN)
+			.canCreateWebScan(PROJECT_1);
+		
+		/* @formatter:on */
+	}
+	
+	@Test
+	public void admin_is_not_able_to_start_scan_when_project_not_exists() {
+		/* prepare*/
+		/* @formatter:off */
+
+		expectHttpFailure(() -> TestAPI.as(SUPER_ADMIN).createWebScan(new TestProject("notexistingproject"), false), HttpStatus.NOT_FOUND);
+		/* @formatter:on */
+
 	}
 
 	@Test

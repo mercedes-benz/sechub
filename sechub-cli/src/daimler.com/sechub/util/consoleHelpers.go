@@ -21,10 +21,11 @@ type ConsoleInputItem struct {
 // Keeps prompting until an allowed input is entered or interrupted with e.g. ctrl-C
 func ReadAllowedItemFromConsole(prompt string, itemList []ConsoleInputItem) (result string, err error) {
 	prompt += " ("
-	for i, item := range itemList {
-		prompt += fmt.Sprintf("'%s' %s, ", item.Input, item.ShortDescription)
+	for i := range itemList {
 		// turn string to lowercase so we can compare later ignoring case
-		itemList[i].Input = strings.ToLower(item.Input)
+		itemList[i].Input = strings.ToLower(itemList[i].Input)
+
+		prompt += fmt.Sprintf("'%s' %s, ", itemList[i].Input, itemList[i].ShortDescription)
 	}
 	prompt = strings.TrimSuffix(prompt, ", ")
 	prompt += ") "
@@ -34,9 +35,10 @@ func ReadAllowedItemFromConsole(prompt string, itemList []ConsoleInputItem) (res
 	for result == "" {
 		fmt.Print(prompt)
 		input, err = ReadFromConsole()
+		input = strings.ToLower(input)
 
 		for _, item := range itemList {
-			if strings.ToLower(input) == item.Input {
+			if input == item.Input {
 				result = input
 			}
 		}
@@ -47,7 +49,7 @@ func ReadAllowedItemFromConsole(prompt string, itemList []ConsoleInputItem) (res
 
 // ReadFromConsole - read a string from Console/stdin
 func ReadFromConsole() (result string, err error) {
-	reader := bufio.NewReaderSize(io.LimitReader(os.Stdin, 255),256) // we alwas limit to 255 characters
+	reader := bufio.NewReaderSize(io.LimitReader(os.Stdin, 255), 256) // we always limit to 255 characters
 
 	result, err = reader.ReadString('\n')
 	return strings.TrimSuffix(result, "\n"), err

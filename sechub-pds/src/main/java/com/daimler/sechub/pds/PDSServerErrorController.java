@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,11 @@ public class PDSServerErrorController implements ErrorController {
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
         ServletWebRequest webRequest = new ServletWebRequest(request);
-        return errorAttributes.getErrorAttributes(webRequest, includeStackTrace);
+        ErrorAttributeOptions options = ErrorAttributeOptions.defaults();
+        if (includeStackTrace) {
+            options=options.including(ErrorAttributeOptions.Include.STACK_TRACE);
+        }
+        return errorAttributes.getErrorAttributes(webRequest, options);
     }
 
 }

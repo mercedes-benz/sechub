@@ -16,6 +16,7 @@ dependencies {
     compile project(':sechub-scan-product-nessus')
     compile project(':sechub-scan-product-sereco')
     compile project(':sechub-scan-product-checkmarx')
+    compile project(':sechub-scan-product-pds')
     compile project(':sechub-sereco')
 
     testCompile (library.hsqldb)

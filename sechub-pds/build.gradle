@@ -5,6 +5,11 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+ 
+plugins {
+    id 'org.springframework.boot' apply true
+}
+ 
 dependencies {
 
     compile library.springboot_starter_web

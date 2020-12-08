@@ -62,7 +62,7 @@ public class ProjectUpdateWhitelistService {
 
 		Optional<Project> found = repository.findById(projectId);
 		if (!found.isPresent()) {
-			throw new NotFoundException("Project '" + projectId + "' does not exist or you have now ");
+			throw new NotFoundException("Project '" + projectId + "' does not exist.");
 		}
 		/*
 		 * TODO Albert Tregnaghi, 2018-09-06: currently we check only role SUPER_ADMIN.

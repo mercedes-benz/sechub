@@ -12,6 +12,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 
 public class CredentialUI {
@@ -27,7 +28,7 @@ public class CredentialUI {
 		return panel;
 	}
 
-	public CredentialUI() {
+	public CredentialUI(UIContext context) {
 		String port = ConfigurationSetup.SECHUB_ADMIN_SERVER_PORT.getStringValue("443");
 		String protocol = ConfigurationSetup.SECHUB_ADMIN_SERVER_PROTOCOL.getStringValue("https");
 		String server = ConfigurationSetup.SECHUB_ADMIN_SERVER.getStringValueOrFail();
@@ -45,7 +46,8 @@ public class CredentialUI {
 		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(serverPortSpinner);
 		editor.getFormat().setGroupingUsed(false);
 		serverPortSpinner.setEditor(editor);
-		serverPortSpinner.setValue(new Integer(port));
+		int portNumber = new Integer(port).intValue();
+        serverPortSpinner.setValue(portNumber);
 
 		/*
 		 * when we run integration test server mode, we use the passwords from
@@ -71,6 +73,12 @@ public class CredentialUI {
 		panel.add(new JLabel("API-Token:"));
 		panel.add(passwordField);
 
+		
+		/* bridge to TEST API ... we need server and user data available by test api*/
+		DeveloperAdministration administration = context.getAdministration();
+        administration.updateTestAPIServerConnection(server, portNumber);
+        administration.updateTestAPISuperAdmin(userId,apiToken);
+        
 		/*
 		 * currently there is a bug - changes are not handled . So we disable edit
 		 * fields etc.
@@ -90,6 +98,8 @@ public class CredentialUI {
 		useDifferentColorsForWellknownEnvironments();
 
 	}
+
+   
 
 	private void useDifferentColorsForWellknownEnvironments() {
 		/* colourize for special environments - if set */

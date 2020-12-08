@@ -21,11 +21,12 @@ import org.junit.rules.ExpectedException;
 import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.adapter.testclasses.TestAdapterConfigBuilder;
 import com.daimler.sechub.adapter.testclasses.TestAdapterConfigInterface;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class AbstractAdapterConfigBuilderTest {
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	@Test
 	public void getter_for_set_password_results_in_same_string_even_when_sealed() {
@@ -292,7 +293,7 @@ public class AbstractAdapterConfigBuilderTest {
 		TestAdapterConfigInterface cf1 = validConfigAnd().setUser(user).setPasswordOrAPIToken(pwdOrApiToken).build();
 
 		/* test */
-		String base64Encoded = cf1.getPasswordOrAPITokenBase64Encoded();
+		String base64Encoded = cf1.getCredentialsBase64Encoded();
 		String base64Decoded = new String(Base64.getDecoder().decode(base64Encoded));
 		assertEquals(user+":"+pwdOrApiToken,base64Decoded);
 	}

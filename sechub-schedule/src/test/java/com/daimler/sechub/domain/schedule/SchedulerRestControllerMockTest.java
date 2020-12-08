@@ -1,13 +1,19 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -101,7 +107,7 @@ public class SchedulerRestControllerMockTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT1_ID,randomUUID.toString())).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:NONE, state:STARTED, trafficLight:null}")
         		);
@@ -122,7 +128,7 @@ public class SchedulerRestControllerMockTest {
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{}")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")
         		);
@@ -144,7 +150,7 @@ public class SchedulerRestControllerMockTest {
         		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{}")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")
         		);

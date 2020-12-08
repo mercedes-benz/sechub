@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -26,7 +27,7 @@ public class JSONAdapterSupportTest {
 	private Adapter<?> adapter;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	@Before
 	public void before() throws Exception {

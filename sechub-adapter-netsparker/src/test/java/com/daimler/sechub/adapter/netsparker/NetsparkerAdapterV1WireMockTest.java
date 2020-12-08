@@ -68,7 +68,7 @@ public class NetsparkerAdapterV1WireMockTest {
 
 		when(config.getTargetAsString()).thenReturn(TARGET_URL);
 		when(config.getProductBaseURL()).thenReturn(NETSPARKER_BASE_URL);
-		when(config.getPasswordOrAPITokenBase64Encoded()).thenReturn(BASE_64_TOKEN);
+		when(config.getCredentialsBase64Encoded()).thenReturn(BASE_64_TOKEN);
 		when(config.getLicenseID()).thenReturn(LICENSE_ID);
 		when(config.getPolicyId()).thenReturn(POLICY_ID);
 		when(config.getAgentName()).thenReturn("agentName");
@@ -129,6 +129,7 @@ public class NetsparkerAdapterV1WireMockTest {
     	}else {
     		newScanBodyJSON.put("AgentName", "agentName");
     	}
+    	newScanBodyJSON.put("ExcludeAuthenticationPages", "true");
     	newScanBodyJSON.put("PolicyId", POLICY_ID);
 
     	String newScanBodyJSONString = newScanBodyJSON.toString();

@@ -31,13 +31,7 @@ public class ThreeButtonDialogResult<T> {
 		return value;
 	}
 	
-	public boolean hasValue() {
-		boolean hasValue = false;
-		
-		if (value != null) {
-			hasValue = true;
-		}
-		
-		return hasValue;
+	public boolean hasValue() {		
+		return value != null;
 	}
 }

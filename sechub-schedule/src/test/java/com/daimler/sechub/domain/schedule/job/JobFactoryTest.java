@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class JobFactoryTest {
 
@@ -18,7 +19,7 @@ public class JobFactoryTest {
 	private SecHubConfiguration configuration;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	
 	@Before
 	public void before() {

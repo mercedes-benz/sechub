@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.integrationtest.scenario1;
+package com.daimler.sechub.integrationtest.scenario3;
 
 import static com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.daimler.sechub.integrationtest.scenario3.Scenario3;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;

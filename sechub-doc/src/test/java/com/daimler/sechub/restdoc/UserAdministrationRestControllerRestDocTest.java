@@ -99,7 +99,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorGrantsAdminRightsToUser.class),
 				pathParameters(
@@ -118,7 +118,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRevokesAdminRightsFromAdmin.class),
 				pathParameters(
@@ -137,7 +137,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesUserUrl(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesUser.class),
 				pathParameters(
@@ -156,7 +156,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAdminAcceptsUserSignUpUrl(USER_ID.pathElement()),"user1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isCreated()).
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAcceptsSignup.class),
         					pathParameters(
@@ -176,7 +176,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminListsUsersUrl())
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllUsers.class))
 
@@ -192,7 +192,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminListsAdminsUrl())
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllAdmins.class))
 
@@ -220,7 +220,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminShowsUserDetailsUrl(USER_ID.pathElement()),"user1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsUserDetails.class),
         					pathParameters(
