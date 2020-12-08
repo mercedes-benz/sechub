@@ -7,15 +7,15 @@ skinparam style strictuml
 
 
 control EventBus
-box "authorization" #C8C8CF
-end box
-box "scan" #F8F8FF
-end box
 box "administration" #C8C8CF
    participant ProjectCreationService
 end box
 box "schedule" #F8F8FF
    participant ScheduleMessageHandler
+end box
+box "authorization" #C8C8CF
+end box
+box "scan" #F8F8FF
 end box
 box "notification" #C8C8CF
 end box
@@ -31,9 +31,9 @@ PlantUML version 1.2018.13(Mon Nov 26 17:11:51 UTC 2018)
 (APACHE source distribution)
 Java Runtime: OpenJDK Runtime Environment
 JVM: OpenJDK 64-Bit Server VM
-Java Version: 1.8.0_265-b11
+Java Version: 1.8.0_275-b01
 Operating System: Linux
-OS Version: 5.4.0-1026-azure
+OS Version: 5.4.0-1031-azure
 Default Encoding: UTF-8
 Language: en
 Country: 

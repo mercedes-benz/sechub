@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber">version 0.0.0</span>
+<span id="revnumber"> Client 0.22.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -450,86 +450,90 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#in-a-nutshell">2.1. In a nutshell</a></li>
 <li><a href="#download">2.2. Download</a></li>
-<li><a href="#usage">2.3. Usage</a>
+<li><a href="#supported-platforms">2.3. Supported Platforms</a></li>
+<li><a href="#usage">2.4. Usage</a>
 <ul class="sectlevel3">
-<li><a href="#show-help">2.3.1. Show help</a></li>
-<li><a href="#actions">2.3.2. Actions</a>
+<li><a href="#show-help">2.4.1. Show help</a></li>
+<li><a href="#actions">2.4.2. Actions</a>
 <ul class="sectlevel4">
-<li><a href="#scan">2.3.2.1. scan</a></li>
-<li><a href="#scanasync">2.3.2.2. scanAsync</a></li>
-<li><a href="#getstatus">2.3.2.3. getStatus</a></li>
-<li><a href="#getreport">2.3.2.4. getReport</a></li>
-<li><a href="#section-client-false-positives-mark">2.3.2.5. markFalsePositives</a></li>
-<li><a href="#getfalsepositives">2.3.2.6. getFalsePositives</a></li>
-<li><a href="#section-client-false-positives-unmark">2.3.2.7. unmarkFalsePositives</a></li>
-<li><a href="#interactivemarkfalsepositives">2.3.2.8. interactiveMarkFalsePositives</a></li>
-<li><a href="#interactiveunmarkfalsepositives">2.3.2.9. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#scan">2.4.2.1. scan</a></li>
+<li><a href="#scanasync">2.4.2.2. scanAsync</a></li>
+<li><a href="#getstatus">2.4.2.3. getStatus</a></li>
+<li><a href="#getreport">2.4.2.4. getReport</a></li>
+<li><a href="#section-client-false-positives-mark">2.4.2.5. markFalsePositives</a></li>
+<li><a href="#getfalsepositives">2.4.2.6. getFalsePositives</a></li>
+<li><a href="#section-client-false-positives-unmark">2.4.2.7. unmarkFalsePositives</a></li>
+<li><a href="#interactivemarkfalsepositives">2.4.2.8. interactiveMarkFalsePositives</a></li>
+<li><a href="#interactiveunmarkfalsepositives">2.4.2.9. interactiveUnmarkFalsePositives</a></li>
 </ul>
 </li>
-<li><a href="#commandline-options">2.3.3. Commandline Options</a></li>
-<li><a href="#environment-variables">2.3.4. Environment variables</a></li>
+<li><a href="#configuration-overview">2.4.3. Configuration overview</a></li>
+<li><a href="#mandatory-parameters">2.4.4. Mandatory parameters</a></li>
+<li><a href="#commandline-options">2.4.5. Commandline Options</a></li>
+<li><a href="#environment-variables">2.4.6. Environment variables</a></li>
+<li><a href="#proxy-support">2.4.7. Proxy support</a></li>
 </ul>
 </li>
-<li><a href="#section-client-configuration-file">2.4. Client configuration file</a>
+<li><a href="#section-client-configuration-file">2.5. Client configuration file</a>
 <ul class="sectlevel3">
-<li><a href="#variables-inside-configuration-files">2.4.1. Variables inside configuration files</a></li>
-<li><a href="#accepted-source-code-files">2.4.2. Accepted source code files</a></li>
+<li><a href="#variables-inside-configuration-files">2.5.1. Variables inside configuration files</a></li>
+<li><a href="#accepted-source-code-files">2.5.2. Accepted source code files</a></li>
 </ul>
 </li>
-<li><a href="#sechub-configuration">2.5. SecHub configuration</a>
+<li><a href="#sechub-configuration">2.6. SecHub configuration</a>
 <ul class="sectlevel3">
-<li><a href="#api-version">2.5.1. API version</a></li>
-<li><a href="#server">2.5.2. Server</a></li>
-<li><a href="#project">2.5.3. Project</a></li>
-<li><a href="#code-scan">2.5.4. Code scan</a>
+<li><a href="#api-version">2.6.1. API version</a></li>
+<li><a href="#server">2.6.2. Server</a></li>
+<li><a href="#project">2.6.3. Project</a></li>
+<li><a href="#code-scan">2.6.4. Code scan</a>
 <ul class="sectlevel4">
-<li><a href="#upload-sources-from-file-system">2.5.4.1. Upload sources from file system</a></li>
-<li><a href="#example-sechub-json">2.5.4.2. Example sechub.json</a></li>
+<li><a href="#upload-sources-from-file-system">2.6.4.1. Upload sources from file system</a></li>
+<li><a href="#example-sechub-json">2.6.4.2. Example sechub.json</a></li>
 </ul>
 </li>
-<li><a href="#web-scan">2.5.5. Web scan</a>
+<li><a href="#web-scan">2.6.5. Web scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris">2.5.5.1. URIs</a>
+<li><a href="#uris">2.6.5.1. URIs</a>
 <ul class="sectlevel5">
-<li><a href="#example-anonymous">2.5.5.1.1. Example anonymous</a></li>
+<li><a href="#example-anonymous">2.6.5.1.1. Example anonymous</a></li>
 </ul>
 </li>
-<li><a href="#login">2.5.5.2. Login</a>
+<li><a href="#login">2.6.5.2. Login</a>
 <ul class="sectlevel5">
-<li><a href="#options">2.5.5.2.1. Options</a></li>
-<li><a href="#example-basic-authentication">2.5.5.2.2. Example basic authentication</a></li>
-<li><a href="#example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</a></li>
-<li><a href="#example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</a></li>
+<li><a href="#options">2.6.5.2.1. Options</a></li>
+<li><a href="#example-basic-authentication">2.6.5.2.2. Example basic authentication</a></li>
+<li><a href="#example-form-based-login-with-auto-detect">2.6.5.2.3. Example form based login with auto detect</a></li>
+<li><a href="#example-form-based-login-by-script">2.6.5.2.4. Example form based login by script</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#infrastructure-scan">2.5.6. Infrastructure scan</a>
+<li><a href="#infrastructure-scan">2.6.6. Infrastructure scan</a>
 <ul class="sectlevel4">
-<li><a href="#uris-2">2.5.6.1. URIs</a>
+<li><a href="#uris-2">2.6.6.1. URIs</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</a></li>
+<li><a href="#example-infrascan-one-uri">2.6.6.1.1. Example infrascan one URI</a></li>
 </ul>
 </li>
-<li><a href="#ips">2.5.6.2. IPs</a>
+<li><a href="#ips">2.6.6.2. IPs</a>
 <ul class="sectlevel5">
-<li><a href="#example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</a></li>
+<li><a href="#example-infrascan-one-ip">2.6.6.2.1. Example infrascan one IP</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#examples">2.6. Examples</a>
+<li><a href="#examples">2.7. Examples</a>
 <ul class="sectlevel3">
-<li><a href="#start-a-source-scan">2.6.1. Start a source scan</a></li>
-<li><a href="#start-a-web-scan">2.6.2. Start a web scan</a></li>
-<li><a href="#start-an-infra-scan">2.6.3. Start an infra scan</a></li>
-<li><a href="#mark-false-positives">2.6.4. Mark false positives</a></li>
-<li><a href="#unmark-false-positives">2.6.5. Unmark false positives</a>
+<li><a href="#start-a-source-scan">2.7.1. Start a source scan</a></li>
+<li><a href="#start-a-web-scan">2.7.2. Start a web scan</a></li>
+<li><a href="#start-an-infra-scan">2.7.3. Start an infra scan</a></li>
+<li><a href="#mark-false-positives">2.7.4. Mark false positives</a></li>
+<li><a href="#unmark-false-positives">2.7.5. Unmark false positives</a>
 <ul class="sectlevel4">
-<li><a href="#section-client-interactiveMarkFalsePositives-mark">2.6.5.1. interactiveMarkFalsePositives</a></li>
-<li><a href="#section-client-interactiveUnmarkFalsePositives-mark">2.6.5.2. interactiveUnmarkFalsePositives</a></li>
+<li><a href="#section-client-interactiveMarkFalsePositives-mark">2.7.5.1. interactiveMarkFalsePositives</a></li>
+<li><a href="#section-client-interactiveUnmarkFalsePositives-mark">2.7.5.2. interactiveUnmarkFalsePositives</a></li>
 </ul>
 </li>
 </ul>
@@ -639,8 +643,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Version
-0.0.0-7fd7089-20201019131400</p>
+<p>Documentation version: <code>Client 0.22.0-20201208160952</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -656,7 +659,7 @@ build pipeline / contionus integration (CI) and helps to provide
 line or in a build tool of your choice.</p>
 </div>
 <div class="paragraph">
-<p>It&#8217;s very easy to use and using the client you have not to handle and REST-API calls by yourself.</p>
+<p>It&#8217;s very easy to use and you do not have to handle all the REST-API calls by yourself.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -665,7 +668,7 @@ line or in a build tool of your choice.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Currently the client only supports only basic authentication, but of course always only over https.
+Currently the client only supports basic authentication, but of course always only over https.
 </td>
 </tr>
 </table>
@@ -682,9 +685,79 @@ You will have no dependencies, just place the single binary file to a location i
 </div>
 </div>
 <div class="sect2">
-<h3 id="usage">2.3. Usage</h3>
+<h3 id="supported-platforms">2.3. Supported Platforms</h3>
+<div class="paragraph">
+<p>The SecHub Client is available for a number of platforms. A platform is a combination of an operating system and a CPU architecture.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Supported platforms</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">OS</th>
+<th class="tableblock halign-left valign-top">CPU Architecture</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">darwin-amd64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">macOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 64-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>macOS client</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linux-386</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 32-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For old hardware running Linux as operating system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linux-amd64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 64-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Linux client</strong>, unless you are using older hardware or an ARM system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linux-arm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ARM 32-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For ARM 32-bit systems. For example, single board computers such as the Raspberry PIs, older Nvidia Jetson boards and many more.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linux-arm64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ARM 64-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For ARM 64-bit systems, such as ARM based servers and some single board computers. Examples include newer models of the Nvidia Jetson series, newer Raspberry PI models, servers from the Marvell ThunderX series and Amazon AWS EC2 A1, T4g, M6g, C6g, and R6g instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">windows-386</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 32-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For older hardware running Windows as operating system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">windows-amd64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMD and Intel 64-bit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Windows client</strong>, unless you are using older 32-bit hardware.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In case your platform is not included in the table, you might be able to compile the SecHub Client for your platform. The SecHub Client is written in the Go programming language. Go supports more platforms. For a full list of supported platforms have a look at the Go documentation: <a href="https://golang.org/doc/install/source#environment">Optional environment variables</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="usage">2.4. Usage</h3>
 <div class="sect3">
-<h4 id="show-help">2.3.1. Show help</h4>
+<h4 id="show-help">2.4.1. Show help</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sechub -help</pre>
@@ -697,12 +770,12 @@ Please change to correct values.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="actions">2.3.2. Actions</h4>
+<h4 id="actions">2.4.2. Actions</h4>
 <div class="paragraph">
 <p>Following actions are supported:</p>
 </div>
 <div class="sect4">
-<h5 id="scan">2.3.2.1. scan</h5>
+<h5 id="scan">2.4.2.1. scan</h5>
 <div class="paragraph">
 <p>Does scan synchronous which means</p>
 </div>
@@ -768,7 +841,7 @@ sechub scan</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="scanasync">2.3.2.2. scanAsync</h5>
+<h5 id="scanasync">2.4.2.2. scanAsync</h5>
 <div class="paragraph">
 <p>Does scan asynchronous which means</p>
 </div>
@@ -817,7 +890,7 @@ sechub scanAsync</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getstatus">2.3.2.3. getStatus</h5>
+<h5 id="getstatus">2.4.2.3. getStatus</h5>
 <div class="paragraph">
 <p>Will fetch current job status and return result as json or html</p>
 </div>
@@ -832,7 +905,7 @@ sechub -jobUUID ${jobUUID} getStatus</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="getreport">2.3.2.4. getReport</h5>
+<h5 id="getreport">2.4.2.4. getReport</h5>
 <div class="paragraph">
 <p>Will fetch report as json (result will only exist when job is done)</p>
 </div>
@@ -847,7 +920,7 @@ sechub -jobUUID ${jobUUID} getReport</pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-mark">2.3.2.5. markFalsePositives</h5>
+<h5 id="section-client-false-positives-mark">2.4.2.5. markFalsePositives</h5>
 <div class="paragraph">
 <p>Read your report carefully and check which of the findings are really "false positives" (FP).
 After this, create a json file containing jobUUID and ID of finding you decided to be a FP. If
@@ -909,13 +982,13 @@ Select this file by the <code>-file</code> argument and start action <code>markF
 </div>
 </div>
 <div class="sect4">
-<h5 id="getfalsepositives">2.3.2.6. getFalsePositives</h5>
+<h5 id="getfalsepositives">2.4.2.6. getFalsePositives</h5>
 <div class="paragraph">
 <p>This will fetch the false positives list of your project as JSON - format is same as for <code>markFalsePositives</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-false-positives-unmark">2.3.2.7. unmarkFalsePositives</h5>
+<h5 id="section-client-false-positives-unmark">2.4.2.7. unmarkFalsePositives</h5>
 <div class="paragraph">
 <p>When you want to remvoe a former defined false positive entry you can do this the same way
 as for mark operation: Just define a JSON file, select the file by the <code>-file</code> argument and start
@@ -946,7 +1019,7 @@ action <code>unmarkFalsePositives</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactivemarkfalsepositives">2.3.2.8. interactiveMarkFalsePositives</h5>
+<h5 id="interactivemarkfalsepositives">2.4.2.8. interactiveMarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to mark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and a report file from a recent scan and run <code>sechub interactiveMarkFalsePositives</code>.</p>
@@ -982,7 +1055,7 @@ Your choices are:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="interactiveunmarkfalsepositives">2.3.2.9. interactiveUnmarkFalsePositives</h5>
+<h5 id="interactiveunmarkfalsepositives">2.4.2.9. interactiveUnmarkFalsePositives</h5>
 <div class="paragraph">
 <p>Instead of creating a json file to unmark false positives, you can also do this interactively:
 Go to the project directory containing <code>sechub.json</code> and run <code>sechub interactiveUnmarkFalsePositives</code></p>
@@ -1013,7 +1086,191 @@ Your choices are:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="commandline-options">2.3.3. Commandline Options</h4>
+<h4 id="configuration-overview">2.4.3. Configuration overview</h4>
+<div class="paragraph">
+<p>Basically parameters can be passed to the <code>SecHub</code> client in three ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>commandline options (overrides below)</p>
+</li>
+<li>
+<p>environment variables (overrides config file)</p>
+</li>
+<li>
+<p>configuration file (default <code>sechub.json</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In below table, there is an overview of what can be defined where.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>parameter</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>cmdline option</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>environment variable</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>config json file</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">api token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-apitoken <em>(!! not recommended !!)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_APITOKEN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">code scan config</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">codeScan</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">configuration file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-configfile</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">file</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-file</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">job uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-jobUUID</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">network timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output folder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-output</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">poll interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_WAITTIME_DEFAULT</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">project id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-project</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_PROJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">project</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">report format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-reportformat</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_SERVER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stop on yellow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-stop-on-yellow</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_USERID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">web scan config</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">webScan</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="mandatory-parameters">2.4.4. Mandatory parameters</h4>
+<div class="paragraph">
+<p>Here is an overview of mandatory parameter for each <code>action</code>:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>action</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>mandatory parameters</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scanAsync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + configFile</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">getStatus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + secHubJobUUID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">getReport</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + secHubJobUUID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">getFalsePositives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">markFalsePositives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unmarkFalsePositives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveMarkFalsePositives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + api token + projectID + (file only if no report file is in current dir)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">interactiveUnmarkFalsePositives</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">server + user + apiToken + projectID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">help</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="commandline-options">2.4.5. Commandline Options</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1024,6 +1281,10 @@ Can <strong>NOT</strong> be defined in config file</p>
 <li>
 <p><code>-configfile &lt;string&gt;</code><br>
 Path to <code>SecHub</code> config file, if not defined <code>sechub.json</code> will be used in current directory</p>
+</li>
+<li>
+<p><code>-file &lt;string&gt;</code><br>
+Defines file to read from for actions <code>markFalsePositives</code> or <code>interactiveMarkFalsePositives</code> or <code>unmarkFalsePositives</code></p>
 </li>
 <li>
 <p><code>-help</code><br>
@@ -1039,7 +1300,7 @@ Output folder for reports etc. per default current dir</p>
 </li>
 <li>
 <p><code>-project &lt;string&gt;</code><br>
-Unique project id - mandatory, but can also be defined in config file</p>
+Unique project id - mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
 <p><code>-reportformat &lt;string&gt;</code><br>
@@ -1048,6 +1309,14 @@ Output format for reports, supported currently: [html,json]. If not a wellknown 
 <li>
 <p><code>-server &lt;string&gt;</code><br>
 Server url of <code>SecHub</code> server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.</p>
+</li>
+<li>
+<p><code>-stop-on-yellow</code><br>
+Makes a yellow traffic light in the scan result also break the build</p>
+</li>
+<li>
+<p><code>-timeout &lt;integer&gt;</code><br>
+Timeout for network communication in seconds. (default 120)</p>
 </li>
 <li>
 <p><code>-user &lt;string&gt;</code><br>
@@ -1060,45 +1329,101 @@ Shows version info and terminates</p>
 <li>
 <p><code>-wait &lt;integer&gt;</code><br>
 wait time in seconds (default 60).
-Will be used for automatic status checks etc. when action=<code>scan</code>.</p>
+Will be used for periodic status checks when action=<code>scan</code>.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="environment-variables">2.3.4. Environment variables</h4>
+<h4 id="environment-variables">2.4.6. Environment variables</h4>
 <div class="paragraph">
 <p>Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>SECHUB_USERID</code><br>
-The SecHub username. (same as <code>-user</code> option)</p>
-</li>
-<li>
 <p><code>SECHUB_APITOKEN</code><br>
 The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_PROJECT</code><br>
+The SecHub project id. (same as <code>-project</code> option)</p>
 </li>
 <li>
 <p><code>SECHUB_SERVER</code><br>
 The SecHub server url. (same as <code>-server</code> option)</p>
 </li>
+<li>
+<p><code>SECHUB_USERID</code><br>
+The SecHub username. (same as <code>-user</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_TRUSTALL</code><br>
+When set to <code>true</code>, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.</p>
+</li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Settings for debugging/client development:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SECHUB_DEBUG</code><br>
+When set to <code>true</code> then log as much as possible</p>
+</li>
+<li>
+<p><code>SECHUB_IGNORE_DEFAULT_EXCLUDES</code><br>
+When set to <code>true</code> then default exclude folders <code>{"**/test/**", "**/.git/**"}</code> will be included for code scan. In this case, you should declare your own exclude list in the config json.</p>
+</li>
+<li>
+<p><code>SECHUB_KEEP_TEMPFILES</code><br>
+When set to <code>true</code> then .zip files for code scan will not be removed, so you can check, what was uploaded to the <code>SecHub</code> server</p>
+</li>
+<li>
+<p><code>SECHUB_WAITTIME_DEFAULT</code><br>
+Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=<code>scan</code>.
+Try to avoid setting it shorter than 60 seconds, because the load on the <code>SecHub</code> server will be increased.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="proxy-support">2.4.7. Proxy support</h4>
+<div class="paragraph">
+<p>The environment variables <code>http_proxy</code>, <code>https_proxy</code> and <code>no_proxy</code> (or the uppercase versions thereof) can be set to use a proxy for accessing the <code>SecHub</code> server.
+(<code>https_proxy</code> takes precedence over <code>http_proxy</code> for https requests.)</p>
+</div>
+<div class="paragraph">
+<p>Syntax: <code>[&lt;scheme&gt;://][&lt;username&gt;:&lt;password&gt;@]&lt;proxy host&gt;[:&lt;proxy port&gt;]</code></p>
+</div>
+<div class="paragraph">
+<p>The environment values may be either a complete URL or a "host[:port]", in which case the "http" scheme is assumed.</p>
+</div>
+<div class="paragraph">
+<p>Examples (Linux/Mac):</p>
+</div>
+<div class="paragraph">
+<p><code>export http_proxy=http://scott:tiger@proxy.example.org:3128</code></p>
+</div>
+<div class="paragraph">
+<p><code>export http_proxy=http://localhost:3128</code> (e.g. when using a local CNTLM proxy)</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-client-configuration-file">2.4. Client configuration file</h3>
+<h3 id="section-client-configuration-file">2.5. Client configuration file</h3>
 <div class="paragraph">
-<p>If not defined, secHub client will load <code>sechub.json</code> file from current directory
-and use it as sechub configuration. There must be always a valid configuration
-file - otherwise client will not work.</p>
+<p>If not defined by option <code>-configfile</code>, secHub client will attempt to load <code>sechub.json</code> file from current directory
+and use it as sechub configuration.</p>
+</div>
+<div class="paragraph">
+<p>For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.</p>
 </div>
 <div class="sect3">
-<h4 id="variables-inside-configuration-files">2.4.1. Variables inside configuration files</h4>
+<h4 id="variables-inside-configuration-files">2.5.1. Variables inside configuration files</h4>
 <div class="paragraph">
-<p>All environment variables are available inside your configuration file in go
+<p>For advanced users: All environment variables are available inside your configuration file in go
 template syntax:</p>
 </div>
 <div class="paragraph">
@@ -1136,7 +1461,7 @@ accidently logging of variables - e.g. credentials.
 </div>
 </div>
 <div class="sect3">
-<h4 id="accepted-source-code-files">2.4.2. Accepted source code files</h4>
+<h4 id="accepted-source-code-files">2.5.2. Accepted source code files</h4>
 <div class="paragraph">
 <p>The client will per default only include wellknown source files.
 This is done by inspecting the filename ending. The accepted defaults are shown in next table.</p>
@@ -1333,7 +1658,7 @@ But of course you can also define additional source file endings - see <a href="
 </div>
 </div>
 <div class="sect2">
-<h3 id="sechub-configuration">2.5. SecHub configuration</h3>
+<h3 id="sechub-configuration">2.6. SecHub configuration</h3>
 <div class="paragraph">
 <p>A <code>SecHub</code> configuration  must be valid <code>JSON</code> and is defined
 at caller side.</p>
@@ -1348,7 +1673,7 @@ be handled by direct REST calls in a special way or do just not exist.
 But this is mentioned inside this documentation</p>
 </div>
 <div class="sect3">
-<h4 id="api-version">2.5.1. API version</h4>
+<h4 id="api-version">2.6.1. API version</h4>
 <div class="paragraph">
 <p><code>apiVersion</code> must be defined (so mandatory). Currently only <code>1.0</code> is valid.</p>
 </div>
@@ -1372,7 +1697,7 @@ the API version remains - despite changes - to 1.0.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="server">2.5.2. Server</h4>
+<h4 id="server">2.6.2. Server</h4>
 <div class="paragraph">
 <p><code>server</code> (optional) defines the location to <code>SecHub</code> server.
 Information can be used by client implementations.</p>
@@ -1392,7 +1717,7 @@ When using REST calls directly you do not need the information inside
 </div>
 </div>
 <div class="sect3">
-<h4 id="project">2.5.3. Project</h4>
+<h4 id="project">2.6.3. Project</h4>
 <div class="paragraph">
 <p><code>project</code> (optional) defines the project to use. Information can be used by
 client implementations.</p>
@@ -1412,12 +1737,12 @@ When using REST calls directly you do not need the information inside
 </div>
 </div>
 <div class="sect3">
-<h4 id="code-scan">2.5.4. Code scan</h4>
+<h4 id="code-scan">2.6.4. Code scan</h4>
 <div class="paragraph">
 <p><code>codeScan</code> (optional) defines the code scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="upload-sources-from-file-system">2.5.4.1. Upload sources from file system</h5>
+<h5 id="upload-sources-from-file-system">2.6.4.1. Upload sources from file system</h5>
 <div class="paragraph">
 <p>Define <code>fileSystem</code> child entry and setup folders to use for code scanning by
 <code>folders</code> sub entry.</p>
@@ -1466,7 +1791,7 @@ on build servers.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="example-sechub-json">2.5.4.2. Example sechub.json</h5>
+<h5 id="example-sechub-json">2.6.4.2. Example sechub.json</h5>
 <div id="sechub-config-example-sourcescan" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1538,12 +1863,12 @@ Inside client documentation you will find a list of the default file endings.</t
 </div>
 </div>
 <div class="sect3">
-<h4 id="web-scan">2.5.5. Web scan</h4>
+<h4 id="web-scan">2.6.5. Web scan</h4>
 <div class="paragraph">
 <p><code>webScan</code> (optional) defines the web scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris">2.5.5.1. URIs</h5>
+<h5 id="uris">2.6.5.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uri</code> element to define a string array containing uris you want to scan.</p>
 </div>
@@ -1561,7 +1886,7 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 </table>
 </div>
 <div class="sect5">
-<h6 id="example-anonymous">2.5.5.1.1. Example anonymous</h6>
+<h6 id="example-anonymous">2.6.5.1.1. Example anonymous</h6>
 <div id="sechub-config-example-webscan-anonymous" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1593,7 +1918,7 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 </div>
 </div>
 <div class="sect4">
-<h5 id="login">2.5.5.2. Login</h5>
+<h5 id="login">2.6.5.2. Login</h5>
 <div class="paragraph">
 <p>A web scan does work very much better if it has got access to all content
  - so a login is necessary most time. If you do not define a login configuration
@@ -1624,7 +1949,7 @@ SMS provider - <strong>so be careful!</strong></p>
 </table>
 </div>
 <div class="sect5">
-<h6 id="options">2.5.5.2.1. Options</h6>
+<h6 id="options">2.6.5.2.1. Options</h6>
 <div class="paragraph">
 <p>SecHub provides you with 3 options for login:</p>
 </div>
@@ -1665,7 +1990,7 @@ will have a failure at execution time!</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-basic-authentication">2.5.5.2.2. Example basic authentication</h6>
+<h6 id="example-basic-authentication">2.6.5.2.2. Example basic authentication</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1705,7 +2030,7 @@ this is not necessary</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-with-auto-detect">2.5.5.2.3. Example form based login with auto detect</h6>
+<h6 id="example-form-based-login-with-auto-detect">2.6.5.2.3. Example form based login with auto detect</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1743,7 +2068,7 @@ If you use REST API directly, you must you must use real values!</td>
 </div>
 </div>
 <div class="sect5">
-<h6 id="example-form-based-login-by-script">2.5.5.2.4. Example form based login by script</h6>
+<h6 id="example-form-based-login-by-script">2.6.5.2.4. Example form based login by script</h6>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1852,17 +2177,17 @@ If you use REST API directly, you must you must use real values!</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="infrastructure-scan">2.5.6. Infrastructure scan</h4>
+<h4 id="infrastructure-scan">2.6.6. Infrastructure scan</h4>
 <div class="paragraph">
 <p><code>infraScan</code> (optional) defines the infrastructure scan settings.</p>
 </div>
 <div class="sect4">
-<h5 id="uris-2">2.5.6.1. URIs</h5>
+<h5 id="uris-2">2.6.6.1. URIs</h5>
 <div class="paragraph">
 <p>Use <code>uris</code> element to define a string array containing <code>URIs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-uri">2.5.6.1.1. Example infrascan one URI</h6>
+<h6 id="example-infrascan-one-uri">2.6.6.1.1. Example infrascan one URI</h6>
 <div id="sechub-config-example-infrascan-with-uri" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1894,12 +2219,12 @@ If you use REST API directly, you must you must use real values!</td>
 </div>
 </div>
 <div class="sect4">
-<h5 id="ips">2.5.6.2. IPs</h5>
+<h5 id="ips">2.6.6.2. IPs</h5>
 <div class="paragraph">
 <p>Use <code>ips</code> element to define a string array containing <code>IPs</code> you want to scan.</p>
 </div>
 <div class="sect5">
-<h6 id="example-infrascan-one-ip">2.5.6.2.1. Example infrascan one IP</h6>
+<h6 id="example-infrascan-one-ip">2.6.6.2.1. Example infrascan one IP</h6>
 <div id="sechub-config-example-infrascan-with-ip" class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
@@ -1935,7 +2260,7 @@ because scanners do not scan them self.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="examples">2.6. Examples</h3>
+<h3 id="examples">2.7. Examples</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1952,7 +2277,7 @@ Next following sub chapters contain some <code>SecHub</code> configuration examp
 </table>
 </div>
 <div class="sect3">
-<h4 id="start-a-source-scan">2.6.1. Start a source scan</h4>
+<h4 id="start-a-source-scan">2.7.1. Start a source scan</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -1964,7 +2289,7 @@ sechub scan</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="start-a-web-scan">2.6.2. Start a web scan</h4>
+<h4 id="start-a-web-scan">2.7.2. Start a web scan</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -1977,7 +2302,7 @@ see <a href="#sechub-config-example-webscan-anonymous">web scan example (anonymo
 </div>
 </div>
 <div class="sect3">
-<h4 id="start-an-infra-scan">2.6.3. Start an infra scan</h4>
+<h4 id="start-an-infra-scan">2.7.3. Start an infra scan</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -1989,7 +2314,7 @@ sechub scan</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="mark-false-positives">2.6.4. Mark false positives</h4>
+<h4 id="mark-false-positives">2.7.4. Mark false positives</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -2001,7 +2326,7 @@ sechub -f mark-fp.json markFalsePositives</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="unmark-false-positives">2.6.5. Unmark false positives</h4>
+<h4 id="unmark-false-positives">2.7.5. Unmark false positives</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -2012,7 +2337,7 @@ sechub -f mark-fp.json unmarkFalsePositives</code></pre>
 <p>with a corresponding <code>mark-fp.json</code> - see <a href="#section-client-false-positives-unmark">Unmark false positives JSON format</a></p>
 </div>
 <div class="sect4">
-<h5 id="section-client-interactiveMarkFalsePositives-mark">2.6.5.1. interactiveMarkFalsePositives</h5>
+<h5 id="section-client-interactiveMarkFalsePositives-mark">2.7.5.1. interactiveMarkFalsePositives</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -2050,7 +2375,7 @@ Add this as false positive? ('y' Yes, 'n' No, 's' Skip following findings, 'c' C
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-client-interactiveUnmarkFalsePositives-mark">2.6.5.2. interactiveUnmarkFalsePositives</h5>
+<h5 id="section-client-interactiveUnmarkFalsePositives-mark">2.7.5.2. interactiveUnmarkFalsePositives</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
@@ -2375,8 +2700,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.0<br>
-Last updated 2020-10-19 13:02:21 UTC
+ Client 0.22.0<br>
 </div>
 </div>
 <style>

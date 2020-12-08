@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber">version 0.0.0</span>
+<span id="revnumber"> Server 0.19.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -507,6 +507,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#how-to-obtain-team-id">2.3.4.3. How to obtain team id</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#section-initial-profile-and-executors">2.4. Profile and executor configuration</a>
+<ul class="sectlevel3">
+<li><a href="#executor-configuration">2.4.1. Executor configuration</a></li>
+<li><a href="#execution-profile">2.4.2. Execution profile</a></li>
 </ul>
 </li>
 </ul>
@@ -633,6 +639,9 @@ build pipeline / contionus integration (CI) and helps to provide
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Documentation version: <code>Server 0.19.0-20201208160952</code></p>
+</div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
 </div>
@@ -1079,7 +1088,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <div class="sect3">
 <h4 id="rest-api">2.2.1. REST API</h4>
 <div class="paragraph">
-<p>Configuration is always done by REST API.</p>
+<p>Configuration can be done by REST API.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1351,8 +1360,62 @@ visible at Checkmarx UI.</p>
 <p>You can either directly access the DB or inspect the web page by
 web tools in you browser (e.g. enable network monitoring and change team at UI&#8230;&#8203;)</p>
 </div>
-<div style="page-break-after: always;"></div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-initial-profile-and-executors">2.4. Profile and executor configuration</h3>
+<div class="sect3">
+<h4 id="executor-configuration">2.4.1. Executor configuration</h4>
+<div class="paragraph">
+<p>With an executor configuration a product executor can be configured for product execution.
+An executor will only be executed when configuration has been enabled!</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="execution-profile">2.4.2. Execution profile</h4>
+<div class="paragraph">
+<p>An execution profile can contain multiple executor configurations. The configurations can be
+shared between multiple profiles.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As an example: a config with name "pds-gosec-1" can be used in profiles "profileA"
+and also "profileB" at the same time.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Additionally a profile can be assigned to a project.</p>
+</div>
+<div class="paragraph">
+<p>The profile has also an enabled state - like executors.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To have a scan job running for a project we need
+- at least one enabled profile assigned to project
+- also at least one configuration inside the profile must be enabled and suitable for wanted scan type (e.g. codescan)</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div style="page-break-after: always;"></div>
 </div>
 </div>
 </div>
@@ -1360,6 +1423,19 @@ web tools in you browser (e.g. enable network monitoring and change team at UI&#
 <div class="sect1">
 <h2 id="security-products">3. Security Products</h2>
 <div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You must only setup those products you have listed inside your
+     profiles. See <a href="#section-initial-profile-and-executors">execution profiles and executor configurations</a>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="checkmarx-2">3.1. Checkmarx</h3>
 <div class="sect3">
@@ -1726,8 +1802,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.0<br>
-Last updated 2020-10-19 13:02:21 UTC
+ Server 0.19.0<br>
 </div>
 </div>
 <style>
