@@ -10,9 +10,9 @@ SecHub represents a mechanism to integrate diverse security products like
 - infrastructure scanners
 - ... maybe more in future
 
-by just using one simple API/client
+by just using one simple API/client.
 
-You find the sources, issue tracker and more at [gitHub ](https://github.com/Daimler/sechub)
+You find the sources, issue tracker and more at [GitHub ](https://github.com/Daimler/sechub).
 
 ## License
 
