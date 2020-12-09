@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.19.0</span>
+<span id="revnumber"> Server 0.19.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -654,12 +654,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#user-clicks-link-to-get-new-api-token">7.6.19. User clicks link to get new api token</a></li>
 <li><a href="#user-creates-a-new-sechub-job">7.6.20. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.20.1. Infrastructure scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.20.2. Web Scan anonymous</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.20.3. Web Scan login basic</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.20.4. Web Scan login form auto dection</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.20.5. Web Scan login form scripted</a></li>
-<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.20.6. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.20.1. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.20.2. Infrastructure scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.20.3. Web Scan anonymous</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.20.4. Web Scan login basic</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.20.5. Web Scan login form auto dection</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.20.6. Web Scan login form scripted</a></li>
 </ul>
 </li>
 <li><a href="#user-uploads-source-code">7.6.21. User uploads source code</a></li>
@@ -1044,7 +1044,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.19.0-20201208160952</code></p>
+<p>Documentation version: <code>Server 0.19.1-20201209172355</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -4833,17 +4833,17 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -6216,7 +6216,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/03bd89bd-b04a-4144-a76f-2db2583ccd11' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/ba688cae-2e61-480f-866e-c360f2b6602e' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6655,12 +6655,105 @@ This will NOT change any former job report where the false positive to unmark ha
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.20.1. Infrastructure scan</h5>
+<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.20.1. Code Scan</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 12. https://localhost:8081/api/project/{projectId}/job</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Request fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.fileSystem.folders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan sources from given file system folders</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.20.2. Infrastructure scan</h5>
+<div class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6753,12 +6846,12 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.20.2. Web Scan anonymous</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.20.3. Web Scan anonymous</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 14. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6846,12 +6939,12 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.20.3. Web Scan login basic</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.20.4. Web Scan login basic</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 15. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6964,12 +7057,12 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.20.4. Web Scan login form auto dection</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.20.5. Web Scan login form auto dection</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 16. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7087,12 +7180,12 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.20.5. Web Scan login form scripted</h5>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.20.6. Web Scan login form scripted</h5>
 <div class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 17. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7214,99 +7307,6 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.20.6. Code Scan</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.fileSystem.folders</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan sources from given file system folders</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;codeScan&quot;:{&quot;fileSystem&quot;:{&quot;folders&quot;:[&quot;testproject1/src/main/java&quot;,&quot;testproject2/src/main/java&quot;]}},&quot;apiVersion&quot;:&quot;1.0&quot;}'</code></pre>
-</div>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="user-uploads-source-code">7.6.21. User uploads source code</h4>
@@ -7344,7 +7344,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ce984d06-5710-4a69-a20d-4dd3e6a633a0/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ec528a9b-04a8-492f-b0c3-03bf3a841059/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7390,7 +7390,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/a6fa76b7-d3f7-4dce-bc93-60fa27764261/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ee02b7ae-5dcb-4293-853c-46cc608f2207/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7490,7 +7490,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/80c735f2-ee61-4eb6-8da6-14d67bbc38ac' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/62e71a40-ff11-4bb3-92df-915fa1b5f48a' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7507,7 +7507,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/0a5f9ad9-5913-447b-8dd4-34ab1c3952ce' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c76a114e-0992-49be-9cb5-20313fa985dc' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -7520,7 +7520,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/525177ae-e414-4d70-80bf-a14de00cf704' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/09c8f4fd-bf61-4e6a-9b2d-23ac2ecda4a4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -8075,7 +8075,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/a83d8150-cde9-4e2f-9f85-b026ab1ae173' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/5def1812-32cb-4e0c-be59-14b7cfd4e788' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8090,7 +8090,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a5b6d76c-d006-4d55-8ab9-a47a04b5f912' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a3161161-32b9-4268-adb8-2e516e82111c' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8105,7 +8105,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/7cf5b7b1-49bc-4461-9b2d-6f93ba242ef3' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/56378c6d-34a8-442a-91f2-4ff62b48801a' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8376,7 +8376,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/97fd42c7-1747-43f2-81a1-0e9e9c18bb49' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bf82a014-99cd-45bd-a4af-bb5407390ff8' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8536,7 +8536,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/896b9dcd-f2ee-414a-a2c6-69a3a4520015' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/5afce549-eeed-47cc-b129-305bb483f19b' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8637,7 +8637,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/48af4b75-e71e-4788-8105-401ecd97d226' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2778c463-968e-4b70-b56b-9530f2057593' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -8825,7 +8825,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;c0f3aa21-9ce5-44ec-86a2-37f7d7f0316a&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;b87ee2ca-79ae-446c-aedc-3d5fc8c0b2f3&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -12694,7 +12694,7 @@ See <a href="https://github.com/Daimler/sechub/issues/12" class="bare">https://g
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.19.0<br>
+ Server 0.19.1<br>
 </div>
 </div>
 <style>
