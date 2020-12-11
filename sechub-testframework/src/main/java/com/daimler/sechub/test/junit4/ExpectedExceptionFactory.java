@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.test.junit4;
 
 import org.junit.rules.ExpectedException;

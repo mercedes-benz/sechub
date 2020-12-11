@@ -1,7 +1,14 @@
 # SPDX-License-Identifier: MIT
 name: Java & Go CI
 
-on: [push]
+on: 
+  push:
+    branches-ignore:
+     # we do NOT build the documentation branch, because here we only copy build output 
+     # of documentation from master branch to the corresponding doc folders -e.g. /docs/latest
+     # So this branch is only for github pages. See https://github.com/Daimler/sechub/issues/481
+     # for details
+     - documentation
 
 jobs:
   build:
@@ -28,9 +35,9 @@ jobs:
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
       
     - name: Build Server
-      run: ./gradlew ensureLocalhostCertificate build openapi3 -x :sechub-integrationtest:test -x :sechub-cli:build
+      run: ./gradlew ensureLocalhostCertificate build openapi3 buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
-    - name: Build Generate OpenAPI Java client
+    - name: Generate OpenAPI Java client
       run: ./gradlew :sechub-client-java:openApiGenerate
 
     - name: Integration test
@@ -40,25 +47,83 @@ jobs:
       if: always()
       run: ./gradlew createCombinedTestReport
       
+    # -----------------------------------------
+    # Upload Build Artifacts  
+    # -----------------------------------------  
     - name: Archive combined test report
       if: always()
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
-    
-    - name: Install graphviz (asciidoc diagrams)
-      run: sudo apt-get install graphviz
-      
-    - name: Create documentation
-      run: ./gradlew documentation-with-pages
-      
-    - name: Archive documentation
+          
+    - name: Archive sechub server artifacts
       if: always()
       uses: actions/upload-artifact@v2
       with:
-          name: sechub-docs-latest
+          name: sechub-server
+          path: sechub-server/build/libs
+          retention-days: 14
+          
+    - name: Archive pds server artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-server
+          path: 
+            sechub-server/build/libs
+          
+    - name: Archive developer tools artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-developertools
+          path: sechub-developertools/build/libs
+          retention-days: 14
+          
+    - name: Archive sechub client artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-client
+          path: sechub-cli/build/go
+          retention-days: 14
+    
+    - name: Install graphviz (asciidoc diagrams)
+      run: sudo apt-get install graphviz
+    
+    # -----------------------------------------
+    # Build Documentation  
+    # -----------------------------------------  
+    - name: Create documentation
+      run: ./gradlew documentation-with-pages
+    
+    # -----------------------------------------
+    # Upload documentation  
+    # -----------------------------------------    
+    - name: Archive documentation HTML
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-docs-html
           path: docs/latest
           retention-days: 14
+    
+    - name: Archive documentation PDF
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-docs-pdf
+          path: sechub-doc/build/docs/asciidoc/*.pdf
+          retention-days: 14
+          
+    - name: Archive documentation openAPI3
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-api-spec
+          path: sechub-doc/build/api-spec/
+          retention-days: 14
+          
     
