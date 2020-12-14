@@ -88,7 +88,7 @@ public class ProjectJsonInputValidation {
         input.getWhiteList().get().getUris().forEach(uri -> {
             ValidationResult uriValidationResult = whitelistValidation.validate(uri);
             if (!uriValidationResult.isValid()) {
-                errors.rejectValue(ProjectJsonInput.PROPERTY_OWNER, "api.error.whitelistentry.invalid", uriValidationResult.getErrorDescription());
+                errors.rejectValue(ProjectJsonInput.PROPERTY_WHITELIST, "api.error.whitelistentry.invalid", uriValidationResult.getErrorDescription());
             }
         });
     }
@@ -103,7 +103,7 @@ public class ProjectJsonInputValidation {
 
         ValidationResult metaDataValidationResult = metaDataValidation.validate(metaDataMap);
         if (!metaDataValidationResult.isValid()) {
-            errors.rejectValue(ProjectJsonInput.PROPERTY_OWNER, "api.error.metadataentry.invalid", metaDataValidationResult.getErrorDescription());
+            errors.rejectValue(ProjectJsonInput.PROPERTY_METADATA, "api.error.metadataentry.invalid", metaDataValidationResult.getErrorDescription());
         }
     }
 }
