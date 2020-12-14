@@ -69,9 +69,15 @@ public class DeveloperAdministration {
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
         return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
     }
-    
-    /* will update test api server connection data - makes it possible to use directly test API methods without
-     * writing duplicates for developer admin ui (faster development)*/
+
+    /**
+     * Will update test API server connection data - makes it possible to use
+     * directly test API methods without writing duplicates for developer admin ui
+     * (faster development)
+     * 
+     * @param server
+     * @param portNumber
+     */
     public void updateTestAPIServerConnection(String server, int portNumber) {
         IntegrationTestContext integrationTestContext = IntegrationTestContext.get();
         integrationTestContext.setHostname(server);
@@ -84,7 +90,7 @@ public class DeveloperAdministration {
         integrationTestContext.setSuperAdminUser(new FixedTestUser(userId, apiToken));
         integrationTestContext.rebuild();
     }
-    
+
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {
         return new TestRestHelper(user, restHelperTarget) {
 
@@ -228,12 +234,12 @@ public class DeveloperAdministration {
             }
             throw new IllegalStateException("Product id not found:" + productId);
         }
-        
+
         public String createExampleProperitesAsString(TestPDSServerConfgiuration config, String productId) {
             StringBuilder sb = new StringBuilder();
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
-
+                /* @formatter:off */
                     sb.append("# ###################################\n");
                     sb.append("# Default example configuration for\n");
                     sb.append("# PDS server at :").append(getUiContext().getPDSConfigurationUI().getHostName()).append(":")
@@ -267,6 +273,7 @@ public class DeveloperAdministration {
                     }
                 }
             }
+            /* @formatter:on */
             String properties = sb.toString();
             return properties;
         }
@@ -424,7 +431,7 @@ public class DeveloperAdministration {
 
         return result;
     }
-    
+
     public String fetchProjectMetaData(String projectId) {
         String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
         TestJSONHelper jsonHelper = TestJSONHelper.get();
@@ -452,13 +459,18 @@ public class DeveloperAdministration {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
         for (Iterator<String> it = result.iterator(); it.hasNext();) {
-            
+
             String uri = it.next();
-            
-            if (!uri.trim().isEmpty()) {
+            if (uri == null) {
+                continue;
+            }
+
+            String trimmedURI = uri.trim();
+            if (!trimmedURI.isEmpty()) {
                 sb.append("\"");
-                sb.append(it.next());
+                sb.append(trimmedURI);
                 sb.append("\"");
+
                 if (it.hasNext()) {
                     sb.append(",");
                 }
@@ -469,12 +481,12 @@ public class DeveloperAdministration {
 
         getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
     }
-    
+
     public void updateProjectMetaData(String projectId, String result) {
-    	
-    	TestJSONHelper jsonHelper = TestJSONHelper.get();
+
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(result);
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
 
@@ -685,6 +697,5 @@ public class DeveloperAdministration {
     public void removeProjectIdsFromProfile(String profileId, List<String> list) {
         removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
     }
-
 
 }
