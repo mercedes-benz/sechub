@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -25,7 +25,7 @@ public class ScheduleDeleteAllProjectAcessService {
 	UserInputAssertion assertion;
 
 	@Transactional
-	@UseCaseAdministratorDeleteProject(@Step(number=6,name="Update authorization parts - remove entries for deleted project"))
+	@UseCaseAdminDeleteProject(@Step(number=6,name="Update authorization parts - remove entries for deleted project"))
 	public void deleteAnyAccessDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);
 

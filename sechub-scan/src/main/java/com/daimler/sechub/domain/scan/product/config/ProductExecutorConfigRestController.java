@@ -23,11 +23,11 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationList;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 
 /**
  * The REST API for project executor config done by a super admin.
@@ -58,7 +58,7 @@ public class ProductExecutorConfigRestController {
     FetchProductExecutorConfigService fetchService;
 
     /* @formatter:off */
-	@UseCaseAdministratorCreatesExecutorConfiguration(
+	@UseCaseAdminCreatesExecutorConfiguration(
 			@Step(
 				number=1,
 				name="Rest call",
@@ -72,7 +72,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorDeletesExecutorConfiguration(
+	@UseCaseAdminDeletesExecutorConfiguration(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -86,7 +86,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorUpdatesExecutorConfig(
+	@UseCaseAdminUpdatesExecutorConfig(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -100,7 +100,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutorConfigurationList(
+	@UseCaseAdminFetchesExecutorConfigurationList(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -114,7 +114,7 @@ public class ProductExecutorConfigRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutorConfiguration(
+	@UseCaseAdminFetchesExecutorConfiguration(
 	        @Step(
 	                number=1,
 	                name="Rest call",

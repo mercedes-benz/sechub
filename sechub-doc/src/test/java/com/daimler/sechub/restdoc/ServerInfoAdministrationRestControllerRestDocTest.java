@@ -3,9 +3,12 @@ package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +32,10 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorChecksServerVersion;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ServerInfoAdministrationRestController.class)
@@ -53,20 +57,30 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 	InfoService serverInfoService;
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorChecksServerVersion.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminChecksServerVersion.class)
 	public void restdoc_admin_get_server_version() throws Exception {
 		/*  prepare */
+        String apiEndpoint = https(PORT_USED).buildGetServerVersionUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminChecksServerVersion.class;
+        
 		when(serverInfoService.getVersionAsString()).thenReturn(SERVER_VERSION);
 		
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildGetServerVersionUrl()).
+				get(apiEndpoint).
 					contentType(MediaType.TEXT_PLAIN_VALUE)
 				).
 					andExpect(status().isOk()).
 					andExpect(content().string(SERVER_VERSION)).
-					andDo(document(RestDocFactory.createPath(UseCaseAdministratorChecksServerVersion.class))
-				);
+					andDo(document(RestDocFactory.createPath(UseCaseAdminChecksServerVersion.class),
+	                           resource(
+	                                    ResourceSnippetParameters.builder().
+	                                        summary(RestDocFactory.createSummary(useCase)).
+	                                        description(RestDocFactory.createDescription(useCase)).
+	                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+	                                        build()
+	                                    )
+					));
 		/* @formatter:on */
 	}
 

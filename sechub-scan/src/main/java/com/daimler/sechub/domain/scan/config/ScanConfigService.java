@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
 @Service
 public class ScanConfigService {
@@ -30,7 +30,7 @@ public class ScanConfigService {
 
     ScanConfig config;
 
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number = 6, name = "Service call", description = "Checks if current mappings in DB lead to a new scan configuration."))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 6, name = "Service call", description = "Checks if current mappings in DB lead to a new scan configuration."))
     public void refreshScanConfigIfNecessary() {
         List<ScanMapping> all = repository.findAll();
         ScanConfig scanConfig = transformer.transform(all);

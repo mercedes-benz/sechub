@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorGrantsAdminRightsToUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -47,7 +47,7 @@ public class UserGrantSuperAdminRightsService {
 
 	/* @formatter:off */
 	@Validated
-	@UseCaseAdministratorGrantsAdminRightsToUser(
+	@UseCaseAdminGrantsAdminRightsToUser(
 			@Step(
 					number = 2,
 					name = "Service grants user admin rights.",

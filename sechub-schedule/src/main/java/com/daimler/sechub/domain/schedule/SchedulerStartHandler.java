@@ -23,7 +23,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart;
 import com.daimler.sechub.sharedkernel.util.HostnameBuilder;
 
 @Component
@@ -46,7 +46,7 @@ public class SchedulerStartHandler {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE) // want this at the very beginning of scheduler start
     @IsSendingAsyncMessage(MessageID.SCHEDULER_STARTED)
-    @UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart(@Step(number = 1, name = "send domain message that new scheduler instance has been started and information about potential zombie jobs"))
+    @UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart(@Step(number = 1, name = "send domain message that new scheduler instance has been started and information about potential zombie jobs"))
     public CommandLineRunner schedulerHasBeenStarted() {
         return args -> {
             LOG.info("scheduler has been started - inspect zombie job status and send event");

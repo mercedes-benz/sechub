@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +41,7 @@ import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRetrievesProject
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ScanProjectMockDataRestController.class)
@@ -59,6 +65,10 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	@Test
 	@WithMockUser
 	public void set_project_mock_configuration() throws Exception {
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildSetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserDefinesProjectMockdata.class;
+        
 		ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
 		config.setCodeScan(new ScanMockData(TrafficLight.RED));
 		config.setWebScan(new ScanMockData(TrafficLight.YELLOW));
@@ -67,15 +77,22 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 		/* @formatter:off */
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		put(https(PORT_USED).buildSetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		put(apiEndpoint,PROJECT1_ID).
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(config.toJSON())
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserDefinesProjectMockdata.class))
-
-	    					);
+	    			andDo(document(RestDocFactory.createPath(useCase),
+	    	                resource(
+	    	                        ResourceSnippetParameters.builder().
+	    	                            summary(RestDocFactory.createSummary(useCase)).
+	    	                            description(RestDocFactory.createDescription(useCase)).
+	    	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+	    	                            requestSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+	    	                            build()
+	    	                        )
+	    			        ));
 	    /* @formatter:on */
 	}
 
@@ -84,6 +101,9 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	@WithMockUser
 	public void get_project_mock_configuration() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildGetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserRetrievesProjectMockdata.class;
+        
 		ScanProjectMockDataConfiguration config = new ScanProjectMockDataConfiguration();
 		config.setCodeScan(new ScanMockData(TrafficLight.RED));
 		config.setWebScan(new ScanMockData(TrafficLight.YELLOW));
@@ -94,7 +114,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 		/* @formatter:off */
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildGetProjectMockConfiguration(RestDocPathParameter.PROJECT_ID.pathElement()),PROJECT1_ID).
+        		get(apiEndpoint, PROJECT1_ID).
         			accept(MediaType.APPLICATION_JSON_VALUE).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
         		).  /*andDo(print()).*/
@@ -103,9 +123,16 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         			andExpect(jsonPath("$.webScan.result").value("YELLOW")).
         			andExpect(jsonPath("$.infraScan.result").value("GREEN")).
 
-        			andDo(document(RestDocFactory.createPath(UseCaseUserRetrievesProjectMockdata.class))
-
-        		);
+        			andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.MOCK_DATA_CONFIGURATION.getSchema()).
+                                        build()
+                                    )
+        			        ));
 
         /* @formatter:on */
 	}

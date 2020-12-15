@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorGrantsAdminRightsToUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 import com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckAlive;
 
 public class RestDocFactoryTest {
@@ -33,10 +33,10 @@ public class RestDocFactoryTest {
     @Test
     public void create_identfier__administrator_grants_admin_rights_to_user() {      
         /* execute */
-        String identifier = RestDocFactory.createIdentifier(UseCaseAdministratorGrantsAdminRightsToUser.class);
+        String identifier = RestDocFactory.createIdentifier(UseCaseAdminGrantsAdminRightsToUser.class);
         
         /* test */
-        assertEquals("administratorGrantsAdminRightsToUser", identifier);
+        assertEquals("adminGrantsAdminRightsToUser", identifier);
     }
     
     @Test
@@ -60,7 +60,7 @@ public class RestDocFactoryTest {
     @Test
     public void create_description__administrator_creates_project() {
         /* execute */
-        String description = RestDocFactory.createDescription(UseCaseAdministratorCreatesProject.class); 
+        String description = RestDocFactory.createDescription(UseCaseAdminCreatesProject.class); 
         
         /* test */
         assertEquals("Admin creates a project", description);

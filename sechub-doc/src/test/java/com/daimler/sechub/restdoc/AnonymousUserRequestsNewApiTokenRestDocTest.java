@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.EMAIL_ADDRESS;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +36,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserRequestsNewApiToken;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousUserRequestNewApiTokenRestController.class)
@@ -54,21 +58,29 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest {
 	@Test
 	@UseCaseRestDoc(useCase = UseCaseUserRequestsNewApiToken.class)
 	public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200() throws Exception {
-		/* prepare */
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAnonymousRequestNewApiToken(EMAIL_ADDRESS.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserRequestsNewApiToken.class;
 
 		/* execute */
 		/* @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildAnonymousRequestNewApiToken(EMAIL_ADDRESS.pathElement()),"emailAdress@test.com").
+        		post(apiEndpoint,"emailAdress@test.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
-        			andExpect(status().isOk()).andDo(
-        					document(RestDocFactory.createPath(UseCaseUserRequestsNewApiToken.class),
-        							pathParameters(
-        									parameterWithName(EMAIL_ADDRESS.paramName()).description("Email address for user where api token shall be refreshed.")
-        									)
-        							)
-        		);
+        			andExpect(status().isOk()).
+        			andDo(document(RestDocFactory.createPath(useCase),
+        	                resource(
+        	                        ResourceSnippetParameters.builder().
+        	                            summary(RestDocFactory.createSummary(useCase)).
+        	                            description(RestDocFactory.createDescription(useCase)).
+        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(EMAIL_ADDRESS.paramName()).description("Email address for user where api token shall be refreshed.")
+                                        ).
+        	                            build()
+        	                         )
+        			        ));
 
         /* @formatter:on */
 	}

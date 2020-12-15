@@ -25,7 +25,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -62,7 +62,7 @@ public class SchedulerCancelJobService {
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdministratorCancelsJob(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
+    @UseCaseAdminCancelsJob(@Step(number = 3, name = "Try to find job and mark as being canceled", description = "When job is found and user has access the state will be updated and marked as canceled"))
     public void cancelJob(UUID jobUUID, String ownerEmailAddress) {
         assertion.isValidJobUUID(jobUUID);
 

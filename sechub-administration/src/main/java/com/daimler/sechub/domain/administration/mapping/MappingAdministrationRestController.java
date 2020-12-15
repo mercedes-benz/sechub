@@ -21,7 +21,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
 /**
  * The rest API for mapping administration done by a super admin.
@@ -51,7 +51,7 @@ public class MappingAdministrationRestController {
 	}
 	
 	/* @formatter:off */
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to update a mapping configuration",needsRestDoc=true))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number=1,name="Rest call",description="Administrator wants to update a mapping configuration",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_CONFIG_MAPPING, method = RequestMethod.PUT, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public void updateMapping(@PathVariable(name="mappingId") String mappingId, @RequestBody MappingData mappingData) {

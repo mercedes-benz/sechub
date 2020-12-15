@@ -1,17 +1,28 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.*;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_ENABLED;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_EXECUTORVERSION;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_NAME;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_PRODUCTIDENTIFIER;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_SETUP;
+import static com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig.PROPERTY_UUID;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.UUID_PARAMETER;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -52,15 +63,16 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationList;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProductExecutorConfigRestController.class)
@@ -106,11 +118,14 @@ public class ProductExecutorConfigRestControllerRestDocTest {
     AuditLogService auditLogService;
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorCreatesExecutorConfiguration.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminCreatesExecutorConfiguration.class)
     public void restdoc_admin_creates_executor_config() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminCreatesProductExecutorConfig();
+        Class<? extends Annotation> useCase = UseCaseAdminCreatesExecutorConfiguration.class;
+        
         UUID randomUUID = UUID.randomUUID();
-
+        
         when(createService.createProductExecutorConfig(any())).thenReturn(randomUUID.toString());
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
@@ -129,35 +144,45 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAdminCreatesProductExecutorConfig()).
+	    		post(apiEndpoint).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(configFromUser))
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
-	    			andDo(document(RestDocFactory.createPath(UseCaseAdministratorCreatesExecutorConfiguration.class),
-	    						requestFields(
-										fieldWithPath(PROPERTY_NAME).description("A name for this configuration"),
-										fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
-										fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
-										fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor, per default false").optional(),
-										fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
-										fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
-										fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
-										fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
-										fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-										)
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase),
+	    	                resource(
+	    	                        ResourceSnippetParameters.builder().
+	    	                            summary(RestDocFactory.createSummary(useCase)).
+	    	                            description(RestDocFactory.createDescription(useCase)).
+	    	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+	    	                            responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_ID.getSchema()).
+	    	                            requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+	                                    requestFields(
+	                                            fieldWithPath(PROPERTY_NAME).description("A name for this configuration"),
+	                                            fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
+	                                            fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
+	                                            fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor, per default false").optional(),
+	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
+	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
+	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
+	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
+	                                            fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
+	                                    ).
+	    	                            build()
+	    	                         )
+	    			        ));
 
 	    /* @formatter:on */
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorUpdatesExecutorConfig.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminUpdatesExecutorConfig.class)
     public void restdoc_admin_updates_executor_config() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminUpdatesProductExecutorConfig(UUID_PARAMETER.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUpdatesExecutorConfig.class;
+        
         UUID randomUUID = UUID.randomUUID();
 
         TestExecutorConfig configFromUser = new TestExecutorConfig();
@@ -175,38 +200,46 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminUpdatesProductExecutorConfig(UUID_PARAMETER.pathElement()),randomUUID).
+                put(apiEndpoint,randomUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(configFromUser))
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorUpdatesExecutorConfig.class),
-                                requestFields(
-                                        fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
-                                        fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
-                                        fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
-                                        fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor, per default false").optional(),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-                                        ),
-
-                                pathParameters(
-                                        parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                                
-                                        )
-                                )
-                );
+                    andDo(document(RestDocFactory.createPath(UseCaseAdminUpdatesExecutorConfig.class),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.EXECUTOR_CONFIGURATION.getSchema()).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
+                                                fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
+                                                fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
+                                                fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor, per default false").optional(),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
+                                        ).
+                                        pathParameters(
+                                                parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
+                                        ).
+                                        build()
+                                     )
+                ));
 
         /* @formatter:on */
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorFetchesExecutorConfiguration.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutorConfiguration.class)
     public void restdoc_admin_fetches_executor_config() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesProductExecutorConfig(UUID_PARAMETER.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutorConfiguration.class;
+
         UUID uuid = UUID.randomUUID();
 
         TestExecutorConfig testConfig = new TestExecutorConfig();
@@ -228,64 +261,76 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildAdminFetchesProductExecutorConfig(UUID_PARAMETER.pathElement()),uuid).
+                get(apiEndpoint,uuid).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutorConfiguration.class),
-                                responseFields(
-                                        fieldWithPath(PROPERTY_UUID).description("The uuid of this configuration"),
-                                        fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
-                                        fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
-                                        fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
-                                        fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor").optional(),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
-                                        fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
-                                        ),
-
-                                pathParameters(
-                                        parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                                
-                                        )
-
-                                )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_WITH_UUID.getSchema()).
+                                        responseFields(
+                                                fieldWithPath(PROPERTY_UUID).description("The uuid of this configuration"),
+                                                fieldWithPath(PROPERTY_NAME).description("The name of this configuration"),
+                                                fieldWithPath(PROPERTY_PRODUCTIDENTIFIER).description("Executor product identifier"),
+                                                fieldWithPath(PROPERTY_EXECUTORVERSION).description("Executor version"),
+                                                fieldWithPath(PROPERTY_ENABLED).description("Enabled state of executor").optional(),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_BASEURL).description("Base URL to the product"),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_USER).description(CREDENTIALS_USER_DESCRIPTION),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_CREDENTIALS+"."+ProductExecutorConfigSetupCredentials.PROPERTY_PASSWORD).description(CREDENTIALS_PWD_DESCRIPTION),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_KEY).description(JOBPARAM_KEY_DESCRIPTION).optional(),
+                                                fieldWithPath(PROPERTY_SETUP+"."+ProductExecutorConfigSetup.PROPERTY_JOBPARAMETERS+"[]."+ProductExecutorConfigSetupJobParameter.PROPERTY_VALUE).description(JOBPARAM_VALUE_DESCRIPTION).optional()
+                                        ).
+                                        pathParameters(
+                                                parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorDeletesExecutorConfiguration.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminDeletesExecutorConfiguration.class)
     public void restDoc_admin_deletes_executor_config() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesProductExecutorConfig(UUID_PARAMETER.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDeletesExecutorConfiguration.class;
+        
         /* execute + test @formatter:off */
 	    UUID configUUID = UUID.randomUUID();
         this.mockMvc.perform(
-                delete(https(PORT_USED).buildAdminDeletesProductExecutorConfig(UUID_PARAMETER.pathElement()),configUUID).
+                delete(apiEndpoint, configUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesExecutorConfiguration.class),
-                    
-
-                            pathParameters(
-                                    parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
-                            
-                                    )
-                            )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(UUID_PARAMETER.paramName()).description("The configuration uuid")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorFetchesExecutorConfigurationList.class)
-    public void restDoc_admin_fetches_executor_configuration() throws Exception {
-
+    @UseCaseRestDoc(useCase = UseCaseAdminFetchesExecutorConfigurationList.class)
+    public void restDoc_admin_fetches_executor_config_list() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminFetchesListOfProductExecutionConfigurations();
+        Class<? extends Annotation> useCase = UseCaseAdminFetchesExecutorConfigurationList.class;
+        
         UUID uuid = UUID.randomUUID();
 
         ProductExecutorConfigList list = new ProductExecutorConfigList();
@@ -296,20 +341,26 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                get(https(PORT_USED).buildAdminFetchesListOfProductExecutionConfigurations()).
+                get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*andDo(print()).*/
                     andExpect(status().isOk()).
-                    andDo(document(RestDocFactory.createPath(UseCaseAdministratorFetchesExecutorConfigurationList.class),
-                            responseFields(
-                                    fieldWithPath("type").description("Always `executorConfigurationList` as an identifier for the list"),
-                                    fieldWithPath("executorConfigurations[]."+PROPERTY_UUID).description("The uuid of the configuration"),
-                                    fieldWithPath("executorConfigurations[]."+PROPERTY_NAME).description("The configuration name"),
-                                    fieldWithPath("executorConfigurations[]."+PROPERTY_ENABLED).description("Enabled state of configuration")
-                                    )
-
-                            )
-                );
+                    andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        responseSchema(OpenApiSchema.EXECUTOR_CONFIGURATION_LIST.getSchema()).
+                                        responseFields(
+                                                fieldWithPath("type").description("Always `executorConfigurationList` as an identifier for the list"),
+                                                fieldWithPath("executorConfigurations[]."+PROPERTY_UUID).description("The uuid of the configuration"),
+                                                fieldWithPath("executorConfigurations[]."+PROPERTY_NAME).description("The configuration name"),
+                                                fieldWithPath("executorConfigurations[]."+PROPERTY_ENABLED).description("Enabled state of configuration")
+                                        ).
+                                        build()
+                                     )
+                            ));
 
         /* @formatter:on */
     }

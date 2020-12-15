@@ -22,7 +22,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -47,7 +47,7 @@ private static final Logger LOG = LoggerFactory.getLogger(JobCancelService.class
 	UserRepository userRepository;
 
 	@Validated
-	@UseCaseAdministratorCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
+	@UseCaseAdminCancelsJob(@Step(number = 2, name = "Cancel job", description = "Will trigger event that job cancel requested"))
 	public void cancelJob(UUID jobUUID) {
 		assertion.isValidJobUUID(jobUUID);
 

@@ -43,7 +43,7 @@ import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesMappingConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter;
@@ -119,11 +119,11 @@ public class StatusAdministrationRestControllerRestDocTest {
 	}
 	
 	@Test
-    @UseCaseRestDoc(useCase=UseCaseAdministratorUpdatesMappingConfiguration.class)
+    @UseCaseRestDoc(useCase=UseCaseAdmiUpdatesMappingConfiguration.class)
     public void restdoc_admin_updates_mapping_configuration() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildUpdateMapping(RestDocPathParameter.MAPPING_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdministratorUpdatesMappingConfiguration.class;
+        Class<? extends Annotation> useCase = UseCaseAdmiUpdatesMappingConfiguration.class;
         
         
         /* execute + test @formatter:off */

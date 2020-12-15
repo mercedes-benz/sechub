@@ -15,6 +15,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +65,6 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfigurati
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
-import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;
@@ -118,6 +118,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Code Scan")
 	public void restDoc_userCreatesNewJob_codescan() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+        
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
@@ -125,7 +128,7 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -136,21 +139,29 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Code Scan"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
-										fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional()
-
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase, "Code Scan"),
+	    			                resource(
+	    			                        ResourceSnippetParameters.builder().
+	    			                            summary(RestDocFactory.createSummary(useCase)).
+	    			                            description(RestDocFactory.createDescription(useCase)).
+	    			                            tag(RestDocFactory.extractTag(apiEndpoint)).
+	    			                            requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+	    			                            responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+	    			                            pathParameters(
+	    			                                    parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+	    			                            ).
+	    			                            requestFields(
+	    			                                    fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+	    			                                    fieldWithPath(PROPERTY_CODE_SCAN).description("Code scan configuration block").optional(),
+	    			                                    fieldWithPath(PROPERTY_CODE_SCAN+"."+SecHubCodeScanConfiguration.PROPERTY_FILESYSTEM+"."+SecHubFileSystemConfiguration.PROPERTY_FOLDERS).description("Code scan sources from given file system folders").optional()
+	    
+	    			                            ).
+	    			                            responseFields(
+	    			                                    fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+	    			                            ).
+	    			                            build()
+	    			                        )
+	    			                ));
 
 	    /* @formatter:on */
 	}
@@ -159,6 +170,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Infrastructure scan")
 	public void restDoc_userCreatesNewJob_infrascan() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+        
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 	
@@ -166,7 +180,7 @@ public class SchedulerRestControllerRestDocTest {
 	
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -178,22 +192,31 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Infrastructure scan"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
-										fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_URIS).description("Infrastructure URIs to scan for").optional(),
-										fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_IPS).description("Infrastructure IPs to scan for").optional()
-	
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-	
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase,"Infrastructure scan"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_INFRA_SCAN).description("Infrastructure configuration block").optional(),
+                                                fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_URIS).description("Infrastructure URIs to scan for").optional(),
+                                                fieldWithPath(PROPERTY_INFRA_SCAN+"."+SecHubInfrastructureScanConfiguration.PROPERTY_IPS).description("Infrastructure IPs to scan for").optional()
+            
+                                        ).
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+            
+                                        ).
+                                        build()
+                                    )
+                            ));
 	
 	    /* @formatter:on */
 	}
@@ -202,6 +225,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan anonymous")
 	public void restDoc_userCreatesNewJob_webscan_anonymous() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+        
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
@@ -209,7 +235,7 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -220,21 +246,30 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan anonymous"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional()
-
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan anonymous"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional()
+            
+                                        ).
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+            
+                                        ).
+                                        build()
+                                    )
+	    			      ));
 
 	    /* @formatter:on */
 	}
@@ -243,6 +278,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login basic")
 	public void restDoc_userCreatesNewJob_webscan_login_basic() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+        
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
@@ -250,7 +288,7 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint, PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -262,26 +300,35 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login basic"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".user").description("username").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".password").description("password").optional()
+	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login basic"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".user").description("username").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".password").description("password").optional()
 
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
-	    						)
-	    		);
+                                        ).
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+            
+                                        ).
+                                        build()
+                                    )
+	    			    ));
 
 	    /* @formatter:on */
 	}
@@ -290,6 +337,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form auto dection")
 	public void restDoc_userCreatesNewJob_webScan_login_form_autodetect() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
@@ -297,7 +347,7 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -309,27 +359,35 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form auto dection"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect").description("login field auto detection").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.user").description("username").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.password").description("password").optional()
-
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form auto dection"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect").description("login field auto detection").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.user").description("username").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".autodetect.password").description("password").optional()
+                                        ).
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+            
+                                        ).
+                                        build()
+                                    )
+	    		    ));
 
 	    /* @formatter:on */
 	}
@@ -338,6 +396,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form scripted")
 	public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+        
 		UUID randomUUID = UUID.randomUUID();
 		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
@@ -345,7 +406,7 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		post(https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement()),PROJECT1_ID).
+	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(configureSecHub().
 	    					api("1.0").
@@ -362,28 +423,36 @@ public class SchedulerRestControllerRestDocTest {
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(UseCaseUserCreatesNewJob.class,"Web Scan login form scripted"),
-	    						pathParameters(
-										parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
-	    									),
-	    						requestFields(
-										fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script").description("login field auto detection").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].step").description("type of step").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].selector").description("css selector").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].value").description("value").optional()
-
-										),
-	    						responseFields(
-	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
-	    						)
-	    		);
+	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form scripted"),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        requestSchema(OpenApiSchema.SCAN_JOB.getSchema()).
+                                        responseSchema(OpenApiSchema.JOB_ID.getSchema()).
+                                        pathParameters(
+                                                parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                        ).
+                                        requestFields(
+                                                fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                                fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script").description("login field auto detection").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].step").description("type of step").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].selector").description("css selector").optional(),
+                                                fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].value").description("value").optional()
+                                        ).
+                                        responseFields(
+                                                fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+            
+                                        ).
+                                        build()
+                                    )
+	    		    ));
 
 	    /* @formatter:on */
 	}
@@ -392,7 +461,9 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserUploadsSourceCode.class)
 	public void restDoc_userUploadsSourceCode() throws Exception {
 		/* prepare */
-
+        String apiEndpoint = https(PORT_USED).buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserUploadsSourceCode.class;
+        
 		ScheduleSecHubJob job = new ScheduleSecHubJob() {
 			public UUID getUUID() {
 				return randomUUID;
@@ -414,21 +485,30 @@ public class SchedulerRestControllerRestDocTest {
 		MockMultipartFile file1 = new MockMultipartFile("file", inputStreamTo);
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		fileUpload(https(PORT_USED).buildUploadSourceCodeUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()) ,PROJECT1_ID,randomUUID).
+        		fileUpload(apiEndpoint, PROJECT1_ID,randomUUID).
         			file(file1).param("checkSum", "mychecksum")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         					// https://docs.spring.io/spring-restdocs/docs/2.0.2.RELEASE/reference/html5/
-        					andDo(document(RestDocFactory.createPath(UseCaseUserUploadsSourceCode.class),
-        							requestParts(partWithName("file").description("The sourcecode as zipfile to upload")),
-        							requestParameters(
-        									parameterWithName("checkSum").description("A sha256 checksum for file upload validation")),
-        							pathParameters(
-        										parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
-        										parameterWithName("jobUUID").description("The jobUUID for sechub job")
-        									)
-        			)
-        		);
+        					andDo(document(RestDocFactory.createPath(useCase),
+                                    resource(
+                                            ResourceSnippetParameters.builder().
+                                                summary(RestDocFactory.createSummary(useCase)).
+                                                description(RestDocFactory.createDescription(useCase)).
+                                                tag(RestDocFactory.extractTag(apiEndpoint)).
+                                                pathParameters(
+                                                        parameterWithName("projectId").description("The id of the project where sourcecode shall be uploaded for"),
+                                                        parameterWithName("jobUUID").description("The jobUUID for sechub job")
+                                                ).
+                                                requestParameters(
+                                                        parameterWithName("checkSum").description("A sha256 checksum for file upload validation")
+                                                ).
+                                                build()
+                                            ),
+                                    // TODO jeeppler, 2020-12-07: It is not possible to document this part properly in OpenAPI. 
+                                    // See: https://github.com/ePages-de/restdocs-api-spec/issues/105
+        							requestParts(partWithName("file").description("The sourcecode as zipfile to upload"))        									
+        			));
 
         /* @formatter:on */
 	}
@@ -437,6 +517,8 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserApprovesJob.class)
 	public void restDoc_userApprovesJob() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserApprovesJob.class;
 
 		ScheduleSecHubJob job = new ScheduleSecHubJob() {
 			public UUID getUUID() {
@@ -456,17 +538,23 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
-	    		put(https(PORT_USED).buildApproveJobUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
+	    		put(apiEndpoint, PROJECT1_ID,randomUUID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		)./*andDo(print()).*/
 	    			andExpect(status().isOk()).
-	    					andDo(document(RestDocFactory.createPath(UseCaseUserApprovesJob.class),
-	    							pathParameters(
-	    										parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
-	    										parameterWithName("jobUUID").description("The jobUUID for sechub job")
-	    									)
-	    			)
-	    		);
+	    					andDo(document(RestDocFactory.createPath(useCase),
+	                                resource(
+	                                        ResourceSnippetParameters.builder().
+	                                            summary(RestDocFactory.createSummary(useCase)).
+	                                            description(RestDocFactory.createDescription(useCase)).
+	                                            tag(RestDocFactory.extractTag(apiEndpoint)).
+	                                            pathParameters(
+	                                                    parameterWithName("projectId").description("The id of the project where sechub job shall be approved"),
+	                                                    parameterWithName("jobUUID").description("The jobUUID for sechub job")
+	                                            ).
+	                                            build()
+	                                        )
+	    				));
 
 	    /* @formatter:on */
 	}
@@ -475,7 +563,8 @@ public class SchedulerRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase = UseCaseUserChecksJobStatus.class)
 	public void restDoc_userChecksJobState() throws Exception {
 		/* prepare */
-	    UseCaseDefinition usecaseAnnotation = UseCaseUserChecksJobStatus.class.getAnnotation(UseCaseDefinition.class);
+        String apiEndpoint = https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserChecksJobStatus.class;
 
 		ScheduleSecHubJob job = new ScheduleSecHubJob() {
 			public UUID getUUID() {
@@ -495,16 +584,17 @@ public class SchedulerRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildGetJobStatusUrl(PROJECT_ID.pathElement(), JOB_UUID.pathElement()),PROJECT1_ID,randomUUID).
+        		get(apiEndpoint, PROJECT1_ID,randomUUID).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
         			andExpect(content().json("{jobUUID:"+randomUUID.toString()+", result:OK, state:ENDED, trafficLight:GREEN}")).
-        					andDo(document(RestDocFactory.createPath(UseCaseUserChecksJobStatus.class),
+        					andDo(document(RestDocFactory.createPath(useCase),
                                   resource(
                                       ResourceSnippetParameters.builder().
-                                          description(usecaseAnnotation.title()).
-                                          tag("job").
+                                          summary(RestDocFactory.createSummary(useCase)).
+                                          description(RestDocFactory.createDescription(useCase)).
+                                          tag(RestDocFactory.extractTag(apiEndpoint)).
                                           responseSchema(OpenApiSchema.JOB_STATUS.getSchema()).
                                           pathParameters(
                                             parameterWithName("projectId").description("The id of the project where sechub job was started for"),

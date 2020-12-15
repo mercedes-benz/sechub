@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorChecksServerVersion;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminChecksServerVersion;
 
 @RestController
 @EnableAutoConfiguration
@@ -28,7 +28,7 @@ public class ServerInfoAdministrationRestController {
 	private InfoService serverInfoService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorChecksServerVersion(
+	@UseCaseAdminChecksServerVersion(
 			@Step(
 					number=1,
 					name="REST API Call",

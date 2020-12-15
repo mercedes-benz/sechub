@@ -12,8 +12,8 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 
 @Service
 public class InformAdminsThatJobRestartWasCanceledService {
@@ -27,8 +27,8 @@ public class InformAdminsThatJobRestartWasCanceledService {
 	@Autowired
 	EmailService emailService;
 	
-	@UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
-	@UseCaseAdministratorRestartsJob(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
+	@UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
+	@UseCaseAdminRestartsJob(@Step(number = 3, name = "Inform sechub admins when job restart was canceled"))
 	public void notify(JobMessage jobMessage, String baseUrl) {
 		requireNonNull(jobMessage);
 

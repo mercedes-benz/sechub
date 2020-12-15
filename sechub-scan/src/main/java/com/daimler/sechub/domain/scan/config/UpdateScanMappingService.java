@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.validation.MappingDataValidation;
 import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 
@@ -39,7 +39,7 @@ public class UpdateScanMappingService {
     @Lazy
     DomainMessageService eventBus;
 
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number=4,name="Service call",description="Updates scan mapping in DB"))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number=4,name="Service call",description="Updates scan mapping in DB"))
     public void updateScanMapping(String mappingId, MappingData mappingData) {
         assertValid(mappingIdValidation.validate(mappingId), "Mapping ID invalid");
         assertValid(mappingDataValidation.validate(mappingData), "Mapping Data invalid");

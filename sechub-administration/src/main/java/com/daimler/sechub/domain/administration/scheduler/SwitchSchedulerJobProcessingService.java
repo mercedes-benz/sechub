@@ -14,8 +14,8 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -28,7 +28,7 @@ public class SwitchSchedulerJobProcessingService {
 	AuditLogService auditLogService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to disable scheduler job processing"))
+	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to disable scheduler job processing"))
 	public void disableJobProcessing() {
 		/* @formatter:on */
 		auditLogService.log("Disabled job processing");
@@ -36,7 +36,7 @@ public class SwitchSchedulerJobProcessingService {
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorEnablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to enable scheduler job processing"))
+	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler domain to enable scheduler job processing"))
 	public void enableJobProcessing() {
 		/* @formatter:on */
 		auditLogService.log("Enabled job processing");

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsScanLogsForProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsScanLogsForProject;
 
 @RestController
 @EnableAutoConfiguration
@@ -29,7 +29,7 @@ public class ScanLogRestController {
 
 
 	/* @formatter:off */
-	@UseCaseAdministratorShowsScanLogsForProject(@Step(number=1,next=2,name="REST API call to get JSON list",needsRestDoc=true))
+	@UseCaseAdminShowsScanLogsForProject(@Step(number=1,next=2,name="REST API call to get JSON list",needsRestDoc=true))
 	@RequestMapping(path = "/scan/logs", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<ProjectScanLogSummary> getScanLogsForProject(
 			@PathVariable("projectId") String projectId

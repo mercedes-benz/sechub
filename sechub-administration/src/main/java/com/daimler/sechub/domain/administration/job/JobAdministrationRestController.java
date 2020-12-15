@@ -21,10 +21,10 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorListsAllRunningJobs;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 
 /**
  * The rest api for job administration done by a super admin.
@@ -48,7 +48,7 @@ public class JobAdministrationRestController {
 	JobRestartRequestService jobRestartRequestService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorListsAllRunningJobs(
+	@UseCaseAdminListsAllRunningJobs(
 			@Step(
 				number=1,
 				name="Rest call",
@@ -62,7 +62,7 @@ public class JobAdministrationRestController {
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorCancelsJob(@Step(number=1,name="Rest call",description="Triggers job cancelation request, owners of project will be informed",needsRestDoc=true))
+	@UseCaseAdminCancelsJob(@Step(number=1,name="Rest call",description="Triggers job cancelation request, owners of project will be informed",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ADMIN_CANCELS_JOB, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void cancelJob(@PathVariable(name="jobUUID") UUID jobUUID) {
 		/* @formatter:on */
@@ -70,7 +70,7 @@ public class JobAdministrationRestController {
 	}
 	
 	/* @formatter:off */
-    @UseCaseAdministratorRestartsJob(@Step(number=1,name="Rest call",description="Triggeres job restart (soft) ",needsRestDoc=true))
+    @UseCaseAdminRestartsJob(@Step(number=1,name="Rest call",description="Triggeres job restart (soft) ",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ADMIN_RESTARTS_JOB, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     public void restartJob(@PathVariable(name="jobUUID") UUID jobUUID) {
         /* @formatter:on */
@@ -78,7 +78,7 @@ public class JobAdministrationRestController {
     }
     
     /* @formatter:off */
-    @UseCaseAdministratorRestartsJobHard(@Step(number=1,name="Rest call",description="Triggeres job restart (hard)",needsRestDoc=true))
+    @UseCaseAdminRestartsJobHard(@Step(number=1,name="Rest call",description="Triggeres job restart (hard)",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ADMIN_RESTARTS_JOB_HARD, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     public void restartJobHard(@PathVariable(name="jobUUID") UUID jobUUID) {
         /* @formatter:on */

@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorRevokesAdminRightsFromAdmin;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -49,7 +49,7 @@ public class UserRevokeSuperAdminRightsService {
 
 	/* @formatter:off */
 	@Validated
-	@UseCaseAdministratorRevokesAdminRightsFromAdmin(
+	@UseCaseAdminRevokesAdminRightsFromAdmin(
 			@Step(
 					number = 2,
 					name = "Service revokes user admin rights.",

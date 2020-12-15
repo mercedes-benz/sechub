@@ -13,7 +13,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
 import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 
 import static com.daimler.sechub.sharedkernel.validation.AssertValidation.*;
@@ -33,7 +33,7 @@ public class FetchProductExecutionProfileService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorFetchesExecutionProfile(
+    @UseCaseAdminFetchesExecutionProfile(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service reads setup information for an existing product executor configuration"))

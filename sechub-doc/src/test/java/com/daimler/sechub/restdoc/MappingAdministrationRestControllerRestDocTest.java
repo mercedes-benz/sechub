@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +39,10 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorListsStatusInformation;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(StatusAdministrationRestController.class)
@@ -82,25 +85,34 @@ public class MappingAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorListsStatusInformation.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminListsStatusInformation.class)
 	public void restdoc_admin_lists_status_information() throws Exception {
-		/*  prepare */
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminListsStatusEntries();
+        Class<? extends Annotation> useCase = UseCaseAdminListsStatusInformation.class;
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminListsStatusEntries()).
+				get(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsStatusInformation.class),
-				responseFields(
-							fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
-							fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")
-						)
-					)
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.STATUS_INFORMATION.getSchema()).
+                            responseFields(
+                                    fieldWithPath("[]."+StatusEntry.PROPERTY_KEY).description("Status key identifier"),
+                                    fieldWithPath("[]."+StatusEntry.PROPERTY_VALUE).description("Status value")
+                            ).
+                            build()
+                         )
+					));
 
 		/* @formatter:on */
 	}

@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.ONE_TIME_TOKEN;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +36,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.UseCaseUserClicksLinkToGetNewAPIToken;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousUserGetApiTokenByOneTimeTokenRestController.class)
@@ -59,21 +63,28 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 	@WithAnonymousUser
 	@UseCaseRestDoc(useCase=UseCaseUserClicksLinkToGetNewAPIToken.class)
 	public void restdoc_user_clicks_link_to_get_NewApiToken() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAnonymousGetNewApiTokenByLinkWithOneTimeTokenUrl(ONE_TIME_TOKEN.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserClicksLinkToGetNewAPIToken.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).
-						buildAnonymousGetNewApiTokenByLinkWithOneTimeTokenUrl(ONE_TIME_TOKEN.pathElement()),"oneTimeToken1").
+				get(apiEndpoint,"oneTimeToken1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseUserClicksLinkToGetNewAPIToken.class),
-				pathParameters(
-						parameterWithName(ONE_TIME_TOKEN.paramName()).description("A one time token the user has got by a previous mail from sechub server")
-						)
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(ONE_TIME_TOKEN.paramName()).description("A one time token the user has got by a previous mail from sechub server")
+                            ).
+                            build()
+                         )
+				));
 
 		/* @formatter:on */
 	}

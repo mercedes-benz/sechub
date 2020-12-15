@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorShowsUserDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -34,7 +34,7 @@ public class UserDetailInformationService {
 	UserInputAssertion assertion;
 
 	/* @formatter:off */
-	@UseCaseAdministratorShowsUserDetails(
+	@UseCaseAdminShowsUserDetails(
 			@Step(
 				number = 2,
 				name = "Service fetches user details.",

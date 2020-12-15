@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutorConfigurationList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutorConfigurationList;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -29,7 +29,7 @@ public class FetchProductExecutorConfigListService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorFetchesExecutorConfigurationList(
+    @UseCaseAdminFetchesExecutorConfigurationList(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service fetches data and creates a list containing all executor configurations"))

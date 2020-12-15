@@ -4,13 +4,15 @@ package com.daimler.sechub.restdoc;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,10 +37,11 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorDeletesSignup;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorListsOpenUserSignups;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SignupAdministrationRestController.class)
@@ -64,40 +68,62 @@ public class SignupAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorListsOpenUserSignups.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminListsOpenUserSignups.class)
 	public void restdoc_list_user_signups() throws Exception {
 		/* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminListsUserSignupsUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminListsOpenUserSignups.class;
+        
 		when(signupRepository.findAll()).thenReturn(Collections.emptyList());
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
+        		get(apiEndpoint)
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsOpenUserSignups.class)
-        		)
-
-        	    );
+        			andDo(document(RestDocFactory.createPath(useCase),
+        	                resource(
+        	                        ResourceSnippetParameters.builder().
+        	                            summary(RestDocFactory.createSummary(useCase)).
+        	                            description(RestDocFactory.createDescription(useCase)).
+        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        	                            responseSchema(OpenApiSchema.SIGNUP_LIST.getSchema()).
+        	                            responseFields(
+        	                                    fieldWithPath("[]").description("List of user signups").optional(),
+        	                                    fieldWithPath("[]."+RestDocPathParameter.USER_ID.paramName()).type(JsonFieldType.STRING).description("The user id"),
+        	                                    fieldWithPath("[]."+RestDocPathParameter.EMAIL_ADDRESS.paramName()).type(JsonFieldType.STRING).description("The email address")
+        	                            ).
+        	                            build()
+        	                        )
+        		));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorDeletesSignup.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminDeletesSignup.class)
 	public void restdoc_delete_signup() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesUserSignUpUrl(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDeletesSignup.class;
+        
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		delete(https(PORT_USED).buildAdminDeletesUserSignUpUrl(USER_ID.pathElement()),"userId1")
+        		delete(apiEndpoint,"userId1")
         		)./*andDo(print()).*/
         			andExpect(status().isOk()).
-        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeletesSignup.class),
-        					pathParameters(
-									parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
-								)
-        					)
-
-        		);
+        			andDo(document(RestDocFactory.createPath(useCase),
+                            resource(
+                                    ResourceSnippetParameters.builder().
+                                        summary(RestDocFactory.createSummary(useCase)).
+                                        description(RestDocFactory.createDescription(useCase)).
+                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                        pathParameters(
+                                                parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be deleted")
+                                        ).
+                                        build()
+                                    )
+        			        ));
 
 		/* @formatter:on */
 	}

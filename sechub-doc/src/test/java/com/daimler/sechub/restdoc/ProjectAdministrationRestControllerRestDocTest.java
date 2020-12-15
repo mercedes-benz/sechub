@@ -1,16 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.USER_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -50,14 +56,15 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
@@ -103,109 +110,164 @@ public class ProjectAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorCreatesProject.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminCreatesProject.class)
 	public void restdoc_create_project() throws Exception {
-
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminCreatesProjectUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminCreatesProject.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminCreatesProjectUrl()).
+				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
 				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
 				)./*andDo(print()).*/
 		andExpect(status().isCreated()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorCreatesProject.class),
-				requestFields(
-						fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-						fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!"),
-						fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!")
-						)
-
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            requestSchema(OpenApiSchema.PROJECT.getSchema()).
+                            requestFields(
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIs used now for whitelisting. Former parts will be replaced completely!"),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!")
+                            ).
+                            build()
+                         )
+				));
 
 		/* @formatter:on */
 	}
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorListsAllProjects.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminListsAllProjects.class)
 	public void restdoc_list_all_projects() throws Exception {
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminListsProjectsUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminListsAllProjects.class;
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildAdminListsProjectsUrl()).
+        		get(apiEndpoint).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
         		/*andDo(print()).*/
-        			andDo(document(RestDocFactory.createPath(UseCaseAdministratorListsAllProjects.class))).
-        			andExpect(status().isOk()
-        		);
+                    andExpect(status().isOk()).
+        			andDo(document(RestDocFactory.createPath(useCase),
+        	                resource(
+        	                        ResourceSnippetParameters.builder().
+        	                            summary(RestDocFactory.createSummary(useCase)).
+        	                            description(RestDocFactory.createDescription(useCase)).
+        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        	                            responseSchema(OpenApiSchema.PROJECT_LIST.getSchema()).
+        	                            responseFields(
+        	                                    fieldWithPath("[]").description("List of project Ids").optional()
+        	                            ).
+        	                            build()
+        	                         )
+        			        ));
 
 		/* @formatter:on */
 	}
 
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorDeleteProject.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminDeleteProject.class)
 	public void restdoc_delete_project() throws Exception {
-
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDeleteProject.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
+				delete(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorDeleteProject.class),
-				pathParameters(
-							parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
-						)
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to delete")
+                            ).
+                            build()
+                         )
 				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorAssignsUserToProject.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminAssignsUserToProject.class)
 	public void restdoc_assign_user2project() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				post(apiEndpoint,"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isCreated()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
-				pathParameters(
-						parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
-						parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
-						)
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
+                            ).
+                            build()
+                         )
 				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorUnassignsUserFromProject.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminUnassignsUserFromProject.class)
 	public void restdoc_unassign_userFromProject() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				delete(apiEndpoint,"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorUnassignsUserFromProject.class),
-				pathParameters(
-						parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
-						parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
-						)
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
+                            ).
+                            build()
+                         )
 				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorShowsProjectDetails.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminShowsProjectDetails.class)
 	public void restdoc_show_project_details() throws Exception {
 		/*  prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminShowsProjectDetails.class;
+        
 		Project project = mock(Project.class);
 		when(project.getId()).thenReturn("projectId1");
 
@@ -230,24 +292,31 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement()),"projectId1").
+				get(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 				*/
 		andDo(print()).
 		andExpect(status().isOk()).
-		andDo(document(RestDocFactory.createPath(UseCaseAdministratorShowsProjectDetails.class),
-				pathParameters(
-							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
-						),
-				responseFields(
-							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!")
-						)
-					)
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
+                            ).
+                            responseFields(
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!")
+                            ).
+                            build()
+                         )
+				));
 
 		/* @formatter:on */
 	}

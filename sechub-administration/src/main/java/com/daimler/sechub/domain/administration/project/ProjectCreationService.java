@@ -28,7 +28,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -62,7 +62,7 @@ public class ProjectCreationService {
 
 	@Validated
 	/* @formatter:off */
-	@UseCaseAdministratorCreatesProject(
+	@UseCaseAdminCreatesProject(
 			@Step(number = 2,
 			name = "Create project",
 			description = "The service will create the project when not already existing with such name."))

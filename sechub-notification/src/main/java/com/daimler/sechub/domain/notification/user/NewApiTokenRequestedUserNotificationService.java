@@ -9,7 +9,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 
 @Service
 public class NewApiTokenRequestedUserNotificationService {
@@ -20,7 +20,7 @@ public class NewApiTokenRequestedUserNotificationService {
 	@Autowired
 	private EmailService emailService;
 
-	@UseCaseAdministratorAcceptsSignup(@Step(number = 3, next = {
+	@UseCaseAdminAcceptsSignup(@Step(number = 3, next = {
 			Step.NO_NEXT_STEP }, name = "Email to user", description = "A notification is send per email to user that a new api token was requested. "
 					+ "The mail contains a link for getting the secure API token"))
 	public void notify(UserMessage userMessage) {
