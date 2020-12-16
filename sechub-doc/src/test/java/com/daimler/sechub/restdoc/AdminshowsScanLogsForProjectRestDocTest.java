@@ -85,7 +85,7 @@ public class AdminshowsScanLogsForProjectRestDocTest {
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminFetchesScanLogsForProject(PROJECT1)).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsScanLogsForProject.class),
 				/* we do not document more, because its binary / zip file...*/

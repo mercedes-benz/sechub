@@ -2,26 +2,39 @@
 
 package util
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
-// LogError - print unified error message
+// LogError - print unified error message with time stamp
 func LogError(text string) {
-	fmt.Printf("ERROR: " + text + "\n")
+	fmt.Fprintln(os.Stderr, Timestamp(), "ERROR:", text)
 }
 
 // LogWarning - print unified error message
 func LogWarning(text string) {
-	fmt.Printf("WARNING: " + text + "\n")
+	fmt.Println("WARNING:", text)
 }
 
 // LogVerbose - print unified verbose message
 func LogVerbose(text string) {
-	fmt.Printf("VERBOSE: " + text + "\n")
+	fmt.Println("VERBOSE:", text)
 }
 
 // LogDebug - Print message only if debug flag is set
 func LogDebug(debug bool, text string) {
 	if debug {
-		fmt.Printf("DEBUG: " + text + "\n")
+		fmt.Println(Timestamp(), "DEBUG:", text)
 	}
+}
+
+// Log - log a text message timestamped to stdout
+func Log(text string) {
+	logWithTimestamp(text)
+}
+
+// logWithTimestamp - print message with time stamp
+func logWithTimestamp(text string) {
+	fmt.Println(Timestamp(), text)
 }

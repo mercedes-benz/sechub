@@ -5,70 +5,61 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 )
 
 // PrintUsage - Print usage help informations
-func PrintUsage() {
-	w := flag.CommandLine.Output()
-	fmt.Fprintf(w, "Usage of %s:\nsechub [options] action\n", os.Args[0])
+func PrintUsage(w io.Writer) {
+	flag.CommandLine.SetOutput(w)
 
-	info := "\nYou can define most of the options also inside your config file! But commandline arguments will override those settings.\nOptions:\n"
+	info := "Usage of " + os.Args[0] + `:
+
+sechub [options] action
+
+action
+  Following actions are supported:
+   ` + scanAction + ` - start scan, wait for job done, download resulting report to output folder
+   ` + scanAsynchronAction + ` - just trigger scan and return job id as last output line
+   ` + getStatusAction + ` - fetch current job status and return result as json
+   ` + getReportAction + ` - fetch report as json (result will only exist when job is done)
+   ` + getFalsePositivesAction + ` - fetch the project's false-positives list as json
+   ` + markFalsePositivesAction + ` - add from a json file to project's false-positives list
+   ` + unmarkFalsePositivesAction + ` - remove items from project's false-positives list as defined in json file
+   ` + interactiveMarkFalsePositivesAction + ` - interactively define false-positives depending on a json report file
+   ` + interactiveUnmarkFalsePositivesAction + ` - interactively remove items from project's false-positives list
+
+Options:
+`
+
+	optionsFooter := `
+You can also define some of the options via environment variables or inside your config file.
+But commandline arguments will override environment variables; Environment variables will override config file.
+`
+
+	example := `
+Example for starting a scan which will wait until results are availabe and download the report:
+  export ` + SechubUserIDEnvVar + `=myUserName
+  export ` + SechubApitokenEnvVar + `=NTg5YSMkGRkM2Uy00NDJjLTkYTY4NjEXAMPLE
+  export ` + SechubServerEnvVar + `=https://sechub.example.com:8443
+  sechub scan
+
+Example 'sechub.json' config file which will configure a code scan and also a webscan:
+  {
+    "apiVersion": "1.0",
+    "project": "my_project",
+    "codeScan": {
+      "fileSystem": { "folders": ["src-server/", "src-client/"] }
+    }
+    "webScan"  : {
+      "uris": ["https://www.myproject"]
+    }
+  }
+
+Please also look into 'sechub-client.pdf' for detailed help, more examples, etc.
+`
 	fmt.Fprintf(w, info)
-
 	flag.PrintDefaults()
-	action := "action\n"
-	action += "  following actions are supported:\n"
-	action += "   " + ActionExecuteSynchron + " - start scan, wait for job done, fetch automatifcally result report to output folder\n"
-	action += "   " + ActionExecuteAsynchron + " - just trigger scan and return job id in json\n"
-	action += "   " + ActionExecuteGetStatus + " - fetch current job status and return result as json\n"
-	action += "   " + ActionExecuteGetReport + " - fetch report as json (result will only exist when job is done)\n"
-	action += "   " + ActionExecuteGetFalsePositives + " - fetch the project's false-positives list as json\n"
-	action += "   " + ActionExecuteMarkFalsePositives + " - add from a json file to project's false-positives list\n"
-	action += "   " + ActionExecuteUnmarkFalsePositives + " - remove items from project's false-positives list as defined in json file\n"
-	action += "   " + ActionExecuteInteractiveMarkFalsePositives + " - interactively define false-positives depending on a json report\n"
-	action += "   " + ActionExecuteInteractiveUnmarkFalsePositives + " - interactively remove items from project's false-positives list\n"
-
-	fmt.Fprintf(w, action)
-	fmt.Fprintln(w)
-	fmt.Fprint(w, "Example for starting a scan which will block until results are availabe:\n")
-	fmt.Fprint(w, "   SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE\n")
-	fmt.Fprint(w, "   sechub scan\n")
-	fmt.Fprint(w, "\n")
-	fmt.Fprint(w, "Example '"+DefaultSecHubConfigFile+"' config file which will configure a webscan and also source scan:\n\n")
-
-	fmt.Fprintf(w, "      {\n")
-	fmt.Fprintf(w, "      	\"apiVersion\": \"1.0\",\n")
-	fmt.Fprintf(w, "\n")
-	fmt.Fprintf(w, "      	\"server\"   : \"https://$SECHUB_SERVER/\",\n")
-	fmt.Fprintf(w, "      	\"user\"     : \"alice\",\n")
-	fmt.Fprintf(w, "\n")
-	fmt.Fprintf(w, "      	\"project\"  : \"gamechanger\",\n")
-	fmt.Fprintf(w, "\n")
-	fmt.Fprintf(w, "      	\"webScan\"  : {\n")
-	fmt.Fprintf(w, "      		\"uris\": [\"http://$SCAN_TARGET_SERVER/\"]\n")
-	fmt.Fprintf(w, "        },\n")
-	fmt.Fprintf(w, "      	\"codeScan\"  : {\n")
-	fmt.Fprintf(w, "      	    \"fileSystem\"  : {\n")
-	fmt.Fprintf(w, "      		    \"folders\": [\"gamechanger-android/src/main/java\",\"gamechanger-server/src/main/java\"]\n")
-	fmt.Fprintf(w, "      	    },\n")
-	fmt.Fprintf(w, "            \"excludes\": [\"**/*.log\",\"README.md\"]\n")
-	fmt.Fprintf(w, "      	}\n")
-
-	fmt.Fprintf(w, "      }\n")
-	fmt.Fprintf(w, "\nPlease look into 'sechub-user.pdf' for detailed help, correct sechub server url, more examples, etc.\n")
-}
-
-func showHelpAndExit() {
-	PrintUsage()
-	os.Exit(0)
-}
-
-func showVersionInfo() {
-	printLogoWithVersion(os.Stdout)
-}
-
-func showVersionInfoAndExit() {
-	showVersionInfo()
-	os.Exit(0)
+	fmt.Fprintf(w, optionsFooter)
+	fmt.Fprintf(w, example)
 }

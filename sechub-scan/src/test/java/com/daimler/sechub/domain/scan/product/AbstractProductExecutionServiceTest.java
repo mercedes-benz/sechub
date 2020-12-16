@@ -25,11 +25,12 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class AbstractProductExecutionServiceTest {
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.NESSUS;
 	private AbstractProductExecutionService serviceToTest;

@@ -3,9 +3,10 @@ package com.daimler.sechub.domain.administration.project;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,6 +28,8 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	public static final String PROPERTY_DESCRIPTION = "description";
 	public static final String PROPERTY_WHITELIST = "whiteList";
 	public static final String PROPERTY_OWNER = "owner";
+	public static final String PROPERTY_METADATA = "metaData";
+	
 
 	private String apiVersion;
 	private String name;
@@ -34,6 +37,8 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	private String owner;
 
 	private Optional<ProjectWhiteList> whiteList = Optional.empty();
+	
+	private Optional<ProjectMetaData> metaData = Optional.empty();
 
 	@Override
 	public Class<ProjectJsonInput> getJSONTargetClass() {
@@ -79,6 +84,24 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void setMetaData(Optional<Map<String, String>> metaData) {
+		
+		
+		if (!metaData.isPresent()) {
+			return;
+		}
+		
+		ProjectMetaData tmpMetaData = new ProjectMetaData();
+		
+		metaData.get().entrySet().stream().forEach(entry -> tmpMetaData.getMetaDataMap().put(entry.getKey(), entry.getValue()));
+		
+		this.metaData = Optional.ofNullable(tmpMetaData);
+	}
+	
+	public Optional<ProjectMetaData> getMetaData() {
+		return metaData;
+	}
 
 	public static class ProjectWhiteList {
 
@@ -89,5 +112,46 @@ public class ProjectJsonInput implements JSONable<ProjectJsonInput> {
 			return uris;
 		}
 
+	}
+	
+	public static class ProjectMetaData {
+		
+		private Map<String, String> metaDataMap = new HashMap<>();
+
+		public Map<String, String> getMetaDataMap() {
+			return metaDataMap;
+		}
+
+		@Override
+		public String toString() {
+			return "ProjectMetaData [metaDataMap=" + metaDataMap + "]";
+		}
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((metaDataMap == null) ? 0 : metaDataMap.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ProjectMetaData other = (ProjectMetaData) obj;
+            if (metaDataMap == null) {
+                if (other.metaDataMap != null)
+                    return false;
+            } else if (!metaDataMap.equals(other.metaDataMap))
+                return false;
+            return true;
+        }
+		
+		
 	}
 }

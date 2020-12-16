@@ -16,13 +16,14 @@ import com.daimler.sechub.developertools.DeveloperToolsTestFileSupport;
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class CreateProjectMassCSVImporterTest {
 
 	private CreateProjectMassCSVImporter importerToTest;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private DeveloperAdministration administration;
 
@@ -46,7 +47,7 @@ public class CreateProjectMassCSVImporterTest {
 
 		/* test */
 		for (int i=1;i<=15;i++) {
-			verify(administration,times(1)).createProject(eq("testproject_"+i),eq("Project testproject_"+i),eq("scenario2_owner1"),eq(Collections.emptyList()));
+			verify(administration,times(1)).createProject(eq("testproject_"+i),eq("Project testproject_"+i),eq("scenario2_owner1"),eq(Collections.emptyList()), eq(Collections.emptyMap()));
 		}
 		verify(administration).assignUserToProject("scenario2_user1", "testproject_1");
 
@@ -68,7 +69,7 @@ public class CreateProjectMassCSVImporterTest {
 
         /* test */
         for (int i=1;i<=15;i++) {
-            verify(administration,times(1)).createProject(eq("testproject_"+i),eq("Project testproject_"+i),eq("scenario2_owner1"),eq(Collections.emptyList()));
+            verify(administration,times(1)).createProject(eq("testproject_"+i),eq("Project testproject_"+i),eq("scenario2_owner1"),eq(Collections.emptyList()), eq(Collections.emptyMap()));
         }
         verify(administration).assignUserToProject("scenario2_user1", "testproject_1");
 

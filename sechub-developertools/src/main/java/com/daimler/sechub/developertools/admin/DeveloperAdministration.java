@@ -69,9 +69,15 @@ public class DeveloperAdministration {
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user) {
         return createTestRestHelperWithErrorHandling(provider, user, RestHelperTarget.SECHUB_SERVER);
     }
-    
-    /* will update test api server connection data - makes it possible to use directly test API methods without
-     * writing duplicates for developer admin ui (faster development)*/
+
+    /**
+     * Will update test API server connection data - makes it possible to use
+     * directly test API methods without writing duplicates for developer admin ui
+     * (faster development)
+     * 
+     * @param server
+     * @param portNumber
+     */
     public void updateTestAPIServerConnection(String server, int portNumber) {
         IntegrationTestContext integrationTestContext = IntegrationTestContext.get();
         integrationTestContext.setHostname(server);
@@ -84,7 +90,7 @@ public class DeveloperAdministration {
         integrationTestContext.setSuperAdminUser(new FixedTestUser(userId, apiToken));
         integrationTestContext.rebuild();
     }
-    
+
     private TestRestHelper createTestRestHelperWithErrorHandling(ErrorHandler provider, UserContext user, RestHelperTarget restHelperTarget) {
         return new TestRestHelper(user, restHelperTarget) {
 
@@ -228,12 +234,12 @@ public class DeveloperAdministration {
             }
             throw new IllegalStateException("Product id not found:" + productId);
         }
-        
+
         public String createExampleProperitesAsString(TestPDSServerConfgiuration config, String productId) {
             StringBuilder sb = new StringBuilder();
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
-
+                /* @formatter:off */
                     sb.append("# ###################################\n");
                     sb.append("# Default example configuration for\n");
                     sb.append("# PDS server at :").append(getUiContext().getPDSConfigurationUI().getHostName()).append(":")
@@ -267,6 +273,7 @@ public class DeveloperAdministration {
                     }
                 }
             }
+            /* @formatter:on */
             String properties = sb.toString();
             return properties;
         }
@@ -296,7 +303,7 @@ public class DeveloperAdministration {
     public String createNewUserSignup(String name, String email) {
 
         String json = "{\"apiVersion\":\"1.0\",\r\n" + "		\"userId\":\"" + name + "\",\r\n" + "		\"emailAdress\":\"" + email + "\"}";
-        return getRestHelper().postJSon(getUrlBuilder().buildUserSignUpUrl(), json);
+        return getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
     }
 
     public String fetchUserList() {
@@ -340,7 +347,7 @@ public class DeveloperAdministration {
         return "Deleted product execution profile:" + profileId;
     }
 
-    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs) {
+    public String createProject(String projectId, String description, String owner, List<String> whiteListURLs, Map<String, String> metaData) {
         /* @formatter:off */
 		StringBuilder json = new StringBuilder();
 		if (description==null || description.isEmpty()) {
@@ -365,11 +372,27 @@ public class DeveloperAdministration {
 			json.append("]\n");
 			json.append("                 }\n");
 		}
+		
+		if (!metaData.isEmpty()) {
+			json.append(",\n \"metaData\" : {\n");
+			
+			for(Iterator<Map.Entry<String, String>> it = metaData.entrySet().iterator(); it.hasNext(); ) {
+				Map.Entry<String, String> pair = it.next();
+				String key = pair.getKey();
+				String value = pair.getValue();
+				json.append("\"" + key + "\":\"" + value + "\"");
+				if (it.hasNext()) {
+					json.append(",\n");
+				}
+			}
+			
+			json.append("\n}\n");
+		}
 
 		json.append("}\n");
 		jsonHelper.assertValidJson(json.toString());
 		/* @formatter:on */
-        return getRestHelper().postJSon(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
+        return getRestHelper().postJson(getUrlBuilder().buildAdminCreatesProjectUrl(), json.toString());
     }
 
     public String fetchProjectList() {
@@ -400,12 +423,22 @@ public class DeveloperAdministration {
             ArrayNode arrayNode = (ArrayNode) whitelist;
             for (JsonNode node : arrayNode) {
                 String uriText = node.textValue();
-                result.add(uriText);
+                if (!uriText.trim().isEmpty()) {
+                    result.add(uriText);
+                }
             }
-
         }
 
         return result;
+    }
+
+    public String fetchProjectMetaData(String projectId) {
+        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(json);
+        JsonNode metaData = jsonNode.get("metaData");
+
+        return metaData.toPrettyString();
     }
 
     public String fetchProjectScanLogs(String projectId) {
@@ -426,26 +459,47 @@ public class DeveloperAdministration {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[");
         for (Iterator<String> it = result.iterator(); it.hasNext();) {
-            sb.append("\"");
-            sb.append(it.next());
-            sb.append("\"");
-            if (it.hasNext()) {
-                sb.append(",");
+
+            String uri = it.next();
+            if (uri == null) {
+                continue;
+            }
+
+            String trimmedURI = uri.trim();
+            if (!trimmedURI.isEmpty()) {
+                sb.append("\"");
+                sb.append(trimmedURI);
+                sb.append("\"");
+
+                if (it.hasNext()) {
+                    sb.append(",");
+                }
             }
 
         }
         sb.append("]}}");
 
-        getRestHelper().postJSon(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectWhiteListUrl(projectId), sb.toString());
+    }
+
+    public void updateProjectMetaData(String projectId, String result) {
+
+        TestJSONHelper jsonHelper = TestJSONHelper.get();
+        JsonNode jsonNode = jsonHelper.readTree(result);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"apiVersion\":\"1.0\", \"metaData\":\n" + jsonNode.toPrettyString() + "\n}");
+
+        getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
     public String assignUserToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(userId, projectId));
+        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
     }
 
     public String unassignUserFromProject(String userId, String projectId) {
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(userId, projectId));
+        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(projectId, userId));
         return "unassigned " + userId + " to project " + projectId;
     }
 
@@ -643,6 +697,5 @@ public class DeveloperAdministration {
     public void removeProjectIdsFromProfile(String profileId, List<String> list) {
         removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
     }
-
 
 }

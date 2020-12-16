@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.test;
 
 import java.lang.reflect.Method;
@@ -77,7 +78,8 @@ public class RoutesTest {
 		}
 	}
 	
-	private List<Class> getAllClassesForAnnotationType(Class clazz) {
+	@SuppressWarnings("unchecked")
+    private List<Class> getAllClassesForAnnotationType(Class clazz) {
 		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
 		scanner.addIncludeFilter(new AnnotationTypeFilter(clazz));
 		

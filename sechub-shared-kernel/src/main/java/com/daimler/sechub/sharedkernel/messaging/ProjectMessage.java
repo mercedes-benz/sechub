@@ -78,7 +78,7 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 	public Set<URI> getWhitelist() {
 		return whitelist;
 	}
-
+	
 	public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
 		this.projectActionTriggeredBy = projectActionTriggeredBy;
 	}

@@ -35,6 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -95,7 +96,7 @@ public class ProjectAdministrationRestControllerMockTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.[0]", CoreMatchers.equalTo("project1"))).
         			andExpect(jsonPath("$.[1]", CoreMatchers.equalTo("project2"))
@@ -113,12 +114,12 @@ public class ProjectAdministrationRestControllerMockTest {
         		contentType(MediaType.APPLICATION_JSON_VALUE).
 
         		content("{\"name\":\"projectId1\",\"description\":\"description1\",\"owner\":\"ownerName1\",\"whiteList\":{\"uris\":[\"192.168.1.1\",\"192.168.1.2\"]}}")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isCreated()
         		);
 
 		verify(creationService).
-			createProject("projectId1","description1","ownerName1", new LinkedHashSet<>(Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2"))));
+			createProject("projectId1","description1","ownerName1", new LinkedHashSet<>(Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2"))), new ProjectMetaData());
 		/* @formatter:on */
 	}
 
@@ -138,7 +139,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		  this.mockMvc.perform(
 	        		post(https(PORT_USED).buildAdminCreatesProjectUrl()).
 	        		contentType(MediaType.APPLICATION_JSON_VALUE)
-	        		)./*andDo(print()).*/
+	        		).
 	        			andExpect(status().isBadRequest()
 	        		);
 
@@ -154,7 +155,7 @@ public class ProjectAdministrationRestControllerMockTest {
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk());
 
 		/* @formatter:on */

@@ -6,6 +6,8 @@ sechub:
         hostname:
           endswith: intranet.example.org
 spring:
+  config:
+    use-legacy-processing: true # see https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4 and  https://stackoverflow.com/questions/64907675/including-profiles-in-spring-boot-2-4-0-version
   jackson:
     # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-customize-the-jackson-objectmapper
     mapper: 

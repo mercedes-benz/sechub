@@ -42,6 +42,7 @@ import com.daimler.sechub.domain.administration.project.ProjectDetailInformation
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformationService;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
+import com.daimler.sechub.domain.administration.project.ProjectMetaDataEntity;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
@@ -111,7 +112,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				post(https(PORT_USED).buildAdminCreatesProjectUrl()).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
 				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCreatesProject.class),
 				requestFields(
@@ -134,7 +135,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
-        		/*andDo(print()).*/
+        		
         			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllProjects.class))).
         			andExpect(status().isOk()
         		);
@@ -151,7 +152,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeleteProject.class),
 				pathParameters(
@@ -168,9 +169,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
 				pathParameters(
@@ -188,9 +189,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement()),"userId1", "projectId1").
+				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorUnassignsUserFromProject.class),
 				pathParameters(
@@ -224,6 +225,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		Set<URI> whiteList = new LinkedHashSet<>();
 		whiteList.add(new URI("http://www.sechub.example.org"));
 		when(project.getWhiteList()).thenReturn(whiteList);
+		
+		Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
+		ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
+		metaData.add(entry);
+		
+		when(project.getMetaData()).thenReturn(metaData);
+		
 		ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
 
 		when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
@@ -244,7 +252,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!")
+							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
 						)
 					)
 				);

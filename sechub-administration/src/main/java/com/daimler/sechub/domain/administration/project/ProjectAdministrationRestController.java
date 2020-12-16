@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
+import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
@@ -73,11 +74,11 @@ public class ProjectAdministrationRestController {
 	/* @formatter:off */
 	@UseCaseAdministratorCreatesProject(
 			@Step(
-				number=1,
-				name="Rest call",
-				needsRestDoc=true,
-				description="Administrator creates a new project by calling rest api"))
-	@RequestMapping(path = AdministrationAPIConstants.API_CREATE_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+				number = 1,
+				name = "Rest call",
+				needsRestDoc = true,
+				description = "Administrator creates a new project by calling rest api"))
+	@RequestMapping(path = AdministrationAPIConstants.API_CREATE_PROJECT, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createProject(@RequestBody @Valid ProjectJsonInput input) {
 		Set<URI> whiteListedURIs = new LinkedHashSet<>();
@@ -87,14 +88,19 @@ public class ProjectAdministrationRestController {
 			ProjectWhiteList whiteList = whitelistOption.get();
 			whiteListedURIs.addAll(whiteList.getUris());
 		}
+		
+		ProjectMetaData metaData = new ProjectMetaData();
+		if (input.getMetaData().isPresent()) {
+			metaData = input.getMetaData().get();
+		}
 
 		/* @formatter:on */
-		creationService.createProject(input.getName(), input.getDescription(), input.getOwner(), whiteListedURIs);
+		creationService.createProject(input.getName(), input.getDescription(), input.getOwner(), whiteListedURIs, metaData);
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorShowsProjectDetails(@Step(number=1,name="Rest call",description="Json returned containing details about project",needsRestDoc=true))
-	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+	@UseCaseAdministratorShowsProjectDetails(@Step(number = 1,name="Rest call", description = "Json returned containing details about project", needsRestDoc = true))
+	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
 		return detailsService.fetchDetails(projectId);

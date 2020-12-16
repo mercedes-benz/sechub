@@ -9,10 +9,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
+
 public class AssertTest {
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	
 	@Test
 	public void not_null_with_null_throws_illegal_argument() {

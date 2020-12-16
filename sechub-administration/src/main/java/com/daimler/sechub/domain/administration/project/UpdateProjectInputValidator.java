@@ -28,6 +28,7 @@ public class UpdateProjectInputValidator implements Validator{
 	@Override
 	public void validate(Object target, Errors errors) {
 		validation.checkApiVersion(errors,validation.asInput(target));
+		validation.checkWhitelist(errors, validation.asInput(target));
+		validation.checkMetaData(errors, validation.asInput(target));
 	}
-
 }

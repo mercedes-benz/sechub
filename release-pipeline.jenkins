@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 // Release  pipeline script for jenkins
-// Please define a new "pipeline" job and use this jenkinsfile there
-// (DO NOT use a "multibranch pipeline job" here! Reason: This job type makes problems
-//  with tagging - also we want releases only from master branch and tags shall be here as well)
 // Only master branch is  build by this script - other branches are build by "continous-integration-multibranch-pipeline.jenkins"
 // For details please refer /sechub-doc/src/docs/asciidoc/documents/buildserver/jenkins-pipeline.adoc
 
@@ -115,15 +112,9 @@ pipeline {
             when {
                  expression { context.isAnyRelease() }
             }
+            
             steps {
-              script{
-                  if (context.isClientRelease()){
-                      callGradleWrapper(':sechub-cli:publish')
-                  }
-                  if (context.isServerRelease()){
-                      callGradleWrapper(':sechub-server:publish')
-                  }
-               }
+                echo 'This step is now ignored - because alreadyd done by GitHub actions - see https://github.com/Daimler/sechub/actions'
             }
         }
 

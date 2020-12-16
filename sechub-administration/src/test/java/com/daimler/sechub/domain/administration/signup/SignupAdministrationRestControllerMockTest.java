@@ -57,7 +57,7 @@ public class SignupAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(content().json("[]")
         		);
@@ -84,7 +84,7 @@ public class SignupAdministrationRestControllerMockTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsUserSignupsUrl())
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.[0].userId", equalTo("sechub.test1"))).
         			andExpect(jsonPath("$.[0].emailAdress", equalTo("sechub.test1@example.org"))).

@@ -20,6 +20,7 @@ import com.daimler.sechub.integrationtest.api.AssertFullScanData;
 import com.daimler.sechub.integrationtest.api.AssertFullScanData.FullScanDataElement;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class FullScanDataScenario3SecHubClientIntTest {
 
@@ -30,7 +31,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
     public Timeout timeOut = Timeout.seconds(300); // 5 minutes is more than enough...
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected =ExpectedExceptionFactory.none();
 
     @Test
     public void product_failure_results_in_downloadable_fullscan_product_result_is_empty_and_report_contains_vulnerability_1_about_sechub_failure()

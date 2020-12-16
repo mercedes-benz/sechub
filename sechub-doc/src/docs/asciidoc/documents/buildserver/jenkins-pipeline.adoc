@@ -6,9 +6,22 @@ use a preconfigured pipeline script.
 
 Your Jenkins server should be at minimum: `Jenkins ver. 2.176.1`.
 
-NOTE: Of course you can setup {secHub} by your own in a way you like. But
-      the following documentation will always work.
+[NOTE]
+====
+The described Jenkins auto deployment is now *relying on the GitHub actions build* - see 
+https://github.com/Daimler/sechub/tree/develop/.github/workflows[GitHub workflows folder].
+Deployment artifacts are available at after gradle workflow has been done. 
 
+In future the artifacts will be automatically available in
+github packages so you can use those for your autodeployment process and just use it as a maven
+repository. In the meantime you must deploy manually. Why still a jenkins file then? 
+
+- You get informed about new available releases. 
+- Also the jenkins will check additionally for problems 
+- You can do a checksum test for outputs - if you want to check sechub build is not corrupted and
+  every version can be rebuild at any time
+
+====
 
 ==== Continous integration build
 

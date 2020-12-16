@@ -302,11 +302,11 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
 
-    public String buildAdminAssignsUserToProjectUrl(String userId, String projectId) {
+    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 
-    public String buildAdminUnassignsUserFromProjectUrl(String userId, String projectId) {
+    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 
@@ -316,6 +316,10 @@ public class TestURLBuilder {
 
     public String buildUpdateProjectWhiteListUrl(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
+    }
+    
+    public String buildUpdateProjectMetaData(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
     }
 
     public String buildAdminDeletesProject(String projectId) {
