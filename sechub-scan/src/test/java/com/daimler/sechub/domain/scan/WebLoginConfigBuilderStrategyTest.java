@@ -86,7 +86,7 @@ public class WebLoginConfigBuilderStrategyTest {
 		assertEquals("pwd2", step.getValue());
 
 		step = it.next();
-		assertEquals("click",step.getAction().toSt));
+		assertEquals("click",step.getAction().toString());
 		assertEquals("#example_login_login_button",step.getSelector());
 		assertEquals(null, step.getValue());
 	}
