@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.domain.scan.project.FalsePositiveJobData.PROPERTY_COMMENT;
-import static com.daimler.sechub.domain.scan.project.FalsePositiveJobData.PROPERTY_FINDINGID;
-import static com.daimler.sechub.domain.scan.project.FalsePositiveJobData.PROPERTY_JOBUUID;
-import static com.daimler.sechub.domain.scan.project.FalsePositiveProjectConfiguration.PROPERTY_FALSE_POSITIVES;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
@@ -34,7 +28,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,16 +40,11 @@ import com.daimler.sechub.domain.scan.log.ProjectScanLog;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogService;
 import com.daimler.sechub.domain.scan.log.ProjectScanLogSummary;
 import com.daimler.sechub.domain.scan.log.ScanLogRestController;
-import com.daimler.sechub.domain.scan.project.FalsePositiveCodeMetaData;
-import com.daimler.sechub.domain.scan.project.FalsePositiveCodePartMetaData;
-import com.daimler.sechub.domain.scan.project.FalsePositiveEntry;
-import com.daimler.sechub.domain.scan.project.FalsePositiveMetaData;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsScanLogsForProject;
-import com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckAlive;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
