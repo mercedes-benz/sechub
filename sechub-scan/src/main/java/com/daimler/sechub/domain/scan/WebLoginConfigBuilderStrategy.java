@@ -140,7 +140,7 @@ public class WebLoginConfigBuilderStrategy implements AdapterConfigurationStrate
 		for (ScriptEntry entry : scriptList) {
 			/* @formatter:off */
 			scriptBuilder.
-				addStep(entry.getStep()).
+				addStep(entry.getAction()).
 					select(entry.getSelector().orElse(null)).
 					enterValue(entry.getValue().orElse(null)).
 				endStep();

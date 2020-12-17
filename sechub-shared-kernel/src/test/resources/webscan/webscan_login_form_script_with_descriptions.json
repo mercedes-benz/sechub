@@ -9,12 +9,19 @@
             "form": {
                 "script": [
                     {
-                        "action": "input",
+                        "action": "username",
                         "selector": "#example_login_userid",
-                        "value": "user2"
+                        "value": "user2",
+                        "description": "The username is different from the email address"
                     },
                     {
                         "action": "input",
+                        "selector": "#example_login_email",
+                        "value": "user2@example.com",
+                        "description": "The website has a separate field for the email address"
+                    },
+                    {
+                        "action": "password",
                         "selector": "#example_login_pwd",
                         "value": "pwd2"
                     },

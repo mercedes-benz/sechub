@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class LoginScriptStepActionTest {
     @Test
-    public void values_of_igoner_case__lower_case() {
+    public void values_of_ignore_case__lower_case() {
                
         /* execute */
         LoginScriptStepAction action = LoginScriptStepAction.valueOfIgnoreCase("input");
@@ -26,7 +26,7 @@ public class LoginScriptStepActionTest {
     }
     
     @Test
-    public void values_of_igoner_case__mixed_case() {
+    public void values_of_ignore_case__mixed_case() {
         
         /* execute */
         LoginScriptStepAction action = LoginScriptStepAction.valueOfIgnoreCase("Input");

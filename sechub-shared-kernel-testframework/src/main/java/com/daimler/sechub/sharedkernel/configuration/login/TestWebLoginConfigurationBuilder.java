@@ -62,7 +62,7 @@ public class TestWebLoginConfigurationBuilder {
 
 		public ScriptEntryBuilder step(String type, String selector, String value) {
 			ScriptEntry entry = new ScriptEntry();
-			entry.step = type;
+			entry.action = type;
 			entry.selector = Optional.ofNullable(selector);
 			entry.value = Optional.ofNullable(value);
 

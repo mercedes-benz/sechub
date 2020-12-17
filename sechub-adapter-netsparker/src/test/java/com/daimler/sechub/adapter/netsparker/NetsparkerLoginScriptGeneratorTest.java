@@ -105,10 +105,12 @@ public class NetsparkerLoginScriptGeneratorTest {
 		LoginScriptStep step2 = mock(LoginScriptStep.class);
 		LoginScriptStep step3 = mock(LoginScriptStep.class);
 
+		when(step3.getAction()).thenReturn(LoginScriptStepAction.USERNAME);
 		when(step1.getSelector()).thenReturn("#usernamefield");
 		when(step1.getValue()).thenReturn("username1");
 		when(step1.isUserName()).thenReturn(true);
 
+		when(step3.getAction()).thenReturn(LoginScriptStepAction.PASSWORD);
 		when(step2.getSelector()).thenReturn("#passwordfield");
 		when(step2.getValue()).thenReturn("password1");
 		when(step2.isPassword()).thenReturn(true);

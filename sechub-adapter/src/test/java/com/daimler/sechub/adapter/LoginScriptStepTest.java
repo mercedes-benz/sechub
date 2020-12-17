@@ -58,7 +58,29 @@ public class LoginScriptStepTest {
 		assertFalse(step(action).isInput());
 		assertFalse(step(action).isUserName());
 	}
+	
+	@Test
+	public void description_not_set() {
+	    /* prepare */
+	    LoginScriptStep step = new LoginScriptStep();
+	    
+	    /* test + execute */
+	    assertFalse(step.getDescription().isPresent());
+	}
 
+    @Test
+    public void description_set() {
+        /* prepare */
+        LoginScriptStep step = new LoginScriptStep();
+        String description = "I am a description";
+        
+        /* execute */
+        step.setDescription(description);
+        
+        /* test */
+        assertTrue(step.getDescription().isPresent());
+        assertEquals(description, step.getDescription().get());
+    }
 
 	private LoginScriptStep step(LoginScriptStepAction action) {
 		LoginScriptStep step = new LoginScriptStep();

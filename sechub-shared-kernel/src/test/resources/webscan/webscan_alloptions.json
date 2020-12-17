@@ -18,17 +18,18 @@
                 },
                 "script": [
                     {
-                        "step": "input",
+                        "action": "input",
                         "selector": "#example_login_userid",
-                        "value": "user2"
+                        "value": "user2",
+                        "description": "This is an example description"
                     },
                     {
-                        "step": "input",
+                        "action": "input",
                         "selector": "#example_login_pwd",
                         "value": "pwd2"
                     },
                     {
-                        "step": "click",
+                        "action": "click",
                         "selector": "#example_login_login_button"
                     }
                 ]
