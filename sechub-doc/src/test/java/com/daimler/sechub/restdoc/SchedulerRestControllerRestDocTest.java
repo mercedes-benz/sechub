@@ -350,9 +350,9 @@ public class SchedulerRestControllerRestDocTest {
 	    						addURI("https://localhost/mywebapp").
 	    						login("https://localhost/mywebapp/login").
 	    						  formScripted("username1","password1").
-	    							step("input", "#example_login_userid", "username1").
-	    							step("input", "#example_login_pwd", "password").
-	    							step("click", "#example_login_button", "").
+	    							step("input", "#example_login_userid", "username1", "the username field").
+	    							step("input", "#example_login_pwd", "password", "").
+	    							step("click", "#example_login_button", "", "").
 	    						  done().
 	    					build().
 	    					toJSON())
@@ -371,10 +371,10 @@ public class SchedulerRestControllerRestDocTest {
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script").description("login field auto detection").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].step").description("type of step").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].action").description("type of action").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].selector").description("css selector").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].value").description("value").optional()
-
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].value").description("value").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].description").description("description").optional()
 										),
 	    						responseFields(
 	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))

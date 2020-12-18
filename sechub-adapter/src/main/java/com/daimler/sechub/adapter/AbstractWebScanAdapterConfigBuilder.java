@@ -63,19 +63,24 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 				private LoginScriptStep step = new LoginScriptStep();
 
-				public FormScriptLoginStepBuilder(LoginScriptStepAction action) {
-					step.action=action;
-				}
+                public FormScriptLoginStepBuilder(LoginScriptStepAction action) {
+                    step.action = action;
+                }
 
-				public FormScriptLoginStepBuilder select(String css) {
-					step.selector=css;
-					return this;
-				}
+                public FormScriptLoginStepBuilder select(String css) {
+                    step.selector = css;
+                    return this;
+                }
 
-				public FormScriptLoginStepBuilder enterValue(String value) {
-					step.value=encrypt(value);
-					return this;
-				}
+                public FormScriptLoginStepBuilder enterValue(String value) {
+                    step.value = encrypt(value);
+                    return this;
+                }
+
+                public FormScriptLoginStepBuilder description(String description) {
+                    step.description = description;
+                    return this;
+                }
 
 				public FormScriptLoginBuilder endStep() {
 					formScriptLoginConfig.getSteps().add(step);

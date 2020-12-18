@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
-import java.util.Optional;
-
 import javax.crypto.SealedObject;
 
 import com.daimler.sechub.commons.core.security.CryptoAccess;
@@ -43,11 +41,7 @@ public class LoginScriptStep {
 		return "click".equalsIgnoreCase(action.name());
 	}
 	
-    public Optional<String> getDescription() {
-        return Optional.ofNullable(description);
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getDescription() {
+        return description;
     }
 }

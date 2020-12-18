@@ -79,6 +79,7 @@ public class WebLoginConfigBuilderStrategyTest {
 		assertEquals("input",step.getAction().toString());
 		assertEquals("#example_login_userid",step.getSelector());
 		assertEquals("user2", step.getValue());
+		assertEquals("This is a description.", step.getDescription());
 
 		step = it.next();
 		assertEquals("input",step.getAction().toString());

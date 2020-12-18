@@ -143,6 +143,7 @@ public class WebLoginConfigBuilderStrategy implements AdapterConfigurationStrate
 				addStep(entry.getAction()).
 					select(entry.getSelector().orElse(null)).
 					enterValue(entry.getValue().orElse(null)).
+					description(entry.getDescription().orElse(null)).
 				endStep();
 			/* @formatter:on */
 

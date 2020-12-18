@@ -65,7 +65,7 @@ public class LoginScriptStepTest {
 	    LoginScriptStep step = new LoginScriptStep();
 	    
 	    /* test + execute */
-	    assertFalse(step.getDescription().isPresent());
+	    assertNull(step.getDescription());
 	}
 
     @Test
@@ -75,11 +75,10 @@ public class LoginScriptStepTest {
         String description = "I am a description";
         
         /* execute */
-        step.setDescription(description);
+        step.description = description;
         
         /* test */
-        assertTrue(step.getDescription().isPresent());
-        assertEquals(description, step.getDescription().get());
+        assertEquals(description, step.getDescription());
     }
 
 	private LoginScriptStep step(LoginScriptStepAction action) {

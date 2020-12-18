@@ -60,11 +60,12 @@ public class TestWebLoginConfigurationBuilder {
 
 		}
 
-		public ScriptEntryBuilder step(String type, String selector, String value) {
+		public ScriptEntryBuilder step(String type, String selector, String value, String description) {
 			ScriptEntry entry = new ScriptEntry();
 			entry.action = type;
 			entry.selector = Optional.ofNullable(selector);
 			entry.value = Optional.ofNullable(value);
+			entry.description = Optional.ofNullable(description);
 
 			entries.add(entry);
 			return this;
