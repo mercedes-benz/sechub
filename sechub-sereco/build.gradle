@@ -6,10 +6,10 @@
  * ============================================================================
  */
 dependencies {
-
+	compile library.jsoup
+	    
     compile project(':sechub-shared-kernel')
 
     testCompile project(':sechub-testframework')
-
 }
 
