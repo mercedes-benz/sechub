@@ -105,8 +105,8 @@
 											<th>Source</th>
 										</thead>
 										<tbody>
-											<tr th:each="callstack,iter : ${finding.code}">
-												<td th:text="${iter.index}">Id</td>
+											<tr th:each="callstack : ${finding.code}">
+												<td>Id</td>
 												<td th:text="${callstack.location}">Location</td>
 												<td th:text="${callstack.line}">Line</td>
 												<td th:text="${callstack.column}">Column</td>
