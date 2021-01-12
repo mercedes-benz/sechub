@@ -91,6 +91,33 @@
 							    </div>
 							</td>
 						</tr>
+						<tr>
+							<td colspan="100%">
+								<details>
+									<summary>callstack</summary>
+									<table>
+										<thead>
+											<th>Id</th>
+											<th>Location</th>
+											<th>Line</th>
+											<th>Column</th>
+											<th>Relevant Part</th>
+											<th>Source</th>
+										</thead>
+										<tbody>
+											<tr th:each="callstack,iter : ${finding.code}">
+												<td th:text="${iter.index}">Id</td>
+												<td th:text="${callstack.location}">Location</td>
+												<td th:text="${callstack.line}">Line</td>
+												<td th:text="${callstack.column}">Column</td>
+												<td th:text="${callstack.relevantPart}">Relevant Part</td>
+												<td th:text="${callstack.source}">Source</td>
+											</tr>
+										</tbody>
+									</table>
+								</details>
+							</td>
+						</tr>
 						<tr th:remove="all">
 							<td>Severity 2</td>
 							<td>Name 2</td>
