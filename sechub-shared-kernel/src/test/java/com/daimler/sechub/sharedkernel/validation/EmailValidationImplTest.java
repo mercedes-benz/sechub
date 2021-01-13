@@ -19,6 +19,21 @@ public class EmailValidationImplTest {
 	public void somebody_at_gmail_adress_is_valid() {
 		assertTrue(validationToTest.validate("somebody@gmail.com").isValid());
 	}
+	
+	@Test
+    public void mail_with_long_prefix_having_not_only_chars_but_numbers_underscores_dots_and_hyphen_umlauts_and_dollar_is_valid() {
+        assertTrue(validationToTest.validate("the_42-is_a_wellknown_Number$äöü.and-also.very_long@example.com").isValid());
+    }
+	
+	@Test
+    public void mail_with_space_is_not_valid() {
+        assertFalse(validationToTest.validate("not valid@example.com").isValid());
+    }
+	
+	@Test
+    public void mail_with_colon_is_not_valid() {
+        assertFalse(validationToTest.validate("not:valid@example.com").isValid());
+    }
 
 	@Test
 	public void null_is_invalid() {

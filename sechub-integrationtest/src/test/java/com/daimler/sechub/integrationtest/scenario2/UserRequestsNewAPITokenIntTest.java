@@ -2,7 +2,7 @@
 package com.daimler.sechub.integrationtest.scenario2;
 
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
-import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
+import static com.daimler.sechub.integrationtest.scenario2.Scenario2.USER_1;
 import static org.junit.Assert.*;
 
 import org.junit.Rule;
@@ -16,7 +16,11 @@ public class UserRequestsNewAPITokenIntTest {
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
 
 	@Test
-	public void an_unregistered_user_can_trigger_new_api_token_request_leads_to_mail_with_link_to_fetch_new_apitoken() {
+	public void an_anonymous_user_can_trigger_new_api_token_request_for_existing_user_email_adress_leads_to_mail_with_link_to_fetch_new_apitoken() {
+	    /* check preconditions */
+        String email = USER_1.getEmail();
+        assertTrue(email.endsWith("_user1@example.org"));
+        
 		/* prepare */
 		as(ANONYMOUS).requestNewApiTokenFor(USER_1.getEmail());
 

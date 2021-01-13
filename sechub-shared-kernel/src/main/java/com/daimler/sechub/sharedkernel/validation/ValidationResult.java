@@ -9,6 +9,12 @@ public class ValidationResult{
 	protected boolean valid = true;
 	private List<String> errors=new ArrayList<>();
 	
+	/**
+	 * Creates an empty validation result - in this state it is valid and has no errors at all
+	 */
+	public ValidationResult() {
+	}
+	
 	public boolean isValid() {
 		return valid;
 	}
