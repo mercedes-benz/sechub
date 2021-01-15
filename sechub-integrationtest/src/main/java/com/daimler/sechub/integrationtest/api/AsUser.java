@@ -763,20 +763,27 @@ public class AsUser {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,
                 "zipfile_contains_only_test1.txt.zip");
     }
+    
+    public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
+        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+        approveJob(project, uuid);
+        return uuid;
+    }
+    
 
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, "zipfile_contains_only_test1.txt.zip");
     }
 
     public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
-        UUID uuid = triggerAsyncScanAndGetJobUUID(project, mode);
+        UUID uuid = triggerAsyncCodeScanAndGetJobUUID(project, mode);
         upload(project, uuid, pathInsideResources);
 
         approveJob(project, uuid);
         return uuid;
     }
 
-    public UUID triggerAsyncScanAndGetJobUUID(TestProject project, IntegrationTestMockMode runMode) {
+    private UUID triggerAsyncCodeScanAndGetJobUUID(TestProject project, IntegrationTestMockMode runMode) {
         UUID uuid = createCodeScan(project, runMode);
         assertNotNull(uuid);
         return uuid;
@@ -952,6 +959,8 @@ public class AsUser {
             return this;
         }
     }
+
+    
 
    
    
