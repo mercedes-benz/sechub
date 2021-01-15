@@ -8,10 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.domain.scan.ScanAssertService;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 
-public class FalsePositiveJobServiceTest {
+public class FalsePositiveJobDataServiceTest {
 
     private static final String PROJECT_ID = "testprojectId";
     private FalsePositiveJobDataService serviceToTest;
@@ -20,6 +21,7 @@ public class FalsePositiveJobServiceTest {
     private ScanAssertService scanAssertService;
     private UserInputAssertion userInputAssertion;
     private ScanProjectConfig config;
+    private AuditLogService auditLogService;
 
     @Before
     public void before() {
@@ -29,11 +31,13 @@ public class FalsePositiveJobServiceTest {
         configService = mock(ScanProjectConfigService.class);
         userInputAssertion = mock(UserInputAssertion.class);
         scanAssertService = mock(ScanAssertService.class);
+        auditLogService =mock(AuditLogService.class);
 
         serviceToTest.falsePositiveJobDataListValidation = falsePositiveListValidation;
         serviceToTest.configService = configService;
         serviceToTest.scanAssertService = scanAssertService;
         serviceToTest.userInputAssertion = userInputAssertion;
+        serviceToTest.auditLogService= auditLogService;
 
         when(falsePositiveListValidation.validate(any(FalsePositiveJobDataList.class))).thenReturn(new ValidationResult());
 
