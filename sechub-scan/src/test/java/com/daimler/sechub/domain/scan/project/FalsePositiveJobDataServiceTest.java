@@ -31,13 +31,13 @@ public class FalsePositiveJobDataServiceTest {
         configService = mock(ScanProjectConfigService.class);
         userInputAssertion = mock(UserInputAssertion.class);
         scanAssertService = mock(ScanAssertService.class);
-        auditLogService =mock(AuditLogService.class);
+        auditLogService = mock(AuditLogService.class);
 
         serviceToTest.falsePositiveJobDataListValidation = falsePositiveListValidation;
         serviceToTest.configService = configService;
         serviceToTest.scanAssertService = scanAssertService;
         serviceToTest.userInputAssertion = userInputAssertion;
-        serviceToTest.auditLogService= auditLogService;
+        serviceToTest.auditLogService = auditLogService;
 
         when(falsePositiveListValidation.validate(any(FalsePositiveJobDataList.class))).thenReturn(new ValidationResult());
 
@@ -45,7 +45,7 @@ public class FalsePositiveJobDataServiceTest {
         config = new ScanProjectConfig();
         config.setData("{}");
 
-        when(configService.getOrCreate(eq(PROJECT_ID), eq(ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION),eq(Boolean.FALSE),any())).thenReturn(config);
+        when(configService.getOrCreate(eq(PROJECT_ID), eq(ScanProjectConfigID.FALSE_POSITIVE_CONFIGURATION), eq(Boolean.FALSE), any())).thenReturn(config);
 
     }
 
