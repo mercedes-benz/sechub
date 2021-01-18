@@ -28,6 +28,7 @@ import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
@@ -61,6 +62,9 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
     MetaDataInspector scanMetaDataCollector;
 
     @Autowired
+    SystemEnvironment systemEnvironment;
+
+    @Autowired
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
 
     ResilientActionExecutor<ProductResult> resilientActionExecutor;
@@ -86,16 +90,23 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
+        CheckmarxExecutionConfigSuppport configSupport = CheckmarxExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+
+        boolean alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
+
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
+
             try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
 
-					CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
+                    CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
 							configure(createAdapterOptionsStrategy(context)).
 							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+							setAlwaysFullScan(alwaysFullScanEnabled).
 							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
 							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
 							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
@@ -118,10 +129,10 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 /* execute checkmarx by adapter and update product result */
                 String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallBack());
-                
+
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
                 productResult.setResult(xml);
-                
+
                 return productResult;
             }
         });

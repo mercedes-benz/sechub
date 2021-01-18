@@ -20,7 +20,7 @@ public enum PDSProductExecutorKeys implements PDSSecHubConfigDataKeyProvider<PDS
     TIME_TO_WAIT_BEFORE_TIMEOUT(new PDSProductAdapterKey("pds.productexecutor.timeout.minutes",
             "When this is set the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.")), 
     
-    TRUST_ALL_CERTRIFICATES(new PDSProductAdapterKey("pds.productexecutor.trustall.certificates", "When 'true' then all certificates are accepted. Do not use this in production!")), 
+    TRUST_ALL_CERTIFICATES(new PDSProductAdapterKey("pds.productexecutor.trustall.certificates", "When 'true' then all certificates are accepted. Do not use this in production!")), 
     
     ;
 
@@ -36,7 +36,7 @@ public enum PDSProductExecutorKeys implements PDSSecHubConfigDataKeyProvider<PDS
 
     private static PDSForbiddenTargetTypeInputKey createSupportTargetType(TargetType type) {
         return new PDSForbiddenTargetTypeInputKey("pds.productexecutor.forbidden.targettype." + type.name().toLowerCase(),
-                "When this key is set to false, than this pds instance does not scan " + type.name() + "!", type);
+                "When this key is set to true, than this pds instance does not scan " + type.name() + "!", type);
     }
 
 }

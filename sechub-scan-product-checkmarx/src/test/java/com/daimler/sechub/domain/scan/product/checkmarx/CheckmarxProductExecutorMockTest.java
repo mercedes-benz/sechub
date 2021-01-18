@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.Profiles;
+import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
@@ -40,6 +41,9 @@ public class CheckmarxProductExecutorMockTest {
 
 	@MockBean
 	TargetResolver targetResolver;
+	
+	@MockBean
+    SystemEnvironment systemEnvironment;
 
 
 	@Before
