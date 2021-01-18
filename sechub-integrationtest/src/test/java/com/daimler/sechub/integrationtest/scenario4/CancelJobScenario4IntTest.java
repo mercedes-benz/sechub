@@ -14,7 +14,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
 /**
- * Integration tests, recording events and check happens as expected
+ * Integration tests to check cancel operations works
  * 
  * @author Albert Tregnaghi
  *
@@ -43,7 +43,9 @@ public class CancelJobScenario4IntTest {
         as(SUPER_ADMIN).cancelJob(sechubJobUUD);
         
         /* test */
-        waitForJobEnded(project, sechubJobUUD);
+        waitForJobStatusCancelRequested(project, sechubJobUUD);
+        waitForJobResultFailed(project, sechubJobUUD);
+        
         
         /* @formatter:on */
     }
