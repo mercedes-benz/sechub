@@ -49,6 +49,7 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
         Throwable rootCause = StacktraceUtil.findRootCause(context.getCurrentError());
         if (rootCause == null) {
             LOG.warn("Cannot make any proposal when root cause is null!");
+            return null;
         }
         String message = rootCause.getMessage();
 
