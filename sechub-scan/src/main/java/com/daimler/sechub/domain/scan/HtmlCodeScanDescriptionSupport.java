@@ -21,35 +21,27 @@ public class HtmlCodeScanDescriptionSupport {
 		SecHubCodeCallStack code = finding.getCode();
 		return code != null;
 	}
-
+	
 	public List<HTMLScanResultCodeScanEntry> buildEntries(SecHubFinding finding) {
 		if (finding == null) {
 			return Collections.emptyList();
 		}
-		SecHubCodeCallStack code = finding.getCode();
+		
+		SecHubCodeCallStack code = finding.getCode();		
 		if (code == null) {
 			return Collections.emptyList();
 		}
+			
+		List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
+		descriptionList.add(createEntry(code));
+		
 		SecHubCodeCallStack lastCode = code;
 		while (lastCode.getCalls() != null) {
-			lastCode = lastCode.getCalls();
-		}
-
-		List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
-		HTMLScanResultCodeScanEntry entry1 = createEntry(code);
-
-		descriptionList.add(entry1);
-
-		if (lastCode != null) {
-			/* create pseudo variant to show call hierarchy */
-			HTMLScanResultCodeScanEntry pseudoEntry = new HTMLScanResultCodeScanEntry();
-			pseudoEntry.location = "...";
-			descriptionList.add(pseudoEntry);
-			descriptionList.add(createEntry(lastCode));
+		    lastCode = lastCode.getCalls();
+		    descriptionList.add(createEntry(lastCode));
 		}
 
 		return descriptionList;
-
 	}
 
 	private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
@@ -60,7 +52,8 @@ public class HtmlCodeScanDescriptionSupport {
 		entry.column = code.getColumn();
 		entry.line = code.getLine();
 		entry.location = code.getLocation();
-		entry.relevantPart=code.getRelevantPart();
+		entry.relevantPart = code.getRelevantPart();
+		
 
 		String source = code.getSource();
 		if (source != null) {
