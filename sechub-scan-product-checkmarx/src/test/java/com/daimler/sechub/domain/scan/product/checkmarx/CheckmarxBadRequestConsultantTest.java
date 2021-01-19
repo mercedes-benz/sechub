@@ -16,85 +16,86 @@ import com.daimler.sechub.sharedkernel.resilience.RetryResilienceProposal;
 
 public class CheckmarxBadRequestConsultantTest {
 
-	private CheckmarxResilienceConsultant consultantToTest;
-	private ResilienceContext context;
+    private CheckmarxResilienceConsultant consultantToTest;
+    private ResilienceContext context;
 
-	@Before
-	public void before() {
-		consultantToTest = new CheckmarxResilienceConsultant();
-		context= mock(ResilienceContext.class);
-	}
+    @Before
+    public void before() {
+        consultantToTest = new CheckmarxResilienceConsultant();
+        context = mock(ResilienceContext.class);
+    }
 
-	@Test
-	public void no_exception_returns_null() {
-		/* prepare*/
+    @Test
+    public void no_exception_returns_null() {
+        /* prepare */
 
-		/* execute*/
-		ResilienceProposal proposal = consultantToTest.consultFor(context);
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
 
-		/* test*/
-		assertNull(proposal);
-	}
+        /* test */
+        assertNull(proposal);
+    }
 
-	@Test
-	public void illegal_argument_exception_returns_null() {
-		/* prepare*/
-		when(context.getCurrentError()).thenReturn(new IllegalArgumentException());
+    @Test
+    public void illegal_argument_exception_returns_null() {
+        /* prepare */
+        when(context.getCurrentError()).thenReturn(new IllegalArgumentException());
 
-		/* execute*/
-		ResilienceProposal proposal = consultantToTest.consultFor(context);
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
 
-		/* test*/
-		assertNull(proposal);
-	}
+        /* test */
+        assertNull(proposal);
+    }
 
-	@Test
-	public void http_bad_request_400_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
-		/* prepare*/
-		when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+    @Test
+    public void http_bad_request_400_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
+        /* prepare */
+        when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
-		/* execute*/
-		ResilienceProposal proposal = consultantToTest.consultFor(context);
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
 
-		/* test*/
-		assertNotNull(proposal);
-		assertTrue(proposal instanceof RetryResilienceProposal);
-		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-		assertEquals(3, rrp.getMaximumAmountOfRetries());
-		assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
-	}
+        /* test */
+        assertNotNull(proposal);
+        assertTrue(proposal instanceof RetryResilienceProposal);
+        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+        assertEquals(3, rrp.getMaximumAmountOfRetries());
+        assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
+    }
 
-	@Test
-	public void http_bad_server_error_500_exception_returns_retry_proposal_with_1_retries_and_5000_millis_to_wait() {
-		/* prepare*/
-		when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+    @Test
+    public void http_bad_server_error_500_exception_returns_retry_proposal_with_1_retries_and_5000_millis_to_wait() {
+        /* prepare */
+        when(context.getCurrentError()).thenReturn(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-		/* execute*/
-		ResilienceProposal proposal = consultantToTest.consultFor(context);
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
 
-		/* test*/
-		assertNotNull(proposal);
-		assertTrue(proposal instanceof RetryResilienceProposal);
-		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-		assertEquals(1, rrp.getMaximumAmountOfRetries());
-		assertEquals(5000, rrp.getMillisecondsToWaitBeforeRetry());
-	}
+        /* test */
+        assertNotNull(proposal);
+        assertTrue(proposal instanceof RetryResilienceProposal);
+        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+        assertEquals(1, rrp.getMaximumAmountOfRetries());
+        assertEquals(5000, rrp.getMillisecondsToWaitBeforeRetry());
+    }
 
-	@Test
-	public void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
+    @Test
+    public void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_3_retries_and_2000_millis_to_wait() {
 
-		/* prepare*/
-		when(context.getCurrentError()).thenReturn(new SecHubExecutionException("se1",new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
+        /* prepare */
+        when(context.getCurrentError())
+                .thenReturn(new SecHubExecutionException("se1", new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
 
-		/* execute*/
-		ResilienceProposal proposal = consultantToTest.consultFor(context);
+        /* execute */
+        ResilienceProposal proposal = consultantToTest.consultFor(context);
 
-		/* test*/
-		assertNotNull(proposal);
-		assertTrue(proposal instanceof RetryResilienceProposal);
-		RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
-		assertEquals(3, rrp.getMaximumAmountOfRetries());
-		assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
-	}
+        /* test */
+        assertNotNull(proposal);
+        assertTrue(proposal instanceof RetryResilienceProposal);
+        RetryResilienceProposal rrp = (RetryResilienceProposal) proposal;
+        assertEquals(3, rrp.getMaximumAmountOfRetries());
+        assertEquals(2000, rrp.getMillisecondsToWaitBeforeRetry());
+    }
 
 }

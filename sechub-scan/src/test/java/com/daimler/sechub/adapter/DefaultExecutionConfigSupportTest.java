@@ -16,7 +16,7 @@ import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJ
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
 public class DefaultExecutionConfigSupportTest {
-    private DefaultExecutionConfigSupport supportToTest;
+    private DefaultExecutorConfigSupport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
@@ -41,7 +41,7 @@ public class DefaultExecutionConfigSupportTest {
         when(setup.getJobParameters()).thenReturn(jobParameters);
         
         systemEnvironment = mock(SystemEnvironment.class);
-        supportToTest= new DefaultExecutionConfigSupport(config,systemEnvironment,null);
+        supportToTest= new DefaultExecutorConfigSupport(config,systemEnvironment,null);
     }
 
     @Test

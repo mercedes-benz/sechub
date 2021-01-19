@@ -17,7 +17,7 @@ import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
 public class CheckmarxExecutionConfigSuppportTest {
 
-    private CheckmarxExecutionConfigSuppport supportToTest;
+    private CheckmarxExecutorConfigSuppport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
@@ -44,7 +44,7 @@ public class CheckmarxExecutionConfigSuppportTest {
     public void always_fullscan_enabled_true() {
         /* prepare */
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_FULLSCAN_ALWAYS, "true"));
-        supportToTest = CheckmarxExecutionConfigSuppport.createSupportAndAssertConfigValid(config, systemEnvironment);
+        supportToTest = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(config, systemEnvironment);
 
         /* test */
         assertEquals(true, supportToTest.isAlwaysFullScanEnabled());
@@ -54,7 +54,7 @@ public class CheckmarxExecutionConfigSuppportTest {
     public void always_fullscan_enabled_false() {
         /* prepare */
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_FULLSCAN_ALWAYS, "false"));
-        supportToTest = CheckmarxExecutionConfigSuppport.createSupportAndAssertConfigValid(config, systemEnvironment);
+        supportToTest = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(config, systemEnvironment);
 
         /* test */
         assertEquals(false, supportToTest.isAlwaysFullScanEnabled());

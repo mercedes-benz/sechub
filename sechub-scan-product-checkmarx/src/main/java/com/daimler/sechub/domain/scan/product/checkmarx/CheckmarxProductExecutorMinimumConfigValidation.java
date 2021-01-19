@@ -22,7 +22,6 @@ import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 @Component
 public class CheckmarxProductExecutorMinimumConfigValidation extends AbstractValidation<ProductExecutorConfig> {
 
-
     public CheckmarxProductExecutorMinimumConfigValidation() {
     }
 
@@ -62,8 +61,9 @@ public class CheckmarxProductExecutorMinimumConfigValidation extends AbstractVal
 
     private void validateMandatoryPartsSet(ValidationContext<ProductExecutorConfig> context, List<ProductExecutorConfigSetupJobParameter> jobParameters) {
         /* check mandatory fields are set */
-       
-       // currently we have no mandatory parts - with #470 when we replace the ENV parts from CheckmarxInstallSetup with runtime config, we must check this here
+
+        // currently we have no mandatory parts - with #470 when we replace the ENV
+        // parts from CheckmarxInstallSetup with runtime config, we must check this here
     }
 
 }

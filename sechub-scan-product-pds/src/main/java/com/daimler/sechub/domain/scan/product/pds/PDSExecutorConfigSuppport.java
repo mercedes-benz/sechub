@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.daimler.sechub.adapter.DefaultExecutionConfigSupport;
+import com.daimler.sechub.adapter.DefaultExecutorConfigSupport;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.validation.Validation;
 
-public class PDSExecutionConfigSuppport extends DefaultExecutionConfigSupport {
+public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
     /**
      * Creates the configuration support and VALIDATE. This will fail when
@@ -25,11 +25,11 @@ public class PDSExecutionConfigSuppport extends DefaultExecutionConfigSupport {
      * @return support
      * @throws NotAcceptableException when configuration is not valid
      */
-    public static PDSExecutionConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
-        return new PDSExecutionConfigSuppport(config, systemEnvironment, new PDSProductExecutorMinimumConfigValidation());
+    public static PDSExecutorConfigSuppport createSupportAndAssertConfigValid(ProductExecutorConfig config, SystemEnvironment systemEnvironment) {
+        return new PDSExecutorConfigSuppport(config, systemEnvironment, new PDSProductExecutorMinimumConfigValidation());
     }
 
-    private PDSExecutionConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
+    private PDSExecutorConfigSuppport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
         super(config, systemEnvironment, validation);
     }
 

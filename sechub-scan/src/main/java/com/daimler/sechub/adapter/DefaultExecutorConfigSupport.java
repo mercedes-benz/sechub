@@ -18,23 +18,23 @@ import com.daimler.sechub.sharedkernel.validation.AssertValidation;
 import com.daimler.sechub.sharedkernel.validation.Validation;
 
 /**
- * A standard execution config support implementation. Supports environment entry evaluation, simple key value checks etc.
+ * A standard executor configuration support. Supports environment entry evaluation, simple key value checks etc.
  * 
  * @author Albert Tregnaghi
  *
  */
-public class DefaultExecutionConfigSupport {
+public class DefaultExecutorConfigSupport {
 
     private static final String ENV_PREFIX_ID = "env:";
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutionConfigSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutorConfigSupport.class);
 
     protected Map<String, String> configuredExecutorParameters = new TreeMap<>();
 
     protected ProductExecutorConfig config;
     private SystemEnvironment systemEnvironment;
 
-    public DefaultExecutionConfigSupport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
+    public DefaultExecutorConfigSupport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
         notNull(config, "config may not be null!");
         notNull(systemEnvironment, "systemEnvironment may not be null!");
 

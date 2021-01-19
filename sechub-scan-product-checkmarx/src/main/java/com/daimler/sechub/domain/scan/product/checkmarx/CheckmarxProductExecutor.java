@@ -32,6 +32,8 @@ import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
+import com.daimler.sechub.sharedkernel.resilience.ResilienceCallback;
+import com.daimler.sechub.sharedkernel.resilience.ResilienceContext;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -90,11 +92,12 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
-        CheckmarxExecutionConfigSuppport configSupport = CheckmarxExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
 
-        boolean alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
+        CheckmarxResilienceCallback callBack = new CheckmarxResilienceCallback(configSupport);
 
+        /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
@@ -103,21 +106,21 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 /* @formatter:off */
 
-                    CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
-							configure(createAdapterOptionsStrategy(context)).
-							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-							setAlwaysFullScan(alwaysFullScanEnabled).
-							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-							setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
-							setClientSecret(setup.getClientSecret()).
-							setEngineConfigurationName(setup.getEngineConfigurationName()).
-							setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
-							setProjectId(projectId).
-							setTraceID(context.getTraceLogIdAsString()).
-							build();
+                CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
+    					configure(createAdapterOptionsStrategy(context)).
+    					configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+    					setAlwaysFullScan(callBack.alwaysFullScanEnabled).
+    					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
+    					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+    					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+    					setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
+    					setClientSecret(setup.getClientSecret()).
+    					setEngineConfigurationName(setup.getEngineConfigurationName()).
+    					setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
+    					setProjectId(projectId).
+    					setTraceID(context.getTraceLogIdAsString()).
+    					build();
 					/* @formatter:on */
 
                 /* inspect */
@@ -126,6 +129,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
                 inspection.notice("engineconfigurationname", checkMarxConfig.getEngineConfigurationName());
                 inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
+                inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
                 String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallBack());
@@ -135,10 +139,27 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 return productResult;
             }
-        });
+        }, callBack);
         return Collections.singletonList(result);
 
     }
+
+    private class CheckmarxResilienceCallback implements ResilienceCallback {
+
+        boolean alwaysFullScanEnabled;
+
+        public CheckmarxResilienceCallback(CheckmarxExecutorConfigSuppport configSupport) {
+            alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
+        }
+
+        @Override
+        public void beforeRetry(ResilienceContext context) {
+            Boolean fallbackToFullScan = context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN);
+            if (fallbackToFullScan != null) {
+                alwaysFullScanEnabled = true;
+            }
+        }
+    };
 
     private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
         if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {

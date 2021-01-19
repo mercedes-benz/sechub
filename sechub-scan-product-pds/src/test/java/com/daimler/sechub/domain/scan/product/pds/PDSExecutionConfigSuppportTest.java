@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.SystemEnvironment;
 public class PDSExecutionConfigSuppportTest {
 
     private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
-    private PDSExecutionConfigSuppport supportToTest;
+    private PDSExecutorConfigSuppport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
@@ -44,7 +44,7 @@ public class PDSExecutionConfigSuppportTest {
         when(setup.getJobParameters()).thenReturn(jobParameters);
         
         systemEnvironment = mock(SystemEnvironment.class);
-        supportToTest=PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
+        supportToTest=PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
     }
 
     @Test
