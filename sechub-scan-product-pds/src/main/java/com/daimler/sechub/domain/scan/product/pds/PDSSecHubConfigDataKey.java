@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.pds;
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 public abstract class PDSSecHubConfigDataKey<T extends PDSSecHubConfigDataKey<?>> {
 
@@ -9,8 +10,15 @@ public abstract class PDSSecHubConfigDataKey<T extends PDSSecHubConfigDataKey<?>
     private boolean sentToPDS;
     private boolean generated;
 
-    PDSSecHubConfigDataKey(String key, String description) {
-        this.id = key.toLowerCase();
+    /**
+     * Creates a new config data key
+     * @param id identifier may never be <code>null</code>
+     * @param description
+     */
+    PDSSecHubConfigDataKey(String id, String description) {
+        notNull(id, "Configuration data key identifier may not be null!");
+        
+        this.id = id.toLowerCase();
         this.description = description;
     }
     
@@ -29,6 +37,9 @@ public abstract class PDSSecHubConfigDataKey<T extends PDSSecHubConfigDataKey<?>
         return (T) this;
     }
     
+    /**
+     * @return identifier, never <code>null</code>
+     */
     public String getId() {
         return id;
     }

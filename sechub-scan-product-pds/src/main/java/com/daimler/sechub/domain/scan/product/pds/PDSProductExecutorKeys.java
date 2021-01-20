@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan.product.pds;
 
 import com.daimler.sechub.domain.scan.TargetType;
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 /**
  * Enumeration of input keys used by product executors to define communication between SecHub and PDS.
@@ -27,6 +28,7 @@ public enum PDSProductExecutorKeys implements PDSSecHubConfigDataKeyProvider<PDS
     private PDSProductExecutorKey key;
 
     PDSProductExecutorKeys(PDSProductExecutorKey key) {
+        notNull(key, "Key may not be null!");
         this.key = key;
     }
 
