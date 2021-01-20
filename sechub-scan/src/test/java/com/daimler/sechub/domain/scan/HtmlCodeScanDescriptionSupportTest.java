@@ -1,7 +1,6 @@
 package com.daimler.sechub.domain.scan;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 import org.junit.Test;

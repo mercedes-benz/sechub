@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -176,7 +177,7 @@ public class HTMLScanResultReportModelBuilderTest {
 
         when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED.name());
         when(scanResult.getResult()).thenReturn(result);
-        when(result.getFindings()).thenReturn(List.of(finding));
+        when(result.getFindings()).thenReturn(Arrays.asList(finding));
         when(finding.getCode()).thenReturn(code1);
         when(code1.getCalls()).thenReturn(subCode);
 
