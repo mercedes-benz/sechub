@@ -17,49 +17,48 @@ import com.daimler.sechub.commons.model.SecHubFinding;
  */
 public class HtmlCodeScanDescriptionSupport {
 
-	public boolean isCodeScan(SecHubFinding finding) {
-		SecHubCodeCallStack code = finding.getCode();
-		return code != null;
-	}
-	
-	public List<HTMLScanResultCodeScanEntry> buildEntries(SecHubFinding finding) {
-		if (finding == null) {
-			return Collections.emptyList();
-		}
-		
-		SecHubCodeCallStack code = finding.getCode();		
-		if (code == null) {
-			return Collections.emptyList();
-		}
-			
-		List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
-		descriptionList.add(createEntry(code));
-		
-		SecHubCodeCallStack lastCode = code;
-		while (lastCode.getCalls() != null) {
-		    lastCode = lastCode.getCalls();
-		    descriptionList.add(createEntry(lastCode));
-		}
+    public boolean isCodeScan(SecHubFinding finding) {
+        SecHubCodeCallStack code = finding.getCode();
+        return code != null;
+    }
 
-		return descriptionList;
-	}
+    public List<HTMLScanResultCodeScanEntry> buildEntries(SecHubFinding finding) {
+        if (finding == null) {
+            return Collections.emptyList();
+        }
 
-	private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
-		Objects.nonNull(code);
+        SecHubCodeCallStack code = finding.getCode();
+        if (code == null) {
+            return Collections.emptyList();
+        }
 
-		HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
+        List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
+        descriptionList.add(createEntry(code));
 
-		entry.column = code.getColumn();
-		entry.line = code.getLine();
-		entry.location = code.getLocation();
-		entry.relevantPart = code.getRelevantPart();
-		
+        SecHubCodeCallStack lastCode = code;
+        while (lastCode.getCalls() != null) {
+            lastCode = lastCode.getCalls();
+            descriptionList.add(createEntry(lastCode));
+        }
 
-		String source = code.getSource();
-		if (source != null) {
-			entry.source = source.trim();// to improve HTML report readability we do trim leading spaces...
-		}
+        return descriptionList;
+    }
 
-		return entry;
-	}
+    private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
+        Objects.nonNull(code);
+
+        HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
+
+        entry.column = code.getColumn();
+        entry.line = code.getLine();
+        entry.location = code.getLocation();
+        entry.relevantPart = code.getRelevantPart();
+
+        String source = code.getSource();
+        if (source != null) {
+            entry.source = source.trim();// to improve HTML report readability we do trim leading spaces...
+        }
+
+        return entry;
+    }
 }
