@@ -17,7 +17,7 @@ import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupC
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
-public class PDSExecutionConfigSuppportTest {
+public class PDSExecutorConfigSuppportTest {
 
     private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
     private PDSExecutorConfigSuppport supportToTest;

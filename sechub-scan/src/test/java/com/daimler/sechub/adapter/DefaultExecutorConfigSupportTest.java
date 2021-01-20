@@ -15,7 +15,7 @@ import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupC
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
-public class DefaultExecutionConfigSupportTest {
+public class DefaultExecutorConfigSupportTest {
     private DefaultExecutorConfigSupport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;

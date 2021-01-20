@@ -119,8 +119,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
     }
 
     private boolean getParameterBooleanValue(PDSProductExecutorKeys k) {
-        String asText = getParameter(k);
-        return Boolean.parseBoolean(asText);
+        return getParameterBooleanValue(k.getKey().getId());
     }
 
 }
