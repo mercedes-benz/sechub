@@ -77,9 +77,30 @@
 						    <td th:text="${finding.severity}">Severity 1</td>
 							<td th:text="${finding.name}">Name 1</td>
 							<td>
-							    <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>			         
-					         	<details th:if="${codeScanSupport.isCodeScan(finding)}" class="callstack">
-									<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
+							    <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>		
+							    
+							    <div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
+								    	<div class="rTableRow">
+								        	<div class="rTableHead" style="width:5%">Id</div>
+								            <div class="rTableHead" style="width:25%">Location</div>
+								            <div class="rTableHead" style="width:5%">Line</div>
+								            <div class="rTableHead" style="width:5%">Column</div>
+								            <div class="rTableHead" style="width:10%">Relevant part</div>
+								            <div class="rTableHead" style="width:25%">Source</div>
+								        </div>
+       									<div class="rTableRow" th:if="${codeScanEntries.get(finding.id).size() - 1  == iterator.index}" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
+											<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
+											<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
+											<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">Line</div>
+											<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">Column</div>
+											<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
+											<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
+										</div>
+								</div>
+							    	         
+							   	<br />
+					         	<details th:if="${codeScanSupport.isCodeScan(finding)}">
+									<summary data-open="Open full Callstack" data-close="Close Callstack"></summary>
 									
 									<div class="rTable">
 								    	<div class="rTableRow">
@@ -131,15 +152,37 @@
 	                    	<th>Description</th>
 						</tr>
 					</thead>
-					<tbody >
+					<tbody>
 					    
 						<tr th:each="finding : ${yellowList}">
 						    <td th:text="${finding.severity}">Severity 1</td>
 							<td th:text="${finding.name}">Name 1</td>
 							<td>
                                 <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-                                <details th:if="${codeScanSupport.isCodeScan(finding)}" class="callstack">
-									<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
+                                
+                                <div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
+								    	<div class="rTableRow">
+								        	<div class="rTableHead" style="width:5%">Id</div>
+								            <div class="rTableHead" style="width:25%">Location</div>
+								            <div class="rTableHead" style="width:5%">Line</div>
+								            <div class="rTableHead" style="width:5%">Column</div>
+								            <div class="rTableHead" style="width:10%">Relevant part</div>
+								            <div class="rTableHead" style="width:25%">Source</div>
+								        </div>
+       									<div class="rTableRow" th:if="${codeScanEntries.get(finding.id).size() - 1  == iterator.index}" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
+											<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
+											<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
+											<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">Line</div>
+											<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">Column</div>
+											<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
+											<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
+										</div>
+								</div>
+							    	         
+							   	<br />
+							   	
+                                <details th:if="${codeScanSupport.isCodeScan(finding)}">
+									<summary data-open="Open full callstack" data-close="Close callstack"></summary>
 									
 									<div class="rTable">
 								    	<div class="rTableRow">
@@ -187,8 +230,30 @@
 							<td th:text="${finding.name}">Name 1</td>
 							<td>
                                 <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-                                <details th:if="${codeScanSupport.isCodeScan(finding)}" class="callstack">
-									<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
+                                
+                                <div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
+								    	<div class="rTableRow">
+								        	<div class="rTableHead" style="width:5%">Id</div>
+								            <div class="rTableHead" style="width:25%">Location</div>
+								            <div class="rTableHead" style="width:5%">Line</div>
+								            <div class="rTableHead" style="width:5%">Column</div>
+								            <div class="rTableHead" style="width:10%">Relevant part</div>
+								            <div class="rTableHead" style="width:25%">Source</div>
+								        </div>
+       									<div class="rTableRow" th:if="${codeScanEntries.get(finding.id).size() - 1  == iterator.index}" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
+											<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
+											<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
+											<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">Line</div>
+											<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">Column</div>
+											<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
+											<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
+										</div>
+								</div>
+							    	         
+							   	<br />										
+										
+                                <details th:if="${codeScanSupport.isCodeScan(finding)}">
+									<summary data-open="Open full callstack" data-close="Close callstack"></summary>
 									<div class="rTable">
 								    	<div class="rTableRow">
 								        	<div class="rTableHead" style="width:5%">Id</div>
