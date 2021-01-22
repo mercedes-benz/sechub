@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,22 +123,19 @@ public class HTMLScanResultReportModelBuilder {
         if (embeddedCSS != null) {
             return embeddedCSS;
         }
+        
         try {
-            InputStream in = cssResource.getInputStream();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
-                String line = null;
-                StringBuilder sb = new StringBuilder();
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\n");
-                }
-                embeddedCSS = sb.toString();
+            
+            Path path = Paths.get(cssResource.getURI());
+            String cssString = new String(Files.readAllBytes(path));
+            if (cssString != null) {
+                embeddedCSS = cssString;
             }
-
         } catch (IOException e) {
             LOG.error("Was not able to load css resources", e);
             embeddedCSS = "/* not able to load css from server */";
         }
+        
         return embeddedCSS;
     }
 
