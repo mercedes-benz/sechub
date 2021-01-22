@@ -131,7 +131,7 @@ public class HTMLScanResultReportModelBuilder {
             if (cssString != null) {
                 embeddedCSS = cssString;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("Was not able to load css resources", e);
             embeddedCSS = "/* not able to load css from server */";
         }
