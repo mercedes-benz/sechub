@@ -88,7 +88,6 @@ public class HTMLScanResultReportModelBuilder {
         model.put("styleYellow", styleYellow);
         model.put("styleGreen", styleGreen);
         model.put("isWebDesignMode", webDesignMode);
-        model.put("embeddedCSS", getEmbeddedCSS());
         model.put("codeScanEntries", codeScanEntries);
         model.put("codeScanSupport", codeScanSupport);
 
@@ -118,25 +117,4 @@ public class HTMLScanResultReportModelBuilder {
         return model;
 
     }
-
-    public String getEmbeddedCSS() {
-        if (embeddedCSS != null) {
-            return embeddedCSS;
-        }
-        
-        try {
-            
-            Path path = Paths.get(cssResource.getURI());
-            String cssString = new String(Files.readAllBytes(path));
-            if (cssString != null) {
-                embeddedCSS = cssString;
-            }
-        } catch (Exception e) {
-            LOG.error("Was not able to load css resources", e);
-            embeddedCSS = "/* not able to load css from server */";
-        }
-        
-        return embeddedCSS;
-    }
-
 }

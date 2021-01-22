@@ -87,7 +87,6 @@ public class HTMLScanResultReportModelBuilderTest {
         assertSame(redList, map.get("redList"));
         assertSame(yellowList, map.get("yellowList"));
         assertEquals(false, map.get("isWebDesignMode"));
-        assertEquals("embeddedCssContent", map.get("embeddedCSS"));
         assertNull(map.get("${includedCSSRef}"));
 
         assertEquals("trafficlight1", map.get("trafficlight"));
