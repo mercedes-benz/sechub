@@ -95,7 +95,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
 
-        CheckmarxResilienceCallback callBack = new CheckmarxResilienceCallback(configSupport);
+        CheckmarxResilienceCallback callBack = new CheckmarxResilienceCallback(configSupport, executorContext);
 
         /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
@@ -146,18 +146,46 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
     private class CheckmarxResilienceCallback implements ResilienceCallback {
 
+        private ProductExecutorContext executorContext;
         boolean alwaysFullScanEnabled;
 
-        public CheckmarxResilienceCallback(CheckmarxExecutorConfigSuppport configSupport) {
-            alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
+        public CheckmarxResilienceCallback(CheckmarxExecutorConfigSuppport configSupport, ProductExecutorContext executorContext) {
+            this.alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
+            this.executorContext = executorContext;
         }
 
         @Override
         public void beforeRetry(ResilienceContext context) {
             Boolean fallbackToFullScan = context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN);
-            if (fallbackToFullScan != null) {
-                alwaysFullScanEnabled = true;
+            if (fallbackToFullScan == null) {
+                return;
             }
+            LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}",alwaysFullScanEnabled);
+            
+            alwaysFullScanEnabled = true;
+            
+            LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}",alwaysFullScanEnabled);
+            /*
+             * we must remove the the old scan id inside metadata so the restart will do a
+             * new scan and not reuse the old one! When we do not rest the file upload as well,
+             * the next scan does complains about missing source locations
+             */
+            AdapterMetaData metaData = executorContext.getCurrentMetaDataOrNull();
+            if (metaData != null) {
+                String keyScanId = CheckmarxMetaDataID.KEY_SCAN_ID;
+                String uploadKey = CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE;
+                LOG.debug("start reset checkmarx adapter meta data for {} and {}", keyScanId, uploadKey);
+                metaData.setValue(keyScanId, null);
+                metaData.setValue(uploadKey, null);
+
+                executorContext.getCallBack().persist(metaData);
+                LOG.debug("persisted checkmarx adapter meta data");
+            }
+            /*
+             * we reset the context information, so former parts will only by triggered
+             * again, when the problem really come up again.
+             */
+            context.setValue(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, null);
         }
     };
 
