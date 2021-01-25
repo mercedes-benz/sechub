@@ -32,8 +32,6 @@ import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.daimler.sechub.sharedkernel.resilience.ResilienceCallback;
-import com.daimler.sechub.sharedkernel.resilience.ResilienceContext;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -41,7 +39,7 @@ import com.daimler.sechub.storage.core.JobStorage;
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
+    static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
 
     @Value("${sechub.adapter.checkmarx.scanresultcheck.period.minutes:-1}")
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
@@ -109,7 +107,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
     					configure(createAdapterOptionsStrategy(context)).
     					configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-    					setAlwaysFullScan(callBack.alwaysFullScanEnabled).
+    					setAlwaysFullScan(callBack.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
     					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
@@ -143,51 +141,6 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         return Collections.singletonList(result);
 
     }
-
-    private class CheckmarxResilienceCallback implements ResilienceCallback {
-
-        private ProductExecutorContext executorContext;
-        boolean alwaysFullScanEnabled;
-
-        public CheckmarxResilienceCallback(CheckmarxExecutorConfigSuppport configSupport, ProductExecutorContext executorContext) {
-            this.alwaysFullScanEnabled = configSupport.isAlwaysFullScanEnabled();
-            this.executorContext = executorContext;
-        }
-
-        @Override
-        public void beforeRetry(ResilienceContext context) {
-            Boolean fallbackToFullScan = context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN);
-            if (fallbackToFullScan == null) {
-                return;
-            }
-            LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled before:{}",alwaysFullScanEnabled);
-            
-            alwaysFullScanEnabled = true;
-            
-            LOG.debug("fallback to checkmarx fullscan recognized, alwaysFullScanEnabled now:{}",alwaysFullScanEnabled);
-            /*
-             * we must remove the the old scan id inside metadata so the restart will do a
-             * new scan and not reuse the old one! When we do not rest the file upload as well,
-             * the next scan does complains about missing source locations
-             */
-            AdapterMetaData metaData = executorContext.getCurrentMetaDataOrNull();
-            if (metaData != null) {
-                String keyScanId = CheckmarxMetaDataID.KEY_SCAN_ID;
-                String uploadKey = CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE;
-                LOG.debug("start reset checkmarx adapter meta data for {} and {}", keyScanId, uploadKey);
-                metaData.setValue(keyScanId, null);
-                metaData.setValue(uploadKey, null);
-
-                executorContext.getCallBack().persist(metaData);
-                LOG.debug("persisted checkmarx adapter meta data");
-            }
-            /*
-             * we reset the context information, so former parts will only by triggered
-             * again, when the problem really come up again.
-             */
-            context.setValue(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, null);
-        }
-    };
 
     private InputStream fetchInputStreamIfNecessary(JobStorage storage, AdapterMetaData metaData) throws IOException {
         if (metaData != null && metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
