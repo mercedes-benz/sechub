@@ -33,9 +33,9 @@ public class PDSExecutorConfigSuppportTest {
         setup = mock(ProductExecutorConfigSetup.class);
         
         jobParameters=new ArrayList<>();
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeys.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeys.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
         
         when(config.getSetup()).thenReturn(setup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();

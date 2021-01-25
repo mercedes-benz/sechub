@@ -5,11 +5,11 @@ import com.daimler.sechub.domain.scan.TargetType;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 /**
- * Enumeration of input keys used by product executors to define communication between SecHub and PDS.
+ * Enumeration of keys providers for keys used by product executors to define communication between SecHub and PDS.
  * @author Albert Tregnaghi
  *
  */
-public enum PDSProductExecutorKeys implements PDSSecHubConfigDataKeyProvider<PDSProductExecutorKey>{
+public enum PDSProductExecutorKeyProvider implements PDSSecHubConfigDataKeyProvider<PDSProductExecutorKey>{
 
     PDS_FORBIDS_TARGETTYPE_INTERNET(createSupportTargetType(TargetType.INTERNET)),
 
@@ -27,7 +27,7 @@ public enum PDSProductExecutorKeys implements PDSSecHubConfigDataKeyProvider<PDS
 
     private PDSProductExecutorKey key;
 
-    PDSProductExecutorKeys(PDSProductExecutorKey key) {
+    PDSProductExecutorKeyProvider(PDSProductExecutorKey key) {
         notNull(key, "Key may not be null!");
         this.key = key;
     }

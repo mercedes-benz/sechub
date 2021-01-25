@@ -37,8 +37,8 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
         Map<String, String> parametersToSend = new TreeMap<>();
         List<PDSSecHubConfigDataKeyProvider<?>> providers = new ArrayList<>();
-        providers.addAll(Arrays.asList(PDSProductExecutorKeys.values()));
-        providers.addAll(Arrays.asList(PDSConfigDataKeys.values()));
+        providers.addAll(Arrays.asList(PDSProductExecutorKeyProvider.values()));
+        providers.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
 
         for (String originKey : configuredExecutorParameters.keySet()) {
             PDSSecHubConfigDataKeyProvider<?> foundProvider = null;
@@ -58,11 +58,11 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
     }
 
     public String getPDSProductIdentifier() {
-        return getParameter(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER);
+        return getParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER);
     }
 
     public int getScanResultCheckPeriodInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSProductExecutorKeys.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
+        int value = getParameterIntValue(PDSProductExecutorKeyProvider.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
         if (value != -1) {
             return value;
         }
@@ -71,7 +71,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
     }
 
     public int getScanResultCheckTimeoutInMinutes(PDSInstallSetup setup) {
-        int value = getParameterIntValue(PDSProductExecutorKeys.TIME_TO_WAIT_BEFORE_TIMEOUT);
+        int value = getParameterIntValue(PDSProductExecutorKeyProvider.TIME_TO_WAIT_BEFORE_TIMEOUT);
         if (value != -1) {
             return value;
         }
@@ -83,12 +83,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
      * @return <code>true</code> when PDS server with an untrusted certificate (e.g. self signed) is accepted, <code>false</code> when not (default)
      */
     public boolean isTrustAllCertificatesEnabled() {
-        return getParameterBooleanValue(PDSProductExecutorKeys.TRUST_ALL_CERTIFICATES);
+        return getParameterBooleanValue(PDSProductExecutorKeyProvider.TRUST_ALL_CERTIFICATES);
     }
 
     public boolean isTargetTypeForbidden(TargetType targetType) {
         boolean forbidden = false;
-        for (PDSProductExecutorKeys k : PDSProductExecutorKeys.values()) {
+        for (PDSProductExecutorKeyProvider k : PDSProductExecutorKeyProvider.values()) {
             if (forbidden) {
                 break;
             }
@@ -114,11 +114,11 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         return getParameter(configDataKey.getId());
     }
 
-    private int getParameterIntValue(PDSProductExecutorKeys k) {
+    private int getParameterIntValue(PDSProductExecutorKeyProvider k) {
         return getParameterIntValue(k.getKey().getId());
     }
 
-    private boolean getParameterBooleanValue(PDSProductExecutorKeys k) {
+    private boolean getParameterBooleanValue(PDSProductExecutorKeyProvider k) {
         return getParameterBooleanValue(k.getKey().getId());
     }
 
