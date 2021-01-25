@@ -55,7 +55,7 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
             return Collections.emptyList();
         }
         TargetType targetType = info.getTargetType();
-        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();

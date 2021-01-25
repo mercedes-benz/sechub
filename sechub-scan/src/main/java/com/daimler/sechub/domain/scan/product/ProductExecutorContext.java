@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 public class ProductExecutorContext {
     
@@ -30,9 +31,13 @@ public class ProductExecutorContext {
      * @param callback
      */
     public ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults, ProductExecutorCallback callback) {
+        notNull(executorConfig, "executorConfig may not be null");
+        notNull(formerResults, "formerResults may not be null");
+        notNull(callback, "callback may not be null");
+
         this.executorConfig=executorConfig;
-        this.callback=callback;
         this.formerResults=formerResults;
+        this.callback=callback;
         
         useFirstFormerResult();
     }

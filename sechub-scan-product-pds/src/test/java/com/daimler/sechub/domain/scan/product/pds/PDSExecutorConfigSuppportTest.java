@@ -10,15 +10,17 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 
-public class PDSExecutionConfigSuppportTest {
+public class PDSExecutorConfigSuppportTest {
 
-    private PDSExecutionConfigSuppport supportToTest;
+    private static final String CONFIGURED_PDS_PRODUCT_IDENTIFIER = "a_string";
+    private PDSExecutorConfigSuppport supportToTest;
     private ProductExecutorConfig config;
     private ProductExecutorConfigSetup setup;
     private ProductExecutorConfigSetupCredentials credentialsInConfigSetup;
@@ -31,7 +33,9 @@ public class PDSExecutionConfigSuppportTest {
         setup = mock(ProductExecutorConfigSetup.class);
         
         jobParameters=new ArrayList<>();
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeys.PDS_PRODUCT_IDENTIFIER.getKey().getId(),"something"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
         
         when(config.getSetup()).thenReturn(setup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();
@@ -40,36 +44,22 @@ public class PDSExecutionConfigSuppportTest {
         when(setup.getJobParameters()).thenReturn(jobParameters);
         
         systemEnvironment = mock(SystemEnvironment.class);
-        supportToTest=PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
+        supportToTest=PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(config,systemEnvironment);
     }
 
     @Test
-    public void direct_credentials_in_config_setup_are_returned_directly() {
-        /* prepare */
-        credentialsInConfigSetup.setUser("user1");
-        credentialsInConfigSetup.setPassword("pwd1");
-        
-        /* execute + test */
-        assertEquals("user1", supportToTest.getUser());
-        assertEquals("pwd1", supportToTest.getPasswordOrAPIToken());
+    public void getPDSProductIdentifier_returns_configured_value() {
+        assertEquals(CONFIGURED_PDS_PRODUCT_IDENTIFIER, supportToTest.getPDSProductIdentifier());
     }
     
     @Test
-    public void env_marked_credentials_in_config_setup_are_returned_evaluated() {
-        
-        /* prepare */
-        String tempUserName = "testuser"+System.currentTimeMillis();
-        String tempPwdFake= "pwd"+System.currentTimeMillis();
-        
-        when(systemEnvironment.getEnv("INTTEST_SECHUB_PDS_USERNAME")).thenReturn(tempUserName);
-        when(systemEnvironment.getEnv("INTTEST_SECHUB_PDS_PWD")).thenReturn(tempPwdFake);
-        
-        credentialsInConfigSetup.setUser("env:INTTEST_SECHUB_PDS_USERNAME");
-        credentialsInConfigSetup.setPassword("env:INTTEST_SECHUB_PDS_PWD");
-        
-        /* execute + test */
-        assertEquals(tempUserName, supportToTest.getUser());
-        assertEquals(tempPwdFake, supportToTest.getPasswordOrAPIToken());
+    public void isTargetTypeForbidden_returns_true_for_target_type_requested_is_internet_when_internet_is_forbidden_in_configuration() {
+        assertEquals(true, supportToTest.isTargetTypeForbidden(TargetType.INTERNET));
+    }
+    
+    @Test
+    public void isTargetTypeForbidden_returns_false_for_target_type_requested_is_intranet_when_internet_is_forbidden_in_configuration() {
+        assertEquals(false, supportToTest.isTargetTypeForbidden(TargetType.INTRANET));
     }
 
 }

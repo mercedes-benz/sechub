@@ -2,7 +2,9 @@
 package com.daimler.sechub.sharedkernel.resilience;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -13,198 +15,253 @@ import com.daimler.sechub.sharedkernel.util.StacktraceUtil;
 /**
  * This class is able to execute actions which shall be resilient by help of
  * consultants. The proposals from consultants will be inspected and used for
- * resilient behaviour. <br><br>
- * But be aware: You <b>MUST</b> use one executor always for same kind of action.
- * If you have dedicated actions you need different executors!. An example:
- * When you want to connect to two servers and you want a fallthrough if server1
- * is not available you do not want to have a fallthrough of server2 automatically.
- * So in this case you should use two different executors for these different
- * targets !
+ * resilient behaviour. <br>
+ * <br>
+ * But be aware: You <b>MUST</b> use one executor always for same kind of
+ * action. If you have dedicated actions you need different executors!. An
+ * example: When you want to connect to two servers and you want a fallthrough
+ * if server1 is not available you do not want to have a fallthrough of server2
+ * automatically. So in this case you should use two different executors for
+ * these different targets !
+ * 
  * @author Albert Tregnaghi
  *
  */
-public class ResilientActionExecutor<R>{
+public class ResilientActionExecutor<R> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ResilientActionExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ResilientActionExecutor.class);
 
-	private List<ResilienceConsultant> consultants = new ArrayList<>();
+    private List<ResilienceConsultant> consultants = new ArrayList<>();
 
-	private FallthroughSupport fallThroughSupport = new FallthroughSupport();
+    private FallthroughSupport fallThroughSupport = new FallthroughSupport();
 
-	public R executeResilient(ActionWhichShallBeResilient<R> action) throws Exception {
-		Objects.requireNonNull(action, "action may not be null!");
+    public R executeResilient(ActionWhichShallBeResilient<R> action) throws Exception {
+        return this.executeResilient(action, null);
+    }
 
-		fallThroughSupport.handleFallThrough();
+    public R executeResilient(ActionWhichShallBeResilient<R> action, ResilienceCallback callBack) throws Exception {
+        Objects.requireNonNull(action, "action may not be null!");
 
-		ResilienctActionContext context = new ResilienctActionContext();
-		R result = null;
-		do {
-			/* try to execute */
-			try {
-				result = action.execute();
-			} catch (Exception e) {
-				handleException(context, e);
-			}
+        fallThroughSupport.handleFallThrough();
 
-		} while (result == null && context.isRetryNecessary());
+        ResilienctActionContext context = new ResilienctActionContext(callBack);
 
-		return result;
-	}
+        R result = null;
+        do {
+            /* try to execute */
+            try {
+                result = action.execute();
+            } catch (Exception e) {
+                handleException(context, e);
+            }
 
-	private void handleException(ResilienctActionContext context, Exception e) throws Exception, InterruptedException {
-		LOG.info("Handle exception of type:{}",e.getClass().getName());
+        } while (result == null && context.isRetryNecessary());
 
-		context.prepareForNextCheck(e);
+        return result;
+    }
 
-		ResilienceProposal proposal = findFirstProposalFromConsultants(context);
-		if (proposal == null) {
-			LOG.info("None of the consultants ({}) gave any proposal, so rethrow exception {}",consultants.size(),StacktraceUtil.createDescription(e));
-			throw e;
-		}
-		if (proposal instanceof RetryResilienceProposal) {
+    private void handleException(ResilienctActionContext context, Exception e) throws Exception, InterruptedException {
+        LOG.info("Handle exception of type:{}", e.getClass().getName());
 
-			RetryResilienceProposal retryProposal = (RetryResilienceProposal) proposal;
+        context.prepareForNextCheck(e);
+        ResilienceCallback callBack = context.getCallBack();
 
-			int maxRetries = retryProposal.getMaximumAmountOfRetries();
-			if (context.getAlreadyDoneRetries() >= maxRetries) {
-				LOG.warn("Maximum retry amount ({}/{}) reached, will rethrow exception for :{}", context.getAlreadyDoneRetries(), maxRetries,proposal.getInfo());
-				throw e;
-			} else {
-				context.forceRetry();
-				LOG.debug("Wait {} millis before retry:{}", retryProposal.getMillisecondsToWaitBeforeRetry(), proposal.getInfo());
+        ResilienceProposal proposal = findFirstProposalFromConsultants(context);
+        if (proposal == null) {
+            LOG.info("None of the consultants ({}) gave any proposal, so rethrow exception {}", consultants.size(), StacktraceUtil.createDescription(e));
+            throw e;
+        }
+        if (proposal instanceof RetryResilienceProposal) {
 
-				/* wait time for next retry */
-				Thread.sleep(retryProposal.getMillisecondsToWaitBeforeRetry());
-				LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
-			}
-		} else if (proposal instanceof FallthroughResilienceProposal) {
-			FallthroughResilienceProposal fallThroughProposal = (FallthroughResilienceProposal) proposal;
-			LOG.info("Fall through activated, will rethrow same exception {} milliseconds", fallThroughProposal.getMillisecondsForFallThrough());
+            RetryResilienceProposal retryProposal = (RetryResilienceProposal) proposal;
 
-			context.forceFallThrough(fallThroughProposal);
-			throw e;
-		} else {
-			LOG.error("Returned proposal is not wellknown and so cannt be handled:{}", proposal.getClass().getName());
-			throw e;
-		}
-	}
+            int maxRetries = retryProposal.getMaximumAmountOfRetries();
+            if (context.getAlreadyDoneRetries() >= maxRetries) {
+                LOG.warn("Maximum retry amount ({}/{}) reached, will rethrow exception for :{}", context.getAlreadyDoneRetries(), maxRetries,
+                        proposal.getInfo());
+                throw e;
+            } else {
+                context.forceRetry();
+                LOG.debug("Wait {} millis before retry:{}", retryProposal.getMillisecondsToWaitBeforeRetry(), proposal.getInfo());
 
-	private ResilienceProposal findFirstProposalFromConsultants(ResilienctActionContext context) {
-		ResilienceProposal proposal = null;
-		for (ResilienceConsultant consultant : consultants) {
-			proposal = consultant.consultFor(context);
-			if (proposal != null) {
-				break;
-			}
-		}
-		return proposal;
-	}
+                /* wait time for next retry */
+                Thread.sleep(retryProposal.getMillisecondsToWaitBeforeRetry());
+                LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
 
-	public void add(ResilienceConsultant consultant) {
-		Objects.requireNonNull(consultant, "consultant may not be null!");
-		consultants.add(consultant);
-	}
+                if (callBack != null) {
+                    callBack.beforeRetry(context);
+                }
+            }
+        } else if (proposal instanceof FallthroughResilienceProposal) {
+            FallthroughResilienceProposal fallThroughProposal = (FallthroughResilienceProposal) proposal;
+            LOG.info("Fall through activated, will rethrow same exception {} milliseconds", fallThroughProposal.getMillisecondsForFallThrough());
 
-	class ResilienctActionContext implements ResilienceContext {
+            context.forceFallThrough(fallThroughProposal);
+            throw e;
+        } else {
+            LOG.error("Returned proposal is not wellknown and so cannt be handled:{}", proposal.getClass().getName());
+            throw e;
+        }
+    }
 
-		private Exception currentError;
-		private int retriesCount;
-		private boolean retryNecessary;
+    private ResilienceProposal findFirstProposalFromConsultants(ResilienctActionContext context) {
+        ResilienceProposal proposal = null;
+        for (ResilienceConsultant consultant : consultants) {
+            proposal = consultant.consultFor(context);
+            if (proposal != null) {
+                break;
+            }
+        }
+        return proposal;
+    }
 
-		public void prepareForNextCheck(Exception e) {
-			this.retryNecessary = false;
-			this.currentError = e;
-		}
+    public void add(ResilienceConsultant consultant) {
+        Objects.requireNonNull(consultant, "consultant may not be null!");
+        consultants.add(consultant);
+    }
 
-		public void forceFallThrough(FallthroughResilienceProposal proposal) {
-			this.retryNecessary = false;
-			fallThroughSupport.enable(currentError,proposal.getInfo(),proposal.getMillisecondsForFallThrough());
-		}
+    class ResilienctActionContext implements ResilienceContext {
 
-		public boolean isRetryNecessary() {
-			return retryNecessary;
-		}
+        private Exception currentError;
+        private int retriesCount;
+        private boolean retryNecessary;
+        private ResilienceCallback callBack;
+        private Map<String, Object> map = new HashMap<>(1);
 
-		public void forceRetry() {
-			retryNecessary = true;
-			retriesCount++;
-		}
+        public ResilienctActionContext(ResilienceCallback callBack) {
+            this.callBack = callBack;
+        }
 
-		public void setCurrentError(Exception currentError) {
-			this.currentError = currentError;
-		}
+        public void prepareForNextCheck(Exception e) {
+            this.retryNecessary = false;
+            this.currentError = e;
+        }
 
-		@Override
-		public Exception getCurrentError() {
-			return currentError;
-		}
+        public void forceFallThrough(FallthroughResilienceProposal proposal) {
+            this.retryNecessary = false;
+            fallThroughSupport.enable(currentError, proposal.getInfo(), proposal.getMillisecondsForFallThrough());
+        }
 
-		@Override
-		public int getAlreadyDoneRetries() {
-			return retriesCount;
-		}
+        public boolean isRetryNecessary() {
+            return retryNecessary;
+        }
 
-	}
+        public void forceRetry() {
+            retryNecessary = true;
+            retriesCount++;
+        }
 
-	class FallthroughSupport{
-		private static final long NO_FALLTHROUGH = 0;
+        public void setCurrentError(Exception currentError) {
+            this.currentError = currentError;
+        }
 
+        @Override
+        public Exception getCurrentError() {
+            return currentError;
+        }
 
-		private Exception lastError;
-		private String infoFallThrough;
-		private Object monitorOBject = new Object();
-		private long timeFallthroughEnd;
+        @Override
+        public int getAlreadyDoneRetries() {
+            return retriesCount;
+        }
 
-		public void handleFallThrough() throws Exception{
-			synchronized (monitorOBject) {
-				if (unsafeIsFallThroughActive()) {
-					LOG.info("Fall through active for {} milliseconds:{}", timeFallthroughEnd - System.currentTimeMillis(), infoFallThrough);
-					throw lastError;
-				}
-			}
-		}
+        /**
+         * @return callback or <code>null</code>
+         */
+        public ResilienceCallback getCallBack() {
+            return callBack;
+        }
 
-		private boolean unsafeIsFallThroughActive() {
-			if (lastError == null) {
-				return false;
-			}
-			if (timeFallthroughEnd == NO_FALLTHROUGH) {
-				return false;
-			}
-			long currentTimeMillis = System.currentTimeMillis();
-			long millisUntilFallThroughTimeOut = timeFallthroughEnd - currentTimeMillis;
-			if (millisUntilFallThroughTimeOut > 0) {
-				return true;
-			} else {
-				/* reset */
-				lastError = null;
-				timeFallthroughEnd = NO_FALLTHROUGH;
-				return false;
-			}
-		}
+        @Override
+        public <V> void setValue(String key, V value) {
+            if (key == null) {
+                LOG.warn("Cannot set a value for key null!");
+                return;
+            }
+            map.put(key, value);
+        }
 
-		public void enable(Exception currentError, String info, long millisecondsForFallThrough) {
-			synchronized (monitorOBject) {
-				this.lastError = currentError;
-				this.infoFallThrough = info;
-				this.timeFallthroughEnd = System.currentTimeMillis() + millisecondsForFallThrough;
-			}
+        @SuppressWarnings("unchecked")
+        public <V> V getValueOrNull(String key) {
+            if (key == null) {
+                LOG.warn("Cannot get a value for key null!");
+                return null;
+            }
+            Object value = map.get(key);
+            if (value == null) {
+                return null;
+            }
 
-		}
+            /* value found - so cast or fail */
+            V castedValueOrNull = null;
+            try {
+                castedValueOrNull = (V) value;
+            } catch (ClassCastException e) {
+                LOG.error("Was not able to cast key:{} to wanted type. Was orignally: {}", key, value.getClass(), e);
+            }
+            return castedValueOrNull;
+        }
 
-	}
+    }
 
-	public boolean containsConsultant(Class<? extends ResilienceConsultant> consultantClass) {
-		Objects.requireNonNull(consultantClass);
-		if (consultants.isEmpty()) {
-			return false;
-		}
-		for (ResilienceConsultant consultant: consultants) {
-			if (consultant.getClass().isAssignableFrom(consultantClass)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    class FallthroughSupport {
+        private static final long NO_FALLTHROUGH = 0;
+
+        private Exception lastError;
+        private String infoFallThrough;
+        private Object monitorOBject = new Object();
+        private long timeFallthroughEnd;
+
+        public void handleFallThrough() throws Exception {
+            synchronized (monitorOBject) {
+                if (unsafeIsFallThroughActive()) {
+                    LOG.info("Fall through active for {} milliseconds:{}", timeFallthroughEnd - System.currentTimeMillis(), infoFallThrough);
+                    throw lastError;
+                }
+            }
+        }
+
+        private boolean unsafeIsFallThroughActive() {
+            if (lastError == null) {
+                return false;
+            }
+            if (timeFallthroughEnd == NO_FALLTHROUGH) {
+                return false;
+            }
+            long currentTimeMillis = System.currentTimeMillis();
+            long millisUntilFallThroughTimeOut = timeFallthroughEnd - currentTimeMillis;
+            if (millisUntilFallThroughTimeOut > 0) {
+                return true;
+            } else {
+                /* reset */
+                lastError = null;
+                timeFallthroughEnd = NO_FALLTHROUGH;
+                return false;
+            }
+        }
+
+        public void enable(Exception currentError, String info, long millisecondsForFallThrough) {
+            synchronized (monitorOBject) {
+                this.lastError = currentError;
+                this.infoFallThrough = info;
+                this.timeFallthroughEnd = System.currentTimeMillis() + millisecondsForFallThrough;
+            }
+
+        }
+
+    }
+
+    public boolean containsConsultant(Class<? extends ResilienceConsultant> consultantClass) {
+        Objects.requireNonNull(consultantClass);
+        if (consultants.isEmpty()) {
+            return false;
+        }
+        for (ResilienceConsultant consultant : consultants) {
+            if (consultant.getClass().isAssignableFrom(consultantClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

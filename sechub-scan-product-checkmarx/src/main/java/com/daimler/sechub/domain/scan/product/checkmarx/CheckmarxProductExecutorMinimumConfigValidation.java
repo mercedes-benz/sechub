@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.scan.product.pds;
+package com.daimler.sechub.domain.scan.product.checkmarx;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -15,28 +13,20 @@ import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 
 /**
  * This validation validates only the standard/minimum configuration parts which
- * are always necessary for any kind PDS communication. Mandatory fields defined
- * by PDS server are NOT tested here.
+ * are always necessary for any kind of Checkmarx communication. 
  * 
  * @author Albert Tregnaghi
  *
  */
 @Component
-public class PDSProductExecutorMinimumConfigValidation extends AbstractValidation<ProductExecutorConfig> {
+public class CheckmarxProductExecutorMinimumConfigValidation extends AbstractValidation<ProductExecutorConfig> {
 
-    private List<PDSSecHubConfigDataKeyProvider<?>> dataKeyProviders;
-
-    public PDSProductExecutorMinimumConfigValidation() {
-
-        /* setup providers */
-        dataKeyProviders = new ArrayList<>();
-        dataKeyProviders.addAll(Arrays.asList(PDSProductExecutorKeyProvider.values()));
-        dataKeyProviders.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
+    public CheckmarxProductExecutorMinimumConfigValidation() {
     }
 
     @Override
     protected String getValidatorName() {
-        return "PDS executor config validation";
+        return "Checkmarx executor config validation";
     }
 
     @Override
@@ -70,33 +60,9 @@ public class PDSProductExecutorMinimumConfigValidation extends AbstractValidatio
 
     private void validateMandatoryPartsSet(ValidationContext<ProductExecutorConfig> context, List<ProductExecutorConfigSetupJobParameter> jobParameters) {
         /* check mandatory fields are set */
-        for (PDSSecHubConfigDataKeyProvider<?> provider : dataKeyProviders) {
-            PDSSecHubConfigDataKey<?> key = provider.getKey();
-            if (!key.isMandatory()) {
-                continue;
-            }
-            ProductExecutorConfigSetupJobParameter found = null;
-            for (ProductExecutorConfigSetupJobParameter parameter : jobParameters) {
-                if (key.getId().equals(parameter.getKey())) {
-                    found = parameter;
-                    break;
-                }
-            }
-            boolean notSet = false;
-            if (found == null) {
-                notSet = true;
-            } else {
-                String value = found.getValue();
-                if (value == null) {
-                    notSet = true;
-                } else {
-                    notSet = value.trim().isEmpty();
-                }
-            }
-            if (notSet) {
-                addErrorMessage(context, "Mandatory field:" + key.getId() + " not set.");
-            }
-        }
+
+        // currently we have no mandatory parts - with #470 when we replace the ENV
+        // parts from CheckmarxInstallSetup with runtime config, we must check this here
     }
 
 }

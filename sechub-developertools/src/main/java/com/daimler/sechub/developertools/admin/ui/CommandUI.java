@@ -27,6 +27,7 @@ import com.daimler.sechub.developertools.admin.ui.action.config.EditConfiguratio
 import com.daimler.sechub.developertools.admin.ui.action.config.EditExecutionProfileAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.ListExecutionProfilesAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.ListExecutorConfigurationsAction;
+import com.daimler.sechub.developertools.admin.ui.action.developerbatchops.DeveloperBatchCreateCheckmarxTestSetupAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.FetchMockMailsAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario2TestDataAction;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.testdata.CreateScenario3TestDataAction;
@@ -404,6 +405,12 @@ public class CommandUI {
         massOperationsMenu.addSeparator();
         add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
         add(massOperationsMenu, new UnassignUserFromProjectMassCSVImportAction(context));
+        massOperationsMenu.addSeparator();
+        
+        JMenu developerBatchOperations = new JMenu("Developer batch ops");
+        massOperationsMenu.add(developerBatchOperations);
+        developerBatchOperations.add(new DeveloperBatchCreateCheckmarxTestSetupAction(context));
+        
     }
 
     private void add(JMenu menu, AbstractAction action) {
