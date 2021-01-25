@@ -99,7 +99,7 @@ public class ResilientActionExecutorTest {
 	}
 
 	@Test
-    public void retry_3_times_allowed__we_three_errors_which_forces_a_retry_the_callback_is_called_3_times()throws Exception {
+    public void retry_3_times_allowed__we_throw_errors_which_forces_a_retry_the_callback_is_called_3_times()throws Exception {
         /* prepare */
         action.throwables.add(new IllegalArgumentException()); 
         action.throwables.add(new IllegalArgumentException()); 

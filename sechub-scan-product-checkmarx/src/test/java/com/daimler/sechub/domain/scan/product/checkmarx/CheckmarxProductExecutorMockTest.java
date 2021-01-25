@@ -50,7 +50,7 @@ import com.daimler.sechub.storage.core.JobStorage;
         CheckmarxProductExecutorMockTest.SimpleTestConfiguration.class, DefaultMetaDataInspector.class })
 public class CheckmarxProductExecutorMockTest {
 
-    private static final String PROJECT_EXAMPL = "projectIdxyz";
+    private static final String PROJECT_EXAMPLE = "projectIdxyz";
 
     private static final String PATH_EXAMPLE1 = "/somepath/somewhere";
 
@@ -102,7 +102,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPL, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */
@@ -129,7 +129,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPL, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */
@@ -161,7 +161,7 @@ public class CheckmarxProductExecutorMockTest {
     private SecHubExecutionContext createExecutionContextForPseudoCodeScan() {
         SecHubExecutionContext context = mock(SecHubExecutionContext.class);
         SecHubConfiguration config = new SecHubConfiguration();
-        config.setProjectId(PROJECT_EXAMPL);
+        config.setProjectId(PROJECT_EXAMPLE);
         SecHubCodeScanConfiguration codeScan = new SecHubCodeScanConfiguration();
         SecHubFileSystemConfiguration fileSystemConfig = new SecHubFileSystemConfiguration();
         fileSystemConfig.getFolders().add(PATH_EXAMPLE1);

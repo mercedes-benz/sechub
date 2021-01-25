@@ -126,7 +126,7 @@ public class ResilientActionExecutor<R> {
         private int retriesCount;
         private boolean retryNecessary;
         private ResilienceCallback callBack;
-        private Map<String, Object> parameters = new HashMap<>(1);
+        private Map<String, Object> map = new HashMap<>(1);
 
         public ResilienctActionContext(ResilienceCallback callBack) {
             this.callBack = callBack;
@@ -174,23 +174,33 @@ public class ResilientActionExecutor<R> {
 
         @Override
         public <V> void setValue(String key, V value) {
-            parameters.put(key, value);
+            if (key == null) {
+                LOG.warn("Cannot set a value for key null!");
+                return;
+            }
+            map.put(key, value);
         }
 
         @SuppressWarnings("unchecked")
         public <V> V getValueOrNull(String key) {
-            Object v = parameters.get(key);
-            if (v == null) {
+            if (key == null) {
+                LOG.warn("Cannot get a value for key null!");
                 return null;
             }
-            V result = null;
-            try {
-                result = (V) v;
-            } catch (ClassCastException e) {
-                LOG.error("Was not able to cast key:{} to wanted type. Was orignally: {}", key, v.getClass(), e);
+            Object value = map.get(key);
+            if (value == null) {
+                return null;
             }
-            return result;
-        };
+
+            /* value found - so cast or fail */
+            V castedValueOrNull = null;
+            try {
+                castedValueOrNull = (V) value;
+            } catch (ClassCastException e) {
+                LOG.error("Was not able to cast key:{} to wanted type. Was orignally: {}", key, value.getClass(), e);
+            }
+            return castedValueOrNull;
+        }
 
     }
 

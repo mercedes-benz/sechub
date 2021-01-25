@@ -58,7 +58,7 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
                 LOG.warn("Checkmarx delta scan exceeded treshold limit. Will suggest to do a retry with fullscan enabled");
                 context.setValue(CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN, true);
 
-                return new SimpleRetryResilienceProposal("checkmarx too much changes - retry fullscan handling", 1, 500);
+                return new SimpleRetryResilienceProposal("checkmarx too many changes - retry fullscan handling", 1, 500);
             }
         }
 
