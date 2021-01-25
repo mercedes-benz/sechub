@@ -84,11 +84,21 @@ public class DefaultExecutorConfigSupport {
         return value;
     }
 
+    /**
+     * Get parameter boolean value for given key
+     * @param key
+     * @return <code>true</code> when value for given key is "true" or "TRUE", otherwise false
+     */
     protected boolean getParameterBooleanValue(String key) {
         String asText = getParameter(key);
         return Boolean.parseBoolean(asText);
     }
 
+    /**
+     * Get parameter string value for given key
+     * @param key
+     * @return string or <code>null</code>
+     */
     protected String getParameter(String key) {
         if (key == null) {
             return null;
@@ -96,6 +106,11 @@ public class DefaultExecutorConfigSupport {
         return configuredExecutorParameters.get(key);
     }
 
+    /**
+     * Get parameter integer value for given key
+     * @param key
+     * @return integer value or -1 if not defined
+     */
     protected int getParameterIntValue(String key) {
         String asText = getParameter(key);
         if (asText == null) {

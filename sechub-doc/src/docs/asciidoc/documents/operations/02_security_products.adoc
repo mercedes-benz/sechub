@@ -36,7 +36,7 @@ WARNING: Standard properties (like base URL, user id etc.) are currently NOT use
                                         Use this only where a delta scan is not possible/ always rejected by checkmarx. 
                                         When 'false' or any other value, delta scan feature is used. 
                                         
-                                        _If a scan fails because checkmarx has detected too much changes there will be a 
+                                        _If a scan fails because checkmarx has detected too many changes there will be a 
                                         retry with fullscan. If you have permanent problems with delta scanning for a 
                                         project you should set this option to 'true' in your checkmarx executor 
                                         configuration._ 

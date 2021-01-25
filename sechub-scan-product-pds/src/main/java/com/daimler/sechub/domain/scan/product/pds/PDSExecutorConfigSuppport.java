@@ -88,11 +88,11 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
 
     public boolean isTargetTypeForbidden(TargetType targetType) {
         boolean forbidden = false;
-        for (PDSProductExecutorKeyProvider k : PDSProductExecutorKeyProvider.values()) {
+        for (PDSProductExecutorKeyProvider provider : PDSProductExecutorKeyProvider.values()) {
             if (forbidden) {
                 break;
             }
-            PDSSecHubConfigDataKey<?> forbiddenKey = k.getKey();
+            PDSSecHubConfigDataKey<?> forbiddenKey = provider.getKey();
             if (!(forbiddenKey instanceof PDSForbiddenTargetTypeInputKey)) {
                 continue;
             }
