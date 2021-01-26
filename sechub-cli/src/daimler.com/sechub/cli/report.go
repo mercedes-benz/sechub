@@ -59,7 +59,11 @@ func (report *ReportDownload) save(context *Context) {
 
 	sechubUtil.WriteContentToFile(filePath, content, context.config.reportFormat)
 
-	sechubUtil.Log(fmt.Sprintf("SecHub report written to %s", filePath))
+	if context.config.quiet {
+		fmt.Println(filePath)
+	} else {
+		sechubUtil.Log(fmt.Sprintf("SecHub report written to %s", filePath), context.config.quiet)
+	}
 }
 
 func (report *ReportDownload) createFilePath(forceDirectory bool) string {
@@ -75,7 +79,7 @@ func (report *ReportDownload) createFilePath(forceDirectory bool) string {
 }
 
 func getSecHubJobReport(context *Context) []byte {
-	sechubUtil.Log(fmt.Sprintf("Fetching result (format=%s) for job %s", context.config.reportFormat, context.config.secHubJobUUID))
+	sechubUtil.Log(fmt.Sprintf("Fetching result (format=%s) for job %s", context.config.reportFormat, context.config.secHubJobUUID), context.config.quiet)
 
 	header := make(map[string]string)
 	header["Content-Type"] = "application/json"
@@ -124,7 +128,7 @@ func newSecHubReportFromBytes(bytes []byte) SecHubReport {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &report)
 	if err != nil {
-		fmt.Println("sechub confiuration json is not valid json")
+		sechubUtil.LogError("sechub confiuration json is not valid json")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}

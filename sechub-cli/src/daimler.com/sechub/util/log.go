@@ -12,7 +12,7 @@ func LogError(text string) {
 	fmt.Fprintln(os.Stderr, Timestamp(), "ERROR:", text)
 }
 
-// LogWarning - print unified error message
+// LogWarning - print unified warn message
 func LogWarning(text string) {
 	fmt.Println("WARNING:", text)
 }
@@ -29,12 +29,21 @@ func LogDebug(debug bool, text string) {
 	}
 }
 
-// Log - log a text message timestamped to stdout
-func Log(text string) {
-	logWithTimestamp(text)
+// Log - log a text message timestamped to stdout if passed boolean is 'false'
+func Log(text string, silent bool) {
+	if !silent {
+		logWithTimestamp(text)
+	}
 }
 
 // logWithTimestamp - print message with time stamp
 func logWithTimestamp(text string) {
 	fmt.Println(Timestamp(), text)
+}
+
+// PrintIfNotSilent - print text if passed boolean is 'false'
+func PrintIfNotSilent(text string, silent bool) {
+	if !silent {
+		fmt.Print(text)
+	}
 }

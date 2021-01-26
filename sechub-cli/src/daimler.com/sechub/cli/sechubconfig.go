@@ -48,7 +48,7 @@ func fillTemplate(templateSource string, data map[string]string) []byte {
 	err := t.Execute(&tpl, data)
 
 	if err != nil {
-		fmt.Println("SecHub configuration json is is not a valid template")
+		sechubUtil.LogError("SecHub configuration json is is not a valid template")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -69,7 +69,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Fprintf(os.Stderr, "\n%v\n", "Hint: Call sechub with -help option to show usage and examples")
+	fmt.Fprint(os.Stderr, "\nHint: Call sechub with -help option to show usage and examples\n")
 }
 
 func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubConfig, bool) {
