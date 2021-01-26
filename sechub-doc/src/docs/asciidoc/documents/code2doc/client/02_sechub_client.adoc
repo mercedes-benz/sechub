@@ -415,7 +415,7 @@ with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json markFalsePositives
+sechub -file mark-fp.json markFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
 
@@ -423,7 +423,7 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json unmarkFalsePositives
+sechub -file mark-fp.json unmarkFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
 
