@@ -14,13 +14,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class TargetRegistryTest {
 
 	private TargetRegistry registryToTest;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 	
 	@Before
 	public void before() throws Exception {

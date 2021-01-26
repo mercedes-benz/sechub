@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSFileUploadJobServiceTest {
 
@@ -27,7 +28,7 @@ public class PDSFileUploadJobServiceTest {
     private static final String NOT_ACCEPTED_CHECKSUM = "checksum-failing";
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     
     private PDSFileUploadJobService serviceToTest;
     private UUID jobUUID;

@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.Errors;
@@ -23,6 +22,7 @@ import com.daimler.sechub.sharedkernel.validation.ProjectMetaDataValidation;
 import com.daimler.sechub.sharedkernel.validation.URIValidation;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
+import com.daimler.sechub.test.TestUtil;
 
 public class ProjectJsonInputValidationTest {
 
@@ -216,7 +216,7 @@ public class ProjectJsonInputValidationTest {
     @Test
     public void when_metadatavalidation_with_too_long_key_invalid_api_error() {
         /* prepare */
-        String key = RandomString.make(61);
+        String key = TestUtil.createRAndomString(61);
         ProjectMetaData metaData = new ProjectMetaData();
         metaData.getMetaDataMap().put(key, "value");
         
@@ -234,7 +234,7 @@ public class ProjectJsonInputValidationTest {
     @Test
     public void when_metadatavalidation_with_too_long_value_invalid_api_error() {
         /* prepare */
-        String value = RandomString.make(260);
+        String value = TestUtil.createRAndomString(260);
         ProjectMetaData metaData = new ProjectMetaData();
         metaData.getMetaDataMap().put("key", value);
         

@@ -16,13 +16,14 @@ import com.daimler.sechub.developertools.DeveloperToolsTestFileSupport;
 import com.daimler.sechub.developertools.admin.DeveloperAdministration;
 import com.daimler.sechub.developertools.admin.ui.OutputUI;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class CreateProjectMassCSVImporterTest {
 
 	private CreateProjectMassCSVImporter importerToTest;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private DeveloperAdministration administration;
 

@@ -18,6 +18,7 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ScanConfigScenario3SecHubClientIntTest {
 
@@ -28,7 +29,7 @@ public class ScanConfigScenario3SecHubClientIntTest {
 	public Timeout timeOut = Timeout.seconds(300); // 5 minutes is more than enough...
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	@Test
 	public void when_scanconfig1_defines_team3_and_preset1_for_project_pattern__project_will_be_scanned_with_this_setup()

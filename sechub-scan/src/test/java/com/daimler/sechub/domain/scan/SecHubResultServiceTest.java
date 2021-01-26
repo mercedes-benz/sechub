@@ -22,11 +22,12 @@ import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SecHubResultServiceTest {
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private SecHubResultService serviceToTest;
 	private ScanReportToSecHubResultTransformer reportTransformer;

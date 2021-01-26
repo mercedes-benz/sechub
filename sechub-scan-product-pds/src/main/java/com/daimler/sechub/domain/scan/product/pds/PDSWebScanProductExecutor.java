@@ -50,7 +50,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
             TargetRegistryInfo info) throws Exception {
         
-        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
         
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {

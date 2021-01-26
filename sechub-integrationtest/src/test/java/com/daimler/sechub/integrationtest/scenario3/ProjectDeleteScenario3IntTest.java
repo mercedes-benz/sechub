@@ -16,6 +16,7 @@ import org.junit.rules.Timeout;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 public class ProjectDeleteScenario3IntTest {
 
 	@Rule
@@ -25,7 +26,7 @@ public class ProjectDeleteScenario3IntTest {
 	public Timeout timeOut = Timeout.seconds(60);
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 
 	/* @formatter:off */

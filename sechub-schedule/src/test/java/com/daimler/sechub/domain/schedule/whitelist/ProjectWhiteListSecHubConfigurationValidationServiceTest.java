@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class ProjectWhiteListSecHubConfigurationValidationServiceTest {
 
@@ -24,7 +25,7 @@ public class ProjectWhiteListSecHubConfigurationValidationServiceTest {
 	private String projectId = "project1";
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedExceptionFactory.none();
 	private ProjectWhiteListSupport support;
 	private ProjectWhitelistEntryRepository repository;
 	private List<ProjectWhitelistEntry> whiteListFoundForProject;

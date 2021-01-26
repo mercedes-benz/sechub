@@ -99,6 +99,58 @@ public class ResilientActionExecutorTest {
 	}
 
 	@Test
+    public void retry_3_times_allowed__we_throw_errors_which_forces_a_retry_the_callback_is_called_3_times()throws Exception {
+        /* prepare */
+        action.throwables.add(new IllegalArgumentException()); 
+        action.throwables.add(new IllegalArgumentException()); 
+        action.throwables.add(new IllegalArgumentException()); 
+
+        ResilienceCallback callBack = mock(ResilienceCallback.class);
+        RetryResilienceProposal resilienceProposal = mock(RetryResilienceProposal.class);
+        when(resilienceProposal.getMaximumAmountOfRetries()).thenReturn(3);
+        when(resilienceProposal.getMillisecondsToWaitBeforeRetry()).thenReturn(0L);
+
+        ResilienceConsultant resilienceConsultant = mock(ResilienceConsultant.class);
+        when(resilienceConsultant.consultFor(any(ResilienceContext.class))).thenReturn(resilienceProposal);
+
+        executorToTest.add(resilienceConsultant);
+
+        /* execute */
+        TestResult result = executorToTest.executeResilient(action,callBack);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals(4, result.timesActionHasBeenExecuted);
+        verify(callBack,times(3)).beforeRetry(any());
+
+    }
+	
+	@Test
+    public void retry_3_times_allowed__we_got_an_error_which_forces_a_retry_the_callback_is_called1_times()throws Exception {
+        /* prepare */
+        action.throwables.add(new IllegalArgumentException()); 
+
+        ResilienceCallback callBack = mock(ResilienceCallback.class);
+        RetryResilienceProposal resilienceProposal = mock(RetryResilienceProposal.class);
+        when(resilienceProposal.getMaximumAmountOfRetries()).thenReturn(3);
+        when(resilienceProposal.getMillisecondsToWaitBeforeRetry()).thenReturn(0L);
+
+        ResilienceConsultant resilienceConsultant = mock(ResilienceConsultant.class);
+        when(resilienceConsultant.consultFor(any(ResilienceContext.class))).thenReturn(resilienceProposal);
+
+        executorToTest.add(resilienceConsultant);
+
+        /* execute */
+        TestResult result = executorToTest.executeResilient(action,callBack);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals(2, result.timesActionHasBeenExecuted);
+        verify(callBack,times(1)).beforeRetry(any());
+
+    }
+	
+	@Test
 	public void retry_2_times_allowed__we_got_an_error_which_forces_a_retry_we_got_the_result_from_second_attempt()throws Exception {
 		/* prepare */
 		action.throwables.add(new IllegalArgumentException()); // one exception only, so second try will return result

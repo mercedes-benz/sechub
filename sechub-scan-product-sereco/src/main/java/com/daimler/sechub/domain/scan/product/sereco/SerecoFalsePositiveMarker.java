@@ -66,7 +66,7 @@ public class SerecoFalsePositiveMarker {
             if (isFalsePositive(vulnerability, entry)) {
                 vulnerability.setFalsePositive(true);
                 FalsePositiveJobData jobData = entry.getJobData();
-                vulnerability.setFalsePositiveReason("finding:"+jobData.getFindingId()+"in job:"+jobData.getJobUUID()+" marked as false positive");
+                vulnerability.setFalsePositiveReason("finding:"+jobData.getFindingId()+" in job:"+jobData.getJobUUID()+" marked as false positive");
                 return;
             }
         }

@@ -15,6 +15,7 @@ import org.junit.rules.ExpectedException;
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 /**
  * Name handling is tested here because its very important when using NETSPARKER (each name produces costs)
@@ -24,7 +25,7 @@ import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBu
 public class NetsparkerConfigBuilderTest {
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+    public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
 	@Test
 	public void uris_with_different_roots_are_not_accepted() throws Exception {
