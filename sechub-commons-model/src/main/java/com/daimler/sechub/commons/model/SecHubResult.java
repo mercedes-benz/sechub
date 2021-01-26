@@ -42,10 +42,6 @@ public class SecHubResult implements JSONable<SecHubResult> {
 		return findings;
 	}
 	
-	public void setFindings(List<SecHubFinding> findings) {
-        this.findings = findings;
-    }
-	
 	public List<SecHubFinding> getFalsePositives() {
         return falsePositives;
     }
