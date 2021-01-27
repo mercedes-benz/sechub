@@ -15,13 +15,23 @@ subprojects {
 
     logger.info("found spring boot relevant project:$project")
     
-	apply plugin: 'io.spring.dependency-management'
+    if (projectType.bootableSpringApplicationProjects.contains(project)){
+       apply plugin: 'org.springframework.boot' 
+       
+       springBoot {
+             // createds build-info.properties in META-INF folder which is auto injected in spring
+             // see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-build-info
+             buildInfo() 
+        }     
+    }
+
 
 	dependencies {
 
         testCompile(library.springboot_starter_test)
         testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
         compile(library.springboot_starter_json)
+        
 
 	    if (projectType.springBootAdapterProjects.contains(project)){
             // next line: compile only, because spring boot does add android-json on test compile as lightweight imp
