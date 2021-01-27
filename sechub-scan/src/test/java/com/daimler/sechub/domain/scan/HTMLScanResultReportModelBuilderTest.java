@@ -168,8 +168,9 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void test_code_scan_entries() {
+    public void code_scan_entries_set_and_right_amount_of_call_stacks_populated() {
 
+        /* prepare */
         SecHubFinding finding = mock(SecHubFinding.class);
         SecHubCodeCallStack code1 = mock(SecHubCodeCallStack.class);
         SecHubCodeCallStack subCode = mock(SecHubCodeCallStack.class);
@@ -180,8 +181,10 @@ public class HTMLScanResultReportModelBuilderTest {
         when(finding.getCode()).thenReturn(code1);
         when(code1.getCalls()).thenReturn(subCode);
 
+        /* execute */
         Map<String, Object> buildResult = builderToTest.build(scanResult);
 
+        /* test */
         assertNotNull(buildResult.get("codeScanEntries"));
 
         assertTrue(buildResult.get("codeScanEntries") instanceof Map<?, ?>);
@@ -194,12 +197,18 @@ public class HTMLScanResultReportModelBuilderTest {
     }
 
     @Test
-    public void test_code_scan_support() {
+    public void code_scan_support_set_and_not_null() {
+        /* prepare */
         when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED.name());
 
+        /* execute */
         Map<String, Object> map = builderToTest.build(scanResult);
 
+        /* test */
+        
         assertNotNull(map.get("codeScanSupport"));
+        assertTrue(map.get("codeScanSupport") instanceof HtmlCodeScanDescriptionSupport);
+
     }
 
 }
