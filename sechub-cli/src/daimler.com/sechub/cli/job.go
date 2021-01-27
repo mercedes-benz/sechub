@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	sechubUtil "daimler.com/sechub/util"
@@ -103,7 +104,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		} else {
 			// PROGRESS bar ... 50 chars with dot, then next line...
 			if newLine {
-				sechubUtil.PrintIfNotSilent("                             ", context.config.quiet)
+				sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
 				newLine = false
 			}
 			sechubUtil.PrintIfNotSilent(".", context.config.quiet)
@@ -138,7 +139,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		os.Exit(ExitCodeFailed)
 	default:
 		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight))
-		fmt.Printf("UNKNOWN traffic light:%s\n", status.TrafficLight)
+		fmt.Printf("UNKNOWN traffic light: %s\n", status.TrafficLight)
 		os.Exit(ExitCodeFailed)
 	}
 	return ""

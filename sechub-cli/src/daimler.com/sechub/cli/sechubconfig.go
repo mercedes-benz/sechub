@@ -48,7 +48,7 @@ func fillTemplate(templateSource string, data map[string]string) []byte {
 	err := t.Execute(&tpl, data)
 
 	if err != nil {
-		sechubUtil.LogError("SecHub configuration json is is not a valid template")
+		sechubUtil.LogError("SecHub configuration json is not a valid template")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
