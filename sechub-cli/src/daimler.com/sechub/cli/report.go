@@ -128,7 +128,7 @@ func newSecHubReportFromBytes(bytes []byte) SecHubReport {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &report)
 	if err != nil {
-		sechubUtil.LogError("sechub configuration json is not valid json")
+		sechubUtil.LogError("SecHub configuration json is not valid json")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
