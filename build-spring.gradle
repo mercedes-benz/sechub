@@ -19,7 +19,7 @@ subprojects {
        apply plugin: 'org.springframework.boot' 
        
        springBoot {
-             // createds build-info.properties in META-INF folder which is auto injected in spring
+             // creates build-info.properties in META-INF folder which is auto injected in spring
              // see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-build-info
              buildInfo() 
         }     

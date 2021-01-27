@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-[[section-howto-quck-test-server-release-local]]
+[[section-howto-quick-test-server-release-local]]
 === Howto quickly test a sechub server release on local machine
 
 For a "quick test" we start the release simply in integrationtest mode.
@@ -11,11 +11,11 @@ or you build it from scratch.
 
 [NOTE]
 ====
-Here an example for a scratch-build: Checked out gi tag `v0.19.1-server` and by executing `./gradlew bootJar`) you will
+Here an example for a scratch-build: Checked out GIT tag `v0.19.1-server` and by executing `./gradlew bootJar`) you will
 find the server release 0.19.1 at `sechub-server/build/libs/sechub-server-0.19.1.jar` 
 ====
 
-==== Start release at your machine  
+==== Start release on your machine  
 Open a shell at the folder where your jar (In the next script we use `sechub-server-0.19.1.jar`) is located. Then
 execute the server in integrationtest mode. 
 ----
