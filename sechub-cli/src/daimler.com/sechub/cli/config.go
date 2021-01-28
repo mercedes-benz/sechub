@@ -79,7 +79,7 @@ func prepareOptionsFromCommandline(config *Config) {
 	flag.StringVar(&config.projectID,
 		projectOption, config.projectID, "SecHub project id - Mandatory, but can also be defined in environment variable "+SechubProjectEnvVar+" or in config file")
 	flag.BoolVar(&config.quiet,
-		quietOption, false, "Quiet mode - Suppress all informative output. Can also be defined in environment variable "+SechubQuietEnvVar)
+		quietOption, false, "Quiet mode - Suppress all informative output. Can also be defined in environment variable "+SechubQuietEnvVar+"=true")
 	flag.StringVar(&config.reportFormat,
 		reportformatOption, config.reportFormat, "Output format for reports, supported currently: [html,json].")
 	flag.StringVar(&config.server,

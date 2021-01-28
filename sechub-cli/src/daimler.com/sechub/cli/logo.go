@@ -7,10 +7,11 @@ import (
 )
 
 func printLogoWithVersion(context *Context) {
-	if !context.config.quiet {
-		printLogoNoNewLine()
-		fmt.Print("Client Version", Version(), "\n\n")
+	if context.config.quiet {
+		return
 	}
+	printLogoNoNewLine()
+	fmt.Print("Client Version ", Version(), "\n\n")
 }
 
 func printLogoNoNewLine() {

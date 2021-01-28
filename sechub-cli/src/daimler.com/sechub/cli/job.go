@@ -125,12 +125,15 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 	/* Evaluate traffic light */
 	switch status.TrafficLight {
 	case "RED":
-		fmt.Println("  RED alert - security vulnerabilities identified (critical or high)")
+		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
 		os.Exit(ExitCodeFailed)
 	case "YELLOW":
-		fmt.Println("  YELLOW alert - security vulnerabilities identified (but not critical or high)")
+		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
 		if context.config.stopOnYellow == true {
+			fmt.Fprintln(os.Stderr, yellowMessage)
 			os.Exit(ExitCodeFailed)
+		} else {
+			fmt.Println(yellowMessage)
 		}
 	case "GREEN":
 		fmt.Println("  GREEN - no severe security vulnerabilities identified")
@@ -138,8 +141,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		sechubUtil.LogError("No traffic light available! Please check server logs.")
 		os.Exit(ExitCodeFailed)
 	default:
-		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight))
-		fmt.Printf("UNKNOWN traffic light: %s\n", status.TrafficLight)
+		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
 		os.Exit(ExitCodeFailed)
 	}
 	return ""
