@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,122 +21,91 @@ import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
-
 @Component
 public class HTMLScanResultReportModelBuilder {
 
-	static final String SHOW_LIGHT = "opacity: 1.0";
-	static final String HIDE_LIGHT = "opacity: 0.25";
+    static final String SHOW_LIGHT = "opacity: 1.0";
+    static final String HIDE_LIGHT = "opacity: 0.25";
 
-	private static final Logger LOG = LoggerFactory.getLogger(HTMLScanResultReportModelBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HTMLScanResultReportModelBuilder.class);
 
-	@Value("${sechub.development.webdesignmode.enabled:false}")
-	@MustBeDocumented(scope="development",value="Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content")
-	boolean webDesignMode;
+    @Value("${sechub.development.webdesignmode.enabled:false}")
+    @MustBeDocumented(scope = "development", value = "Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content")
+    boolean webDesignMode;
 
-	@Value("classpath:templates/report/html/scanresult.css")
-	Resource cssResource;
+    @Value("classpath:templates/report/html/scanresult.css")
+    Resource cssResource;
 
-	String embeddedCSS;
+    String embeddedCSS;
 
-	@Autowired
-	ScanReportTrafficLightCalculator trafficLightCalculator;
+    @Autowired
+    ScanReportTrafficLightCalculator trafficLightCalculator;
 
+    public Map<String, Object> build(ScanReportResult scanResult) {
+        String trafficLight = scanResult.getTrafficLight();
 
-	public Map<String, Object> build(ScanReportResult scanResult) {
-		String trafficLight = scanResult.getTrafficLight();
+        String styleRed = HIDE_LIGHT;
+        String styleYellow = HIDE_LIGHT;
+        String styleGreen = HIDE_LIGHT;
 
-		String styleRed = HIDE_LIGHT;
-		String styleYellow = HIDE_LIGHT;
-		String styleGreen = HIDE_LIGHT;
+        switch (trafficLight) {
+        case "RED":
+            styleRed = SHOW_LIGHT;
+            break;
+        case "YELLOW":
+            styleYellow = SHOW_LIGHT;
+            break;
+        case "GREEN":
+            styleGreen = SHOW_LIGHT;
+            break;
+        default:
+        }
+        HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
+        SecHubResult result = scanResult.getResult();
 
-		switch (trafficLight) {
-		case "RED":
-			styleRed = SHOW_LIGHT;
-			break;
-		case "YELLOW":
-			styleYellow = SHOW_LIGHT;
-			break;
-		case "GREEN":
-			styleGreen = SHOW_LIGHT;
-			break;
-		default:
-		}
-		HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
-		SecHubResult result = scanResult.getResult();
+        Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
+        for (SecHubFinding finding : result.getFindings()) {
+            codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
+        }
 
-		Map<Integer,List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
-		for (SecHubFinding finding: result.getFindings()) {
-			codeScanEntries.put(finding.getId(), codeScanSupport.buildEntries(finding));
-		}
+        Map<String, Object> model = new HashMap<>();
+        model.put("result", scanResult.getResult());
+        model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
+        model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
+        model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
 
-		Map<String, Object> model = new HashMap<>();
-		model.put("result", scanResult.getResult());
-		model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
-		model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
-		model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
+        model.put("trafficlight", trafficLight);
 
-		model.put("trafficlight", trafficLight);
+        model.put("styleRed", styleRed);
+        model.put("styleYellow", styleYellow);
+        model.put("styleGreen", styleGreen);
+        model.put("isWebDesignMode", webDesignMode);
+        model.put("codeScanEntries", codeScanEntries);
+        model.put("codeScanSupport", codeScanSupport);
 
-		model.put("styleRed", styleRed);
-		model.put("styleYellow", styleYellow);
-		model.put("styleGreen", styleGreen);
-		model.put("isWebDesignMode", webDesignMode);
-		model.put("embeddedCSS", getEmbeddedCSS());
-		model.put("codeScanEntries", codeScanEntries);
-		model.put("codeScanSupport", codeScanSupport);
+        if (webDesignMode) {
+            File file;
+            try {
+                if (cssResource == null) {
+                    LOG.error("CSS resource not set:{}", cssResource);
+                } else {
+                    file = cssResource.getFile();
+                    String absolutePathToCSSFile = file.getAbsolutePath();
+                    LOG.info("Web design mode activate, using not embedded css but ref to:{}", absolutePathToCSSFile);
+                    model.put("includedCSSRef", absolutePathToCSSFile);
+                }
+            } catch (Exception e) {
+                LOG.error("Was not able get file from resource:{}", cssResource, e);
+            }
+        }
+        UUID jobUUID = scanResult.getJobUUID();
+        if (jobUUID != null) {
+            model.put("jobuuid", jobUUID.toString());
+        } else {
+            model.put("jobuuid", "none");
+        }
+        model.put("info", scanResult.getInfo());
 
-
-		if (webDesignMode) {
-			File file;
-			try {
-				if (cssResource==null) {
-					LOG.error("CSS resource not set:{}",cssResource);
-				}else {
-					file = cssResource.getFile();
-					String absolutePathToCSSFile = file.getAbsolutePath();
-					LOG.info("Web design mode activate, using not embedded css but ref to:{}",absolutePathToCSSFile);
-					model.put("includedCSSRef", absolutePathToCSSFile);
-				}
-			} catch (Exception e) {
-				LOG.error("Was not able get file from resource:{}",cssResource,e);
-			}
-		}
-		UUID jobUUID = scanResult.getJobUUID();
-		if (jobUUID!=null) {
-			model.put("jobuuid", jobUUID.toString());
-		}else {
-			model.put("jobuuid", "none");
-		}
-		model.put("info", scanResult.getInfo());
-
-		return model;
-
-	}
-
-	public String getEmbeddedCSS() {
-		if (embeddedCSS!=null) {
-			return embeddedCSS;
-		}
-		try {
-			InputStream in = cssResource.getInputStream();
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))){
-				String line=null;
-				StringBuilder sb = new StringBuilder();
-				while ((line=br.readLine())!=null) {
-					sb.append(line);
-					sb.append("\n");
-				}
-				embeddedCSS=sb.toString();
-			}
-
-		} catch (IOException e) {
-			LOG.error("Was not able to load css resources",e);
-			embeddedCSS="/* not able to load css from server */";
-		}
-		return embeddedCSS;
-	}
-
-
-
+        return model;
+    }
 }

@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <title>SecHub scan result</title>
 <link th:if="${isWebDesignMode}" th:href="${includedCSSRef}" rel="stylesheet" type="text/css" href="scanresult.css">
-<style type="text/css" th:if="!${isWebDesignMode}" th:utext="${embeddedCSS}">
+<style type="text/css" th:if="!${isWebDesignMode}" th:replace="report/html/fragments :: styles">
+
 </style>
 </head>
 <body>
@@ -64,32 +65,19 @@
 		    <div th:if="!${redList.isEmpty()}">
 			    <h2 class='redFindingHeadline'>Red findings</h2>
 				<table class='findingsTable redFindingsTable'>
+					<thead>
+						<tr>
+							<th>Severity</th>
+						    <th>Type</th>
+						    <th>Description</th>
+						</tr>
+					</thead>
 					<tbody>
-					    <th>Severity</th>
-					    <th>Type</th>
-					    <th>Description</th>
+					    
 						<tr th:each="finding : ${redList}">
-						    <td th:text="${finding.severity}">Severity 1</td>
-							<td th:text="${finding.name}">Name 1</td>
-							<td>
-							    <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-							    <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
-							           <div class="rTableRow">
-							             <div class="rTableHead" style="width:25%">Location</div>
-							             <div class="rTableHead" style="width:5%">Line</div>
-							             <div class="rTableHead" style="width:5%">Column</div>
-							             <div class="rTableHead" style="width:10%">Relevant part</div>
-							             <div class="rTableHead" style="width:25%">Source</div>
-							         </div>
-							         <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-							             <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
-							             <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
-							             <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-							             <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
-							             <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
-							         </div>
-							    </div>
-							</td>
+						    
+						    <div th:replace="report/html/fragments :: findingCells"></div>
+						    
 						</tr>
 						<tr th:remove="all">
 							<td>Severity 2</td>
@@ -112,32 +100,19 @@
 		    <div th:if="!${yellowList.isEmpty()}">
 	            <h2 class='yellowFindingHeadline'>Yellow findings</h2>
 				<table class='findingsTable yellowFindingsTable'>
-					<tbody >
-					    <th>Severity</th>
-	                    <th>Type</th>
-	                    <th>Description</th>
+					<thead>
+						<tr>
+							<th>Severity</th>
+	                    	<th>Type</th>
+	                    	<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					    
 						<tr th:each="finding : ${yellowList}">
-						    <td th:text="${finding.severity}">Severity 1</td>
-							<td th:text="${finding.name}">Name 1</td>
-							<td>
-                                <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-                                <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
-                                       <div class="rTableRow">
-                                         <div class="rTableHead" style="width:25%">Location</div>
-                                         <div class="rTableHead" style="width:5%">Line</div>
-                                         <div class="rTableHead" style="width:5%">Column</div>
-                                         <div class="rTableHead" style="width:10%">Relevant part</div>
-                                         <div class="rTableHead" style="width:25%">Source</div>
-                                     </div>
-                                     <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
-                                     </div>
-                                </div>
-                            </td>
+						
+						    <div th:replace="report/html/fragments :: findingCells"></div>
+						    
 						</tr>
 						<tr th:remove="all">
 							<td>Severity 2</td>
@@ -150,32 +125,18 @@
 			<div th:if="!${greenList.isEmpty()}">
 	            <h2 class='greenFindingHeadline'>Green findings</h2>
 				<table class='findingsTable greenFindingsTable'>
+					<thead>
+						<tr>
+							<th>Severity</th>
+	                    	<th>Type</th>
+	                    	<th>Description</th>
+						</tr>
+					</thead>
 					<tbody>
-						<th>Severity</th>
-	                    <th>Type</th>
-	                    <th>Description</th>
 						<tr th:each="finding : ${greenList}">
-						    <td th:text="${finding.severity}">Severity 1</td>
-							<td th:text="${finding.name}">Name 1</td>
-							<td>
-                                <div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-                                <div th:if="${codeScanSupport.isCodeScan(finding)}" class="rTable">
-                                       <div class="rTableRow">
-                                         <div class="rTableHead" style="width:25%">Location</div>
-                                         <div class="rTableHead" style="width:5%">Line</div>
-                                         <div class="rTableHead" style="width:5%">Column</div>
-                                         <div class="rTableHead" style="width:10%">Relevant part</div>
-                                         <div class="rTableHead" style="width:25%">Source</div>
-                                     </div>
-                                     <div class="rTableRow" th:each="codeScanEntry : ${codeScanEntries.get(finding.id)}">
-                                         <div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">12</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">33</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Source</div>
-                                         <div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
-                                     </div>
-                                </div>
-                            </td>
+						    
+						    <div th:replace="report/html/fragments :: findingCells"></div>
+						    
 						</tr>
 						<tr th:remove="all">
 							<td>Severity 2</td>
