@@ -149,6 +149,8 @@
 
 .findingsTable th {
 	padding: 8px;
+	vertical-align: top;
+	text-align: left;
 }
 
 .findingsTable tr:nth-child(even) {
@@ -253,7 +255,7 @@ details:not([open]) summary::after {
 <td th:text="${finding.severity}">Severity 1</td>
 <td>
 	<div th:text="${finding.name}">Name 1</div>
-	<a  th:if="${finding.cweId != null}" th:href="@{https://cwe.mitre.org/data/definitions/${finding.cweId}.html}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWEId</a>
+	<a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWEId</a>
 </td>
 <td>
 	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
