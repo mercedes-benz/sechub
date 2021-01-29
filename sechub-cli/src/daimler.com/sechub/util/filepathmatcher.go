@@ -33,7 +33,7 @@ func Filepathmatch(path string, pattern string) (result bool) {
 
 	matched, err := regexp.MatchString(regexpPattern, path)
 	if err != nil {
-		fmt.Println(err, matched)
+		LogError(fmt.Sprintln("Error evaluating filepath matches:", err, matched))
 	}
 
 	return matched
