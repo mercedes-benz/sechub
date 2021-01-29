@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class ScanReportRestControllerMockTest {
         map.put("styleRed", "theRedStyle");
         map.put("styleGreen", "display:none");
         map.put("styleYellow", "display:none");
-        map.put("redList", List.of(finding));
+        map.put("redList", Arrays.asList(finding));
         map.put("yellowList", new ArrayList<>());
         map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
@@ -160,13 +161,13 @@ public class ScanReportRestControllerMockTest {
     @WithMockUser
     public void get_html_report_without_cwe_id() throws Exception {
         /* prepare */
-
+        
         Map<String, Object> map = new HashMap<>();
         map.put("jobuuid", randomUUID);
         map.put("styleRed", "theRedStyle");
         map.put("styleGreen", "display:none");
         map.put("styleYellow", "display:none");
-        map.put("redList", List.of(new SecHubFinding()));
+        map.put("redList", Arrays.asList(new SecHubFinding()));
         map.put("yellowList", new ArrayList<>());
         map.put("greenList", new ArrayList<>());
         map.put("isWebDesignMode", false);
