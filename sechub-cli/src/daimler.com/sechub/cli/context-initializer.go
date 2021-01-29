@@ -18,7 +18,9 @@ func InitializeContext() *Context {
 	context := NewContext(configPtr)
 
 	/* load configuration file - maybe there are some settings normally done by cli arguments too */
-	loadConfigFile(context)
+	if context.config.action != showHelpAction {
+		loadConfigFile(context)
+	}
 
 	/* assert after load the configuration is valid */
 	assertValidConfig(configPtr)

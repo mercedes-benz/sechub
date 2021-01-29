@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+[[section-howto-quick-test-server-release-local]]
+=== Howto quickly test a sechub server release on local machine
+
+For a "quick test" we start the release simply in integrationtest mode.
+
+==== Get the release
+
+You got different options: You can either download an existing release from https://github.com/Daimler/sechub/releases ,
+or you build it from scratch. 
+
+[NOTE]
+====
+Here an example for a scratch-build: Checked out GIT tag `v0.19.1-server` and by executing `./gradlew bootJar`) you will
+find the server release 0.19.1 at `sechub-server/build/libs/sechub-server-0.19.1.jar` 
+====
+
+==== Start release on your machine  
+Open a shell at the folder where your jar (In the next script we use `sechub-server-0.19.1.jar`) is located. Then
+execute the server in integrationtest mode. 
+----
+java -Dspring.profiles.active=mocked_products,h2,integrationtest -Dsechub.server.debug=false -Dsechub.storage.sharedvolume.upload.dir=temp -Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org -Dsechub.config.trigger.nextjob.initialdelay=0 -Dsechub.integrationtest.ignore.missing.serverproject=true -jar sechub-server-0.19.1.jar
+---- 
+
+==== Further steps
+Use the DAUI (developer administration UI) to test server. In integration test mode, you can test
+nearly all sechub server features - except the real product communication, because all adapters are
+mocked. 
