@@ -149,6 +149,8 @@
 
 .findingsTable th {
 	padding: 8px;
+	vertical-align: top;
+	text-align: left;
 }
 
 .findingsTable tr:nth-child(even) {
@@ -162,6 +164,8 @@
 .findingsTable td {
 	padding: 8px;
 	font-family: monospace;
+	vertical-align: top;
+	text-align: left;
 }
 
 .findingsTable td:nth-child(1) {
@@ -249,9 +253,12 @@ details:not([open]) summary::after {
 <th:block th:fragment="findingCells">
 
 <td th:text="${finding.severity}">Severity 1</td>
-<td th:text="${finding.name}">Name 1</td>
 <td>
-	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>		
+	<div th:text="${finding.name}">Name 1</div>
+	<a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWEId</a>
+</td>
+<td>
+	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
 	<div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
 		<div class="rTableRow">
 			<div class="rTableHead" style="width:5%">Id</div>
@@ -269,7 +276,7 @@ details:not([open]) summary::after {
 			<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
 			<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
 		</div>
-	</div>       
+	</div>
 	<br />
 	<details th:if="${codeScanSupport.isCodeScan(finding)}">
 		<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
@@ -281,7 +288,7 @@ details:not([open]) summary::after {
 				<div class="rTableHead" style="width:5%">Column</div>
 				<div class="rTableHead" style="width:10%">Relevant part</div>
 				<div class="rTableHead" style="width:25%">Source</div>
-			</div>									
+			</div>
 			<div class="rTableRow" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
 				<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
 				<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
@@ -290,7 +297,7 @@ details:not([open]) summary::after {
 				<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
 				<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
 			</div>
-		</div>									
+		</div>
 	</details>
 </td>
 

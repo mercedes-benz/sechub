@@ -37,10 +37,10 @@ to your current situation.
 ** YELLOW or
 ** RED.
 
-===== Example code scan report with yellow traffic light
+===== Example code scan report with red traffic light
 The next picture shows a report which resulted in a red traffic light.
 
-At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`.
+At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the `Type` column. 
 
 The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.
 
