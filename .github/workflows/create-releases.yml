@@ -308,7 +308,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
-        asset_path: ./sechub-cli.zip.sha256
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
         asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
         asset_content_type: application/zip
     # sechub-client.pdf
