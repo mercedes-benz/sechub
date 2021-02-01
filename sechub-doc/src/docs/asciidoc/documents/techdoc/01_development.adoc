@@ -34,7 +34,7 @@ git config user.name "$firstName $lastName"
 ----
 git config branch.autosetuprebase always
 git config branch.master.rebase true
-git config push.default matching
+git config push.default current
 git config core.autocrlf input
 git config color.ui auto
 git config --add remote.origin.fetch +refs/tags/*:refs/tags/*
