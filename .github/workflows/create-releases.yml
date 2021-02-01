@@ -72,6 +72,11 @@ jobs:
     - name: Create combined test report
       if: always()
       run: ./gradlew createCombinedTestReport
+   
+    # For identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
+    - name: Inspect GIT status
+      if: always()
+      run: git status > build/reports/git-status.txt
       
     # -----------------------------------------
     # Upload Build Artifacts  
@@ -83,7 +88,13 @@ jobs:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
-          
+    - name: Archive GIT status
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: git-status.txt
+          path: build/reports/git-status.txt
+          retention-days: 14      
     - name: Archive sechub server artifacts
       if: always()
       uses: actions/upload-artifact@v2
