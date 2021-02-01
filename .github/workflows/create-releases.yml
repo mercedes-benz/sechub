@@ -17,6 +17,9 @@ on:
         description: Milestone number for release(s)
         default: 15
         required: true
+      only-draft:
+        default: true
+        required: true
 jobs:
   release-version:
     name: Create releases
@@ -169,7 +172,7 @@ jobs:
           - Some minor changes on SecHub server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: false
+        draft: {{ github.event.inputs.only-draft }}
         prerelease: false
     - name: Upload Server release asset
       id: upload-server-release-asset 
@@ -277,7 +280,7 @@ jobs:
           - Some minor changes on client implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: false
+        draft: {{ github.event.inputs.only-draft }}
         prerelease: false
     - name: Upload Client release asset create ZIP
       id: create-client-release-asset 
@@ -295,7 +298,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
-        asset_path: ./sechub-cli.zip
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip
         asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
         asset_content_type: application/zip
     - name: Upload Client release asset (SHA256)
@@ -340,7 +343,7 @@ jobs:
           - Some minor changes on PDS server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: false
+        draft: {{ github.event.inputs.only-draft }}
         prerelease: false
     - name: Upload PDS release asset
       id: upload-pds-release-asset 
