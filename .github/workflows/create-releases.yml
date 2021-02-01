@@ -3,8 +3,6 @@ name: Release
 
 on: 
   workflow_dispatch:
-    branches:
-      - master
     inputs:
       server-version:
         description: SecHub Server Version (e.g. 0.20.0)
@@ -21,7 +19,7 @@ on:
         required: true
 jobs:
   release-version:
-    name: Tag SecHub Server and/or PDS and/or Client version
+    name: Create releases
     runs-on: ubuntu-latest
     steps:
     - name: Checkout master
