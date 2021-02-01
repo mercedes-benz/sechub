@@ -163,6 +163,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.server-version }}-server
+        commitish: master
         release_name: Server Version ${{ github.event.inputs.server-version }}
         body: |
           Changes in this Release
@@ -271,6 +272,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.client-version }}-client
+        commitish: master
         release_name: Client Version ${{ github.event.inputs.client-version }}
         body: |
           Changes in this Release
@@ -334,6 +336,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.pds-version }}-pds
+        commitish: master
         release_name: PDS Version ${{ github.event.inputs.pds-version }}
         body: |
           Changes in this Release
