@@ -284,7 +284,7 @@ jobs:
       if: github.event.inputs.client-version != ''
       run: |
           cd sechub-cli/build/go
-          zip -r sechub-cli sechub-cli
+          zip -r sechub-cli.zip platform
           sha256sum sechub-cli.zip > sechub-cli.zip.sha256
           cd ../../../
     - name: Upload Client release asset
