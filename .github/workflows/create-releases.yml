@@ -178,7 +178,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
         asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar
         asset_content_type: application/zip
@@ -189,7 +189,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
         asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar
         asset_content_type: application/zip
@@ -204,7 +204,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-architecture.pdf
         asset_name: sechub-architecture-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
@@ -216,7 +216,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
         asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
@@ -228,7 +228,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-quickstart-guide.pdf
         asset_name: sechub-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
@@ -241,7 +241,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
         asset_name: sechub-restapi-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
@@ -254,7 +254,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/api-spec/openapi3.yaml
         asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.yaml
         asset_content_type: text/plain
@@ -283,7 +283,10 @@ jobs:
       id: create-client-release-asset 
       if: github.event.inputs.client-version != ''
       run: |
-          zip -r sechub-cli sechub-cli/build/go
+          cd sechub-cli/build/go
+          zip -r sechub-cli sechub-cli
+          sha256sum sechub-cli.zip > sechub-cli.zip.sha256
+          cd ../../../
     - name: Upload Client release asset
       id: upload-client-release-asset 
       if: github.event.inputs.client-version != ''
@@ -291,9 +294,20 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_client_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
         asset_path: ./sechub-cli.zip
         asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
+        asset_content_type: application/zip
+    - name: Upload Client release asset (SHA256)
+      id: upload-client-release-asset-sha256
+      if: github.event.inputs.client-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-cli.zip.sha256
+        asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
         asset_content_type: application/zip
     # sechub-client.pdf
     - name: Upload sechub-client.pdf release asset
@@ -303,7 +317,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_client_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-client.pdf
         asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
         asset_content_type: application/pdf
@@ -320,7 +334,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.pds-version }}-pds
-        release_name: PDS Version ${{ github.event.inputs.pds-version }}
+        release_name: Server Version ${{ github.event.inputs.pds-version }}
         body: |
           Changes in this Release
           - First Change (please edit)
@@ -335,7 +349,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_pds_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
         asset_path: ./sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
         asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar
         asset_content_type: application/zip
@@ -347,7 +361,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_pds_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
         asset_name: /sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
         asset_content_type: application/pdf
