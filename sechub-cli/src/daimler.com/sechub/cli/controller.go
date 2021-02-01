@@ -22,21 +22,17 @@ type jobScheduleResult struct {
 // Execute starts sechub client
 func Execute() {
 
-	printLogoWithVersion(os.Stdout)
-
 	context := InitializeContext()
+
+	printLogoWithVersion(context)
 
 	switch context.config.action {
 	case scanAction:
-		{
-			commonWayToApprove(context)
-			waitForSecHubJobDoneAndFailOnTrafficLight(context)
-		}
+		commonWayToApprove(context)
+		waitForSecHubJobDoneAndFailOnTrafficLight(context)
 	case scanAsynchronAction:
-		{
-			commonWayToApprove(context)
-			fmt.Println(context.config.secHubJobUUID)
-		}
+		commonWayToApprove(context)
+		fmt.Println(context.config.secHubJobUUID)
 	case getStatusAction:
 		fmt.Println(getSecHubJobState(context, true, false, false))
 	case getReportAction:
@@ -54,13 +50,15 @@ func Execute() {
 	case showHelpAction:
 		PrintUsage(os.Stdout)
 	case showVersionAction:
+		if context.config.quiet {
+			// Print ONLY in quiet mode, because otherwise the version is already printed along with the banner
+			fmt.Println(Version())
+		}
 		// We show the version every time - so nothing more to do here
 	default:
-		{
-			fmt.Printf("Unknown action '%s'\n", context.config.action)
-			showHelpHint()
-			os.Exit(ExitCodeIllegalAction)
-		}
+		fmt.Printf("Unknown action '%s'\n", context.config.action)
+		showHelpHint()
+		os.Exit(ExitCodeIllegalAction)
 	}
 	os.Exit(ExitCodeOK)
 }
@@ -84,7 +82,7 @@ func handleCodeScanParts(context *Context) {
 	if !context.isUploadingSourceZip() {
 		return
 	}
-	sechubUtil.Log("Uploading source zip file")
+	sechubUtil.Log("Uploading source zip file", context.config.quiet)
 	uploadSourceZipFile(context)
 }
 
@@ -120,10 +118,9 @@ func handleCodeScan(context *Context) {
 		Excludes:           json.CodeScan.Excludes,
 		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
 		Debug:              context.config.debug} // pass through debug flag
-	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config)
+	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config, context.config.quiet)
 	if err != nil {
-		fmt.Printf("%s\n", err)
-		fmt.Print("Exiting due to fatal error...\n")
+		sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error...\n", err))
 		os.Remove(context.sourceZipFileName) // cleanup zip file
 		os.Exit(ExitCodeFailed)
 	}

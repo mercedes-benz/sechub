@@ -140,7 +140,6 @@
 
 .findingsTable {
 	width: 100%;
-	/*padding: 10px;*/
 	padding-bottom: 16px;
 	padding-top: 10px;
 	border-collapse: separate;
@@ -164,11 +163,13 @@
 .findingsTable td {
 	padding: 8px;
 	font-family: monospace;
+	vertical-align: top;
+	text-align: left;
 }
 
 .findingsTable td:nth-child(1) {
-	width: 200px;
-	padding-left: 20px;
+	width: 100px;
+	padding-left: 10px;
 }
 
 .findingsTable td:nth-child(2) {
@@ -178,10 +179,8 @@
 
 .findingsTable td:nth-child(3) {
 	border-left: 1px solid #cccccc;
-	white-space: pre-wrap;
 	width: 1024px;
 	display: block;
-	/*     word-wrap:break-word; */
 }
 
 .redFindingsTable {
@@ -213,6 +212,7 @@
 
 .rTable {
 	display: table;
+	padding-top: 0;
 }
 
 .rTableRow {
@@ -237,4 +237,12 @@
 
 .rTableHead {
 	font-weight: bolder;
+}
+
+details[open] summary::after {
+	content: attr(data-close);
+}
+
+details:not([open]) summary::after {
+	content: attr(data-open);
 }

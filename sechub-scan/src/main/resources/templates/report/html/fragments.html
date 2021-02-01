@@ -1,0 +1,304 @@
+<style type="text/css" th:fragment="styles">
+
+.trafficlight {
+	background: #222;
+	background-image: linear-gradient(transparent 2%, #111 2%, transparent 3%, #111 30%);
+	width: 170px;
+	height: 400px;
+	border-radius: 20px;
+	position: relative;
+	border: solid 5px #333;
+}
+
+.trafficlight:before {
+	background: #222;
+	background-image: radial-gradient(#444, #000);
+	content: "";
+	width: 170px;
+	height: 150px;
+	margin: 0 auto;
+	position: absolute;
+	top: -20px;
+	margin-left: 0px;
+	border-radius: 50%;
+	z-index: -1;
+}
+
+.trafficlight:after {
+	background: #222;
+	background-image: linear-gradient(-90deg, #222 0%, #444 30%, #000);
+	content: "";
+	width: 50px;
+	height: 600px;
+	margin-left: 60px;
+	position: absolute;
+	top: 150px;
+	z-index: -1;
+}
+
+.protector {
+	background: transparent;
+	width: 180px;
+	height: 0;
+	position: absolute;
+	top: 20px;
+	left: -35px;
+	border-right: solid 30px transparent;
+	border-left: solid 30px transparent;
+	border-top: solid 90px #111;
+	border-radius: 10px;
+	z-index: -1;
+}
+
+.protector:nth-child(2) {
+	top: 140px;
+}
+
+.protector:nth-child(3) {
+	top: 260px;
+}
+
+.red {
+	background: red;
+	background-image: radial-gradient(brown, transparent);
+	background-size: 5px 5px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	position: absolute;
+	top: 20px;
+	left: 35px;
+	border: dotted 2px red;
+	box-shadow: 0 0 20px #111 inset, 0 0 10px red;
+}
+
+.yellow {
+	background: yellow;
+	background-image: radial-gradient(orange, transparent);
+	background-size: 5px 5px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	border: dotted 2px yellow;
+	position: absolute;
+	top: 145px;
+	left: 35px;
+	box-shadow: 0 0 20px #111 inset, 0 0 10px yellow;
+}
+
+.green {
+	background: green;
+	background-image: radial-gradient(lime, transparent);
+	background-size: 5px 5px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	border: dotted 2px lime;
+	position: absolute;
+	top: 270px;
+	left: 35px;
+	box-shadow: 0 0 20px #111 inset, 0 0 10px lime;
+}
+
+/* The sidebar menu */
+.sidenav {
+	height: 100%;
+	width: 250px;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 10;
+	background-color: white;
+	overflow-x: hidden;
+	padding-top: 20px;
+}
+
+/* Style page content */
+.main {
+	margin-left: 250px;
+	padding: 0px 10px;
+}
+
+.content {
+
+}
+
+.logo {
+	width: 100px;
+}
+
+.logotitle {
+	font-family: monospace;
+	font-size: 60px;
+}
+
+.reportsubtitle {
+	font-family: monospace;
+	font-size: 24px;
+}
+
+.findingsTable {
+	width: 100%;
+	padding-bottom: 16px;
+	padding-top: 10px;
+	border-collapse: separate;
+	border: solid #cccccc 1px;
+	border-radius: 16px;
+	border-spacing: 0px;
+}
+
+.findingsTable th {
+	padding: 8px;
+	vertical-align: top;
+	text-align: left;
+}
+
+.findingsTable tr:nth-child(even) {
+	background: #f0f0f0;
+}
+
+.findingsTable tr:nth-child(odd) {
+	background: #fefefe;
+}
+
+.findingsTable td {
+	padding: 8px;
+	font-family: monospace;
+	vertical-align: top;
+	text-align: left;
+}
+
+.findingsTable td:nth-child(1) {
+	width: 100px;
+	padding-left: 10px;
+}
+
+.findingsTable td:nth-child(2) {
+	width: 200px;
+	border-left: 1px solid #cccccc;
+}
+
+.findingsTable td:nth-child(3) {
+	border-left: 1px solid #cccccc;
+	width: 1024px;
+	display: block;
+}
+
+.redFindingsTable {
+
+}
+
+.yellowFindingsTable {
+
+}
+
+.greenFindingsTable {
+
+}
+
+.greenFindingHeadline {
+	color: #248f24;
+	font-family: monospace;
+}
+
+.yellowFindingHeadline {
+	color: #ccbb00;
+	font-family: monospace;
+}
+
+.redFindingHeadline {
+	color: #cc0000;
+	font-family: monospace;
+}
+
+.rTable {
+	display: table;
+	padding-top: 0;
+}
+
+.rTableRow {
+	display: table-row;
+}
+
+.rTableHeading {
+	display: table-header-group;
+}
+
+.rTableBody {
+	display: table-row-group;
+}
+
+.rTableFoot {
+	display: table-footer-group;
+}
+
+.rTableCell, .rTableHead {
+	display: table-cell;
+}
+
+.rTableHead {
+	font-weight: bolder;
+}
+
+details[open] summary::after {
+	content: attr(data-close);
+}
+
+details:not([open]) summary::after {
+	content: attr(data-open);
+}
+
+</style>
+
+<th:block th:fragment="findingCells">
+
+<td th:text="${finding.severity}">Severity 1</td>
+<td>
+	<div th:text="${finding.name}">Name 1</div>
+	<a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWEId</a>
+</td>
+<td>
+	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
+	<div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
+		<div class="rTableRow">
+			<div class="rTableHead" style="width:5%">Id</div>
+			<div class="rTableHead" style="width:25%">Location</div>
+			<div class="rTableHead" style="width:5%">Line</div>
+			<div class="rTableHead" style="width:5%">Column</div>
+			<div class="rTableHead" style="width:10%">Relevant part</div>
+			<div class="rTableHead" style="width:25%">Source</div>
+		</div>
+		<div class="rTableRow" th:if="${codeScanEntries.get(finding.id).size() - 1  == iterator.index}" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
+			<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
+			<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
+			<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">Line</div>
+			<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">Column</div>
+			<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
+			<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
+		</div>
+	</div>
+	<br />
+	<details th:if="${codeScanSupport.isCodeScan(finding)}">
+		<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
+		<div class="rTable">
+			<div class="rTableRow">
+				<div class="rTableHead" style="width:5%">Id</div>
+				<div class="rTableHead" style="width:25%">Location</div>
+				<div class="rTableHead" style="width:5%">Line</div>
+				<div class="rTableHead" style="width:5%">Column</div>
+				<div class="rTableHead" style="width:10%">Relevant part</div>
+				<div class="rTableHead" style="width:25%">Source</div>
+			</div>
+			<div class="rTableRow" th:each="codeScanEntry,iterator : ${codeScanEntries.get(finding.id)}">
+				<div class="rTableCell" th:text="${iterator.index}" style="width:5%">Id</div>
+				<div class="rTableCell" th:text="${codeScanEntry.location}" style="width:25%">Location</div>
+				<div class="rTableCell" th:text="${codeScanEntry.line}" style="width:5%">Line</div>
+				<div class="rTableCell" th:text="${codeScanEntry.column}" style="width:5%">Column</div>
+				<div class="rTableCell" th:text="${codeScanEntry.relevantPart}" style="width:10%">Relevant Part</div>
+				<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">Source</div>
+			</div>
+		</div>
+	</details>
+</td>
+
+</th:block>

@@ -232,6 +232,7 @@ In below table, there is an overview of what can be defined where.
 | output folder | -output ||
 | poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
 | project id | -project | SECHUB_PROJECT |project
+| quiet mode | -quiet | SECHUB_QUIET |
 | report format | -reportformat||
 | server url | -server | SECHUB_SERVER | server
 | stop on yellow | -stop-on-yellow||
@@ -275,6 +276,9 @@ Here is an overview of mandatory parameter for each `action`:
   Output folder for reports etc. per default current dir
 - `-project <string>` +
   Unique project id - mandatory, but can also be defined in config file or via environment variable.
+- `-quiet` +
+  Quiet mode - Suppress all informative output. Can also be defined via environment variable `SECHUB_QUIET=true`. +
+  Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).
 - `-reportformat <string>` +
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
 - `-server <string>` +
@@ -298,6 +302,8 @@ Additionally to above cmdline options, you can set some values also via environm
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
 - `SECHUB_PROJECT` +
   The SecHub project id. (same as `-project` option)
+- `SECHUB_QUIET` +
+  Quiet mode (`true` or `false` / unset) - Suppress all informative output. (same as `-quiet` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
 - `SECHUB_USERID` +
@@ -415,7 +421,7 @@ with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json markFalsePositives
+sechub -file mark-fp.json markFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
 
@@ -423,7 +429,7 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json unmarkFalsePositives
+sechub -file mark-fp.json unmarkFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
 

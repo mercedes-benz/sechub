@@ -16,6 +16,7 @@ import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportResult;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -44,8 +45,13 @@ public class FalsePositiveJobDataService {
     @Autowired
     ScanAssertService scanAssertService;
 
+    @Autowired
+    AuditLogService auditLogService;
+
     public void addFalsePositives(String projectId, FalsePositiveJobDataList data) {
-        validateUserInput(projectId, data);
+        validateUserInputAndProjectAccess(projectId, data);
+
+        auditLogService.log("triggers add of {} false postive entries to project {}", data.getJobData().size(), projectId);
 
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
 
@@ -57,26 +63,27 @@ public class FalsePositiveJobDataService {
     }
 
     public void removeFalsePositive(String projectId, UUID jobUUID, int findingId) {
-        validateProjectAccess(projectId);
-        
+        validateProjectIdAndProjectAccess(projectId);
+
+        auditLogService.log("triggers remove of false positive entry from project {}: jobUUID={}, findingId={}", projectId, jobUUID, findingId);
+
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
         FalsePositiveJobData jobDataToRemove = new FalsePositiveJobData();
         jobDataToRemove.setJobUUID(jobUUID);
         jobDataToRemove.setFindingId(findingId);
 
-        merger.removeJobDataWithMetaDataFromConfig(config,jobDataToRemove);
-        
+        merger.removeJobDataWithMetaDataFromConfig(config, jobDataToRemove);
+
         /* update configuration */
         configService.set(projectId, CONFIG_ID, config.toJSON());
-        
+
     }
-    
 
     public FalsePositiveProjectConfiguration fetchFalsePositivesProjectConfiguration(String projectId) {
-        validateProjectAccess(projectId);
-        
+        validateProjectIdAndProjectAccess(projectId);
+
         FalsePositiveProjectConfiguration config = fetchOrCreateConfiguration(projectId);
-        
+
         dropMetaData(config);
         return config;
     }
@@ -84,12 +91,12 @@ public class FalsePositiveJobDataService {
     private void dropMetaData(FalsePositiveProjectConfiguration config) {
     }
 
-    private void validateUserInput(String projectId, FalsePositiveJobDataList data) {
-        validateProjectAccess(projectId);
+    private void validateUserInputAndProjectAccess(String projectId, FalsePositiveJobDataList data) {
+        validateProjectIdAndProjectAccess(projectId);
         assertValid(data, falsePositiveJobDataListValidation);
     }
 
-    private void validateProjectAccess(String projectId) {
+    private void validateProjectIdAndProjectAccess(String projectId) {
         userInputAssertion.isValidProjectId(projectId);
         scanAssertService.assertUserHasAccessToProject(projectId);
     }
@@ -115,15 +122,12 @@ public class FalsePositiveJobDataService {
         }
 
     }
-    
+
     private FalsePositiveProjectConfiguration fetchOrCreateConfiguration(String projectId) {
         ScanProjectConfig projectConfig = configService.getOrCreate(projectId, CONFIG_ID, false, "{}"); // access check unnecessary, already done
 
         FalsePositiveProjectConfiguration falsePositiveConfiguration = FalsePositiveProjectConfiguration.fromJSONString(projectConfig.getData());
         return falsePositiveConfiguration;
     }
-
-
-    
 
 }

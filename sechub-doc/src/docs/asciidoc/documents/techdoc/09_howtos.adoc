@@ -8,3 +8,5 @@ include::09_02_howto_configure_mock_behaviours.adoc[]
 
 include::09_03_howto_start_local_like_in_production.adoc[]
 
+include::09_04_howto_quick_test_created_sechub_server_release_local.adoc[]
+

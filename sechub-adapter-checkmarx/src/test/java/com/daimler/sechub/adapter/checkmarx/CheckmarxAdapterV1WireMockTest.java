@@ -34,6 +34,7 @@ import com.daimler.sechub.test.WiremockUrlHistory;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class CheckmarxAdapterV1WireMockTest {
+    
     private static final String CONTENT_FROM_CHECKMARX = "content-from-checkmarx";
     private static final String TARGET_TYPE = "theType";
     private static final String SECHUB_TRACE_ID = "sechub-trace-id";

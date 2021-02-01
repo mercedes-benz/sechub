@@ -79,7 +79,11 @@ func (list *FalsePositivesList) save(context *Context) {
 
 	sechubUtil.WriteContentToFile(filePath, content, "json")
 
-	sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath))
+	if context.config.quiet {
+		fmt.Println(filePath)
+	} else {
+		sechubUtil.Log(fmt.Sprintf("Project %q: false-positives list written to file %s", context.config.projectID, filePath), context.config.quiet)
+	}
 }
 
 func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
@@ -95,7 +99,7 @@ func (list *FalsePositivesList) createFilePath(forceDirectory bool) string {
 }
 
 func getFalsePositivesList(context *Context) []byte {
-	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q.", context.config.projectID))
+	sechubUtil.Log(fmt.Sprintf("Fetching false-positives list for project %q.", context.config.projectID), context.config.quiet)
 
 	// we don't want to send content here
 	context.inputForContentProcessing = []byte(``)
@@ -140,7 +144,7 @@ func uploadFalsePositives(context *Context) {
 	// Send context.inputForContentProcessing to SecHub server
 	sendWithDefaultHeader("PUT", buildFalsePositivesAPICall(context), context)
 
-	sechubUtil.Log(fmt.Sprintf("Successfully uploaded SecHub false-positives list for project %q to server.", context.config.projectID))
+	sechubUtil.Log(fmt.Sprintf("Successfully uploaded SecHub false-positives list for project %q to server.", context.config.projectID), context.config.quiet)
 }
 
 func unmarkFalsePositivesFromFile(context *Context) {
@@ -169,7 +173,7 @@ func unmarkFalsePositivesFromFile(context *Context) {
 }
 
 func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
-	fmt.Printf("Applying false-positives to be removed for project %q:\n", context.config.projectID)
+	sechubUtil.Log(fmt.Sprintln("Applying false-positives to be removed for project '", context.config.projectID, "'"), context.config.quiet)
 	// Loop over list and push to SecHub server
 	// Url scheme: curl 'https://sechub.example.com/api/project/project1/false-positive/f1d02a9d-5e1b-4f52-99e5-401854ccf936/42' -i -X DELETE
 	urlPrefix := buildFalsePositiveAPICall(context)
@@ -179,10 +183,10 @@ func unmarkFalsePositives(context *Context, list *FalsePositivesConfig) {
 	processContent(context)
 
 	for _, element := range list.JobData {
-		fmt.Printf("- JobUUID %s: finding #%d\n", element.JobUUID, element.FindingID)
+		sechubUtil.Log(fmt.Sprintf("- JobUUID %s: finding #%d", element.JobUUID, element.FindingID), context.config.quiet)
 		sendWithDefaultHeader("DELETE", fmt.Sprintf("%s/%s/%d", urlPrefix, element.JobUUID, element.FindingID), context)
 	}
-	fmt.Println("Transfer completed")
+	sechubUtil.Log("Transfer completed", context.config.quiet)
 }
 
 func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
@@ -191,7 +195,7 @@ func newFalsePositivesListFromBytes(bytes []byte) FalsePositivesConfig {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &list)
 	if err != nil {
-		fmt.Println("Encoding is no valid json")
+		sechubUtil.LogError("Encoding is no valid json")
 		sechubUtil.HandleError(err, ExitCodeFailed)
 	}
 	return list

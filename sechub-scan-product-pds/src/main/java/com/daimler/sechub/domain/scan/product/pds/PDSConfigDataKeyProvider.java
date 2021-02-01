@@ -4,12 +4,12 @@ package com.daimler.sechub.domain.scan.product.pds;
 import com.daimler.sechub.adapter.pds.PDSAdapterConstants;
 
 /**
- * Contains keys from executor configuration which are interpreted at PDS side
+ * Contains key providers holding keys for executor configuration which are interpreted <strong>at PDS side</strong>
  * 
  * @author Albert Tregnaghi
  *
  */
-public enum PDSConfigDataKeys implements PDSSecHubConfigDataKeyProvider<PDSConfigDataKey> {
+public enum PDSConfigDataKeyProvider implements PDSSecHubConfigDataKeyProvider<PDSConfigDataKey> {
 
     /**
      * Special key inside executor configuration which will be used to define the
@@ -29,7 +29,7 @@ public enum PDSConfigDataKeys implements PDSSecHubConfigDataKeyProvider<PDSConfi
 
     private PDSConfigDataKey key;
 
-    PDSConfigDataKeys(PDSConfigDataKey key) {
+    PDSConfigDataKeyProvider(PDSConfigDataKey key) {
         this.key = key;
     }
 
