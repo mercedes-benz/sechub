@@ -166,7 +166,7 @@ jobs:
         release_name: Server Version ${{ github.event.inputs.server-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
+          - Some minor changes on SecHub server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
         draft: false
@@ -274,7 +274,7 @@ jobs:
         release_name: Client Version ${{ github.event.inputs.client-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
+          - Some minor changes on client implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
         draft: false
@@ -324,7 +324,7 @@ jobs:
         
     # ******************************************  
     # Now lets create a new PDS release
-    # when client version is set
+    # when pds version is set
     # ******************************************
     - name: Create PDS release
       if: github.event.inputs.pds-version != ''
@@ -334,10 +334,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.pds-version }}-pds
-        release_name: Server Version ${{ github.event.inputs.pds-version }}
+        release_name: PDS Version ${{ github.event.inputs.pds-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
+          - Some minor changes on PDS server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
         draft: false
