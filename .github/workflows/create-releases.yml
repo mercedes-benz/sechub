@@ -73,7 +73,7 @@ jobs:
       if: always()
       run: ./gradlew createCombinedTestReport
    
-    # For identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
+    # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
     - name: Inspect GIT status
       if: always()
       run: git status > build/reports/git-status.txt
