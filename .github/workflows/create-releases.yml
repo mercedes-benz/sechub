@@ -356,7 +356,7 @@ jobs:
     # sechub-product-delegation-server.pdf
     - name: Upload sechub-product-delegation-server.pdf release asset
       id: upload-sechub-doc-pds-release-asset 
-      if: github.event.inputs.client-version != ''
+      if: github.event.inputs.pds-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
