@@ -3,8 +3,6 @@ name: Release
 
 on: 
   workflow_dispatch:
-    branches:
-      - master
     inputs:
       server-version:
         description: SecHub Server Version (e.g. 0.20.0)
@@ -21,7 +19,7 @@ on:
         required: true
 jobs:
   release-version:
-    name: Tag SecHub Server and/or PDS and/or Client version
+    name: Create releases
     runs-on: ubuntu-latest
     steps:
     - name: Checkout master
@@ -31,15 +29,15 @@ jobs:
     
     
     # Create local tags, so we build documentation for this tag...
-    - name: Tag server version - if defined 
+    - name: "Tag server version: v${{ github.event.inputs.server-version }}-server - if defined" 
       if: github.event.inputs.server-version != ''
       run: git tag v${{ github.event.inputs.server-version }}-server
     
-    - name: Tag client version - if defined 
+    - name: "Tag client version: v${{ github.event.inputs.client-version }}-client - if defined" 
       if: github.event.inputs.client-version != ''
       run: git tag v${{ github.event.inputs.client-version }}-client
     
-    - name: Tag PDS version - if defined 
+    - name: "Tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined" 
       if: github.event.inputs.pds-version != ''
       run: git tag v${{ github.event.inputs.pds-version }}-pds
     
@@ -74,6 +72,11 @@ jobs:
     - name: Create combined test report
       if: always()
       run: ./gradlew createCombinedTestReport
+   
+    # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
+    - name: Inspect GIT status
+      if: always()
+      run: git status > build/reports/git-status.txt
       
     # -----------------------------------------
     # Upload Build Artifacts  
@@ -85,7 +88,13 @@ jobs:
           name: combined-sechub-testreport
           path: build/reports/combined-report
           retention-days: 14
-          
+    - name: Archive GIT status
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: git-status.txt
+          path: build/reports/git-status.txt
+          retention-days: 14      
     - name: Archive sechub server artifacts
       if: always()
       uses: actions/upload-artifact@v2
@@ -154,7 +163,7 @@ jobs:
           path: sechub-doc/build/api-spec/
           retention-days: 14
     # ******************************************     
-    # Now lets create a new SERVER release
+    # Now let's create a new SERVER release
     # when server version is set
     # ******************************************     
     - name: Create server release
@@ -165,34 +174,34 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.server-version }}-server
+        commitish: master
         release_name: Server Version ${{ github.event.inputs.server-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
-          - Second Change (please edit)
+          - Some minor changes on SecHub server implementation
           
-          For more details please look at https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}}}?closed=1
-        draft: false
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
         prerelease: false
-    - name: Upload Server Release Asset
+    - name: Upload Server release asset
       id: upload-server-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
         asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar
         asset_content_type: application/zip
-    - name: Upload SecHub developer tools Release Asset
+    - name: Upload SecHub developer tools release asset
       id: upload-developertools-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
         asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar
         asset_content_type: application/zip
@@ -200,70 +209,70 @@ jobs:
     # Server documentation:
     # -----------------------------------------    
     # sechub-architecture.pdf
-    - name: Upload sechub-architecture.pdf RELEASE asset
+    - name: Upload sechub-architecture.pdf release asset
       id: upload-sechub-doc-architecture-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-architecture.pdf
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-architecture.pdf
         asset_name: sechub-architecture-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
     # sechub-operations.pdf
-    - name: Upload sechub-operations.pdf RELEASE asset
+    - name: Upload sechub-operations.pdf release asset
       id: upload-sechub-doc-operations-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-operations.pdf
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
         asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
     # sechub-quickstart-guide.pdf
-    - name: Upload sechub-quickstart-guide.pdf RELEASE asset
+    - name: Upload sechub-quickstart-guide.pdf release asset
       id: upload-sechub-doc-quickstart-guide-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-quickstart-guide.pdf
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-quickstart-guide.pdf
         asset_name: sechub-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
     
     # sechub-restapi.pdf
-    - name: Upload sechub-restapi.pdf RELEASE asset
+    - name: Upload sechub-restapi.pdf release asset
       id: upload-sechub-doc-restapi-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-restapi.pdf
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
         asset_name: sechub-restapi-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
     
     # sechub-openapi.json
-    - name: Upload sechub-openapi3.yaml RELEASE asset
+    - name: Upload sechub-openapi3.yaml release asset
       id: upload-sechub-doc-openapi3-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_server_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
         asset_path: ./sechub-doc/build/api-spec/openapi3.yaml
         asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.yaml
         asset_content_type: text/plain
     
     # ******************************************  
-    # Now lets create a new CLIENT release
+    # Now let's create a new CLIENT release
     # when client version is set
     # ******************************************
     - name: Create client release
@@ -274,47 +283,61 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: v${{ github.event.inputs.client-version }}-client
+        commitish: master
         release_name: Client Version ${{ github.event.inputs.client-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
-          - Second Change (please edit)
+          - Some minor changes on client implementation
           
-          For more details please look at https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}}}?closed=1
-        draft: false
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
         prerelease: false
-    - name: Upload Client Release Asset create ZIP
+    - name: Upload Client release asset create ZIP
       id: create-client-release-asset 
       if: github.event.inputs.client-version != ''
       run: |
-          zip -r sechub-cli sechub-cli/build/go
-    - name: Upload Client Release Asset
+          cd sechub-cli/build/go
+          zip -r sechub-cli.zip platform
+          sha256sum sechub-cli.zip > sechub-cli.zip.sha256
+          cd ../../../
+    - name: Upload Client release asset
       id: upload-client-release-asset 
       if: github.event.inputs.client-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_client_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-cli.zip
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip
         asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
         asset_content_type: application/zip
+    - name: Upload Client release asset (SHA256)
+      id: upload-client-release-asset-sha256
+      if: github.event.inputs.client-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
+        asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
+        asset_content_type: application/zip
     # sechub-client.pdf
-    - name: Upload sechub-client.pdf RELEASE asset
+    - name: Upload sechub-client.pdf release asset
       id: upload-sechub-doc-client-release-asset 
       if: github.event.inputs.client-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_client_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-client.pdf
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-client.pdf
         asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
         asset_content_type: application/pdf
         
     # ******************************************  
-    # Now lets create a new PDS release
-    # when client version is set
+    # Now let's create a new PDS release
+    # when pds version is set
     # ******************************************
     - name: Create PDS release
       if: github.event.inputs.pds-version != ''
@@ -323,37 +346,37 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: v${{ github.event.inputs.client-version }}-client
-        release_name: PDS Version ${{ github.event.inputs.client-version }}
+        tag_name: v${{ github.event.inputs.pds-version }}-pds
+        commitish: master
+        release_name: PDS Version ${{ github.event.inputs.pds-version }}
         body: |
           Changes in this Release
-          - First Change (please edit)
-          - Second Change (please edit)
+          - Some minor changes on PDS server implementation
           
-          For more details please look at https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}}}?closed=1
-        draft: false
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
         prerelease: false
-    - name: Upload PDS Release Asset
+    - name: Upload PDS release asset
       id: upload-pds-release-asset 
       if: github.event.inputs.pds-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_pds_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
         asset_path: ./sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
         asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar
         asset_content_type: application/zip
-    # sechub-client.pdf
-    - name: Upload sechub-product-delegation-server.pdf RELEASE asset
+    # sechub-product-delegation-server.pdf
+    - name: Upload sechub-product-delegation-server.pdf release asset
       id: upload-sechub-doc-pds-release-asset 
-      if: github.event.inputs.client-version != ''
+      if: github.event.inputs.pds-version != ''
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_pds_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./sechub-doc/build/docs/asciidoctor/sechub-product-delegation-server.pdf
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
         asset_name: /sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
         asset_content_type: application/pdf
     

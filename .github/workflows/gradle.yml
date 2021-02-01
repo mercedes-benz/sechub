@@ -9,6 +9,9 @@ on:
      # So this branch is only for github pages. See https://github.com/Daimler/sechub/issues/481
      # for details
      - documentation
+     # We ignore everything where tag starts with v* - this is done by release build!
+    tags-ignore:
+     - v*
 
 jobs:
   build:
