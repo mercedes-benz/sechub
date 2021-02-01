@@ -9,6 +9,10 @@ on:
      # So this branch is only for github pages. See https://github.com/Daimler/sechub/issues/481
      # for details
      - documentation
+     # We no longer build master branch, because only for releases and this is done in create-releases.yaml!
+     - master
+     # We not build features for issue 536 - it's only about create-releases.yaml!
+     - feature-536-*
 
 jobs:
   build:
