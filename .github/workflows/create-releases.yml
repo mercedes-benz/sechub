@@ -17,9 +17,6 @@ on:
         description: Milestone number for release(s)
         default: 15
         required: true
-      only-draft:
-        default: true
-        required: true
 jobs:
   release-version:
     name: Create releases
@@ -172,7 +169,7 @@ jobs:
           - Some minor changes on SecHub server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: {{ github.event.inputs.only-draft }}
+        draft: true
         prerelease: false
     - name: Upload Server release asset
       id: upload-server-release-asset 
@@ -280,7 +277,7 @@ jobs:
           - Some minor changes on client implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: {{ github.event.inputs.only-draft }}
+        draft: true
         prerelease: false
     - name: Upload Client release asset create ZIP
       id: create-client-release-asset 
@@ -343,7 +340,7 @@ jobs:
           - Some minor changes on PDS server implementation
           
           For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
-        draft: {{ github.event.inputs.only-draft }}
+        draft: true
         prerelease: false
     - name: Upload PDS release asset
       id: upload-pds-release-asset 
