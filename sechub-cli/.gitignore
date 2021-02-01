@@ -13,3 +13,6 @@ __debug_bin
 
 # ignore testing artifacts:
 sechub*.json
+
+# ignore all generated go parts
+*_gen.go
