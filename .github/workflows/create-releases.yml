@@ -152,7 +152,7 @@ jobs:
           path: sechub-doc/build/api-spec/
           retention-days: 14
     # ******************************************     
-    # Now lets create a new SERVER release
+    # Now let's create a new SERVER release
     # when server version is set
     # ******************************************     
     - name: Create server release
@@ -260,7 +260,7 @@ jobs:
         asset_content_type: text/plain
     
     # ******************************************  
-    # Now lets create a new CLIENT release
+    # Now let's create a new CLIENT release
     # when client version is set
     # ******************************************
     - name: Create client release
@@ -323,7 +323,7 @@ jobs:
         asset_content_type: application/pdf
         
     # ******************************************  
-    # Now lets create a new PDS release
+    # Now let's create a new PDS release
     # when pds version is set
     # ******************************************
     - name: Create PDS release
