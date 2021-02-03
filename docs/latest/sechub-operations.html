@@ -440,79 +440,81 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.19.1</span>
+<span id="revnumber"> Server 0.20.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
 <li><a href="#about">1. About</a></li>
 <li><a href="#sechub-server">2. SecHub Server</a>
-<ul class="sectlevel2">
-<li><a href="#deployment">2.1. Deployment</a>
 <ul class="sectlevel3">
-<li><a href="#database">2.1.1. Database</a>
+<li><a href="#section-general-configuration">2.1. General configuration</a></li>
+<li><a href="#scheduling-definitions">2.2. Scheduling definitions</a></li>
+<li><a href="#deployment">2.3. Deployment</a>
+<ul class="sectlevel3">
+<li><a href="#database">2.3.1. Database</a>
 <ul class="sectlevel4">
-<li><a href="#plain-server">2.1.1.1. Plain server</a></li>
-<li><a href="#kubernetes">2.1.1.2. Kubernetes</a></li>
+<li><a href="#plain-server">2.3.1.1. Plain server</a></li>
+<li><a href="#kubernetes">2.3.1.2. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#file-upload-storage">2.1.2. File upload storage</a>
+<li><a href="#file-upload-storage">2.3.2. File upload storage</a>
 <ul class="sectlevel4">
-<li><a href="#plain-server-2">2.1.2.1. Plain server</a></li>
-<li><a href="#kubernetes-2">2.1.2.2. Kubernetes</a></li>
+<li><a href="#plain-server-2">2.3.2.1. Plain server</a></li>
+<li><a href="#kubernetes-2">2.3.2.2. Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#server-application">2.1.3. Server Application</a>
+<li><a href="#server-application">2.3.3. Server Application</a>
 <ul class="sectlevel4">
-<li><a href="#mandatory-configuration">2.1.3.1. Mandatory configuration</a>
+<li><a href="#mandatory-configuration">2.3.3.1. Mandatory configuration</a>
 <ul class="sectlevel5">
-<li><a href="#storage-configuration">2.1.3.1.1. Storage configuration</a></li>
+<li><a href="#storage-configuration">2.3.3.1.1. Storage configuration</a></li>
 </ul>
 </li>
-<li><a href="#plain-server-3">2.1.3.2. Plain server</a>
+<li><a href="#plain-server-3">2.3.3.2. Plain server</a>
 <ul class="sectlevel5">
-<li><a href="#logging">2.1.3.2.1. Logging</a></li>
+<li><a href="#logging">2.3.3.2.1. Logging</a></li>
 </ul>
 </li>
-<li><a href="#docker">2.1.3.3. Docker</a></li>
-<li><a href="#kubernetes-3">2.1.3.4. Kubernetes</a>
+<li><a href="#docker">2.3.3.3. Docker</a></li>
+<li><a href="#kubernetes-3">2.3.3.4. Kubernetes</a>
 <ul class="sectlevel5">
-<li><a href="#generator">2.1.3.4.1. Generator</a></li>
-<li><a href="#logging-2">2.1.3.4.2. Logging</a></li>
+<li><a href="#generator">2.3.3.4.1. Generator</a></li>
+<li><a href="#logging-2">2.3.3.4.2. Logging</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#mapping">2.2. Mapping</a>
+<li><a href="#mapping">2.4. Mapping</a>
 <ul class="sectlevel3">
-<li><a href="#rest-api">2.2.1. REST API</a></li>
-<li><a href="#json-structure">2.2.2. JSON structure</a></li>
+<li><a href="#rest-api">2.4.1. REST API</a></li>
+<li><a href="#json-structure">2.4.2. JSON structure</a></li>
 </ul>
 </li>
-<li><a href="#scan-configuration">2.3. Scan configuration</a>
+<li><a href="#scan-configuration">2.5. Scan configuration</a>
 <ul class="sectlevel3">
-<li><a href="#general">2.3.1. General</a>
+<li><a href="#general">2.5.1. General</a>
 <ul class="sectlevel4">
-<li><a href="#name-pattern-id-providers">2.3.1.1. Name pattern ID providers</a></li>
+<li><a href="#name-pattern-id-providers">2.5.1.1. Name pattern ID providers</a></li>
 </ul>
 </li>
-<li><a href="#mapping-2">2.3.2. Mapping</a></li>
-<li><a href="#overview-of-possible-configurations">2.3.3. Overview of possible configurations</a></li>
-<li><a href="#checkmarx">2.3.4. Checkmarx</a>
+<li><a href="#mapping-2">2.5.2. Mapping</a></li>
+<li><a href="#overview-of-possible-configurations">2.5.3. Overview of possible configurations</a></li>
+<li><a href="#checkmarx">2.5.4. Checkmarx</a>
 <ul class="sectlevel4">
-<li><a href="#project-creation-with-dedicated-checkmarx-preset-and-team">2.3.4.1. Project creation with dedicated checkmarx preset and team</a></li>
-<li><a href="#how-to-obtain-preset-id">2.3.4.2. How to obtain preset id</a></li>
-<li><a href="#how-to-obtain-team-id">2.3.4.3. How to obtain team id</a></li>
+<li><a href="#project-creation-with-dedicated-checkmarx-preset-and-team">2.5.4.1. Project creation with dedicated checkmarx preset and team</a></li>
+<li><a href="#how-to-obtain-preset-id">2.5.4.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.5.4.3. How to obtain team id</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#section-initial-profile-and-executors">2.4. Profile and executor configuration</a>
+<li><a href="#section-initial-profile-and-executors">2.6. Profile and executor configuration</a>
 <ul class="sectlevel3">
-<li><a href="#executor-configuration">2.4.1. Executor configuration</a></li>
-<li><a href="#execution-profile">2.4.2. Execution profile</a></li>
+<li><a href="#executor-configuration">2.6.1. Executor configuration</a></li>
+<li><a href="#execution-profile">2.6.2. Execution profile</a></li>
 </ul>
 </li>
 </ul>
@@ -524,6 +526,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#what-does-the-adapter-do">3.1.1. What does the adapter do?</a>
 <ul class="sectlevel4">
 <li><a href="#what-must-be-done-on-checkmarx-ui">3.1.1.1. What must be done on Checkmarx UI</a></li>
+<li><a href="#what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</a>
+<ul class="sectlevel5">
+<li><a href="#environment">3.1.1.2.1. Environment</a></li>
+<li><a href="#runtime">3.1.1.2.2. Runtime</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#summary">3.1.2. Summary</a></li>
@@ -640,7 +648,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.19.1-20201209172355</code></p>
+<p>Documentation version: <code>Server 0.20.0-20210203083110</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -652,15 +660,757 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="sect1">
 <h2 id="sechub-server">2. SecHub Server</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="deployment">2.1. Deployment</h3>
 <div class="sect3">
-<h4 id="database">2.1.1. Database</h4>
+<h4 id="section-general-configuration">2.1. General configuration</h4>
+<div class="paragraph">
+<p>SecHub can be configured  by keys on server startup.
+Using the spring <code>@Value</code> annotation we are able to
+use these keys as Java system properties but also as environment entries.</p>
+</div>
+<div class="paragraph">
+<p>E.g. a key like <code>sechub.server.baseurl</code> can be set with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java ... -Dsechub.server.baseurl=https://sechub.example.org</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or with an environment entry <code>SECHUB_SERVER_BASEURL</code> which
+is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
+</div>
+<div class="paragraph">
+<p>The next text blocks describe the keys available on SecHub:</p>
+</div>
+<table id="section-gen-config-scope-administration" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Scope 'administration'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.feature.showProductResultLink</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrators can turn on this mode to allow product links in json and HTML output</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
+<p class="tableblock"> When disabled, incoming events wille be ignored and no notification sent.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Scope 'anonymous'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One time token time when outdating</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-checkmarx" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Scope 'checkmarx'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url for checkmarx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.clientsecret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">014DF517-39D1-4453-B7B3-9930C563627C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">So called 'client secret' of checkmarx. At leat at the moment this ist just a fixed default value, available in public documentation at <a href="https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up" class="bare">https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.engineconfiguration.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-language Scan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checkmarx engine configuration name. Possible values are documented in the checkmarx REST API documentation: <a href="https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up" class="bare">https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.newproject.teamid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initial team ID. When a scan is started a and checkmarx project is still missing, a new checkmarx project will be automatically created. For creation a team must be defined. This value is an fallback if scan config is not set (scan config does this in a dynamic way by inspecting project names)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of checkmarx user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.trustall</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.userid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User id of checkmarx user</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Scope 'development'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.development.webdesignmode.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Developers can turn on this mode to have reports creating with external css. Normally the html model builder will create embedded css content</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Scope 'initial'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.initialadmin.apitoken</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An apitoken for initial admin, will only be used in DEV and INTEGRATIONTEST profiles and is optional!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.initialadmin.email</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mail of initial administrator</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.initialadmin.userid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Userid of initial administrator</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Scope 'mock'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.mock.cache.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When email mock shall cache the mails this must be configured to true, per default disabled!</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Scope 'nessus'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.defaultpolicyid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default policy ID for nessus scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of nessus used for internet scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password for nessus instance used for internet scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.internet.userid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User id of nessus user (internet)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of nessus used for intranet scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password for nessus instance used for intranet scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.intranet.userid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User id of nessus user (intranet)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.proxy.hostname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy hostname for nessus server connection, when empty no proxy is used. When not empty proxy port must be set too!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.proxy.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy port for nessus server connection, default is 0. If you are setting a proxy hostname you have to configure this value correctly</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.nessus.trustall</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Scope 'netsparker'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.agentname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent to be used by netsparker. If a agent group name is already defined the group will be superiour. If no group set and no agent name netsparker will use a agent but seems to be unpredictable which agent will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.apitoken</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API token for netsparker user</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url for netsparker installation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.defaultpolicyid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default policy ID for netsparker scans</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.internet.agentgroupname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent group to be used by netsparker for <strong>intranet scans</strong>. If not set no agent group will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.intranet.agentgroupname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the agent group to be used by netsparker for <strong>intranet scans</strong>. If not set no agent group will be used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.licenseid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter check operation is called next. When -1 value is 1 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.trustall</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.netsparker.userid</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user id of netsparker user</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Scope 'notification'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.administrators</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single mail adress used for emails to administrators. This should an NPM (non personalized mailbox)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.from</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for emails sent by sechub system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.replyto</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Adress used for reply when email was sent by sechub system</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Scope 'p'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 400 bad request happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.servererror.retry.wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter check operation is called next. When -1 value is 1 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will be canceled/time out. When -1 timeout is 7200 minutes</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Scope 's'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 12. Scope 'scan'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancelation check will be executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay (in milliseconds) for next job execution trigger after last executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay (in milliseconds) for scan config refresh check operation.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Scope 'scheduler'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.healthcheck.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an healtching by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay for next job execution trigger after last executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.maxwaitretry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">300</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When retry mechanism is enabled by <code>sechub.config.trigger.nextjob.retries</code>, and a retry is necessary, this value is used to define the maximum time period in millis which will be waited before retry. Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. So having here a max value will result in a randomized wait time so cluster members will do fetch operations time shifted and automatically reduce collisions!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Scope 'sec'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of SecHub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Scope 'server'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contain stacktraces.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. Scope 'storage'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.accesskey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the access key for used s3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.bucketname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 bucket name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.secretkey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the secret key for used s3 bucket</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.sharedvolume.upload.dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword <strong>temp</strong> as path, this will create a temporary directory (for testing).</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. Scope 'system'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.cpu.average.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.memory.usage.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.cache.time.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds monitoring fetch results are cached before fetching again</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. Scope 'target'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
+Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-ip-pattern' is supported as strategy. For example: <code>intranet-ip-pattern:192.168.178.<strong>,[2001:db8:85a3:0:0:8a2e:370:</strong>]</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given URI.</strong><br>
+Starts always with strategy-identifer, colon and value(s). Currently only 'intranet-hostname-ends-with' is supported as strategy. For example: <code>intranet-hostname-ends-with::intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="scheduling-definitions">2.2. Scheduling definitions</h4>
+<table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 19. Scope 'scheduler'</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Fixed</th>
+</tr>
+</thead>
+</table>
+</div>
+<div class="sect2">
+<h3 id="deployment">2.3. Deployment</h3>
+<div class="sect3">
+<h4 id="database">2.3.1. Database</h4>
 <div class="paragraph">
 <p>SecHub requires a PostgreSQL DB, Version &gt; 10.x</p>
 </div>
 <div class="sect4">
-<h5 id="plain-server">2.1.1.1. Plain server</h5>
+<h5 id="plain-server">2.3.1.1. Plain server</h5>
 <div class="paragraph">
 <p>In this scenario you would configure a database server available from SecHub.</p>
 </div>
@@ -669,7 +1419,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </div>
 </div>
 <div class="sect4">
-<h5 id="kubernetes">2.1.1.2. Kubernetes</h5>
+<h5 id="kubernetes">2.3.1.2. Kubernetes</h5>
 <div class="paragraph">
 <p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
 define a network policy, services, endpoints etc. etc.</p>
@@ -707,7 +1457,7 @@ installation variant&#8230;&#8203;</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="file-upload-storage">2.1.2. File upload storage</h4>
+<h4 id="file-upload-storage">2.3.2. File upload storage</h4>
 <div class="paragraph">
 <p>SecHub requires a file system folder where source scan uploads can be transferred to.</p>
 </div>
@@ -727,14 +1477,14 @@ every cluster member!</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="plain-server-2">2.1.2.1. Plain server</h5>
+<h5 id="plain-server-2">2.3.2.1. Plain server</h5>
 <div class="paragraph">
 <p>In this scenario you would just either reuse SecHub server file system or
 define a network share available form server.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="kubernetes-2">2.1.2.2. Kubernetes</h5>
+<h5 id="kubernetes-2">2.3.2.2. Kubernetes</h5>
 <div class="paragraph">
 <p>Here you must provide a PostgreSQL DB server deployment <strong>(one POD only)</strong>,
 define a network policy, services, endpoints etc.</p>
@@ -757,7 +1507,7 @@ PODs</strong> <em>(means this is a shared kernel / bottle neck but necessary)</e
 </div>
 </div>
 <div class="sect3">
-<h4 id="server-application">2.1.3. Server Application</h4>
+<h4 id="server-application">2.3.3. Server Application</h4>
 <div class="paragraph">
 <p>SecHub server is a written in <code>Java</code> and needs at least <code>JDK 8</code>.</p>
 </div>
@@ -769,7 +1519,7 @@ variables.</p>
 <p>Next blocks describe necessary system properties and their ENV pendants.</p>
 </div>
 <div class="sect4">
-<h5 id="mandatory-configuration">2.1.3.1. Mandatory configuration</h5>
+<h5 id="mandatory-configuration">2.3.3.1. Mandatory configuration</h5>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -870,7 +1620,7 @@ access to this server by port 443, but access to port 8443 is restricted to some
 </table>
 </div>
 <div class="sect5">
-<h6 id="storage-configuration">2.1.3.1.1. Storage configuration</h6>
+<h6 id="storage-configuration">2.3.3.1.1. Storage configuration</h6>
 <div class="paragraph">
 <p>In SecHub we need to store job data (e.g. zipped source code).</p>
 </div>
@@ -884,7 +1634,7 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="plain-server-3">2.1.3.2. Plain server</h5>
+<h5 id="plain-server-3">2.3.3.2. Plain server</h5>
 <div class="paragraph">
 <p>To start the server by executing</p>
 </div>
@@ -896,7 +1646,7 @@ You can either define a shared volume (normally a NFS) or a S3 storage.</p>
 you use environment entries (configuration is explained in common chapter before)</p>
 </div>
 <div class="sect5">
-<h6 id="logging">2.1.3.2.1. Logging</h6>
+<h6 id="logging">2.3.3.2.1. Logging</h6>
 <div class="paragraph">
 <p>SecHub uses per default logging to stdout. So you have to change this behaviour
 for your server when you want to change log output format, location etc.</p>
@@ -908,7 +1658,7 @@ for your server when you want to change log output format, location etc.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="docker">2.1.3.3. Docker</h5>
+<h5 id="docker">2.3.3.3. Docker</h5>
 <div class="paragraph">
 <p>At the moment there exists no default public docker image. But you can easily create your own one.
 Here an example dockerfile:</p>
@@ -985,7 +1735,7 @@ java $JAVA_DBG_OPTS -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urando
 </div>
 </div>
 <div class="sect4">
-<h5 id="kubernetes-3">2.1.3.4. Kubernetes</h5>
+<h5 id="kubernetes-3">2.3.3.4. Kubernetes</h5>
 <div class="paragraph">
 <p>Create a docker file as described before and upload it to your docker registry available from your kubernetes cluster.</p>
 </div>
@@ -1007,7 +1757,7 @@ Provide credentials inside your kubernetes deployment files by at least using
 </table>
 </div>
 <div class="sect5">
-<h6 id="generator">2.1.3.4.1. Generator</h6>
+<h6 id="generator">2.3.3.4.1. Generator</h6>
 <div class="paragraph">
 <p>There exists a class <code>KubernetesTemplateFilesGenerator</code>.
 Starting this class with <code>SECHUB_KUBERNETES_GENO_TARGET_ROOT</code> set to
@@ -1070,7 +1820,7 @@ accidently add the credentials to your repository.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="logging-2">2.1.3.4.2. Logging</h6>
+<h6 id="logging-2">2.3.3.4.2. Logging</h6>
 <div class="paragraph">
 <p>SecHub uses per default logging to stdout, so you just need to use something like
 <code>fluentd</code> PODs to gather log output.</p>
@@ -1080,13 +1830,13 @@ accidently add the credentials to your repository.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="mapping">2.2. Mapping</h3>
+<h3 id="mapping">2.4. Mapping</h3>
 <div id="mapping-technical-details" class="paragraph">
 <p>Mapping is used for simple key value configuration, but also for more sophisticated
 behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="rest-api">2.2.1. REST API</h4>
+<h4 id="rest-api">2.4.1. REST API</h4>
 <div class="paragraph">
 <p>Configuration can be done by REST API.</p>
 </div>
@@ -1102,7 +1852,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-structure">2.2.2. JSON structure</h4>
+<h4 id="json-structure">2.4.2. JSON structure</h4>
 <div class="paragraph">
 <p>given JSON has following structure:</p>
 </div>
@@ -1149,7 +1899,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="scan-configuration">2.3. Scan configuration</h3>
+<h3 id="scan-configuration">2.5. Scan configuration</h3>
 <div id="scan-config-about" class="paragraph">
 <p>Sometimes it is necessary to provide special scan configuration setup, e.g. when
 initializing scan operations at server side.</p>
@@ -1172,9 +1922,9 @@ initializing scan operations at server side.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="general">2.3.1. General</h4>
+<h4 id="general">2.5.1. General</h4>
 <div class="sect4">
-<h5 id="name-pattern-id-providers">2.3.1.1. Name pattern ID providers</h5>
+<h5 id="name-pattern-id-providers">2.5.1.1. Name pattern ID providers</h5>
 <div class="paragraph">
 <p>Currently only <code>namePatternIdProviders</code> are provided, which contain an id and mappings from name patterns
 to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups.</p>
@@ -1182,7 +1932,7 @@ to identifiers. By this very generic approach dedicated adapters can fetch ident
 </div>
 </div>
 <div class="sect3">
-<h4 id="mapping-2">2.3.2. Mapping</h4>
+<h4 id="mapping-2">2.5.2. Mapping</h4>
 <div class="paragraph">
 <p>Scan configuration can be changed by SecHub <code>mapping</code> - look at <a href="#mapping-technical-details">mapping</a> for more information.</p>
 </div>
@@ -1200,7 +1950,7 @@ Just use the <code>provider</code> ID as mapping ID.
 </div>
 </div>
 <div class="sect3">
-<h4 id="overview-of-possible-configurations">2.3.3. Overview of possible configurations</h4>
+<h4 id="overview-of-possible-configurations">2.5.3. Overview of possible configurations</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1229,9 +1979,9 @@ Just use the <code>provider</code> ID as mapping ID.
 </table>
 </div>
 <div class="sect3">
-<h4 id="checkmarx">2.3.4. Checkmarx</h4>
+<h4 id="checkmarx">2.5.4. Checkmarx</h4>
 <div class="sect4">
-<h5 id="project-creation-with-dedicated-checkmarx-preset-and-team">2.3.4.1. Project creation with dedicated checkmarx preset and team</h5>
+<h5 id="project-creation-with-dedicated-checkmarx-preset-and-team">2.5.4.1. Project creation with dedicated checkmarx preset and team</h5>
 <div class="paragraph">
 <p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.
 So far so good.</p>
@@ -1340,7 +2090,7 @@ as shown in following example:</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-to-obtain-preset-id">2.3.4.2. How to obtain preset id</h5>
+<h5 id="how-to-obtain-preset-id">2.5.4.2. How to obtain preset id</h5>
 <div class="paragraph">
 <p>Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -1351,7 +2101,7 @@ web tools in you browser (e.g. enable network monitoring and change prest at UI&
 </div>
 </div>
 <div class="sect4">
-<h5 id="how-to-obtain-team-id">2.3.4.3. How to obtain team id</h5>
+<h5 id="how-to-obtain-team-id">2.5.4.3. How to obtain team id</h5>
 <div class="paragraph">
 <p>Unfortunately the team ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
@@ -1364,16 +2114,16 @@ web tools in you browser (e.g. enable network monitoring and change team at UI&#
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-initial-profile-and-executors">2.4. Profile and executor configuration</h3>
+<h3 id="section-initial-profile-and-executors">2.6. Profile and executor configuration</h3>
 <div class="sect3">
-<h4 id="executor-configuration">2.4.1. Executor configuration</h4>
+<h4 id="executor-configuration">2.6.1. Executor configuration</h4>
 <div class="paragraph">
 <p>With an executor configuration a product executor can be configured for product execution.
 An executor will only be executed when configuration has been enabled!</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="execution-profile">2.4.2. Execution profile</h4>
+<h4 id="execution-profile">2.6.2. Execution profile</h4>
 <div class="paragraph">
 <p>An execution profile can contain multiple executor configurations. The configurations can be
 shared between multiple profiles.</p>
@@ -1490,6 +2240,58 @@ You must only setup those products you have listed inside your
 <p>If users shall have access to Checkmarx UI you must add them to used Checkmarx team (manual)</p>
 </li>
 </ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="what-can-be-configured-for-sechub">3.1.1.2. What can be configured for SecHub ?</h5>
+<div class="sect5">
+<h6 id="environment">3.1.1.2.1. Environment</h6>
+<div class="paragraph">
+<p>Please look at <a href="#section-gen-config-scope-checkmarx">checkmarx config</a>  section.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="runtime">3.1.1.2.2. Runtime</h6>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Standard properties (like base URL, user id etc.) are currently NOT used from
+         existing product executor configurations but only the environment configuration is used at the moment.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.fullscan.always</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When 'true' every scan will be done as a full scan and delta scan is not used.</p>
+<p class="tableblock">                                        Use this only where a delta scan is not possible/ always rejected by checkmarx.
+                                        When 'false' or any other value, delta scan feature is used.</p>
+<p class="tableblock">                                        <em>If a scan fails because checkmarx has detected too many changes there will be a
+                                        retry with fullscan. If you have permanent problems with delta scanning for a
+                                        project you should set this option to 'true' in your checkmarx executor
+                                        configuration.</em></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1802,7 +2604,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.19.1<br>
+ Server 0.20.0<br>
 </div>
 </div>
 <style>

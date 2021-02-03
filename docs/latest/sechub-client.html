@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Client Documentation</h1>
 <div class="details">
-<span id="revnumber"> Client 0.22.1</span>
+<span id="revnumber"> Client 0.23.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -546,13 +546,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#html">3.1.1. HTML</a>
 <ul class="sectlevel4">
-<li><a href="#example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#example-code-scan-report-with-red-traffic-light">3.1.1.1. Example code scan report with red traffic light</a></li>
 <li><a href="#what-about-descriptions-and-mitigation-suggestions">3.1.1.2. What about descriptions and mitigation suggestions?</a></li>
 </ul>
 </li>
 <li><a href="#json">3.1.2. JSON</a>
 <ul class="sectlevel4">
-<li><a href="#example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#example-code-scan-report-with-yellow-traffic-light">3.1.2.1. Example code scan report with yellow traffic light</a></li>
 </ul>
 </li>
 </ul>
@@ -643,7 +643,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.22.1-20201209172355</code></p>
+<p>Documentation version: <code>Client 0.23.0-20210203083110</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1175,6 +1175,12 @@ Your choices are:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">project</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quiet mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-quiet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_QUIET</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">report format</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-reportformat</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1303,6 +1309,11 @@ Output folder for reports etc. per default current dir</p>
 Unique project id - mandatory, but can also be defined in config file or via environment variable.</p>
 </li>
 <li>
+<p><code>-quiet</code><br>
+Quiet mode - Suppress all informative output. Can also be defined via environment variable <code>SECHUB_QUIET=true</code>.<br>
+Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).</p>
+</li>
+<li>
 <p><code>-reportformat &lt;string&gt;</code><br>
 Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")</p>
 </li>
@@ -1348,6 +1359,10 @@ The SecHub api token for <code>SECHUB_USERID</code>. (same as <code>-apitoken</c
 <li>
 <p><code>SECHUB_PROJECT</code><br>
 The SecHub project id. (same as <code>-project</code> option)</p>
+</li>
+<li>
+<p><code>SECHUB_QUIET</code><br>
+Quiet mode (<code>true</code> or <code>false</code> / unset) - Suppress all informative output. (same as <code>-quiet</code> option)</p>
 </li>
 <li>
 <p><code>SECHUB_SERVER</code><br>
@@ -2318,7 +2333,7 @@ sechub scan</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json markFalsePositives</code></pre>
+sechub -file mark-fp.json markFalsePositives</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2330,7 +2345,7 @@ sechub -f mark-fp.json markFalsePositives</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json unmarkFalsePositives</code></pre>
+sechub -file mark-fp.json unmarkFalsePositives</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2485,18 +2500,15 @@ to your current situation.</p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="example-code-scan-report-with-yellow-traffic-light">3.1.1.1. Example code scan report with yellow traffic light</h5>
+<h5 id="example-code-scan-report-with-red-traffic-light">3.1.1.1. Example code scan report with red traffic light</h5>
 <div class="paragraph">
-<p>The next picture shows a report which resulted in yellow traffic light.</p>
+<p>The next picture shows a report which resulted in a red traffic light.</p>
 </div>
 <div class="paragraph">
-<p>At the top of the report you will find the most critical parts - in our example it is only one
-yellow finding which is a <code>Absolute path traversal</code>.</p>
+<p>At the top of the report you will find the most critical parts - in our example it is a red finding which is a <code>Command Injection</code>. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the <code>Type</code> column.</p>
 </div>
 <div class="paragraph">
-<p>The entry point for the found vulnerability is the <strong>Line 28</strong> in java class <code>AsciidocGenerator</code>.
-The data sink (where the path traversal could lead to problems at the end) is ins same class but
-at <strong>Line 29</strong>.</p>
+<p>The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2506,16 +2518,14 @@ at <strong>Line 29</strong>.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The call hierarchy between entry point and data sink is not shown in HTML reports - reason: This would
-overload the report. Even for security mitigations/development changes
-it&#8217;s normally enough to know entry point and data sink + name of finding.</p>
+<p>You can open the complete call hierarchy by clicking on "Open full callstack". This allows you to see the full hierarchy from entry point up to data sink and can help you in analyzing this finding.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>There are other findings (green) which are less problematic.</p>
+<p>There are other findings (yellow and green) which are less problematic.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2525,7 +2535,7 @@ it&#8217;s normally enough to know entry point and data sink + name of finding.<
 </td>
 <td class="content">
 SecHub client will break your build per default only at a RED traffic light, but you can also
-configure client to do this also on color YELLOW. Only Green is always accepted.
+configure the client to do this also on color YELLOW. Only Green is always accepted.
 </td>
 </tr>
 </table>
@@ -2549,7 +2559,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 <p>This is the machine readable report format.</p>
 </div>
 <div class="sect4">
-<h5 id="example-code-scan-report-with-yellow-traffic-light-2">3.1.2.1. Example code scan report with yellow traffic light</h5>
+<h5 id="example-code-scan-report-with-yellow-traffic-light">3.1.2.1. Example code scan report with yellow traffic light</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="JSON">{
@@ -2700,7 +2710,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 </div>
 <div id="footer">
 <div id="footer-text">
- Client 0.22.1<br>
+ Client 0.23.0<br>
 </div>
 </div>
 <style>

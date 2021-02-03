@@ -440,14 +440,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.19.1</span>
+<span id="revnumber"> Server 0.20.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
 <li><a href="#guide">1. Guide</a>
 <ul class="sectlevel2">
-<li><a href="#requirements">1.1. Requirements</a></li>
+<li><a href="#requirements">1.1. Requirements</a>
+<ul class="sectlevel3">
+<li><a href="#alpine-linux-3-10-3-11-3-12">1.1.1. Alpine Linux 3.10, 3.11 &amp; 3.12:</a></li>
+<li><a href="#debian-10">1.1.2. Debian 10:</a></li>
+<li><a href="#fedora-32-33-and-centos-8">1.1.3. Fedora 32 &amp; 33 and CentOS 8:</a></li>
+<li><a href="#ubuntu-18-04-20-04">1.1.4. Ubuntu 18.04 &amp; 20.04:</a></li>
+</ul>
+</li>
 <li><a href="#instructions">1.2. Instructions</a></li>
 </ul>
 </li>
@@ -534,7 +541,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.19.1-20201209172355</code></p>
+<p>Documentation version: <code>Server 0.20.0-20210203083110</code></p>
 </div>
 </div>
 </div>
@@ -551,6 +558,9 @@ build pipeline / contionus integration (CI) and helps to provide
 <ul class="checklist">
 <li>
 <p><i class="fa fa-check-square-o"></i> Getting SecHub</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Building SecHub</p>
 </li>
 <li>
 <p><i class="fa fa-check-square-o"></i> Starting SecHub in Integration Test Server mode</p>
@@ -581,28 +591,47 @@ build pipeline / contionus integration (CI) and helps to provide
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="alpine-linux-3-10-3-11-3-12">1.1.1. Alpine Linux 3.10, 3.11 &amp; 3.12:</h4>
 <div class="paragraph">
-<p>Ubuntu 18.04 &amp; 20.04:</p>
+<p>Java 8:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-8-jdk curl</pre>
+<pre>apk add openjdk8 curl git bash</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Debian 10:</p>
+<p>Java 11:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>apk add openjdk11 curl git bash</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="debian-10">1.1.2. Debian 10:</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sudo apt install git openjdk-11-jdk curl</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>CentOS 8 &amp; Fedora 31:</p>
 </div>
+<div class="sect3">
+<h4 id="fedora-32-33-and-centos-8">1.1.3. Fedora 32 &amp; 33 and CentOS 8:</h4>
 <div class="listingblock">
 <div class="content">
 <pre>sudo dnf install git java-1.8.0-openjdk-devel curl</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ubuntu-18-04-20-04">1.1.4. Ubuntu 18.04 &amp; 20.04:</h4>
+<div class="listingblock">
+<div class="content">
+<pre>sudo apt install git openjdk-8-jdk curl</pre>
+</div>
 </div>
 </div>
 </div>
@@ -618,8 +647,6 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="listingblock">
 <div class="content">
 <pre>$ cd ~
-$ mkdir develop
-$ cd develop
 $ git clone https://github.com/Daimler/sechub.git
 $ cd sechub</pre>
 </div>
@@ -812,7 +839,7 @@ The <code>{noop}</code> has to be excluded from the password string <code>{noop}
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.19.1<br>
+ Server 0.20.0<br>
 </div>
 </div>
 <style>

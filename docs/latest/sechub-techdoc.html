@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 0.19.1</span>
+<span id="revnumber"> Server 0.20.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -1039,6 +1039,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#section-howto-start-localserver-like-in-production">13.3. Howto start a local development server like in production</a></li>
+<li><a href="#section-howto-quick-test-server-release-local">13.4. Howto quickly test a sechub server release on local machine</a>
+<ul class="sectlevel3">
+<li><a href="#get-the-release">13.4.1. Get the release</a></li>
+<li><a href="#start-release-on-your-machine">13.4.2. Start release on your machine</a></li>
+<li><a href="#further-steps">13.4.3. Further steps</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#section-sechub-reporting">14. Reporting</a>
@@ -1047,13 +1054,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#html">14.1.1. HTML</a>
 <ul class="sectlevel4">
-<li><a href="#example-code-scan-report-with-yellow-traffic-light">14.1.1.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#example-code-scan-report-with-red-traffic-light">14.1.1.1. Example code scan report with red traffic light</a></li>
 <li><a href="#what-about-descriptions-and-mitigation-suggestions">14.1.1.2. What about descriptions and mitigation suggestions?</a></li>
 </ul>
 </li>
 <li><a href="#json">14.1.2. JSON</a>
 <ul class="sectlevel4">
-<li><a href="#example-code-scan-report-with-yellow-traffic-light-2">14.1.2.1. Example code scan report with yellow traffic light</a></li>
+<li><a href="#example-code-scan-report-with-yellow-traffic-light">14.1.2.1. Example code scan report with yellow traffic light</a></li>
 </ul>
 </li>
 </ul>
@@ -1144,7 +1151,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.19.1-20201209172355</code></p>
+<p>Documentation version: <code>Server 0.20.0-20210203083110</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1222,7 +1229,7 @@ git config user.name "$firstName $lastName"</pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">git config branch.autosetuprebase always
 git config branch.master.rebase true
-git config push.default matching
+git config push.default current
 git config core.autocrlf input
 git config color.ui auto
 git config --add remote.origin.fetch +refs/tags/*:refs/tags/*</code></pre>
@@ -1670,7 +1677,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2419" height="230">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2421" height="230">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1707,7 +1714,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1247" height="251">
+<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1195" height="251">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -1720,7 +1727,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">3.1.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1407" height="258">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1385" height="258">
 </div>
 <div class="title">Figure 4. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -3496,11 +3503,6 @@ use those by explicit ENV entries</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Shows debug outputs</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_QUIET</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"true"</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Suppresses warning outputs</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SECHUB_TRUSTALL</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">"true"</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Trust all certificates (only for development). Normally SecHub client does show a warning when <code>trustall</code> option is enabled</p></td>
@@ -5064,7 +5066,7 @@ one domain calls another one.</p>
 <h6 id="diagram">10.3.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="852" height="3063">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="801" height="3063">
 </div>
 </div>
 </div>
@@ -5382,7 +5384,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-mapping_configuration_changed">10.3.2.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="603" height="174">
+<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="606" height="174">
 </div>
 </div>
 </div>
@@ -5398,7 +5400,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_deleted">10.3.2.14. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="888" height="233">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="885" height="233">
 </div>
 </div>
 </div>
@@ -5414,7 +5416,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_batch_job_status">10.3.2.16. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="616" height="233">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="686" height="233">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5512,7 +5514,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_purge_job_results">10.3.2.20. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="599" height="308">
+<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="613" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5607,7 +5609,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">10.3.2.24. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2024" height="349">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2069" height="349">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5724,7 +5726,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-scheduler_started">10.3.2.30. Message SCHEDULER_STARTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="540" height="174">
+<img src="images/gen_domain_messaging_scheduler_started.svg" alt="Sequence diagram of messaging SCHEDULER_STARTED" width="522" height="174">
 </div>
 </div>
 </div>
@@ -5740,7 +5742,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">10.3.2.32. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="410" height="308">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="424" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5780,7 +5782,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">10.3.2.34. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="743" height="204">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5809,7 +5811,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">10.3.2.35. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1076" height="233">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1171" height="233">
 </div>
 </div>
 </div>
@@ -5825,7 +5827,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">10.3.2.37. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="623" height="204">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="633" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5854,7 +5856,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">10.3.2.38. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1034" height="262">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1023" height="262">
 </div>
 </div>
 </div>
@@ -5862,7 +5864,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_new_api_token_requested">10.3.2.39. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="972" height="204">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="879" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5899,7 +5901,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">10.3.2.41. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="788" height="204">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -5928,7 +5930,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_roles_changed">10.3.2.42. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="526" height="174">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="546" height="174">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -7077,17 +7079,17 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanReportResultJSON</code> in class `com.daimler.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getScanReportResultJSON</code> in class `com.daimler.sechub.domain.scan.report.ScanReportRestController`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>getJobStatus</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestController`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -7468,14 +7470,14 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7614,14 +7616,14 @@ and that the ownership must be moved before User delete is possible.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">revoke user from schedule access</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccess</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessAtAllService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -8438,16 +8440,16 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
-<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
+<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p>
-<p class="tableblock"><em>This step is defined at method <code>triggerSchedulerStatusRefresh</code> in class `com.daimler.sechub.domain.administration.scheduler.TriggerSchedulerStatusRefreshService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p>
+<p class="tableblock"><em>This step is defined at method <code>disableJobProcessing</code> in class `com.daimler.sechub.domain.administration.scheduler.SwitchSchedulerJobProcessingService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -9509,11 +9511,10 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
-<p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -9525,10 +9526,11 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
+<p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10020,7 +10022,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -10028,7 +10030,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -11092,7 +11094,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/ba688cae-2e61-480f-866e-c360f2b6602e' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/8f5ce8de-9f1c-4906-8f42-38a6ea063635' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12220,7 +12222,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ec528a9b-04a8-492f-b0c3-03bf3a841059/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/80f7c533-c2d3-4f12-ad50-2f112cea013a/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -12266,7 +12268,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ee02b7ae-5dcb-4293-853c-46cc608f2207/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/da80b476-4ef1-4e75-b034-64c55323b389/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12366,7 +12368,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/62e71a40-ff11-4bb3-92df-915fa1b5f48a' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f113e364-6964-4f72-8ac8-a0027a4c1435' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12383,7 +12385,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/c76a114e-0992-49be-9cb5-20313fa985dc' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/68394cd6-3f14-4bf6-8712-01c7fc19d940' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -12396,7 +12398,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/09c8f4fd-bf61-4e6a-9b2d-23ac2ecda4a4' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/349c8df1-6f2e-4e2d-affb-772230414608' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -12951,7 +12953,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/5def1812-32cb-4e0c-be59-14b7cfd4e788' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/e133c746-96f2-4db4-b4b1-ec0098ac1f22' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12966,7 +12968,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/a3161161-32b9-4268-adb8-2e516e82111c' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/5fa70b32-f275-4f9a-bee8-af667dbd776a' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12981,7 +12983,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/56378c6d-34a8-442a-91f2-4ff62b48801a' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a77199a6-21e8-49e8-bc19-36902d8e479c' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13252,7 +13254,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/bf82a014-99cd-45bd-a4af-bb5407390ff8' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/73d18ce2-9c10-47e2-91df-01128525cf4e' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13412,7 +13414,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/5afce549-eeed-47cc-b129-305bb483f19b' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4ced4e12-c31a-4191-a2d7-a2e0b6623859' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13513,7 +13515,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2778c463-968e-4b70-b56b-9530f2057593' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4891b855-043e-4779-a330-b1318364ad50' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -13701,7 +13703,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;b87ee2ca-79ae-446c-aedc-3d5fc8c0b2f3&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;eef0f842-caf9-4db9-ac02-ec62baee4273&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -14448,7 +14450,55 @@ real security products (e.g. full integration testing etc.)</p>
 You should also use same storage as you use in production! So when you are
 using a S3 bucket for storage there you should define this as well!</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="section-howto-quick-test-server-release-local">13.4. Howto quickly test a sechub server release on local machine</h3>
+<div class="paragraph">
+<p>For a "quick test" we start the release simply in integrationtest mode.</p>
+</div>
+<div class="sect3">
+<h4 id="get-the-release">13.4.1. Get the release</h4>
+<div class="paragraph">
+<p>You got different options: You can either download an existing release from <a href="https://github.com/Daimler/sechub/releases" class="bare">https://github.com/Daimler/sechub/releases</a> ,
+or you build it from scratch.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Here an example for a scratch-build: Checked out GIT tag <code>v0.19.1-server</code> and by executing <code>./gradlew bootJar</code>) you will
+find the server release 0.19.1 at <code>sechub-server/build/libs/sechub-server-0.19.1.jar</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="start-release-on-your-machine">13.4.2. Start release on your machine</h4>
+<div class="paragraph">
+<p>Open a shell at the folder where your jar (In the next script we use <code>sechub-server-0.19.1.jar</code>) is located. Then
+execute the server in integrationtest mode.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java -Dspring.profiles.active=mocked_products,h2,integrationtest -Dsechub.server.debug=false -Dsechub.storage.sharedvolume.upload.dir=temp -Dsechub.targettype.detection.intranet.hostname.endswith=intranet.example.org -Dsechub.config.trigger.nextjob.initialdelay=0 -Dsechub.integrationtest.ignore.missing.serverproject=true -jar sechub-server-0.19.1.jar</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="further-steps">13.4.3. Further steps</h4>
+<div class="paragraph">
+<p>Use the DAUI (developer administration UI) to test server. In integration test mode, you can test
+nearly all sechub server features - except the real product communication, because all adapters are
+mocked.</p>
+</div>
 <div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 </div>
@@ -14535,18 +14585,15 @@ to your current situation.</p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="example-code-scan-report-with-yellow-traffic-light">14.1.1.1. Example code scan report with yellow traffic light</h5>
+<h5 id="example-code-scan-report-with-red-traffic-light">14.1.1.1. Example code scan report with red traffic light</h5>
 <div class="paragraph">
-<p>The next picture shows a report which resulted in yellow traffic light.</p>
+<p>The next picture shows a report which resulted in a red traffic light.</p>
 </div>
 <div class="paragraph">
-<p>At the top of the report you will find the most critical parts - in our example it is only one
-yellow finding which is a <code>Absolute path traversal</code>.</p>
+<p>At the top of the report you will find the most critical parts - in our example it is a red finding which is a <code>Command Injection</code>. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the <code>Type</code> column.</p>
 </div>
 <div class="paragraph">
-<p>The entry point for the found vulnerability is the <strong>Line 28</strong> in java class <code>AsciidocGenerator</code>.
-The data sink (where the path traversal could lead to problems at the end) is ins same class but
-at <strong>Line 29</strong>.</p>
+<p>The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -14556,16 +14603,14 @@ at <strong>Line 29</strong>.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The call hierarchy between entry point and data sink is not shown in HTML reports - reason: This would
-overload the report. Even for security mitigations/development changes
-it&#8217;s normally enough to know entry point and data sink + name of finding.</p>
+<p>You can open the complete call hierarchy by clicking on "Open full callstack". This allows you to see the full hierarchy from entry point up to data sink and can help you in analyzing this finding.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>There are other findings (green) which are less problematic.</p>
+<p>There are other findings (yellow and green) which are less problematic.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -14575,7 +14620,7 @@ it&#8217;s normally enough to know entry point and data sink + name of finding.<
 </td>
 <td class="content">
 SecHub client will break your build per default only at a RED traffic light, but you can also
-configure client to do this also on color YELLOW. Only Green is always accepted.
+configure the client to do this also on color YELLOW. Only Green is always accepted.
 </td>
 </tr>
 </table>
@@ -14599,7 +14644,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 <p>This is the machine readable report format.</p>
 </div>
 <div class="sect4">
-<h5 id="example-code-scan-report-with-yellow-traffic-light-2">14.1.2.1. Example code scan report with yellow traffic light</h5>
+<h5 id="example-code-scan-report-with-yellow-traffic-light">14.1.2.1. Example code scan report with yellow traffic light</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="JSON">{
@@ -14750,7 +14795,7 @@ configure client to do this also on color YELLOW. Only Green is always accepted.
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.19.1<br>
+ Server 0.20.0<br>
 </div>
 </div>
 <style>
