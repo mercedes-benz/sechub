@@ -82,6 +82,20 @@ mkdir ~/go/src/daimler.com/
 ln -s $pathToSecHubRepo/sechub-cli/src/daimler.com/sechub ~/go/src/daimler.com/sechub
 ----
 
+==== Special developer files
+
+===== Developer property file
+Inside `~/.sechub/sechub-developer.properties` you can define some special default behaviours
+[options="header",cols="1,1,1"]
+|===
+|Key                                |Possible values/types   |Description   
+//----------------------------------------------------------------------------------------
+|sechub.integrationtest.running     |boolean                 |When `true`, every integration test is run, 
+                                                              no matter if system property is set for launch config or not   
+|===
+
+see `LocalDeveloperFileSetupSupport.java` for more details
+
 === First steps
 Here some first steps to get {sechub} running and being able to develop parts.
 
