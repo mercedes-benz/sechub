@@ -220,6 +220,18 @@
 	display: table-row;
 }
 
+.rTableRowHead {
+	display: table-row;
+}
+
+.rTableRow:nth-child(even) {
+	background: #f0f0f0;
+}
+
+.rTableRow:nth-child(odd) {
+	background: #fefefe;
+}
+
 .rTableHeading {
 	display: table-header-group;
 }
@@ -234,6 +246,7 @@
 
 .rTableCell, .rTableHead {
 	display: table-cell;
+	word-break: break-all;
 }
 
 .rTableHead {
@@ -260,7 +273,7 @@ details:not([open]) summary::after {
 <td>
 	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
 	<div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
-		<div class="rTableRow">
+		<div class="rTableRowHead">
 			<div class="rTableHead" style="width:5%">Id</div>
 			<div class="rTableHead" style="width:25%">Location</div>
 			<div class="rTableHead" style="width:5%">Line</div>
@@ -281,7 +294,7 @@ details:not([open]) summary::after {
 	<details th:if="${codeScanSupport.isCodeScan(finding)}">
 		<summary data-open="Open Callstack" data-close="Close Callstack"></summary>
 		<div class="rTable">
-			<div class="rTableRow">
+			<div class="rTableRowHead">
 				<div class="rTableHead" style="width:5%">Id</div>
 				<div class="rTableHead" style="width:25%">Location</div>
 				<div class="rTableHead" style="width:5%">Line</div>
