@@ -116,10 +116,10 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
     					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
     					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-    					setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
+    					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
     					setClientSecret(setup.getClientSecret()).
     					setEngineConfigurationName(setup.getEngineConfigurationName()).
-    					setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
+    					setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
     					setProjectId(projectId).
     					setTraceID(context.getTraceLogIdAsString()).
     					build();

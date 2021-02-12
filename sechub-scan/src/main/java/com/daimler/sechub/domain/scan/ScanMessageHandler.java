@@ -137,7 +137,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
         }
         /* filter only relevant parts - message may contain uninteresting stuff */
         if (!found.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION, MappingType.GLOBAL_CONFIGURATION)) {
-            LOG.debug("Mapping with id:{} is not relevant and so ignored.", mappingId);
+            LOG.debug("Mapping with id:{} is not relevant for cluster configuration and so ignored.", mappingId);
             return;
         }
 

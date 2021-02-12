@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +9,10 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConstants;
 import com.daimler.sechub.domain.scan.AbstractInstallSetup;
 import com.daimler.sechub.domain.scan.TargetType;
-import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
-import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 @Component
 public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements CheckmarxInstallSetup {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxInstallSetupImpl.class);
 
     @Value("${sechub.adapter.checkmarx.engineconfiguration.name:" + CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME + "}")
     @MustBeDocumented(value = "Checkmarx engine configuration name. " + "Possible values are documented in the checkmarx REST API documentation: "
@@ -34,30 +27,8 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TRUSTALL)
     private boolean trustAllCertificatesNecessary;
 
-    @Autowired
-    ScanConfigService scanConfigService;
-
     public String getClientSecret() {
         return clientSecret;
-    }
-
-    public String getTeamIdForNewProjects(String projectId) {
-        String teamId = scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID).getIdForName(projectId);
-        if (teamId != null) {
-            return teamId;
-        }
-        return null;
-    }
-
-    @Override
-    public Long getPresetIdForNewProjects(String projectId) {
-        String id = scanConfigService.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID).getIdForName(projectId);
-        try {
-            return Long.valueOf(id);
-        } catch (NumberFormatException e) {
-            LOG.error("Was not able to handle preset id for project {} will provide null instead", projectId);
-            return null;
-        }
     }
 
     @Override

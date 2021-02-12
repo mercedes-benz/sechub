@@ -14,7 +14,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministrato
 public class ScanConfigRefreshTriggerService {
 
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 0;
-    private static final int DEFAULT_FIXED_DELAY_MILLIS = 300000; // only template update between cluster entities, so refresh just every 5 minutes
+    private static final int DEFAULT_FIXED_DELAY_MILLIS = 5000;
 
     @MustBeDocumented("Define initial delay (in milliseconds) for scan config refresh check operation.")
     @Value("${sechub.config.scan.scanconfig.refresh.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")

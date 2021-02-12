@@ -7,11 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
@@ -32,6 +29,8 @@ import javax.swing.border.LineBorder;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
+import com.daimler.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
+import com.daimler.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
@@ -203,23 +202,19 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);
 
     }
-
+    SortedMapToTextConverter mapToTextConverter = new SortedMapToTextConverter();
+    TextToSortedMapConverter textToMapConverter = new TextToSortedMapConverter();
+    
     public void setTextForOKButton(String text) {
         buttonOkText = text;
     }
 
     protected String resolveInitialJobParamsAsString() {
-        Properties p = new Properties();
+        TreeMap<String,String> map = new TreeMap<>();
         for (TestExecutorSetupJobParam param : config.setup.jobParameters) {
-            p.put(param.key, param.value);
+            map.put(param.key, param.value);
         }
-        StringWriter out = new StringWriter();
-        try {
-            p.store(out, "Define here your keys in java properties format:");
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        return out.getBuffer().toString();
+        return mapToTextConverter.convertToText(map);
     }
 
     public TestExecutorConfig getUpdatedConfig() {
@@ -246,23 +241,13 @@ public class ExecutorConfigDialogUI {
     }
 
     private void writeJobParamsStringBackToConfig() {
-        Properties p = new Properties();
-        try {
-            p.load(new StringReader(jobParametersTextArea.getText()));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        
+        SortedMap<String, String> map = textToMapConverter.convertFromText(jobParametersTextArea.getText());
+     
         config.setup.jobParameters.clear();
-        for (Entry<Object, Object> entry : p.entrySet()) {
-            Object key = entry.getKey();
-            if (key == null) {
-                continue;
-            }
-            Object value = entry.getValue();
-            if (value == null) {
-                continue;
-            }
-            config.setup.jobParameters.add(new TestExecutorSetupJobParam(key.toString(), value.toString()));
+        for (String key: map.keySet()) {
+            String value = map.get(key);
+            config.setup.jobParameters.add(new TestExecutorSetupJobParam(key, value));
 
         }
     }

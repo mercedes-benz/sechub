@@ -81,8 +81,6 @@ public class CheckmarxProductExecutorMockTest {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
-
-        when(installSetup.getTeamIdForNewProjects(any())).thenReturn("teamIdxyz");
     }
 
     @Test
