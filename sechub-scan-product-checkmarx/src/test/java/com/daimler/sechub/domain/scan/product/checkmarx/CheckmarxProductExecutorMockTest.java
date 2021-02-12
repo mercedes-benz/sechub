@@ -83,8 +83,6 @@ public class CheckmarxProductExecutorMockTest {
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
 
         when(installSetup.getTeamIdForNewProjects(any())).thenReturn("teamIdxyz");
-        when(installSetup.getUserId()).thenReturn("checkmarx-user");
-        when(installSetup.getPassword()).thenReturn("checkmarx-pwd");
     }
 
     @Test

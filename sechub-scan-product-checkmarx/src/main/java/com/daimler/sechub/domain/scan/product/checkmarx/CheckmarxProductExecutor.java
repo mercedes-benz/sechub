@@ -21,7 +21,6 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
@@ -106,7 +105,12 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
     					configure(createAdapterOptionsStrategy(context)).
-    					configure(new OneInstallSetupConfigBuilderStrategy(setup)).
+    					
+    					setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
+    					setUser(configSupport.getUser()).
+    					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+    					setProductBaseUrl(configSupport.getProductBaseURL()).
+
     					setAlwaysFullScan(callBack.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).

@@ -68,6 +68,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.productIdentifier=TestExecutorProductIdentifier.NETSPARKER.name();
         config.name=INTTEST_NAME_PREFIX+"Netsparker V1";
         config.setup.baseURL="https://netsparker.example.com";
+        config.setup.credentials.user="netsparker-user";
+        config.setup.credentials.password="netsparker-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;
     }
@@ -78,7 +80,9 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.CHECKMARX.name();
         config.name=INTTEST_NAME_PREFIX+"Checkmarx V1";
-        config.setup.baseURL="https://checkmarx.example.com";
+        config.setup.baseURL="https://checkmarx.mock.example.org:6011";
+        config.setup.credentials.user="checkmarx-user";
+        config.setup.credentials.password="checkmarx-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;
     }
@@ -90,6 +94,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.productIdentifier=TestExecutorProductIdentifier.NESSUS.name();
         config.name=INTTEST_NAME_PREFIX+"Nessus V1";
         config.setup.baseURL="https://nessus.example.com";
+        config.setup.credentials.user="nessus-user";
+        config.setup.credentials.password="nessus-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;
     }

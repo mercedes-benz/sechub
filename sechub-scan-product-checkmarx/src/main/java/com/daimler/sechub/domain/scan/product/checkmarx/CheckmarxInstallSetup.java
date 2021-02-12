@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.checkmarx;
 
-import com.daimler.sechub.domain.scan.AnyTargetOneInstallSetup;
+import com.daimler.sechub.domain.scan.InstallSetup;
 
-public interface CheckmarxInstallSetup extends AnyTargetOneInstallSetup {
+public interface CheckmarxInstallSetup extends InstallSetup{
 
     /**
      * Provide team id when project has to be created
@@ -36,4 +36,7 @@ public interface CheckmarxInstallSetup extends AnyTargetOneInstallSetup {
      * @return
      */
     public String getEngineConfigurationName();
+    
+    
+    public boolean isHavingUntrustedCertificate();
 }

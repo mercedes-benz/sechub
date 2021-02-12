@@ -28,18 +28,6 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
             + "does this in a dynamic way by inspecting project names)")
     String teamIdForNewProjects;
 
-    @Value("${sechub.adapter.checkmarx.baseurl}")
-    @MustBeDocumented(value = "Base url for checkmarx")
-    private String baseURL;
-
-    @Value("${sechub.adapter.checkmarx.userid}")
-    @MustBeDocumented(value = "User id of checkmarx user", secret = true)
-    private String userId;
-
-    @Value("${sechub.adapter.checkmarx.password}")
-    @MustBeDocumented(value = "Password of checkmarx user", secret = true)
-    private String password;
-
     @Value("${sechub.adapter.checkmarx.engineconfiguration.name:" + CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME + "}")
     @MustBeDocumented(value = "Checkmarx engine configuration name. " + "Possible values are documented in the checkmarx REST API documentation: "
             + "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up")
@@ -56,23 +44,8 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
     @Autowired
     ScanConfigService scanConfigService;
 
-    @Override
-    public String getBaseURL() {
-        return baseURL;
-    }
-
     public String getClientSecret() {
         return clientSecret;
-    }
-
-    @Override
-    public String getUserId() {
-        return userId;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     public String getTeamIdForNewProjects(String projectId) {
