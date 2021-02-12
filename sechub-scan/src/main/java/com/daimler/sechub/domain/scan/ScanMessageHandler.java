@@ -12,7 +12,7 @@ import com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllSe
 import com.daimler.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
-import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
+import com.daimler.sechub.domain.scan.config.UpdateScanConfigService;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
@@ -52,7 +52,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     ProjectDataDeleteService projectDataDeleteService;
 
     @Autowired
-    UpdateScanMappingService updateScanMappingService;
+    UpdateScanConfigService updateScanMappingService;
 
     @Autowired
     ProductResultService productResultService;

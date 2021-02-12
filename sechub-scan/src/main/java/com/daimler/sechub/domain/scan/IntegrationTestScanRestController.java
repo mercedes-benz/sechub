@@ -22,7 +22,7 @@ import com.daimler.sechub.domain.scan.config.NamePatternIdprovider;
 import com.daimler.sechub.domain.scan.config.ScanConfigService;
 import com.daimler.sechub.domain.scan.config.ScanMapping;
 import com.daimler.sechub.domain.scan.config.ScanMappingRepository;
-import com.daimler.sechub.domain.scan.config.UpdateScanMappingService;
+import com.daimler.sechub.domain.scan.config.UpdateScanConfigService;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
@@ -59,7 +59,7 @@ public class IntegrationTestScanRestController {
     private ScanReportCountService scanReportCountService;
 
     @Autowired
-    private UpdateScanMappingService updateScanMappingService;
+    private UpdateScanConfigService updateScanMappingService;
 
     @Autowired
     private ScanMappingRepository scanMappingrepository;

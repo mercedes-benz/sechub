@@ -15,9 +15,9 @@ public class MappingUI {
     private String mappingId;
     private JPanel panel;
     private JTextArea textArea;
-    private AdapterDialogUI dialogUI;
+    private ProductExecutorTemplateDialogUI dialogUI;
 
-    MappingUI(AdapterDialogUI ui, String mappingId) {
+    MappingUI(ProductExecutorTemplateDialogUI ui, String mappingId) {
         this.dialogUI = ui;
         this.mappingId = mappingId;
         this.panel = new JPanel(new BorderLayout());
@@ -29,11 +29,13 @@ public class MappingUI {
         buttonPanel.add(new JButton(new LoadJSONAdapterDialogAction(this)));
         buttonPanel.add(new JButton(new SaveJSONAdapterDialogAction(this)));
         buttonPanel.add(new JSeparator());
+        buttonPanel.add(new JButton(new ScanConfigTestJSONasNamePatternDialogAction(this)));
+        buttonPanel.add(new JButton(new CopyToClipboardAsPropertyEntryAction(this)));
+        buttonPanel.add(new JSeparator());
+        buttonPanel.add(new JButton(new CreateExampleJSONAdapterDialogAction(this)));
+        buttonPanel.add(new JSeparator());
         buttonPanel.add(new JButton(new ImportCSVToJSONAdapterDialogAction(this)));
         buttonPanel.add(new JButton(new ExportJSONToCSVAdapterDialogAction(this)));
-        buttonPanel.add(new JSeparator());
-        buttonPanel.add(new JButton(new ScanConfigTestJSONasNamePatternDialogAction(this)));
-        buttonPanel.add(new JButton(new CreateExampleJSONAdapterDialogAction(this)));
 
         panel.add(buttonPanel,BorderLayout.SOUTH);
         
@@ -47,7 +49,7 @@ public class MappingUI {
         return panel;
     }
 
-    AdapterDialogUI getDialogUI() {
+    ProductExecutorTemplateDialogUI getDialogUI() {
         return dialogUI;
     }
 

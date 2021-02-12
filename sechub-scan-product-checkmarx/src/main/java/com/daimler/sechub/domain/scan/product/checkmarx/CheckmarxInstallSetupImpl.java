@@ -21,13 +21,6 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
 
     private static final Logger LOG = LoggerFactory.getLogger(CheckmarxInstallSetupImpl.class);
 
-    @Value("${sechub.adapter.checkmarx.newproject.teamid}")
-    @MustBeDocumented(value = "Initial team ID. When a scan is started a and checkmarx project is still missing, "
-            + "a new checkmarx project will be automatically created. "
-            + "For creation a team must be defined. This value is an fallback if scan config is not set (scan config "
-            + "does this in a dynamic way by inspecting project names)")
-    String teamIdForNewProjects;
-
     @Value("${sechub.adapter.checkmarx.engineconfiguration.name:" + CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME + "}")
     @MustBeDocumented(value = "Checkmarx engine configuration name. " + "Possible values are documented in the checkmarx REST API documentation: "
             + "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up")
@@ -53,7 +46,7 @@ public class CheckmarxInstallSetupImpl extends AbstractInstallSetup implements C
         if (teamId != null) {
             return teamId;
         }
-        return teamIdForNewProjects;
+        return null;
     }
 
     @Override

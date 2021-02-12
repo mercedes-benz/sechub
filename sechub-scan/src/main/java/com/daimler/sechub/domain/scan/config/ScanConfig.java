@@ -10,7 +10,7 @@ import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // we do ignore to avoid problems from wrong configured values!
-@MustBeKeptStable("This configuration is used by users to schedule a job. It has to be backward compatible. To afford this we will NOT remove older parts since final API releases")
+@MustBeKeptStable("This configuration is used by admins to have templates for their mapping configurations etc.")
 public class ScanConfig implements JSONable<ScanConfig> {
 
 	private String apiVersion;

@@ -19,7 +19,6 @@ public class CheckmarxInstallSetupImplTest {
     @Before
     public void before() {
         setupImplToTest = new CheckmarxInstallSetupImpl();
-        setupImplToTest.teamIdForNewProjects = "A0";
         scanConfigService = mock(ScanConfigService.class);
         setupImplToTest.scanConfigService = scanConfigService;
     }

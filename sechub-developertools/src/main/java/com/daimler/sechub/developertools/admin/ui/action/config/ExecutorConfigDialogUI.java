@@ -21,14 +21,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.LineBorder;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
@@ -99,9 +102,9 @@ public class ExecutorConfigDialogUI {
 
         dialog.setTitle(title);
         dialog.setModal(true);
-        dialog.setLocationRelativeTo(context.getFrame());
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
         dialog.pack();
+        dialog.setLocationRelativeTo(context.getFrame());
         dialog.setVisible(true);
     }
 
@@ -125,6 +128,7 @@ public class ExecutorConfigDialogUI {
 
     private void createMainPanel() {
         mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(new LineBorder(Color.GREEN));
 
         int row = 0;
         /* name */
@@ -152,8 +156,8 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(new JLabel("Product identifier"), createLabelConstraint(row));
         mainPanel.add(productIdentifierCombobox, createComponentConstraint(row++));
 
-        SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 9999, 1);
-        executorVersionTextField = new JSpinner(model);
+        SpinnerNumberModel versionSpinnerModel = new SpinnerNumberModel(1, 0, 9999, 1);
+        executorVersionTextField = new JSpinner(versionSpinnerModel);
         executorVersionTextField.setValue(config.executorVersion);
         mainPanel.add(new JLabel("Executor version"), createLabelConstraint(row));
         mainPanel.add(executorVersionTextField, createComponentConstraint(row++));
@@ -171,12 +175,29 @@ public class ExecutorConfigDialogUI {
         pwdTextField = new JTextField(config.setup.credentials.password);
         mainPanel.add(new JLabel("Product password/apitoken:"), createLabelConstraint(row));
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
+        
+        /* template button*/
+        JButton button = new JButton("Open template dialog");
+        button.addActionListener(e -> {
+            ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
+            int version = (int) versionSpinnerModel.getNumber();
+            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier, version);
+            if (action==null) {
+                JOptionPane.showMessageDialog(context.getFrame(),"No template dialog available for "+procutIdentifier+" v"+version);
+                return;
+            }
+            action.actionPerformed(e);
+        });
+            
+        mainPanel.add(button, createComponentConstraint(row++));
 
         /* job parameters */
         jobParametersTextArea = new JTextArea(resolveInitialJobParamsAsString());
-        mainPanel.add(new JLabel("Job parameters:"), createLabelConstraint(row));
+        jobParametersTextArea.setRows(30);
+        jobParametersTextArea.setBorder(new LineBorder(Color.RED));
+        mainPanel.add(new JLabel("Parameters:"), createLabelConstraint(row));
         GridBagConstraints jobParameterGridDataConstraints = createComponentConstraint(row++);
-        jobParameterGridDataConstraints.gridheight = 10;
+        jobParameterGridDataConstraints.gridheight = 140;
         jobParameterGridDataConstraints.weighty = 0.0;
         jobParameterGridDataConstraints.fill = GridBagConstraints.BOTH;
         mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);

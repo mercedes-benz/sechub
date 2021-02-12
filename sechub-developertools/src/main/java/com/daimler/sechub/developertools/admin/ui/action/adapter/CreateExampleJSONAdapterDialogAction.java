@@ -11,7 +11,7 @@ public class CreateExampleJSONAdapterDialogAction extends AbstractAdapterDialogM
     private static final long serialVersionUID = 1L;
 
     public CreateExampleJSONAdapterDialogAction(MappingUI ui) {
-        super("Show example", ui);
+        super("Example", ui);
     }
 
     @Override

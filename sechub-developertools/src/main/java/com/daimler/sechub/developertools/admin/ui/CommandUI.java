@@ -3,7 +3,9 @@ package com.daimler.sechub.developertools.admin.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.AbstractAction;
@@ -17,7 +19,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
-import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowAdapterDialogAction;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
@@ -95,6 +97,7 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserDetailActi
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
+import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
@@ -109,6 +112,7 @@ public class CommandUI {
     UIContext context;
     private JToolBar toolBar;
     private CheckStatusAction checkStatusAction;
+    private Set<ShowProductExecutorTemplatesDialogAction> showProductExecutorTemplatesDialogActions = new HashSet<>();
 
     public JPanel getPanel() {
         return panel;
@@ -124,6 +128,9 @@ public class CommandUI {
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         progressBar.setPreferredSize(new Dimension(400, 30));
+        
+        // register product executor template actions
+        register(new ShowProductExecutorTemplatesDialogAction(context, ProductIdentifier.CHECKMARX, 1, MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
 
         panel = new JPanel(new BorderLayout());
 
@@ -192,11 +199,10 @@ public class CommandUI {
         menuBar.add(mainMenu);
     }
 
-    
     public void createConfigMenu() {
         JMenu menu = new JMenu("Config");
         menuBar.add(menu);
-        
+
         JMenu executorMenu = new JMenu("Executors");
         menu.add(executorMenu);
 
@@ -207,20 +213,39 @@ public class CommandUI {
 
         menu.addSeparator();
         JMenu profileMenu = new JMenu("Profiles");
-       
+
         profileMenu.setIcon(EDIT_ROAD_BLACK_ICON);
         menu.add(profileMenu);
-        
+
         add(profileMenu, new CreateExecutionProfileAction(context));
         add(profileMenu, new EditExecutionProfileAction(context));
         add(profileMenu, new DeleteProfileAction(context));
         add(profileMenu, new ListExecutionProfilesAction(context));
         menu.addSeparator();
-        
-        JMenu mappingsMenu = new JMenu("Mappings");
+
+        JMenu mappingsMenu = new JMenu("Templates");
         menu.add(mappingsMenu);
-        add(mappingsMenu, new ShowAdapterDialogAction(context, "Checkmarx", MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),
-                MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+        for (ShowProductExecutorTemplatesDialogAction action : showProductExecutorTemplatesDialogActions) {
+            add(mappingsMenu, action);
+        }
+    }
+
+    private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
+        showProductExecutorTemplatesDialogActions.add(action);
+        return action;
+    }
+
+    public ShowProductExecutorTemplatesDialogAction resolveShowProductExecutorMappingDialogActionOrNull(ProductIdentifier productId, int version) {
+        for (ShowProductExecutorTemplatesDialogAction action : showProductExecutorTemplatesDialogActions) {
+            if (!action.getProductIdentifier().equals(productId)) {
+                continue;
+            }
+            if (action.getVersion() != version) {
+                continue;
+            }
+            return action;
+        }
+        return null;
     }
 
     public void createPDSMenu() {
@@ -281,18 +306,18 @@ public class CommandUI {
         add(menu, new DeleteProjectAction(context));
         add(menu, new ShowProjectDetailAction(context));
         add(menu, new ShowProjectsScanLogsAction(context));
-        
+
         menu.addSeparator();
         add(menu, new AssignUserToProjectAction(context));
         add(menu, new UnassignUserFromProjectAction(context));
-        
+
         menu.addSeparator();
         add(menu, new ShowProjectListAction(context));
-        
+
         menu.addSeparator();
         add(menu, new UpdateProjectWhitelistAction(context));
         add(menu, new UpdateProjectMetaDataAction(context));
-        
+
         menu.addSeparator();
         JMenu profiles = new JMenu("Execution profiles");
         profiles.setIcon(EDIT_ROAD_BLACK_ICON);
@@ -310,7 +335,6 @@ public class CommandUI {
         add(falsePositives, new MarkProjectFalsePositiveAction(context));
         menu.add(falsePositives);
 
-
         JMenu projectMockData = new JMenu("Mockdata");
         menu.add(projectMockData);
 
@@ -318,7 +342,6 @@ public class CommandUI {
         add(projectMockData, new GetProjectMockConfigurationAction(context));
 
     }
-    
 
     private void createStatusMenu() {
         JMenu menu = new JMenu("Status");
@@ -406,11 +429,11 @@ public class CommandUI {
         add(massOperationsMenu, new DeleteProjectMassCSVImportAction(context));
         add(massOperationsMenu, new UnassignUserFromProjectMassCSVImportAction(context));
         massOperationsMenu.addSeparator();
-        
+
         JMenu developerBatchOperations = new JMenu("Developer batch ops");
         massOperationsMenu.add(developerBatchOperations);
         developerBatchOperations.add(new DeveloperBatchCreateCheckmarxTestSetupAction(context));
-        
+
     }
 
     private void add(JMenu menu, AbstractAction action) {
