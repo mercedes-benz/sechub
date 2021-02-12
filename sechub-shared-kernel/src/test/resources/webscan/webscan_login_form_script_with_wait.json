@@ -9,12 +9,17 @@
             "form": {
                 "script": [
                     {
-                        "action": "username",
+                        "action": "input",
                         "selector": "#example_login_userid",
                         "value": "user2"
                     },
                     {
-                        "action": "password",
+                        "action": "wait",
+                        "value": "1458",
+                        "unit": "millisecond"
+                    },
+                    {
+                        "action": "input",
                         "selector": "#example_login_pwd",
                         "value": "pwd2"
                     },

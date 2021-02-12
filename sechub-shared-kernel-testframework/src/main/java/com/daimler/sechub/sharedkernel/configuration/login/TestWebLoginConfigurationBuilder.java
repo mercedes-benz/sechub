@@ -59,18 +59,56 @@ public class TestWebLoginConfigurationBuilder {
 		private ScriptEntryBuilder() {
 
 		}
-
-		public ScriptEntryBuilder step(String type, String selector, String value, String description) {
-			ScriptEntry entry = new ScriptEntry();
-			entry.action = type;
-			entry.selector = Optional.ofNullable(selector);
-			entry.value = Optional.ofNullable(value);
-			entry.description = Optional.ofNullable(description);
-
-			entries.add(entry);
-			return this;
+		
+		public ScriptStepBuilder createStep() {
+		    return new ScriptStepBuilder();
 		}
-
+		
+		public class ScriptStepBuilder {
+	        private ScriptEntry entry ;
+		    private ScriptStepBuilder() {
+		        entry = new ScriptEntry();
+		    }
+		    
+		    public ScriptStepBuilder action(String action) {
+		        entry.action = action;
+                return this;
+            }
+		    
+		    public ScriptStepBuilder selector(String selector) {
+		        entry.selector = Optional.ofNullable(selector);
+		        return this;
+		    }
+		    
+		    public ScriptStepBuilder value(String value) {
+                entry.value = Optional.ofNullable(value);
+                return this;
+            }
+		    
+		    public ScriptStepBuilder description(String description) {
+		        entry.description = Optional.ofNullable(description);
+		        return this;
+            }
+		    
+	        /**
+             * The time unit
+             * 
+             * E. g. "hour", "millisecond" etc.
+             * 
+             * @param unit
+             * @return
+             */
+		    public ScriptStepBuilder unit(String unit) {
+		        entry.unit = Optional.ofNullable(unit);
+		        return this;
+		    }
+		    
+		    public ScriptEntryBuilder add() {
+	            entries.add(entry);
+	            return ScriptEntryBuilder.this;
+	        }
+		}
+		
 		public TestWebConfigurationBuilder done() {
 			FormLoginConfiguration formLogin = new FormLoginConfiguration();
 			Optional<List<ScriptEntry>> scriptOption = Optional.of(entries);

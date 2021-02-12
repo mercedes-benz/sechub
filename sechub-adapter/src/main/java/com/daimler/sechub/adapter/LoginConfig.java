@@ -9,37 +9,37 @@ import com.daimler.sechub.commons.core.security.CryptoAccess;
 
 public interface LoginConfig {
 
-	default boolean isBasic() {
-		return this instanceof BasicLoginConfig;
-	}
+    default boolean isBasic() {
+        return this instanceof BasicLoginConfig;
+    }
 
-	default boolean isFormAutoDetect() {
-		return this instanceof FormAutoDetectLoginConfig;
-	}
-	default boolean isFormScript() {
-		return this instanceof FormScriptLoginConfig;
-	}
+    default boolean isFormAutoDetect() {
+        return this instanceof FormAutoDetectLoginConfig;
+    }
 
-	public URL getLoginURL();
+    default boolean isFormScript() {
+        return this instanceof FormScriptLoginConfig;
+    }
 
-	default BasicLoginConfig asBasic() {
-		return (BasicLoginConfig)this;
-	}
+    public URL getLoginURL();
 
-	default FormAutoDetectLoginConfig asFormAutoDetect() {
-		return (FormAutoDetectLoginConfig)this;
-	}
+    default BasicLoginConfig asBasic() {
+        return (BasicLoginConfig) this;
+    }
 
-	default FormScriptLoginConfig asFormScript() {
-		return (FormScriptLoginConfig)this;
-	}
+    default FormAutoDetectLoginConfig asFormAutoDetect() {
+        return (FormAutoDetectLoginConfig) this;
+    }
 
-	default String decrypt(SealedObject sealed) {
-		return CryptoAccess.CRYPTO_STRING.unseal(sealed);
-	}
-	default SealedObject encrypt(String string) {
-		return CryptoAccess.CRYPTO_STRING.seal(string);
-	}
+    default FormScriptLoginConfig asFormScript() {
+        return (FormScriptLoginConfig) this;
+    }
 
+    default String decrypt(SealedObject sealed) {
+        return CryptoAccess.CRYPTO_STRING.unseal(sealed);
+    }
 
+    default SealedObject encrypt(String string) {
+        return CryptoAccess.CRYPTO_STRING.seal(string);
+    }
 }

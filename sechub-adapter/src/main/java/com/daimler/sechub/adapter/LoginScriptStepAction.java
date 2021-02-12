@@ -2,9 +2,14 @@ package com.daimler.sechub.adapter;
 
 public enum LoginScriptStepAction {
     INPUT,
+    
     CLICK,
+    
     PASSWORD,
-    USERNAME;
+    
+    USERNAME,
+    
+    WAIT;
     
     public static LoginScriptStepAction valueOfIgnoreCase(String action) {
         LoginScriptStepAction loginAction = null;

@@ -12,7 +12,8 @@ public class ScriptEntry {
 	Optional<String> value = Optional.empty();
 	
 	Optional<String> description = Optional.empty();
-
+	
+	Optional<String> unit = Optional.empty();
 
     /**
 	 * @return type of action as string (e.g. "input", "click")
@@ -30,5 +31,9 @@ public class ScriptEntry {
 
     public Optional<String> getDescription() {
         return description;
+    }
+    
+    public Optional<String> getUnit() {
+        return unit;
     }
 }

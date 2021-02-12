@@ -93,9 +93,6 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 		entry.put("IsActive", true);
 		personas.add(entry);
 		formAuthenticationSettingModel.put("Personas", personas);
-
-
-
 	}
 
 	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New

@@ -18,6 +18,7 @@ public class LoginScriptStepTest {
 		assertFalse(step(action).isClick());
 		assertFalse(step(action).isPassword());
 		assertFalse(step(action).isUserName());
+		assertFalse(step(action).isWait());
 	}
 
 	@Test

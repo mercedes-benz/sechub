@@ -81,6 +81,17 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
                     step.description = description;
                     return this;
                 }
+                
+                public FormScriptLoginStepBuilder unit(String unitAsString) {
+                    SecHubTimeUnit unit = null;
+                    
+                    if (unitAsString != null) {
+                        unit = SecHubTimeUnit.valueOfUnit(unitAsString);
+                    }
+                    
+                    step.unit = unit;
+                    return this;
+                }
 
 				public FormScriptLoginBuilder endStep() {
 					formScriptLoginConfig.getSteps().add(step);

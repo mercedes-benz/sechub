@@ -60,7 +60,6 @@ public class SecHubConfigurationTest {
         /*-- form --*/
         Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
         assertFalse("form login config must NOT be present", form.isPresent());
-
     }
 
     @Test
@@ -78,6 +77,48 @@ public class SecHubConfigurationTest {
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
         assertTrue("login config must be present", loginOption.isPresent());
+        WebLoginConfiguration loginConfiguration = loginOption.get();
+        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+
+        Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
+        assertFalse("basic login config must NOT be present", basic.isPresent());
+
+        /*-- form --*/
+        Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
+        assertTrue("form login config must be present", form.isPresent());
+
+        /*-- form : auto detect --*/
+        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
+        assertTrue("auto detect config must be present", autodetect.isPresent());
+        assertEquals("user1", new String(autodetect.get().getUser()));
+        assertEquals("pwd1", new String(autodetect.get().getPassword()));
+
+        Optional<List<ScriptEntry>> script = form.get().getScript();
+        assertFalse("script config must NOT be present", script.isPresent());
+    }
+    
+    @Test
+    public void webscan_login_form_autodetec_json_with_max_scan_duration() throws Exception {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_autodetect_with_max_scan_duration.json");
+        
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
+        assertTrue("webscan config must be present", webScanOption.isPresent());
+
+        SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
+        
+        Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
+        assertTrue("max san duration config must be present", maxScanDuration.isPresent());
+        assertEquals(Long.valueOf(1), maxScanDuration.get().getDuration().get());
+        assertEquals("hour", maxScanDuration.get().getUnit().get());
+        
+        Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
+        assertTrue("login config must be present", loginOption.isPresent());
+        
         WebLoginConfiguration loginConfiguration = loginOption.get();
         assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
 
@@ -135,11 +176,11 @@ public class SecHubConfigurationTest {
         ScriptEntry entry2 = entries.get(1);
         ScriptEntry entry3 = entries.get(2);
 
-        assertEquals("input", entry1.getAction());
+        assertEquals("username", entry1.getAction());
         assertEquals("#example_login_userid", entry1.getSelector().get());
         assertEquals("user2", entry1.getValue().get());
 
-        assertEquals("input", entry2.getAction());
+        assertEquals("password", entry2.getAction());
         assertEquals("#example_login_pwd", entry2.getSelector().get());
         assertEquals("pwd2", entry2.getValue().get());
 
@@ -202,6 +243,62 @@ public class SecHubConfigurationTest {
         assertEquals("click", entry4.getAction());
         assertEquals("#example_login_login_button", entry4.getSelector().get());
     }
+    
+    @Test
+    public void webscan_login_form_script_with_wait_json_has_webconfig_as_expected() throws Exception {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_login_form_script_with_wait.json");
+
+        /* execute */
+        SecHubConfiguration result = SECHUB_CONFIG.fromJSON(json);
+
+        /* test */
+        Optional<SecHubWebScanConfiguration> webScanOption = result.getWebScan();
+        assertTrue("webscan config must be present", webScanOption.isPresent());
+
+        SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
+        Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
+        assertTrue("login config must be present", loginOption.isPresent());
+        WebLoginConfiguration loginConfiguration = loginOption.get();
+        assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfiguration.getUrl());
+
+        Optional<BasicLoginConfiguration> basic = loginConfiguration.getBasic();
+        assertFalse("basic login config must NOT be present", basic.isPresent());
+
+        /*-- form --*/
+        Optional<FormLoginConfiguration> form = loginConfiguration.getForm();
+        assertTrue("form login config must be present", form.isPresent());
+
+        /*-- form : auto detect --*/
+        Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
+        assertFalse("auto detect config must NOT be present", autodetect.isPresent());
+
+        Optional<List<ScriptEntry>> script = form.get().getScript();
+        assertTrue("script config must be present", script.isPresent());
+        
+        List<ScriptEntry> entries = script.get();
+        assertEquals("Must have 4 script entries", 4, entries.size());
+        
+        ScriptEntry entry1 = entries.get(0);
+        ScriptEntry entry2 = entries.get(1);
+        ScriptEntry entry3 = entries.get(2);
+        ScriptEntry entry4 = entries.get(3);
+        
+        assertEquals("input", entry1.getAction());
+        assertEquals("#example_login_userid", entry1.getSelector().get());
+        assertEquals("user2", entry1.getValue().get());
+        
+        assertEquals("wait", entry2.getAction());
+        assertEquals("1458", entry2.getValue().get());
+        assertEquals("millisecond", entry2.getUnit().get());
+        
+        assertEquals("input", entry3.getAction());
+        assertEquals("#example_login_pwd", entry3.getSelector().get());
+        assertEquals("pwd2", entry3.getValue().get());
+
+        assertEquals("click", entry4.getAction());
+        assertEquals("#example_login_login_button", entry4.getSelector().get());
+    }
 
     @Test
     public void webscan_alloptions_json_has_webconfig_with_all_examples() throws Exception {
@@ -216,6 +313,12 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
+        
+        Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
+        assertTrue("max san duration config must be present", maxScanDuration.isPresent());
+        assertEquals(Long.valueOf(2), maxScanDuration.get().getDuration().get());
+        assertEquals("hours", maxScanDuration.get().getUnit().get());
+        
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
         assertTrue("login config must be present", loginOption.isPresent());
         WebLoginConfiguration loginConfiguration = loginOption.get();
@@ -242,23 +345,38 @@ public class SecHubConfigurationTest {
         Optional<List<ScriptEntry>> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
         List<ScriptEntry> entries = script.get();
-        assertEquals("Must have 3 script entries", 3, entries.size());
+        assertEquals("Must have 6 script entries", 6, entries.size());
         ScriptEntry entry1 = entries.get(0);
         ScriptEntry entry2 = entries.get(1);
         ScriptEntry entry3 = entries.get(2);
+        ScriptEntry entry4 = entries.get(3);
+        ScriptEntry entry5 = entries.get(4);
+        ScriptEntry entry6 = entries.get(5);
 
-        assertEquals("input", entry1.getAction());
+        assertEquals("username", entry1.getAction());
         assertEquals("#example_login_userid", entry1.getSelector().get());
         assertEquals("user2", entry1.getValue().get());
         assertEquals("This is an example description", entry1.getDescription().get());
 
-        assertEquals("input", entry2.getAction());
-        assertEquals("#example_login_pwd", entry2.getSelector().get());
-        assertEquals("pwd2", entry2.getValue().get());
+        assertEquals("click", entry2.getAction());
+        assertEquals("#next_button", entry2.getSelector().get());
+        assertEquals("Click the next button to go to the password field", entry2.getDescription().get());
+        
+        assertEquals("wait", entry3.getAction());
+        assertEquals("3200", entry3.getValue().get());
+        assertEquals("milliseconds", entry3.getUnit().get());
+        
+        assertEquals("input", entry4.getAction());
+        assertEquals("#email_field", entry4.getSelector().get());
+        assertEquals("user@example.org", entry4.getValue().get());
+        assertEquals("The user's email address.", entry4.getDescription().get());
 
-        assertEquals("click", entry3.getAction());
-        assertEquals("#example_login_login_button", entry3.getSelector().get());
+        assertEquals("password", entry5.getAction());
+        assertEquals("#example_login_pwd", entry5.getSelector().get());
+        assertEquals("pwd2", entry5.getValue().get());
 
+        assertEquals("click", entry6.getAction());
+        assertEquals("#example_login_login_button", entry6.getSelector().get());
     }
 
     @Test

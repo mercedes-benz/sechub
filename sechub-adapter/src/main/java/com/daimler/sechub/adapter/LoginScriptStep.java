@@ -10,10 +10,14 @@ public class LoginScriptStep {
 	LoginScriptStepAction action;
 	String selector;
 	String description;
-
 	SealedObject value;
+	SecHubTimeUnit unit;
 
-	public String getSelector() {
+	public SecHubTimeUnit getUnit() {
+        return unit;
+    }
+
+    public String getSelector() {
 		return selector;
 	}
 
@@ -23,6 +27,10 @@ public class LoginScriptStep {
 
 	public LoginScriptStepAction getAction() {
 		return action;
+	}
+	
+	public boolean isWait() {
+	    return "wait".equalsIgnoreCase(action.name());
 	}
 
 	public boolean isInput() {

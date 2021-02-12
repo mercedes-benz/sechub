@@ -152,7 +152,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 		// This parameter is not configurable, because without it the 
 		// form authentication and script authentication does not work.
 		// In addition, the basic authentication takes twice as much time.
-		// This problem exists in version Netsparker version: 1.9.0.x, 1.9.1.x and 1.9.2.x
+		// This problem exists in Netsparker version: 1.9.0.x, 1.9.1.x and 1.9.2.x
 		map.put(EXCLUDE_AUTHENTICATION_PAGES, "true");
 
 		webLoginSupport.addAuthorizationInfo(config, map);

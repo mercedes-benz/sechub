@@ -14,6 +14,7 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.LoginConfig;
 import com.daimler.sechub.adapter.LoginScriptStep;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
@@ -72,24 +73,33 @@ public class WebLoginConfigBuilderStrategyTest {
 		LoginConfig loginConfig = result.getLoginConfig();
 		assertTrue(loginConfig.isFormScript());
 		List<LoginScriptStep> steps = loginConfig.asFormScript().getSteps();
-		assertEquals(3,steps.size());
+		assertEquals(5,steps.size());
 		Iterator<LoginScriptStep> it = steps.iterator();
 
 		LoginScriptStep step = it.next();
-		assertEquals("input",step.getAction().toString());
-		assertEquals("#example_login_userid",step.getSelector());
+		assertEquals("username", step.getAction().toString());
+		assertEquals("#example_login_userid", step.getSelector());
 		assertEquals("user2", step.getValue());
-		assertEquals("This is a description.", step.getDescription());
 
-		step = it.next();
-		assertEquals("input",step.getAction().toString());
-		assertEquals("#example_login_pwd",step.getSelector());
-		assertEquals("pwd2", step.getValue());
+        step = it.next();
+        assertEquals("click", step.getAction().toString());
+        assertEquals("#next_button", step.getSelector());
+        assertEquals(null, step.getValue());
 
-		step = it.next();
-		assertEquals("click",step.getAction().toString());
-		assertEquals("#example_login_login_button",step.getSelector());
-		assertEquals(null, step.getValue());
+        step = it.next();
+        assertEquals("wait", step.getAction().toString());
+        assertEquals("2456", step.getValue());
+        assertEquals(SecHubTimeUnit.MILLISECOND, step.getUnit());
+
+        step = it.next();
+        assertEquals("password", step.getAction().toString());
+        assertEquals("#example_login_pwd", step.getSelector());
+        assertEquals("pwd2", step.getValue());
+
+        step = it.next();
+        assertEquals("click", step.getAction().toString());
+        assertEquals("#example_login_login_button", step.getSelector());
+        assertEquals(null, step.getValue());
 	}
 
 	private WebLoginConfigBuilderStrategy createStrategy(String path) {
