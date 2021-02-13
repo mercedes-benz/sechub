@@ -2,6 +2,7 @@
 package com.daimler.sechub.developertools.admin.ui.action.adapter;
 
 import java.awt.BorderLayout;
+import java.awt.LayoutManager;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -10,46 +11,93 @@ import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 
 import com.daimler.sechub.developertools.JSONDeveloperHelper;
+import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class MappingUI {
     private String mappingId;
-    private JPanel panel;
+    private MappingPanel panel;
     private JTextArea textArea;
-    private ProductExecutorTemplateDialogUI dialogUI;
+    private ProductExecutorTemplatesDialogUI dialogUI;
+    private LoadJSONAdapterDialogAction loadAction;
+    private SaveJSONAdapterDialogAction saveAction;
+    private ScanConfigTestJSONasNamePatternDialogAction testAction;
+    private CopyToClipboardAsPropertyEntryAction copyToClipboardAsPropertyLine;
+    private CreateExampleJSONAdapterDialogAction exampleAction;
+    private ImportCSVToJSONAdapterDialogAction importCSVAction;
+    private ExportJSONToCSVAdapterDialogAction exportCSVAction;
 
-    MappingUI(ProductExecutorTemplateDialogUI ui, String mappingId) {
+    MappingUI(ProductExecutorTemplatesDialogUI ui, String mappingId) {
+
         this.dialogUI = ui;
         this.mappingId = mappingId;
-        this.panel = new JPanel(new BorderLayout());
+        this.panel = new MappingPanel(new BorderLayout());
         this.textArea = new JTextArea();
+
+        ActionSupport.getInstance().installAllTextActionsAsPopupTo(textArea);
+
         panel.add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel();
-        
-        buttonPanel.add(new JButton(new LoadJSONAdapterDialogAction(this)));
-        buttonPanel.add(new JButton(new SaveJSONAdapterDialogAction(this)));
-        buttonPanel.add(new JSeparator());
-        buttonPanel.add(new JButton(new ScanConfigTestJSONasNamePatternDialogAction(this)));
-        buttonPanel.add(new JButton(new CopyToClipboardAsPropertyEntryAction(this)));
-        buttonPanel.add(new JSeparator());
-        buttonPanel.add(new JButton(new CreateExampleJSONAdapterDialogAction(this)));
-        buttonPanel.add(new JSeparator());
-        buttonPanel.add(new JButton(new ImportCSVToJSONAdapterDialogAction(this)));
-        buttonPanel.add(new JButton(new ExportJSONToCSVAdapterDialogAction(this)));
+        loadAction = new LoadJSONAdapterDialogAction(this);
+        saveAction = new SaveJSONAdapterDialogAction(this);
+        testAction = new ScanConfigTestJSONasNamePatternDialogAction(this);
+        copyToClipboardAsPropertyLine = new CopyToClipboardAsPropertyEntryAction(this);
+        exampleAction = new CreateExampleJSONAdapterDialogAction(this);
+        importCSVAction = new ImportCSVToJSONAdapterDialogAction(this);
+        exportCSVAction = new ExportJSONToCSVAdapterDialogAction(this);
 
-        panel.add(buttonPanel,BorderLayout.SOUTH);
-        
+        JPanel buttonPanel = createButtonPanel();
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+    }
+
+    public CreateExampleJSONAdapterDialogAction getExampleAction() {
+        return exampleAction;
+    }
+
+    public ImportCSVToJSONAdapterDialogAction getImportCSVAction() {
+        return importCSVAction;
+    }
+
+    public ExportJSONToCSVAdapterDialogAction getExportCSVAction() {
+        return exportCSVAction;
+    }
+
+    public CopyToClipboardAsPropertyEntryAction getCopyToClipboardAsPropertyLine() {
+        return copyToClipboardAsPropertyLine;
+    }
+
+    public LoadJSONAdapterDialogAction getLoadAction() {
+        return loadAction;
+    }
+
+    public SaveJSONAdapterDialogAction getSaveAction() {
+        return saveAction;
+    }
+    
+    public ScanConfigTestJSONasNamePatternDialogAction getTestAction() {
+        return testAction;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(new JButton(loadAction));
+        buttonPanel.add(new JButton(saveAction));
+        buttonPanel.add(new JSeparator());
+        buttonPanel.add(new JButton(testAction));
+        buttonPanel.add(new JButton(copyToClipboardAsPropertyLine));
+        return buttonPanel;
     }
 
     public String getTitle() {
         return mappingId;
     }
 
-    public JPanel getComponent() {
+    public MappingPanel getComponent() {
         return panel;
     }
 
-    ProductExecutorTemplateDialogUI getDialogUI() {
+    ProductExecutorTemplatesDialogUI getDialogUI() {
         return dialogUI;
     }
 
@@ -63,5 +111,17 @@ public class MappingUI {
 
     public String getJSON() {
         return textArea.getText();
+    }
+
+    public class MappingPanel extends JPanel {
+        private static final long serialVersionUID = 1L;
+
+        public MappingPanel(LayoutManager layoutManager) {
+            super(layoutManager);
+        }
+
+        public MappingUI getMappingUI() {
+            return MappingUI.this;
+        }
     }
 }

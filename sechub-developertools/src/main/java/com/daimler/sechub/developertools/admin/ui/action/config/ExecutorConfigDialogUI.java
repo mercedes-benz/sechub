@@ -5,6 +5,7 @@ import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraint
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.SortedMap;
@@ -28,6 +29,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
+import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.daimler.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
 import com.daimler.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
@@ -126,6 +128,9 @@ public class ExecutorConfigDialogUI {
     }
 
     private void createMainPanel() {
+
+        ActionSupport actionSupport = ActionSupport.getInstance();
+
         mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(new LineBorder(Color.GREEN));
 
@@ -165,6 +170,7 @@ public class ExecutorConfigDialogUI {
         baseURLTextField = new JTextField(config.setup.baseURL);
         mainPanel.add(new JLabel("Product base url"), createLabelConstraint(row));
         mainPanel.add(baseURLTextField, createComponentConstraint(row++));
+        actionSupport.provideUndoRedo(baseURLTextField);
 
         /* credentials */
         userTextField = new JTextField(config.setup.credentials.user);
@@ -174,43 +180,51 @@ public class ExecutorConfigDialogUI {
         pwdTextField = new JTextField(config.setup.credentials.password);
         mainPanel.add(new JLabel("Product password/apitoken:"), createLabelConstraint(row));
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
-        
-        /* template button*/
-        JButton button = new JButton("Open template dialog");
+
+        /* template button */
+        JButton button = new JButton("Open templates dialog");
         button.addActionListener(e -> {
             ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
             int version = (int) versionSpinnerModel.getNumber();
-            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier, version);
-            if (action==null) {
-                JOptionPane.showMessageDialog(context.getFrame(),"No template dialog available for "+procutIdentifier+" v"+version);
+            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier,
+                    version);
+            if (action == null) {
+                JOptionPane.showMessageDialog(context.getFrame(), "No templates dialog available for " + procutIdentifier + " v" + version);
                 return;
             }
             action.actionPerformed(e);
         });
-            
+
         mainPanel.add(button, createComponentConstraint(row++));
 
         /* job parameters */
         jobParametersTextArea = new JTextArea(resolveInitialJobParamsAsString());
-        jobParametersTextArea.setRows(30);
-        jobParametersTextArea.setBorder(new LineBorder(Color.RED));
+        actionSupport.installAllTextActionsAsPopupTo(jobParametersTextArea);
+
         mainPanel.add(new JLabel("Parameters:"), createLabelConstraint(row));
-        GridBagConstraints jobParameterGridDataConstraints = createComponentConstraint(row++);
-        jobParameterGridDataConstraints.gridheight = 140;
-        jobParameterGridDataConstraints.weighty = 0.0;
-        jobParameterGridDataConstraints.fill = GridBagConstraints.BOTH;
-        mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);
+
+        JScrollPane scrollpane = new JScrollPane(jobParametersTextArea);
+        GridBagConstraints scrollPaneGridDataConstraints = createComponentConstraint(row++);
+        scrollPaneGridDataConstraints.gridheight = 140;
+        scrollPaneGridDataConstraints.weighty = 0.0;
+        scrollPaneGridDataConstraints.fill = GridBagConstraints.BOTH;
+
+        scrollpane.setPreferredSize(new Dimension(500, 500));
+        scrollpane.setMinimumSize(new Dimension(500, 500));
+
+        mainPanel.add(scrollpane, scrollPaneGridDataConstraints);
 
     }
+
     SortedMapToTextConverter mapToTextConverter = new SortedMapToTextConverter();
     TextToSortedMapConverter textToMapConverter = new TextToSortedMapConverter();
-    
+
     public void setTextForOKButton(String text) {
         buttonOkText = text;
     }
 
     protected String resolveInitialJobParamsAsString() {
-        TreeMap<String,String> map = new TreeMap<>();
+        TreeMap<String, String> map = new TreeMap<>();
         for (TestExecutorSetupJobParam param : config.setup.jobParameters) {
             map.put(param.key, param.value);
         }
@@ -241,11 +255,11 @@ public class ExecutorConfigDialogUI {
     }
 
     private void writeJobParamsStringBackToConfig() {
-        
+
         SortedMap<String, String> map = textToMapConverter.convertFromText(jobParametersTextArea.getText());
-     
+
         config.setup.jobParameters.clear();
-        for (String key: map.keySet()) {
+        for (String key : map.keySet()) {
             String value = map.get(key);
             config.setup.jobParameters.add(new TestExecutorSetupJobParam(key, value));
 

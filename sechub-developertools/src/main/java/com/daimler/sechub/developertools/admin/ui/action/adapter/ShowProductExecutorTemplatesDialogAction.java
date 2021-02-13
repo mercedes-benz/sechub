@@ -36,7 +36,7 @@ public class ShowProductExecutorTemplatesDialogAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProductExecutorTemplateDialogUI dialogUI = new ProductExecutorTemplateDialogUI(context, productIdentifier, version, mappingIdentifiers);
+        ProductExecutorTemplatesDialogUI dialogUI = new ProductExecutorTemplatesDialogUI(context, productIdentifier, version, mappingIdentifiers);
         dialogUI.showDialog();
     }
     

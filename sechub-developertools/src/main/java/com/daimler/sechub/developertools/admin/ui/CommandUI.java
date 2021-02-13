@@ -194,7 +194,7 @@ public class CommandUI {
 
     public void createEditMenu() {
         JMenu mainMenu = new JMenu("Edit");
-        ActionSupport support = new ActionSupport();
+        ActionSupport support = ActionSupport.getInstance();
         support.apply(mainMenu, support.createDefaultCutCopyAndPastActions());
         menuBar.add(mainMenu);
     }
