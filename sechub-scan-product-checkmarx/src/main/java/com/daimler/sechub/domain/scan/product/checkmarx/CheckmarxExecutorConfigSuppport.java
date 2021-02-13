@@ -44,11 +44,15 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
             return teamId;
         }
         LOG.error("Was not able to handle team id for project {} will fail because not possible", projectId);
-        throw new SecHubRuntimeException("Configuration failure happend! A checkmarx team id MUST be available for projects with id:"+projectId);
+        throw new SecHubRuntimeException("Configuration failure happend! A checkmarx team id MUST be available for projects with id:" + projectId);
     }
 
     public Long getPresetIdForNewProjects(String projectId) {
-        String id = super.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId()).getIdForName(projectId);
+        /* preset is an optional value and must not be configured */
+        String id = super.getNamePatternIdProvider(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(), false).getIdForName(projectId);
+        if (id == null) {
+            return null;
+        }
         try {
             return Long.valueOf(id);
         } catch (NumberFormatException e) {

@@ -358,37 +358,37 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     protected void assertUserSet() {
         if (user == null) {
-            throwIllegalParameter("no user given");
+            throwIllegalArgument("no user given");
         }
     }
 
     public void assertProjectIdSet() {
         if (projectId == null) {
-            throwIllegalParameter("no projectId given");
+            throwIllegalArgument("no projectId given");
         }
     }
 
     protected void assertPasswordSet() {
         if (passwordOrApiToken == null) {
-            throwIllegalParameter("no password given");
+            throwIllegalArgument("no password given");
         }
     }
 
     protected void assertPolicyIdSet() {
         if (policyID == null) {
-            throwIllegalParameter("no policyID given");
+            throwIllegalArgument("no policyID given");
         }
     }
 
     protected void assertProductBaseURLSet() {
         if (productBaseURL == null || productBaseURL.isEmpty()) {
-            throwIllegalParameter("no product base url given");
+            throwIllegalArgument("no product base url given");
         }
     }
 
     protected void assertProxyPortSetWhenProxyHostnameDefined() {
         if (isProxyDefinedButPortMissing()) {
-            throwIllegalParameter("Proxy set, but no port!");
+            throwIllegalState("Proxy set, but no port!");
         }
     }
 
@@ -396,8 +396,12 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         return proxyHostname != null && !proxyHostname.isEmpty() && proxyPort == 0;
     }
     
-    private void throwIllegalParameter(String message) throws IllegalArgumentException{
+    private void throwIllegalArgument(String message) throws IllegalArgumentException{
         throw new IllegalArgumentException(message + " in "+getClass().getSimpleName());
+    }
+    
+    private void throwIllegalState(String message) throws IllegalStateException{
+        throw new IllegalStateException(message + " in "+getClass().getSimpleName());
     }
 
 }

@@ -33,21 +33,22 @@ public class DefaultExecutorConfigSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExecutorConfigSupport.class);
 
+    private static final NamePatternIdprovider FALLBACK_NOT_FOUND_PROVIDER = new NamePatternIdprovider("fallback");
+
     protected Map<String, String> configuredExecutorParameters = new TreeMap<>();
     private Map<String, NamePatternIdprovider> namePatternIdProviders = new TreeMap<>();
 
     protected ProductExecutorConfig config;
     private SystemEnvironment systemEnvironment;
     NamePatternIdProviderFactory providerFactory;
-    
-    
+
     public DefaultExecutorConfigSupport(ProductExecutorConfig config, SystemEnvironment systemEnvironment, Validation<ProductExecutorConfig> validation) {
         notNull(config, "config may not be null!");
         notNull(systemEnvironment, "systemEnvironment may not be null!");
 
         this.config = config;
         this.systemEnvironment = systemEnvironment;
-        
+
         providerFactory = new NamePatternIdProviderFactory();
 
         if (validation != null) {
@@ -138,27 +139,44 @@ public class DefaultExecutorConfigSupport {
 
     /**
      * Resolves a name pattern provider for given id
+     * 
      * @param id
      * @return provider never <code>null</code>
      * @throws SecHubRuntimeException when name pattern provider cannot be resolved
      */
     public NamePatternIdprovider getNamePatternIdProvider(String id) {
+        return getNamePatternIdProvider(id, true);
+    }
+
+    /**
+     * Resolves a name pattern provider for given id
+     * 
+     * @param id
+     * @param failWhenNotConfigured when <code>false</code> missing name provider
+     *                              will be replaced by fallback implementation
+     *                              returning always null (nothing configured)
+     * @return provider never <code>null</code>
+     * @throws SecHubRuntimeException when name pattern provider cannot be resolved
+     */
+    public NamePatternIdprovider getNamePatternIdProvider(String id, boolean failWhenNotConfigured) {
         NamePatternIdprovider provider = namePatternIdProviders.get(id);
         if (provider != null) {
             return provider;
         }
-        
+
         String parameterValue = getParameter(id);
-        if (parameterValue==null) {
-            throw new SecHubRuntimeException("No parameter found for necessary mapping key:"+id);
+        if (parameterValue == null) {
+            if (failWhenNotConfigured) {
+                throw new SecHubRuntimeException("No parameter found for necessary mapping key:" + id);
+            }else {
+                return FALLBACK_NOT_FOUND_PROVIDER;
+            }
         }
         NamePatternIdprovider newProvider = providerFactory.createProvider(id, parameterValue);
         namePatternIdProviders.put(id, newProvider);
-        
+
         LOG.debug("Created NamePatternIdprovider:{}", newProvider.getProviderId());
         return newProvider;
     }
-
-   
 
 }
