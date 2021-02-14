@@ -22,10 +22,17 @@ public class CreateExampleJSONAdapterDialogAction extends AbstractAdapterDialogM
             
             return;
         }
-        MappingData data = new MappingData();
-        data.getEntries().add(new MappingEntry("pattern1", "replacement1", "comment1"));
-        data.getEntries().add(new MappingEntry("pattern2", "replacement2", "comment2"));
-        getMappingUI().setJSON(data.toJSON());
+        
+        String exampleFound = getMappingUI().getData().example;
+        
+        if (exampleFound!=null) {
+            getMappingUI().setJSON(exampleFound);
+        }else {
+            MappingData data = new MappingData();
+            data.getEntries().add(new MappingEntry("pattern1", "replacement1", "comment1"));
+            data.getEntries().add(new MappingEntry("pattern2", "replacement2", "comment2"));
+            getMappingUI().setJSON(data.toJSON());
+        }
 
     }
 

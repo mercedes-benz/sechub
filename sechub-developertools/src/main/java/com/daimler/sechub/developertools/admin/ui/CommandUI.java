@@ -20,6 +20,9 @@ import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Necessarity;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Type;
 import com.daimler.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
@@ -128,9 +131,9 @@ public class CommandUI {
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(false);
         progressBar.setPreferredSize(new Dimension(400, 30));
-        
+
         // register product executor template actions
-        register(new ShowProductExecutorTemplatesDialogAction(context, ProductIdentifier.CHECKMARX, 1, MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId()));
+        register(createCheckmarxV1Action());
 
         panel = new JPanel(new BorderLayout());
 
@@ -152,6 +155,18 @@ public class CommandUI {
                 }
             });
         }
+    }
+
+    private ShowProductExecutorTemplatesDialogAction createCheckmarxV1Action() {
+        TemplatesDialogData data = new TemplatesDialogData();
+        data.add(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),Type.MAPPING,Necessarity.OPTIONAL,"Here we can define presetid mappings for new projects");
+        data.add(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(),Type.MAPPING,Necessarity.MANDATORY,"Here we must define teamId mapping for new projects");
+        
+        data.add("checkmarx.engineConfigurationName",Type.KEY_VALUE,Necessarity.OPTIONAL,"The engine configuration name","somevalue");
+        data.add("checkmarx.clientSecret ",Type.KEY_VALUE,Necessarity.OPTIONAL,"Normally a static 'secret' - if it ever changes, we can change this here");
+        
+        ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, ProductIdentifier.CHECKMARX, 1, data);
+        return action;
     }
 
     public TrafficLightComponent getStatusTrafficLight() {

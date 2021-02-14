@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -26,7 +29,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.LineBorder;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
@@ -132,7 +134,6 @@ public class ExecutorConfigDialogUI {
         ActionSupport actionSupport = ActionSupport.getInstance();
 
         mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBorder(new LineBorder(Color.GREEN));
 
         int row = 0;
         /* name */
@@ -182,18 +183,7 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
 
         /* template button */
-        JButton button = new JButton("Open templates dialog");
-        button.addActionListener(e -> {
-            ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
-            int version = (int) versionSpinnerModel.getNumber();
-            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier,
-                    version);
-            if (action == null) {
-                JOptionPane.showMessageDialog(context.getFrame(), "No templates dialog available for " + procutIdentifier + " v" + version);
-                return;
-            }
-            action.actionPerformed(e);
-        });
+        JButton button = new JButton("Copy to clipboard + open templates dialog");
 
         mainPanel.add(button, createComponentConstraint(row++));
 
@@ -209,10 +199,28 @@ public class ExecutorConfigDialogUI {
         scrollPaneGridDataConstraints.weighty = 0.0;
         scrollPaneGridDataConstraints.fill = GridBagConstraints.BOTH;
 
-        scrollpane.setPreferredSize(new Dimension(500, 500));
-        scrollpane.setMinimumSize(new Dimension(500, 500));
+        scrollpane.setPreferredSize(new Dimension(400, 300));
+        scrollpane.setMinimumSize(new Dimension(400, 300));
 
         mainPanel.add(scrollpane, scrollPaneGridDataConstraints);
+        
+        button.addActionListener(e -> {
+            ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
+            int version = (int) versionSpinnerModel.getNumber();
+            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier,
+                    version);
+            if (action == null) {
+                JOptionPane.showMessageDialog(context.getFrame(), "No templates dialog available for " + procutIdentifier + " v" + version);
+                return;
+            }
+            /* copy text to clipboard*/
+            StringSelection selection = new StringSelection(jobParametersTextArea.getText());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, selection);
+            
+            /* open template dialog, and auto import clipboard content */
+            action.openDialog(true);
+        });
 
     }
 

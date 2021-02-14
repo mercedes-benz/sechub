@@ -56,6 +56,22 @@ public class SortedMapToTextConverterTest {
         assertEquals("key1=value1\nkey2=value2", result);
     }
 
+    
+    @Test
+    public void key_values_are_trimmed() {
+        /* prepare */
+        TreeMap<String, String> map = new TreeMap<>();
+        map.put("  key1", "value1");
+        map.put("key2", "     value2");
+
+        /* execute */
+        String result = converterToTest.convertToText(map);
+
+        /* test */
+        assertNotNull(result);
+        assertEquals("key1=value1\nkey2=value2", result);
+    }
+
     @Test
     public void a_map_with_key1_having_value1_and_key2_having_null_is_converted_like_property_file_key2_not_listed() {
         /* prepare */

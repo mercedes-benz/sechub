@@ -23,7 +23,7 @@ public class CopyToClipboardAsPropertyEntryAction extends AbstractAdapterDialogM
     protected void execute(ActionEvent e) throws Exception {
         String json = getMappingUI().getJSON();
         String compressedJson = JSONDeveloperHelper.INSTANCE.compress(json);
-        String key = getMappingUI().getMappingId();
+        String key = getMappingUI().getData().key;
 
         String content = key + "=" + compressedJson;
 

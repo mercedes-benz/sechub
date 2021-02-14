@@ -11,18 +11,18 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 public class ShowProductExecutorTemplatesDialogAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     private ProductIdentifier productIdentifier;
-    private String[] mappingIdentifiers;
+    private TemplatesDialogData data;
     private UIContext context;
     private int version;
 
-    public ShowProductExecutorTemplatesDialogAction(UIContext context, ProductIdentifier productIdentifier, int version, String... mappingIdentifiers) {
+    public ShowProductExecutorTemplatesDialogAction(UIContext context, ProductIdentifier productIdentifier, int version, TemplatesDialogData data) {
         super("Product executor:" + productIdentifier + ", Version:" + version);
         if (productIdentifier==null) {
             throw new IllegalArgumentException();
         }
         this.productIdentifier = productIdentifier;
         this.context = context;
-        this.mappingIdentifiers = mappingIdentifiers;
+        this.data = data;
         this.version = version;
     }
 
@@ -36,8 +36,12 @@ public class ShowProductExecutorTemplatesDialogAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ProductExecutorTemplatesDialogUI dialogUI = new ProductExecutorTemplatesDialogUI(context, productIdentifier, version, mappingIdentifiers);
-        dialogUI.showDialog();
+        openDialog(false);
+    }
+    
+    public void openDialog(boolean autoImportFromClipboard) {
+        ProductExecutorTemplatesDialogUI dialogUI = new ProductExecutorTemplatesDialogUI(context, productIdentifier, version, data);
+        dialogUI.showDialog(autoImportFromClipboard);
     }
     
     @Override

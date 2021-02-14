@@ -13,6 +13,12 @@ import java.util.SortedMap;
  */
 public class SortedMapToTextConverter {
 
+    /**
+     * Converts given map to lines with "key=value". Keys and values are 
+     * automatically trimmed if necessary!
+     * @param map
+     * @return
+     */
     public String convertToText(SortedMap<String, String> map) {
         StringBuilder sb = new StringBuilder();
         if (map == null) {
@@ -29,7 +35,7 @@ public class SortedMapToTextConverter {
             if (sb.length() > 0) {
                 sb.append('\n');
             }
-            sb.append(key).append('=').append(value);
+            sb.append(key.trim()).append('=').append(value.trim());
         }
         return sb.toString();
     }

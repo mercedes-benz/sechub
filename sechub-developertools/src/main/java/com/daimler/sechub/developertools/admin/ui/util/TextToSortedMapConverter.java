@@ -14,6 +14,12 @@ import java.util.TreeMap;
  */
 public class TextToSortedMapConverter {
 
+    /**
+     * Converts lines with "key=value" to a sorted map. Keys and values are
+     * automatically trimmed! Empty keys or empty values are ignored
+     * @param text
+     * @return
+     */
     public SortedMap<String, String> convertFromText(String text) {
         TreeMap<String, String> map = new TreeMap<>();
         if (text == null || text.isEmpty()) {
