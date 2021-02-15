@@ -22,9 +22,9 @@ public class KeyValueUI implements TemplateDataUIPart {
         this.data = data;
 
         JPanel panel2 = new JPanel(new BorderLayout());
-        panel2.add(new JLabel("Type:" + data.type), BorderLayout.NORTH);
-        panel2.add(new JLabel("Necessarity:" + data.necessarity), BorderLayout.CENTER);
-        panel2.add(new JLabel("Description:" + data.description), BorderLayout.SOUTH);
+        panel2.add(new JLabel("Type: " + data.type), BorderLayout.NORTH);
+        panel2.add(new JLabel("Necessarity: " + data.necessarity), BorderLayout.CENTER);
+        panel2.add(new JLabel("Description: " + (data.description==null ? "<no description available>" : data.description)), BorderLayout.SOUTH);
 
         panel.add(panel2, BorderLayout.NORTH);
 

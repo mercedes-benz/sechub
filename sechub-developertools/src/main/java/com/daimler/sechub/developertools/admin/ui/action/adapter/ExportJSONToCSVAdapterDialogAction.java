@@ -31,7 +31,9 @@ public class ExportJSONToCSVAdapterDialogAction extends AbstractAdapterDialogMap
         String defaultPath = ConfigurationSetup.SECHUB_MASS_OPERATION_PARENTDIRECTORY.getStringValue(System.getProperty("user.home"));
         File defaultFile = new File(defaultPath,getMappingUI().getMappingId()+".csv");
         File file = getDialogUI().getContext().getDialogUI().selectFile(defaultFile.getAbsolutePath());
-
+        if (file == null) {
+            return;
+        }
         /* export */
         SimpleCSVExporter exporter = new SimpleCSVExporter();
         exporter.exportCSVFile(file, rows, 3);

@@ -28,7 +28,9 @@ public class ImportCSVToJSONAdapterDialogAction extends AbstractAdapterDialogMap
         String mappingId = getMappingUI().getMappingId();
         File defaultFile = new File(defaultPath, mappingId + ".csv");
         File file = getDialogUI().getContext().getDialogUI().selectFile(defaultFile.getAbsolutePath());
-
+        if (file == null) {
+            return;
+        }
         if (!file.getName().equals(defaultFile.getName())) {
             boolean confirmed = getDialogUI().getContext().getDialogUI()
                     .confirm("File name not as expected - is mappingId:" + mappingId + " really saved inside " + file.getName() + " ?");

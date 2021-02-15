@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 
 import com.daimler.sechub.developertools.JSONDeveloperHelper;
@@ -89,11 +88,7 @@ public class MappingUI implements TemplateDataUIPart {
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(new JButton(loadAction));
-        buttonPanel.add(new JButton(saveAction));
-        buttonPanel.add(new JSeparator());
         buttonPanel.add(new JButton(testAction));
-        buttonPanel.add(new JButton(copyToClipboardAsPropertyLine));
         return buttonPanel;
     }
 

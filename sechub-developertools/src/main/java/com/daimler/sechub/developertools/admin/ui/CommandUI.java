@@ -130,6 +130,9 @@ public class CommandUI {
 
         // register product executor template actions
         register(ShowProductExecutorTemplatesDialogActionFactory.createCheckmarxV1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_CODESCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_WEBSCAN_V1Action(context));
+        register(ShowProductExecutorTemplatesDialogActionFactory.createPDS_INFRASCAN_V1Action(context));
 
         panel = new JPanel(new BorderLayout());
 
@@ -172,6 +175,9 @@ public class CommandUI {
         toolBar.add(new DisableSchedulerJobProcessingAction(context).tooltipUseText());
         toolBar.addSeparator();
         toolBar.add(new TriggerSecHubClientSynchronousScanAction(context).tooltipUseText());
+        toolBar.addSeparator();
+        toolBar.add(new EditExecutionProfileAction(context).tooltipUseText());
+        toolBar.add(new EditConfigurationAction(context).tooltipUseText());
 
     }
 

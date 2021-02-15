@@ -19,7 +19,7 @@ public class ScanConfigTestJSONasNamePatternDialogAction extends AbstractAdapter
     
 
     public ScanConfigTestJSONasNamePatternDialogAction(MappingUI ui) {
-        super("Test", ui);
+        super("Test mapping", ui);
     }
 
     @Override

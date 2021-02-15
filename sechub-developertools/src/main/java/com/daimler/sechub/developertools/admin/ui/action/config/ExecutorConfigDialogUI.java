@@ -8,9 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -24,14 +21,18 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogConfig;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogResult;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.daimler.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
 import com.daimler.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
@@ -59,6 +60,9 @@ public class ExecutorConfigDialogUI {
     private String title;
     private JTextField uuidTextField;
     private String buttonOkText;
+    private SortedMapToTextConverter mapToTextConverter = new SortedMapToTextConverter();
+    private TextToSortedMapConverter textToMapConverter = new TextToSortedMapConverter();
+    private JScrollPane jobParameterScrollPane;
 
     public ExecutorConfigDialogUI(UIContext context, String title) {
         this(context, title, createExampleConfig());
@@ -102,12 +106,15 @@ public class ExecutorConfigDialogUI {
 
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
-
+        
+        
         dialog.setTitle(title);
         dialog.setModal(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
         dialog.pack();
         dialog.setLocationRelativeTo(context.getFrame());
+
+        SwingUtilities.invokeLater(()->scrollToLeftTopOfJobParameters());
         dialog.setVisible(true);
     }
 
@@ -183,7 +190,7 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
 
         /* template button */
-        JButton button = new JButton("Copy to clipboard + open templates dialog");
+        JButton button = new JButton("Edit parameters");
 
         mainPanel.add(button, createComponentConstraint(row++));
 
@@ -193,16 +200,16 @@ public class ExecutorConfigDialogUI {
 
         mainPanel.add(new JLabel("Parameters:"), createLabelConstraint(row));
 
-        JScrollPane scrollpane = new JScrollPane(jobParametersTextArea);
-        GridBagConstraints scrollPaneGridDataConstraints = createComponentConstraint(row++);
-        scrollPaneGridDataConstraints.gridheight = 140;
-        scrollPaneGridDataConstraints.weighty = 0.0;
-        scrollPaneGridDataConstraints.fill = GridBagConstraints.BOTH;
+        jobParameterScrollPane = new JScrollPane(jobParametersTextArea);
+        GridBagConstraints jobParameterScrollPaneGridDataConstraints = createComponentConstraint(row++);
+        jobParameterScrollPaneGridDataConstraints.gridheight = 140;
+        jobParameterScrollPaneGridDataConstraints.weighty = 0.0;
+        jobParameterScrollPaneGridDataConstraints.fill = GridBagConstraints.BOTH;
 
-        scrollpane.setPreferredSize(new Dimension(400, 300));
-        scrollpane.setMinimumSize(new Dimension(400, 300));
+        jobParameterScrollPane.setPreferredSize(new Dimension(400, 300));
+        jobParameterScrollPane.setMinimumSize(new Dimension(400, 300));
 
-        mainPanel.add(scrollpane, scrollPaneGridDataConstraints);
+        mainPanel.add(jobParameterScrollPane, jobParameterScrollPaneGridDataConstraints);
         
         button.addActionListener(e -> {
             ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
@@ -210,22 +217,36 @@ public class ExecutorConfigDialogUI {
             ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier,
                     version);
             if (action == null) {
-                JOptionPane.showMessageDialog(context.getFrame(), "No templates dialog available for " + procutIdentifier + " v" + version);
+                JOptionPane.showMessageDialog(context.getFrame(), "No special parameter editor dialog available for " + procutIdentifier + " v" + version);
                 return;
             }
-            /* copy text to clipboard*/
-            StringSelection selection = new StringSelection(jobParametersTextArea.getText());
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(selection, selection);
-            
-            /* open template dialog, and auto import clipboard content */
-            action.openDialog(true);
+
+            TemplatesDialogConfig config = new TemplatesDialogConfig();
+            config.inputContent = jobParametersTextArea.getText();
+            config.provideExportAllButton = true;
+            config.provideExportAllButtonText = "Apply";
+
+            /* open template dialog, auto import clipboard content and add apply button */
+            TemplatesDialogResult result = action.openDialog(config);
+            if (result.provideExportAllButtonPressed) {
+                jobParametersTextArea.setText(result.outputContent);
+
+                scrollToLeftTopOfJobParameters();
+
+            }
+
         });
 
     }
 
-    SortedMapToTextConverter mapToTextConverter = new SortedMapToTextConverter();
-    TextToSortedMapConverter textToMapConverter = new TextToSortedMapConverter();
+    private void scrollToLeftTopOfJobParameters() {
+        // scroll back to left top...
+        JScrollBar vscrollbar = jobParameterScrollPane.getVerticalScrollBar();
+        vscrollbar.setValue(vscrollbar.getMinimum());
+
+        JScrollBar hscrollbar = jobParameterScrollPane.getHorizontalScrollBar();
+        hscrollbar.setValue(hscrollbar.getMinimum());
+    }
 
     public void setTextForOKButton(String text) {
         buttonOkText = text;
@@ -241,7 +262,6 @@ public class ExecutorConfigDialogUI {
 
     public TestExecutorConfig getUpdatedConfig() {
         Integer execVersionObj = (Integer) executorVersionTextField.getValue();
-        ;
 
         config.productIdentifier = productIdentifierCombobox.getSelectedItem().toString();
         config.enabled = enabledCheckBox.isSelected();
