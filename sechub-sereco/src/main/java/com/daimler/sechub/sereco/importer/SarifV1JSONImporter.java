@@ -1,6 +1,7 @@
 package com.daimler.sechub.sereco.importer;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +74,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         
         ThreadFlow flow = optFlow.get();
         
-        List<SerecoCodeCallStackElement> callstack = List.of();
+        List<SerecoCodeCallStackElement> callstack = Arrays.asList();
         
         flow.getLocations().forEach(location -> {
             
