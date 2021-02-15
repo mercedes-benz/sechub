@@ -10,6 +10,11 @@ package com.daimler.sechub.domain.scan.product.checkmarx;
 public class CheckmarxExecutorConfigParameterKeys {
 
     public static final String CHECKMARX_FULLSCAN_ALWAYS = "checkmarx.fullscan.always";
+    
+    /**
+     * Normally only the default client "secret" - which is a static value.
+     */
+    public static final String CHECKMARX_CLIENT_SECRET = "checkmarx.clientSecret";
 
     /**
      * Checkmarx engine configuration, for possible values refer

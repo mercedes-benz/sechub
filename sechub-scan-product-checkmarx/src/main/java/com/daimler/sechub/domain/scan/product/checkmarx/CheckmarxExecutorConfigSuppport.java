@@ -72,5 +72,15 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
         }
         return configuredEngineConfigurationName;
     }
-
+    
+    public String getClientSecret() {
+        String configuredClientSecret = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_CLIENT_SECRET);
+        
+        if (SimpleStringUtils.isEmpty(configuredClientSecret)) {
+            
+            return CheckmarxConstants.DEFAULT_CLIENT_SECRET;
+        }
+        return configuredClientSecret;
+    }
+    
 }
