@@ -12,13 +12,5 @@ public interface CheckmarxInstallSetup extends InstallSetup{
      */
     public String getClientSecret();
 
-    /**
-     * Get the engine configuration name
-     * 
-     * @return
-     */
-    public String getEngineConfigurationName();
-    
-    
     public boolean isHavingUntrustedCertificate();
 }

@@ -20,9 +20,6 @@ import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
-import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData;
-import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Necessarity;
-import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Type;
 import com.daimler.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutionProfileAction;
 import com.daimler.sechub.developertools.admin.ui.action.config.CreateExecutorConfigAction;
@@ -102,7 +99,6 @@ import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantA
 import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
-import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 
 public class CommandUI {
     private static final ImageIcon EDIT_ROAD_BLACK_ICON = new ImageIcon(CommandUI.class.getResource("/icons/material-io/twotone_edit_road_black_18dp.png"));
@@ -133,7 +129,7 @@ public class CommandUI {
         progressBar.setPreferredSize(new Dimension(400, 30));
 
         // register product executor template actions
-        register(createCheckmarxV1Action());
+        register(ShowProductExecutorTemplatesDialogActionFactory.createCheckmarxV1Action(context));
 
         panel = new JPanel(new BorderLayout());
 
@@ -155,18 +151,6 @@ public class CommandUI {
                 }
             });
         }
-    }
-
-    private ShowProductExecutorTemplatesDialogAction createCheckmarxV1Action() {
-        TemplatesDialogData data = new TemplatesDialogData();
-        data.add(MappingIdentifier.CHECKMARX_NEWPROJECT_PRESET_ID.getId(),Type.MAPPING,Necessarity.OPTIONAL,"Here we can define presetid mappings for new projects");
-        data.add(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(),Type.MAPPING,Necessarity.MANDATORY,"Here we must define teamId mapping for new projects");
-        
-        data.add("checkmarx.engineConfigurationName",Type.KEY_VALUE,Necessarity.OPTIONAL,"The engine configuration name","somevalue");
-        data.add("checkmarx.clientSecret ",Type.KEY_VALUE,Necessarity.OPTIONAL,"Normally a static 'secret' - if it ever changes, we can change this here");
-        
-        ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, ProductIdentifier.CHECKMARX, 1, data);
-        return action;
     }
 
     public TrafficLightComponent getStatusTrafficLight() {

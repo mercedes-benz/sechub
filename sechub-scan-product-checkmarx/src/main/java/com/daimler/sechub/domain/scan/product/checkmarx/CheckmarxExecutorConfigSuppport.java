@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.adapter.DefaultExecutorConfigSupport;
+import com.daimler.sechub.adapter.checkmarx.CheckmarxConstants;
+import com.daimler.sechub.commons.core.util.SimpleStringUtils;
 import com.daimler.sechub.commons.model.SecHubRuntimeException;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
@@ -59,6 +61,16 @@ public class CheckmarxExecutorConfigSuppport extends DefaultExecutorConfigSuppor
             LOG.error("Was not able to handle preset id for project {} will provide null instead", projectId);
             return null;
         }
+    }
+
+    public String getEngineConfigurationName() {
+        String configuredEngineConfigurationName = getParameter(CheckmarxExecutorConfigParameterKeys.CHECKMARX_ENGINE_CONFIGURATIONNAME);
+        
+        if (SimpleStringUtils.isEmpty(configuredEngineConfigurationName)) {
+            
+            return CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
+        }
+        return configuredEngineConfigurationName;
     }
 
 }
