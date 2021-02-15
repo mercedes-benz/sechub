@@ -16,7 +16,7 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
         
         data.add("checkmarx.engineConfigurationName",Type.KEY_VALUE,Necessarity.OPTIONAL,"The engine configuration name. If not set default will be used","somevalue");
         data.add("checkmarx.clientSecret",Type.KEY_VALUE,Necessarity.OPTIONAL,"Normally a static 'secret' - if it ever changes, we can change this here");
-        data.add("checkmarx.fullscan.always",Type.KEY_VALUE,Necessarity.OPTIONAL,"When enabled, no delta scan is tried, but alway a fullscan. Default value is:false","true");
+        data.add("checkmarx.fullscan.always",Type.KEY_VALUE,Necessarity.OPTIONAL,"If enabled, Checkmarx will always do a fullscan. If disabled, checkmarx will do a delta scan and in case it does not work, a fullscan will be performed. Default value is: false","true");
         
         ShowProductExecutorTemplatesDialogAction action = new ShowProductExecutorTemplatesDialogAction(context, ProductIdentifier.CHECKMARX, 1, data);
         return action;

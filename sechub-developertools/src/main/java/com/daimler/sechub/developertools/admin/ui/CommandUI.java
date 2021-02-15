@@ -236,13 +236,9 @@ public class CommandUI {
 
     public ShowProductExecutorTemplatesDialogAction resolveShowProductExecutorMappingDialogActionOrNull(ProductIdentifier productId, int version) {
         for (ShowProductExecutorTemplatesDialogAction action : showProductExecutorTemplatesDialogActions) {
-            if (!action.getProductIdentifier().equals(productId)) {
-                continue;
+            if (action.getProductIdentifier().equals(productId) && action.getVersion() == version) {
+                return action;
             }
-            if (action.getVersion() != version) {
-                continue;
-            }
-            return action;
         }
         return null;
     }
