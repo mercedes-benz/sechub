@@ -19,9 +19,9 @@ import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 @MustBeKeptStable("The enum is used as identifiers in database + in code. Do NOT rename Ids inside")
 public enum MappingIdentifier {
 
-    CHECKMARX_NEWPROJECT_TEAM_ID("checkmarx.newproject.teamid.mapping", MappingType.PROD_EXEC_PARAM_TEMPLATE),
+    CHECKMARX_NEWPROJECT_TEAM_ID("checkmarx.newproject.teamid.mapping", MappingType.PRODUCT_EXEC_CFG_PARAM),
 
-    CHECKMARX_NEWPROJECT_PRESET_ID("checkmarx.newproject.presetid.mapping", MappingType.PROD_EXEC_PARAM_TEMPLATE),
+    CHECKMARX_NEWPROJECT_PRESET_ID("checkmarx.newproject.presetid.mapping", MappingType.PRODUCT_EXEC_CFG_PARAM),
 
     ;
 
@@ -74,14 +74,20 @@ public enum MappingIdentifier {
         return StaticRef.map.get(id);
     }
 
+    /**
+     * We got different types for mappings. This is to identify a mapping stands for
+     * @author Albert Tregnaghi
+     *
+     */
     public static enum MappingType {
-        /* global configuration mapping */
-        GLOBAL_CONFIGURATION,
-        /* a configuration mappping for adapters (but also globally) */
+        /* global common configuration mapping */
+        COMMON_CONFIGURATION,
+        
+        /* a configuration mappping for adapters */
         ADAPTER_CONFIGURATION,
 
-        /* mapping for product executor templates */
-        PROD_EXEC_PARAM_TEMPLATE
+        /* mapping for product executor configuration parameters */
+        PRODUCT_EXEC_CFG_PARAM
     }
 
     /**
