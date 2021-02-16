@@ -766,19 +766,25 @@ public class AsUser {
                 "zipfile_contains_only_test1.txt.zip");
     }
 
+    public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
+        UUID uuid = createWebScan(project, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);
+        approveJob(project, uuid);
+        return uuid;
+    }
+
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, "zipfile_contains_only_test1.txt.zip");
     }
 
     public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
-        UUID uuid = triggerAsyncScanAndGetJobUUID(project, mode);
+        UUID uuid = triggerAsyncCodeScanAndGetJobUUID(project, mode);
         upload(project, uuid, pathInsideResources);
 
         approveJob(project, uuid);
         return uuid;
     }
 
-    public UUID triggerAsyncScanAndGetJobUUID(TestProject project, IntegrationTestMockMode runMode) {
+    private UUID triggerAsyncCodeScanAndGetJobUUID(TestProject project, IntegrationTestMockMode runMode) {
         UUID uuid = createCodeScan(project, runMode);
         assertNotNull(uuid);
         return uuid;
@@ -799,9 +805,9 @@ public class AsUser {
             LOG.warn("The executor config:" + executorConfig.name
                     + " had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted");
             TestExecutorConfigList list = fetchProductExecutorConfigList();
-            for (TestExecutorConfigListEntry entry: list.executorConfigurations) {
+            for (TestExecutorConfigListEntry entry : list.executorConfigurations) {
                 if (executorConfig.name.equals(entry.name)) {
-                    executorConfig.uuid=entry.uuid;
+                    executorConfig.uuid = entry.uuid;
                     break;
                 }
             }

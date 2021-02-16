@@ -140,7 +140,7 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being done - after 5 seconds time out is reached
+     * Waits for sechub job being done (means status execution result is OK) - after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
@@ -150,7 +150,7 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being done - after 5 seconds time out is reached
+     * Waits for sechub job being done (means status execution result is OK)- after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
@@ -185,6 +185,47 @@ public class TestAPI {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
                 LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
                 return status.contains("STARTED");
+            }
+        });
+    }
+    
+    /**
+     * Waits for sechub job being cancele requested - after 5 seconds time out is reached
+     * 
+     * @param project
+     * @param jobUUID
+     */
+    @SuppressWarnings("unchecked")
+    public static void waitForJobStatusCancelRequested(TestProject project, UUID jobUUID) {
+        LOG.debug("wait for job cancel requested project:{}, job:{}", project.getProjectId(), jobUUID);
+
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+            @Override
+            public boolean runImpl() throws Exception {
+                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                return status.contains("CANCEL_REQUESTED");
+            }
+        });
+    }
+    
+
+    /**
+     * Waits for sechub job being cancele requested - after 5 seconds time out is reached
+     * 
+     * @param project
+     * @param jobUUID
+     */
+    @SuppressWarnings("unchecked")
+    public static void waitForJobResultFailed(TestProject project, UUID jobUUID) {
+        LOG.debug("wait for job failed project:{}, job:{}", project.getProjectId(), jobUUID);
+
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+            @Override
+            public boolean runImpl() throws Exception {
+                String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
+                LOG.debug(">>>>>>>>>JOB:STATUS:" + status);
+                return status.contains("FAILED");
             }
         });
     }

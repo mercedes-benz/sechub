@@ -5,6 +5,8 @@ include::../shared/sechub_options.adoc[]
 
 include::server/server_deployment.adoc[]
 
+include::04_migration_steps.adoc[]
+
 include::../shared/configuration/mapping.adoc[]
 
 include::../shared/configuration/execution_profiles.adoc[]
