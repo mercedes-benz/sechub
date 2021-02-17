@@ -111,6 +111,7 @@ Some product executors do need special mappings - e.g for new project creations.
 <<mapping-technical-details, mapping>> for more details about the
 concept and the format. 
 
+
 ====== Key values
 It is also possible to provide just dedicated key value parameters.
 
@@ -144,15 +145,15 @@ Also there should be an automated assignment to dedicated teams when the project
 This can be done by name pattern providers `checkmarx.newproject.presetid.mapping` and `checkmarx.newproject.teamid.mapping`
 as shown in following example:
 
-*An example scan configuration:*
+*An example parameter configuration:*
 
-Define mapping with `checkmarx.newproject.presetid`
+Define mapping for key `checkmarx.newproject.presetid.mapping`
 [[scan-config-example1-checkmarx]]
 [source, json]
 ----
 include::scan_config_example1_checkmarx-preset-id.json[]
 ----
-Define mapping with `checkmarx.newproject.teamid`
+Define mapping for key `checkmarx.newproject.teamid.mapping`
 [[scan-config-example2-checkmarx]]
 [source, json]
 ----
@@ -215,10 +216,15 @@ Parameters are inside a simple text field. But there exists also a button "Edit 
 
 image::sechub-daui-checkmarx-executor-config-example.png[width=75%]
 
+[WARNING]
+====
+If you edit directly inside the `Parameters` text area be aware that only one line per key is allowed.
+====
+
 When you press the "Edit parameters" button, a dedicated parameter editor will appear:
 
 image::sechub-daui-checkmarx-executor-parameter-editor-mappings-example.png[width=75%]
-As you can see the type, the necessarity and a short description of the parameters are
+On last figure the type, the necessarity and a short description of the parameters are
 shown above the text component. This makes it easier to configure values.
 
 At the mapping tab pane you can edit the JSON data. With "Test mapping" button you can also
@@ -230,6 +236,8 @@ like "true" or "false" or simply nothing.
 
 image::sechub-daui-checkmarx-executor-parameter-editor-key-values-example.png[width=75%]
 
+After pressing the `Apply` button the changed data is set inside executor configuration in correct
+format. 
 
 
 ===== PDS code scan configuration
