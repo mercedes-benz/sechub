@@ -19,9 +19,9 @@ import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 @MustBeKeptStable("The enum is used as identifiers in database + in code. Do NOT rename Ids inside")
 public enum MappingIdentifier {
 
-    CHECKMARX_NEWPROJECT_TEAM_ID("checkmarx.newproject.teamid.mapping", MappingType.PRODUCT_EXEC_CFG_PARAM),
+    CHECKMARX_NEWPROJECT_TEAM_ID("checkmarx.newproject.teamid.mapping", MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER),
 
-    CHECKMARX_NEWPROJECT_PRESET_ID("checkmarx.newproject.presetid.mapping", MappingType.PRODUCT_EXEC_CFG_PARAM),
+    CHECKMARX_NEWPROJECT_PRESET_ID("checkmarx.newproject.presetid.mapping", MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER),
 
     ;
 
@@ -87,7 +87,7 @@ public enum MappingIdentifier {
         ADAPTER_CONFIGURATION,
 
         /* mapping for product executor configuration parameters */
-        PRODUCT_EXEC_CFG_PARAM
+        PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER
     }
 
     /**

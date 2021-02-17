@@ -21,9 +21,9 @@ endif::techdoc[]
  
 [IMPORTANT]
 ====
-To have a scan job running, at least one executor configuration must fit - otherwise you will have
-always a "green" scan result will happen!
-==== 
+To have a scan job running, at least one executor configuration must match - 
+otherwise you will have always a "green" scan result.
+====
 
 ifdef::usecasedoc[]
 Following usecases are supported:
