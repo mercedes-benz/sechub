@@ -2,17 +2,17 @@
     "entries": [
             {
                 "pattern": "my-java-project-.*",
-                "replacement": "e2e4e8f4-ba17-453b-b194-c736c605700d", 
+                "replacement": "1", 
                 "comment":"team id for java projects"
             },
             {
                 "pattern": "a-go-project-.*",
-                "replacement": "e2e4e8f4-ba17-453b-b194-d836c605700d", 
+                "replacement": "2", 
                 "comment":"team id for go projects"
             },
             {
                 "pattern": ".*",
-                "replacement": "f2c4g8f4-ba17-453b-b194-c746c605700d", 
+                "replacement": "3", 
                 "comment":"team id for other projects"
             }
         ]

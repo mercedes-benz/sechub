@@ -89,9 +89,9 @@ public class TestAPI {
     }
 
     public static AssertSecHubReport assertSecHubReport(String json) {
-        return  AssertSecHubReport.assertSecHubReport(json);
+        return AssertSecHubReport.assertSecHubReport(json);
     }
-    
+
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -146,8 +146,9 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID,5);
+        waitForJobDone(project, jobUUID, 5);
     }
+
     /**
      * Waits for sechub job being done (means status execution result is OK)- after 5 seconds time out is reached
      * 

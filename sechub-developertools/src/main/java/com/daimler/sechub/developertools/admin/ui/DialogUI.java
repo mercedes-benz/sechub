@@ -220,7 +220,8 @@ public class DialogUI {
             this.textArea.setPreferredSize(new Dimension(500, 200));
             JPopupMenu popup = new JPopupMenu();
             textArea.setComponentPopupMenu(popup);
-            ActionSupport support = new ActionSupport();
+            
+            ActionSupport support = ActionSupport.getInstance();
             support.apply(popup, support.createDefaultCutCopyAndPastActions());
 
             add(new JScrollPane(textArea), BorderLayout.CENTER);

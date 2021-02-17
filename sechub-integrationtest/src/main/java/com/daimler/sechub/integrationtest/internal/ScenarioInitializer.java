@@ -95,22 +95,6 @@ public class ScenarioInitializer {
 		return this;
 	}
 
-//	public ScenarioInitializer waitUntilUserCanAccessProject(TestUser user, TestProject project) {
-//		return waitUntilUserCanAccessProject(user,project, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
-//	}
-//
-//	@SuppressWarnings("unchecked")
-//	public ScenarioInitializer waitUntilUserCanAccessProject(TestUser user, TestProject project, int seconds) {
-//		TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user,seconds,HttpClientErrorException.class) {
-//			@Override
-//			public boolean runImpl() throws Exception {
-//				assertUser(user).can(project);
-//				return true;
-//			}
-//		});
-//		return this;
-//	}
-
 	public ScenarioInitializer waitUntilUserCanLogin(TestUser user) {
 		return waitUntilUserCanLogin(user,DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
 	}

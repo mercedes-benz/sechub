@@ -193,6 +193,6 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     
     protected void handleSanityFailure(String message) {
         LOG.error("SANITY CHECK FAILURE for {},{}",getClass().getSimpleName(), message);
-        throw new IllegalStateException("Sanity check failed");
+        throw new IllegalStateException("Sanity check failed:"+message);
     }
 }
