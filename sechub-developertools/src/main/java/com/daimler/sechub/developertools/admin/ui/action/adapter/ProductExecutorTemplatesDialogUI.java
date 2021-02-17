@@ -158,8 +158,8 @@ public class ProductExecutorTemplatesDialogUI {
         exportMenu.add(new ExportToClipboardAction());
 
         JMenu otherMenu = new JMenu("Other");
-        otherMenu.add(new LoadFromGlobalTemplateStoreAction());
-        otherMenu.add(new SaveToGlobalTemplateStoreAction());
+        otherMenu.add(new LoadFromGlobalMappingStorageAction());
+        otherMenu.add(new SaveToGlobalMappingStorageAction());
         menuBar.add(otherMenu);
 
         otherMenu.add(new CreateExampleAction());
@@ -288,32 +288,32 @@ public class ProductExecutorTemplatesDialogUI {
 
     }
 
-    private class LoadFromGlobalTemplateStoreAction extends AbstractMappingUIAction {
+    private class LoadFromGlobalMappingStorageAction extends AbstractMappingUIAction {
 
         private static final long serialVersionUID = 1L;
 
-        public LoadFromGlobalTemplateStoreAction() {
-            super("Load from global template store");
+        public LoadFromGlobalMappingStorageAction() {
+            super("Load from global mapping");
         }
 
         @Override
         protected void actionPerformed(ActionEvent e, MappingUI ui) {
-            ui.getImportCSVAction().actionPerformed(e);
+            ui.getLoadAction().actionPerformed(e);
         }
 
     }
 
-    private class SaveToGlobalTemplateStoreAction extends AbstractMappingUIAction {
+    private class SaveToGlobalMappingStorageAction extends AbstractMappingUIAction {
 
         private static final long serialVersionUID = 1L;
 
-        public SaveToGlobalTemplateStoreAction() {
-            super("Load from global template store");
+        public SaveToGlobalMappingStorageAction() {
+            super("Save as global mapping");
         }
 
         @Override
         protected void actionPerformed(ActionEvent e, MappingUI ui) {
-            ui.getImportCSVAction().actionPerformed(e);
+            ui.getSaveAction().actionPerformed(e);
         }
 
     }

@@ -46,6 +46,8 @@ import com.daimler.sechub.developertools.admin.ui.action.job.RestartJobHardActio
 import com.daimler.sechub.developertools.admin.ui.action.job.ShowRunningBatchJobsListAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.other.CheckVersionAction;
+import com.daimler.sechub.developertools.admin.ui.action.other.FetchGlobalMappingAction;
+import com.daimler.sechub.developertools.admin.ui.action.other.UpdateGlobalMappingAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSAliveAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobResultOrErrorAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAction;
@@ -228,11 +230,10 @@ public class CommandUI {
         add(profileMenu, new ListExecutionProfilesAction(context));
         menu.addSeparator();
 
-        JMenu mappingsMenu = new JMenu("Templates");
+        JMenu mappingsMenu = new JMenu("Global mappings");
         menu.add(mappingsMenu);
-        for (ShowProductExecutorTemplatesDialogAction action : showProductExecutorTemplatesDialogActions) {
-            add(mappingsMenu, action);
-        }
+        add(mappingsMenu,new FetchGlobalMappingAction(context));
+        add(mappingsMenu,new UpdateGlobalMappingAction(context));
     }
 
     private ShowProductExecutorTemplatesDialogAction register(ShowProductExecutorTemplatesDialogAction action) {
