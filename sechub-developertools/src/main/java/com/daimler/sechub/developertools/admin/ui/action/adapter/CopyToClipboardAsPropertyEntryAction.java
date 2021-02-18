@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui.action.adapter;
 
 import java.awt.Toolkit;

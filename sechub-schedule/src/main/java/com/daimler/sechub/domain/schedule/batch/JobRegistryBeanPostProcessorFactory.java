@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.batch;
 
 import org.springframework.batch.core.configuration.JobRegistry;
