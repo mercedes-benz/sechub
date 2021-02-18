@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 0.20.0</span>
+<span id="revnumber"> Server 0.21.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -487,34 +487,81 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#mapping">2.4. Mapping</a>
+<li><a href="#migration-steps">2.4. Migration steps</a>
 <ul class="sectlevel3">
-<li><a href="#rest-api">2.4.1. REST API</a></li>
-<li><a href="#json-structure">2.4.2. JSON structure</a></li>
-</ul>
-</li>
-<li><a href="#scan-configuration">2.5. Scan configuration</a>
-<ul class="sectlevel3">
-<li><a href="#general">2.5.1. General</a>
+<li><a href="#database-2">2.4.1. Database</a>
 <ul class="sectlevel4">
-<li><a href="#name-pattern-id-providers">2.5.1.1. Name pattern ID providers</a></li>
-</ul>
-</li>
-<li><a href="#mapping-2">2.5.2. Mapping</a></li>
-<li><a href="#overview-of-possible-configurations">2.5.3. Overview of possible configurations</a></li>
-<li><a href="#checkmarx">2.5.4. Checkmarx</a>
-<ul class="sectlevel4">
-<li><a href="#project-creation-with-dedicated-checkmarx-preset-and-team">2.5.4.1. Project creation with dedicated checkmarx preset and team</a></li>
-<li><a href="#how-to-obtain-preset-id">2.5.4.2. How to obtain preset id</a></li>
-<li><a href="#how-to-obtain-team-id">2.5.4.3. How to obtain team id</a></li>
+<li><a href="#section-migration-spring-batch-477">2.4.1.1. Post handle CVE-2020-5411</a>
+<ul class="sectlevel5">
+<li><a href="#update-job-execution-context-to-new-format">2.4.1.1.1. Update job execution context to new format</a></li>
+<li><a href="#update-step-execution-context-to-new-format">2.4.1.1.2. Update step execution context to new format</a></li>
+<li><a href="#cancel-your-old-running-jobs">2.4.1.1.3. Cancel your old running jobs</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#section-initial-profile-and-executors">2.6. Profile and executor configuration</a>
+</ul>
+</li>
+<li><a href="#mapping">2.5. Mapping</a>
 <ul class="sectlevel3">
-<li><a href="#executor-configuration">2.6.1. Executor configuration</a></li>
-<li><a href="#execution-profile">2.6.2. Execution profile</a></li>
+<li><a href="#rest-api-for-global-mapping">2.5.1. REST API for global mapping</a></li>
+<li><a href="#json-structure">2.5.2. JSON structure</a></li>
+</ul>
+</li>
+<li><a href="#section-initial-profile-and-executors">2.6. Execution profiles</a></li>
+<li><a href="#section-executor-configuration">2.7. Executor configuration</a>
+<ul class="sectlevel3">
+<li><a href="#data-structure">2.7.1. Data structure</a>
+<ul class="sectlevel4">
+<li><a href="#name">2.7.1.1. Name</a></li>
+<li><a href="#enabled">2.7.1.2. Enabled</a></li>
+<li><a href="#uuid">2.7.1.3. UUID</a></li>
+<li><a href="#product-identifier">2.7.1.4. Product identifier</a></li>
+<li><a href="#executor-version">2.7.1.5. Executor version</a></li>
+<li><a href="#product-base-url">2.7.1.6. Product base URL</a></li>
+<li><a href="#product-credentials">2.7.1.7. Product credentials</a>
+<ul class="sectlevel5">
+<li><a href="#executor-config-env-variable-references">2.7.1.7.1. Environment variable references</a></li>
+<li><a href="#user">2.7.1.7.2. User</a></li>
+<li><a href="#password-or-api-token">2.7.1.7.3. Password or API token</a></li>
+</ul>
+</li>
+<li><a href="#parameters">2.7.1.8. Parameters</a>
+<ul class="sectlevel5">
+<li><a href="#mappings">2.7.1.8.1. Mappings</a></li>
+<li><a href="#key-values">2.7.1.8.2. Key values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#product-specific-details">2.7.2. Product specific details</a>
+<ul class="sectlevel4">
+<li><a href="#checkmarx">2.7.2.1. Checkmarx</a>
+<ul class="sectlevel5">
+<li><a href="#mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</a></li>
+<li><a href="#how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</a></li>
+<li><a href="#how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#examples">2.7.3. Examples</a>
+<ul class="sectlevel4">
+<li><a href="#checkmarx-configuration">2.7.3.1. Checkmarx configuration</a></li>
+<li><a href="#pds-code-scan-configuration">2.7.3.2. PDS code scan configuration</a></li>
+<li><a href="#sereco-configuration">2.7.3.3. Sereco configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#scan-config-about">2.8. Scan configuration</a>
+<ul class="sectlevel3">
+<li><a href="#general">2.8.1. General</a>
+<ul class="sectlevel4">
+<li><a href="#name-pattern-id-providers">2.8.1.1. Name pattern ID providers</a></li>
+</ul>
+</li>
+<li><a href="#mapping-2">2.8.2. Mapping</a></li>
 </ul>
 </li>
 </ul>
@@ -648,7 +695,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.20.0-20210203083110</code></p>
+<p>Documentation version: <code>Server 0.21.0-20210218101232</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -748,31 +795,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.baseurl</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base url for checkmarx</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.clientsecret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">014DF517-39D1-4453-B7B3-9930C563627C</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">So called 'client secret' of checkmarx. At leat at the moment this ist just a fixed default value, available in public documentation at <a href="https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up" class="bare">https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.engineconfiguration.name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multi-language Scan</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Checkmarx engine configuration name. Possible values are documented in the checkmarx REST API documentation: <a href="https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up" class="bare">https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223543515/Get+All+Engine+Configurations+-+GET+sast+engineConfigurations+v8.6.0+and+up</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.newproject.teamid</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Initial team ID. When a scan is started a and checkmarx project is still missing, a new checkmarx project will be automatically created. For creation a team must be defined. This value is an fallback if scan config is not set (scan config does this in a dynamic way by inspecting project names)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of checkmarx user</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.resilience.badrequest.retry.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a 400 bad request happened on Checkmarx server</p></td>
@@ -806,11 +828,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.trustall</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.userid</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User id of checkmarx user</p></td>
 </tr>
 </tbody>
 </table>
@@ -1538,10 +1555,6 @@ Next lines will show java launcher properties which MUST be set because
 <div class="listingblock">
 <div class="content">
 <pre>-Dspring.profiles.active=dev,postgres,real_products
--Dsechub.adapter.checkmarx.baseurl=value
--Dsechub.adapter.checkmarx.newproject.teamid=value
--Dsechub.adapter.checkmarx.password=value
--Dsechub.adapter.checkmarx.userid=value
 -Dsechub.initialadmin.email=value
 -Dsechub.initialadmin.userid=value
 -Dsechub.adapter.nessus.defaultpolicyid=value
@@ -1572,10 +1585,6 @@ Instead of java system properties you can also define environment entries
 <div class="listingblock">
 <div class="content">
 <pre>export SPRING_PROFILES_ACTIVE=dev,postgres,real_products
-export SECHUB_ADAPTER_CHECKMARX_BASEURL=value
-export SECHUB_ADAPTER_CHECKMARX_NEWPROJECT_TEAMID=value
-export SECHUB_ADAPTER_CHECKMARX_PASSWORD=value
-export SECHUB_ADAPTER_CHECKMARX_USERID=value
 export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
 export SECHUB_ADAPTER_NESSUS_DEFAULTPOLICYID=value
@@ -1830,15 +1839,149 @@ accidently add the credentials to your repository.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="mapping">2.4. Mapping</h3>
+<h3 id="migration-steps">2.4. Migration steps</h3>
+<div class="sect3">
+<h4 id="database-2">2.4.1. Database</h4>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Normally all updates in database are done by our flyway script automatically!</p>
+</div>
+<div class="paragraph">
+<p>It is very uncommon to do something manually here. Every manual changes will be described why no
+automation was possible!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 8.3333%;">
+<col style="width: 25%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr.</th>
+<th class="tableblock halign-left valign-top">What</th>
+<th class="tableblock halign-left valign-top">Why manual?</th>
+<th class="tableblock halign-left valign-top">Apply to version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-migration-spring-batch-477">post handle CVE-2020-5411</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Table to update does not exist on new started servers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initial run &lt; v0.19.0-server</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="section-migration-spring-batch-477">2.4.1.1. Post handle CVE-2020-5411</h5>
+<div class="sect5">
+<h6 id="update-job-execution-context-to-new-format">2.4.1.1.1. Update job execution context to new format</h6>
+<div class="paragraph">
+<p>Script to prepare old jobs for Spring batch CVE-2020-5411 changes</p>
+</div>
+<div class="paragraph">
+<p>With Server v0.19.0 we upgraded our Spring Boot dependencies <sup class="footnote" id="_footnote_update_0_19_0">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> but this led to cancelation problems on older jobs -
+this led to problems when deleting older jobs still running.<sup class="footnote" id="_footnote_problem_499">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>The solution is to execute following <code>SQL</code> script on all environments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">UPDATE</span> batch_job_execution_context <span class="class">SET</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;}</span><span class="delimiter">'</span></span> <span class="keyword">WHERE</span> short_context =<span class="string"><span class="delimiter">'</span><span class="content">{}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Migrate old execution context JSON to correct format: an empty <code>HashMap</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Unfortunately it is not possible to automatically migrate the data by <code>flyway</code> script, because this would fail any new started server, because
+a flyway update script would lead to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table <span class="string"><span class="delimiter">&quot;</span><span class="content">BATCH_JOB_EXECUTION_CONTEXT</span><span class="delimiter">&quot;</span></span> not found; SQL statement:</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="update-step-execution-context-to-new-format">2.4.1.1.2. Update step execution context to new format</h6>
+<div class="paragraph">
+<p>Additionally we need to update the step context data as well</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="comment">-- check for entries with old format</span>
+<span class="class">select</span> sc.short_context, <span class="predefined">count</span>(*) <span class="keyword">from</span> batch_job_execution_params p
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution e <span class="keyword">on</span> e.job_execution_id=p.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution_context c <span class="keyword">on</span> c.job_execution_id= e.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution se <span class="keyword">on</span> se.job_execution_id = e.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution_context sc <span class="keyword">on</span> sc.step_execution_id = se.step_execution_id
+<span class="keyword">group</span> <span class="keyword">by</span> sc.short_context
+
+<span class="comment">--- execute update when former query has old entries...</span>
+<span class="class">update</span> batch_step_execution_context sc <span class="class">set</span> short_context=<span class="string"><span class="delimiter">'</span><span class="content">{&quot;@class&quot;:&quot;java.util.HashMap&quot;,&quot;batch.taskletType&quot;:&quot;com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span>
+<span class="keyword">where</span> sc.short_context = <span class="string"><span class="delimiter">'</span><span class="content">{&quot;batch.taskletType&quot;:&quot;com.daimler.sechub.domain.schedule.batch.ScanExecutionTasklet&quot;,&quot;batch.stepType&quot;:&quot;org.springframework.batch.core.step.tasklet.TaskletStep&quot;}</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="comment">-- check again for entries in old format</span>
+<span class="class">select</span> sc.short_context, <span class="predefined">count</span>(*) <span class="keyword">from</span> batch_job_execution_params p
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution e <span class="keyword">on</span> e.job_execution_id=p.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_job_execution_context c <span class="keyword">on</span> c.job_execution_id= e.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution se <span class="keyword">on</span> se.job_execution_id = e.job_execution_id
+<span class="keyword">inner</span> <span class="keyword">join</span> batch_step_execution_context sc <span class="keyword">on</span> sc.step_execution_id = se.step_execution_id
+<span class="keyword">group</span> <span class="keyword">by</span> sc.short_context</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Migrate old execution context JSON to correct format: with <code>HashMap</code> as class</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="cancel-your-old-running-jobs">2.4.1.1.3. Cancel your old running jobs</h6>
+<div class="paragraph">
+<p>When you have some still running jobs - for example because of a former database connection pool problem -
+you can now cancel the old jobs without any problems.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mapping">2.5. Mapping</h3>
 <div id="mapping-technical-details" class="paragraph">
 <p>Mapping is used for simple key value configuration, but also for more sophisticated
 behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
-<div class="sect3">
-<h4 id="rest-api">2.4.1. REST API</h4>
 <div class="paragraph">
-<p>Configuration can be done by REST API.</p>
+<p>The mapping concept can be either used in a global persisted way, or in a dynmaic way
+ like done for parameter mappings in <a href="#section-executor-configuration">product executor configuration</a> .</p>
+</div>
+<div class="sect3">
+<h4 id="rest-api-for-global-mapping">2.5.1. REST API for global mapping</h4>
+<div class="paragraph">
+<p>A global configuration can be done by REST API.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1852,7 +1995,7 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="json-structure">2.4.2. JSON structure</h4>
+<h4 id="json-structure">2.5.2. JSON structure</h4>
 <div class="paragraph">
 <p>given JSON has following structure:</p>
 </div>
@@ -1886,11 +2029,11 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 <pre class="CodeRay highlight"><code data-lang="json">{
   <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span> : [ {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">testproject_*</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">8be4e3d4-6b53-4636-b65a-949a9ebdf6b9</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Maps all projects starting with name testproject_ to dedicated checkmarx team ID</span><span class="delimiter">&quot;</span></span>
   }, {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">3be4e3d2-2b55-2336-b65a-949b9ebdf6b9</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">2</span><span class="delimiter">&quot;</span></span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Default checkmarx team id for all other projects</span><span class="delimiter">&quot;</span></span>
   } ]
 }</code></pre>
@@ -1899,13 +2042,10 @@ behaviour like done in <a href="#scan-config-about">scan configuration</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="scan-configuration">2.5. Scan configuration</h3>
-<div id="scan-config-about" class="paragraph">
-<p>Sometimes it is necessary to provide special scan configuration setup, e.g. when
-initializing scan operations at server side.</p>
-</div>
+<h3 id="section-initial-profile-and-executors">2.6. Execution profiles</h3>
 <div class="paragraph">
-<p>This can be done by a special scan configuration which is defined as JSON.</p>
+<p>An execution profile can contain multiple executor configurations. The configurations can be
+shared between multiple profiles.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1915,95 +2055,278 @@ initializing scan operations at server side.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Do not confuse with <code>SecHub configuration</code> which is always on client side.</p>
+<p>As an example: a config with name "pds-gosec-1" can be used in profiles "profileA"
+and also "profileB" at the same time.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="general">2.5.1. General</h4>
-<div class="sect4">
-<h5 id="name-pattern-id-providers">2.5.1.1. Name pattern ID providers</h5>
 <div class="paragraph">
-<p>Currently only <code>namePatternIdProviders</code> are provided, which contain an id and mappings from name patterns
-to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups.</p>
+<p>When a profile is assigned to a project and the profile is enabled, all of its
+enabled executor configurations are executed for the project when suitable for
+code scan type.</p>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="mapping-2">2.5.2. Mapping</h4>
-<div class="paragraph">
-<p>Scan configuration can be changed by SecHub <code>mapping</code> - look at <a href="#mapping-technical-details">mapping</a> for more information.</p>
-</div>
-<div class="admonitionblock note">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Just use the <code>provider</code> ID as mapping ID.
+<div class="paragraph">
+<p>To have a scan job running, at least one executor configuration must match -
+otherwise you will have always a "green" scan result.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="overview-of-possible-configurations">2.5.3. Overview of possible configurations</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
+<div class="sect2">
+<h3 id="section-executor-configuration">2.7. Executor configuration</h3>
+<div class="paragraph">
+<p>SecHub uses <code>product executors</code> to call security products by dedicated <code>product adapters</code>.
+Each used security product has at least one executor configuration.</p>
+</div>
+<div class="paragraph">
+<p>Inside such a configuration, we can define properties and parameters which are used when it comes
+to SecHub job execution. The data is evaluated and used by product executors at runtime and no server restart is necessary.</p>
+</div>
+<div class="paragraph">
+<p>So for example you can easily change a base URL of a product location and it will automatically be
+used by next job execution.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Provider ID</th>
-<th class="tableblock halign-left valign-top">Provides</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the moment <code>NESSUS</code> and <code>NETSPARKER</code> product executors do not use
+ all executor configuration data.</p>
+</div>
+<div class="paragraph">
+<p>They ignore</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Base URL</p>
+</li>
+<li>
+<p>Credentials</p>
+</li>
+<li>
+<p>Parameter content</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You still have to configure the ignored parts by system environment variables
+(or system properties) in a global way and you can&#8217;t change these settings at runtime.</p>
+</div>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.presetid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name pattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx project names being matched by regexp are mapped to preset ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx.newproject.teamid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name pattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkmarx project names being matched by regexp are mapped to team ID</p></td>
-</tr>
-</tbody>
 </table>
 </div>
 <div class="sect3">
-<h4 id="checkmarx">2.5.4. Checkmarx</h4>
+<h4 id="data-structure">2.7.1. Data structure</h4>
 <div class="sect4">
-<h5 id="project-creation-with-dedicated-checkmarx-preset-and-team">2.5.4.1. Project creation with dedicated checkmarx preset and team</h5>
+<h5 id="name">2.7.1.1. Name</h5>
 <div class="paragraph">
-<p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.
-So far so good.</p>
+<p>Just the name of the executor configuration. Can be changed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="enabled">2.7.1.2. Enabled</h5>
+<div class="paragraph">
+<p>Only when the executor configuration is enabled, it will be used (of course
+it has also be added to an enabled profile and this to a project).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="uuid">2.7.1.3. UUID</h5>
+<div class="paragraph">
+<p>Unmodifiaable unique ID of an executor configuration. Cannot be changed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="product-identifier">2.7.1.4. Product identifier</h5>
+<div class="paragraph">
+<p>The product identifier for the product executor to use.
+Examples are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CHECKMARX</code></p>
+</li>
+<li>
+<p><code>NESSUS</code></p>
+</li>
+<li>
+<p><code>NETSPARKER</code></p>
+</li>
+<li>
+<p><code>PDS_CODESCAN</code></p>
+</li>
+<li>
+<p><code>PDS_WEBSCAN</code></p>
+</li>
+<li>
+<p><code>PDS_INFRASCAN</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="executor-version">2.7.1.5. Executor version</h5>
+<div class="paragraph">
+<p>At the moment all product executors exists only in version <code>1</code> and as long as there is no
+breaking change the exisitng product executor will be extended and the existing version will be kept.</p>
 </div>
 <div class="paragraph">
-<p>But maybe it is shall not be created with the default Checkmarx "preset" because in some scenarios this is not very suitable
-- e.g. when creating many projects, we do not want to assign all presetIds manually to the project.
-(A preset is something like a profile in Checkmarx where scope of scan can be defined at project level).</p>
+<p>When there are breaking changes - e.g. the communication between SecHub and a new version of the security
+product becomes completely different, or parameters have a complete other meaning, an additional
+product executor with another version will be available.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="product-base-url">2.7.1.6. Product base URL</h5>
+<div class="paragraph">
+<p>Here we define the base URL to the security product including port number.</p>
 </div>
 <div class="paragraph">
-<p>Also there should be an automated assignment to dedicated teams when
-the project is new created.</p>
+<p>As an example: <code><a href="https://checkmarx.example.org:6011" class="bare">https://checkmarx.example.org:6011</a></code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="product-credentials">2.7.1.7. Product credentials</h5>
+<div class="paragraph">
+<p>To use a security product, we always need login credentials.
+These credentials must be defined inside the configuration.</p>
+</div>
+<div class="sect5">
+<h6 id="executor-config-env-variable-references">2.7.1.7.1. Environment variable references</h6>
+<div class="paragraph">
+<p>To store no real credentials in SecHub database, you can reference SecHub server environment
+variables instead - just use the pattern <code>env:${variableName}</code>.</p>
 </div>
 <div class="paragraph">
-<p>This can be done by name pattern providers <code>checkmarx.newproject.presetid</code> and <code>checkmarx.newproject.teamid</code>
+<p>SecHub server will store the given pattern in database, but the content of the
+environment variable will be used at runtime when it comes to authentication.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Example for an environment variable reference:</strong></p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume a have a running PDS server which accepts <em>"exampleToken"</em> as API token for
+technical user.</p>
+</div>
+<div class="paragraph">
+<p>You would add</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export PDS_CODESCAN1_APITOKEN=exampleToken</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>at the beginning of your start script for SecHub server.</p>
+</div>
+<div class="paragraph">
+<p>In your executor configuration you would set the API token field to <code>env:PDS_CODESCAN1_APITOKEN</code>.
+When a SecHub job has beend started, SecHub server will use <code>exampleToken</code> as
+API token for communication with this PDS server.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="user">2.7.1.7.2. User</h6>
+<div class="paragraph">
+<p>The user name used by SecHub to authenticate at security product.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="password-or-api-token">2.7.1.7.3. Password or API token</h6>
+<div class="paragraph">
+<p>The password or API token used by SecHub to authenticate at security product.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+It is strongly recommended to use <a href="#executor-config-env-variable-references">environment variable references</a>  environment variable references here instead of plain text.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="parameters">2.7.1.8. Parameters</h5>
+<div class="paragraph">
+<p>Parameters are used at job execution runtime to setup product adapters and to change security
+product behaviours.</p>
+</div>
+<div class="sect5">
+<h6 id="mappings">2.7.1.8.1. Mappings</h6>
+<div class="paragraph">
+<p>Some product executors do need special mappings - e.g for new project creations. Please look at
+<a href="#mapping-technical-details">mapping</a> for more details about the
+concept and the format.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="key-values">2.7.1.8.2. Key values</h6>
+<div class="paragraph">
+<p>It is also possible to provide just dedicated key value parameters.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="product-specific-details">2.7.2. Product specific details</h4>
+<div class="sect4">
+<h5 id="checkmarx">2.7.2.1. Checkmarx</h5>
+<div class="sect5">
+<h6 id="mapping-teams-and-presets-for-new-projects">2.7.2.1.1. Mapping teams and presets for new projects</h6>
+<div class="paragraph">
+<p>When a user starts a scan and a <code>checkmarx</code> project does not already exist, it will be created.</p>
+</div>
+<div class="paragraph">
+<p>In some cases, however, it should not be created with the default Checkmarx "preset" but a dedicated one.
+And when creating many projects we do not want to assign all other presetIds manually to the project
+<em>(a preset is something like a profile in Checkmarx where scope of scan can be defined at project level)</em>.</p>
+</div>
+<div class="paragraph">
+<p>Also there should be an automated assignment to dedicated teams when the project is newly created.</p>
+</div>
+<div class="paragraph">
+<p>This can be done by name pattern providers <code>checkmarx.newproject.presetid.mapping</code> and <code>checkmarx.newproject.teamid.mapping</code>
 as shown in following example:</p>
 </div>
 <div class="paragraph">
-<p><strong>An example scan configuration:</strong></p>
+<p><strong>An example parameter configuration:</strong></p>
 </div>
 <div class="paragraph">
-<p>Define mapping with <code>checkmarx.newproject.presetid</code></p>
+<p>Define mapping for key <code>checkmarx.newproject.presetid.mapping</code></p>
 </div>
 <div id="scan-config-example1-checkmarx" class="listingblock">
 <div class="content">
@@ -2030,7 +2353,7 @@ as shown in following example:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Define mapping with <code>checkmarx.newproject.teamid</code></p>
+<p>Define mapping for key <code>checkmarx.newproject.teamid.mapping</code></p>
 </div>
 <div id="scan-config-example2-checkmarx" class="listingblock">
 <div class="content">
@@ -2038,17 +2361,17 @@ as shown in following example:</p>
     <span class="key"><span class="delimiter">&quot;</span><span class="content">entries</span><span class="delimiter">&quot;</span></span>: [
             {
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">my-java-project-.*</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">e2e4e8f4-ba17-453b-b194-c736c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>,
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for java projects</span><span class="delimiter">&quot;</span></span>
             },
             {
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">a-go-project-.*</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">e2e4e8f4-ba17-453b-b194-d836c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">2</span><span class="delimiter">&quot;</span></span>,
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for go projects</span><span class="delimiter">&quot;</span></span>
             },
             {
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">pattern</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">.*</span><span class="delimiter">&quot;</span></span>,
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">f2c4g8f4-ba17-453b-b194-c746c605700d</span><span class="delimiter">&quot;</span></span>,
+                <span class="key"><span class="delimiter">&quot;</span><span class="content">replacement</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">3</span><span class="delimiter">&quot;</span></span>,
                 <span class="key"><span class="delimiter">&quot;</span><span class="content">comment</span><span class="delimiter">&quot;</span></span>:<span class="string"><span class="delimiter">&quot;</span><span class="content">team id for other projects</span><span class="delimiter">&quot;</span></span>
             }
         ]
@@ -2064,13 +2387,13 @@ as shown in following example:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>project named in sechub with <code>my-java-project-marvelous1</code> will have preset id <code>100021</code> and will have teamId <code>e2e4e8f4-ba17-453b-b194-c736c605700d</code>.</p>
+<p>project named in sechub with <code>my-java-project-marvelous1</code> will have preset id <code>100021</code> and teamId <code>1</code>.</p>
 </li>
 <li>
-<p>project named in sechub with <code>a-go-project-super-cli</code> will have preset id <code>100031</code> and will have teamId <code>e2e4e8f4-ba17-453b-b194-d836c605700d</code>.</p>
+<p>project named in sechub with <code>a-go-project-super-cli</code> will have preset id <code>100031</code> and teamId <code>2</code>.</p>
 </li>
 <li>
-<p>project named in sechub with <code>something-else`will have preset id `100001</code> and teamId <code>f2c4g8f4-ba17-453b-b194-c746c605700d</code></p>
+<p>project named in sechub with <code>something-else`will have preset id `100001</code> and teamId <code>3</code></p>
 </li>
 </ul>
 </div>
@@ -2089,44 +2412,173 @@ as shown in following example:</p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="how-to-obtain-preset-id">2.5.4.2. How to obtain preset id</h5>
+<div class="sect5">
+<h6 id="how-to-obtain-preset-id">2.7.2.1.2. How to obtain preset id</h6>
 <div class="paragraph">
 <p>Unfortunately the preset ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
 </div>
 <div class="paragraph">
 <p>You can either directly access the DB or inspect the web page by
-web tools in you browser (e.g. enable network monitoring and change prest at UI&#8230;&#8203;)</p>
+web tools in you browser (e.g. enable network monitoring and change preset id at UI&#8230;&#8203;)</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="how-to-obtain-team-id">2.5.4.3. How to obtain team id</h5>
+<div class="sect5">
+<h6 id="how-to-obtain-team-id">2.7.2.1.3. How to obtain team id</h6>
 <div class="paragraph">
 <p>Unfortunately the team ID is necessary for REST calls, but not
 visible at Checkmarx UI.</p>
 </div>
 <div class="paragraph">
 <p>You can either directly access the DB or inspect the web page by
-web tools in you browser (e.g. enable network monitoring and change team at UI&#8230;&#8203;)</p>
+web tools in you browser <em>(e.g. enable network monitoring and change team at UI&#8230;&#8203;)</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples">2.7.3. Examples</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As long as there is no dedicated Web UI for administration we use the
+Developer Admin UI for example screenshots:
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For every example you have either to create a new executor configuration or edit an an
+existing one.</p>
+</div>
+<div class="paragraph">
+<p>To edit an existing one, select main menu entry "Edit executor configuration" as shown
+in next figure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-config-edit-executor-config-menuentry.png" alt="sechub daui config edit executor config menuentry">
+</div>
+</div>
+<div class="paragraph">
+<p>This will result in a selection dialog.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-select-executor-config-to-edit.png" alt="sechub daui select executor config to edit" width="75%">
+</div>
+</div>
+<div class="sect4">
+<h5 id="checkmarx-configuration">2.7.3.1. Checkmarx configuration</h5>
+<div class="paragraph">
+<p>At the configuration editor dialog you can change the data structure.
+Parameters are inside a simple text field. But there exists also a button "Edit parameters".</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-checkmarx-executor-config-example.png" alt="sechub daui checkmarx executor config example" width="75%">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you edit directly inside the <code>Parameters</code> text area be aware that only one line per key is allowed.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When you press the "Edit parameters" button, a dedicated parameter editor will appear:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-checkmarx-executor-parameter-editor-mappings-example.png" alt="sechub daui checkmarx executor parameter editor mappings example" width="75%">
+</div>
+</div>
+<div class="paragraph">
+<p>On last figure the type, the necessarity and a short description of the parameters are
+shown above the text component. This makes it easier to configure values.</p>
+</div>
+<div class="paragraph">
+<p>At the mapping tab pane you can edit the JSON data. With "Test mapping" button you can also
+check if the naming pattern are correct and the expected values are resulting.</p>
+</div>
+<div class="paragraph">
+<p>For the "normal" key value pairs we got the "key/values" tab pane. Here the content is normally
+only simple text. For example <code>checkmarx.fullscan.always</code> could contain
+like "true" or "false" or simply nothing.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-checkmarx-executor-parameter-editor-key-values-example.png" alt="sechub daui checkmarx executor parameter editor key values example" width="75%">
+</div>
+</div>
+<div class="paragraph">
+<p>After pressing the <code>Apply</code> button the changed data is set inside executor configuration in correct
+format.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pds-code-scan-configuration">2.7.3.2. PDS code scan configuration</h5>
+<div class="paragraph">
+<p>Here we got an example for a configuration with selected product identifier <code>PDS_CODESCAN</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sechub-daui-pds-executor-parameter-editor-key-values-example.png" alt="sechub daui pds executor parameter editor key values example">
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>pds.config.productidentifier</code> which is an mandatory value is marked <strong>red</strong> because it must be
+sent to PDS server to identify which product shall be used on the other side.</p>
+</div>
+<div class="paragraph">
+<p>Optional, but wellknown PDS key value pairs are shown in <strong>black</strong> - the parameters <code>example.key1</code> and
+<code>example.key2</code> are marked <strong>yellow</strong>. Reason: Those keys are unknown by
+SecHub and so normally custom parameters.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="sereco-configuration">2.7.3.3. Sereco configuration</h5>
+<div class="paragraph">
+<p><code>Sereco</code> is <strong>the only product which needs no configuration at all</strong>, because it is an embedded "product".</p>
+</div>
+<div class="paragraph">
+<p>It also needs no profile setup or something else - as long as there is no other reporting product
+available/configured for a SecHub job, an automated fallback will always call <code>Sereco</code> at the end to ensure a report
+result is created.</p>
+</div>
+<div class="paragraph">
+<p>But <code>Sereco</code> is the one and only exception!</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="section-initial-profile-and-executors">2.6. Profile and executor configuration</h3>
-<div class="sect3">
-<h4 id="executor-configuration">2.6.1. Executor configuration</h4>
+<h3 id="scan-config-about">2.8. Scan configuration</h3>
 <div class="paragraph">
-<p>With an executor configuration a product executor can be configured for product execution.
-An executor will only be executed when configuration has been enabled!</p>
+<p>Sometimes it is necessary to provide special scan configuration setup, e.g. when
+initializing scan operations at server side.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="execution-profile">2.6.2. Execution profile</h4>
 <div class="paragraph">
-<p>An execution profile can contain multiple executor configurations. The configurations can be
-shared between multiple profiles.</p>
+<p>This can be done by a special scan configuration which is defined as JSON.</p>
+</div>
+<div class="paragraph">
+<p>Please don&#8217;t be confused this configuration with <code>SecHub configuration</code> which is always on client side.</p>
+</div>
+<div class="paragraph">
+<p>The scan configuration feature was established before the runtime configuration
+by profiles and executor configurations was introduced.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2135,32 +2587,36 @@ shared between multiple profiles.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="paragraph">
-<p>As an example: a config with name "pds-gosec-1" can be used in profiles "profileA"
-and also "profileB" at the same time.</p>
-</div>
+The scan configuration is a <strong>global configuration</strong> for scan behaviour. At the
+moment there is no need any more for this - <strong>now deprecated</strong> - feature. Maybe it will be removed in the future
+But we explain the concept and its possibilities here.
 </td>
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="general">2.8.1. General</h4>
+<div class="sect4">
+<h5 id="name-pattern-id-providers">2.8.1.1. Name pattern ID providers</h5>
 <div class="paragraph">
-<p>Additionally a profile can be assigned to a project.</p>
+<p>Currently only <code>namePatternIdProviders</code> are provided, which contain an id and mappings from name patterns
+to identifiers. By this very generic approach dedicated adapters can fetch identifiers for specific name setups.</p>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mapping-2">2.8.2. Mapping</h4>
 <div class="paragraph">
-<p>The profile has also an enabled state - like executors.</p>
+<p>Scan configuration can be changed by SecHub <code>mapping</code> - look at <a href="#mapping-technical-details">mapping</a> for more information.</p>
 </div>
-<div class="admonitionblock important">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="paragraph">
-<p>To have a scan job running for a project we need
-- at least one enabled profile assigned to project
-- also at least one configuration inside the profile must be enabled and suitable for wanted scan type (e.g. codescan)</p>
-</div>
+Just use the <code>provider</code> ID as mapping ID.
 </td>
 </tr>
 </table>
@@ -2602,9 +3058,18 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 </div>
 </div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. <a href="https://github.com/Daimler/sechub/issues/472" class="bare">https://github.com/Daimler/sechub/issues/472</a>
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. <a href="https://github.com/Daimler/sechub/issues/499" class="bare">https://github.com/Daimler/sechub/issues/499</a>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
- Server 0.20.0<br>
+ Server 0.21.0<br>
 </div>
 </div>
 <style>

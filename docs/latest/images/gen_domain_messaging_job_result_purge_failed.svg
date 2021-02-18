@@ -7,16 +7,16 @@ skinparam style strictuml
 
 
 control EventBus
-box "scan" #C8C8CF
-   participant ScanMessageHandler
+box "notification" #C8C8CF
 end box
 box "authorization" #F8F8FF
 end box
 box "administration" #C8C8CF
 end box
-box "notification" #F8F8FF
+box "schedule" #F8F8FF
 end box
-box "schedule" #C8C8CF
+box "scan" #C8C8CF
+   participant ScanMessageHandler
 end box
 
 
@@ -28,7 +28,7 @@ Java Runtime: OpenJDK Runtime Environment
 JVM: OpenJDK 64-Bit Server VM
 Java Version: 1.8.0_282-b08
 Operating System: Linux
-OS Version: 5.4.0-1036-azure
+OS Version: 5.4.0-1039-azure
 Default Encoding: UTF-8
 Language: en
 Country: 

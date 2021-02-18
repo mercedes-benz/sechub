@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Server Rest API Documentation</h1>
 <div class="details">
-<span id="revnumber"> Server 0.20.0</span>
+<span id="revnumber"> Server 0.21.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -510,8 +510,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#check-if-the-server-is-alive-and-running">2.2.2. Check if the server is alive and running.</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.1. HEAD</a></li>
-<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.2. GET</a></li>
+<li><a href="#section-ucrestdoc-UC_039-get">2.2.2.1. GET</a></li>
+<li><a href="#section-ucrestdoc-UC_039-head">2.2.2.2. HEAD</a></li>
 </ul>
 </li>
 <li><a href="#admin-lists-all-users">2.2.3. Admin lists all users</a></li>
@@ -823,7 +823,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.20.0-20210203083110</code></p>
+<p>Documentation version: <code>Server 0.21.0-20210218101232</code></p>
 </div>
 <hr>
 </div>
@@ -1736,24 +1736,24 @@ because scanners do not scan them self.</td>
 <p>REST API for usecase <a href="#section-usecase-UC_039">UC_039-Check if the server is alive and running. </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-head">2.2.2.1. HEAD</h5>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="section-ucrestdoc-UC_039-get">2.2.2.2. GET</h5>
+<h5 id="section-ucrestdoc-UC_039-get">2.2.2.1. GET</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="section-ucrestdoc-UC_039-head">2.2.2.2. HEAD</h5>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/anonymous/check/alive' -i -X HEAD</code></pre>
 </div>
 </div>
 </div>
@@ -2066,7 +2066,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/8f5ce8de-9f1c-4906-8f42-38a6ea063635' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/1f10fc0f-17fb-4c98-9bbf-cbf7ae0be902' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3194,7 +3194,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/80f7c533-c2d3-4f12-ad50-2f112cea013a/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ff5222d8-0e6f-403b-beed-9900bacbb2ab/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -3240,7 +3240,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/da80b476-4ef1-4e75-b034-64c55323b389/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/3423d918-afce-41f0-a034-b03f8b0f7cbc/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3340,7 +3340,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/f113e364-6964-4f72-8ac8-a0027a4c1435' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/370b14a3-529c-4641-9526-6ddc7004e748' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3357,7 +3357,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/68394cd6-3f14-4bf6-8712-01c7fc19d940' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/d0ee8b0e-fa17-430f-875f-db1acd89f7a3' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -3370,7 +3370,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/349c8df1-6f2e-4e2d-affb-772230414608' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/f4602200-3df6-4a32-abc4-4e84e9a52150' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -3925,7 +3925,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/e133c746-96f2-4db4-b4b1-ec0098ac1f22' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/75b40da5-6570-497a-bb88-e2368a4e51e3' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3940,7 +3940,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/5fa70b32-f275-4f9a-bee8-af667dbd776a' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/26ba83c6-b465-4bb2-86ac-fe8db98fa980' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -3955,7 +3955,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a77199a6-21e8-49e8-bc19-36902d8e479c' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/b2331fe5-a3f5-46fb-b3c8-dd656704e495' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4059,7 +4059,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid.mapping' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;entries&quot;:[{&quot;pattern&quot;:&quot;testproject_*&quot;,&quot;replacement&quot;:&quot;8be4e3d4-6b53-4636-b65a-949a9ebdf6b9&quot;,&quot;comment&quot;:&quot;testproject-team&quot;},{&quot;pattern&quot;:&quot;.*&quot;,&quot;replacement&quot;:&quot;3be4e3d2-2b55-2336-b65a-949b9ebdf6b9&quot;,&quot;comment&quot;:&quot;default-team&quot;}]}'</code></pre>
 </div>
@@ -4109,7 +4109,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/mapping/checkmarx.newproject.teamid.mapping' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4226,7 +4226,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/73d18ce2-9c10-47e2-91df-01128525cf4e' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/69ef7ea8-2a3b-4af3-b51a-a113504e23bf' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4386,7 +4386,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4ced4e12-c31a-4191-a2d7-a2e0b6623859' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/096d62f5-ce55-4f14-90e9-55a88c4e9099' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -4487,7 +4487,7 @@ because scanners do not scan them self.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/4891b855-043e-4779-a330-b1318364ad50' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/afe50cad-b9c6-4506-8217-f273256db2f5' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -4675,7 +4675,7 @@ because scanners do not scan them self.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;eef0f842-caf9-4db9-ac02-ec62baee4273&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;dafe5772-6c63-4bc6-95b4-5482f7ac338b&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -6263,14 +6263,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -7422,14 +7422,14 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -9135,7 +9135,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h6 id="diagram">4.1.60.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="801" height="3063">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="813" height="3063">
 </div>
 </div>
 </div>
@@ -9397,7 +9397,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-job_results_purged">4.1.60.8. Message JOB_RESULTS_PURGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="541" height="174">
+<img src="images/gen_domain_messaging_job_results_purged.svg" alt="Sequence diagram of messaging JOB_RESULTS_PURGED" width="519" height="174">
 </div>
 </div>
 </div>
@@ -9453,7 +9453,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-mapping_configuration_changed">4.1.60.12. Message MAPPING_CONFIGURATION_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="606" height="174">
+<img src="images/gen_domain_messaging_mapping_configuration_changed.svg" alt="Sequence diagram of messaging MAPPING_CONFIGURATION_CHANGED" width="603" height="174">
 </div>
 </div>
 </div>
@@ -9469,7 +9469,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-project_deleted">4.1.60.14. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="885" height="233">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="864" height="233">
 </div>
 </div>
 </div>
@@ -9485,7 +9485,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-request_batch_job_status">4.1.60.16. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="686" height="233">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="616" height="233">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9583,7 +9583,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-request_purge_job_results">4.1.60.20. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="613" height="308">
+<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="599" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9737,7 +9737,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-scheduler_job_processing_disabled">4.1.60.28. Message SCHEDULER_JOB_PROCESSING_DISABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="920" height="204">
+<img src="images/gen_domain_messaging_scheduler_job_processing_disabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_DISABLED" width="966" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9766,7 +9766,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-scheduler_job_processing_enabled">4.1.60.29. Message SCHEDULER_JOB_PROCESSING_ENABLED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="916" height="204">
+<img src="images/gen_domain_messaging_scheduler_job_processing_enabled.svg" alt="Sequence diagram of messaging SCHEDULER_JOB_PROCESSING_ENABLED" width="962" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9811,7 +9811,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-start_scan">4.1.60.32. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="424" height="308">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="410" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9851,7 +9851,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_added_to_project">4.1.60.34. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="204">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="743" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9880,7 +9880,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_api_token_changed">4.1.60.35. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1171" height="233">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1149" height="233">
 </div>
 </div>
 </div>
@@ -9888,7 +9888,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_becomes_superadmin">4.1.60.36. Message USER_BECOMES_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="642" height="174">
+<img src="images/gen_domain_messaging_user_becomes_superadmin.svg" alt="Sequence diagram of messaging USER_BECOMES_SUPERADMIN" width="670" height="174">
 </div>
 </div>
 </div>
@@ -9925,7 +9925,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_deleted">4.1.60.38. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1023" height="262">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1014" height="262">
 </div>
 </div>
 </div>
@@ -9933,7 +9933,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_new_api_token_requested">4.1.60.39. Message USER_NEW_API_TOKEN_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="879" height="204">
+<img src="images/gen_domain_messaging_user_new_api_token_requested.svg" alt="Sequence diagram of messaging USER_NEW_API_TOKEN_REQUESTED" width="946" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9962,7 +9962,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_no_longer_superadmin">4.1.60.40. Message USER_NO_LONGER_SUPERADMIN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="665" height="174">
+<img src="images/gen_domain_messaging_user_no_longer_superadmin.svg" alt="Sequence diagram of messaging USER_NO_LONGER_SUPERADMIN" width="700" height="174">
 </div>
 </div>
 </div>
@@ -9970,7 +9970,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_removed_from_project">4.1.60.41. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="204">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="788" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10034,7 +10034,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <h5 id="section-gen-messaging-user_signup_requested">4.1.60.43. Message USER_SIGNUP_REQUESTED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="609" height="174">
+<img src="images/gen_domain_messaging_user_signup_requested.svg" alt="Sequence diagram of messaging USER_SIGNUP_REQUESTED" width="626" height="174">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10066,7 +10066,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.20.0<br>
+ Server 0.21.0<br>
 </div>
 </div>
 <style>
