@@ -1,26 +1,7 @@
 // SPDX-License-Identifier: MIT
 [[section-initial-profile-and-executors]]
-=== Profile and executor configuration
+=== Execution profiles
 
-==== Executor configuration
-With an executor configuration a product executor can be configured for product execution.
-An executor will only be executed when configuration has been enabled!
-
-ifdef::usecasedoc[]
-Following usecases are supported:
-
-- <<section-usecase-UC_047,UC_047-Admin creates an executor configuration>>
-
-- <<section-usecase-UC_048,UC_048-Admin deletes executor configuration>>
-
-- <<section-usecase-UC_049,UC_049-Admin fetches executor configuration list>>
-
-- <<section-usecase-UC_050,UC_050-Admin fetches executor configuration>>
-
-- <<section-usecase-UC_051,UC_051-Admin updates executor configuration>>
-endif::usecasedoc[]
-
-==== Execution profile
 An execution profile can contain multiple executor configurations. The configurations can be 
 shared between multiple profiles. 
 
@@ -30,20 +11,19 @@ As an example: a config with name "pds-gosec-1" can be used in profiles "profile
 and also "profileB" at the same time. 
 ====
 
-Additionally a profile can be assigned to a project.
+When a profile is assigned to a project and the profile is enabled, all of its 
+enabled executor configurations are executed for the project when suitable for
+code scan type.  
 
 ifdef::techdoc[]
 TIP: Technically we assign a projectId to a profile, because in domain `scan` we only know projectIds but not `Project` entity...
 endif::techdoc[]
  
-The profile has also an enabled state - like executors.
-
 [IMPORTANT]
 ====
-To have a scan job running for a project we need
-- at least one enabled profile assigned to project
-- also at least one configuration inside the profile must be enabled and suitable for wanted scan type (e.g. codescan) 
-==== 
+To have a scan job running, at least one executor configuration must match - 
+otherwise you will have always a "green" scan result.
+====
 
 ifdef::usecasedoc[]
 Following usecases are supported:

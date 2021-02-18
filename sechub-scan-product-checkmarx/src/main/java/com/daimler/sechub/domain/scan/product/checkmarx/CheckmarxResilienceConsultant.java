@@ -86,7 +86,8 @@ public class CheckmarxResilienceConsultant implements ResilienceConsultant {
                 LOG.info("Can't make proposal for http client error exception:{}", StacktraceUtil.createDescription(rootCause));
             }
         } else {
-            LOG.info("Can't make proposal for exception with root cause:{}", StacktraceUtil.createDescription(rootCause));
+            // unexpected problem - so log as warning and exception, so full stack trace availabe in logs
+            LOG.warn("Can't make proposal for exception with root cause: {}",rootCause.getClass().getSimpleName(),rootCause);
         }
         return null;
     }

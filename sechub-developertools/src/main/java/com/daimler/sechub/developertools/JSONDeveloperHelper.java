@@ -67,4 +67,19 @@ public class JSONDeveloperHelper {
 			return json;
 		}
 	}
+
+    public String compress(String json) {
+        if (json==null) {
+            return null;
+        }
+        try {
+            Object jsonObj = mapper.readValue(json, Object.class);
+            String notIndented = mapper.writer().writeValueAsString(jsonObj);
+            return notIndented;
+        }catch(IOException e) {
+            LOG.error("Was not able to compress json, will return origin text as fallback");
+            return json;
+        }
+        
+    }
 }

@@ -4,8 +4,11 @@
 Mapping is used for simple key value configuration, but also for more sophisticated
 behaviour like done in <<scan-config-about,scan configuration>>.
 
-==== REST API
-Configuration can be done by REST API.
+The mapping concept can be either used in a global persisted way, or in a dynmaic way
+ like done for parameter mappings in <<section-executor-configuration,product executor configuration>> .
+
+==== REST API for global mapping
+A global configuration can be done by REST API.
 
 - <<section-ucrestdoc-uc-UC_037,REST API for UC_037-Admin updates mapping configuration >>
 - <<section-ucrestdoc-uc-UC_038,REST API for UC_038-Admin fetches mapping configuration >>

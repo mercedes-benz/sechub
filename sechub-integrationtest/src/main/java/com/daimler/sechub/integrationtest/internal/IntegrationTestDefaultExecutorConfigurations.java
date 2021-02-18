@@ -6,6 +6,8 @@ import java.util.List;
 import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
@@ -13,6 +15,10 @@ import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
 
 public class IntegrationTestDefaultExecutorConfigurations {
     
+    public static final MappingEntry CHECKMARX_PRESETID_MAPPING_DEFAULT_MAPPING = new MappingEntry(".*","4711","A default presetId for integration tests");
+
+    public static final MappingEntry CHECKMARX_TEAMID_MAPPING_DEFAULT_MAPPING = new MappingEntry(".*","checkmarx-newproject-teamid","our default team id for new checkmarx projects in integration tests");
+
     public static final String VALUE_PRODUCT_LEVEL = "42";
 
     private static final String INTTEST_NAME_PREFIX = "INTTEST_";
@@ -68,6 +74,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.productIdentifier=TestExecutorProductIdentifier.NETSPARKER.name();
         config.name=INTTEST_NAME_PREFIX+"Netsparker V1";
         config.setup.baseURL="https://netsparker.example.com";
+        config.setup.credentials.user="netsparker-user";
+        config.setup.credentials.password="netsparker-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
         return config;
     }
@@ -78,8 +86,22 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.CHECKMARX.name();
         config.name=INTTEST_NAME_PREFIX+"Checkmarx V1";
-        config.setup.baseURL="https://checkmarx.example.com";
+        config.setup.baseURL="https://checkmarx.mock.example.org:6011";
+        config.setup.credentials.user="checkmarx-user";
+        config.setup.credentials.password="checkmarx-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
+        
+        
+        MappingData teamIdMappingData = new MappingData();
+        teamIdMappingData.getEntries().add(CHECKMARX_TEAMID_MAPPING_DEFAULT_MAPPING);
+        
+        MappingData presetIdMappingData = new MappingData();
+        presetIdMappingData.getEntries().add(CHECKMARX_PRESETID_MAPPING_DEFAULT_MAPPING);
+        
+        List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
+        jobParameters.add(new TestExecutorSetupJobParam("checkmarx.newproject.teamid.mapping",teamIdMappingData.toJSON()));
+        jobParameters.add(new TestExecutorSetupJobParam("checkmarx.newproject.presetid.mapping",presetIdMappingData.toJSON()));
+        
         return config;
     }
     
@@ -89,8 +111,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.NESSUS.name();
         config.name=INTTEST_NAME_PREFIX+"Nessus V1";
-        config.setup.baseURL="https://nessus.example.com";
+        config.setup.baseURL="\"https://nessus-intranet.mock.example.org:6000";
+        config.setup.credentials.user="nessus-user-id";
+        config.setup.credentials.password="nessus-password";
         config.uuid=null;// not initialized - is done at creation time by scenario initializer!
+        
+        List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
+        jobParameters.add(new TestExecutorSetupJobParam("nessus.default.policy.id","nessus-default-policiy-id"));
         return config;
     }
 }
