@@ -3,23 +3,22 @@ package com.daimler.sechub.sereco.importer;
 
 import com.daimler.sechub.sereco.ImportParameter;
 
-public abstract class AbstractProductResultImporter implements ProductResultImporter{
+public abstract class AbstractProductResultImporter implements ProductResultImporter {
 
-	private ImportSupport importSupport;
+    private ImportSupport importSupport;
 
-	public AbstractProductResultImporter() {
-		this.importSupport=createImportSupport();
-	}
+    public AbstractProductResultImporter() {
+        this.importSupport = createImportSupport();
+    }
 
-	protected abstract ImportSupport createImportSupport();
+    protected abstract ImportSupport createImportSupport();
 
-	protected ImportSupport getImportSupport() {
-		return importSupport;
-	}
+    protected ImportSupport getImportSupport() {
+        return importSupport;
+    }
 
-	public final ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
-		return importSupport.isAbleToImport(param);
-	}
-	
-	
+    public final ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+        return importSupport.isAbleToImport(param);
+    }
+
 }
