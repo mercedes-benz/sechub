@@ -7,11 +7,10 @@
  */
 dependencies {
 
+	compile 'com.contrastsecurity:java-sarif:1.0'
+	
     compile project(':sechub-shared-kernel')
-
-    testCompile project(':sechub-testframework')
     
-    compile "com.contrastsecurity:java-sarif:1.0"
-
+    testCompile project(':sechub-testframework')
 }
 
