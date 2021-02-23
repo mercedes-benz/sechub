@@ -5,6 +5,7 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+ 
 dependencies {
 
 	implementation 'com.contrastsecurity:java-sarif:1.0'
@@ -13,3 +14,15 @@ dependencies {
     testCompile project(':sechub-testframework')
 }
 
+repositories {
+    maven {
+        url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
+
+        if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
+            credentials(PasswordCredentials) {
+                username project.properties['mavenRepoUserName']
+                password project.properties['mavenRepoPassword']
+            }
+        }
+    }
+}
