@@ -1,7 +1,6 @@
 package com.daimler.sechub.sereco.importer;
 
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 import java.util.List;
