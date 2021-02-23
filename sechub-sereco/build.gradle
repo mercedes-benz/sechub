@@ -8,21 +8,8 @@
  
 dependencies {
 
-	implementation 'com.contrastsecurity:java-sarif:1.0'
+	compile 'com.contrastsecurity:java-sarif:1.0'
     compile project(':sechub-shared-kernel')
     
     testCompile project(':sechub-testframework')
-}
-
-repositories {
-    maven {
-        url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
-
-        if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
-            credentials(PasswordCredentials) {
-                username project.properties['mavenRepoUserName']
-                password project.properties['mavenRepoPassword']
-            }
-        }
-    }
 }

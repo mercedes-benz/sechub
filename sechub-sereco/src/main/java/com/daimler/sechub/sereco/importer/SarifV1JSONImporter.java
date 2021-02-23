@@ -2,14 +2,12 @@ package com.daimler.sechub.sereco.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.contrastsecurity.*;
 import com.contrastsecurity.sarif.SarifSchema210;
 import com.contrastsecurity.sarif.ThreadFlow;
 import com.contrastsecurity.sarif.CodeFlow;
