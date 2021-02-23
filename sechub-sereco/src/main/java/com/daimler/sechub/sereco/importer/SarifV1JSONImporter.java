@@ -2,12 +2,11 @@ package com.daimler.sechub.sereco.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
-
 import com.contrastsecurity.sarif.SarifSchema210;
 import com.contrastsecurity.sarif.ThreadFlow;
 import com.contrastsecurity.sarif.CodeFlow;
@@ -44,7 +43,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         SerecoMetaData metaData = new SerecoMetaData();
 
         sarif.getRuns().stream().forEach(run -> {
-            run.getResults().stream().forEach(result -> {
+            
+            List<Result> results = resultsWithGroupedLocations(run.getResults());
+            
+            results.stream().forEach(result -> {
                 SerecoVulnerability vulnerability = new SerecoVulnerability();
 
                 vulnerability.setDescription("");
@@ -138,6 +140,23 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
 
         return taxa.get().getId();
+    }
+    
+    private List<Result> resultsWithGroupedLocations(List<Result> results) {
+        
+        HashMap<Integer, Result> mappedResults = new HashMap<>();
+        
+        results.stream().forEach(result -> {
+            if (!mappedResults.containsKey(result.getRuleIndex())) {
+                mappedResults.put(result.getRuleIndex(), result);
+            }
+            else {
+                mappedResults.get(result.getRuleIndex()).getLocations().addAll(result.getLocations());
+            }
+            
+        });
+        
+        return new ArrayList<Result>(mappedResults.values());   
     }
 
     private SerecoSeverity mapToSeverity(Level level) {

@@ -2,6 +2,7 @@ package com.daimler.sechub.sereco.importer;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,19 +19,23 @@ import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
 public class SarifV1JSONImporterTest {
 
     private SarifV1JSONImporter importerToTest;
-    private String sarif;
+    private String sarifBrakeman;
+    private String sarifEmptyResult;
+    private String sarifSimpleExample;
 
     @Before
     public void before() {
         importerToTest = new SarifV1JSONImporter();
-        sarif = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_brakeman.json");
+        sarifBrakeman = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_brakeman.json");
+        sarifEmptyResult = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_empty_results.json");
+        sarifSimpleExample = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_simple_example.json");
     }
 
     @Test
     public void sarifreport_can_be_imported() {
         /* prepare */
 
-        ImportParameter param = ImportParameter.builder().importData(sarif).importId("id1").productId("SARIF").build();
+        ImportParameter param = ImportParameter.builder().importData(sarifBrakeman).importId("id1").productId("SARIF").build();
 
         /* execute */
         ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
@@ -40,9 +45,23 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
+    public void empty_sarifreport_throws_exception() throws IOException {
+        
+        /* prepare */
+        /* test */
+        assertThrows(IOException.class, () -> {
+            importerToTest.importResult(null);
+        });
+        
+        assertThrows(IOException.class, () -> {
+            importerToTest.importResult("");
+        });
+    }
+    
+    @Test
     public void sarifreport_has_errorlevel() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif);
+        SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -55,7 +74,7 @@ public class SarifV1JSONImporterTest {
     @Test
     public void sarifreport_has_no_description() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif);
+        SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -66,9 +85,22 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
+    public void sarifreport_has_no_results() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(sarifEmptyResult);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+        
+        /* test */
+        assertTrue(vulnerabilities.isEmpty());
+        
+    }
+    
+    @Test
     public void sarifreport_has_code_info() throws Exception {
         /* prepare */
-        SerecoMetaData result = importerToTest.importResult(sarif);
+        SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
@@ -79,7 +111,7 @@ public class SarifV1JSONImporterTest {
         assertNotNull(codeInfo);
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
-        assertEquals(32, vulnerabilities.size());
+        assertEquals(21, vulnerabilities.size());
 
     }
 
