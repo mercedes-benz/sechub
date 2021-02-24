@@ -21,14 +21,12 @@ public class SarifV1JSONImporterTest {
     private SarifV1JSONImporter importerToTest;
     private String sarifBrakeman;
     private String sarifEmptyResult;
-    private String sarifSimpleExample;
-
+    
     @Before
     public void before() {
         importerToTest = new SarifV1JSONImporter();
         sarifBrakeman = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_brakeman.json");
-        sarifEmptyResult = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_empty_results.json");
-        sarifSimpleExample = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_simple_example.json");
+        sarifEmptyResult = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_empty_results.json");    
     }
 
     @Test
@@ -45,7 +43,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void empty_sarifreport_throws_exception() throws IOException {
+    public void empty_sarifreport_throws_exception() {
         
         /* prepare */
         /* test */

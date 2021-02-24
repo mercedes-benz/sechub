@@ -6,28 +6,9 @@
       "tool": {
         "driver": {
           "name": "ESLint",
-          "informationUri": "https://eslint.org",
-          "rules": [
-            {
-              "id": "no-unused-vars",
-              "shortDescription": {
-                "text": "disallow unused variables"
-              },
-              "helpUri": "https://eslint.org/docs/rules/no-unused-vars",
-              "properties": {
-                "category": "Variables"
-              }
-            }
-          ]
+          "informationUri": "https://eslint.org"
         }
       },
-      "artifacts": [
-        {
-          "location": {
-            "uri": "file:///C:/dev/sarif/sarif-tutorials/samples/Introduction/simple-example.js"
-          }
-        }
-      ],
       "results": []
     }
   ]
