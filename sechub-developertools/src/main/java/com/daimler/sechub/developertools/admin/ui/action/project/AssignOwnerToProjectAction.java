@@ -8,11 +8,11 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.daimler.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
 
-public class AssignUserToProjectAction extends AbstractUIAction {
+public class AssignOwnerToProjectAction extends AbstractUIAction {
     private static final long serialVersionUID = 1L;
 
-    public AssignUserToProjectAction(UIContext context) {
-        super("Assign user to project", context);
+    public AssignOwnerToProjectAction(UIContext context) {
+        super("Assign owner to project", context);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class AssignUserToProjectAction extends AbstractUIAction {
             return;
         }
 
-        if (!confirm("Do you really want to assign the userId " + userId.get() + " to the project ID/name " + projectId.get() + "?")) {
+        if (!confirm("Do you really want to assign the userId " + userId.get() + " as the new owner to the project ID/name " + projectId.get() + "?")) {
             return;
         }
 

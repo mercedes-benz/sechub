@@ -29,9 +29,9 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class ProjectAssignUserService {
+public class ProjectAssignOwnerService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignUserService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignOwnerService.class);
 
     @Autowired
     DomainMessageService eventBus;
@@ -58,10 +58,10 @@ public class ProjectAssignUserService {
 	@UseCaseAdministratorAssignsUserToProject(
 			@Step(
 					number = 2,
-					name = "Assign user",
-					description = "The service will add the user to the project. If user does not have ROLE_USER it will obtain it"))
+					name = "Assign owner",
+					description = "The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it"))
 	/* @formatter:on */
-    public void assignUserToProject(String userId, String projectId) {
+    public void assignOwnerToProject(String userId, String projectId) {
         LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
@@ -69,27 +69,32 @@ public class ProjectAssignUserService {
         assertion.isValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
-        User user = userRepository.findOrFailUser(userId);
-        if (!project.getUsers().add(user)) {
-            throw new AlreadyExistsException("User already assigned to this project!");
+        User owner = userRepository.findOrFailUser(userId);
+        
+        if (project.owner == owner) {
+            throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
-        user.getProjects().add(project);
-        project.getUsers().add(user);
+        
+        project.owner = owner;
+        
+        owner.getProjects().add(project);
+        
+        transactionService.saveInOwnTransaction(project, owner);
 
-        transactionService.saveInOwnTransaction(project, user);
-
-        sendUserAddedToProjectEvent(projectId, user);
-        sendRequestUserRoleRecalculation(user);
+        sendOwnerAddedToProjectEvent(projectId, owner);
+        sendRequestOwnerRoleRecalculation(owner);
 
     }
 
+	// TODO: check if this needs a distinct REQUEST_OWNER_ROLE_RECALCULATION
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-    private void sendRequestUserRoleRecalculation(User user) {
+    private void sendRequestOwnerRoleRecalculation(User user) {
         eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
     }
 
+    // TODO: check if this needs a distinct OWNER_CHANGED_ON_PROJECT
     @IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
-    private void sendUserAddedToProjectEvent(String projectId, User user) {
+    private void sendOwnerAddedToProjectEvent(String projectId, User user) {
         DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);
         UserMessage projectToUserData = new UserMessage();
         projectToUserData.setUserId(user.getName());

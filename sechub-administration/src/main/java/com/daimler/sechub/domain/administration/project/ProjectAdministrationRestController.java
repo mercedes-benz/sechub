@@ -50,28 +50,31 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorU
 @Profile(Profiles.ADMIN_ACCESS)
 public class ProjectAdministrationRestController {
 
-	@Autowired
-	ProjectCreationService creationService;
+    @Autowired
+    ProjectCreationService creationService;
+    
+    @Autowired
+    ProjectAssignOwnerService assignOwnerToProjectService;
 
-	@Autowired
-	ProjectAssignUserService assignUserToProjectService;
+    @Autowired
+    ProjectAssignUserService assignUserToProjectService;
 
-	@Autowired
-	ProjectUnassignUserService unassignUserToProjectService;
+    @Autowired
+    ProjectUnassignUserService unassignUserToProjectService;
 
-	@Autowired
-	ProjectDeleteService deleteService;
+    @Autowired
+    ProjectDeleteService deleteService;
 
-	@Autowired
-	ProjectDetailInformationService detailsService;
+    @Autowired
+    ProjectDetailInformationService detailsService;
 
-	@Autowired
-	ProjectRepository repository;
+    @Autowired
+    ProjectRepository repository;
 
-	@Autowired
-	CreateProjectInputValidator validator;
+    @Autowired
+    CreateProjectInputValidator validator;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorCreatesProject(
 			@Step(
 				number = 1,
@@ -95,53 +98,62 @@ public class ProjectAdministrationRestController {
 		}
 
 		/* @formatter:on */
-		creationService.createProject(input.getName(), input.getDescription(), input.getOwner(), whiteListedURIs, metaData);
-	}
+        creationService.createProject(input.getName(), input.getDescription(), input.getOwner(), whiteListedURIs, metaData);
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorShowsProjectDetails(@Step(number = 1,name="Rest call", description = "Json returned containing details about project", needsRestDoc = true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		return detailsService.fetchDetails(projectId);
-	}
+        return detailsService.fetchDetails(projectId);
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorListsAllProjects(@Step(number=1,name="Rest call",description="All project ids of sechub are returned as json", needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_PROJECTS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listProjects() {
 		/* @formatter:on */
-		return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
-	}
-
+        return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
+    }
+	
 	/* @formatter:off */
+    @UseCaseAdministratorAssignsUserToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign new owner",needsRestDoc=true))
+    @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public void assignOwnerToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
+        /* @formatter:on */
+        assignOwnerToProjectService.assignOwnerToProject(userId, projectId);
+    }
+
+    /* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign user",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.CREATED)
 	public void assignUserToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
 		/* @formatter:on */
-		assignUserToProjectService.assignUserToProject(userId, projectId);
-	}
+        assignUserToProjectService.assignUserToProject(userId, projectId);
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorUnassignsUserFromProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to unassign user",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_UNASSIGN_USER_TO_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void unassignUserFromProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
 		/* @formatter:on */
-		unassignUserToProjectService.unassignUserFromProject(userId, projectId);
-	}
+        unassignUserToProjectService.unassignUserFromProject(userId, projectId);
+    }
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorDeleteProject(@Step(number=1,name="Rest call",description="Project will be deleted",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_PROJECT, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void deleteProject(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-		deleteService.deleteProject(projectId);
-	}
+        deleteService.deleteProject(projectId);
+    }
 
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		binder.setValidator(validator);
-	}
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 }
