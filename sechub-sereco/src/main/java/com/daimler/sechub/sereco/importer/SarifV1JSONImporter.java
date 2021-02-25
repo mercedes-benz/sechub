@@ -23,6 +23,11 @@ import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+/** 
+ * This Importer supports SARIF Version 2.1.0
+ * https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
+ *  */
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
