@@ -134,6 +134,7 @@ public enum UseCaseIdentifier {
 
     /* project administration */
     UC_ADMIN_UPDATES_PROJECT_METADATA(59),
+    UC_ADMIN_ASSIGNS_OWNER_TO_PROJECT(60),
     ;
 
     /* +-----------------------------------------------------------------------+ */

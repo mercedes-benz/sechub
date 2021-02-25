@@ -15,7 +15,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_USER_TO_PROJECT,
+		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_OWNER_TO_PROJECT,
 		group=UseCaseGroup.USER_ADMINISTRATION,
 		title="Admin assigns owner to project", 
 		description="An administrator assigns an owner to an existing sechub project.")

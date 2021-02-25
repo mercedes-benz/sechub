@@ -58,6 +58,9 @@ public class ProjectAdministrationRestControllerMockTest {
 	ProjectCreationService creationService;
 
 	@MockBean
+    ProjectAssignOwnerService assignOwnerService;
+	
+	@MockBean
 	ProjectAssignUserService assignUserService;
 
 	@MockBean

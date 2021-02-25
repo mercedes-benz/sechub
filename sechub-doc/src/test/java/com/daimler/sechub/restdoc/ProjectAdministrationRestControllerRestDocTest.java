@@ -35,6 +35,7 @@ import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.administration.project.CreateProjectInputValidator;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
+import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
@@ -80,6 +81,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
 	@MockBean
 	ProjectCreationService creationService;
+	
+	@MockBean
+    ProjectAssignOwnerService assignOwnerService;
 
 	@MockBean
 	ProjectAssignUserService assignUserService;
