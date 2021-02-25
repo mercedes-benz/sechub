@@ -55,6 +55,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministrat
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsOwnerToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 import com.daimler.sechub.test.ExampleConstants;
@@ -163,6 +164,26 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		/* @formatter:on */
 	}
 
+	@Test
+    @UseCaseRestDoc(useCase=UseCaseAdministratorAssignsOwnerToProject.class)
+    public void restdoc_assign_owner2project() throws Exception {
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isCreated()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsOwnerToProject.class),
+                pathParameters(
+                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                        parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
+                        )
+                ));
+
+        /* @formatter:on */
+    }
+	
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdministratorAssignsUserToProject.class)
 	public void restdoc_assign_user2project() throws Exception {

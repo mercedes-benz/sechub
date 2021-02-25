@@ -35,6 +35,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministrat
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsOwnerToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 
@@ -52,7 +53,7 @@ public class ProjectAdministrationRestController {
 
     @Autowired
     ProjectCreationService creationService;
-    
+
     @Autowired
     ProjectAssignOwnerService assignOwnerToProjectService;
 
@@ -116,9 +117,9 @@ public class ProjectAdministrationRestController {
 		/* @formatter:on */
         return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
     }
-	
-	/* @formatter:off */
-    @UseCaseAdministratorAssignsUserToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign new owner",needsRestDoc=true))
+
+    /* @formatter:off */
+	@UseCaseAdministratorAssignsOwnerToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign new owner",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     public void assignOwnerToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
