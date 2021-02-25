@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -144,7 +145,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     
     private List<Result> resultsWithGroupedLocations(List<Result> results) {
         
-        HashMap<Integer, Result> mappedResults = new HashMap<>();
+        Map<Integer, Result> mappedResults = new HashMap<>();
         
         results.stream().forEach(result -> {
             if (!mappedResults.containsKey(result.getRuleIndex())) {
