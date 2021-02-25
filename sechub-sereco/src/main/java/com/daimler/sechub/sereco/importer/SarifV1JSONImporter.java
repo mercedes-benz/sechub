@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.importer;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /** 
  * This Importer supports SARIF Version 2.1.0
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
- *  */
+ */
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
