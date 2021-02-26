@@ -69,30 +69,27 @@ public class ProjectAssignOwnerService {
         assertion.isValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
-        User owner = userRepository.findOrFailUser(userId);
-        
-        if (project.owner == owner) {
+        User newOwner = userRepository.findOrFailUser(userId);
+
+        if (project.owner == newOwner) {
             throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
-        
-        project.owner = owner;
-        
-        owner.getProjects().add(project);
-        
-        transactionService.saveInOwnTransaction(project, owner);
 
-        sendOwnerAddedToProjectEvent(projectId, owner);
-        sendRequestOwnerRoleRecalculation(owner);
+        project.owner = newOwner;
 
+        newOwner.getProjects().add(project);
+
+        transactionService.saveInOwnTransaction(project, newOwner);
+
+        sendOwnerAddedToProjectEvent(projectId, newOwner);
+        sendRequestOwnerRoleRecalculation(newOwner);
     }
 
-	// TODO: check if this needs a distinct REQUEST_OWNER_ROLE_RECALCULATION
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
     private void sendRequestOwnerRoleRecalculation(User user) {
         eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
     }
 
-    // TODO: check if this needs a distinct OWNER_CHANGED_ON_PROJECT
     @IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
     private void sendOwnerAddedToProjectEvent(String projectId, User user) {
         DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);

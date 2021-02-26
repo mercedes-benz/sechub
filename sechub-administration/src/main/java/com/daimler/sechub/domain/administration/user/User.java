@@ -22,152 +22,149 @@ import com.daimler.sechub.domain.administration.project.Project;
 @Table(name = User.TABLE_NAME)
 public class User {
 
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ SQL ......................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String TABLE_NAME = "ADM_USER";
+    public static final String TABLE_NAME_PROJECT_TO_USER = "ADM_PROJECT_TO_USER";
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ SQL ......................................+ */
-	/* +-----------------------------------------------------------------------+ */
-	public static final String TABLE_NAME = "ADM_USER";
-	public static final String TABLE_NAME_PROJECT_TO_USER = "ADM_PROJECT_TO_USER";
+    public static final String COLUMN_USER_ID = "USER_ID";
+    public static final String COLUMN_USER_HASHED_API_TOKEN = "USER_APITOKEN";
+    /**
+     * A one time token represents a special token which can be used just one time
+     */
+    public static final String COLUMN_USER_ONE_TIME_TOKEN = "USER_ONETIMETOKEN";
+    public static final String COLUMN_USER_ONE_TIME_TOKEN_CREATED = "USER_OTT_CREATED";
+    public static final String COLUMN_USER_ENABLED = "USER_ENABLED";
 
-	public static final String COLUMN_USER_ID = "USER_ID";
-	public static final String COLUMN_USER_HASHED_API_TOKEN = "USER_APITOKEN";
-	/**
-	 * A one time token represents a special token which can be used just one time
-	 */
-	public static final String COLUMN_USER_ONE_TIME_TOKEN = "USER_ONETIMETOKEN";
-	public static final String COLUMN_USER_ONE_TIME_TOKEN_CREATED = "USER_OTT_CREATED";
-	public static final String COLUMN_USER_ENABLED = "USER_ENABLED";
+    public static final String COLUMN_EMAIL_ADRESS = "USER_EMAIL_ADRESS";
+    public static final String COLUMN_USER_ROLES = "USER_ROLES";
+    public static final String COLUMN_USER_SUPERADMIN = "USER_SUPERADMIN";
+    public static final String COLUMN_USER_DEACTIVATED = "USER_DEACTIVATED";
+    public static final String COLUMN_USER_PROJECTS = "PROJECTS_PROJECT_ID";
 
-	public static final String COLUMN_EMAIL_ADRESS = "USER_EMAIL_ADRESS";
-	public static final String COLUMN_USER_ROLES = "USER_ROLES";
-	public static final String COLUMN_USER_SUPERADMIN = "USER_SUPERADMIN";
-	public static final String COLUMN_USER_DEACTIVATED = "USER_DEACTIVATED";
-	public static final String COLUMN_USER_PROJECTS = "PROJECTS_PROJECT_ID";
+    public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_USER_ID = "USERS_USER_ID";
 
-	public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_USER_ID = "USERS_USER_ID";
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ JPQL .....................................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public static final String CLASS_NAME = User.class.getSimpleName();
 
+    @Id
+    @Column(name = COLUMN_USER_ID, unique = true, nullable = false)
+    String name;
 
-	/* +-----------------------------------------------------------------------+ */
-	/* +............................ JPQL .....................................+ */
-	/* +-----------------------------------------------------------------------+ */
-	public static final String CLASS_NAME = User.class.getSimpleName();
+    @Column(name = COLUMN_EMAIL_ADRESS, unique = true, nullable = false)
+    String emailAdress;
 
-	@Id
-	@Column(name = COLUMN_USER_ID, unique = true, nullable = false)
-	String name;
+    @Column(name = COLUMN_USER_HASHED_API_TOKEN, nullable = false)
+    String hashedApiToken;
 
-	@Column(name = COLUMN_EMAIL_ADRESS, unique = true, nullable = false)
-	String emailAdress;
+    @Column(name = COLUMN_USER_ONE_TIME_TOKEN, nullable = true)
+    String oneTimeToken;
 
-	@Column(name = COLUMN_USER_HASHED_API_TOKEN, nullable = false)
-	String hashedApiToken;
+    @Column(name = COLUMN_USER_ONE_TIME_TOKEN_CREATED, nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    Date oneTimeTokenDate;
 
-	@Column(name = COLUMN_USER_ONE_TIME_TOKEN, nullable = true)
-	String oneTimeToken;
+    @Column(name = COLUMN_USER_PROJECTS, nullable = false)
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = Project.PROPERTY_USERS, fetch = FetchType.EAGER)
+    Set<Project> projects;
 
-	@Column(name = COLUMN_USER_ONE_TIME_TOKEN_CREATED, nullable = true)
-	@Temporal(TemporalType.TIMESTAMP)
-	Date oneTimeTokenDate;
-
-	@Column(name = COLUMN_USER_PROJECTS, nullable = false)
-    @ManyToMany(cascade=CascadeType.REFRESH, mappedBy=Project.PROPERTY_USERS, fetch=FetchType.EAGER)
-	Set<Project> projects;
-
-    @OneToMany(cascade=CascadeType.REFRESH, mappedBy=Project.PROPERTY_OWNER, fetch=FetchType.EAGER)
-   	Set<Project> ownedProjects;
+    @OneToMany(cascade = CascadeType.REFRESH, mappedBy = Project.PROPERTY_OWNER, fetch = FetchType.EAGER)
+    Set<Project> ownedProjects;
 
     @Column(name = COLUMN_USER_SUPERADMIN)
-	boolean superAdmin;
+    boolean superAdmin;
 
     @Column(name = COLUMN_USER_DEACTIVATED)
-  	boolean deactivated;
+    boolean deactivated;
 
     @Version
-	@Column(name = "VERSION")
-	Integer version;
+    @Column(name = "VERSION")
+    Integer version;
 
     public Set<Project> getProjects() {
-		return projects;
-	}
+        return projects;
+    }
 
     public Set<Project> getOwnedProjects() {
-		return ownedProjects;
-	}
+        return ownedProjects;
+    }
 
     public boolean isSuperAdmin() {
-		return superAdmin;
-	}
+        return superAdmin;
+    }
 
     public boolean isDeactivated() {
-		return deactivated;
-	}
+        return deactivated;
+    }
 
-	public String getEmailAdress() {
-		return emailAdress;
-	}
+    public String getEmailAdress() {
+        return emailAdress;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getHashedApiToken() {
-		return hashedApiToken;
-	}
+    public String getHashedApiToken() {
+        return hashedApiToken;
+    }
 
-	public String getOneTimeToken() {
-		return oneTimeToken;
-	}
+    public String getOneTimeToken() {
+        return oneTimeToken;
+    }
 
-	public Date getOneTimeTokenDate() {
-		return oneTimeTokenDate;
-	}
+    public Date getOneTimeTokenDate() {
+        return oneTimeTokenDate;
+    }
 
-	/**
-	 * Returns <code>true</code> when one time token is outdated or not existing
-	 * @param timeOutMillis
-	 * @return <code>true</code> when one time token is outdated
-	 */
-	public boolean isOneTimeTokenOutDated(long timeOutMillis) {
-		if (oneTimeTokenDate==null) {
-			return true;
-		}
-		if (oneTimeToken==null || oneTimeToken.isEmpty()) {
-			return true;
-		}
-		long current = System.currentTimeMillis();
-		long diff =  current-oneTimeTokenDate.getTime();
-		return diff>timeOutMillis;
-	}
+    /**
+     * Returns <code>true</code> when one time token is outdated or not existing
+     * 
+     * @param timeOutMillis
+     * @return <code>true</code> when one time token is outdated
+     */
+    public boolean isOneTimeTokenOutDated(long timeOutMillis) {
+        if (oneTimeTokenDate == null) {
+            return true;
+        }
+        if (oneTimeToken == null || oneTimeToken.isEmpty()) {
+            return true;
+        }
+        long current = System.currentTimeMillis();
+        long diff = current - oneTimeTokenDate.getTime();
+        return diff > timeOutMillis;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		User other = (User) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
-
-
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        User other = (User) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
+    }
 
 }

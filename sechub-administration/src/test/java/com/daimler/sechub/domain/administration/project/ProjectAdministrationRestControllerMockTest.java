@@ -3,7 +3,6 @@ package com.daimler.sechub.domain.administration.project;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-//import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,59 +42,58 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class,
-		ProjectAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerMockTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 public class ProjectAdministrationRestControllerMockTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ProjectCreationService creationService;
+    @MockBean
+    ProjectCreationService creationService;
 
-	@MockBean
+    @MockBean
     ProjectAssignOwnerService assignOwnerService;
-	
-	@MockBean
-	ProjectAssignUserService assignUserService;
 
-	@MockBean
-	ProjectDeleteService projectDeleteService;
+    @MockBean
+    ProjectAssignUserService assignUserService;
 
-	@MockBean
-	ProjectUnassignUserService unassignUserService;
+    @MockBean
+    ProjectDeleteService projectDeleteService;
 
-	@MockBean
-	ProjectDetailInformationService detailService;
+    @MockBean
+    ProjectUnassignUserService unassignUserService;
 
-	@MockBean
-	ProjectRepository mockedProjectRepository;
+    @MockBean
+    ProjectDetailInformationService detailService;
 
-	@MockBean
-	CreateProjectInputValidator createProjectInputvalidator;
+    @MockBean
+    ProjectRepository mockedProjectRepository;
 
-	@Before
-	public void before() {
-		when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
-	}
+    @MockBean
+    CreateProjectInputValidator createProjectInputvalidator;
 
-	@Test
-	public void when_admin_tries_to_list_all_projects_all_2_projects_from_repo_are_returned_in_string_array() throws Exception {
-		/* prepare */
-		List<Project> list = new ArrayList<>();
-		Project project1 = new Project();
-		project1.id="project1";
-		Project project2 = new Project();
-		project2.id="project2";
-		list.add(project1);
-		list.add(project2);
-		when(mockedProjectRepository.findAll()).thenReturn(list);
+    @Before
+    public void before() {
+        when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
+    }
 
-		/* execute + test @formatter:off */
+    @Test
+    public void when_admin_tries_to_list_all_projects_all_2_projects_from_repo_are_returned_in_string_array() throws Exception {
+        /* prepare */
+        List<Project> list = new ArrayList<>();
+        Project project1 = new Project();
+        project1.id = "project1";
+        Project project2 = new Project();
+        project2.id = "project2";
+        list.add(project1);
+        list.add(project2);
+        when(mockedProjectRepository.findAll()).thenReturn(list);
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -106,12 +104,12 @@ public class ProjectAdministrationRestControllerMockTest {
         		);
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void when_validator_marks_no_errors___calling_create_project_url_calls_create_service_and_returns_http_200() throws Exception {
+    @Test
+    public void when_validator_marks_no_errors___calling_create_project_url_calls_create_service_and_returns_http_200() throws Exception {
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(https(PORT_USED).buildAdminCreatesProjectUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -124,12 +122,12 @@ public class ProjectAdministrationRestControllerMockTest {
 		verify(creationService).
 			createProject("projectId1","description1","ownerName1", new LinkedHashSet<>(Arrays.asList(new URI("192.168.1.1"), new URI("192.168.1.2"))), new ProjectMetaData());
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void when_validator_marks_errors___calling_create_project_url_never_calls_create_service_but_returns_http_400() throws Exception {
-		/* prepare */
-		doAnswer(new Answer<Void>() {
+    @Test
+    public void when_validator_marks_errors___calling_create_project_url_never_calls_create_service_but_returns_http_400() throws Exception {
+        /* prepare */
+        doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Errors errors = invocation.getArgument(1);
                 errors.reject("testerror");
@@ -137,8 +135,7 @@ public class ProjectAdministrationRestControllerMockTest {
             }
         }).when(createProjectInputvalidator).validate(any(ProjectJsonInput.class), any(Errors.class));
 
-
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		  this.mockMvc.perform(
 	        		post(https(PORT_USED).buildAdminCreatesProjectUrl()).
 	        		contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -149,12 +146,12 @@ public class ProjectAdministrationRestControllerMockTest {
 
 		  verifyNoInteractions(creationService);
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	public void delete_project_calls_delete_service() throws Exception {
+    @Test
+    public void delete_project_calls_delete_service() throws Exception {
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -162,14 +159,14 @@ public class ProjectAdministrationRestControllerMockTest {
 		andExpect(status().isOk());
 
 		/* @formatter:on */
-		verify(projectDeleteService).deleteProject("projectId1");
-	}
+        verify(projectDeleteService).deleteProject("projectId1");
+    }
 
-	@TestConfiguration
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @TestConfiguration
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }
