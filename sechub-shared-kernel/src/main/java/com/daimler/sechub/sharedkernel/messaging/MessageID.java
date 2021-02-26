@@ -141,6 +141,8 @@ public enum MessageID {
      * Informs that a scheduler has been started
      */
     SCHEDULER_STARTED(MessageDataKeys.ENVIRONMENT_BASE_URL, MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS),
+    
+    PROJECT_OWNER_CHANGED,
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

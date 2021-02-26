@@ -23,6 +23,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
+import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
@@ -75,13 +76,14 @@ public class ProjectAssignOwnerService {
             throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
 
+        User previousOwner = project.owner;
         project.owner = newOwner;
 
         newOwner.getProjects().add(project);
 
         transactionService.saveInOwnTransaction(project, newOwner);
 
-        sendOwnerAddedToProjectEvent(projectId, newOwner);
+        sendOwnerChangedForProjectEvent(projectId, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(newOwner);
     }
 
@@ -91,13 +93,14 @@ public class ProjectAssignOwnerService {
     }
 
     @IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
-    private void sendOwnerAddedToProjectEvent(String projectId, User user) {
-        DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);
-        UserMessage projectToUserData = new UserMessage();
-        projectToUserData.setUserId(user.getName());
-        projectToUserData.setProjectIds(Arrays.asList(projectId));
-
-        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, projectToUserData);
+    private void sendOwnerChangedForProjectEvent(String projectId, User previousOwner, User newOwner) {
+        DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
+        ProjectMessage projectData = new ProjectMessage();
+        projectData.setProjectId(projectId);
+        projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAdress());
+        projectData.setProjectOwnerEmailAddress(newOwner.getEmailAdress());
+        
+        request.set(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, projectData);
         eventBus.sendAsynchron(request);
     }
 
