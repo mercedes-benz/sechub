@@ -3,9 +3,6 @@ package com.daimler.sechub.domain.administration.project;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import java.util.HashSet;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,9 +17,9 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
-public class ProjectAssignOwnerServiceTest {
+public class ProjectAssignUserServiceTest {
 
-    private ProjectAssignOwnerService serviceToTest;
+    private ProjectAssignUserService serviceToTest;
     private UserContextService userContext;
     private DomainMessageService eventBusService;
     private ProjectRepository projectRepository;
@@ -41,7 +38,7 @@ public class ProjectAssignOwnerServiceTest {
 
         transactionService = mock(ProjectTransactionService.class);
 
-        serviceToTest = new ProjectAssignOwnerService();
+        serviceToTest = new ProjectAssignUserService();
         serviceToTest.eventBus = eventBusService;
         serviceToTest.projectRepository = projectRepository;
         serviceToTest.userRepository = userRepository;
@@ -52,47 +49,46 @@ public class ProjectAssignOwnerServiceTest {
     }
 
     @Test
-    public void assign_new_owner_to_project() {
-        
-        User oldOwner = mock(User.class);
-        User newOwner = mock(User.class);
-                
+    public void assign_new_user_to_project() {
+
+        User previousUser = mock(User.class);
+        User newUser = mock(User.class);
+
         /* prepare */
         Project project1 = new Project();
         project1.id = "project1";
-        project1.owner = oldOwner;
+        project1.users.add(previousUser);
 
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
-        when(oldOwner.getName()).thenReturn("old");
-        when(newOwner.getName()).thenReturn("new");
-        when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
-        when(newOwner.getProjects()).thenReturn(new HashSet<Project>());
-        
+        when(previousUser.getName()).thenReturn("previous");
+        when(newUser.getName()).thenReturn("new");
+        when(userRepository.findOrFailUser("new")).thenReturn(newUser);
+
         /* execute */
-        serviceToTest.assignOwnerToProject(newOwner.getName(), project1.getId());
-        
+        serviceToTest.assignUserToProject(newUser.getName(), project1.getId());
+
         /* test */
-        verify(transactionService).saveInOwnTransaction(project1, newOwner);
+        verify(transactionService).saveInOwnTransaction(project1, newUser);
     }
-    
+
     @Test
-    public void assign_same_owner_to_project__throws_already_exists_exception() {
-        
-        User oldOwner = mock(User.class);
-                        
+    public void assign_already_added_user_to_project__throws_already_exists_exception() {
+
+        User existingUser = mock(User.class);
+
         /* prepare */
         Project project1 = new Project();
         project1.id = "project1";
-        project1.owner = oldOwner;
+        project1.users.add(existingUser);
 
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
-        when(oldOwner.getName()).thenReturn("old");
-        when(userRepository.findOrFailUser("old")).thenReturn(oldOwner);
-        
+        when(existingUser.getName()).thenReturn("existing");
+        when(userRepository.findOrFailUser("existing")).thenReturn(existingUser);
+
         /* execute */
         /* test */
         assertThrows(AlreadyExistsException.class, () -> {
-            serviceToTest.assignOwnerToProject(oldOwner.getName(), project1.getId());
+            serviceToTest.assignUserToProject(existingUser.getName(), project1.getId());
         });
     }
 
