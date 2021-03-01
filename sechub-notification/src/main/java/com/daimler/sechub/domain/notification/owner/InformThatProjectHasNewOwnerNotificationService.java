@@ -41,33 +41,30 @@ public class InformThatProjectHasNewOwnerNotificationService {
             LOG.warn("No project owner email set - can not inform owner about owner change of project {}", projectMessage.getProjectId());
             return;
         }
-                
+
         if (previousOwnerEmailAddress == null || previousOwnerEmailAddress.isEmpty()) {
             LOG.warn("No previous project owner email set - can not inform previous owner about owner change of project {}", projectMessage.getProjectId());
             return;
         }
-        
+
         Set<String> ccMailsSet = projectMessage.getUserEmailAdresses();
         ccMailsSet.add(previousOwnerEmailAddress);
-        
+
         List<String> ccMails = new ArrayList<>(ccMailsSet);
-        
+
         String ccAddresses = StringUtils.join(ccMails, ',');
-        
+
         SimpleMailMessage message = factory.createMessage("Owner of project " + projectMessage.getProjectId() + " changed");
 
         StringBuilder emailContent = new StringBuilder();
-        emailContent.append("Ownership of the project '");
-        emailContent.append(projectMessage.getProjectId());
-        emailContent.append("' in environment ");
-        emailContent.append(baseUrl);
-        emailContent.append("\n");
-        emailContent.append("has changed.\n\n");
-        emailContent.append(".\n");
+        emailContent.append("Ownership of the project '" + projectMessage.getProjectId());
+        emailContent.append("' in environment " + baseUrl + " has changed.");
+        emailContent.append("\n\nPrevious owner: " + previousOwnerEmailAddress);
+        emailContent.append("\nNew owner: " + projectOwnerEmailAddress);
 
         message.setTo(projectOwnerEmailAddress);
         message.setCc(ccAddresses);
-        
+
         message.setText(emailContent.toString());
 
         emailService.send(message);
