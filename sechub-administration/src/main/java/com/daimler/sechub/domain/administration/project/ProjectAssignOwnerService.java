@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
-import java.util.Arrays;
-
 import javax.annotation.security.RolesAllowed;
 
 import org.slf4j.Logger;
@@ -24,7 +22,6 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -92,7 +89,7 @@ public class ProjectAssignOwnerService {
         eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
     }
 
-    @IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
+    @IsSendingAsyncMessage(MessageID.PROJECT_OWNER_CHANGED)
     private void sendOwnerChangedForProjectEvent(String projectId, User previousOwner, User newOwner) {
         DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
         ProjectMessage projectData = new ProjectMessage();

@@ -192,6 +192,7 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		informUserThatJobHasBeenCanceledService.notify(jobMessage);
 	}
 
+    @IsReceivingAsyncMessage(MessageID.PROJECT_OWNER_CHANGED)
     private void handleOwnerChanged(ProjectMessage projectMessage, String baseUrl) {
         informThatProjectHasNewOwnerService.notify(projectMessage, baseUrl);
     }

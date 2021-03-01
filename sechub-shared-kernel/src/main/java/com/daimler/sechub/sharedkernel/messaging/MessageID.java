@@ -142,7 +142,7 @@ public enum MessageID {
      */
     SCHEDULER_STARTED(MessageDataKeys.ENVIRONMENT_BASE_URL, MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS),
     
-    PROJECT_OWNER_CHANGED,
+    PROJECT_OWNER_CHANGED(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

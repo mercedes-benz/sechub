@@ -31,19 +31,19 @@ public class InformThatProjectHasNewOwnerNotificationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InformThatProjectHasNewOwnerNotificationService.class);
 
-    @UseCaseAdministratorAssignsOwnerToProject(@Step(number = 4, name = "Inform project owner that the project has been deleted"))
+    @UseCaseAdministratorAssignsOwnerToProject(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 
         String projectOwnerEmailAddress = projectMessage.getProjectOwnerEmailAddress();
         String previousOwnerEmailAddress = projectMessage.getPreviousProjectOwnerEmailAddress();
         if (projectOwnerEmailAddress == null || projectOwnerEmailAddress.isEmpty()) {
-            LOG.warn("No project owner email message set - can not inform owner about owner change of project {}", projectMessage.getProjectId());
+            LOG.warn("No project owner email set - can not inform owner about owner change of project {}", projectMessage.getProjectId());
             return;
         }
                 
         if (previousOwnerEmailAddress == null || previousOwnerEmailAddress.isEmpty()) {
-            LOG.warn("No previous project owner email message set - can not inform previous owner about owner change of project {}", projectMessage.getProjectId());
+            LOG.warn("No previous project owner email set - can not inform previous owner about owner change of project {}", projectMessage.getProjectId());
             return;
         }
         
