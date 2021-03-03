@@ -35,7 +35,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministrat
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsOwnerToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 
@@ -119,9 +119,9 @@ public class ProjectAdministrationRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorAssignsOwnerToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign new owner",needsRestDoc=true))
+	@UseCaseAdministratorChangesProjectOwner(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign new owner",needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void assignOwnerToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
         /* @formatter:on */
         assignOwnerToProjectService.assignOwnerToProject(userId, projectId);
@@ -130,7 +130,7 @@ public class ProjectAdministrationRestController {
     /* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(@Step(number=1,name="Rest call",description="Administrator does call rest API to assign user",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
-	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseStatus(HttpStatus.OK)
 	public void assignUserToProject(@PathVariable(name="projectId") String projectId, @PathVariable(name="userId") String userId) {
 		/* @formatter:on */
         assignUserToProjectService.assignUserToProject(userId, projectId);

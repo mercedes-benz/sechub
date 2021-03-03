@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tomcat.util.buf.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsOwnerToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 
 @Service
 public class InformThatProjectHasNewOwnerNotificationService {
@@ -31,7 +31,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InformThatProjectHasNewOwnerNotificationService.class);
 
-    @UseCaseAdministratorAssignsOwnerToProject(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
+    @UseCaseAdministratorChangesProjectOwner(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 
@@ -50,9 +50,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
         Set<String> ccMailsSet = projectMessage.getUserEmailAdresses();
         ccMailsSet.add(previousOwnerEmailAddress);
 
-        List<String> ccMails = new ArrayList<>(ccMailsSet);
-
-        String ccAddresses = StringUtils.join(ccMails, ',');
+        String ccAddresses = StringUtils.join(ccMailsSet, ',');
 
         SimpleMailMessage message = factory.createMessage("Owner of project " + projectMessage.getProjectId() + " changed");
 

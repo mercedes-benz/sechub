@@ -69,7 +69,7 @@ public class ProjectAssignOwnerService {
         Project project = projectRepository.findOrFailProject(projectId);
         User newOwner = userRepository.findOrFailUser(userId);
 
-        if (project.owner == newOwner) {
+        if (project.owner.equals(newOwner)) {
             throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
 
@@ -77,11 +77,13 @@ public class ProjectAssignOwnerService {
         project.owner = newOwner;
 
         newOwner.getProjects().add(project);
+        previousOwner.getProjects().remove(project);
 
         transactionService.saveInOwnTransaction(project, newOwner);
 
         sendOwnerChangedForProjectEvent(projectId, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(newOwner);
+        sendRequestOwnerRoleRecalculation(previousOwner);
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)

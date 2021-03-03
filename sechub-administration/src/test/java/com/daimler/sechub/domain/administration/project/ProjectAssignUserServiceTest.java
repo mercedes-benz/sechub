@@ -50,17 +50,13 @@ public class ProjectAssignUserServiceTest {
 
     @Test
     public void assign_new_user_to_project() {
-
-        User previousUser = mock(User.class);
         User newUser = mock(User.class);
 
         /* prepare */
         Project project1 = new Project();
         project1.id = "project1";
-        project1.users.add(previousUser);
 
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
-        when(previousUser.getName()).thenReturn("previous");
         when(newUser.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newUser);
 

@@ -17,9 +17,9 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_ASSIGNS_OWNER_TO_PROJECT,
 		group=UseCaseGroup.USER_ADMINISTRATION,
-		title="Admin assigns owner to project", 
-		description="An administrator assigns an owner to an existing sechub project.")
-public @interface UseCaseAdministratorAssignsOwnerToProject {
+		title="Admin changes owner of a project", 
+		description="An administrator changes the owner of an existing sechub project.")
+public @interface UseCaseAdministratorChangesProjectOwner {
 	
 	Step value();
 }
