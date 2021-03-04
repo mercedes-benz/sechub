@@ -81,7 +81,7 @@ public class ProjectAssignOwnerService {
 
         transactionService.saveInOwnTransaction(project, newOwner);
 
-        sendOwnerChangedForProjectEvent(projectId, previousOwner, newOwner);
+        sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
     }
@@ -92,12 +92,17 @@ public class ProjectAssignOwnerService {
     }
 
     @IsSendingAsyncMessage(MessageID.PROJECT_OWNER_CHANGED)
-    private void sendOwnerChangedForProjectEvent(String projectId, User previousOwner, User newOwner) {
+    private void sendOwnerChangedForProjectEvent(Project project, User previousOwner, User newOwner) {
+        
         DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
         ProjectMessage projectData = new ProjectMessage();
-        projectData.setProjectId(projectId);
+        projectData.setProjectId(project.id);
         projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAdress());
         projectData.setProjectOwnerEmailAddress(newOwner.getEmailAdress());
+        
+        project.users.forEach(user -> {
+            projectData.addUserEmailAddress(user.getEmailAdress());
+        });
         
         request.set(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, projectData);
         eventBus.sendAsynchron(request);
