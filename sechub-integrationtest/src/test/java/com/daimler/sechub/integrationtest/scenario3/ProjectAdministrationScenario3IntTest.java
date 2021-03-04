@@ -80,13 +80,16 @@ public class ProjectAdministrationScenario3IntTest {
         /* prepare */
         assertUser(USER_1).isOwnerOf(PROJECT_1);
         assertUser(USER_1).hasOwnerRole();
-        as(SUPER_ADMIN).assignUserToProject(USER_3, PROJECT_1);
-
+        
         /* execute */
+        as(SUPER_ADMIN).assignUserToProject(USER_3, PROJECT_1);
         as(SUPER_ADMIN).assignOwnerToProject(USER_2, PROJECT_1);
 
         /* test */
         String subject = "Owner of project " + PROJECT_1.getProjectId() + " changed";
+        
+        assertUser(USER_3).isAssignedToProject(PROJECT_1);
+                
         assertUser(USER_1).hasReceivedEmail(subject);
         assertUser(USER_2).hasReceivedEmail(subject);
         assertUser(USER_3).hasReceivedEmail(subject);        
