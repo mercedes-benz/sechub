@@ -6,6 +6,8 @@ import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
 
 import org.junit.Rule;
 import org.junit.Test;
+
+import static com.daimler.sechub.integrationtest.api.AssertMail.*;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class ProjectAdministrationScenario3IntTest {
@@ -90,8 +92,8 @@ public class ProjectAdministrationScenario3IntTest {
         
         assertUser(USER_3).isAssignedToProject(PROJECT_1);
                 
-        assertUser(USER_1).hasReceivedEmail(subject);
-        assertUser(USER_2).hasReceivedEmail(subject);
-        assertUser(USER_3).hasReceivedEmail(subject);        
+        assertMailExists(USER_1, subject);
+        assertMailExists(USER_2, subject);
+        assertMailExists(USER_3, subject);        
     }
 }
