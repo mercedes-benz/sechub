@@ -74,4 +74,21 @@ public class ProjectAdministrationScenario3IntTest {
         assertUser(USER_1).isNotOwnerOf(PROJECT_1);
         assertUser(USER_1).hasNotOwnerRole();
     }
+    
+    @Test
+    public void when_a_superadmin_assigns_another_owner_to_a_project_all_associated_users_are_mailed() {
+        /* prepare */
+        assertUser(USER_1).isOwnerOf(PROJECT_1);
+        assertUser(USER_1).hasOwnerRole();
+        as(SUPER_ADMIN).assignUserToProject(USER_3, PROJECT_1);
+
+        /* execute */
+        as(SUPER_ADMIN).assignOwnerToProject(USER_2, PROJECT_1);
+
+        /* test */
+        String subject = "Owner of project " + PROJECT_1.getProjectId() + " changed";
+        assertUser(USER_1).hasReceivedEmail(subject);
+        assertUser(USER_2).hasReceivedEmail(subject);
+        assertUser(USER_3).hasReceivedEmail(subject);        
+    }
 }

@@ -26,6 +26,7 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
      */
     public static final TestUser USER_1 = createTestUser(Scenario3.class, "user1");
     public static final TestUser USER_2 = createTestUser(Scenario3.class, "user2");
+    public static final TestUser USER_3 = createTestUser(Scenario3.class, "user3");
 
     /**
      * Project 1 is created on startup, and has {@link #USER_1} assigned
@@ -40,6 +41,7 @@ public class Scenario3 extends AbstractGrowingSecHubServerTestScenario {
 		    ensureDefaultExecutionProfile_1().
 			createUser(USER_1).
 			createUser(USER_2).
+			createUser(USER_3).
 			createProject(PROJECT_1, USER_1).
 			createProject(PROJECT_2, USER_1).
 			assignUserToProject(PROJECT_1, USER_1).
