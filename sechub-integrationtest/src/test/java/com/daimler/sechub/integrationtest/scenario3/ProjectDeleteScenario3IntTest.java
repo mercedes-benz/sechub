@@ -39,7 +39,6 @@ public class ProjectDeleteScenario3IntTest {
             hasUserRole();
         
         assertUser(USER_1).
-            isAssignedToProject(PROJECT_2).
             hasOwnerRole().
             hasUserRole();
 
