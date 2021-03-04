@@ -46,11 +46,6 @@ public class ProjectDeleteScenario3IntTest {
             doesExist().
             hasAccessEntriesInDomainSchedule(1). // user 1 is assigned and so has access to
             hasAccessEntriesInDomainScan(1); // user 1 is assigned and so has access to
-        
-        assertProject(PROJECT_2).
-            doesExist().
-            hasAccessEntriesInDomainSchedule(1). // user 1 is assigned and so has access to
-            hasAccessEntriesInDomainScan(1); // user 1 is assigned and so has access to
 
         /* execute */
         as(SUPER_ADMIN).deleteProject(PROJECT_1);
