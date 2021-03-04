@@ -55,6 +55,7 @@ public class ProjectAdministrationScenario3IntTest {
 
         /* test */
         assertUser(USER_1).isNotOwnerOf(PROJECT_1);
+        assertUser(USER_1).isOwnerOf(PROJECT_2);
         assertUser(USER_1).hasOwnerRole();
     }
     
