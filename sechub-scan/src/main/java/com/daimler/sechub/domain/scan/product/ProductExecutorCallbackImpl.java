@@ -23,20 +23,21 @@ public class ProductExecutorCallbackImpl implements ProductExecutorCallback {
 
     private String projectId;
 
-    private ProductIdentifier productIdentifier;
-
+    private ProductExecutorContext productExecutorContext;
+    
     private SecHubExecutionContext context;
 
     private AdapterMetaDataConverter metaDataConverter;
     
-    public ProductExecutorCallbackImpl(SecHubExecutionContext context, ProductIdentifier productIdentifier, ProductResultTransactionService transactionService) {
+    public ProductExecutorCallbackImpl(SecHubExecutionContext context, ProductExecutorContext productExecutorContext, ProductResultTransactionService transactionService) {
         this.metaDataConverter=new AdapterMetaDataConverter();
         this.transactionService=transactionService;
+        requireNonNull(productExecutorContext, "productExecutorContext be set");
         String projectId = context.getConfiguration().getProjectId();
         requireNonNull(projectId, "Project id must be set");
         this.projectId=projectId;
-        this.productIdentifier=productIdentifier;
         this.context=context;
+        this.productExecutorContext=productExecutorContext;
     }
 
     public AdapterMetaData getMetaDataOrNull() {
@@ -66,7 +67,7 @@ public class ProductExecutorCallbackImpl implements ProductExecutorCallback {
     @Override
     public ProductResult save(ProductResult result) {
         if (result == null) {
-            LOG.error("Product executor {} returned null as one of the results {}", productIdentifier, context.getTraceLogId());
+            LOG.error("Product executor {} returned null as one of the results {}", productExecutorContext.getExecutorConfig(), context.getTraceLogId());
             return null;
         }
         ProductResult newPProductResult = transactionService.persistResult(context.getTraceLogId(), result);
@@ -77,7 +78,7 @@ public class ProductExecutorCallbackImpl implements ProductExecutorCallback {
     @Override
     public ProductResult getProductResult() {
         if (currentProductResult==null) {
-            currentProductResult=new ProductResult(context.getSechubJobUUID(), projectId, productIdentifier, "");
+            currentProductResult=new ProductResult(context.getSechubJobUUID(), projectId, productExecutorContext.getExecutorConfig(), "");
         }
         return currentProductResult;
     }

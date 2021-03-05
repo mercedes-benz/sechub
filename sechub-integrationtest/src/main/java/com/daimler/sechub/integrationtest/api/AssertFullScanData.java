@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import java.util.zip.ZipFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.daimler.sechub.adapter.AdapterMetaData;
+import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 
 public class AssertFullScanData {
 
@@ -64,10 +68,16 @@ public class AssertFullScanData {
         return this;
     }
 
+    public AssertFullScanData containsFileSstartingWith(String name) {
+        resolveFileStartingWith(name);
+        return this;
+    }
+    
     public FullScanDataElement resolveFile(String name) {
         return assertFile(name, fullDataScanElements, ScanMode.EQUAL);
     }
 
+    
     public FullScanDataElement resolveFileStartingWith(String name) {
         return assertFile(name, fullDataScanElements, ScanMode.STARTSWITH);
     }
@@ -121,6 +131,14 @@ public class AssertFullScanData {
         @Override
         public String toString() {
             return "FullScanDataElement [fileName=" + fileName + "]";
+        }
+        
+        public AdapterMetaData asAdapterMetaData() {
+            try {
+                return TestJSONHelper.get().getMapper().readValue(content.getBytes(),AdapterMetaData.class);
+            } catch (IOException e) {
+              throw new IllegalStateException("Was not able to convert to adapter meta data", e);
+            }
         }
     }
 

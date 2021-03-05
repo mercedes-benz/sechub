@@ -19,6 +19,7 @@ import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
@@ -56,7 +57,7 @@ public class SecHubResultServiceTest {
 	public void when_product_result_repository_returns_empty_list__sechub_execution_is_thrown_with_message()
 			throws Exception {
 		/* prepare */
-		when(productResultRepository.findProductResults(eq(secHubJobUUID), any())).thenReturn(new ArrayList<>());
+		when(productResultRepository.findAllProductResults(eq(secHubJobUUID), any())).thenReturn(new ArrayList<>());
 
 		/* test */
 		expected.expect(SecHubExecutionException.class);
@@ -70,9 +71,9 @@ public class SecHubResultServiceTest {
 	public void when_product_result_repository_returns_only_netsparker_result__sechub_execution_is_thrown_with_message()
 			throws Exception {
 		/* prepare */
-		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.NETSPARKER, "scan-result");
+		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1",  new WithoutProductExecutorConfigInfo(ProductIdentifier.NETSPARKER), "scan-result");
 
-		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
+		when(productResultRepository.findAllProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));
 
 		/* test */
@@ -87,11 +88,11 @@ public class SecHubResultServiceTest {
 			throws Exception {
 		/* prepare */
 		SecHubResult secHubResult = new SecHubResult();
-		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1", ProductIdentifier.SERECO, "scan-result");
+		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1",  new WithoutProductExecutorConfigInfo(ProductIdentifier.SERECO), "scan-result");
 		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
 		when(reportTransformer.transform(scanResult)).thenReturn(secHubResult);
 
-		when(productResultRepository.findProductResults(eq(secHubJobUUID), any()))
+		when(productResultRepository.findAllProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));
 		when(resultMerger.merge(null,secHubResult)).thenReturn(secHubResult);
 

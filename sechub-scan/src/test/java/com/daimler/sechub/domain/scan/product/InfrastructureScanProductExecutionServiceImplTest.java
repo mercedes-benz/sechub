@@ -15,7 +15,9 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -37,9 +39,12 @@ public class InfrastructureScanProductExecutionServiceImplTest {
     private ProductExecutorContext productExecutorContext;
     private ProductExecutorContextFactory productExecutorContextFactory;
     private ProductExecutorConfigRepository productExecutorConfigRepository;
+    private ProductExecutorConfigInfo infraScanProductExecutorConfigInfo;
 
 	@Before
 	public void before() throws Exception {
+	    infraScanProductExecutorConfigInfo= new WithoutProductExecutorConfigInfo(INFRASCANNER1_PRODUCT_IDENTIFIER);
+	    
 		uri = new URI("https://www.example.org");
 
 		configuration = mock(SecHubConfiguration.class);
@@ -119,10 +124,10 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", INFRASCANNER1_PRODUCT_IDENTIFIER, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", infraScanProductExecutorConfigInfo, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", INFRASCANNER2_PRODUCT_IDENTIFIER, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", infraScanProductExecutorConfigInfo, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));
@@ -147,13 +152,13 @@ public class InfrastructureScanProductExecutionServiceImplTest {
 
 		/* prepare */
 		UUID secHubJobUUID = UUID.randomUUID();
-		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", INFRASCANNER1_PRODUCT_IDENTIFIER, "result1");
+		ProductResult result1 = new ProductResult(secHubJobUUID, "project1", infraScanProductExecutorConfigInfo, "result1");
 		ProductResultTestAccess.setUUID(result1, UUID.randomUUID());
 
-		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", INFRASCANNER2_PRODUCT_IDENTIFIER, "result2");
+		ProductResult result2 = new ProductResult(secHubJobUUID, "project1", infraScanProductExecutorConfigInfo, "result2");
 		ProductResultTestAccess.setUUID(result2, UUID.randomUUID());
 
-		ProductResult result3 = new ProductResult(secHubJobUUID, "project1", INFRASCANNER2_PRODUCT_IDENTIFIER, "result3");
+		ProductResult result3 = new ProductResult(secHubJobUUID, "project1", infraScanProductExecutorConfigInfo, "result3");
 		ProductResultTestAccess.setUUID(result3, UUID.randomUUID());
 
 		when(configuration.getInfraScan()).thenReturn(Optional.of(infraconfig));

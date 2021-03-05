@@ -57,7 +57,7 @@ public class SecHubResultService {
 
     public SecHubResult createResult(UUID secHubJobUUID) throws SecHubExecutionException {
         notNull(secHubJobUUID, "secHubJobUUID may not be null!");
-        List<ProductResult> productResults = productResultRepository.findProductResults(secHubJobUUID, SERECO);
+        List<ProductResult> productResults = productResultRepository.findAllProductResults(secHubJobUUID, SERECO);
 
 		if (productResults.isEmpty()) {
 			throw new SecHubExecutionException("No report result found for:" + secHubJobUUID);

@@ -17,7 +17,13 @@ public class ProductExecutorContextFactory {
     
     public ProductExecutorContext create(List<ProductResult> formerResults, SecHubExecutionContext executionContext, ProductExecutor productExecutor, ProductExecutorConfig config) {
         
-        return new ProductExecutorContext(config,formerResults, new ProductExecutorCallbackImpl(executionContext, productExecutor.getIdentifier(), transactionService));
+        ProductExecutorContext productExecutorContext = new ProductExecutorContext(config,formerResults);
+        
+        ProductExecutorCallbackImpl callBack = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
+        productExecutorContext.callback=callBack;
+        productExecutorContext.afterCallbackSet();
+        
+        return productExecutorContext;
     }
     
 }

@@ -47,11 +47,9 @@ public class Scenario8 extends AbstractGrowingSecHubServerTestScenario {
 	protected void initializeTestData() {
 		/* @formatter:off */
 		initializer().
-		    ensureDefaultExecutionProfile_1().
 			createUser(USER_1).
 			createProject(PROJECT_1, USER_1).
-			assignUserToProject(PROJECT_1,USER_1).
-			addProjectIdsToDefaultExecutionProfile_1(PROJECT_1)
+			assignUserToProject(PROJECT_1,USER_1)
 			
 			;
 		/* @formatter:on */

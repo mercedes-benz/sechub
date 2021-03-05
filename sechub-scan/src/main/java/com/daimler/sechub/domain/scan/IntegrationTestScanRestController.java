@@ -28,7 +28,10 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultCountService;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
+import com.daimler.sechub.domain.scan.product.config.DefaultProductExecutorConfigInfo;
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutionProfileRepository;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.report.ScanReportCountService;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
@@ -116,7 +119,8 @@ public class IntegrationTestScanRestController {
             if (result.length()>maxLength) {
                 result = result.substring(0,maxLength-3)+"...";
             }
-            ProductResult shrinked = new ProductResult(originProductResult.getSecHubJobUUID(),originProductResult.getProjectId(),originProductResult.getProductIdentifier(),result);
+            ProductExecutorConfigInfo info = new DefaultProductExecutorConfigInfo(originProductResult.getProductIdentifier(), originProductResult.getProductExecutorConfigUUID());
+            ProductResult shrinked = new ProductResult(originProductResult.getSecHubJobUUID(),originProductResult.getProjectId(),info,result);
             shrinkedResults.add(shrinked);
         }
         return shrinkedResults;
@@ -137,7 +141,9 @@ public class IntegrationTestScanRestController {
         if (result!=null) {
             r = result;
         }else {
-            r = new ProductResult(sechubJobUUID,projectId,productIdentifier,body);
+            // We do not know which executor this has been done - it's a new one, so we create just a new pseudo config without uuid 
+            WithoutProductExecutorConfigInfo info = new WithoutProductExecutorConfigInfo(productIdentifier);
+            r = new ProductResult(sechubJobUUID,projectId,info,body);
             
         }
         r.setResult(body);

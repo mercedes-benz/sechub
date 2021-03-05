@@ -103,8 +103,11 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
-        ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
+        when(executorContext.getCallBack()).thenReturn(callBack);
+        when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+        
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */
@@ -133,8 +136,11 @@ public class CheckmarxProductExecutorMockTest {
         
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
-        ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
+        when(executorContext.getCallBack()).thenReturn(callBack);
+        when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+        
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */

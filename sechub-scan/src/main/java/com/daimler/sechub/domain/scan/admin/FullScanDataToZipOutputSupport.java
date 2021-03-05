@@ -23,17 +23,24 @@ public class FullScanDataToZipOutputSupport {
 	    	for (ProjectScanLog log: data.allScanLogs) {
 	    		writeStringAsZipFileEntry(zippedOut, log.toString(), "log_"+log.getUUID(),fileNamesAlreadyUsed);
 	    	}
-	    	for (ScanData sd: data.allScanData) {
-	    		writeStringAsZipFileEntry(zippedOut, sd.result, sd.productId,fileNamesAlreadyUsed);
-	    		String metaData = sd.metaData;
+	    	for (ScanData scanData: data.allScanData) {
+	    		writeStringAsZipFileEntry(zippedOut, scanData.result, createFilenamePart(scanData),fileNamesAlreadyUsed);
+	    		String metaData = scanData.metaData;
 	    		if (metaData==null) {
 	    		    metaData="{ \"message\" : \"no meta data available\" }";
 	    		}
-	    		writeStringAsZipFileEntry(zippedOut, metaData, "metadata_"+sd.productId,fileNamesAlreadyUsed);
+	    		writeStringAsZipFileEntry(zippedOut, metaData, "metadata_"+createFilenamePart(scanData),fileNamesAlreadyUsed);
 	    	}
 	    	zippedOut.closeEntry();
 	    	zippedOut.finish();
 	    }
+	}
+	
+	private String createFilenamePart(ScanData data) {
+	    if (data.executorConfigUUID==null) {
+	        return data.productId;
+	    }
+	    return data.productId+"_"+data.executorConfigUUID;
 	}
 
 	private void writeStringAsZipFileEntry(ZipOutputStream zippedOut, String string, String wantedFileName, List<String> fileNamesAlreadyUsed) throws UnsupportedEncodingException, IOException {

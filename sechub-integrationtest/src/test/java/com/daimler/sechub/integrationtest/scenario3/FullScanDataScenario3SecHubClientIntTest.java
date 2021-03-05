@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import com.daimler.sechub.integrationtest.api.AssertFullScanData;
 import com.daimler.sechub.integrationtest.api.AssertFullScanData.FullScanDataElement;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -54,15 +55,16 @@ public class FullScanDataScenario3SecHubClientIntTest {
         /* test @formatter:off*/
         AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
         
+        String netsparkerFileName = "NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".txt";
         assertFullScanData.
 		    dumpDownloadFilePath().
-		    containsFile("NETSPARKER.txt").// txt because just empty text
-		    containsFile("metadata_NETSPARKER.json").// txt because just empty text
+		    containsFile(netsparkerFileName).// txt because just empty text
+		    containsFile("metadata_NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".json").// txt because just empty text
 		    containsFile("SERECO.json").
 			containsFile("metadata_SERECO.json").
 		    containsFiles(5);
 
-		FullScanDataElement netsparker = assertFullScanData.resolveFile("NETSPARKER.txt");
+		FullScanDataElement netsparker = assertFullScanData.resolveFile(netsparkerFileName);
 		assertEquals("", netsparker.content);
 		FullScanDataElement sereco = assertFullScanData.resolveFile("SERECO.json");
 
@@ -90,8 +92,8 @@ public class FullScanDataScenario3SecHubClientIntTest {
         /* test @formatter:off*/
         assertFullScanData.
             dumpDownloadFilePath().
-            containsFile("CHECKMARX.xml").
-            containsFile("metadata_CHECKMARX.json").
+            containsFile("CHECKMARX_"+IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid+".xml").
+            containsFile("metadata_CHECKMARX_" +IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid+".json").
             containsFile("metadata_SERECO.json").
             containsFile("SERECO.json").
             containsFiles(5);
