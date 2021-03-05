@@ -501,9 +501,9 @@ public class AsUser {
      * @param project
      * @return execution result
      */
-    public AssertExecutionResult createWebScanAndFetchScanData(TestProject project) {
+    public ExecutionResult createWebScanAndFetchScanData(TestProject project) {
         ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.JSON_WEBSCAN_RED);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
