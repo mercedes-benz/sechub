@@ -6,6 +6,7 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario4.Scenario4.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.junit.Rule;
@@ -180,8 +181,10 @@ public class RestartJobScenario4IntTest {
 
         assertInspections().hasAmountOfInspections(2);
         
-        as(SUPER_ADMIN).
-            downloadFullScanDataFor(sechubJobUUD).
+        File file = as(SUPER_ADMIN).
+            downloadFullScanDataFor(sechubJobUUD);
+        
+        assertFullScanDataZipFile(file).
             dumpDownloadFilePath().
             containsFile("CHECKMARX.xml").
             containsFile("metadata_CHECKMARX.json").

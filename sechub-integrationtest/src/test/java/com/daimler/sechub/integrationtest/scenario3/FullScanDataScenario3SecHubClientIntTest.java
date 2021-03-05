@@ -6,6 +6,7 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
     public Timeout timeOut = Timeout.seconds(300); // 5 minutes is more than enough...
 
     @Rule
-    public ExpectedException expected =ExpectedExceptionFactory.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
     @Test
     public void product_failure_results_in_downloadable_fullscan_product_result_is_empty_and_report_contains_vulnerability_1_about_sechub_failure()
@@ -48,10 +49,12 @@ public class FullScanDataScenario3SecHubClientIntTest {
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
         /* execute */
-        AssertFullScanData assertFullScanData = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
+        File scanDataZipFile = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
 
         /* test @formatter:off*/
-		assertFullScanData.
+        AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
+        
+        assertFullScanData.
 		    dumpDownloadFilePath().
 		    containsFile("NETSPARKER.txt").// txt because just empty text
 		    containsFile("metadata_NETSPARKER.json").// txt because just empty text
@@ -79,8 +82,10 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
+        File scanDataZipFile =as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
+        
         /* execute */
-        AssertFullScanData assertFullScanData = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
+        AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
 
         /* test @formatter:off*/
         assertFullScanData.

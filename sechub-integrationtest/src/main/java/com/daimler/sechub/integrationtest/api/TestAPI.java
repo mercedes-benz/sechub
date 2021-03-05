@@ -92,6 +92,10 @@ public class TestAPI {
         return AssertSecHubReport.assertSecHubReport(json);
     }
 
+    public static AssertFullScanData assertFullScanDataZipFile(File file) {
+        return AssertFullScanData.assertFullScanDataZipFile(file);
+    }
+    
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }

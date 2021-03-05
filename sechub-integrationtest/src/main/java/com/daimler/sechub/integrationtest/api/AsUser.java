@@ -653,10 +653,10 @@ public class AsUser {
         return true;
     }
 
-    public AssertFullScanData downloadFullScanDataFor(UUID sechubJobUUID) {
+    public File downloadFullScanDataFor(UUID sechubJobUUID) {
         String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
         File file = downloadAsTempFileFromURL(url, sechubJobUUID, "download-fullscan", ".zip");
-        return new AssertFullScanData(file);
+        return file;
     }
 
     public AsUser grantSuperAdminRightsTo(TestUser targetUser) {
