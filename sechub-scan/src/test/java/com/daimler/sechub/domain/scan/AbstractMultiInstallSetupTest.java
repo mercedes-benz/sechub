@@ -165,7 +165,7 @@ public class AbstractMultiInstallSetupTest {
 		}
 
 		@Override
-		protected String getBaseURLWhenDaimlerIntranetTarget() {
+		protected String getBaseURLWhenIntranetTarget() {
 			return baseURLIntranetTarget;
 		}
 
@@ -175,7 +175,7 @@ public class AbstractMultiInstallSetupTest {
 		}
 
 		@Override
-		protected String getUsernameWhenDaimlerIntranetTarget() {
+		protected String getUsernameWhenIntranetTarget() {
 			return useridIntranetTarget;
 		}
 
@@ -185,7 +185,7 @@ public class AbstractMultiInstallSetupTest {
 		}
 
 		@Override
-		protected String getPasswordWhenDaimlerIntranetTarget() {
+		protected String getPasswordWhenIntranetTarget() {
 			return passwordIntranetTarget;
 		}
 
