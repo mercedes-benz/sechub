@@ -21,6 +21,7 @@ import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -63,8 +64,10 @@ public class NessusProductExecutorTest {
 		nessusAdapter = mock(NessusAdapter.class);
 		executorContext=mock(ProductExecutorContext.class);
 		executorConfig=mock(ProductExecutorConfig.class);
-		
+	
+		ProductResult productResult = mock(ProductResult.class);
 		when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+		when(executorContext.getCurrentProductResult()).thenReturn(productResult);
 		
 		installSetup= mock(NessusInstallSetup.class);
 		when(installSetup.getBaseURL(any())).thenReturn("baseURL");
