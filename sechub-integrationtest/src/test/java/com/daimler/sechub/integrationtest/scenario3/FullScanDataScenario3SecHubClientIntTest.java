@@ -35,9 +35,12 @@ public class FullScanDataScenario3SecHubClientIntTest {
     @Rule
     public ExpectedException expected = ExpectedExceptionFactory.none();
 
+    /**
+     * product failure results in downloadable fullscan product result is empty and
+     * report contains vulnerability 1 about sechub failure
+     */
     @Test
-    public void product_failure_results_in_downloadable_fullscan_product_result_is_empty_and_report_contains_vulnerability_1_about_sechub_failure()
-            throws IOException {
+    public void product_failure_results_in_downloadable_scan_log() throws IOException {
         /* check preconditions */
         assertUser(USER_1).isAssignedToProject(PROJECT_1).hasOwnerRole().hasUserRole();
 
@@ -84,8 +87,8 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
-        File scanDataZipFile =as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
-        
+        File scanDataZipFile = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
+
         /* execute */
         AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
 

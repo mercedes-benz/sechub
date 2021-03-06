@@ -196,8 +196,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
             getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
 
             productResults = new ArrayList<ProductResult>();
-            ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, executorConfiguration, "");
-            productResults.add(fallbackResult);
+            ProductResult currentResult = executorContext.getCurrentProductResult();
+            if (currentResult==null) {
+                currentResult= new ProductResult(context.getSechubJobUUID(), projectId, executorConfiguration, "");
+            }else {
+                /* product result does already exists, e.g. when adapter has written meta data - so reuse it */
+                currentResult.setResult("");
+            }
+            productResults.add(currentResult);
         }
         if (context.isCanceledOrAbandonded()) {
             return;
