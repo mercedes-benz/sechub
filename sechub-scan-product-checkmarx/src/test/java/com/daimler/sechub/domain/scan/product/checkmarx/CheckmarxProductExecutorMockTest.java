@@ -104,7 +104,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
-        when(executorContext.getCallBack()).thenReturn(callback);
+        when(executorContext.getCallback()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
         
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
@@ -137,7 +137,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
-        when(executorContext.getCallBack()).thenReturn(callback);
+        when(executorContext.getCallback()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
         
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");

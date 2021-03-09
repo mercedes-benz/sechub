@@ -80,7 +80,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 			/* @formatter:on */
 
 			/* execute NETSPARKER by adapter and return product result */
-			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
+			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallback());
 			
 			ProductResult currentProductResult = executorContext.getCurrentProductResult();
             currentProductResult.setResult(xml);

@@ -134,7 +134,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallBack());
+                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallback());
 
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
                 productResult.setResult(xml);

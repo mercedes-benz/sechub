@@ -64,7 +64,7 @@ public class ResilientActionExecutor<R> {
         LOG.info("Handle exception of type:{}", e.getClass().getName());
 
         context.prepareForNextCheck(e);
-        ResilienceCallback callback = context.getCallBack();
+        ResilienceCallback callback = context.getCallback();
 
         ResilienceProposal proposal = findFirstProposalFromConsultants(context);
         if (proposal == null) {
@@ -168,7 +168,7 @@ public class ResilientActionExecutor<R> {
         /**
          * @return callback or <code>null</code>
          */
-        public ResilienceCallback getCallBack() {
+        public ResilienceCallback getCallback() {
             return callback;
         }
 

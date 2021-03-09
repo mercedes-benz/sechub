@@ -28,7 +28,7 @@ public class CheckmarxResilienceCallbackTest {
         executorContext = mock(ProductExecutorContext.class);
         adapterMetaDataCallback=mock(AdapterMetaDataCallback.class);
         
-        when(executorContext.getCallBack()).thenReturn(adapterMetaDataCallback);
+        when(executorContext.getCallback()).thenReturn(adapterMetaDataCallback);
         metaData = mock(AdapterMetaData.class);
         when(executorContext.getCurrentMetaDataOrNull()).thenReturn(metaData);
         

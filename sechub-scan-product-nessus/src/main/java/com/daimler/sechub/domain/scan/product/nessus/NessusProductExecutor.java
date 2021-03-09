@@ -76,7 +76,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 		/* @formatter:on */
 
         /* execute NESSUS by adapter and return product result */
-        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallBack());
+        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallback());
         
         ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
         productResult.setResult(xml);

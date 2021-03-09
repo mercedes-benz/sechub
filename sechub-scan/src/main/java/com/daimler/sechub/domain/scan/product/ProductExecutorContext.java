@@ -65,7 +65,7 @@ public class ProductExecutorContext {
         return executorConfig;
     }
     
-    public AdapterMetaDataCallback getCallBack() {
+    public AdapterMetaDataCallback getCallback() {
         return callback;
     }
 
