@@ -2,9 +2,9 @@
 package com.daimler.sechub.domain.notification.owner;
 
 import static java.util.Objects.*;
+
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,8 @@ public class InformThatProjectHasNewOwnerNotificationService {
         Set<String> ccMailsSet = projectMessage.getUserEmailAdresses();
         ccMailsSet.add(previousOwnerEmailAddress);
 
-        String ccAddresses = StringUtils.join(ccMailsSet, ',');
+        
+        String[] ccAddresses = ccMailsSet.toArray(String[]::new);
 
         SimpleMailMessage message = factory.createMessage("Owner of project " + projectMessage.getProjectId() + " changed");
 

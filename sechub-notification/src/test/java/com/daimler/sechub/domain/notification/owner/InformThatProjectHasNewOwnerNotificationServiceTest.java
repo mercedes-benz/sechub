@@ -65,7 +65,7 @@ public class InformThatProjectHasNewOwnerNotificationServiceTest {
         /* test */
         // check mocked mail message was sent
 
-        String ccAddresses = "prevowner@example.org,user1@example.org";
+        String[] ccAddresses = {"prevowner@example.org", "user1@example.org"};
 
         ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(mockedEmailService).send(mailMessageCaptor.capture());
