@@ -19,8 +19,8 @@ public class ProductExecutorContextFactory {
         
         ProductExecutorContext productExecutorContext = new ProductExecutorContext(config,formerResults);
         
-        ProductExecutorCallbackImpl callBack = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
-        productExecutorContext.callback=callBack;
+        ProductExecutorCallbackImpl callback = new ProductExecutorCallbackImpl(executionContext, productExecutorContext, transactionService);
+        productExecutorContext.callback=callback;
         productExecutorContext.afterCallbackSet();
         
         return productExecutorContext;

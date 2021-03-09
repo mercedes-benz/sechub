@@ -99,12 +99,12 @@ public class CheckmarxProductExecutorMockTest {
         /* prepare */
         SecHubExecutionContext context = createExecutionContextForPseudoCodeScan();
 
-        ProductExecutorCallback callBack = mock(ProductExecutorCallback.class);
+        ProductExecutorCallback callback = mock(ProductExecutorCallback.class);
         ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
-        when(executorContext.getCallBack()).thenReturn(callBack);
+        when(executorContext.getCallBack()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
         
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
@@ -129,7 +129,7 @@ public class CheckmarxProductExecutorMockTest {
         /* prepare */
         SecHubExecutionContext context = createExecutionContextForPseudoCodeScan();
 
-        ProductExecutorCallback callBack = mock(ProductExecutorCallback.class);
+        ProductExecutorCallback callback = mock(ProductExecutorCallback.class);
        
 
         ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
@@ -137,7 +137,7 @@ public class CheckmarxProductExecutorMockTest {
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
         ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
-        when(executorContext.getCallBack()).thenReturn(callBack);
+        when(executorContext.getCallBack()).thenReturn(callback);
         when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
         
         ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");

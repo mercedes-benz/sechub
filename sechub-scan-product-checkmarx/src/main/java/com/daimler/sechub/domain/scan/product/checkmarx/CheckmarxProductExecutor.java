@@ -92,7 +92,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
         CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
 
-        CheckmarxResilienceCallback callBack = new CheckmarxResilienceCallback(configSupport, executorContext);
+        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, executorContext);
 
         /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
@@ -111,7 +111,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
     					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
     					setProductBaseUrl(configSupport.getProductBaseURL()).
 
-    					setAlwaysFullScan(callBack.isAlwaysFullScanEnabled()).
+    					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
     					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
     					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
@@ -141,7 +141,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
                 return productResult;
             }
-        }, callBack);
+        }, callback);
         return Collections.singletonList(result);
 
     }
