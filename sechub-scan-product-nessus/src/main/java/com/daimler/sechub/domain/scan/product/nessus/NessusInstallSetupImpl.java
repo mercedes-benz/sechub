@@ -54,7 +54,7 @@ public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstal
 	}
 
 	@Override
-	protected String getBaseURLWhenDaimlerIntranetTarget() {
+	protected String getBaseURLWhenIntranetTarget() {
 		return intranetNessusBaseURL;
 	}
 
@@ -64,7 +64,7 @@ public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstal
 	}
 
 	@Override
-	protected String getUsernameWhenDaimlerIntranetTarget() {
+	protected String getUsernameWhenIntranetTarget() {
 		return intranetNessusUserId;
 	}
 
@@ -74,7 +74,7 @@ public class NessusInstallSetupImpl extends AbstractTargetIdentifyingMultiInstal
 	}
 
 	@Override
-	protected String getPasswordWhenDaimlerIntranetTarget() {
+	protected String getPasswordWhenIntranetTarget() {
 		return intranetNessusPassword;
 	}
 

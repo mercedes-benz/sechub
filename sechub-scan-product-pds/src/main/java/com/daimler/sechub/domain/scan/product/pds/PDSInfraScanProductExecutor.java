@@ -96,7 +96,7 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 			/* @formatter:on */
 
             /* execute PDS by adapter and return product result */
-            String xml = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallBack());
+            String xml = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());
 
             ProductResult currentProductResult = executorContext.getCurrentProductResult();
             currentProductResult.setResult(xml);

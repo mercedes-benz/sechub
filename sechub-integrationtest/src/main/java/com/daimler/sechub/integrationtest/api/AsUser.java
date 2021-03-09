@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
@@ -501,9 +502,9 @@ public class AsUser {
      * @param project
      * @return execution result
      */
-    public AssertExecutionResult createWebScanAndFetchScanData(TestProject project) {
+    public ExecutionResult createWebScanAndFetchScanData(TestProject project) {
         ExecutionResult result = withSecHubClient().startSynchronScanFor(project, IntegrationTestJSONLocation.JSON_WEBSCAN_RED);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     public String restartCodeScanAndFetchJobStatus(TestProject project, UUID sechubJobUUID) {
@@ -653,10 +654,10 @@ public class AsUser {
         return true;
     }
 
-    public AssertFullScanData downloadFullScanDataFor(UUID sechubJobUUID) {
+    public File downloadFullScanDataFor(UUID sechubJobUUID) {
         String url = getUrlBuilder().buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID);
         File file = downloadAsTempFileFromURL(url, sechubJobUUID, "download-fullscan", ".zip");
-        return new AssertFullScanData(file);
+        return file;
     }
 
     public AsUser grantSuperAdminRightsTo(TestUser targetUser) {
@@ -801,18 +802,7 @@ public class AsUser {
      * @throws IllegalStateException    when key was not found
      */
     public AsUser changeProductExecutorJobParameter(TestExecutorConfig executorConfig, String key, String newValue) {
-        if (executorConfig.uuid == null) {
-            LOG.warn("The executor config:" + executorConfig.name
-                    + " had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted");
-            TestExecutorConfigList list = fetchProductExecutorConfigList();
-            for (TestExecutorConfigListEntry entry : list.executorConfigurations) {
-                if (executorConfig.name.equals(entry.name)) {
-                    executorConfig.uuid = entry.uuid;
-                    break;
-                }
-            }
-
-        }
+        ensureExecutorConfigUUIDs(executorConfig);
         UUID executorConfigUUID = executorConfig.uuid;
         if (executorConfigUUID == null) {
             throw new IllegalArgumentException("Invalid test case: executorConfigUUID may not be null! Name was:" + executorConfig.name);
@@ -832,6 +822,27 @@ public class AsUser {
         }
         return this;
 
+    }
+    
+    void ensureExecutorConfigUUIDs() {
+        for (TestExecutorConfig config: IntegrationTestDefaultExecutorConfigurations.getAllConfigurations()) {
+            ensureExecutorConfigUUIDs(config);
+        }
+    }
+
+    void ensureExecutorConfigUUIDs(TestExecutorConfig executorConfig) {
+        if (executorConfig.uuid != null) {
+            return;
+        }
+        LOG.warn("The executor config:" + executorConfig.name
+                + " had no UUID - this can happen when starting an integration test again when executor config already exists and not recreated. So load list of executor configurations and try to resolve the config. But be aware! Ensure names of configurations are unique here so it's really the config you wanted");
+        TestExecutorConfigList list = fetchProductExecutorConfigList();
+        for (TestExecutorConfigListEntry entry : list.executorConfigurations) {
+            if (executorConfig.name.equals(entry.name)) {
+                executorConfig.uuid = entry.uuid;
+                break;
+            }
+        }
     }
 
     ProjectFalsePositivesDefinition create(TestProject project, String json) {

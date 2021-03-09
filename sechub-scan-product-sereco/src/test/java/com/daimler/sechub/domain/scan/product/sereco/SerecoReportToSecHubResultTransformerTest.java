@@ -18,6 +18,7 @@ import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.AssertSecHubResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
@@ -47,7 +48,7 @@ public class SerecoReportToSecHubResultTransformerTest {
     }
 
     private ProductResult createProductResult(String converted) {
-        ProductResult r = new ProductResult(UUID.randomUUID(), "project1", ProductIdentifier.PDS_WEBSCAN, converted);
+        ProductResult r = new ProductResult(UUID.randomUUID(), "project1",  new WithoutProductExecutorConfigInfo(ProductIdentifier.PDS_WEBSCAN), converted);
         return r;
     }
 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
@@ -21,6 +23,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final String VALUE_PRODUCT_LEVEL = "42";
 
+    private static final List<TestExecutorConfig> registeredConfigurations = new ArrayList<>();
+    
     private static final String INTTEST_NAME_PREFIX = "INTTEST_";
     
     public static final TestExecutorConfig NETSPARKER_V1 = defineNetsparkerConfig();
@@ -41,8 +45,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
     
     public static final String JOBPARAM_PDS_KEY_FOR_VARIANTNAME = "pds.test.key.variantname";
     
+    public static List<TestExecutorConfig> getAllConfigurations() {
+        return Collections.unmodifiableList(registeredConfigurations);
+    }
+    
     private static TestExecutorConfig definePDSCodeScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
-        TestExecutorConfig config = new TestExecutorConfig();
+        TestExecutorConfig config = createTestEditorConfig();
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.PDS_CODESCAN.name();
@@ -68,7 +76,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
     
     private static TestExecutorConfig defineNetsparkerConfig() {
-        TestExecutorConfig config = new TestExecutorConfig();
+        TestExecutorConfig config = createTestEditorConfig();
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.NETSPARKER.name();
@@ -81,7 +89,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
     
     private static TestExecutorConfig defineCheckmarxConfig() {
-        TestExecutorConfig config = new TestExecutorConfig();
+        TestExecutorConfig config = createTestEditorConfig();
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.CHECKMARX.name();
@@ -106,7 +114,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
     
     private static TestExecutorConfig defineNessusConfig() {
-        TestExecutorConfig config = new TestExecutorConfig();
+        TestExecutorConfig config = createTestEditorConfig();
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.NESSUS.name();
@@ -120,4 +128,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
         jobParameters.add(new TestExecutorSetupJobParam("nessus.default.policy.id","nessus-default-policiy-id"));
         return config;
     }
+
+    private static TestExecutorConfig createTestEditorConfig() {
+        TestExecutorConfig testExecutorConfig = new TestExecutorConfig();
+        registeredConfigurations.add(testExecutorConfig);
+        return testExecutorConfig;
+    }
+    
 }

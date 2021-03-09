@@ -20,6 +20,7 @@ import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
@@ -65,7 +66,7 @@ public class NetsparkerProductExecutorTest {
 		UUID pseudoJobUUID = UUID.randomUUID();
         when(context.getSechubJobUUID()).thenReturn(pseudoJobUUID);
 
-		when(executorContext.getCurrentProductResult()).thenReturn(new ProductResult(pseudoJobUUID, "project1", ProductIdentifier.NETSPARKER, "resullt1"));
+		when(executorContext.getCurrentProductResult()).thenReturn(new ProductResult(pseudoJobUUID, "project1", new WithoutProductExecutorConfigInfo(ProductIdentifier.NETSPARKER), "resullt1"));
 
 		executorToTest = new TestNetsparkerProductExecutor();
 

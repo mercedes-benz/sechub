@@ -377,13 +377,13 @@ public class WithSecHubClient {
      * @param project
      * @return
      */
-    public AssertExecutionResult startAndWaitForCodeScan(TestProject project) {
+    public ExecutionResult startAndWaitForCodeScan(TestProject project) {
         return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
     }
 
-    public AssertExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
+    public ExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
         ExecutionResult result = startSynchronScanFor(project, location);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     /**
@@ -396,9 +396,9 @@ public class WithSecHubClient {
      * @param project
      * @return execution result
      */
-    public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
+    public ExecutionResult createInfraScanAndFetchScanData(TestProject project) {
         ExecutionResult result = startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     public void markAsFalsePositive(TestProject project, IntegrationTestJSONLocation location, String pathToJSONFile) {

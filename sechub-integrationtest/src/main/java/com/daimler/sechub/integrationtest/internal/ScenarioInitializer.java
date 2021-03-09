@@ -50,15 +50,15 @@ public class ScenarioInitializer {
     }
 	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
-	    if (TestAPI.isExecutionProfileExisting(profile.id)) {
+	    if (TestAPI.canReloadExecutionProfileData(profile)){
 	        return this;
 	    }
 	    Set<TestExecutorConfig> realConfigurations = new LinkedHashSet<>();
 
-	    /* we iterate over initial list, where all defaults are insdie - but UUID is null...*/
+	    /* we iterate over initial list, where all defaults are inside - but UUID is null...*/
 	    for (TestExecutorConfig config: profile.initialConfigurationsWithoutUUID) {
 	        UUID uuid = TestAPI.as(SUPER_ADMIN).createProductExecutorConfig(config);
-	        config.uuid=uuid; // set uuid from service to this so available 
+	        config.uuid=uuid; // set UUID from service to this so available 
 	        realConfigurations.add(config);
 	    }
 	    /* define profile */
