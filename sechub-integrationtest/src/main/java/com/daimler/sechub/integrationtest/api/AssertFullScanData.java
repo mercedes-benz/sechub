@@ -68,7 +68,7 @@ public class AssertFullScanData {
         return this;
     }
 
-    public AssertFullScanData containsFileSstartingWith(String name) {
+    public AssertFullScanData containsFileStartingWith(String name) {
         resolveFileStartingWith(name);
         return this;
     }

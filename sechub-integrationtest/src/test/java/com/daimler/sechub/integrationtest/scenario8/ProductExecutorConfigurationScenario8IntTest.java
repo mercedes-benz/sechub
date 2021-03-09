@@ -31,7 +31,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
     public Timeout timeOut = Timeout.seconds(30);
 
     @Test
-    public void one_profile_with_two_configs_for_same_product_result_in_scanlog_with_separeted_metadata_and_result_entries() {
+    public void one_profile_with_two_configs_for_same_product_result_in_scanlog_with_separated_metadata_and_result_entries() {
 
         /* prepare */
         // info: we use NETSPARKER here, because our standard results for a web scan in mocked
@@ -52,7 +52,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
         ExecutionResult result = as(USER_1).createWebScanAndFetchScanData(PROJECT_1);
         
         /* test */
-        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUD());
+        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUID());
         AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(zipfile);
         
         assertFullScanDataZipFile.
@@ -66,7 +66,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
             containsFile("NETSPARKER_"+config2UUID+".xml").
             containsFile("metadata_NETSPARKER_"+config2UUID+".json").
         
-            containsFileSstartingWith("log_").
+            containsFileStartingWith("log_").
             containsFiles(7);
         
         AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile("metadata_NETSPARKER_"+config1UUID+".json").asAdapterMetaData();
@@ -79,7 +79,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
     }
     
     @Test
-    public void two_profile_with_two_configs_for_same_product_result_in_scanlog_with_separeted_metadata_and_result_entries() {
+    public void two_profiles_with_two_configs_for_same_product_result_in_scanlog_with_separeted_metadata_and_result_entries() {
 
         /* prepare */
         // info: we use NETSPARKER here, because our standard results for a web scan in mocked
@@ -108,7 +108,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
         ExecutionResult result = as(USER_1).createWebScanAndFetchScanData(PROJECT_1);
         
         /* test */
-        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUD());
+        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUID());
         AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(zipfile);
         assertFullScanDataZipFile.
             dumpDownloadFilePath().
@@ -120,7 +120,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
             
             containsFile("NETSPARKER_"+config2UUID+".xml").
             containsFile("metadata_NETSPARKER_"+config2UUID+".json").
-            containsFileSstartingWith("log_").
+            containsFileStartingWith("log_").
             containsFiles(7);
         
         /* check adapter persistence of reused meta data not more than two times called */
@@ -134,7 +134,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
     }
     
     @Test
-    public void two_profile_with_same_config_inside_for_same_product_result_in_scanlog_with_one_metadata_and_result_entry_for_product() {
+    public void two_profiles_with_same_config_inside_for_same_product_result_in_scanlog_with_one_metadata_and_result_entry_for_product() {
 
         /* prepare */
         // info: we use NETSPARKER here, because our standard results for a web scan in mocked
@@ -162,7 +162,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
         ExecutionResult result = as(USER_1).createWebScanAndFetchScanData(PROJECT_1);
         
         /* test */
-        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUD());
+        File zipfile = as(SUPER_ADMIN).downloadFullScanDataFor(result.getSechubJobUUID());
         AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(zipfile);
         assertFullScanDataZipFile.
             dumpDownloadFilePath().
@@ -172,7 +172,7 @@ public class ProductExecutorConfigurationScenario8IntTest {
             containsFile("NETSPARKER_"+config1UUID+".xml").
             
             containsFile("metadata_NETSPARKER_"+config1UUID+".json").
-            containsFileSstartingWith("log_").
+            containsFileStartingWith("log_").
             containsFiles(5);
         
         /* check adapter persistence of reused meta data not more than two times called */

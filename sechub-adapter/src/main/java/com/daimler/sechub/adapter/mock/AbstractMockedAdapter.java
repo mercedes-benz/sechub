@@ -29,20 +29,32 @@ import com.daimler.sechub.adapter.support.MockSupport;
 public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C extends AdapterConfig> extends AbstractAdapter<A, C> implements MockedAdapter<C> {
 
     /**
-     * A special key for meta which is always tried to be reuse by adapter. Value
-     * will transform:
+     * In tests we want to have the possibility to check if adapter meta data is
+     * really reused and appended on resilience retries (but only for same SecHub
+     * JobUUID and product executor configuration!)<br>
+     * <br>
+     * To do this we have the special key "reused" - each mocked adapter will append
+     * "+1" two times on every adapter call. So when a adapter call has failed and
+     * will be called again (resilience) we are able to check if adapter meta data
+     * is handled as expected.
+     * 
+     * Here an example:
+     * 
      * <pre>
      *  null -> "+1" -> "+1+1"
      * </pre>
-     * When adapter is started . Another start will transform: 
-     * <pre> 
-     * "+1+1" -> "+1+1+1" ->"+1+1+1+1" 
-     * </pre> 
-     * and so on. This can be used to check if meta data is
-     * persisted by callback in expected way etc.
+     * 
+     * When adapter is started . Another start will transform:
+     * 
+     * <pre>
+     *  
+     * "+1+1" -> "+1+1+1" ->"+1+1+1+1"
+     * </pre>
+     * 
+     * and so on.
      */
     public static final String KEY_METADATA_REUSED = "reused";
-    
+
     private static final String KEY_METADATA_INITIAL = "initial";
     private static final String KEY_METADATA_COMBINED = "combined";
     private static final String KEY_METADATA_BEFORE_WAIT = "before_wait";
@@ -78,51 +90,55 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
             LOG.info("did not found adapter setup so returning empty string");
             return "";
         }
+        
         String target = config.getTargetAsString();
 
-        handleMetaDataPerstenceInitial(config, runtimeContext);
+        /* first meta data persistence call - write some test meta data... */
+        writeInitialAndReusedMetaData(config, runtimeContext);
 
+        /*
+         * throw an error - if we have configured the adapter to throw an error to
+         * simulate product failures...
+         */
         throwExceptionIfConfigured(config, setup, target);
+
+        /* no error wanted, so load result.... */
         String result = loadResultAsConfigured(setup, target);
 
-        handleeMetaDataPerstenceBeforeWait(config, runtimeContext);
+        /* second meta data persistence call - write/update some test meta data... */
+        writeBeforeWaitAndReusedMetaData(config, runtimeContext);
+        
+        /* wait configured time (simulates product elapsing time) */
         waitIfConfigured(timeStarted, setup, target);
-        simulateMetaDataPerstenceAfterWait(config, runtimeContext);
+        
+        assertMetaDataHandledAsExpected(config, runtimeContext);
 
         LOG.trace("Returning content:{}", result);
 
         return result;
     }
 
-    protected void handleMetaDataPerstenceInitial(C config, AdapterRuntimeContext runtimeContext) {
+    protected void writeInitialAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_INITIAL, DEFAULT_METADATA_MOCK_INITIAL_VALUE);
         metaData.setValue(KEY_METADATA_COMBINED, "1");
 
-        updateReusedEntryAndPersistMetaData(metaData,runtimeContext);
+        updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
 
-    private void updateReusedEntryAndPersistMetaData(AdapterMetaData metaData, AdapterRuntimeContext runtimeContext) {
-        String value = metaData.getValue(KEY_METADATA_REUSED);
-        if (value == null) {
-            value = "";
-        }
-        metaData.setValue(KEY_METADATA_REUSED, value + "+1");
-        runtimeContext.getCallback().persist(metaData);
-        
-    }
 
-    protected void handleeMetaDataPerstenceBeforeWait(C config, AdapterRuntimeContext runtimeContext) {
+    protected void writeBeforeWaitAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
         String value = metaData.getValue(KEY_METADATA_COMBINED);
         metaData.setValue(KEY_METADATA_COMBINED, value + "+2");
 
-        updateReusedEntryAndPersistMetaData(metaData,runtimeContext);
+        updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
 
-    protected void simulateMetaDataPerstenceAfterWait(C config, AdapterRuntimeContext runtimeContext) {
+    
+    protected void assertMetaDataHandledAsExpected(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
 
@@ -141,6 +157,16 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         }
     }
 
+    private void updateReusedEntryAndPersistMetaData(AdapterMetaData metaData, AdapterRuntimeContext runtimeContext) {
+        String value = metaData.getValue(KEY_METADATA_REUSED);
+        if (value == null) {
+            value = "";
+        }
+        metaData.setValue(KEY_METADATA_REUSED, value + "+1");
+        runtimeContext.getCallback().persist(metaData);
+        
+    }
+    
     private AdapterMetaData assertMetaData(AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = runtimeContext.getMetaData();
         if (metaData == null) {

@@ -23,7 +23,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     public static final String VALUE_PRODUCT_LEVEL = "42";
 
-    private static final List<TestExecutorConfig> registeredConfigurations = new ArrayList<>();;
+    private static final List<TestExecutorConfig> registeredConfigurations = new ArrayList<>();
     
     private static final String INTTEST_NAME_PREFIX = "INTTEST_";
     

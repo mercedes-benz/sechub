@@ -21,7 +21,7 @@ public class TriggerNewInfraScanJobScenario3User1Action extends IntegrationTestA
 		ExecutionResult result = TestAPI.as(Scenario3.USER_1).withSecHubClient().createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
 		
 		outputAsTextOnSuccess("Job executed, data fetched, last output line:"+result.getLastOutputLine());
-		outputAsTextOnSuccess("Job UID was:"+result.getSechubJobUUD());
+		outputAsTextOnSuccess("Job UID was:"+result.getSechubJobUUID());
 	}
 
 }

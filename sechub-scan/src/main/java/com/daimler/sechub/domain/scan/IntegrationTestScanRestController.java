@@ -47,10 +47,8 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 @RestController
 @Profile(Profiles.INTEGRATIONTEST)
 public class IntegrationTestScanRestController {
-    
 
     private static final Logger LOG = LoggerFactory.getLogger(IntegrationTestScanRestController.class);
-
 
     @Autowired
     private ScanAccessCountService scanAccessCountService;
@@ -66,28 +64,28 @@ public class IntegrationTestScanRestController {
 
     @Autowired
     private ScanMappingRepository scanMappingrepository;
-    
+
     @Autowired
     private ScanConfigService scanConfigService;
-    
+
     @Autowired
     private IntegrationTestScanJobListener scanJobCancelService;
-    
+
     @Autowired
     private ProductResultService productResultService;
 
     @Autowired
     ProductResultRepository productResultRepository;
-    
+
     @Autowired
     ProductExecutionProfileRepository profileRepository;
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/execution/profile/{profileId}/exists", method = RequestMethod.GET, produces = {
             MediaType.TEXT_PLAIN_VALUE })
     public String executionProfileExists(@PathVariable("profileId") String profileId) {
-        return ""+profileRepository.existsById(profileId);
+        return "" + profileRepository.existsById(profileId);
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/access/count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long countProjectAccess(@PathVariable("projectId") String projectId) {
@@ -105,64 +103,71 @@ public class IntegrationTestScanRestController {
     public long countScanResults(@PathVariable("projectId") String projectId) {
         return productResultCountService.countProjectScanResults(projectId);
     }
-    
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/scan/productresult/all-shrinked/{maxLength}", method = RequestMethod.GET, produces = {
-            MediaType.APPLICATION_JSON_VALUE })
-    public List<ProductResult>fetchScanResults(@PathVariable("projectId") String projectId,@PathVariable("maxLength") int maxLength) {
-        if (maxLength<10) {
-            maxLength=10;
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS
+            + "integrationtest/project/{projectId}/scan/productresult/all-shrinked/{maxLength}", method = RequestMethod.GET, produces = {
+                    MediaType.APPLICATION_JSON_VALUE })
+    public List<ProductResult> fetchScanResults(@PathVariable("projectId") String projectId, @PathVariable("maxLength") int maxLength) {
+        if (maxLength < 10) {
+            maxLength = 10;
         }
         List<ProductResult> originResults = productResultService.fetchAllResultsInProject(projectId);
         List<ProductResult> shrinkedResults = new ArrayList<ProductResult>();
-        for (ProductResult originProductResult: originResults) {
+        for (ProductResult originProductResult : originResults) {
             String result = originProductResult.getResult();
-            if (result.length()>maxLength) {
-                result = result.substring(0,maxLength-3)+"...";
+            if (result.length() > maxLength) {
+                result = result.substring(0, maxLength - 3) + "...";
             }
-            ProductExecutorConfigInfo info = new DefaultProductExecutorConfigInfo(originProductResult.getProductIdentifier(), originProductResult.getProductExecutorConfigUUID());
-            ProductResult shrinked = new ProductResult(originProductResult.getSecHubJobUUID(),originProductResult.getProjectId(),info,result);
+            ProductExecutorConfigInfo info = new DefaultProductExecutorConfigInfo(originProductResult.getProductIdentifier(),
+                    originProductResult.getProductExecutorConfigUUID());
+            ProductResult shrinked = new ProductResult(originProductResult.getSecHubJobUUID(), originProductResult.getProjectId(), info, result);
             shrinkedResults.add(shrinked);
         }
         return shrinkedResults;
     }
-    
-    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/job/{sechubJobUUID}/scan/productresult/{productIdentifier}", method = RequestMethod.PUT, produces = {
-            MediaType.APPLICATION_JSON_VALUE })
-    public void changeScanResults(@RequestBody String body, @PathVariable("projectId")String projectId, @PathVariable("sechubJobUUID") UUID sechubJobUUID ,@PathVariable("productIdentifier") ProductIdentifier productIdentifier) {
+
+    @RequestMapping(path = APIConstants.API_ANONYMOUS
+            + "integrationtest/project/{projectId}/job/{sechubJobUUID}/scan/productresult/{productIdentifier}", method = RequestMethod.PUT, produces = {
+                    MediaType.APPLICATION_JSON_VALUE })
+    public void changeScanResults(@RequestBody String body, @PathVariable("projectId") String projectId, @PathVariable("sechubJobUUID") UUID sechubJobUUID,
+            @PathVariable("productIdentifier") ProductIdentifier productIdentifier) {
+
         List<ProductResult> originResults = productResultService.fetchAllResultsForJob(sechubJobUUID);
+
         ProductResult result = null;
-        for (ProductResult originProductResult: originResults) {
-            if (productIdentifier.equals(originProductResult.getProductIdentifier())){
+        for (ProductResult originProductResult : originResults) {
+            if (productIdentifier.equals(originProductResult.getProductIdentifier())) {
                 result = originProductResult;
                 break;
             }
         }
-        ProductResult r = null;
-        if (result!=null) {
-            r = result;
-        }else {
-            // We do not know which executor this has been done - it's a new one, so we create just a new pseudo config without uuid 
+        ProductResult resultToPersist = null;
+        if (result != null) {
+            resultToPersist = result;
+        } else {
+            // We do not know which executor this has been done - it's a new one, so we
+            // create just a new configuration info without UUID
             WithoutProductExecutorConfigInfo info = new WithoutProductExecutorConfigInfo(productIdentifier);
-            r = new ProductResult(sechubJobUUID,projectId,info,body);
-            
+            resultToPersist = new ProductResult(sechubJobUUID, projectId, info, body);
+
         }
-        r.setResult(body);
-        productResultRepository.save(r);
+        resultToPersist.setResult(body);
+        productResultRepository.save(resultToPersist);
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{sechubJobUUID}/productresults", method = RequestMethod.DELETE, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void deleteAllJobResults(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
         productResultService.deleteAllResultsForJob(sechubJobUUID);
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/job/{sechubJobUUID}/productresults-count", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public String countProductresults(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {
         long result = productResultService.fetchAllResultsForJob(sechubJobUUID).size();
-        return ""+result;
+        return "" + result;
     }
-    
+
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scan/cancel/jobs", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public long cancelAllJobs() {
@@ -178,24 +183,25 @@ public class IntegrationTestScanRestController {
 
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/scan/mapping/{mappingId}", method = RequestMethod.GET)
     public MappingData fetchScanMappingData(@PathVariable("mappingId") String mappingId) {
-	    Optional<ScanMapping> found = scanMappingrepository.findById(mappingId);
-	    if (found.isPresent()){
-	        MappingData data = MappingData.fromString(found.get().getData());
-	        return data;
-	    }
-	    return null;
-	            
+        Optional<ScanMapping> found = scanMappingrepository.findById(mappingId);
+        if (found.isPresent()) {
+            MappingData data = MappingData.fromString(found.get().getData());
+            return data;
+        }
+        return null;
+
     }
+
     @SuppressWarnings("deprecation")
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/config/namepattern/{namePatternProviderId}/{name}", method = RequestMethod.GET)
     public String getIdForNameByProvider(@PathVariable("namePatternProviderId") String namePatternProviderId, @PathVariable("name") String name) {
         NamePatternIdprovider provider = scanConfigService.getNamePatternIdProvider(namePatternProviderId);
-        if (provider==null) {
+        if (provider == null) {
             return null;
         }
         String id = provider.getIdForName(name);
         return id;
-                
+
     }
 
 }

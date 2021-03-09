@@ -48,7 +48,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         /* prepare - just execute a job */
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, JSON_WEBSCAN_SCENARIO3_PRODUCTFAILURE);
-        UUID sechubJobUUID = result.getSechubJobUUD();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
@@ -57,12 +57,12 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         /* test @formatter:off*/
         AssertFullScanData assertFullScanData = assertFullScanDataZipFile(scanDataZipFile);
-        
-        String netsparkerFileName = "NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".txt";
+      
+        String netsparkerFileName = "NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".txt"; //.txt because just empty text for failed parts
         assertFullScanData.
 		    dumpDownloadFilePath().
-		    containsFile(netsparkerFileName).// txt because just empty text
-		    containsFile("metadata_NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".json").// txt because just empty text
+		    containsFile(netsparkerFileName).
+		    containsFile("metadata_NETSPARKER_"+IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1.uuid+".json").
 		    containsFile("SERECO.json").
 			containsFile("metadata_SERECO.json").
 		    containsFiles(5);
@@ -83,7 +83,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
 
         /* prepare - just execute a job */
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUD();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
@@ -111,7 +111,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
     public void when_user1_has_started_job_for_project_admin_is_able_to_fetch_json_scanlog_which_is_containing_jobuuid_and_executor() throws IOException {
         /* prepare - just execute a job */
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUD();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
@@ -128,7 +128,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
     public void when_user1_has_started_job_for_project_user1_is_NOT_able_to_fetch_json_scanlog() throws IOException {
         /* prepare - just execute a job */
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUD();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
@@ -140,7 +140,7 @@ public class FullScanDataScenario3SecHubClientIntTest {
     public void when_user1_has_started_job_for_project_user1_is_NOT_able_to_download_fullscan_zipfile() throws IOException {
         /* prepare - just execute a job */
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-        UUID sechubJobUUID = result.getSechubJobUUD();
+        UUID sechubJobUUID = result.getSechubJobUUID();
 
         assertNotNull("No sechub jobUUId found-maybe client call failed?", sechubJobUUID);
 
