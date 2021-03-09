@@ -92,8 +92,8 @@ public class ProjectAdministrationScenario3IntTest {
         
         assertUser(USER_3).isAssignedToProject(PROJECT_1);
                 
-        assertMailExists(USER_1.getEmail(), subject);
-        assertMailExists(USER_2.getEmail(), subject);
-        assertMailExists(USER_3.getEmail(), subject);        
+        assertUser(USER_1).hasReceivedEmail(subject);
+        assertUser(USER_2).hasReceivedEmail(subject);
+        assertUser(USER_3).hasReceivedEmail(subject);     
     }
 }
