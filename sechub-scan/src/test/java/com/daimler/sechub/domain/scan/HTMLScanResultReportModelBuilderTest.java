@@ -189,6 +189,7 @@ public class HTMLScanResultReportModelBuilderTest {
 
         assertTrue(buildResult.get("codeScanEntries") instanceof Map<?, ?>);
 
+        @SuppressWarnings("unchecked")
         Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = (Map<Integer, List<HTMLScanResultCodeScanEntry>>) buildResult.get("codeScanEntries");
         assertNotNull(codeScanEntries.get(0));
 

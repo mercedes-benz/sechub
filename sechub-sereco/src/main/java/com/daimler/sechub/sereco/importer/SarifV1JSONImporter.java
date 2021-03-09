@@ -7,16 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
-import com.contrastsecurity.sarif.SarifSchema210;
-import com.contrastsecurity.sarif.ThreadFlow;
+
 import com.contrastsecurity.sarif.CodeFlow;
 import com.contrastsecurity.sarif.Location;
 import com.contrastsecurity.sarif.PhysicalLocation;
+import com.contrastsecurity.sarif.ReportingDescriptor;
 import com.contrastsecurity.sarif.ReportingDescriptorReference;
 import com.contrastsecurity.sarif.Result;
 import com.contrastsecurity.sarif.Result.Level;
+import com.contrastsecurity.sarif.Run;
+import com.contrastsecurity.sarif.SarifSchema210;
+import com.contrastsecurity.sarif.ThreadFlow;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
@@ -51,9 +56,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         try {
             sarif = readSarifSchema210(data);
         } catch (Exception e) {
-            /* here we can throw the exception - should never happen, because 
-             * with #isAbleToImportForProduct we already check this is possible.
-             * So there is something odd here and we throw the exception
+            /*
+             * here we can throw the exception - should never happen, because with
+             * #isAbleToImportForProduct we already check this is possible. So there is
+             * something odd here and we throw the exception
              */
             throw new IOException("Import cannot parse sarif 2.1.0 json", e);
         }
@@ -67,7 +73,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             results.stream().forEach(result -> {
                 SerecoVulnerability vulnerability = new SerecoVulnerability();
 
-                vulnerability.setDescription("");
+                ResultData resultData = resolveData(run, result);
+                vulnerability.setType(resultData.shortName);
+                vulnerability.setDescription(resultData.description);
                 vulnerability.setSeverity(mapToSeverity(result.getLevel()));
                 vulnerability.getClassification().setCwe(cweIdFrom(result));
 
@@ -81,6 +89,51 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         });
 
         return metaData;
+    }
+
+    private class ResultData {
+        String shortName;
+        String description;
+    }
+
+    private ResultData resolveData(Run run, Result result) {
+        String ruleId = result.getRuleId();
+
+        Set<ReportingDescriptor> rules = run.getTool().getDriver().getRules();
+        /* @formatter:off */
+        ReportingDescriptor reportingDescription = 
+                        rules.
+                        stream().
+                        filter(r ->r.getId().equals(ruleId)).
+                        findFirst().orElse(null);
+        /* @formatter:on */
+
+        ResultData data = new ResultData();
+        if (reportingDescription != null) {
+            data.shortName = resolveShortName(reportingDescription);
+            data.description = resolveDescription(reportingDescription);
+        }
+        if (data.shortName == null) {
+            data.shortName = "Undefined"; // at least we set this to indicate there is no name defined inside SARIF
+        }
+
+        return data;
+    }
+
+    private String resolveDescription(ReportingDescriptor reportingDescription) {
+        return reportingDescription.getFullDescription().getText();
+    }
+
+    private String resolveShortName(ReportingDescriptor desc) {
+        String name = desc == null ? null : desc.getName();
+        int index = name.lastIndexOf("/");
+        if (index != -1) {
+            index++;
+            if (index < name.length() - 1) {
+                name = name.substring(index);
+            }
+        }
+        return name;
     }
 
     private SarifSchema210 readSarifSchema210(String data) throws JsonProcessingException, JsonMappingException {
@@ -202,12 +255,13 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
         /* okay it's a json and it contains "runs" */
         try {
-            /* Currently the easiest way to identify if this JSON content
-             * can be imported is to just try a JSON deserialization here. So we just
-             * read Sarif schema. If this is a SARIF file the read will be done twice,
-             * but this is something we have to live with. Reading this to a field is no
-             * option, because this is a component with standard spring injection scope,
-             * so only a singleton and we must be not stateful here. 
+            /*
+             * Currently the easiest way to identify if this JSON content can be imported is
+             * to just try a JSON deserialization here. So we just read Sarif schema. If
+             * this is a SARIF file the read will be done twice, but this is something we
+             * have to live with. Reading this to a field is no option, because this is a
+             * component with standard spring injection scope, so only a singleton and we
+             * must be not stateful here.
              */
             readSarifSchema210(param.getImportData());
         } catch (Exception e) {
@@ -219,7 +273,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
     protected ImportSupport createImportSupport() {
-        return ImportSupport.builder().productId("SARIF").mustBeJSON().contentIdentifiedBy("\"runs\"").build();
+        return ImportSupport.builder().productId("PDS_CODESCAN").mustBeJSON().contentIdentifiedBy("\"runs\"").build();
     }
 
 }

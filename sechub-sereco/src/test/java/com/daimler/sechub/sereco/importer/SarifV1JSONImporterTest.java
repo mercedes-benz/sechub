@@ -36,7 +36,7 @@ public class SarifV1JSONImporterTest {
     public void brakeman_sarif_report_can_be_imported() {
         /* prepare */
 
-        ImportParameter paramBrakeman = ImportParameter.builder().importData(sarifBrakeman).importId("id1").productId("SARIF").build();
+        ImportParameter paramBrakeman = ImportParameter.builder().importData(sarifBrakeman).importId("id1").productId("PDS_CODESCAN").build();
         
         /* execute */
         ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
@@ -48,7 +48,7 @@ public class SarifV1JSONImporterTest {
     @Test
     public void threadflow_sarif_report_can_be_imported() {
         /* prepare */
-        ImportParameter paramThreadFlows = ImportParameter.builder().importData(sarifThreadflowsExample).importId("id1").productId("SARIF").build();
+        ImportParameter paramThreadFlows = ImportParameter.builder().importData(sarifThreadflowsExample).importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
         ProductImportAbility ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
@@ -61,7 +61,7 @@ public class SarifV1JSONImporterTest {
     public void empty_json__can_NOT_be_imported() {
         /* prepare */
 
-        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("SARIF").build();
+        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
         ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
@@ -74,7 +74,7 @@ public class SarifV1JSONImporterTest {
     public void empty_string_is_recognized_as_product_failure() {
         /* prepare */
 
-        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("SARIF").build();
+        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("PDS_CODESCAN").build();
 
         /* execute */
         ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
@@ -116,7 +116,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void sarif_report_has_no_description() throws Exception {
+    public void sarif_report_has_simple_text_description() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
@@ -125,7 +125,7 @@ public class SarifV1JSONImporterTest {
         SerecoVulnerability vulnerability = vulnerabilities.get(0);
 
         /* test */
-        assertEquals("", vulnerability.getDescription());
+        assertEquals("Checks for XSS in calls to content_tag.", vulnerability.getDescription());
     }
 
     @Test
@@ -153,6 +153,7 @@ public class SarifV1JSONImporterTest {
 
         /* test */
         assertNotNull(codeInfo);
+        assertEquals("Cross-Site Scripting", vulnerability.getType());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(21, vulnerabilities.size());
@@ -169,6 +170,7 @@ public class SarifV1JSONImporterTest {
         SerecoCodeCallStackElement codeInfo = vulnerability.getCode();
 
         /* test */
+        assertEquals("Undefined", vulnerability.getType()); // was not able to detect from this data
         assertNotNull(codeInfo);
         assertEquals("3-Beyond-basics/bad-eval-with-code-flow.py", codeInfo.getLocation());
         assertEquals(3, codeInfo.getLine().intValue());

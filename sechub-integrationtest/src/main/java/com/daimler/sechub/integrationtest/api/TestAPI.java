@@ -88,8 +88,13 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    @Deprecated // use assertReport instead (newer implementation , has more details and uses common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
         return  AssertSecHubReport.assertSecHubReport(json);
+    }
+    
+    public static AssertReport assertReport(String json) {
+        return AssertReport.assertReport(json);
     }
     
     public static AssertPDSStatus assertPDSJobStatus(String json) {
