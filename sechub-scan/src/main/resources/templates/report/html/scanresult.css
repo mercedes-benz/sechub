@@ -219,6 +219,18 @@
 	display: table-row;
 }
 
+.rTableRowHead {
+	display: table-row;
+}
+
+.rTableRow:nth-child(even) {
+	background: #f0f0f0;
+}
+
+.rTableRow:nth-child(odd) {
+	background: #fefefe;
+}
+
 .rTableHeading {
 	display: table-header-group;
 }
@@ -233,6 +245,7 @@
 
 .rTableCell, .rTableHead {
 	display: table-cell;
+	word-break: break-all;
 }
 
 .rTableHead {

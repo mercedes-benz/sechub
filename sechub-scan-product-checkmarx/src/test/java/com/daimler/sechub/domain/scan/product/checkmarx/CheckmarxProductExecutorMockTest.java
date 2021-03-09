@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -32,6 +33,8 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupCredentials;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
@@ -41,6 +44,9 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
+import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
 import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -81,10 +87,6 @@ public class CheckmarxProductExecutorMockTest {
         JobStorage storage = Mockito.mock(JobStorage.class);
         when(storage.fetch(any())).thenReturn(new StringInputStream("something as a code..."));
         when(storageService.getJobStorage(any(), any())).thenReturn(storage);
-
-        when(installSetup.getTeamIdForNewProjects(any())).thenReturn("teamIdxyz");
-        when(installSetup.getUserId()).thenReturn("checkmarx-user");
-        when(installSetup.getPassword()).thenReturn("checkmarx-pwd");
     }
 
     @Test
@@ -97,12 +99,15 @@ public class CheckmarxProductExecutorMockTest {
         /* prepare */
         SecHubExecutionContext context = createExecutionContextForPseudoCodeScan();
 
-        ProductExecutorCallback callBack = mock(ProductExecutorCallback.class);
-        ProductExecutorConfigSetup setup = mock(ProductExecutorConfigSetup.class);
+        ProductExecutorCallback callback = mock(ProductExecutorCallback.class);
+        ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
-        ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
+        when(executorContext.getCallback()).thenReturn(callback);
+        when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+        
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */
@@ -124,12 +129,18 @@ public class CheckmarxProductExecutorMockTest {
         /* prepare */
         SecHubExecutionContext context = createExecutionContextForPseudoCodeScan();
 
-        ProductExecutorCallback callBack = mock(ProductExecutorCallback.class);
-        ProductExecutorConfigSetup setup = mock(ProductExecutorConfigSetup.class);
+        ProductExecutorCallback callback = mock(ProductExecutorCallback.class);
+       
+
+        ProductExecutorConfigSetup setup = createCheckmarxSetupWithAllMandotoryPartsSet();
+        
         ProductExecutorConfig executorConfig = new ProductExecutorConfig(ProductIdentifier.CHECKMARX, 1, setup);
 
-        ProductExecutorContext executorContext = new ProductExecutorContext(executorConfig, new ArrayList<>(), callBack);
-        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, ProductIdentifier.CHECKMARX, "pseudo-result");
+        ProductExecutorContext executorContext = mock(ProductExecutorContext.class);
+        when(executorContext.getCallback()).thenReturn(callback);
+        when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+        
+        ProductResult currentResult = new ProductResult(JOB_UUID, PROJECT_EXAMPLE, executorConfig, "pseudo-result");
         when(executorContext.getCurrentProductResult()).thenReturn(currentResult);
 
         /* @formatter:off */
@@ -156,6 +167,21 @@ public class CheckmarxProductExecutorMockTest {
 
         assertTrue(message.contains("Changes exceeded the threshold limit"));
 
+    }
+
+    private ProductExecutorConfigSetup createCheckmarxSetupWithAllMandotoryPartsSet() {
+        ProductExecutorConfigSetup setup = mock(ProductExecutorConfigSetup.class);
+        ProductExecutorConfigSetupCredentials credentials = mock(ProductExecutorConfigSetupCredentials.class);
+        when(setup.getCredentials()).thenReturn(credentials);
+        when(credentials.getUser()).thenReturn("user");
+        when(credentials.getPassword()).thenReturn("pwd");
+        List<ProductExecutorConfigSetupJobParameter> jobParameters = new ArrayList<>();
+        MappingData data = new MappingData();
+        data.getEntries().add(new MappingEntry(".*","teamId1",""));
+        
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(MappingIdentifier.CHECKMARX_NEWPROJECT_TEAM_ID.getId(), data.toJSON()));
+        when(setup.getJobParameters()).thenReturn(jobParameters);
+        return setup;
     }
 
     private SecHubExecutionContext createExecutionContextForPseudoCodeScan() {

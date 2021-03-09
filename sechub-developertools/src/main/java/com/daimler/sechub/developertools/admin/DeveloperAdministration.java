@@ -581,6 +581,16 @@ public class DeveloperAdministration {
 
     }
 
+    public String fetchGlobalMappings(String mappingId) {
+        String url = getUrlBuilder().buildGetMapping(mappingId);
+        return getRestHelper().getJSon(url);
+    }
+    
+    public String updateGlobalMappings(String mappingId, String mappingDataAsJSON) {
+        String url = getUrlBuilder().buildUpdateMapping(mappingId);
+        return getRestHelper().putJSon(url, mappingDataAsJSON);
+    }
+    
     public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
         String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);

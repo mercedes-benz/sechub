@@ -29,6 +29,9 @@ subprojects {
 	dependencies {
 
         testCompile(library.springboot_starter_test)
+        // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+        testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.7.1'
+        
         testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
         compile(library.springboot_starter_json)
         

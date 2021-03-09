@@ -19,9 +19,9 @@ import com.daimler.sechub.sharedkernel.validation.MappingDataValidation;
 import com.daimler.sechub.sharedkernel.validation.MappingIdValidation;
 
 @Service
-public class UpdateScanMappingService {
+public class UpdateScanConfigService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UpdateScanMappingService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateScanConfigService.class);
     
     @Autowired
     ScanMappingRepository repository;

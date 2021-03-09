@@ -67,19 +67,21 @@ public class MappingIdentifierTest {
     }
     
     @Test
-    public void CHECKMARX_NEW_PROJECT_TEAM_ID_is_an_adapterconfiguration_mapping() {
-        assertEquals(MappingType.ADAPTER_CONFIGURATION, CHECKMARX_NEWPROJECT_TEAM_ID.getType());
+    public void CHECKMARX_NEW_PROJECT_TEAM_ID_is_only_a_product_executor_parameter_template_mapping() {
+        assertEquals(MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER, CHECKMARX_NEWPROJECT_TEAM_ID.getType());
     }
     
     @Test
     public void hasTypeContainedIn_works() {
         MappingIdentifier adapterConfigId = CHECKMARX_NEWPROJECT_TEAM_ID;
         
-        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION));
-        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.GLOBAL_CONFIGURATION,MappingType.ADAPTER_CONFIGURATION));
-        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION,MappingType.GLOBAL_CONFIGURATION));
+        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER));
+        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.COMMON_CONFIGURATION,MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER));
+        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER,MappingType.COMMON_CONFIGURATION));
+        assertTrue(adapterConfigId.hasTypeContainedIn(MappingType.PRODUCT_EXECUTOR_CONFIGURATION_PARAMETER,MappingType.ADAPTER_CONFIGURATION));
         
-        assertFalse(adapterConfigId.hasTypeContainedIn(MappingType.GLOBAL_CONFIGURATION));
+        assertFalse(adapterConfigId.hasTypeContainedIn(MappingType.COMMON_CONFIGURATION));
+        assertFalse(adapterConfigId.hasTypeContainedIn(MappingType.ADAPTER_CONFIGURATION));
         assertFalse(adapterConfigId.hasTypeContainedIn((MappingType[])null));
         assertFalse(adapterConfigId.hasTypeContainedIn(new MappingType[] {}));
         assertFalse(adapterConfigId.hasTypeContainedIn(new MappingType[] {null}));

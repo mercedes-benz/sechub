@@ -32,21 +32,21 @@ public abstract class AbstractUIAction extends AbstractAction {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUIAction.class);
 
     private transient UIContext context;
-    
+
     public AbstractUIAction(String text, UIContext context) {
         this.context = context;
         this.putValue(Action.NAME, text);
     }
-    
+
     public AbstractUIAction tooltip(String text) {
         this.putValue(Action.SHORT_DESCRIPTION, text);// tooltip text
         return this;
     }
+
     public AbstractUIAction tooltipUseText() {
-        return tooltip((String)this.getValue(Action.NAME));
+        return tooltip((String) this.getValue(Action.NAME));
     }
-    
-    
+
     protected void setIcon(URL url) {
         Icon icon = new ImageIcon(url);
         putValue(Action.LARGE_ICON_KEY, icon);
@@ -55,15 +55,16 @@ public abstract class AbstractUIAction extends AbstractAction {
     protected UIContext getContext() {
         return context;
     }
-    
+
     /**
      * SecHub uses always lower cased identifier - this method is a helper.
+     * 
      * @param id
      * @return lower cased trimmed id - or empty string when given id is null
      */
     protected String asSecHubId(String id) {
-        if (id==null || id.isEmpty()) {
-            return ""; 
+        if (id == null || id.isEmpty()) {
+            return "";
         }
         return id.toLowerCase().trim();
     }
@@ -86,7 +87,7 @@ public abstract class AbstractUIAction extends AbstractAction {
 
             if (getErrorHandler().hasErrors()) {
                 output("[FAILED]");
-            }else {
+            } else {
                 output("[SUCCESS]");
             }
 
@@ -135,7 +136,6 @@ public abstract class AbstractUIAction extends AbstractAction {
         OutputUI outputUI = getContext().getOutputUI();
         outputUI.output(text);
     }
-    
 
     /**
      * Output given text - no matter of an error has happened or not
@@ -148,7 +148,6 @@ public abstract class AbstractUIAction extends AbstractAction {
         outputUI.error(text);
     }
 
-
     private void safeExecute(ActionEvent event, String executionDescription) {
         try {
             execute(event);
@@ -157,7 +156,6 @@ public abstract class AbstractUIAction extends AbstractAction {
         }
     }
 
-    
     /**
      * Shows an input dialog for user (one liner). Default values for given
      * identifier will be shown - and always be reused. NO caching!
@@ -170,16 +168,17 @@ public abstract class AbstractUIAction extends AbstractAction {
         Optional<String> x = getContext().getDialogUI().getUserInput(message, defaultValue);
         return x;
     }
-    
+
     /**
-     * Shows an input dialog for user (one liner). 
+     * Shows an input dialog for user (one liner).
      * 
      * @param message
      * @return
      */
     protected Optional<String> getUserInput(String message) {
-        return getUserInput(message, (InputCacheIdentifier)null);        
+        return getUserInput(message, (InputCacheIdentifier) null);
     }
+
     /**
      * Shows an input dialog for user (one liner). Last entered values for given
      * identifier will be shown
@@ -196,7 +195,7 @@ public abstract class AbstractUIAction extends AbstractAction {
         }
         return x;
     }
-    
+
     /**
      * Shows an password dialog for user (one liner). Last entered values for given
      * identifier will be used when nothing entered
@@ -215,35 +214,49 @@ public abstract class AbstractUIAction extends AbstractAction {
     }
 
     /**
+     * Shows an input dialog for user (multi line) and sets given text as content
+     * 
+     * @param title
+     * @param text
+     * @return
+     */
+    protected Optional<String> getUserInputFromTextArea(String title, String text) {
+        Optional<String> x = getContext().getDialogUI().getUserInputFromTextArea(title, text);
+        return x;
+    }
+
+    /**
      * Shows an input dialog for user (multi line). Last entered values for given
      * identifier will be shown
      * 
-     * @param message
+     * @param title
      * @param identifier
      * @return
      */
-    protected Optional<String> getUserInputFromTextArea(String message, InputCacheIdentifier identifier) {
+    protected Optional<String> getUserInputFromTextArea(String title, InputCacheIdentifier identifier) {
 
-        Optional<String> x = getContext().getDialogUI().getUserInputFromTextArea(message, inputCache.get(identifier));
+        Optional<String> x = getContext().getDialogUI().getUserInputFromTextArea(title, inputCache.get(identifier));
         if (x.isPresent() && identifier != null) {
             inputCache.set(identifier, x.get());
         }
         return x;
     }
-    
+
     protected ThreeButtonDialogResult<String> getUserInputFromField(String inputLabelText) {
-    	return getContext().getDialogUI().getUserInputFromField(inputLabelText);
+        return getContext().getDialogUI().getUserInputFromField(inputLabelText);
     }
 
     /**
-     * Maybe we have some actions where override shall not be possible - if so override the method
-     * and return false
-     * @return <code>true</code> (default) when this action confirmations can be disabled by system property
+     * Maybe we have some actions where override shall not be possible - if so
+     * override the method and return false
+     * 
+     * @return <code>true</code> (default) when this action confirmations can be
+     *         disabled by system property
      */
     protected boolean canConfirmationBeOverridenBySetup() {
         return true;
     }
-    
+
     protected boolean confirm(String message) {
         if (canConfirmationBeOverridenBySetup() && ConfigurationSetup.isConfirmationDisabled()) {
             return true;

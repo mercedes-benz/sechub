@@ -358,42 +358,50 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     protected void assertUserSet() {
         if (user == null) {
-            throw new IllegalStateException("no user given");
+            throwIllegalArgument("no user given");
         }
     }
 
     public void assertProjectIdSet() {
         if (projectId == null) {
-            throw new IllegalStateException("no projectId given");
+            throwIllegalArgument("no projectId given");
         }
     }
 
     protected void assertPasswordSet() {
         if (passwordOrApiToken == null) {
-            throw new IllegalStateException("no password given");
+            throwIllegalArgument("no password given");
         }
     }
 
     protected void assertPolicyIdSet() {
         if (policyID == null) {
-            throw new IllegalStateException("no policyID given");
+            throwIllegalArgument("no policyID given");
         }
     }
 
     protected void assertProductBaseURLSet() {
         if (productBaseURL == null || productBaseURL.isEmpty()) {
-            throw new IllegalStateException("no product base url given");
+            throwIllegalArgument("no product base url given");
         }
     }
 
     protected void assertProxyPortSetWhenProxyHostnameDefined() {
         if (isProxyDefinedButPortMissing()) {
-            throw new IllegalStateException("Proxy set, but no port!");
+            throwIllegalState("Proxy set, but no port!");
         }
     }
 
     private boolean isProxyDefinedButPortMissing() {
         return proxyHostname != null && !proxyHostname.isEmpty() && proxyPort == 0;
+    }
+    
+    private void throwIllegalArgument(String message) throws IllegalArgumentException{
+        throw new IllegalArgumentException(message + " in "+getClass().getSimpleName());
+    }
+    
+    private void throwIllegalState(String message) throws IllegalStateException{
+        throw new IllegalStateException(message + " in "+getClass().getSimpleName());
     }
 
 }

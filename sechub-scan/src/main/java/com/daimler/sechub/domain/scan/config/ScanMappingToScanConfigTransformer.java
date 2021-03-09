@@ -1,17 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
-import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 
 @Component
 public class ScanMappingToScanConfigTransformer {
 
+    MappingDataToNamePatternToIdEntryConverter converter;
+    
+    public ScanMappingToScanConfigTransformer(){
+        converter = new MappingDataToNamePatternToIdEntryConverter();
+    }
+    
     public ScanConfig transform(List<ScanMapping> mappings) {
         ScanConfig config = new ScanConfig();
         
@@ -21,18 +25,11 @@ public class ScanMappingToScanConfigTransformer {
         
         for (ScanMapping mapping: mappings) {
             MappingData data = MappingData.fromString(mapping.getData());
-            config.getNamePatternMappings().put(mapping.getId(), convert(data));
+            config.getNamePatternMappings().put(mapping.getId(), converter.convert(data));
         }
         
         return config;
     }
 
-    private List<NamePatternToIdEntry> convert(MappingData data) {
-        List<NamePatternToIdEntry> list = new ArrayList<>();
-        for (MappingEntry entry: data.getEntries()) {
-            NamePatternToIdEntry np = new NamePatternToIdEntry(entry.getPattern(),entry.getReplacement());
-            list.add(np);
-        }
-        return list;
-    }
+   
 }

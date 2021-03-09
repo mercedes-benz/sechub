@@ -23,10 +23,3 @@ sechub:
         agentgroupname: "netsparker-agent-group-internet"
       intranet:
         agentgroupname: "netsparker-agent-group-intranet"
-      
-    checkmarx:
-      baseurl: "https://checkmarx.mock.example.org:6011"
-      userid: "checkmarx-user-id"
-      password: "checkmarx-password"
-      newproject:
-        teamid: "checkmarx-newproject-teamid"

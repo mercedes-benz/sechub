@@ -10,7 +10,7 @@ public interface ResilienceContext {
 	/**
      * @return callback or <code>null</code>
      */
-    public ResilienceCallback getCallBack();
+    public ResilienceCallback getCallback();
 
     public <V> V getValueOrNull(String key);
     
