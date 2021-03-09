@@ -18,19 +18,27 @@ import com.contrastsecurity.sarif.ReportingDescriptorReference;
 import com.contrastsecurity.sarif.Result;
 import com.contrastsecurity.sarif.Result.Level;
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-/** 
+/**
  * This Importer supports SARIF Version 2.1.0
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
  */
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
+
+    private ObjectMapper mapper;
+
+    public SarifV1JSONImporter() {
+        mapper = new ObjectMapper();
+    }
 
     public SerecoMetaData importResult(String data) throws IOException {
 
@@ -38,21 +46,24 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             data = "";
         }
 
-        ObjectMapper mapper = new ObjectMapper();
         SarifSchema210 sarif;
 
         try {
-            sarif = mapper.readValue(data, SarifSchema210.class);
+            sarif = readSarifSchema210(data);
         } catch (Exception e) {
+            /* here we can throw the exception - should never happen, because 
+             * with #isAbleToImportForProduct we already check this is possible.
+             * So there is something odd here and we throw the exception
+             */
             throw new IOException("Import cannot parse sarif 2.1.0 json", e);
         }
 
         SerecoMetaData metaData = new SerecoMetaData();
 
         sarif.getRuns().stream().forEach(run -> {
-            
+
             List<Result> results = resultsWithGroupedLocations(run.getResults());
-            
+
             results.stream().forEach(result -> {
                 SerecoVulnerability vulnerability = new SerecoVulnerability();
 
@@ -70,6 +81,10 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         });
 
         return metaData;
+    }
+
+    private SarifSchema210 readSarifSchema210(String data) throws JsonProcessingException, JsonMappingException {
+        return mapper.readValue(data, SarifSchema210.class);
     }
 
     private SerecoCodeCallStackElement resolveCodeInfoFromResult(Result result) {
@@ -148,22 +163,21 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
         return taxa.get().getId();
     }
-    
+
     private List<Result> resultsWithGroupedLocations(List<Result> results) {
-        
+
         Map<Integer, Result> mappedResults = new HashMap<>();
-        
+
         results.stream().forEach(result -> {
             if (!mappedResults.containsKey(result.getRuleIndex())) {
                 mappedResults.put(result.getRuleIndex(), result);
-            }
-            else {
+            } else {
                 mappedResults.get(result.getRuleIndex()).getLocations().addAll(result.getLocations());
             }
-            
+
         });
-        
-        return new ArrayList<Result>(mappedResults.values());   
+
+        return new ArrayList<Result>(mappedResults.values());
     }
 
     private SerecoSeverity mapToSeverity(Level level) {
@@ -181,8 +195,31 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     @Override
+    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+        ProductImportAbility ability = super.isAbleToImportForProduct(param);
+        if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
+            return ability;
+        }
+        /* okay it's a json and it contains "runs" */
+        try {
+            /* Currently the easiest way to identify if this JSON content
+             * can be imported is to just try a JSON deserialization here. So we just
+             * read Sarif schema. If this is a SARIF file the read will be done twice,
+             * but this is something we have to live with. Reading this to a field is no
+             * option, because this is a component with standard spring injection scope,
+             * so only a singleton and we must be not stateful here. 
+             */
+            readSarifSchema210(param.getImportData());
+        } catch (Exception e) {
+            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+        }
+
+        return ProductImportAbility.ABLE_TO_IMPORT;
+    }
+
+    @Override
     protected ImportSupport createImportSupport() {
-        return ImportSupport.builder().productId("SARIF").mustBeJSON().build();
+        return ImportSupport.builder().productId("SARIF").mustBeJSON().contentIdentifiedBy("\"runs\"").build();
     }
 
 }

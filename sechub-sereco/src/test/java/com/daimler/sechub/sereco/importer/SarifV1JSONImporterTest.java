@@ -42,20 +42,45 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
         
         /* test */
-        assertEquals("Was able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif);    
+        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif);    
     }
     
     @Test
     public void threadflow_sarif_report_can_be_imported() {
         /* prepare */
-
         ImportParameter paramThreadFlows = ImportParameter.builder().importData(sarifThreadflowsExample).importId("id1").productId("SARIF").build();
 
         /* execute */
         ProductImportAbility ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
 
         /* test */
-        assertEquals("Was able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif);
+        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif);
+    }
+    
+    @Test
+    public void empty_json__can_NOT_be_imported() {
+        /* prepare */
+
+        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("SARIF").build();
+
+        /* execute */
+        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+
+        /* test */
+        assertEquals("Not the expected ability!", ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility);
+    }
+    
+    @Test
+    public void empty_string_is_recognized_as_product_failure() {
+        /* prepare */
+
+        ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("SARIF").build();
+
+        /* execute */
+        ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
+
+        /* test */
+        assertEquals("Not the expected ability!", ProductImportAbility.PRODUCT_FAILED, importAbility);
     }
 
 
@@ -64,7 +89,7 @@ public class SarifV1JSONImporterTest {
         
         /* test */
         assertThrows(IOException.class, () -> {
-            importerToTest.importResult("");
+            importerToTest.importResult("");// here we call the importer directly with empty string, isAbleToImport is not used, so an exception is expected
         });
     }
     
