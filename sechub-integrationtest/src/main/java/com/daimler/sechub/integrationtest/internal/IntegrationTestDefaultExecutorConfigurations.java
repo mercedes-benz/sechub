@@ -34,10 +34,12 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_A="a";
     public static final String PDS_CODESCAN_VARIANT_B="b";
     public static final String PDS_CODESCAN_VARIANT_C="b";
+    public static final String PDS_CODESCAN_VARIANT_D="d";
     
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSCodeScan(PDS_CODESCAN_VARIANT_A,false,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSCodeScan(PDS_CODESCAN_VARIANT_B,true,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSCodeScan(PDS_CODESCAN_VARIANT_C,true,null);// no identifier set, will not work...
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(PDS_CODESCAN_VARIANT_A,false,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(PDS_CODESCAN_VARIANT_B,true,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(PDS_CODESCAN_VARIANT_C,true,(String)null);// no identifier set, will not work...
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSScan(PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF);
     
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID="TEST_PDS_TECHUSER_ID";
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN="TEST_PDS_TECHUSER_APITOKEN";
@@ -49,8 +51,14 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return Collections.unmodifiableList(registeredConfigurations);
     }
     
-    private static TestExecutorConfig definePDSCodeScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
+        String productIdentfieriId=pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing";
+        return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId);
+        
+    }
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId) {
         TestExecutorConfig config = createTestEditorConfig();
+        
         config.enabled=true;
         config.executorVersion=1;
         config.productIdentifier=TestExecutorProductIdentifier.PDS_CODESCAN.name();
@@ -66,7 +74,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         }
         
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
-        jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier",pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing"));
+        jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier",productIdentifierId));
         jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.trustall.certificates","true")); // accept for testing
         jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.minutes","0")); // speed up tests...
         jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true")); // mandatory from PDS integration test server

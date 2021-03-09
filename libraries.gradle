@@ -102,7 +102,10 @@ ext {
          google_re2j:                           "com.google.re2j:re2j:1.4",
          
          /* epages - see https://github.com/ePages-de/restdocs-api-spec */
-         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}"
+         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}",
+         
+         /* contrastsecurity java-sarif - https://github.com/Contrast-Security-OSS/java-sarif */
+         contrastsecurity_sarif:				"com.contrastsecurity:java-sarif:1.0"
          
    ]
 

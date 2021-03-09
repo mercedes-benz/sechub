@@ -101,6 +101,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_no_white_list_entries_but_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -135,6 +136,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		/* @formatter:on */
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_no_metadata_but_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -169,6 +171,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         /* @formatter:on */
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_metadata_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -209,6 +212,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         /* @formatter:on */
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_metadata_updated_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -272,6 +276,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
         /* @formatter:on */
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_no_problems_can_be_executed_as_codescan_and_results_green() {
         /* @formatter:off */
@@ -309,6 +314,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void sechub_client_can_execute_a_config_file_which_uses_template_variables_of_environment_entries() {
         /* @formatter:off */
@@ -357,6 +363,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 
     }
 
+    @SuppressWarnings("deprecation") // we use startDownloadJobReport here - old implementation okay here
     @Test
     public void a_project_having_no_white_list_entries_but_some_problems_can_be_executed_as_codescan_and_results_yellow() {
         /* @formatter:off */

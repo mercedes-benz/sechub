@@ -89,14 +89,19 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    @Deprecated // use assertReport instead (newer implementation , has more details and uses common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
-        return AssertSecHubReport.assertSecHubReport(json);
+        return  AssertSecHubReport.assertSecHubReport(json);
     }
-
+    
+    public static AssertReport assertReport(String json) {
+        return AssertReport.assertReport(json);
+    }
+    
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
         return AssertFullScanData.assertFullScanDataZipFile(file);
     }
-
+    
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -152,9 +157,8 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID, 5);
+        waitForJobDone(project, jobUUID,5);
     }
-
     /**
      * Waits for sechub job being done (means status execution result is OK)- after
      * 5 seconds time out is reached
@@ -817,7 +821,7 @@ public class TestAPI {
             }
         }
     }
-    
+
     public static boolean canReloadExecutionProfileData(DoNotChangeTestExecutionProfile profile) {
         if (!TestAPI.isExecutionProfileExisting(profile.id)) {
             return false;

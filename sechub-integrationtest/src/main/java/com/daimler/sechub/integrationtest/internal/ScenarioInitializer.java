@@ -41,12 +41,22 @@ public class ScenarioInitializer {
         return this;
     }
 	
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_3_PDS_SARIF(TestProject ...projects) {
+        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_3_ID,projects);
+        return this;
+    }
+    
+	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
 	    return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_1);
 	}
 	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_2_PDS_codescan() {
         return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN);
+    }
+	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_3_PDS_codescan_sarif() {
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF);
     }
 	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
