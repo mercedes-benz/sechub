@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.BasicLoginConfig;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
 public class NetsparkerAdapterV1Test {
@@ -44,7 +46,7 @@ public class NetsparkerAdapterV1Test {
 	}
 
 	@Test
-	public void build_json_for_new_scan_with_basic_auth_contians_basic_login_parts() throws Exception {
+	public void build_json_for_new_scan_with_basic_auth_contains_basic_login_parts() throws Exception {
 		/*prepare */
 		BasicLoginConfig basicLoginConfig = mock(BasicLoginConfig.class);
 		when(config.getLoginConfig()).thenReturn(basicLoginConfig);
@@ -60,9 +62,56 @@ public class NetsparkerAdapterV1Test {
 		String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
 		/* test */
-		String expected= NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("login/basic_weblogin_expected1.json");
+		String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/basic_weblogin_expected1.json");
 		assertEquals(expected, json);
 	}
+	
+	@Test
+	public void build_json_for_new_scan_with_max_scan_duration_one_hour() throws Exception {
+	    /* prepare */
+	    SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(60, SecHubTimeUnit.MINUTE);
+	    when(config.getMaxScanDuration()).thenReturn(maxScanDuration);
+	    when(config.hasMaxScanDuration()).thenReturn(true);
+	    
+	    /* execute */
+	    String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
+	    
+	    /* test */
+	    String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
+	    assertEquals(expected, json);
+	}
+	
+    @Test
+    public void build_json_for_new_scan_with_max_scan_duration_5_minutes() throws Exception {
+        /* prepare */
+        SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(5, SecHubTimeUnit.MINUTE);
+        when(config.getMaxScanDuration()).thenReturn(maxScanDuration);
+        when(config.hasMaxScanDuration()).thenReturn(true);
+        
+        /* execute */
+        String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
+        
+        /* test */
+        
+        // the minimum scan duration for Netsparker is 1 hour
+        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_one_hour_expected.json");
+        assertEquals(expected, json);
+    }
+    
+    @Test
+    public void build_json_for_new_scan_with_max_scan_duration_129_minutes() throws Exception {
+        /* prepare */
+        SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(129, SecHubTimeUnit.MINUTE);
+        when(config.getMaxScanDuration()).thenReturn(maxScanDuration);
+        when(config.hasMaxScanDuration()).thenReturn(true);
+        
+        /* execute */
+        String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
+        
+        /* test */
+        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_two_hours_expected.json");
+        assertEquals(expected, json);
+    }
 
 	@Test
 	public void a_fetch_report__triggers_rest_tempate_with_correct_params() {

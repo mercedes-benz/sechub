@@ -144,12 +144,72 @@ public class SecHubTimeUnitDataTest {
     @Test
     public void days_max() {
         /* prepare */
-       long maxDaysInMilliseconds = SecHubTimeUnit.DAY.getMultiplicatorMilliseconds() * Integer.MAX_VALUE;
+        long maxDaysInMilliseconds = SecHubTimeUnit.DAY.getMultiplicatorMilliseconds() * Integer.MAX_VALUE;
        
         /* execute */
         SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(Integer.MAX_VALUE, SecHubTimeUnit.DAY);
         
         /* test */
         assertEquals(maxDaysInMilliseconds, timeUnitData.getTimeInMilliseconds());
+    }
+    
+    @Test
+    public void get_time_in_hours_one_hour() {
+        /* prepare */
+        long hours = 1;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(1, SecHubTimeUnit.HOUR);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
+    }
+    
+    @Test
+    public void get_time_in_hours_61_minutes() {
+        /* prepare */
+        long hours = 1;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(73, SecHubTimeUnit.MINUTE);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
+    }
+    
+    @Test
+    public void get_time_in_hours_59_minutes() {
+        /* prepare */
+        long hours = 0;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(59, SecHubTimeUnit.MINUTE);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
+    }
+    
+    @Test
+    public void get_time_in_hours_1_millisecond() {
+        /* prepare */
+        long hours = 0;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(1, SecHubTimeUnit.MILLISECOND);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
+    }
+    
+    @Test
+    public void get_time_in_hours_2_days() {
+        /* prepare */
+        long hours = 48;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(2, SecHubTimeUnit.DAY);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
     }
 }

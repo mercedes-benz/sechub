@@ -36,6 +36,11 @@ public class SecHubTimeUnitData {
         return time * unit.getMultiplicatorMilliseconds();
     }
     
+    @JsonIgnore
+    public long getTimeInHours() {
+        return (long)(getTimeInMilliseconds() / (60*60*1000));
+    }
+    
     @Override
     public int hashCode() {
         return Objects.hash(time, unit);

@@ -6,6 +6,7 @@ import java.net.URL;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
+import com.daimler.sechub.adapter.SecHubTimeUnitData;
 
 public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
 
@@ -15,8 +16,9 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 	private String agentGroupName;
 
 	private String websiteName;
+	private SecHubTimeUnitData maxScanDuration;
 
-	@Override
+    @Override
 	public String getLicenseID() {
 		return licenseID;
 	}
@@ -40,6 +42,15 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 	public boolean hasAgentGroup() {
 		return agentGroupName != null && !agentGroupName.isEmpty();
 	}
+	
+    public SecHubTimeUnitData getMaxScanDuration() {
+        return maxScanDuration;
+    }
+    
+    @Override
+    public boolean hasMaxScanDuration() {
+        return maxScanDuration != null;
+    }
 
 	private NetsparkerConfig() {
 	}
@@ -55,8 +66,9 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 		private String licenseID;
 		private String agentName;
 		private String agentGroupName;
+		private SecHubTimeUnitData maxScanDuration;
 
-		private NetsparkerConfigBuilder() {
+        private NetsparkerConfigBuilder() {
 		}
 
 		public NetsparkerConfigBuilder setAgentName(String agentName) {
@@ -73,6 +85,12 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 			this.licenseID = licenseID;
 			return this;
 		}
+		
+
+        public NetsparkerConfigBuilder setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
+            this.maxScanDuration = maxScanDuration;
+            return this;
+        }
 
 		@Override
 		protected void customBuild(NetsparkerConfig adapterConfig) {
@@ -87,7 +105,7 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 			}
 			String websiteURLAsString = config.getRootTargetURIasString();
 			if (websiteURLAsString==null) {
-				throw new IllegalStateException("website url (root target url ) may not be null at this point!");
+				throw new IllegalStateException("website url (root target url) may not be null at this point!");
 			}
 			try {
 				URL url = new URL(websiteURLAsString);
@@ -101,13 +119,14 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 					sb.append(port);
 				}
 
-				config.websiteName= sb.toString().toLowerCase();
+				config.websiteName = sb.toString().toLowerCase();
 			} catch (MalformedURLException e) {
 				throw new IllegalArgumentException("website root url '"+websiteURLAsString+"' is not a valid URL!",e);
 			}
 			config.licenseID = licenseID;
 			config.agentName = agentName;
 			config.agentGroupName = agentGroupName;
+			config.maxScanDuration = maxScanDuration;
 		}
 
 		@Override
@@ -130,5 +149,4 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 		}
 
 	}
-
 }
