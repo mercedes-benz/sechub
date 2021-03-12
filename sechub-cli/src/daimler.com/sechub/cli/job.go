@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	sechubUtil "daimler.com/sechub/util"
@@ -17,7 +18,7 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	sechubUtil.Log("Creating new sechub job")
+	sechubUtil.Log("Creating new sechub job", context.config.quiet)
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -32,7 +33,7 @@ func createNewSecHubJob(context *Context) {
 
 // approveSecHubJob - Approve Job
 func approveSecHubJob(context *Context) {
-	sechubUtil.Log("Approve sechub job")
+	sechubUtil.Log("Approve sechub job", context.config.quiet)
 	response := sendWithDefaultHeader("PUT", buildApproveSecHubJobAPICall(context), context)
 
 	_, err := ioutil.ReadAll(response.Body)
@@ -75,7 +76,7 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 	if checkOnlyOnce {
 		done = true
 	} else {
-		sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID))
+		sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
 	}
 
 	for {
@@ -103,46 +104,45 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 		} else {
 			// PROGRESS bar ... 50 chars with dot, then next line...
 			if newLine {
-				fmt.Print("                             ")
+				sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
 				newLine = false
 			}
-			fmt.Print(".")
+			sechubUtil.PrintIfNotSilent(".", context.config.quiet)
 			if cursor++; cursor == 50 {
-				fmt.Println()
+				sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 				cursor = 0
 				newLine = true
 			}
 			time.Sleep(time.Duration(context.config.waitNanoseconds))
 		}
 	}
-	fmt.Print("\n")
+	sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 
 	if downloadReport {
 		downloadSechubReport(context)
 	}
 
-	/* FAIL mode */
-	if status.TrafficLight == "" {
-		fmt.Println("  No traffic light available! Seems job has been broken.")
+	/* Evaluate traffic light */
+	switch status.TrafficLight {
+	case "RED":
+		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
 		os.Exit(ExitCodeFailed)
-	}
-	if status.TrafficLight == "RED" {
-		fmt.Println("  RED alert - security vulnerabilities identified (critical or high)")
-		os.Exit(ExitCodeFailed)
-	}
-	if status.TrafficLight == "YELLOW" {
-		fmt.Println("  YELLOW alert - security vulnerabilities identified (but not critical or high)")
+	case "YELLOW":
+		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
 		if context.config.stopOnYellow == true {
+			fmt.Fprintln(os.Stderr, yellowMessage)
 			os.Exit(ExitCodeFailed)
 		} else {
-			return ""
+			fmt.Println(yellowMessage)
 		}
+	case "GREEN":
+		fmt.Println("  GREEN - no severe security vulnerabilities identified")
+	case "":
+		sechubUtil.LogError("No traffic light available! Please check server logs.")
+		os.Exit(ExitCodeFailed)
+	default:
+		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
+		os.Exit(ExitCodeFailed)
 	}
-	if status.TrafficLight == "GREEN" {
-		fmt.Println("  GREEN - no security vulnerabilities identified")
-		return ""
-	}
-	fmt.Printf("UNKNOWN traffic light:%s\n", status.TrafficLight)
-	os.Exit(ExitCodeFailed)
-	return "" // dummy - will never happen
+	return ""
 }

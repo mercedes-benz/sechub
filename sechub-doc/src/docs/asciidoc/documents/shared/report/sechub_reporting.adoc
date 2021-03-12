@@ -27,46 +27,43 @@ NOTE: If you are interested in technical details/ development situation you can 
 endif::techdoc[]
 
 
-==== HTML 
+==== HTML
 
 The main purpose for the HTML report is to have a human friendly report which gives you a fast overview
 to your current situation.
 
-* At the left top corner you see a traffic light showing either 
+* At the left top corner you see a traffic light showing either
 ** GREEN
 ** YELLOW or
-** RED.  
+** RED.
 
-===== Example code scan report with yellow traffic light
-The next picture shows a report which resulted in yellow traffic light.
+===== Example code scan report with red traffic light
+The next picture shows a report which resulted in a red traffic light.
 
-At the top of the report you will find the most critical parts - in our example it is only one
-yellow finding which is a `Absolute path traversal`.
+At the top of the report you will find the most critical parts - in our example it is a red finding which is a `Command Injection`. If available for this type of finding, you can find the corresponding CWE-Id (Common Weakness Enumeration) as a link to the knowledge base of MITRE in the `Type` column. 
 
-The entry point for the found vulnerability is the *Line 28* in java class `AsciidocGenerator`.
-The data sink (where the path traversal could lead to problems at the end) is ins same class but
-at *Line 29*. 
+The data sink with Id 9 (where the command injection could lead to problems at the end) is at the top of the Description field.
 
 [NOTE]
 ====
-The call hierarchy between entry point and data sink is not shown in HTML reports - reason: This would
-overload the report. Even for security mitigations/development changes
-it's normally enough to know entry point and data sink + name of finding.  
+
+You can open the complete call hierarchy by clicking on "Open full callstack". This allows you to see the full hierarchy from entry point up to data sink and can help you in analyzing this finding.
+
 ====
 
-There are other findings (green) which are less problematic. 
+There are other findings (yellow and green) which are less problematic.
 
 TIP: {sechub} client will break your build per default only at a RED traffic light, but you can also
-configure client to do this also on color YELLOW. Only Green is always accepted.
+configure the client to do this also on color YELLOW. Only Green is always accepted.
 
 image::sechub-report-html-example1.png[]
 
 ===== What about descriptions and mitigation suggestions?
 At the moment {sechub} does not contain this inside it's reports, but this feature will come in future
 
-==== JSON  
+==== JSON
 
-This is the machine readable report format. 
+This is the machine readable report format.
 
 ===== Example code scan report with yellow traffic light
 [source, JSON]

@@ -24,7 +24,7 @@ public interface JSONable<T> {
 	Class<T> getJSONTargetClass();
 
 	/**
-	 * Converts object to JSON
+	 * Converts object to JSON - not pretty printed
 	 * 
 	 * @return
 	 * @throws JSONConverterException

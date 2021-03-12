@@ -10,8 +10,8 @@ package com.daimler.sechub.domain.scan.product.pds;
 public class PDSProductExecutorKey extends PDSSecHubConfigDataKey<PDSProductExecutorKey>{
 
     
-    PDSProductExecutorKey(String key, String description) {
-        super(key, description);
+    PDSProductExecutorKey(String id, String description) {
+        super(id, description);
     }
 
 }

@@ -71,10 +71,10 @@ public class ProjectDeleteScenario3IntTest {
 
 		/* prepare - just execute two jobs */
 		ExecutionResult result1 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-		UUID sechubJobUUID1 = result1.getSechubJobUUD();
+		UUID sechubJobUUID1 = result1.getSechubJobUUID();
 
 		ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
-		UUID sechubJobUUID2 = result2.getSechubJobUUD();
+		UUID sechubJobUUID2 = result2.getSechubJobUUID();
 
 		/* check preconditions */
 		assertNotNull(sechubJobUUID1);

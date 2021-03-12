@@ -85,7 +85,7 @@ public class SecHubClientExecutor {
             return lastOutputLine;
         }
 
-        public UUID getSechubJobUUD() {
+        public UUID getSechubJobUUID() {
             if (sechubJobUUD == null) {
                 for (String line : lines) {
                     if (sechubJobUUD != null) {
@@ -123,7 +123,7 @@ public class SecHubClientExecutor {
         }
 
         public File getJSONReportFile() {
-            UUID jobUUID = getSechubJobUUD();
+            UUID jobUUID = getSechubJobUUID();
             if (jobUUID == null) {
                 fail("No job uuid found - last output line was:" + lastOutputLine);
             }

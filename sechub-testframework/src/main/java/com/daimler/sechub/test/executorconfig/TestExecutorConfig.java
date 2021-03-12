@@ -4,6 +4,12 @@ package com.daimler.sechub.test.executorconfig;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * This is our test implementation which is parsed in and and to JSON. So we need to be "in sync"
+ * with the origin class `ProductExecutorConfig` !
+ * @author Albert Tregnaghi
+ *
+ */
 public class TestExecutorConfig {
 
     public TestExecutorConfig(UUID uuid) {

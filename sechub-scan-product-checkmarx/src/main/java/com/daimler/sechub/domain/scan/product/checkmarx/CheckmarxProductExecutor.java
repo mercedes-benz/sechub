@@ -21,13 +21,13 @@ import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapter;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxAdapterConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.daimler.sechub.adapter.checkmarx.CheckmarxMetaDataID;
-import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.product.AbstractCodeScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
@@ -38,7 +38,7 @@ import com.daimler.sechub.storage.core.JobStorage;
 @Service
 public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<CheckmarxInstallSetup> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
+    static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
 
     @Value("${sechub.adapter.checkmarx.scanresultcheck.period.minutes:-1}")
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
@@ -59,6 +59,9 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
     @Autowired
     MetaDataInspector scanMetaDataCollector;
+
+    @Autowired
+    SystemEnvironment systemEnvironment;
 
     @Autowired
     CheckmarxResilienceConsultant checkmarxResilienceConsultant;
@@ -86,27 +89,40 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
         JobStorage storage = storageService.getJobStorage(projectId, jobUUID);
 
+        CheckmarxExecutorConfigSuppport configSupport = CheckmarxExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+
+        CheckmarxResilienceCallback callback = new CheckmarxResilienceCallback(configSupport, executorContext);
+
+        /* start resilient */
         ProductResult result = resilientActionExecutor.executeResilient(() -> {
 
             AdapterMetaData metaDataOrNull = executorContext.getCurrentMetaDataOrNull();
+
             try (InputStream sourceCodeZipFileInputStream = fetchInputStreamIfNecessary(storage, metaDataOrNull)) {
 
                 /* @formatter:off */
 
-					CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
-							configure(createAdapterOptionsStrategy(context)).
-							configure(new OneInstallSetupConfigBuilderStrategy(setup)).
-							setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-							setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
-							setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
-							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-							setTeamIdForNewProjects(setup.getTeamIdForNewProjects(projectId)).
-							setClientSecret(setup.getClientSecret()).
-							setEngineConfigurationName(setup.getEngineConfigurationName()).
-							setPresetIdForNewProjects(setup.getPresetIdForNewProjects(projectId)).
-							setProjectId(projectId).
-							setTraceID(context.getTraceLogIdAsString()).
-							build();
+                CheckmarxAdapterConfig checkMarxConfig = CheckmarxConfig.builder().
+    					configure(createAdapterOptionsStrategy(context)).
+    					
+    					setTrustAllCertificates(setup.isHavingUntrustedCertificate()).
+    					setUser(configSupport.getUser()).
+    					setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+    					setProductBaseUrl(configSupport.getProductBaseURL()).
+
+    					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
+    					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
+    					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+    					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
+    					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+    					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).
+    					setClientSecret(configSupport.getClientSecret()).
+    					setEngineConfigurationName(configSupport.getEngineConfigurationName()).
+    					setPresetIdForNewProjects(configSupport.getPresetIdForNewProjects(projectId)).
+    					setProjectId(projectId).
+    					setTraceID(context.getTraceLogIdAsString()).
+    					build();
 					/* @formatter:on */
 
                 /* inspect */
@@ -115,16 +131,17 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
                 inspection.notice("presetid", checkMarxConfig.getPresetIdForNewProjectsOrNull());
                 inspection.notice("engineconfigurationname", checkMarxConfig.getEngineConfigurationName());
                 inspection.notice("teamid", checkMarxConfig.getTeamIdForNewProjects());
+                inspection.notice("alwaysFullScanEnabled", checkMarxConfig.isAlwaysFullScanEnabled());
 
                 /* execute checkmarx by adapter and update product result */
-                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallBack());
-                
+                String xml = checkmarxAdapter.start(checkMarxConfig, executorContext.getCallback());
+
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
                 productResult.setResult(xml);
-                
+
                 return productResult;
             }
-        });
+        }, callback);
         return Collections.singletonList(result);
 
     }

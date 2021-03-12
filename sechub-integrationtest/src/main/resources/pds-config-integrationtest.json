@@ -32,6 +32,34 @@
                 ]
             }
         },
+         {
+            "id": "PDS_INTTEST_PRODUCT_CS_SARIF",
+            "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-codescan-sarif.sh",
+            "scanType": "codeScan",
+            "description": "This is only a fake code scan - used by integration tests. The code scan will just return data from uploaded zip file",
+            "parameters": {
+                "mandatory": [
+                    {
+                        "key": "product1.qualititycheck.enabled",
+                        "description": "when 'true' quality scan results are added as well"
+                    },
+                    {
+                        "key": "product1.level",
+                        "description": "numeric, 1-gets all, 2-only critical,fatal and medium, 3- only critical and fatal"
+                    }
+                ],
+                "optional": [
+                    {
+                        "key": "product1.add.tipoftheday",
+                        "description": "add tip of the day as info"
+                    },
+                    {
+                        "key": "pds.test.key.variantname",
+                        "description": "a parameter from configuration - will be different in each integration test config from sechub integration test server"
+                    }
+                ]
+            }
+        },
         {
             "id": "PDS_INTTEST_PRODUCT_WEBSCAN",
             "path": "./../sechub-integrationtest/pds/product-scripts/integrationtest-webscan.sh",

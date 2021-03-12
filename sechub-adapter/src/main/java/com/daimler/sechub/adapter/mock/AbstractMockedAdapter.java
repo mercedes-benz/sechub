@@ -28,6 +28,33 @@ import com.daimler.sechub.adapter.support.MockSupport;
  */
 public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C extends AdapterConfig> extends AbstractAdapter<A, C> implements MockedAdapter<C> {
 
+    /**
+     * In tests we want to have the possibility to check if adapter meta data is
+     * really reused and appended on resilience retries (but only for same SecHub
+     * JobUUID and product executor configuration!)<br>
+     * <br>
+     * To do this we have the special key "reused" - each mocked adapter will append
+     * "+1" two times on every adapter call. So when a adapter call has failed and
+     * will be called again (resilience) we are able to check if adapter meta data
+     * is handled as expected.
+     * 
+     * Here an example:
+     * 
+     * <pre>
+     *  null -> "+1" -> "+1+1"
+     * </pre>
+     * 
+     * When adapter is started . Another start will transform:
+     * 
+     * <pre>
+     *  
+     * "+1+1" -> "+1+1+1" ->"+1+1+1+1"
+     * </pre>
+     * 
+     * and so on.
+     */
+    public static final String KEY_METADATA_REUSED = "reused";
+
     private static final String KEY_METADATA_INITIAL = "initial";
     private static final String KEY_METADATA_COMBINED = "combined";
     private static final String KEY_METADATA_BEFORE_WAIT = "before_wait";
@@ -38,8 +65,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
 
     @Value("${sechub.adapter.mock.sanitycheck.enabled:false}")
     private boolean mockSanityCheckEnabled;
-    
-    
+
     @Autowired
     private MockedAdapterSetupService setupService;
 
@@ -58,71 +84,97 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         if (mockSanityCheckEnabled) {
             executeMockSanityCheck(config);
         }
-        
+
         MockedAdapterSetupEntry setup = setupService.getSetupFor(this, config);
         if (setup == null) {
             LOG.info("did not found adapter setup so returning empty string");
             return "";
         }
+        
         String target = config.getTargetAsString();
 
-        simulateMetaDataPerstenceInitial(config, runtimeContext);
-        
+        /* first meta data persistence call - write some test meta data... */
+        writeInitialAndReusedMetaData(config, runtimeContext);
+
+        /*
+         * throw an error - if we have configured the adapter to throw an error to
+         * simulate product failures...
+         */
         throwExceptionIfConfigured(config, setup, target);
+
+        /* no error wanted, so load result.... */
         String result = loadResultAsConfigured(setup, target);
 
-        simulateMetaDataPerstenceBeforeWait(config, runtimeContext);
+        /* second meta data persistence call - write/update some test meta data... */
+        writeBeforeWaitAndReusedMetaData(config, runtimeContext);
+        
+        /* wait configured time (simulates product elapsing time) */
         waitIfConfigured(timeStarted, setup, target);
-        simulateMetaDataPerstenceAfterWait(config, runtimeContext);
+        
+        assertMetaDataHandledAsExpected(config, runtimeContext);
 
         LOG.trace("Returning content:{}", result);
 
         return result;
     }
 
-    protected void simulateMetaDataPerstenceInitial(C config, AdapterRuntimeContext runtimeContext) {
+    protected void writeInitialAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_INITIAL, DEFAULT_METADATA_MOCK_INITIAL_VALUE);
         metaData.setValue(KEY_METADATA_COMBINED, "1");
+
+        updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
-    
 
 
-    protected void simulateMetaDataPerstenceBeforeWait(C config, AdapterRuntimeContext runtimeContext) {
+    protected void writeBeforeWaitAndReusedMetaData(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
-        
+
         String value = metaData.getValue(KEY_METADATA_COMBINED);
-        metaData.setValue(KEY_METADATA_COMBINED, value+"+2");
+        metaData.setValue(KEY_METADATA_COMBINED, value + "+2");
+
+        updateReusedEntryAndPersistMetaData(metaData, runtimeContext);
     }
+
     
-    protected void simulateMetaDataPerstenceAfterWait(C config, AdapterRuntimeContext runtimeContext) {
+    protected void assertMetaDataHandledAsExpected(C config, AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = assertMetaData(runtimeContext);
         metaData.setValue(KEY_METADATA_BEFORE_WAIT, DEFAULT_METADATA_MOCK_BEFORE_WAIT);
-        
+
         String combined = metaData.getValue(KEY_METADATA_COMBINED);
         String initial = metaData.getValue(KEY_METADATA_INITIAL);
         String before = metaData.getValue(KEY_METADATA_BEFORE_WAIT);
-        
+
         if (!"1+2".equals(combined)) {
-            throw new IllegalStateException("meta data for combined value was not as expected ,but:"+combined);
+            throw new IllegalStateException("meta data for combined value was not as expected ,but:" + combined);
         }
         if (!DEFAULT_METADATA_MOCK_INITIAL_VALUE.equals(initial)) {
-            throw new IllegalStateException("meta data for initial value was not as expected ,but:"+initial);
+            throw new IllegalStateException("meta data for initial value was not as expected ,but:" + initial);
         }
         if (!DEFAULT_METADATA_MOCK_BEFORE_WAIT.equals(before)) {
-            throw new IllegalStateException("meta data for before value was not as expected ,but:"+before);
+            throw new IllegalStateException("meta data for before value was not as expected ,but:" + before);
         }
     }
 
-
+    private void updateReusedEntryAndPersistMetaData(AdapterMetaData metaData, AdapterRuntimeContext runtimeContext) {
+        String value = metaData.getValue(KEY_METADATA_REUSED);
+        if (value == null) {
+            value = "";
+        }
+        metaData.setValue(KEY_METADATA_REUSED, value + "+1");
+        runtimeContext.getCallback().persist(metaData);
+        
+    }
+    
     private AdapterMetaData assertMetaData(AdapterRuntimeContext runtimeContext) {
         AdapterMetaData metaData = runtimeContext.getMetaData();
-        if (metaData==null) {
+        if (metaData == null) {
             throw new IllegalStateException("Meta data may not be null inside adapter!");
         }
         return metaData;
     }
+
     private String loadResultAsConfigured(MockedAdapterSetupEntry setup, String target) {
         String resultFilePath = setup.getResultFilePathFor(target);
         LOG.info("adapter instance {} will use result file path :{} for targeturl:{}", hashCode(), resultFilePath, target);
@@ -147,11 +199,11 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
         LOG.debug("adapter instance {}, wanted {} milliseconds to elapse for target {}", hashCode(), wantedMs, target);
         long elapsedMs = System.currentTimeMillis() - timeStarted;
         long timeToWait = wantedMs - elapsedMs;
-        LOG.debug("apter instance {}, will wait {} milliseconds to elapse for target {}",hashCode(),  wantedMs, target);
+        LOG.debug("apter instance {}, will wait {} milliseconds to elapse for target {}", hashCode(), wantedMs, target);
         if (timeToWait > 0) {
             try {
                 Thread.sleep(timeToWait);
-                LOG.debug("adapter instance {}, waited {} milliseconds for target {}",hashCode(), timeToWait, target);
+                LOG.debug("adapter instance {}, waited {} milliseconds for target {}", hashCode(), timeToWait, target);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -190,9 +242,9 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     protected String getMockDataFileEnding() {
         return "xml";
     }
-    
+
     protected void handleSanityFailure(String message) {
-        LOG.error("SANITY CHECK FAILURE for {},{}",getClass().getSimpleName(), message);
-        throw new IllegalStateException("Sanity check failed");
+        LOG.error("SANITY CHECK FAILURE for {},{}", getClass().getSimpleName(), message);
+        throw new IllegalStateException("Sanity check failed:" + message);
     }
 }

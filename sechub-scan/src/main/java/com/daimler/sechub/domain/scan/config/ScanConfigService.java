@@ -14,6 +14,11 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
 
+/**
+ * The scan config service represents a global scan configuration which can contain for example mappings
+ * @author Albert Tregnaghi
+ *
+ */
 @Service
 public class ScanConfigService {
 
@@ -102,13 +107,13 @@ public class ScanConfigService {
                     continue;
                 }
                 NamePatternIdprovider provider = new NamePatternIdprovider(providerId);
-                providers.put(providerId, provider);
                 LOG.debug("Created NamePatternIdprovider:{}", provider.getProviderId());
 
                 List<NamePatternToIdEntry> data = configMappings.get(key);
                 for (NamePatternToIdEntry entry : data) {
                     provider.add(entry);
                 }
+                providers.put(providerId, provider);
             }
         }
     }

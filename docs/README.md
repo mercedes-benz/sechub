@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # About
 
 ## What is this folder for?

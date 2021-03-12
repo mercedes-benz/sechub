@@ -1,0 +1,382 @@
+# SPDX-License-Identifier: MIT
+name: Release
+
+on: 
+  workflow_dispatch:
+    inputs:
+      server-version:
+        description: SecHub Server Version (e.g. 0.20.0)
+        required: false
+      pds-version:
+        description: PDS Server Version (e.g. 0.20.0)
+        required: false
+      client-version:
+        description: Client Version (e.g. 0.23.0)
+        required: false
+      milestone-number:
+        description: Milestone number for release(s)
+        default: 15
+        required: true
+jobs:
+  release-version:
+    name: Create releases
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@v2
+      with:
+        ref: master
+    
+    
+    # Create local tags, so we build documentation for this tag...
+    - name: "Tag server version: v${{ github.event.inputs.server-version }}-server - if defined" 
+      if: github.event.inputs.server-version != ''
+      run: git tag v${{ github.event.inputs.server-version }}-server
+    
+    - name: "Tag client version: v${{ github.event.inputs.client-version }}-client - if defined" 
+      if: github.event.inputs.client-version != ''
+      run: git tag v${{ github.event.inputs.client-version }}-client
+    
+    - name: "Tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined" 
+      if: github.event.inputs.pds-version != ''
+      run: git tag v${{ github.event.inputs.pds-version }}-pds
+    
+    
+    # Build
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.3
+        stable: true
+    
+    - name: Gradle clean
+      run: ./gradlew clean
+    
+    - name: Build CLI
+      run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
+      
+    - name: Build Server
+      run: ./gradlew ensureLocalhostCertificate build openapi3 buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+
+    - name: Generate OpenAPI Java client
+      run: ./gradlew :sechub-client-java:openApiGenerate
+
+    - name: Integration test
+      run: ./gradlew integrationtest
+      
+    - name: Create combined test report
+      if: always()
+      run: ./gradlew createCombinedTestReport
+   
+    # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
+    - name: Inspect GIT status
+      if: always()
+      run: git status > build/reports/git-status.txt
+      
+    # -----------------------------------------
+    # Upload Build Artifacts  
+    # -----------------------------------------  
+    - name: Archive combined test report
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: combined-sechub-testreport
+          path: build/reports/combined-report
+          retention-days: 14
+    - name: Archive GIT status
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: git-status.txt
+          path: build/reports/git-status.txt
+          retention-days: 14      
+    - name: Archive sechub server artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-server
+          path: sechub-server/build/libs
+          retention-days: 14
+          
+    - name: Archive pds server artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-server
+          path: 
+            sechub-server/build/libs
+          
+    - name: Archive developer tools artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-developertools
+          path: sechub-developertools/build/libs
+          retention-days: 14
+          
+    - name: Archive sechub client artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-client
+          path: sechub-cli/build/go
+          retention-days: 14
+    
+    - name: Install graphviz (asciidoc diagrams)
+      run: sudo apt-get install graphviz
+    
+    # -----------------------------------------
+    # Build Documentation  
+    # -----------------------------------------  
+    - name: Create documentation
+      run: ./gradlew documentation-with-pages
+    
+    # -----------------------------------------
+    # Upload documentation  
+    # -----------------------------------------    
+    - name: Archive documentation HTML
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-docs-html
+          path: docs/latest
+          retention-days: 14
+    
+    - name: Archive documentation PDF
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-docs-pdf
+          path: sechub-doc/build/docs/asciidoc/*.pdf
+          retention-days: 14
+          
+    - name: Archive documentation openAPI3
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+          name: sechub-api-spec
+          path: sechub-doc/build/api-spec/
+          retention-days: 14
+    # ******************************************     
+    # Now let's create a new SERVER release
+    # when server version is set
+    # ******************************************     
+    - name: Create server release
+      if: github.event.inputs.server-version != ''
+      id: create_server_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ github.event.inputs.server-version }}-server
+        commitish: master
+        release_name: Server Version ${{ github.event.inputs.server-version }}
+        body: |
+          Changes in this Release
+          - Some minor changes on SecHub server implementation
+          
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
+        prerelease: false
+    - name: Upload Server release asset
+      id: upload-server-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-server/build/libs/sechub-server-${{ github.event.inputs.server-version }}.jar
+        asset_name: sechub-server-${{ github.event.inputs.server-version }}.jar
+        asset_content_type: application/zip
+    - name: Upload SecHub developer tools release asset
+      id: upload-developertools-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-developertools/build/libs/sechub-developertools-${{ github.event.inputs.server-version }}.jar
+        asset_name: sechub-developertools-${{ github.event.inputs.server-version }}.jar
+        asset_content_type: application/zip
+    # -----------------------------------------
+    # Server documentation:
+    # -----------------------------------------    
+    # sechub-architecture.pdf
+    - name: Upload sechub-architecture.pdf release asset
+      id: upload-sechub-doc-architecture-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-architecture.pdf
+        asset_name: sechub-architecture-${{ github.event.inputs.server-version }}.pdf
+        asset_content_type: application/pdf
+    # sechub-operations.pdf
+    - name: Upload sechub-operations.pdf release asset
+      id: upload-sechub-doc-operations-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-operations.pdf
+        asset_name: sechub-operations-${{ github.event.inputs.server-version }}.pdf
+        asset_content_type: application/pdf
+    # sechub-quickstart-guide.pdf
+    - name: Upload sechub-quickstart-guide.pdf release asset
+      id: upload-sechub-doc-quickstart-guide-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-quickstart-guide.pdf
+        asset_name: sechub-quickstart-guide-${{ github.event.inputs.server-version }}.pdf
+        asset_content_type: application/pdf
+    
+    # sechub-restapi.pdf
+    - name: Upload sechub-restapi.pdf release asset
+      id: upload-sechub-doc-restapi-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
+        asset_name: sechub-restapi-${{ github.event.inputs.server-version }}.pdf
+        asset_content_type: application/pdf
+    
+    # sechub-openapi.json
+    - name: Upload sechub-openapi3.yaml release asset
+      id: upload-sechub-doc-openapi3-release-asset 
+      if: github.event.inputs.server-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/api-spec/openapi3.yaml
+        asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.yaml
+        asset_content_type: text/plain
+    
+    # ******************************************  
+    # Now let's create a new CLIENT release
+    # when client version is set
+    # ******************************************
+    - name: Create client release
+      if: github.event.inputs.client-version != ''
+      id: create_client_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ github.event.inputs.client-version }}-client
+        commitish: master
+        release_name: Client Version ${{ github.event.inputs.client-version }}
+        body: |
+          Changes in this Release
+          - Some minor changes on client implementation
+          
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
+        prerelease: false
+    - name: Upload Client release asset create ZIP
+      id: create-client-release-asset 
+      if: github.event.inputs.client-version != ''
+      run: |
+          cd sechub-cli/build/go
+          zip -r sechub-cli.zip platform
+          sha256sum sechub-cli.zip > sechub-cli.zip.sha256
+          cd ../../../
+    - name: Upload Client release asset
+      id: upload-client-release-asset 
+      if: github.event.inputs.client-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip
+        asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip
+        asset_content_type: application/zip
+    - name: Upload Client release asset (SHA256)
+      id: upload-client-release-asset-sha256
+      if: github.event.inputs.client-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-cli/build/go/sechub-cli.zip.sha256
+        asset_name: sechub-cli-${{ github.event.inputs.client-version }}.zip.sha256
+        asset_content_type: application/zip
+    # sechub-client.pdf
+    - name: Upload sechub-client.pdf release asset
+      id: upload-sechub-doc-client-release-asset 
+      if: github.event.inputs.client-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_client_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-client.pdf
+        asset_name: sechub-client-${{ github.event.inputs.client-version }}.pdf
+        asset_content_type: application/pdf
+        
+    # ******************************************  
+    # Now let's create a new PDS release
+    # when pds version is set
+    # ******************************************
+    - name: Create PDS release
+      if: github.event.inputs.pds-version != ''
+      id: create_pds_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{ github.event.inputs.pds-version }}-pds
+        commitish: master
+        release_name: PDS Version ${{ github.event.inputs.pds-version }}
+        body: |
+          Changes in this Release
+          - Some minor changes on PDS server implementation
+          
+          For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+        draft: true
+        prerelease: false
+    - name: Upload PDS release asset
+      id: upload-pds-release-asset 
+      if: github.event.inputs.pds-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
+        asset_path: ./sechub-pds/build/libs/sechub-pds-${{ github.event.inputs.pds-version }}.jar
+        asset_name: sechub-pds-${{ github.event.inputs.pds-version }}.jar
+        asset_content_type: application/zip
+    # sechub-product-delegation-server.pdf
+    - name: Upload sechub-product-delegation-server.pdf release asset
+      id: upload-sechub-doc-pds-release-asset 
+      if: github.event.inputs.pds-version != ''
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_pds_release.outputs.upload_url }}  
+        asset_path: ./sechub-doc/build/docs/asciidoc/sechub-product-delegation-server.pdf
+        asset_name: /sechub-product-delegation-server-${{ github.event.inputs.pds-version }}.pdf
+        asset_content_type: application/pdf
+    

@@ -79,7 +79,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
             TargetRegistryInfo info) throws Exception {
         LOG.debug("Trigger PDS adapter execution");
 
-        PDSExecutionConfigSuppport configSupport = PDSExecutionConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
         if (configSupport.isTargetTypeForbidden(info.getTargetType())){
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
@@ -127,7 +127,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                 inspection.notice(MetaDataInspection.TRACE_ID, pdsCodeScanConfig.getTraceID());
 
                 /* execute PDS by adapter and update product result */
-                String xml = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallBack());
+                String xml = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
                 productResult.setResult(xml);

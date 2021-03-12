@@ -13,7 +13,6 @@ use those by explicit ENV entries
 |ENV-NAME       |Value    |Description
 //-----------------------------------------
 |SECHUB_DEBUG   |"true"   |Shows debug outputs
-|SECHUB_QUIET   |"true"   |Suppresses warning outputs
 |SECHUB_TRUSTALL|"true"   |Trust all certificates (only for development). Normally SecHub client does show a warning when `trustall` option is enabled
 |===
 

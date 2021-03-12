@@ -2,6 +2,11 @@
 == Concepts
 
 include::../shared/configuration/mapping.adoc[]
+
+include::../shared/configuration/execution_profiles.adoc[]
+
+include::../shared/configuration/executor_config.adoc[]
+
 include::../shared/configuration/scan_config.adoc[]
 
 === Domain driven design

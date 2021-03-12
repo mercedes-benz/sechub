@@ -1,11 +1,11 @@
 {
   "entries" : [ {
     "pattern" : "testproject_*",
-    "replacement" : "8be4e3d4-6b53-4636-b65a-949a9ebdf6b9",
+    "replacement" : "1",
     "comment" : "Maps all projects starting with name testproject_ to dedicated checkmarx team ID"
   }, {
     "pattern" : ".*",
-    "replacement" : "3be4e3d2-2b55-2336-b65a-949b9ebdf6b9",
+    "replacement" : "2",
     "comment" : "Default checkmarx team id for all other projects"
   } ]
 }
