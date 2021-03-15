@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.schedule.job;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface SecHubJobRepositoryCustom {
 
@@ -10,4 +11,10 @@ public interface SecHubJobRepositoryCustom {
 	 *         necessary
 	 */
 	Optional<ScheduleSecHubJob> findNextJobToExecute();
+	
+	Optional<ScheduleSecHubJob> getJob(UUID id);
+	
+	Optional<UUID> nextJobIdToExecuteFirstInFirstOut();
+	
+	Optional<UUID> nextJobIdToExecuteForProjectNotYetExecuted();
 }

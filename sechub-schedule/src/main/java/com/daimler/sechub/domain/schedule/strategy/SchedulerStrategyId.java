@@ -1,0 +1,28 @@
+package com.daimler.sechub.domain.schedule.strategy;
+
+public enum SchedulerStrategyId {
+    FirstComeFirstServe("first-come-first-serve"),
+    OnlyOneScanPerProjectAtATime("only-one-scan-per-project-at-a-time");
+
+    private String strategy;
+
+    SchedulerStrategyId(String strategyString) {
+
+        if (strategyString == null || strategyString.isEmpty()) {
+            throw new IllegalArgumentException("strategyString may not be null!");
+        }
+        this.strategy = strategyString;
+
+    }
+
+    public static SchedulerStrategyId getId(String strategyString) {
+        for (SchedulerStrategyId value : values()) {
+            if (value.strategy.equals(strategyString)) {
+                return value;
+            }
+        }
+        // if wrongly set, FirstComeFirstServe is the default
+        return null;
+//                SchedulerStrategyId.FirstComeFirstServe;
+    }
+}
