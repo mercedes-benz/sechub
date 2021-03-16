@@ -1,11 +1,28 @@
 package com.daimler.sechub.adapter;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public enum SecHubTimeUnit {
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonAlias({"millisecond", "milliseconds"})
     MILLISECOND(1),
+    
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonAlias({"second", "seconds"})
     SECOND(1000),
-    MINUTE(1000*60),
-    HOUR(1000*60*60),
-    DAY(1000*60*60*24);
+    
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonAlias({"minute", "minutes"})
+    MINUTE(1000 * 60),
+
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonAlias({"hour", "hours"})
+    HOUR(1000 * 60 * 60),
+
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    @JsonAlias({"day", "days"})
+    DAY(1000 * 60 * 60 * 24);
     
     private int multiplicatorMilliseconds;
 
@@ -15,47 +32,5 @@ public enum SecHubTimeUnit {
     
     public long getMultiplicatorMilliseconds() {
         return multiplicatorMilliseconds;
-    }
-    
-    public static SecHubTimeUnit valueOfUnit(String timeUnit) {
-        SecHubTimeUnit unit = null;
-        
-        if (timeUnit != null) {
-            String timeUnitLower = timeUnit.toLowerCase();
-
-            switch (timeUnitLower) {
-                case "millisecond":
-                case "milliseconds":
-                    unit = MILLISECOND;
-                    break;
-                case "second":
-                case "seconds":
-                    unit = SECOND;
-                    break;
-                case "minute":
-                case "minutes":
-                    unit = MINUTE;
-                    break;
-                case "hour":
-                case "hours":
-                    unit = HOUR;
-                    break;
-                case "day":
-                case "days":
-                    unit = DAY;
-                    break;
-                default:
-                    break;
-            }
-            
-            if (unit == null) {
-                String message = String.format("A time unit of \"%s\" is not an accepted time unit.", timeUnit);
-                throw new IllegalArgumentException(message);
-            }
-        } else {
-            throw new NullPointerException("The time unit cannot be null.");
-        }
-            
-        return unit;
     }
 }

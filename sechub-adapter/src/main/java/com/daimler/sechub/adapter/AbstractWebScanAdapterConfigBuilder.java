@@ -6,8 +6,15 @@ import java.net.URL;
 public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig> extends AbstractAdapterConfigBuilder<B,C> {
 
 	private LoginBuilder currentLoginBuilder;
+	private SecHubTimeUnitData maxScanDuration;
 
 
+	@SuppressWarnings("unchecked")
+    public B setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
+        this.maxScanDuration = maxScanDuration;
+        return (B) this;
+    }
+	
 	public class LoginBuilder{
 
 		private AbstractLoginConfig createdLoginConfig;
@@ -82,13 +89,13 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
                     return this;
                 }
                 
-                public FormScriptLoginStepBuilder unit(String unitAsString) {
-                    SecHubTimeUnit unit = null;
-                    
-                    if (unitAsString != null) {
-                        unit = SecHubTimeUnit.valueOfUnit(unitAsString);
-                    }
-                    
+                public FormScriptLoginStepBuilder unit(SecHubTimeUnit unit) {
+//                    SecHubTimeUnit unit = null;
+//                    
+//                    if (unitAsString != null) {
+//                        unit = SecHubTimeUnit.valueOfUnit(unitAsString);
+//                    }
+//                    
                     step.unit = unit;
                     return this;
                 }
@@ -166,6 +173,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 	@Override
 	void packageInternalCustomBuild(C config) {
+	    config.maxScanDuration=maxScanDuration;
+	    
 		if (currentLoginBuilder==null) {
 			return;
 		}

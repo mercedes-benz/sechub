@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 public class SecHubTimeUnitTest {   
     @Test
     public void get_multiplicator_milliseconds__get_millisecond() {
@@ -35,127 +40,66 @@ public class SecHubTimeUnitTest {
     }
     
     @Test
-    public void value_of_unit__millisecond() {
+    public void from_json_millisecond() throws JsonMappingException, JsonProcessingException {
+        /* prepare */
+        String json = "\"millisecond\"";
+        ObjectMapper objectMapper = new ObjectMapper();
+        
         /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("millisecond");
+        SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
         
         /* test */
         assertEquals(SecHubTimeUnit.MILLISECOND, unit);
     }
     
     @Test
-    public void value_of_unit__milliseconds() {
+    public void from_json_milliseconds() throws JsonMappingException, JsonProcessingException {
+        /* prepare */
+        String json = "\"milliseconds\"";
+        ObjectMapper objectMapper = new ObjectMapper();
+        
         /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("milliseconds");
+        SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
         
         /* test */
         assertEquals(SecHubTimeUnit.MILLISECOND, unit);
     }
     
     @Test
-    public void value_of_unit__millisecond_mixed_case() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("MilliSecond");
+    public void from_json_hour() throws JsonMappingException, JsonProcessingException {
+        /* prepare */
+        String json = "\"HOUR\"";
+        ObjectMapper objectMapper = new ObjectMapper();
         
-        /* test */
-        assertEquals(SecHubTimeUnit.MILLISECOND, unit);
-    }
-    
-    @Test
-    public void value_of_unit__second() {
         /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("second");
-        
-        /* test */
-        assertEquals(SecHubTimeUnit.SECOND, unit);
-    }
-    
-    @Test
-    public void value_of_unit__seconds() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("seconds");
-        
-        /* test */
-        assertEquals(SecHubTimeUnit.SECOND, unit);
-    }
-    
-    @Test
-    public void value_of_unit__minute() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("minute");
-        
-        /* test */
-        assertEquals(SecHubTimeUnit.MINUTE, unit);
-    }
-    
-    @Test
-    public void value_of_unit__minutes() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("minutes");
-        
-        /* test */
-        assertEquals(SecHubTimeUnit.MINUTE, unit);
-    }
-    
-    @Test
-    public void value_of_unit__hour() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("hour");
+        SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
         
         /* test */
         assertEquals(SecHubTimeUnit.HOUR, unit);
     }
     
     @Test
-    public void value_of_unit__hours() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("hours");
+    public void from_json_days() throws JsonMappingException, JsonProcessingException {
+        /* prepare */
+        String json = "\"days\"";
+        ObjectMapper objectMapper = new ObjectMapper();
         
-        /* test */
-        assertEquals(SecHubTimeUnit.HOUR, unit);
-    }
-    
-    @Test
-    public void value_of_unit__day() {
         /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("day");
+        SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
         
         /* test */
         assertEquals(SecHubTimeUnit.DAY, unit);
     }
     
     @Test
-    public void value_of_unit__days() {
-        /* execute */
-        SecHubTimeUnit unit = SecHubTimeUnit.valueOfUnit("days");
-        
-        /* test */
-        assertEquals(SecHubTimeUnit.DAY, unit);
-    }
-    
-    @Test
-    public void value_of_unit__not_a_unit() {
+    public void from_json_months() throws JsonMappingException, JsonProcessingException {
         /* prepare */
-        String expectedMessage = "A time unit of \"Orange\" is not an accepted time unit.";
+        String json = "\"months\"";
+        ObjectMapper objectMapper = new ObjectMapper();
         
         /* execute + test */
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            SecHubTimeUnit.valueOfUnit("Orange");
+        assertThrows(InvalidFormatException.class, () -> {
+            objectMapper.readValue(json, SecHubTimeUnit.class); 
         });
-        
-        assertEquals(expectedMessage, exception.getMessage());
-    }
-    
-    @Test
-    public void value_of_unit__null() {
-        /* prepare */
-        String expectedMessage = "The time unit cannot be null.";
-        
-        /* execute + test */
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            SecHubTimeUnit.valueOfUnit(null);
-        });
-        
-        assertEquals(expectedMessage, exception.getMessage());
     }
 }

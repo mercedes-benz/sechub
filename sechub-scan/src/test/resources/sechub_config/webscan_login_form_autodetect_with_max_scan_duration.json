@@ -5,8 +5,8 @@
             "https://productfailure.demo.example.org"
         ],
         "maxScanDuration": {
-			"time" : 1,
-			"unit" : "hour"
+			"duration" : 1,
+			"unit" : "hours"
 		},
         "login": {
             "url": "https://productfailure.demo.example.org/login",

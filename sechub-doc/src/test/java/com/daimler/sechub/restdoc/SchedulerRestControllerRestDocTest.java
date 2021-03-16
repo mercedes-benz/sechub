@@ -52,6 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.docgen.util.RestDocTestFileSupport;
@@ -380,7 +381,7 @@ public class SchedulerRestControllerRestDocTest {
 	    						    createStep().
 	    						        action("wait").
 	    						        value("2345").
-	    						        unit("milliseconds").
+	    						        unit(SecHubTimeUnit.MILLISECOND).
 	    						        add().
 	    						    createStep().
 	    						        action("password").

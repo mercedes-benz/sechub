@@ -66,7 +66,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 		private String licenseID;
 		private String agentName;
 		private String agentGroupName;
-		private SecHubTimeUnitData maxScanDuration;
 
         private NetsparkerConfigBuilder() {
 		}
@@ -86,11 +85,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 			return this;
 		}
 		
-
-        public NetsparkerConfigBuilder setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
-            this.maxScanDuration = maxScanDuration;
-            return this;
-        }
 
 		@Override
 		protected void customBuild(NetsparkerConfig adapterConfig) {
@@ -126,7 +120,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 			config.licenseID = licenseID;
 			config.agentName = agentName;
 			config.agentGroupName = agentGroupName;
-			config.maxScanDuration = maxScanDuration;
 		}
 
 		@Override

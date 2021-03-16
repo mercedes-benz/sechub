@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.TestWebConfigurationBuilder;
 
 public class TestWebLoginConfigurationBuilder {
@@ -98,7 +99,7 @@ public class TestWebLoginConfigurationBuilder {
              * @param unit
              * @return
              */
-		    public ScriptStepBuilder unit(String unit) {
+		    public ScriptStepBuilder unit(SecHubTimeUnit unit) {
 		        entry.unit = Optional.ofNullable(unit);
 		        return this;
 		    }

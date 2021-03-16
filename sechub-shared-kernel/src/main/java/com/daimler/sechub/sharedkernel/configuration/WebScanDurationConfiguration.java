@@ -1,19 +1,19 @@
 package com.daimler.sechub.sharedkernel.configuration;
 
-import java.util.Optional;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 
 public class WebScanDurationConfiguration {
     public static final String PROPERTY_TIME = "duration";
     public static final String PROPERTY_UNIT = "unit";
 
-    private Optional<Long> duration = Optional.empty();
-    private Optional<String> unit = Optional.empty();
+    private int duration;
+    private SecHubTimeUnit unit;
     
-    public Optional<Long> getDuration() {
+    public int getDuration() {
         return duration;
     }
     
-    public Optional<String> getUnit() {
+    public SecHubTimeUnit getUnit() {
         return unit;
     }
 }

@@ -13,7 +13,9 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.JSONConverterException;
 import com.daimler.sechub.sharedkernel.SharedKernelTestFileSupport;
 import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
@@ -113,8 +115,8 @@ public class SecHubConfigurationTest {
         
         Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
         assertTrue("max san duration config must be present", maxScanDuration.isPresent());
-        assertEquals(Long.valueOf(1), maxScanDuration.get().getDuration().get());
-        assertEquals("hour", maxScanDuration.get().getUnit().get());
+        assertEquals(1, maxScanDuration.get().getDuration());
+        assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.get().getUnit());
         
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
         assertTrue("login config must be present", loginOption.isPresent());
@@ -290,7 +292,7 @@ public class SecHubConfigurationTest {
         
         assertEquals("wait", entry2.getAction());
         assertEquals("1458", entry2.getValue().get());
-        assertEquals("millisecond", entry2.getUnit().get());
+        assertEquals(SecHubTimeUnit.MILLISECOND, entry2.getUnit().get());
         
         assertEquals("input", entry3.getAction());
         assertEquals("#example_login_pwd", entry3.getSelector().get());
@@ -316,8 +318,8 @@ public class SecHubConfigurationTest {
         
         Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
         assertTrue("max san duration config must be present", maxScanDuration.isPresent());
-        assertEquals(Long.valueOf(2), maxScanDuration.get().getDuration().get());
-        assertEquals("hours", maxScanDuration.get().getUnit().get());
+        assertEquals(2, maxScanDuration.get().getDuration());
+        assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.get().getUnit());
         
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
         assertTrue("login config must be present", loginOption.isPresent());
@@ -364,7 +366,7 @@ public class SecHubConfigurationTest {
         
         assertEquals("wait", entry3.getAction());
         assertEquals("3200", entry3.getValue().get());
-        assertEquals("milliseconds", entry3.getUnit().get());
+        assertEquals(SecHubTimeUnit.MILLISECOND, entry3.getUnit().get());
         
         assertEquals("input", entry4.getAction());
         assertEquals("#email_field", entry4.getSelector().get());
@@ -517,6 +519,17 @@ public class SecHubConfigurationTest {
 
         /* test */
         assertTrue(configurationToTest.getInfraScan().isPresent());
+    }
+    
+    @Test
+    public void webscan_max_scan_duration_wrong_unit() {
+        /* prepare */
+        String json = SharedKernelTestFileSupport.getTestfileSupport().loadTestFile("webscan/webscan_max_scan_duration_wrong_unit.json");
+
+        /* execute + test */
+        assertThrows(JSONConverterException.class, () -> {
+            SECHUB_CONFIG.fromJSON(json);
+        });
     }
 
 }

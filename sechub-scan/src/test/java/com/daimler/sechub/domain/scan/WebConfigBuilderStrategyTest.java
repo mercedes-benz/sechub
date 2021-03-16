@@ -15,17 +15,18 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.LoginConfig;
 import com.daimler.sechub.adapter.LoginScriptStep;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
-public class WebLoginConfigBuilderStrategyTest {
+public class WebConfigBuilderStrategyTest {
 
 	private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
 	@Test
 	public void basic_login_data_transfered() throws Exception{
 		/* prepare */
-		WebLoginConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic.json");
+		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_basic.json");
 		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
 		/* execute */
@@ -45,7 +46,7 @@ public class WebLoginConfigBuilderStrategyTest {
 	@Test
 	public void form_autodetect_login_data_transfered() {
 		/* prepare */
-		WebLoginConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect.json");
+		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect.json");
 		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
 		/* execute */
@@ -58,11 +59,47 @@ public class WebLoginConfigBuilderStrategyTest {
 		assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
 		assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
 	}
+	
+    @Test
+    public void form_autodetect_with_max_scan_duration() {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect_with_max_scan_duration.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+
+        /* execute */
+        strategyToTest.configure(configBuilder);
+
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        LoginConfig loginConfig = result.getLoginConfig();
+        SecHubTimeUnitData maxScanDuration = result.getMaxScanDuration();
+        assertNotNull(maxScanDuration);
+        assertTrue(loginConfig.isFormAutoDetect());
+        assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
+        assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
+    }
+	
+    @Test
+    public void webscan_max_scan_duration() {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_max_scan_duration.json");
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+        SecHubTimeUnitData expectedMaxScanDuration = SecHubTimeUnitData.of(1, SecHubTimeUnit.HOUR);
+
+        /* execute */
+        strategyToTest.configure(configBuilder);
+
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+        SecHubTimeUnitData maxScanDuration = result.getMaxScanDuration();
+        assertNotNull(maxScanDuration);
+        assertEquals(expectedMaxScanDuration, maxScanDuration);
+    }
 
 	@Test
 	public void form_script_login_data_transfered() {
 		/* prepare */
-		WebLoginConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_script.json");
+		WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_script.json");
 		TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
 		/* execute */
@@ -102,8 +139,8 @@ public class WebLoginConfigBuilderStrategyTest {
         assertEquals(null, step.getValue());
 	}
 
-	private WebLoginConfigBuilderStrategy createStrategy(String path) {
-		return new WebLoginConfigBuilderStrategy(createContext(path));
+	private WebConfigBuilderStrategy createStrategy(String path) {
+		return new WebConfigBuilderStrategy(createContext(path));
 	}
 
 	private SecHubExecutionContext createContext(String pathToTestConfig) {

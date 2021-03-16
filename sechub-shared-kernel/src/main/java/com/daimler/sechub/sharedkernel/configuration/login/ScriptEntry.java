@@ -3,6 +3,8 @@ package com.daimler.sechub.sharedkernel.configuration.login;
 
 import java.util.Optional;
 
+import com.daimler.sechub.adapter.SecHubTimeUnit;
+
 public class ScriptEntry {
 
 	String action;
@@ -13,7 +15,7 @@ public class ScriptEntry {
 	
 	Optional<String> description = Optional.empty();
 	
-	Optional<String> unit = Optional.empty();
+	Optional<SecHubTimeUnit> unit = Optional.empty();
 
     /**
 	 * @return type of action as string (e.g. "input", "click")
@@ -33,7 +35,7 @@ public class ScriptEntry {
         return description;
     }
     
-    public Optional<String> getUnit() {
+    public Optional<SecHubTimeUnit> getUnit() {
         return unit;
     }
 }
