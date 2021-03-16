@@ -90,12 +90,6 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
                 }
                 
                 public FormScriptLoginStepBuilder unit(SecHubTimeUnit unit) {
-//                    SecHubTimeUnit unit = null;
-//                    
-//                    if (unitAsString != null) {
-//                        unit = SecHubTimeUnit.valueOfUnit(unitAsString);
-//                    }
-//                    
                     step.unit = unit;
                     return this;
                 }
