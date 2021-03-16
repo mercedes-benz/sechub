@@ -167,16 +167,16 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
 	@Override
 	void packageInternalCustomBuild(C config) {
-	    config.maxScanDuration=maxScanDuration;
-	    
-		if (currentLoginBuilder==null) {
-			return;
-		}
-		if (currentLoginBuilder.createdLoginConfig==null) {
-			return;
-		}
-		config.loginConfig=currentLoginBuilder.createdLoginConfig;
-		config.loginConfig.loginUrl=currentLoginBuilder.loginUrl;
+        config.maxScanDuration = maxScanDuration;
+
+        if (currentLoginBuilder == null) {
+            return;
+        }
+        if (currentLoginBuilder.createdLoginConfig == null) {
+            return;
+        }
+        config.loginConfig = currentLoginBuilder.createdLoginConfig;
+        config.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
 	}
 
 }

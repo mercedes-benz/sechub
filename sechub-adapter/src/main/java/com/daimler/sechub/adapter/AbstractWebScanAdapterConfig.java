@@ -14,4 +14,9 @@ public class AbstractWebScanAdapterConfig extends AbstractAdapterConfig implemen
         return loginConfig;
     }
 
+    @Override
+    public boolean hasMaxScanDuration() {
+        return maxScanDuration != null;
+    }
+
 }

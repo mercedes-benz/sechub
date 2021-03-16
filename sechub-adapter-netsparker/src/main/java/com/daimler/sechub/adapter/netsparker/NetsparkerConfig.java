@@ -6,7 +6,6 @@ import java.net.URL;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
-import com.daimler.sechub.adapter.SecHubTimeUnitData;
 
 public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements NetsparkerAdapterConfig{
 
@@ -16,7 +15,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 	private String agentGroupName;
 
 	private String websiteName;
-	private SecHubTimeUnitData maxScanDuration;
 
     @Override
 	public String getLicenseID() {
@@ -42,15 +40,6 @@ public class NetsparkerConfig extends AbstractWebScanAdapterConfig implements Ne
 	public boolean hasAgentGroup() {
 		return agentGroupName != null && !agentGroupName.isEmpty();
 	}
-	
-    public SecHubTimeUnitData getMaxScanDuration() {
-        return maxScanDuration;
-    }
-    
-    @Override
-    public boolean hasMaxScanDuration() {
-        return maxScanDuration != null;
-    }
 
 	private NetsparkerConfig() {
 	}
