@@ -71,13 +71,14 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     }
 
     @Override
-    public Optional<UUID> nextJobIdToExecuteFirstInFirstOut() {
-        Query query = em.createQuery(JPQL_STRING_SELECT_BY_EXECUTION_STATE);
-        query.setParameter(PROPERTY_EXECUTION_STATE, READY_TO_START);
-        query.setMaxResults(1);
-        query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
-        
-        return getUUIDFromJob(typedQuerySupport.getSingleResultAsOptional(query));
+    public Optional<UUID> nextJobIdToExecuteFirstInFirstOut() {        
+        try {
+            return getUUIDFromJob(findNextJobToExecute());
+        }
+        catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -91,7 +92,7 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
     }
     
     private Optional<UUID> getUUIDFromJob(Optional<ScheduleSecHubJob> job) {
-        if (job.isPresent()) {
+        if (job.isPresent() && job.get().getUUID() != null) {
             return Optional.of(job.get().getUUID());
         }
         

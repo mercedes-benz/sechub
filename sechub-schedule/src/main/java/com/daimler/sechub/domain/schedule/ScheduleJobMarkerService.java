@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
-import com.daimler.sechub.domain.schedule.strategy.SchedulerStrategy;
 import com.daimler.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
 
 /**

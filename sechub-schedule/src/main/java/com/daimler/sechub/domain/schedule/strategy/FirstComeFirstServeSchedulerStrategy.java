@@ -4,9 +4,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 
+@Component
 public class FirstComeFirstServeSchedulerStrategy implements SchedulerStrategy {
     
     @Autowired
