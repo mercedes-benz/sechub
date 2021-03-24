@@ -328,6 +328,19 @@ public class AsUser {
     public String getStringFromURL(String link) {
         return getRestHelper().getStringFromURL(link);
     }
+    
+    /**
+     * Assigns owner to a project
+     *
+     * @param targetUser
+     * @param project
+     * @return this
+     */
+    public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
+        LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
+        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        return this;
+    }
 
     /**
      * Assigns user to a project

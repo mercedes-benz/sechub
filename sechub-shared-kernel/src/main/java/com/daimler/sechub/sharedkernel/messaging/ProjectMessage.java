@@ -26,6 +26,9 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 	private String projectId;
 
 	private String projectOwnerEmailAddress;
+	
+	// applicable if owner was changed
+	private String previousOwnerEmailAddress;
 
 	private Set<String> userEmailAdresses = new LinkedHashSet<>(2);
 
@@ -55,13 +58,21 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 		return userEmailAdresses;
 	}
 
-	public void setProjectOwnerEmailAddress(String projectOwner) {
-		this.projectOwnerEmailAddress = projectOwner;
+	public void setProjectOwnerEmailAddress(String emailAddress) {
+		this.projectOwnerEmailAddress = emailAddress;
 	}
 
 	public String getProjectOwnerEmailAddress() {
 		return projectOwnerEmailAddress;
 	}
+	
+	public void setPreviousProjectOwnerEmailAddress(String emailAddress) {
+        this.previousOwnerEmailAddress = emailAddress;
+    }
+
+    public String getPreviousProjectOwnerEmailAddress() {
+        return previousOwnerEmailAddress;
+    }
 
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;

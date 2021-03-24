@@ -199,6 +199,35 @@ public class AssertUser extends AbstractAssert {
 
         return this;
     }
+    
+    /**
+     * Asserts that the user can assign targetUser as owner to given project. Will fail if
+     * the project or target user does not exist before, or assignment is not
+     * possible.<br>
+     * <br>
+     * After this is executed the user is assigned as new owner to project or test fails
+     *
+     * @param targetUser
+     * @param project
+     * @return
+     */
+    public AssertUser canAssignOwnerToProject(TestUser targetUser, TestProject project) {
+        /* @formatter:off */
+        assertProject(project).
+            doesExist();
+        assertUser(targetUser).
+            doesExist().
+            isNotOwnerOf(project);
+            
+        as(this.user).
+            assignOwnerToProject(targetUser, project);
+
+        assertUser(targetUser).
+            isOwnerOf(project);
+        /* @formatter:on */
+        return this;
+    }
+
 
     /**
      * Asserts that the user can assign targetUser to given project. Will fail if
@@ -468,7 +497,6 @@ public class AssertUser extends AbstractAssert {
 
     public AssertUser hasReceivedEmail(String subject) {
         AssertMail.assertMailExists(user.getEmail(), subject);
-        //return hasReceivedEmail(subject, false);
         return this;
 	}
 

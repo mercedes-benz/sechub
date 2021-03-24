@@ -493,6 +493,11 @@ public class DeveloperAdministration {
         getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
+    public String assignOwnerToProject(String userId, String projectId) {
+        getRestHelper().post(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(projectId, userId));
+        return "assigned " + userId + " as new owner to project " + projectId;
+    }
+    
     public String assignUserToProject(String userId, String projectId) {
         getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
