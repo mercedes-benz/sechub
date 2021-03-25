@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.strategy;
 
 public enum SchedulerStrategyId {
@@ -21,8 +22,6 @@ public enum SchedulerStrategyId {
                 return value;
             }
         }
-        // if wrongly set, FirstComeFirstServe is the default
         return null;
-//                SchedulerStrategyId.FirstComeFirstServe;
     }
 }

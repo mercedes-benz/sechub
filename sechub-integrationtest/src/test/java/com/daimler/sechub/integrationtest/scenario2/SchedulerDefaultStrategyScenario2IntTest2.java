@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
@@ -35,13 +36,8 @@ public class SchedulerDefaultStrategyScenario2IntTest2 {
             assignUserToProject(USER_1, PROJECT_1);
         
         /* execute */
-        UUID jobId1 = assertUser(USER_1).
-                canCreateWebScan(PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
-        UUID jobId2 = assertUser(USER_1).
-                canCreateWebScan(PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
-        
-        assertUser(USER_1).canApproveJob(PROJECT_1, jobId1);
-        assertUser(USER_1).canApproveJob(PROJECT_1, jobId2);
+        UUID jobId1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID jobId2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
         waitSeconds(1);
         

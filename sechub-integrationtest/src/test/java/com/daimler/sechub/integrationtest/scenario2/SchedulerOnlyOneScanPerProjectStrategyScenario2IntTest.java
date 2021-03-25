@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionResult;
 
 @TestPropertySource(properties = {"sechub.scheduler.strategy.id=only-one-scan-per-project-at-a-time"})
 public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
@@ -36,24 +39,31 @@ public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
             assignUserToProject(USER_1, PROJECT_1);
         
         /* execute */
-        UUID jobId1 = assertUser(USER_1).
-                canCreateWebScan(PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
-        UUID jobId2 = assertUser(USER_1).
-                canCreateWebScan(PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
+        UUID jobId1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
-        assertUser(USER_1).canApproveJob(PROJECT_1, jobId1);
-        assertUser(USER_1).canApproveJob(PROJECT_1, jobId2);
+//        waitForJobRunning(PROJECT_1, jobId1);
+        
+        UUID jobId2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
         waitSeconds(1);
         
         /* test */
+        
+        waitForJobDone(PROJECT_1, jobId1);
+        
         assertUser(SUPER_ADMIN).
-            onJobAdministration().
-            canFindRunningJob(jobId1);
+            onJobScheduling(PROJECT_1).
+            canFindJob(jobId1).havingExecutionResult(TestExecutionResult.OK);
         
         assertUser(SUPER_ADMIN).
             onJobAdministration().
             canNotFindRunningJob(jobId2);
+        
+        waitUntilNoLongerJobsRunning();
+        
+        assertUser(SUPER_ADMIN).
+            onJobScheduling(PROJECT_1).
+            canFindJob(jobId2).havingExecutionResult(TestExecutionResult.OK);
         
         /* @formatter:on */
     }
