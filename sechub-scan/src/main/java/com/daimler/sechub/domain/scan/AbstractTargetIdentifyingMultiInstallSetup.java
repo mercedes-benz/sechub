@@ -12,11 +12,11 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	@Override
 	protected void init(ScanInfo info) {
-		boolean canScanDaimlerIntranet = isNotEmpty(getBaseURLWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && isNotEmpty(getUsernameWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && isNotEmpty(getPasswordWhenDaimlerIntranetTarget());
+		boolean canScanIntranet = isNotEmpty(getBaseURLWhenIntranetTarget());
+		canScanIntranet=canScanIntranet && isNotEmpty(getUsernameWhenIntranetTarget());
+		canScanIntranet=canScanIntranet && isNotEmpty(getPasswordWhenIntranetTarget());
 		
-		info.canScanIntranet=canScanDaimlerIntranet;
+		info.canScanIntranet=canScanIntranet;
 		
 		boolean canScanInternet = isNotEmpty(getBaseURLWhenInternetTarget());
 		canScanInternet=canScanInternet && isNotEmpty(getUsernameWhenInternetTarget());
@@ -30,7 +30,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	@Override
 	public final String getBaseURL(TargetType type) {
 		if (isIntranet(type)) {
-			return getBaseURLWhenDaimlerIntranetTarget();
+			return getBaseURLWhenIntranetTarget();
 		}
 		if (isInternet(type)) {
 			return getBaseURLWhenInternetTarget();
@@ -41,7 +41,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	@Override
 	public final String getUserId(TargetType type) {
 		if (isIntranet(type)) {
-			return getUsernameWhenDaimlerIntranetTarget();
+			return getUsernameWhenIntranetTarget();
 		}
 		if (isInternet(type)) {
 			return getUsernameWhenInternetTarget();
@@ -52,7 +52,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	@Override
 	public final String getPassword(TargetType target) {
 		if (isIntranet(target)) {
-			return getPasswordWhenDaimlerIntranetTarget();
+			return getPasswordWhenIntranetTarget();
 		}
 		if (isInternet(target)) {
 			return getPasswordWhenInternetTarget();
@@ -62,15 +62,15 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	protected abstract String getBaseURLWhenInternetTarget();
 
-	protected abstract String getBaseURLWhenDaimlerIntranetTarget();
+	protected abstract String getBaseURLWhenIntranetTarget();
 	
 	protected abstract String getUsernameWhenInternetTarget();
 
-	protected abstract String getUsernameWhenDaimlerIntranetTarget();
+	protected abstract String getUsernameWhenIntranetTarget();
 
 	protected abstract String getPasswordWhenInternetTarget();
 
-	protected abstract String getPasswordWhenDaimlerIntranetTarget();
+	protected abstract String getPasswordWhenIntranetTarget();
 	
 	
 

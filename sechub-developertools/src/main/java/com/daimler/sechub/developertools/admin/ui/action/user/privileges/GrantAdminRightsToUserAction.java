@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.developertools.admin.ui.action.user.priviledges;
+package com.daimler.sechub.developertools.admin.ui.action.user.privileges;
 
 import java.awt.event.ActionEvent;
 import java.util.Optional;

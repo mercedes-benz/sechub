@@ -21,6 +21,13 @@ public class ExecutionConstants {
      * profiles. This profile contains executors of PDS integration test in version V1.
      * 
      */
-    public static final String DEFAULT_PROFILE_2_ID = IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN.id;  
+    public static final String DEFAULT_PROFILE_2_ID = IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN.id;
+    
+    /**
+     * Id for default profile 2 - please NEVER CHANGE THIS PROFILE! Create your own execution
+     * profiles. This profile contains executors of PDS integration test in version V1, using SARIF
+     * 
+     */
+    public static final String DEFAULT_PROFILE_3_ID = IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF.id;  
     
 }

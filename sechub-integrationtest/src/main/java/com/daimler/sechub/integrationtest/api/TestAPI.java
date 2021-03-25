@@ -34,6 +34,7 @@ import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestURLBuilder;
+import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -88,10 +89,19 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
+    @Deprecated // use assertReport instead (newer implementation , has more details and uses common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
-        return AssertSecHubReport.assertSecHubReport(json);
+        return  AssertSecHubReport.assertSecHubReport(json);
     }
-
+    
+    public static AssertReport assertReport(String json) {
+        return AssertReport.assertReport(json);
+    }
+    
+    public static AssertFullScanData assertFullScanDataZipFile(File file) {
+        return AssertFullScanData.assertFullScanDataZipFile(file);
+    }
+    
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -140,17 +150,18 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being done (means status execution result is OK) - after 5 seconds time out is reached
+     * Waits for sechub job being done (means status execution result is OK) - after
+     * 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID, 5);
+        waitForJobDone(project, jobUUID,5);
     }
-
     /**
-     * Waits for sechub job being done (means status execution result is OK)- after 5 seconds time out is reached
+     * Waits for sechub job being done (means status execution result is OK)- after
+     * 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
@@ -188,9 +199,10 @@ public class TestAPI {
             }
         });
     }
-    
+
     /**
-     * Waits for sechub job being cancele requested - after 5 seconds time out is reached
+     * Waits for sechub job being cancele requested - after 5 seconds time out is
+     * reached
      * 
      * @param project
      * @param jobUUID
@@ -208,10 +220,10 @@ public class TestAPI {
             }
         });
     }
-    
 
     /**
-     * Waits for sechub job being cancele requested - after 5 seconds time out is reached
+     * Waits for sechub job being cancele requested - after 5 seconds time out is
+     * reached
      * 
      * @param project
      * @param jobUUID
@@ -809,5 +821,25 @@ public class TestAPI {
             }
         }
     }
+
+    public static boolean canReloadExecutionProfileData(DoNotChangeTestExecutionProfile profile) {
+        if (!TestAPI.isExecutionProfileExisting(profile.id)) {
+            return false;
+        }
+        reConnectStaticDataWithDatabaseContent(profile);
+        return true;
+    }
+
+    private static void reConnectStaticDataWithDatabaseContent(TestExecutionProfile profile) {
+        if (profile.configurations.isEmpty()) {
+            LOG.info("reconnecting static data with existing database content of profiles");
+            TestExecutionProfile profile2 = as(SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
+
+            profile.configurations.addAll(profile2.configurations);
+            profile.enabled = profile2.enabled;
+        }
+        as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
+    }
+
 
 }

@@ -20,7 +20,7 @@ public class AssertExecutionResult {
     }
 
     public UUID getSechubJobUUD() {
-        return getResult().getSechubJobUUD();
+        return getResult().getSechubJobUUID();
     }
 
     private AssertExecutionResult(ExecutionResult result) {

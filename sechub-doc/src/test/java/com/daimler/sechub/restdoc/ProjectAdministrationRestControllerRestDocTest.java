@@ -35,6 +35,7 @@ import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.domain.administration.project.CreateProjectInputValidator;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
+import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
@@ -55,6 +56,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministrat
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 import com.daimler.sechub.test.ExampleConstants;
@@ -62,52 +64,54 @@ import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class,
-		ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProjectAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
+    @MockBean
+    ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 
-	@MockBean
-	ProjectCreationService creationService;
+    @MockBean
+    ProjectCreationService creationService;
 
-	@MockBean
-	ProjectAssignUserService assignUserService;
+    @MockBean
+    ProjectAssignOwnerService assignOwnerService;
 
-	@MockBean
-	ProjectDeleteService projectDeleteService;
+    @MockBean
+    ProjectAssignUserService assignUserService;
 
-	@MockBean
-	ProjectUnassignUserService unassignUserService;
+    @MockBean
+    ProjectDeleteService projectDeleteService;
 
-	@MockBean
-	ProjectDetailInformationService detailService;
+    @MockBean
+    ProjectUnassignUserService unassignUserService;
 
-	@MockBean
-	ProjectRepository mockedProjectRepository;
+    @MockBean
+    ProjectDetailInformationService detailService;
 
-	@MockBean
-	CreateProjectInputValidator createProjectInputvalidator;
+    @MockBean
+    ProjectRepository mockedProjectRepository;
 
-	@Before
-	public void before() {
-		when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
-	}
+    @MockBean
+    CreateProjectInputValidator createProjectInputvalidator;
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorCreatesProject.class)
-	public void restdoc_create_project() throws Exception {
+    @Before
+    public void before() {
+        when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
+    }
 
-		/* execute + test @formatter:off */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorCreatesProject.class)
+    public void restdoc_create_project() throws Exception {
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminCreatesProjectUrl()).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -126,12 +130,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				);
 
 		/* @formatter:on */
-	}
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorListsAllProjects.class)
-	public void restdoc_list_all_projects() throws Exception {
+    }
 
-		/* execute + test @formatter:off */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorListsAllProjects.class)
+    public void restdoc_list_all_projects() throws Exception {
+
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(https(PORT_USED).buildAdminListsProjectsUrl()).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
@@ -141,14 +146,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
         		);
 
 		/* @formatter:on */
-	}
+    }
 
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorDeleteProject.class)
+    public void restdoc_delete_project() throws Exception {
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorDeleteProject.class)
-	public void restdoc_delete_project() throws Exception {
-
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -161,18 +165,38 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorAssignsUserToProject.class)
-	public void restdoc_assign_user2project() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectOwner.class)
+    public void restdoc_assign_owner2project() throws Exception {
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectOwner.class),
+                pathParameters(
+                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                        parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
+                        )
+                ));
+
+        /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorAssignsUserToProject.class)
+    public void restdoc_assign_user2project() throws Exception {
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
-		andExpect(status().isCreated()).
+		andExpect(status().isOk()).
 		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAssignsUserToProject.class),
 				pathParameters(
 						parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
@@ -181,13 +205,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorUnassignsUserFromProject.class)
-	public void restdoc_unassign_userFromProject() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorUnassignsUserFromProject.class)
+    public void restdoc_unassign_userFromProject() throws Exception {
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -201,42 +225,42 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorShowsProjectDetails.class)
-	public void restdoc_show_project_details() throws Exception {
-		/*  prepare */
-		Project project = mock(Project.class);
-		when(project.getId()).thenReturn("projectId1");
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorShowsProjectDetails.class)
+    public void restdoc_show_project_details() throws Exception {
+        /* prepare */
+        Project project = mock(Project.class);
+        when(project.getId()).thenReturn("projectId1");
 
-		Set<User> users = new LinkedHashSet<>();
-		User user1 = mock(User.class);
-		when(user1.getName()).thenReturn("name1");
+        Set<User> users = new LinkedHashSet<>();
+        User user1 = mock(User.class);
+        when(user1.getName()).thenReturn("name1");
 
-		User user2 = mock(User.class);
-		when(user2.getName()).thenReturn("name2");
+        User user2 = mock(User.class);
+        when(user2.getName()).thenReturn("name2");
 
-		users.add(user1);
-		users.add(user2);
+        users.add(user1);
+        users.add(user2);
 
-		when(project.getUsers()).thenReturn(users);
-		when(project.getOwner()).thenReturn(user1);
-		Set<URI> whiteList = new LinkedHashSet<>();
-		whiteList.add(new URI("http://www.sechub.example.org"));
-		when(project.getWhiteList()).thenReturn(whiteList);
-		
-		Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
-		ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
-		metaData.add(entry);
-		
-		when(project.getMetaData()).thenReturn(metaData);
-		
-		ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
+        when(project.getUsers()).thenReturn(users);
+        when(project.getOwner()).thenReturn(user1);
+        Set<URI> whiteList = new LinkedHashSet<>();
+        whiteList.add(new URI("http://www.sechub.example.org"));
+        when(project.getWhiteList()).thenReturn(whiteList);
 
-		when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
+        Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
+        ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
+        metaData.add(entry);
 
-		/* execute + test @formatter:off */
+        when(project.getMetaData()).thenReturn(metaData);
+
+        ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
+
+        when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement()),"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -260,12 +284,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				);
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

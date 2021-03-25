@@ -127,7 +127,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                 inspection.notice(MetaDataInspection.TRACE_ID, pdsCodeScanConfig.getTraceID());
 
                 /* execute PDS by adapter and update product result */
-                String xml = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallBack());
+                String xml = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
                 productResult.setResult(xml);

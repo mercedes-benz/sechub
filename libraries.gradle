@@ -75,6 +75,7 @@ ext {
          apache_commons_validator:              "commons-validator:commons-validator:1.6",
          apache_commons_io:                     "commons-io:commons-io:2.6",
          apache_commons_cli:					"commons-cli:commons-cli:1.4",
+         apache_commons_lang3:					"org.apache.commons:commons-lang3:3.11",
 
          openjson:                              "com.github.openjson:openjson:1.0.10",
 
@@ -102,7 +103,10 @@ ext {
          google_re2j:                           "com.google.re2j:re2j:1.4",
          
          /* epages - see https://github.com/ePages-de/restdocs-api-spec */
-         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}"
+         epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}",
+         
+         /* contrastsecurity java-sarif - https://github.com/Contrast-Security-OSS/java-sarif */
+         contrastsecurity_sarif:				"com.contrastsecurity:java-sarif:1.0"
          
    ]
 

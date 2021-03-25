@@ -7,6 +7,7 @@ import static java.util.Objects.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,9 @@ public abstract class AbstractProductExecutionService implements ProductExection
     protected List<ProductResult> execute(ProductExecutor executor, ProductExecutorContext executorContext, SecHubExecutionContext context,
             UUIDTraceLogID traceLogID) throws SecHubExecutionException {
 
-        LOG.info("Start executor {} and wait for result. {}", executor.getIdentifier(), traceLogID);
+        ProductExecutorConfig executorConfig = executorContext.getExecutorConfig();
+        UUID executorConfigUUID = executorConfig == null ? null :executorConfig.getUUID();
+        LOG.info("Start executor:{} config:{} and wait for result. {}", executor.getIdentifier(),executorConfigUUID ,traceLogID);
 
         List<ProductResult> productResults = executor.execute(context, executorContext);
         if (context.isCanceledOrAbandonded()) {
@@ -121,29 +124,27 @@ public abstract class AbstractProductExecutionService implements ProductExection
         String projectId = configuration.getProjectId();
         requireNonNull(projectId, "Project id must be set");
 
-
         int countOfReports = 0;
         ProductExecutor serecoProductExecutor = null;
-        
+
         for (ProductExecutor productExecutor : executors) {
             if (context.isCanceledOrAbandonded()) {
                 return;
             }
             ProductIdentifier productIdentifier = productExecutor.getIdentifier();
             int executorVersion = productExecutor.getVersion();
-            
+
             switch (productIdentifier) {
 
             case SERECO:
-                serecoProductExecutor=productExecutor;
+                serecoProductExecutor = productExecutor;
                 /* fall through */
             default:
                 LOG.debug("search config for project={}, executor={}, version={}", projectId, productIdentifier, executorVersion);
                 List<ProductExecutorConfig> executorConfigurations = productExecutorConfigRepository.findExecutableConfigurationsForProject(projectId,
                         productIdentifier, executorVersion);
                 if (executorConfigurations.isEmpty()) {
-                    LOG.debug("no config found for project={} so skipping executor={}, version={}", projectId, productIdentifier,
-                            executorVersion);
+                    LOG.debug("no config found for project={} so skipping executor={}, version={}", projectId, productIdentifier, executorVersion);
                     continue;
                 }
                 for (ProductExecutorConfig executorConfiguration : executorConfigurations) {
@@ -155,12 +156,12 @@ public abstract class AbstractProductExecutionService implements ProductExection
 
             }
         }
-        
-        if (serecoProductExecutor!=null && countOfReports==0) {
+
+        if (serecoProductExecutor != null && countOfReports == 0) {
             LOG.debug("no dedicated configuration for report execution was executed before, so fallback to sereco default behaviour");
             runOnExecutorWithOneConfiguration(SERECO_FALLBACK, serecoProductExecutor, context, projectId, traceLogID);
         }
-        
+
     }
 
     private void runOnExecutorWithOneConfiguration(ProductExecutorConfig executorConfiguration, ProductExecutor productExecutor, SecHubExecutionContext context,
@@ -169,7 +170,16 @@ public abstract class AbstractProductExecutionService implements ProductExection
          * find former results - necessary for restart, contains necessary meta data for
          * restart
          */
-        List<ProductResult> formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), productExecutor.getIdentifier());
+        List<ProductResult> formerResults = null;
+        if (executorConfiguration == SERECO_FALLBACK) {
+            /*
+             * in this case we have no configuration available (just fallback when no
+             * reporting has been configured) and have to fetch simply all sereco results
+             */
+            formerResults = productResultRepository.findAllProductResults(context.getSechubJobUUID(), executorConfiguration.getProductIdentifier());
+        } else {
+            formerResults = productResultRepository.findProductResults(context.getSechubJobUUID(), executorConfiguration);
+        }
         ProductExecutorContext executorContext = productExecutorContextFactory.create(formerResults, context, productExecutor, executorConfiguration);
 
         List<ProductResult> productResults = null;
@@ -186,8 +196,14 @@ public abstract class AbstractProductExecutionService implements ProductExection
             getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
 
             productResults = new ArrayList<ProductResult>();
-            ProductResult fallbackResult = new ProductResult(context.getSechubJobUUID(), projectId, productExecutor.getIdentifier(), "");
-            productResults.add(fallbackResult);
+            ProductResult currentResult = executorContext.getCurrentProductResult();
+            if (currentResult==null) {
+                currentResult= new ProductResult(context.getSechubJobUUID(), projectId, executorConfiguration, "");
+            }else {
+                /* product result does already exists, e.g. when adapter has written meta data - so reuse it */
+                currentResult.setResult("");
+            }
+            productResults.add(currentResult);
         }
         if (context.isCanceledOrAbandonded()) {
             return;

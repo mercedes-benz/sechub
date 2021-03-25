@@ -13,15 +13,15 @@ projectType = [
                project(':sechub-commons-model'),
             ],
 
-            /* any project using spring parts but not already in other spring boot group must be defined here*/
+            /* any project using spring parts but not already in other spring boot group must be defined here */
             springBootProjects: [
-                    project(':sechub-shared-kernel-testframework'),//we use same mockito and junit as in other projects, so a spring boot project...
+                    project(':sechub-shared-kernel-testframework'), //we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-scan-testframework'), //we use same mockito and junit as in other projects, so a spring boot project...
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
-                    /* only necessary ,because otherwise we got the (older)
-                       dependencies from aws as comiled projects in IDEs: */
+                    /* only necessary, because otherwise we get the (older)
+                       dependencies from aws as compiled projects in IDEs: */
                     project(':sechub-storage-core'),
                     project(':sechub-storage-s3-aws'),
                     project(':sechub-storage-s3-aws-test'),
@@ -67,7 +67,7 @@ projectType = [
 
             /* documentation projects */
             springDocProjects: [
-                    project(':sechub-doc'), // we use this project for doc generation so msut be java and also with spring dependencies
+                    project(':sechub-doc'), // we use this project for doc generation so must be java and also with spring dependencies
 
             ],
 

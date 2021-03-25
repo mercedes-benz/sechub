@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = ProductExecutorConfig.TABLE_NAME)
-public class ProductExecutorConfig {
+public class ProductExecutorConfig implements ProductExecutorConfigInfo{
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ SQL ......................................+ */

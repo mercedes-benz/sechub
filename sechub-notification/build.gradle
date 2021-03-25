@@ -9,6 +9,7 @@ dependencies {
 
     compile project(':sechub-shared-kernel')
     compile library.springboot_starter_mail
+    compile library.apache_commons_lang3
     
     testCompile project(':sechub-testframework')
 

@@ -105,7 +105,7 @@ public class ResilientActionExecutorTest {
         action.throwables.add(new IllegalArgumentException()); 
         action.throwables.add(new IllegalArgumentException()); 
 
-        ResilienceCallback callBack = mock(ResilienceCallback.class);
+        ResilienceCallback callback = mock(ResilienceCallback.class);
         RetryResilienceProposal resilienceProposal = mock(RetryResilienceProposal.class);
         when(resilienceProposal.getMaximumAmountOfRetries()).thenReturn(3);
         when(resilienceProposal.getMillisecondsToWaitBeforeRetry()).thenReturn(0L);
@@ -116,12 +116,12 @@ public class ResilientActionExecutorTest {
         executorToTest.add(resilienceConsultant);
 
         /* execute */
-        TestResult result = executorToTest.executeResilient(action,callBack);
+        TestResult result = executorToTest.executeResilient(action,callback);
 
         /* test */
         assertNotNull(result);
         assertEquals(4, result.timesActionHasBeenExecuted);
-        verify(callBack,times(3)).beforeRetry(any());
+        verify(callback,times(3)).beforeRetry(any());
 
     }
 	
@@ -130,7 +130,7 @@ public class ResilientActionExecutorTest {
         /* prepare */
         action.throwables.add(new IllegalArgumentException()); 
 
-        ResilienceCallback callBack = mock(ResilienceCallback.class);
+        ResilienceCallback callback = mock(ResilienceCallback.class);
         RetryResilienceProposal resilienceProposal = mock(RetryResilienceProposal.class);
         when(resilienceProposal.getMaximumAmountOfRetries()).thenReturn(3);
         when(resilienceProposal.getMillisecondsToWaitBeforeRetry()).thenReturn(0L);
@@ -141,12 +141,12 @@ public class ResilientActionExecutorTest {
         executorToTest.add(resilienceConsultant);
 
         /* execute */
-        TestResult result = executorToTest.executeResilient(action,callBack);
+        TestResult result = executorToTest.executeResilient(action,callback);
 
         /* test */
         assertNotNull(result);
         assertEquals(2, result.timesActionHasBeenExecuted);
-        verify(callBack,times(1)).beforeRetry(any());
+        verify(callback,times(1)).beforeRetry(any());
 
     }
 	

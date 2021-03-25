@@ -31,71 +31,72 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectAssignUserService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignUserService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignUserService.class);
 
-	@Autowired
-	DomainMessageService eventBus;
+    @Autowired
+    DomainMessageService eventBus;
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserContextService userContextService;
+    @Autowired
+    UserContextService userContextService;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	ProjectTransactionService transactionService;
+    @Autowired
+    ProjectTransactionService transactionService;
 
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorAssignsUserToProject(
 			@Step(
 					number = 2,
 					name = "Assign user",
 					description = "The service will add the user to the project. If user does not have ROLE_USER it will obtain it"))
 	/* @formatter:on */
-	public void assignUserToProject(String userId, String projectId) {
-		LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));
+    public void assignUserToProject(String userId, String projectId) {
+        LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
+                logSanitizer.sanitize(projectId, 30));
 
-		assertion.isValidUserId(userId);
-		assertion.isValidProjectId(projectId);
+        assertion.isValidUserId(userId);
+        assertion.isValidProjectId(projectId);
 
-		Project project = projectRepository.findOrFailProject(projectId);
-		User user = userRepository.findOrFailUser(userId);
-		if (!project.getUsers().add(user)) {
-			throw new AlreadyExistsException("User already assigned to this project!");
-		}
-		user.getProjects().add(project);
-		project.getUsers().add(user);
+        Project project = projectRepository.findOrFailProject(projectId);
+        User user = userRepository.findOrFailUser(userId);
+        if (!project.getUsers().add(user)) {
+            throw new AlreadyExistsException("User already assigned to this project!");
+        }
+        user.getProjects().add(project);
+        project.getUsers().add(user);
 
-		transactionService.saveInOwnTransaction(project,user);
+        transactionService.saveInOwnTransaction(project, user);
 
-		sendUserAddedToProjectEvent(projectId, user);
-		sendRequestUserRoleRecalculation(user);
+        sendUserAddedToProjectEvent(projectId, user);
+        sendRequestUserRoleRecalculation(user);
 
+    }
 
-	}
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void sendRequestUserRoleRecalculation(User user) {
-		eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
-	}
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void sendRequestUserRoleRecalculation(User user) {
+        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(user.getName()));
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
-	private void sendUserAddedToProjectEvent(String projectId, User user) {
-		DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);
-		UserMessage projectToUserData = new UserMessage();
-		projectToUserData.setUserId(user.getName());
-		projectToUserData.setProjectIds(Arrays.asList(projectId));
+    @IsSendingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)
+    private void sendUserAddedToProjectEvent(String projectId, User user) {
+        DomainMessage request = new DomainMessage(MessageID.USER_ADDED_TO_PROJECT);
+        UserMessage projectToUserData = new UserMessage();
+        projectToUserData.setUserId(user.getName());
+        projectToUserData.setProjectIds(Arrays.asList(projectId));
 
-		request.set(MessageDataKeys.PROJECT_TO_USER_DATA, projectToUserData);
-		eventBus.sendAsynchron(request);
-	}
+        request.set(MessageDataKeys.PROJECT_TO_USER_DATA, projectToUserData);
+        eventBus.sendAsynchron(request);
+    }
 
 }

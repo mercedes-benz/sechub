@@ -23,92 +23,93 @@ import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 @Profile(Profiles.MOCKED_NOTIFICATIONS)
 public class MockEmailService implements EmailService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MockEmailService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MockEmailService.class);
 
-	@Autowired
-	LogSanitizer logSanitizer;
-	
-	@Autowired
-	private SimpleMailMessageSupport mailMessageSupport;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@MustBeDocumented("When email mock shall cache the mails this must be configured to true, per default disabled!")
-	@Value("${sechub.notification.email.mock.cache.enabled:false}")
-	private boolean cacheEmailsEnabled;
+    @Autowired
+    private SimpleMailMessageSupport mailMessageSupport;
 
-	private Map<String, List<SimpleMailMessage>> mails = new HashMap<>();
+    @MustBeDocumented("When email mock shall cache the mails this must be configured to true, per default disabled!")
+    @Value("${sechub.notification.email.mock.cache.enabled:false}")
+    private boolean cacheEmailsEnabled;
 
-	public boolean isCacheEmailsEnabled() {
-		return cacheEmailsEnabled;
-	}
+    private Map<String, List<SimpleMailMessage>> mails = new HashMap<>();
 
-	@Override
-	public void send(SimpleMailMessage message) {
-		LOG.info("sending email: {}", mailMessageSupport.describeTopic(message));
-		if (!cacheEmailsEnabled) {
-			return;
-		}
-		addMessages(message, MailTargetType.TO);
-		addMessages(message, MailTargetType.CC);
-		addMessages(message, MailTargetType.BCC);
+    public boolean isCacheEmailsEnabled() {
+        return cacheEmailsEnabled;
+    }
 
-	}
+    @Override
+    public void send(SimpleMailMessage message) {
+        LOG.info("sending email: {}", mailMessageSupport.describeTopic(message));
+        if (!cacheEmailsEnabled) {
+            return;
+        }
+        addMessages(message, MailTargetType.TO);
+        addMessages(message, MailTargetType.CC);
+        addMessages(message, MailTargetType.BCC);
 
-	private enum MailTargetType {
-		TO, CC, BCC
-	}
+    }
 
-	private void addMessages(SimpleMailMessage message, MailTargetType targetType) {
-		String[] targetMailAddresses;
-		switch (targetType) {
-		case TO:
-			targetMailAddresses = message.getTo();
-			break;
-		case CC:
-			targetMailAddresses = message.getCc();
-			break;
-		case BCC:
-			targetMailAddresses = message.getBcc();
-			break;
-		default:
-			targetMailAddresses = null;
-		}
-		if (targetMailAddresses == null) {
-			return;
-		}
-		for (String target : targetMailAddresses) {
-			List<SimpleMailMessage> mailsInternal = getMailsInternal(target);
-			mailsInternal.add(message);
-			LOG.info("Send {} target:{} [ {} ]: subject:'{}', ", targetType, target, mailsInternal.size(), message.getSubject());
-		}
-	}
+    private enum MailTargetType {
+        TO, CC, BCC
+    }
 
-	public List<SimpleMailMessage> getMailsFor(String emailAdress) {
-		if (!cacheEmailsEnabled) {
-			LOG.debug("cache for emails is disabled, so returning empty mails list for emailAdress:{}", logSanitizer.sanitize(emailAdress, -1));
-			return Collections.emptyList();
-		}
-		List<SimpleMailMessage> copy = new ArrayList<>();
-		copy.addAll(getMailsInternal(emailAdress));
-		return copy;
-	}
+    private void addMessages(SimpleMailMessage message, MailTargetType targetType) {
+        String[] targetMailAddresses;
+        switch (targetType) {
+        case TO:
+            targetMailAddresses = message.getTo();
+            break;
+        case CC:
+            targetMailAddresses = message.getCc();
+            break;
+        case BCC:
+            targetMailAddresses = message.getBcc();
+            break;
+        default:
+            targetMailAddresses = null;
+        }
+        if (targetMailAddresses == null) {
+            return;
+        }
+        for (String target : targetMailAddresses) {
+            List<SimpleMailMessage> mailsInternal = getMailsInternal(target);
+            mailsInternal.add(message);
+            mails.put(target, mailsInternal);
+            LOG.info("Send {} target:{} [ {} ]: subject:'{}', ", targetType, target, mailsInternal.size(), message.getSubject());
+        }
+    }
 
-	private List<SimpleMailMessage> getMailsInternal(String emailAdress) {
-		synchronized (mails) {
-			List<SimpleMailMessage> list = mails.computeIfAbsent(emailAdress, this::createMailList);
-			LOG.info("resolved messages:{} for user:{}", list.size(), logSanitizer.sanitize(emailAdress, -1));
-			return list;
-		}
+    public List<SimpleMailMessage> getMailsFor(String emailAddress) {
+        if (!cacheEmailsEnabled) {
+            LOG.debug("cache for emails is disabled, so returning empty mails list for emailAddress:{}", logSanitizer.sanitize(emailAddress, -1));
+            return Collections.emptyList();
+        }
+        List<SimpleMailMessage> copy = new ArrayList<>();
+        copy.addAll(getMailsInternal(emailAddress));
+        return copy;
+    }
 
-	}
+    private List<SimpleMailMessage> getMailsInternal(String emailAddress) {
+        synchronized (mails) {
+            List<SimpleMailMessage> list = mails.computeIfAbsent(emailAddress, this::createMailList);
+            LOG.info("resolved messages:{} for user:{}", list.size(), logSanitizer.sanitize(emailAddress, -1));
+            return list;
+        }
 
-	private List<SimpleMailMessage> createMailList(/* NOSONAR */String emailAdress) {
-		return new ArrayList<>();
-	}
+    }
 
-	public void resetMockMails() {
-		synchronized (mails) {
-			mails.clear();
-		}
-	}
+    private List<SimpleMailMessage> createMailList(/* NOSONAR */String emailAddress) {
+        return new ArrayList<>();
+    }
+
+    public void resetMockMails() {
+        synchronized (mails) {
+            mails.clear();
+        }
+    }
 
 }

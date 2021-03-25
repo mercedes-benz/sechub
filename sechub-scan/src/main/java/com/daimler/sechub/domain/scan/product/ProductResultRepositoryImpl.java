@@ -12,12 +12,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+
 public class ProductResultRepositoryImpl implements ProductResultRepositoryCustom {
 	/* @formatter:off */
 	public static final String JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_IDS =
 			"select r from "+CLASS_NAME+" r"+
 					" where r."+PROPERTY_SECHUB_JOB_UUID+" = :"+PROPERTY_SECHUB_JOB_UUID +
 					" and r."+PROPERTY_PRODUCT_IDENTIFIER+" in :"+PROPERTY_PRODUCT_IDENTIFIER;
+
+	public static final String JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_CONFIG_UUID =
+	        "select r from "+CLASS_NAME+" r"+
+	                " where r."+PROPERTY_SECHUB_JOB_UUID+" = :"+PROPERTY_SECHUB_JOB_UUID +
+	                " and r."+PROPERTY_PRODUCT_CONFIG_UUID+" = :"+PROPERTY_PRODUCT_CONFIG_UUID;
 	/* @formatter:on */
 
 	@PersistenceContext
@@ -25,19 +32,40 @@ public class ProductResultRepositoryImpl implements ProductResultRepositoryCusto
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ProductResult> findProductResults(UUID secHubJobUUID, ProductIdentifier... allowedIdentifiers) {
+	public List<ProductResult> findProductResults(UUID secHubJobUUID, ProductExecutorConfigInfo info){
 		if (secHubJobUUID == null) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("secHubJobUUID may not be null!");
 		}
-		if (allowedIdentifiers == null || allowedIdentifiers.length == 0) {
-			/* a shortcut - then no result is possible... */
-			return new ArrayList<>();
+		if (info == null) {
+		    throw new IllegalArgumentException("productExecutorConfiguration may not be null!");
 		}
-		Query query = em.createQuery(JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_IDS);
+		UUID configUUID = info.getUUID();
+		if (configUUID == null) {
+            throw new IllegalArgumentException("configUUID may not be null!");
+        }
+		
+		Query query = em.createQuery(JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_CONFIG_UUID);
 		query.setParameter(PROPERTY_SECHUB_JOB_UUID, secHubJobUUID);
-		query.setParameter(PROPERTY_PRODUCT_IDENTIFIER, Arrays.asList(allowedIdentifiers));
+        query.setParameter(PROPERTY_PRODUCT_CONFIG_UUID, configUUID);
 
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    public List<ProductResult> findAllProductResults(UUID secHubJobUUID, ProductIdentifier... allowedIdentifiers) {
+        if (secHubJobUUID == null) {
+            throw new IllegalArgumentException();
+        }
+        if (allowedIdentifiers == null || allowedIdentifiers.length == 0) {
+            /* a shortcut - then no result is possible... */
+            return new ArrayList<>();
+        }
+        Query query = em.createQuery(JPQL_STRING_SELECT_BY_SECHUB_JOB_UUID_AND_PRODUCT_IDS);
+        query.setParameter(PROPERTY_SECHUB_JOB_UUID, secHubJobUUID);
+        query.setParameter(PROPERTY_PRODUCT_IDENTIFIER, Arrays.asList(allowedIdentifiers));
+
+        return query.getResultList();
+    }
 
 }
