@@ -302,6 +302,10 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
 
+    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+    }
+    
     public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.domain.notification.owner.InformOwnerThatProjectHasBeenDeletedNotificationService;
+import com.daimler.sechub.domain.notification.owner.InformThatProjectHasNewOwnerNotificationService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartHasBeenTriggeredService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService;
 import com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobResultsHaveBeenPurgedService;
@@ -96,6 +97,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 	InformAdminsThatProjectHasBeenDeletedNotificationService informAdminsThatProjectHasBeenDeletedService;
 
 	@Autowired
+    InformThatProjectHasNewOwnerNotificationService informThatProjectHasNewOwnerService;
+	
+	@Autowired
 	InformOwnerThatProjectHasBeenDeletedNotificationService informOwnerThatProjectHasBeenDeletedService;
 
 	@Autowired
@@ -153,6 +157,9 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		case SCHEDULER_STARTED:
             handleSchedulerStarted(request.get(MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
             break;
+		case PROJECT_OWNER_CHANGED:
+		    handleOwnerChanged(request.get(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA), request.get(MessageDataKeys.ENVIRONMENT_BASE_URL));
+		    break;
 		default:
 			throw new IllegalStateException("unhandled message id:" + messageId);
 		}
@@ -185,6 +192,11 @@ public class NotificationMessageHandler implements AsynchronMessageHandler {
 		informUserThatJobHasBeenCanceledService.notify(jobMessage);
 	}
 
+    @IsReceivingAsyncMessage(MessageID.PROJECT_OWNER_CHANGED)
+    private void handleOwnerChanged(ProjectMessage projectMessage, String baseUrl) {
+        informThatProjectHasNewOwnerService.notify(projectMessage, baseUrl);
+    }
+    
 	@IsReceivingAsyncMessage(MessageID.PROJECT_DELETED)
 	private void handleProjectDeleted(ProjectMessage projectMessage, String baseUrl) {
 		informAdminsThatProjectHasBeenDeletedService.notify(projectMessage, baseUrl);
