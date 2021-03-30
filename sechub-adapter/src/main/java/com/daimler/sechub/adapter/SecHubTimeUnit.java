@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
