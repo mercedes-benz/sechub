@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
+import com.daimler.sechub.domain.schedule.strategy.SchedulerStrategy;
 import com.daimler.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
 
 /**
@@ -32,18 +33,24 @@ public class ScheduleJobMarkerService {
 	
 	@Autowired
 	SchedulerStrategyFactory schedulerStrategyFactory;
+	
+	private SchedulerStrategy schedulerStrategy;
 
 	/**
 	 * @return either schedule job to execute, or <code>null</code> if no one has to be executed
 	 */
 	@Transactional
 	public ScheduleSecHubJob markNextJobToExecuteByThisPOD() {
+	    
+	    if (schedulerStrategy == null) {
+	        schedulerStrategy = schedulerStrategyFactory.build();
+	    }
 
 		if (LOG.isTraceEnabled()) {
 			/*NOSONAR*/LOG.trace("Trigger execution of next job started");
 		}
 		
-		UUID nextJobId = schedulerStrategyFactory.build().nextJobId();
+		UUID nextJobId = schedulerStrategy.nextJobId();
 		if (nextJobId == null) {
 		    return null;
 		}
