@@ -5,9 +5,9 @@ import javax.crypto.SealedObject;
 
 import com.daimler.sechub.commons.core.security.CryptoAccess;
 
-public class LoginScriptStep {
+public class LoginScriptAction {
 
-	LoginScriptStepAction action;
+	ActionType action;
 	String selector;
 	String description;
 	SealedObject value;
@@ -25,7 +25,7 @@ public class LoginScriptStep {
 		return CryptoAccess.CRYPTO_STRING.unseal(value);
 	}
 
-	public LoginScriptStepAction getAction() {
+	public ActionType getAction() {
 		return action;
 	}
 	

@@ -7,29 +7,35 @@
         "login": {
             "url": "https://productfailure.demo.example.org/login",
             "form": {
-                "script": [
-                    {
-                        "action": "username",
-                        "selector": "#example_login_userid",
-                        "value": "user2",
-                        "description": "The username is different from the email address"
-                    },
-                    {
-                        "action": "input",
-                        "selector": "#example_login_email",
-                        "value": "user2@example.com",
-                        "description": "The website has a separate field for the email address"
-                    },
-                    {
-                        "action": "password",
-                        "selector": "#example_login_pwd",
-                        "value": "pwd2"
-                    },
-                    {
-                        "action": "click",
-                        "selector": "#example_login_login_button"
-                    }
-                ]
+                "script": {
+                	"pages": [
+                		{
+                			"actions": [
+			                    {
+			                        "type": "username",
+			                        "selector": "#example_login_userid",
+			                        "value": "user2",
+			                        "description": "The username is different from the email address"
+			                    },
+			                    {
+			                        "type": "input",
+			                        "selector": "#example_login_email",
+			                        "value": "user2@example.com",
+			                        "description": "The website has a separate field for the email address"
+			                    },
+			                    {
+			                        "type": "password",
+			                        "selector": "#example_login_pwd",
+			                        "value": "pwd2"
+			                    },
+			                    {
+			                        "type": "click",
+			                        "selector": "#example_login_login_button"
+			                    }
+			                ]
+		                }
+	            	]
+                }
             }
         }
     }

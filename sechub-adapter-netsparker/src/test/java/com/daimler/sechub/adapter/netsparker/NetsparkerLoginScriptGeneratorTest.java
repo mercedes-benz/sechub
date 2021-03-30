@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.adapter.LoginScriptStep;
+import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 
 public class NetsparkerLoginScriptGeneratorTest {
@@ -43,7 +43,7 @@ public class NetsparkerLoginScriptGeneratorTest {
     @Test
     public void one_list_entry_but_null_results_in_empty_string() {
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
         steps.add(null);
 
         /* execute */
@@ -56,8 +56,8 @@ public class NetsparkerLoginScriptGeneratorTest {
     @Test
     public void one_step() {
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
 
         when(step1.isClick()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#buttonfield");
@@ -68,7 +68,7 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
 
@@ -77,9 +77,9 @@ public class NetsparkerLoginScriptGeneratorTest {
     @Test
     public void two_steps() {
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
 
         when(step1.isInput()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -95,8 +95,8 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
 
@@ -106,10 +106,10 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void input_usernamefield_input_passwordfield_click_buttonfield() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
 
         when(step1.isInput()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -130,9 +130,9 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
 
@@ -142,10 +142,10 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void username_usernamefield_password_passwordfield_click_buttonfield() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
 
         when(step1.isUserName()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -166,9 +166,9 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield',username);\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield',password);\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield',username);";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield',password);";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
     }
@@ -177,11 +177,11 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void input_username_input_password_wait_click_button() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
-        LoginScriptStep step4 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
+        LoginScriptAction step4 = mock(LoginScriptAction.class);
 
         when(step1.isInput()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -207,9 +207,9 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield',3020);\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');";
+        expected += "netsparker.auth.clickByQuery('#buttonfield',3020);";
 
         assertEquals(expected, result);
     }
@@ -218,11 +218,11 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void input_username_input_password_click_button_wait() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
-        LoginScriptStep step4 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
+        LoginScriptAction step4 = mock(LoginScriptAction.class);
 
         when(step1.isInput()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -248,10 +248,10 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
-        expected += "setTimeout(function() {},5000);\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1');";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
+        expected += "setTimeout(function() {},5000);";
 
         assertEquals(expected, result);
     }
@@ -260,11 +260,11 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void wait_input_username_input_password_click_button() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
-        LoginScriptStep step4 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
+        LoginScriptAction step4 = mock(LoginScriptAction.class);
 
         when(step1.isWait()).thenReturn(true);
         when(step1.getValue()).thenReturn("1");
@@ -290,9 +290,9 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1',60000);\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield','username1',60000);";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield','password1');";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
     }
@@ -301,11 +301,11 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void input_username_input_email_input_password_click_button() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
-        LoginScriptStep step4 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
+        LoginScriptAction step4 = mock(LoginScriptAction.class);
 
         when(step1.isUserName()).thenReturn(true);
         when(step1.getSelector()).thenReturn("#usernamefield");
@@ -332,11 +332,11 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "netsparker.auth.setValueByQuery('#usernamefield',username);\n";
-        expected += "// The email has to be provided.\n";
-        expected += "netsparker.auth.setValueByQuery('#emailfield','user@example.org');\n";
-        expected += "netsparker.auth.setValueByQuery('#passwordfield',password);\n";
-        expected += "netsparker.auth.clickByQuery('#buttonfield');\n";
+        String expected = "netsparker.auth.setValueByQuery('#usernamefield',username);";
+        expected += "// The email has to be provided.";
+        expected += "netsparker.auth.setValueByQuery('#emailfield','user@example.org');";
+        expected += "netsparker.auth.setValueByQuery('#passwordfield',password);";
+        expected += "netsparker.auth.clickByQuery('#buttonfield');";
 
         assertEquals(expected, result);
     }
@@ -345,11 +345,11 @@ public class NetsparkerLoginScriptGeneratorTest {
     public void wait_wait_wait_wait() {
 
         /* prepare */
-        List<LoginScriptStep> steps = new ArrayList<LoginScriptStep>();
-        LoginScriptStep step1 = mock(LoginScriptStep.class);
-        LoginScriptStep step2 = mock(LoginScriptStep.class);
-        LoginScriptStep step3 = mock(LoginScriptStep.class);
-        LoginScriptStep step4 = mock(LoginScriptStep.class);
+        List<LoginScriptAction> steps = new ArrayList<LoginScriptAction>();
+        LoginScriptAction step1 = mock(LoginScriptAction.class);
+        LoginScriptAction step2 = mock(LoginScriptAction.class);
+        LoginScriptAction step3 = mock(LoginScriptAction.class);
+        LoginScriptAction step4 = mock(LoginScriptAction.class);
 
         when(step1.isWait()).thenReturn(true);
         when(step1.getValue()).thenReturn("100");
@@ -376,10 +376,10 @@ public class NetsparkerLoginScriptGeneratorTest {
         String result = genoToTest.generate(steps);
 
         /* test */
-        String expected = "setTimeout(function() {},100);\n";
-        expected += "setTimeout(function() {},200);\n";
-        expected += "setTimeout(function() {},300);\n";
-        expected += "setTimeout(function() {},400);\n";
+        String expected = "setTimeout(function() {},100);";
+        expected += "setTimeout(function() {},200);";
+        expected += "setTimeout(function() {},300);";
+        expected += "setTimeout(function() {},400);";
 
         assertEquals(expected, result);
     }

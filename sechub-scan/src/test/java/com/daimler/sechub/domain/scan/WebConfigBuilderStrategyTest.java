@@ -13,7 +13,8 @@ import org.junit.Test;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.LoginConfig;
-import com.daimler.sechub.adapter.LoginScriptStep;
+import com.daimler.sechub.adapter.LoginScriptAction;
+import com.daimler.sechub.adapter.LoginScriptPage;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
@@ -109,34 +110,44 @@ public class WebConfigBuilderStrategyTest {
 		TestWebScanAdapterConfig result = configBuilder.build();
 		LoginConfig loginConfig = result.getLoginConfig();
 		assertTrue(loginConfig.isFormScript());
-		List<LoginScriptStep> steps = loginConfig.asFormScript().getSteps();
-		assertEquals(5,steps.size());
-		Iterator<LoginScriptStep> it = steps.iterator();
+		
+		List<LoginScriptPage> pages = loginConfig.asFormScript().getPages();
+		assertEquals(2, pages.size());
+		
+		/* page 1 */
+		List<LoginScriptAction> actions = loginConfig.asFormScript().getPages().get(0).getActions();
+		assertEquals(2, actions.size());
+		Iterator<LoginScriptAction> iterator = actions.iterator();
 
-		LoginScriptStep step = it.next();
-		assertEquals("username", step.getAction().toString());
-		assertEquals("#example_login_userid", step.getSelector());
-		assertEquals("user2", step.getValue());
+		LoginScriptAction action = iterator.next();
+		assertEquals("username", action.getAction().toString());
+		assertEquals("#example_login_userid", action.getSelector());
+		assertEquals("user2", action.getValue());
 
-        step = it.next();
-        assertEquals("click", step.getAction().toString());
-        assertEquals("#next_button", step.getSelector());
-        assertEquals(null, step.getValue());
+		action = iterator.next();
+        assertEquals("click", action.getAction().toString());
+        assertEquals("#next_button", action.getSelector());
+        assertEquals(null, action.getValue());
 
-        step = it.next();
-        assertEquals("wait", step.getAction().toString());
-        assertEquals("2456", step.getValue());
-        assertEquals(SecHubTimeUnit.MILLISECOND, step.getUnit());
+        /* page 2 */
+        List<LoginScriptAction> actions2 = loginConfig.asFormScript().getPages().get(1).getActions();
+        assertEquals(3, actions2.size());
+        Iterator<LoginScriptAction> iterator2 = actions2.iterator();
+        
+        action = iterator2.next();
+        assertEquals("wait", action.getAction().toString());
+        assertEquals("2456", action.getValue());
+        assertEquals(SecHubTimeUnit.MILLISECOND, action.getUnit());
 
-        step = it.next();
-        assertEquals("password", step.getAction().toString());
-        assertEquals("#example_login_pwd", step.getSelector());
-        assertEquals("pwd2", step.getValue());
+        action = iterator2.next();
+        assertEquals("password", action.getAction().toString());
+        assertEquals("#example_login_pwd", action.getSelector());
+        assertEquals("pwd2", action.getValue());
 
-        step = it.next();
-        assertEquals("click", step.getAction().toString());
-        assertEquals("#example_login_login_button", step.getSelector());
-        assertEquals(null, step.getValue());
+        action = iterator2.next();
+        assertEquals("click", action.getAction().toString());
+        assertEquals("#example_login_login_button", action.getSelector());
+        assertEquals(null, action.getValue());
 	}
 
 	private WebConfigBuilderStrategy createStrategy(String path) {

@@ -56,44 +56,47 @@ public class AbstractWebScanAdapterConfigBuilderTest {
 	@Test
 	public void login_form_scripted() {
 		/* @formatter:off */
-		TestWebScanAdapterConfig x = new TestAbstractWebScanAdapterConfigBuilder().
+		TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().
 				login().
-					form().script().
-					    addStep("input").select("#user_id").enterValue("user1").endStep().
-					    addStep("input").select("#pwd_id").enterValue("pwd1").endStep().
-					    addStep("click").select("#login_butotn_id").enterValue(null).endStep().
-				endLogin()
+					form().
+					    script().
+    					    addPage().
+        					    addAction(ActionType.INPUT).select("#user_id").enterValue("user1").endStep().
+        					    addAction(ActionType.INPUT).select("#pwd_id").enterValue("pwd1").endStep().
+        					    addAction(ActionType.CLICK).select("#login_butotn_id").enterValue(null).endStep().
+        					doEndPage().
+        			endLogin()
 				.build();
 		/* @formatter:on */
 
 		/* test */
-		assertNotNull(x);
-		LoginConfig config = x.getLoginConfig();
+		assertNotNull(testAdapterConfig);
+		LoginConfig config = testAdapterConfig.getLoginConfig();
 		assertNotNull(config);
 		assertTrue(null, config.isFormScript());
-		List<LoginScriptStep> steps = config.asFormScript().getSteps();
-		assertNotNull(steps);
-		assertEquals(3,steps.size());
+		List<LoginScriptAction> actions = config.asFormScript().getPages().get(0).getActions();
+		assertNotNull(actions);
+		assertEquals(3,actions.size());
 
-		Iterator<LoginScriptStep> it = steps.iterator();
-		LoginScriptStep step = it.next();
+		Iterator<LoginScriptAction> it = actions.iterator();
+		LoginScriptAction action = it.next();
 
-		assertTrue(step.isInput());
-		assertFalse(step.isClick());
-		assertEquals("user1",step.getValue());
-		assertEquals("#user_id",step.getSelector());
+		assertTrue(action.isInput());
+		assertFalse(action.isClick());
+		assertEquals("user1",action.getValue());
+		assertEquals("#user_id",action.getSelector());
 
-		step = it.next();
-		assertTrue(step.isInput());
-		assertFalse(step.isClick());
-		assertEquals("pwd1",step.getValue());
-		assertEquals("#pwd_id",step.getSelector());
+		action = it.next();
+		assertTrue(action.isInput());
+		assertFalse(action.isClick());
+		assertEquals("pwd1",action.getValue());
+		assertEquals("#pwd_id",action.getSelector());
 
-		step = it.next();
-		assertFalse(step.isInput());
-		assertTrue(step.isClick());
-		assertEquals("#login_butotn_id",step.getSelector());
-		assertEquals(null,step.getValue());
+		action = it.next();
+		assertFalse(action.isInput());
+		assertTrue(action.isClick());
+		assertEquals("#login_butotn_id",action.getSelector());
+		assertEquals(null,action.getValue());
 	}
 
 

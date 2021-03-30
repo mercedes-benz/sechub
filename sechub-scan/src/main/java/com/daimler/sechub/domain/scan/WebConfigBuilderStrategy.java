@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
+import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder.LoginBuilder.FormScriptLoginBuilder.FormScriptLoginPageBuilder;
 import com.daimler.sechub.adapter.AdapterConfig;
 import com.daimler.sechub.adapter.AdapterConfigurationStrategy;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
@@ -18,7 +19,9 @@ import com.daimler.sechub.sharedkernel.configuration.WebScanDurationConfiguratio
 import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.ScriptEntry;
+import com.daimler.sechub.sharedkernel.configuration.login.Page;
+import com.daimler.sechub.sharedkernel.configuration.login.Script;
+import com.daimler.sechub.sharedkernel.configuration.login.Action;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
@@ -153,22 +156,45 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
     /* ------------------------ */
     /* +---- FORM:SCRIPT -----+ */
     /* ------------------------ */
+    @SuppressWarnings("rawtypes")
     private <C extends AbstractWebScanAdapterConfig, B extends AbstractWebScanAdapterConfigBuilder<B, C>> void configureScriptAuth(B configBuilder,
-            URL loginUrl, List<ScriptEntry> scriptList) {
+            URL loginUrl, Script script) {
         AbstractWebScanAdapterConfigBuilder<B, C>.LoginBuilder.FormScriptLoginBuilder scriptBuilder = configBuilder.login().url(loginUrl).form().script();
 
-        for (ScriptEntry entry : scriptList) {
-            /* @formatter:off */
-			scriptBuilder.
-				addStep(entry.getAction()).
-					select(entry.getSelector().orElse(null)).
-					enterValue(entry.getValue().orElse(null)).
-					description(entry.getDescription().orElse(null)).
-					unit(entry.getUnit().orElse(null)).
-				endStep();
-			/* @formatter:on */
-
+        Optional<List<Page>> optPages = script.getPages();
+        
+        if (!optPages.isPresent()) {
+            return;
         }
+        
+        List<Page> pages = optPages.get();
+        
+        for (Page page : pages) {
+            FormScriptLoginPageBuilder pageBuilder = scriptBuilder.addPage();
+            
+            Optional<List<Action>> optActions = page.getActions();
+            
+            if (optActions.isPresent()) {
+                List<Action> actions = optActions.get();
+                
+                for (Action action : actions) {
+                    /* @formatter:off */
+                    pageBuilder.
+                            addAction(action.getType()).
+                                select(action.getSelector().orElse(null)).
+                                enterValue(action.getValue().orElse(null)).
+                                description(action.getDescription().orElse(null)).
+                                unit(action.getUnit().orElse(null)).
+                            endStep();
+                    /* @formatter:on */
+
+                }
+                
+                pageBuilder.doEndPage();
+            }
+            
+        }
+
         scriptBuilder.endLogin();
     }
 

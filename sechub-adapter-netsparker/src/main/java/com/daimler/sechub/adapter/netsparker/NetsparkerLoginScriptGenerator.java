@@ -5,31 +5,32 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.daimler.sechub.adapter.LoginScriptGenerator;
-import com.daimler.sechub.adapter.LoginScriptStep;
+import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 
 public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator{
 
-	public String generate(List<LoginScriptStep> steps) {
+	public String generate(List<LoginScriptAction> steps) {
 		StringBuilder sb = new StringBuilder();
 
 		generate(steps, sb);
 
 		return sb.toString();
 	}
+	
 
-	private void generate(List<LoginScriptStep> steps, StringBuilder sb) {
+	private void generate(List<LoginScriptAction> steps, StringBuilder sb) {
 		if (steps == null) {
 			return;
 		}
 		
-		LoginScriptStep previousStep = null;
-		LoginScriptStep currentStep = null;
-		LoginScriptStep nextStep = null;
+		LoginScriptAction previousStep = null;
+		LoginScriptAction currentStep = null;
+		LoginScriptAction nextStep = null;
 		
 		if (steps.size() > 0) {
 		    
-            Iterator<LoginScriptStep> iter = steps.iterator();
+            Iterator<LoginScriptAction> iter = steps.iterator();
 
             // the loop needs to iterate one more time, than the element size 
             for (int iterations = -1; iterations < (steps.size()); iterations++) {
@@ -44,13 +45,13 @@ public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator{
                     nextStep = null;
                 }
                 
-                generate(previousStep, currentStep, nextStep, sb);
+                generateScript(previousStep, currentStep, nextStep, sb);
             }
 		} 		
 
 	}
 
-    private void generate(LoginScriptStep previousStep, LoginScriptStep currentStep, LoginScriptStep nextStep, StringBuilder sb) {
+    private void generateScript(LoginScriptAction previousStep, LoginScriptAction currentStep, LoginScriptAction nextStep, StringBuilder sb) {
         if (currentStep == null) {
             return;
         }
@@ -58,7 +59,7 @@ public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator{
         // Add the description as comment
         String description = currentStep.getDescription();
         if (description != null && !description.isEmpty()) {
-            sb.append("// ").append(description).append("\n");
+            sb.append("// ").append(description);
         }
         
         boolean scriptCommand = true;
@@ -94,14 +95,14 @@ public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator{
         
         if (scriptCommand) {           
             if (wait != null) {
-                sb.append(",").append(wait).append(");\n");
+                sb.append(",").append(wait).append(");");
             } else {
-                sb.append(");\n");
+                sb.append(");");
             }
         }
     }
     
-    private Long getWaitTimeInMilliseconds(LoginScriptStep step) {
+    private Long getWaitTimeInMilliseconds(LoginScriptAction step) {
         Long wait = null;
         
         if (step.isWait()) {

@@ -3,11 +3,12 @@ package com.daimler.sechub.sharedkernel.configuration.login;
 
 import java.util.Optional;
 
+import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 
-public class ScriptEntry {
+public class Action {
 
-	String action;
+    ActionType type;
 
 	Optional<String> selector = Optional.empty();
 
@@ -20,8 +21,8 @@ public class ScriptEntry {
     /**
 	 * @return type of action as string (e.g. "input", "click")
 	 */
-	public String getAction() {
-		return action;
+	public ActionType getType() {
+		return type;
 	}
 	public Optional<String> getSelector() {
 		return selector;

@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
@@ -94,17 +95,19 @@ public class NetsparkerAdapterTestApplication {
 				url(new URL(getSystemProperty("sechub.adapter.netsparker.login.url"))).
 				form().
 					script().
-						addStep("username").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.action1.input.selector","#username")).
-							enterValue(getSystemProperty("sechub.adapter.netsparker.login.user")).
-					    endStep().
-					    addStep("password").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.action2.input.selector","#password")).
-							enterValue(getSystemProperty("sechub.adapter.netsparker.login.password")).
-						endStep().
-						addStep("click").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.action3.click.selector","#doLogin")).
-						endStep().
+					    addPage().
+    						addAction(ActionType.USERNAME).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action1.input.selector","#username")).
+    							enterValue(getSystemProperty("sechub.adapter.netsparker.login.user")).
+    					    endStep().
+    					    addAction(ActionType.PASSWORD).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action2.input.selector","#password")).
+    							enterValue(getSystemProperty("sechub.adapter.netsparker.login.password")).
+    						endStep().
+    						addAction(ActionType.CLICK).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action3.click.selector","#doLogin")).
+    						endStep().
+    					doEndPage().
 				endLogin();
 		/* @formatter:on */
 	}

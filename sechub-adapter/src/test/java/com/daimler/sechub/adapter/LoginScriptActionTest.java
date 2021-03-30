@@ -5,12 +5,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class LoginScriptStepTest {
+public class LoginScriptActionTest {
 
 	@Test
 	public void step_input_getter_check() {
 		/* prepare */
-		LoginScriptStepAction action = LoginScriptStepAction.INPUT;
+		ActionType action = ActionType.INPUT;
 
 		/* test */
 		assertTrue(step(action).isInput());
@@ -24,7 +24,7 @@ public class LoginScriptStepTest {
 	@Test
 	public void step_username_getter_check() {
 		/* prepare */
-		LoginScriptStepAction action = LoginScriptStepAction.USERNAME;
+		ActionType action = ActionType.USERNAME;
 
 		/* test */
 		assertTrue(step(action).isUserName());
@@ -37,7 +37,7 @@ public class LoginScriptStepTest {
 	@Test
 	public void step_password_getter_check() {
 		/* prepare */
-		LoginScriptStepAction action = LoginScriptStepAction.PASSWORD;
+		ActionType action = ActionType.PASSWORD;
 
 		/* test */
 		assertTrue(step(action).isPassword());
@@ -50,7 +50,7 @@ public class LoginScriptStepTest {
 	@Test
 	public void step_click_getter_check() {
 		/* prepare */
-		LoginScriptStepAction action = LoginScriptStepAction.CLICK;
+		ActionType action = ActionType.CLICK;
 
 		/* test */
 		assertTrue(step(action).isClick());
@@ -63,7 +63,7 @@ public class LoginScriptStepTest {
 	@Test
 	public void description_not_set() {
 	    /* prepare */
-	    LoginScriptStep step = new LoginScriptStep();
+	    LoginScriptAction step = new LoginScriptAction();
 	    
 	    /* test + execute */
 	    assertNull(step.getDescription());
@@ -72,7 +72,7 @@ public class LoginScriptStepTest {
     @Test
     public void description_set() {
         /* prepare */
-        LoginScriptStep step = new LoginScriptStep();
+        LoginScriptAction step = new LoginScriptAction();
         String description = "I am a description";
         
         /* execute */
@@ -82,8 +82,8 @@ public class LoginScriptStepTest {
         assertEquals(description, step.getDescription());
     }
 
-	private LoginScriptStep step(LoginScriptStepAction action) {
-		LoginScriptStep step = new LoginScriptStep();
+	private LoginScriptAction step(ActionType action) {
+		LoginScriptAction step = new LoginScriptAction();
 		step.action=action;
 		return step;
 	}

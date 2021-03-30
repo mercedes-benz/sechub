@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.commons.model.JSONConverterException;
@@ -20,7 +21,9 @@ import com.daimler.sechub.sharedkernel.SharedKernelTestFileSupport;
 import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.ScriptEntry;
+import com.daimler.sechub.sharedkernel.configuration.login.Page;
+import com.daimler.sechub.sharedkernel.configuration.login.Script;
+import com.daimler.sechub.sharedkernel.configuration.login.Action;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.test.PojoTester;
 
@@ -95,7 +98,7 @@ public class SecHubConfigurationTest {
         assertEquals("user1", new String(autodetect.get().getUser()));
         assertEquals("pwd1", new String(autodetect.get().getPassword()));
 
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        Optional<Script> script = form.get().getScript();
         assertFalse("script config must NOT be present", script.isPresent());
     }
     
@@ -137,7 +140,7 @@ public class SecHubConfigurationTest {
         assertEquals("user1", new String(autodetect.get().getUser()));
         assertEquals("pwd1", new String(autodetect.get().getPassword()));
 
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        Optional<Script> script = form.get().getScript();
         assertFalse("script config must NOT be present", script.isPresent());
     }
 
@@ -170,24 +173,33 @@ public class SecHubConfigurationTest {
         Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
         assertFalse("auto detect config must NOT be present", autodetect.isPresent());
 
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        /*-- form: script --*/
+        Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        List<ScriptEntry> entries = script.get();
-        assertEquals("Must have 3 script entries", 3, entries.size());
-        ScriptEntry entry1 = entries.get(0);
-        ScriptEntry entry2 = entries.get(1);
-        ScriptEntry entry3 = entries.get(2);
+        
+        Optional<List<Page>> pages = script.get().getPages();
+        assertTrue("pages must be present", pages.isPresent());
+        assertEquals("must have 1 pages", 1, pages.get().size());
+        
+        /*-- page 1 --*/
+        Optional<List<Action>> page1 = pages.get().get(0).getActions();
+        assertTrue("actions must be present", page1.isPresent());
+        assertEquals("must have 3 action entries", 3, page1.get().size());
 
-        assertEquals("username", entry1.getAction());
-        assertEquals("#example_login_userid", entry1.getSelector().get());
-        assertEquals("user2", entry1.getValue().get());
+        Action action1 = page1.get().get(0);
+        Action action2 = page1.get().get(1);
+        Action action3 = page1.get().get(2);
 
-        assertEquals("password", entry2.getAction());
-        assertEquals("#example_login_pwd", entry2.getSelector().get());
-        assertEquals("pwd2", entry2.getValue().get());
+        assertEquals(ActionType.USERNAME, action1.getType());
+        assertEquals("#example_login_userid", action1.getSelector().get());
+        assertEquals("user2", action1.getValue().get());
 
-        assertEquals("click", entry3.getAction());
-        assertEquals("#example_login_login_button", entry3.getSelector().get());
+        assertEquals(ActionType.PASSWORD, action2.getType());
+        assertEquals("#example_login_pwd", action2.getSelector().get());
+        assertEquals("pwd2", action2.getValue().get());
+
+        assertEquals(ActionType.CLICK, action3.getType());
+        assertEquals("#example_login_login_button", action3.getSelector().get());
     }
 
     @Test
@@ -219,31 +231,40 @@ public class SecHubConfigurationTest {
         Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
         assertFalse("auto detect config must NOT be present", autodetect.isPresent());
 
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        /*-- form: script --*/
+        Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        List<ScriptEntry> entries = script.get();
-        assertEquals("Must have 4 script entries", 4, entries.size());
-        ScriptEntry entry1 = entries.get(0);
-        ScriptEntry entry2 = entries.get(1);
-        ScriptEntry entry3 = entries.get(2);
-        ScriptEntry entry4 = entries.get(3);
+        
+        Optional<List<Page>> pages = script.get().getPages();
+        assertTrue("pages must be present", pages.isPresent());
+        assertEquals("must have 1 pages", 1, pages.get().size());
+        
+        /*-- page 1 --*/
+        Optional<List<Action>> page1 = pages.get().get(0).getActions();
+        assertTrue("actions must be present", page1.isPresent());
+        assertEquals("must have 4 action entries", 4, page1.get().size());
 
-        assertEquals("username", entry1.getAction());
-        assertEquals("#example_login_userid", entry1.getSelector().get());
-        assertEquals("user2", entry1.getValue().get());
-        assertEquals("The username is different from the email address", entry1.getDescription().get());
+        Action action1 = page1.get().get(0);
+        Action action2 = page1.get().get(1);
+        Action action3 = page1.get().get(2);
+        Action action4 = page1.get().get(3);
 
-        assertEquals("input", entry2.getAction());
-        assertEquals("#example_login_email", entry2.getSelector().get());
-        assertEquals("user2@example.com", entry2.getValue().get());
-        assertEquals("The website has a separate field for the email address", entry2.getDescription().get());
+        assertEquals(ActionType.USERNAME, action1.getType());
+        assertEquals("#example_login_userid", action1.getSelector().get());
+        assertEquals("user2", action1.getValue().get());
+        assertEquals("The username is different from the email address", action1.getDescription().get());
 
-        assertEquals("password", entry3.getAction());
-        assertEquals("#example_login_pwd", entry3.getSelector().get());
-        assertEquals("pwd2", entry3.getValue().get());
+        assertEquals(ActionType.INPUT, action2.getType());
+        assertEquals("#example_login_email", action2.getSelector().get());
+        assertEquals("user2@example.com", action2.getValue().get());
+        assertEquals("The website has a separate field for the email address", action2.getDescription().get());
 
-        assertEquals("click", entry4.getAction());
-        assertEquals("#example_login_login_button", entry4.getSelector().get());
+        assertEquals(ActionType.PASSWORD, action3.getType());
+        assertEquals("#example_login_pwd", action3.getSelector().get());
+        assertEquals("pwd2", action3.getValue().get());
+
+        assertEquals(ActionType.CLICK, action4.getType());
+        assertEquals("#example_login_login_button", action4.getSelector().get());
     }
     
     @Test
@@ -275,31 +296,38 @@ public class SecHubConfigurationTest {
         Optional<AutoDetectUserLoginConfiguration> autodetect = form.get().getAutodetect();
         assertFalse("auto detect config must NOT be present", autodetect.isPresent());
 
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        /*-- form : script --*/
+        Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
         
-        List<ScriptEntry> entries = script.get();
-        assertEquals("Must have 4 script entries", 4, entries.size());
+        Optional<List<Page>> pages = script.get().getPages();
+        assertTrue("pages must be present", pages.isPresent());
+        assertEquals("must have 1 pages", 1, pages.get().size());
         
-        ScriptEntry entry1 = entries.get(0);
-        ScriptEntry entry2 = entries.get(1);
-        ScriptEntry entry3 = entries.get(2);
-        ScriptEntry entry4 = entries.get(3);
+        /*-- page 1 --*/
+        Optional<List<Action>> page1 = pages.get().get(0).getActions();
+        assertTrue("actions must be present", page1.isPresent());
+        assertEquals("must have 4 action entries", 4, page1.get().size());
         
-        assertEquals("input", entry1.getAction());
-        assertEquals("#example_login_userid", entry1.getSelector().get());
-        assertEquals("user2", entry1.getValue().get());
+        Action action1 = page1.get().get(0);
+        Action action2 = page1.get().get(1);
+        Action action3 = page1.get().get(2);
+        Action action4 = page1.get().get(3);
         
-        assertEquals("wait", entry2.getAction());
-        assertEquals("1458", entry2.getValue().get());
-        assertEquals(SecHubTimeUnit.MILLISECOND, entry2.getUnit().get());
+        assertEquals(ActionType.INPUT, action1.getType());
+        assertEquals("#example_login_userid", action1.getSelector().get());
+        assertEquals("user2", action1.getValue().get());
         
-        assertEquals("input", entry3.getAction());
-        assertEquals("#example_login_pwd", entry3.getSelector().get());
-        assertEquals("pwd2", entry3.getValue().get());
+        assertEquals(ActionType.WAIT, action2.getType());
+        assertEquals("1458", action2.getValue().get());
+        assertEquals(SecHubTimeUnit.MILLISECOND, action2.getUnit().get());
+        
+        assertEquals(ActionType.INPUT, action3.getType());
+        assertEquals("#example_login_pwd", action3.getSelector().get());
+        assertEquals("pwd2", action3.getValue().get());
 
-        assertEquals("click", entry4.getAction());
-        assertEquals("#example_login_login_button", entry4.getSelector().get());
+        assertEquals(ActionType.CLICK, action4.getType());
+        assertEquals("#example_login_login_button", action4.getSelector().get());
     }
 
     @Test
@@ -315,12 +343,12 @@ public class SecHubConfigurationTest {
         assertTrue("webscan config must be present", webScanOption.isPresent());
 
         SecHubWebScanConfiguration secHubWebScanConfiguration = webScanOption.get();
-        
+
         Optional<WebScanDurationConfiguration> maxScanDuration = secHubWebScanConfiguration.getMaxScanDuration();
         assertTrue("max san duration config must be present", maxScanDuration.isPresent());
         assertEquals(2, maxScanDuration.get().getDuration());
         assertEquals(SecHubTimeUnit.HOUR, maxScanDuration.get().getUnit());
-        
+
         Optional<WebLoginConfiguration> loginOption = secHubWebScanConfiguration.getLogin();
         assertTrue("login config must be present", loginOption.isPresent());
         WebLoginConfiguration loginConfiguration = loginOption.get();
@@ -344,41 +372,56 @@ public class SecHubConfigurationTest {
         assertEquals("pwd1", new String(autodetect.get().getPassword()));
 
         /*-- form : script --*/
-        Optional<List<ScriptEntry>> script = form.get().getScript();
+        Optional<Script> script = form.get().getScript();
         assertTrue("script config must be present", script.isPresent());
-        List<ScriptEntry> entries = script.get();
-        assertEquals("Must have 6 script entries", 6, entries.size());
-        ScriptEntry entry1 = entries.get(0);
-        ScriptEntry entry2 = entries.get(1);
-        ScriptEntry entry3 = entries.get(2);
-        ScriptEntry entry4 = entries.get(3);
-        ScriptEntry entry5 = entries.get(4);
-        ScriptEntry entry6 = entries.get(5);
-
-        assertEquals("username", entry1.getAction());
-        assertEquals("#example_login_userid", entry1.getSelector().get());
-        assertEquals("user2", entry1.getValue().get());
-        assertEquals("This is an example description", entry1.getDescription().get());
-
-        assertEquals("click", entry2.getAction());
-        assertEquals("#next_button", entry2.getSelector().get());
-        assertEquals("Click the next button to go to the password field", entry2.getDescription().get());
         
-        assertEquals("wait", entry3.getAction());
-        assertEquals("3200", entry3.getValue().get());
-        assertEquals(SecHubTimeUnit.MILLISECOND, entry3.getUnit().get());
+        Optional<List<Page>> pages = script.get().getPages();
+        assertTrue("pages must be present", pages.isPresent());
+        assertEquals("must have 2 pages", 2, pages.get().size());
         
-        assertEquals("input", entry4.getAction());
-        assertEquals("#email_field", entry4.getSelector().get());
-        assertEquals("user@example.org", entry4.getValue().get());
-        assertEquals("The user's email address.", entry4.getDescription().get());
+        /*-- page 1 --*/
+        Optional<List<Action>> page1 = pages.get().get(0).getActions();
+        assertTrue("actions must be present", page1.isPresent());
+        assertEquals("must have 2 action entries", 2, page1.get().size());
 
-        assertEquals("password", entry5.getAction());
-        assertEquals("#example_login_pwd", entry5.getSelector().get());
-        assertEquals("pwd2", entry5.getValue().get());
+        Action action1 = page1.get().get(0);
+        Action action2 = page1.get().get(1);
 
-        assertEquals("click", entry6.getAction());
-        assertEquals("#example_login_login_button", entry6.getSelector().get());
+        assertEquals(ActionType.USERNAME, action1.getType());
+        assertEquals("#example_login_userid", action1.getSelector().get());
+        assertEquals("user2", action1.getValue().get());
+        assertEquals("This is an example description", action1.getDescription().get());
+
+        assertEquals(ActionType.CLICK, action2.getType());
+        assertEquals("#next_button", action2.getSelector().get());
+        assertEquals("Click the next button to go to the password field", action2.getDescription().get());
+
+        /*-- page 2 --*/
+        Optional<List<Action>> page2 = pages.get().get(1).getActions();
+        assertTrue("actions must be present", page2.isPresent());
+        assertEquals("must have 4 action entries", 4, page2.get().size());
+
+        Action action3 = page2.get().get(0);
+        Action action4 = page2.get().get(1);
+        Action action5 = page2.get().get(2);
+        Action action6 = page2.get().get(3);
+
+        assertEquals(ActionType.WAIT, action3.getType());
+        assertEquals("3200", action3.getValue().get());
+        assertEquals(SecHubTimeUnit.MILLISECOND, action3.getUnit().get());
+
+        assertEquals(ActionType.INPUT, action4.getType());
+        assertEquals("#email_field", action4.getSelector().get());
+        assertEquals("user@example.org", action4.getValue().get());
+        assertEquals("The user's email address.", action4.getDescription().get());
+
+        assertEquals(ActionType.PASSWORD, action5.getType());
+        assertEquals("#example_login_pwd", action5.getSelector().get());
+        assertEquals("pwd2", action5.getValue().get());
+
+        assertEquals(ActionType.CLICK, action6.getType());
+        assertEquals("#example_login_login_button", action6.getSelector().get());
+
     }
 
     @Test
