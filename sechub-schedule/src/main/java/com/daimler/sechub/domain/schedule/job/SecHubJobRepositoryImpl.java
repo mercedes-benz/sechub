@@ -35,7 +35,8 @@ public class SecHubJobRepositoryImpl implements SecHubJobRepositoryCustom {
             "select j from " + CLASS_NAME + " j" +
             " where j." + PROPERTY_EXECUTION_STATE + " = :" + PROPERTY_EXECUTION_STATE +
             " and j." + PROPERTY_PROJECT_ID + 
-            " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS + " )";
+            " not in ( " + SUB_JPQL_STRING_SELECT_PROJECTS_WITH_RUNNING_JOBS + " )" +
+            " order by " + PROPERTY_CREATED;
 	
 	
     /* @formatter:on */
