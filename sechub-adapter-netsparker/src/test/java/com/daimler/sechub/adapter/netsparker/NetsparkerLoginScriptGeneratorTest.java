@@ -333,7 +333,7 @@ public class NetsparkerLoginScriptGeneratorTest {
 
         /* test */
         String expected = "netsparker.auth.setValueByQuery('#usernamefield',username);";
-        expected += "// The email has to be provided.";
+        expected += "/* The email has to be provided. */";
         expected += "netsparker.auth.setValueByQuery('#emailfield','user@example.org');";
         expected += "netsparker.auth.setValueByQuery('#passwordfield',password);";
         expected += "netsparker.auth.clickByQuery('#buttonfield');";

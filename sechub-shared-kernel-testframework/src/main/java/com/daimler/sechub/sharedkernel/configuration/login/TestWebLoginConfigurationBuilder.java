@@ -73,7 +73,7 @@ public class TestWebLoginConfigurationBuilder {
                 page = new Page();
             }
 
-            public ScriptStepBuilder createStep() {
+            public ScriptStepBuilder createAction() {
                 return new ScriptStepBuilder();
             }
 
@@ -83,7 +83,7 @@ public class TestWebLoginConfigurationBuilder {
                     action = new Action();
                 }
                 
-                public ScriptStepBuilder action(ActionType actionType) {
+                public ScriptStepBuilder type(ActionType actionType) {
                     action.type = actionType;
                     return this;
                 }

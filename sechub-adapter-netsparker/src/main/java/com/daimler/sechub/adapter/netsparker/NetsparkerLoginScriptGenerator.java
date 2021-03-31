@@ -59,7 +59,7 @@ public class NetsparkerLoginScriptGenerator implements LoginScriptGenerator{
         // Add the description as comment
         String description = currentStep.getDescription();
         if (description != null && !description.isEmpty()) {
-            sb.append("// ").append(description);
+            sb.append("/* ").append(description).append(" */");
         }
         
         boolean scriptCommand = true;

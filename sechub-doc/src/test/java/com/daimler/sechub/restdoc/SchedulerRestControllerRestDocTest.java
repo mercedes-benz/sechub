@@ -372,32 +372,32 @@ public class SchedulerRestControllerRestDocTest {
 	    						login("https://localhost/mywebapp/login").
 	    						  formScripted("username1","password1").
 	    						    createPage().
-    	    						    createStep().
-    	    						        action(ActionType.USERNAME).
+    	    						    createAction().
+    	    						        type(ActionType.USERNAME).
     	    						        selector("#example_login_userid").
     	    						        value("username1").
     	    						        description("the username field").
     	    						        add().
-    	    						    createStep().
-    	    						        action(ActionType.INPUT).
+    	    						    createAction().
+    	    						        type(ActionType.INPUT).
     	    						        selector("#example_login_email_id").
     	    						        value("user@example.com").
     	    						        description("The email id field.").
     	    						        add().
                                         add().
                                    createPage().
-    	    						    createStep().
-    	    						        action(ActionType.WAIT).
+    	    						    createAction().
+    	    						        type(ActionType.WAIT).
     	    						        value("2345").
     	    						        unit(SecHubTimeUnit.MILLISECOND).
     	    						        add().
-    	    						    createStep().
-    	    						        action(ActionType.PASSWORD).
+    	    						    createAction().
+    	    						        type(ActionType.PASSWORD).
     	    						        selector("#example_login_pwd").
     	    						        value("Super$ecret234!").
     	    						        add().
-    	    						    createStep().
-    	    						        action(ActionType.CLICK).
+    	    						    createAction().
+    	    						        type(ActionType.CLICK).
     	    						        selector("#example_login_button").
     	    						        add().
     	                                add().
