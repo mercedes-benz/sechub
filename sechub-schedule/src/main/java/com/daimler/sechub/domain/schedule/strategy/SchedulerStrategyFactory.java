@@ -18,7 +18,7 @@ public class SchedulerStrategyFactory {
     @Autowired
     OnlyOneScanPerProjectAtSameTimeStrategy oosppStrategy;
 
-    @Value("${sechub.scheduler.strategy.id}")
+    @Value("${sechub.scheduler.strategy.id:}")
     private String strategyId;
 
     public SchedulerStrategy build() {

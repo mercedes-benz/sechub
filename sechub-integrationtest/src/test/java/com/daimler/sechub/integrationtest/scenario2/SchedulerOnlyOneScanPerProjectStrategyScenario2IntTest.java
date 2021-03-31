@@ -41,8 +41,6 @@ public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
         /* execute */
         UUID jobId1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
-//        waitForJobRunning(PROJECT_1, jobId1);
-        
         UUID jobId2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
         waitSeconds(1);
