@@ -4,7 +4,6 @@ package com.daimler.sechub.domain.notification.owner;
 import static java.util.Objects.*;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

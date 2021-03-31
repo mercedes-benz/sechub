@@ -7,7 +7,6 @@ import static com.daimler.sechub.integrationtest.scenario3.Scenario3.*;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.daimler.sechub.integrationtest.api.AssertMail.*;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class ProjectAdministrationScenario3IntTest {
