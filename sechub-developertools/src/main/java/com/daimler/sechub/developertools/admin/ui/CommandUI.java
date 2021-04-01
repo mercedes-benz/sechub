@@ -59,6 +59,7 @@ import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringS
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.ShowPDSConfigurationDialogAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.UploadPDSJobFileAction;
+import com.daimler.sechub.developertools.admin.ui.action.project.AssignOwnerToProjectAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileToAllProjectsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignProfileToProjectsAction;
 import com.daimler.sechub.developertools.admin.ui.action.project.AssignUserToProjectAction;
@@ -97,8 +98,8 @@ import com.daimler.sechub.developertools.admin.ui.action.user.ListSignupsAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowAdminListAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserDetailAction;
 import com.daimler.sechub.developertools.admin.ui.action.user.ShowUserListAction;
-import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.GrantAdminRightsToUserAction;
-import com.daimler.sechub.developertools.admin.ui.action.user.priviledges.RevokeAdminRightsFromAdminAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.privileges.GrantAdminRightsToUserAction;
+import com.daimler.sechub.developertools.admin.ui.action.user.privileges.RevokeAdminRightsFromAdminAction;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 
@@ -288,6 +289,8 @@ public class CommandUI {
         add(menu, new ListSignupsAction(context));
         add(menu, new ShowUserListAction(context));
         menu.addSeparator();
+        add(menu, new AssignOwnerToProjectAction(context));
+        menu.addSeparator();
         add(menu, new AssignUserToProjectAction(context));
         add(menu, new UnassignUserFromProjectAction(context));
         menu.addSeparator();
@@ -309,6 +312,9 @@ public class CommandUI {
         add(menu, new ShowProjectDetailAction(context));
         add(menu, new ShowProjectsScanLogsAction(context));
 
+        menu.addSeparator();
+        add(menu, new AssignOwnerToProjectAction(context));
+        
         menu.addSeparator();
         add(menu, new AssignUserToProjectAction(context));
         add(menu, new UnassignUserFromProjectAction(context));

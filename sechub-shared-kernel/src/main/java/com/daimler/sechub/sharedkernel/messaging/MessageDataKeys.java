@@ -124,6 +124,8 @@ public class MessageDataKeys {
 
 	public static final MessageDataKey<MappingMessage> CONFIG_MAPPING_DATA = createMappingMessageKey("config.mapping.data");
 
+	public static final MessageDataKey<ProjectMessage> PROJECT_OWNER_CHANGE_DATA = createProjectMessageKey("project.owner.change.data");
+	
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Helpers ..................................+ */
 	/* +-----------------------------------------------------------------------+ */

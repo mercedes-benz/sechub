@@ -23,7 +23,7 @@ public class ImportParameter {
 	}
 
 	/**
-	 * Builder for input paramters
+	 * Builder for input parameters
 	 * @author Albert Tregnaghi
 	 *
 	 */

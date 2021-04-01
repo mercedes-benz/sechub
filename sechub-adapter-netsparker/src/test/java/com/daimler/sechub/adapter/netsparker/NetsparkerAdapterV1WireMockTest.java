@@ -178,9 +178,9 @@ public class NetsparkerAdapterV1WireMockTest {
                     .withBody(xml)));
         /* @formatter:on */
 
-        AdapterMetaDataCallback callBack = mock(AdapterMetaDataCallback.class);
+        AdapterMetaDataCallback callback = mock(AdapterMetaDataCallback.class);
         /* execute */
-        String result = adapterToTest.start(config,callBack);
+        String result = adapterToTest.start(config,callback);
 
 		/* test */
 		verify(getRequestedFor(urlEqualTo("/netsparkertest_1/api/1.0/websites/get?query=" + WEBSITE_ID)));

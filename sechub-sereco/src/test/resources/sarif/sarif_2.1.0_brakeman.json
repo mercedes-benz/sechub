@@ -1,0 +1,1048 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Brakeman",
+          "informationUri": "https://brakemanscanner.org",
+          "semanticVersion": "5.0.0",
+          "rules": [
+            {
+              "id": "BRAKE0102",
+              "name": "ContentTag/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for XSS in calls to content_tag."
+              },
+              "helpUri": "https://groups.google.com/d/msg/ruby-security-ann/8B2iV2tPRSE/JkjCJkSoCgAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/ruby-security-ann/8B2iV2tPRSE/JkjCJkSoCgAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/ruby-security-ann/8B2iV2tPRSE/JkjCJkSoCgAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "ContentTag"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0116",
+              "name": "CSRFTokenForgeryCVE/Cross-Site Request Forgery",
+              "fullDescription": {
+                "text": "Checks for versions with CSRF token forgery vulnerability (CVE-2020-8166)."
+              },
+              "helpUri": "https://groups.google.com/g/rubyonrails-security/c/NOjKiGeXUgw",
+              "help": {
+                "text": "More info: https://groups.google.com/g/rubyonrails-security/c/NOjKiGeXUgw.",
+                "markdown": "[More info](https://groups.google.com/g/rubyonrails-security/c/NOjKiGeXUgw)."
+              },
+              "properties": {
+                "tags": [
+                  "CSRFTokenForgeryCVE"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0013",
+              "name": "Evaluation/Dangerous Eval",
+              "fullDescription": {
+                "text": "Searches for evaluation of user input."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/dangerous_eval/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/dangerous_eval/)."
+              },
+              "properties": {
+                "tags": [
+                  "Evaluation"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0070",
+              "name": "MassAssignment/Mass Assignment",
+              "fullDescription": {
+                "text": "Finds instances of mass assignment."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/mass_assignment/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/mass_assignment/)."
+              },
+              "properties": {
+                "tags": [
+                  "MassAssignment"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0115",
+              "name": "PageCachingCVE/Directory Traversal",
+              "fullDescription": {
+                "text": "Check for page caching vulnerability (CVE-2020-8159)."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/CFRVkEytdP8/c5gmICECAgAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/CFRVkEytdP8/c5gmICECAgAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/CFRVkEytdP8/c5gmICECAgAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "PageCachingCVE"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0105",
+              "name": "PermitAttributes/Mass Assignment",
+              "fullDescription": {
+                "text": "Warn on potentially dangerous attributes allowed via permit."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/mass_assignment/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/mass_assignment/)."
+              },
+              "properties": {
+                "tags": [
+                  "PermitAttributes"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0018",
+              "name": "Redirect/Redirect",
+              "fullDescription": {
+                "text": "Looks for calls to redirect_to with user input as arguments."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/redirect/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/redirect/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/redirect/)."
+              },
+              "properties": {
+                "tags": [
+                  "Redirect"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0084",
+              "name": "RenderInline/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for cross-site scripting in render calls."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/cross-site_scripting/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/cross-site_scripting/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/cross-site_scripting/)."
+              },
+              "properties": {
+                "tags": [
+                  "RenderInline"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0096",
+              "name": "SanitizeMethods/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for versions with vulnerable sanitize and sanitize_css."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/JbvSRpdbFQAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/JbvSRpdbFQAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/JbvSRpdbFQAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "SanitizeMethods"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0097",
+              "name": "SanitizeMethods/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for versions with vulnerable sanitize and sanitize_css."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/m_CVZtdbFQAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/m_CVZtdbFQAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/uh--W4TDwmI/m_CVZtdbFQAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "SanitizeMethods"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0107",
+              "name": "SanitizeMethods/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for versions with vulnerable sanitize and sanitize_css."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/tP7W3kLc5u4/uDy2Br7xBgAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/tP7W3kLc5u4/uDy2Br7xBgAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/tP7W3kLc5u4/uDy2Br7xBgAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "SanitizeMethods"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0106",
+              "name": "SanitizeMethods/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for versions with vulnerable sanitize and sanitize_css."
+              },
+              "helpUri": "https://github.com/flavorjones/loofah/issues/144",
+              "help": {
+                "text": "More info: https://github.com/flavorjones/loofah/issues/144.",
+                "markdown": "[More info](https://github.com/flavorjones/loofah/issues/144)."
+              },
+              "properties": {
+                "tags": [
+                  "SanitizeMethods"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0023",
+              "name": "Send/Dangerous Send",
+              "fullDescription": {
+                "text": "Check for unsafe use of Object#send."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/dangerous_send/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/dangerous_send/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/dangerous_send/)."
+              },
+              "properties": {
+                "tags": [
+                  "Send"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0108",
+              "name": "SprocketsPathTraversal/Path Traversal",
+              "fullDescription": {
+                "text": "Checks for CVE-2018-3760."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/ft_J--l55fM/7roDfQ50BwAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/ft_J--l55fM/7roDfQ50BwAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/ft_J--l55fM/7roDfQ50BwAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "SprocketsPathTraversal"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0000",
+              "name": "SQL/SQL Injection",
+              "fullDescription": {
+                "text": "Check for SQL injection."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/sql_injection/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/sql_injection/)."
+              },
+              "properties": {
+                "tags": [
+                  "SQL"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0098",
+              "name": "StripTags/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Report strip_tags vulnerabilities."
+              },
+              "helpUri": "https://groups.google.com/d/msg/rubyonrails-security/OU9ugTZcbjc/PjEP46pbFQAJ",
+              "help": {
+                "text": "More info: https://groups.google.com/d/msg/rubyonrails-security/OU9ugTZcbjc/PjEP46pbFQAJ.",
+                "markdown": "[More info](https://groups.google.com/d/msg/rubyonrails-security/OU9ugTZcbjc/PjEP46pbFQAJ)."
+              },
+              "properties": {
+                "tags": [
+                  "StripTags"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0117",
+              "name": "TemplateInjection/Template Injection",
+              "fullDescription": {
+                "text": "Searches for evaluation of user input through template injection."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/template_injection/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/template_injection/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/template_injection/)."
+              },
+              "properties": {
+                "tags": [
+                  "TemplateInjection"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0024",
+              "name": "UnsafeReflection/Remote Code Execution",
+              "fullDescription": {
+                "text": "Checks for unsafe reflection."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/remote_code_execution/",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/remote_code_execution/.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/remote_code_execution/)."
+              },
+              "properties": {
+                "tags": [
+                  "UnsafeReflection"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0002",
+              "name": "CrossSiteScripting/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for unescaped output in views."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/cross_site_scripting.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/cross_site_scripting)."
+              },
+              "properties": {
+                "tags": [
+                  "CrossSiteScripting"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0053",
+              "name": "ContentTag/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks for XSS in calls to content_tag."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/content_tag",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/content_tag.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/content_tag)."
+              },
+              "properties": {
+                "tags": [
+                  "ContentTag"
+                ]
+              }
+            },
+            {
+              "id": "BRAKE0004",
+              "name": "LinkToHref/Cross-Site Scripting",
+              "fullDescription": {
+                "text": "Checks to see if values used for hrefs are sanitized using a :url_safe_method to protect against javascript:/data: XSS."
+              },
+              "helpUri": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+              "help": {
+                "text": "More info: https://brakemanscanner.org/docs/warning_types/link_to_href.",
+                "markdown": "[More info](https://brakemanscanner.org/docs/warning_types/link_to_href)."
+              },
+              "properties": {
+                "tags": [
+                  "LinkToHref"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "BRAKE0102",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 115
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0116",
+          "ruleIndex": 1,
+          "level": "warning",
+          "message": {
+            "text": "Rails 5.0.0 has a vulnerability that may allow CSRF token forgery. Upgrade to Rails 5.2.4.3 or patch."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 115
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0013",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "User input in eval."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/models/user.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0013",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "User input in eval."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/helpers/users_helper.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0070",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/users_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 78
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0115",
+          "ruleIndex": 4,
+          "level": "note",
+          "message": {
+            "text": "Directory traversal vulnerability in actionpack-page_caching 1.2.0 (CVE-2020-8159). Upgrade to actionpack-page_caching 1.2.2."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 24
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0105",
+          "ruleIndex": 5,
+          "level": "error",
+          "message": {
+            "text": "Potentially dangerous key allowed for mass assignment."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/widget_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 90
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0018",
+          "ruleIndex": 6,
+          "level": "error",
+          "message": {
+            "text": "Possible unprotected redirect."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/mixed_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0084",
+          "ruleIndex": 7,
+          "level": "error",
+          "message": {
+            "text": "Unescaped cookie value rendered inline."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/widget_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 86
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0096",
+          "ruleIndex": 8,
+          "level": "error",
+          "message": {
+            "text": "rails-html-sanitizer 1.0.2 is vulnerable (CVE-2015-7578). Upgrade to rails-html-sanitizer 1.0.3."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 133
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0097",
+          "ruleIndex": 9,
+          "level": "error",
+          "message": {
+            "text": "rails-html-sanitizer 1.0.2 is vulnerable (CVE-2015-7580). Upgrade to rails-html-sanitizer 1.0.3."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 133
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0107",
+          "ruleIndex": 10,
+          "level": "error",
+          "message": {
+            "text": "rails-html-sanitizer 1.0.2 is vulnerable (CVE-2018-3741). Upgrade to rails-html-sanitizer 1.0.4."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 133
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0106",
+          "ruleIndex": 11,
+          "level": "error",
+          "message": {
+            "text": "loofah gem 2.0.3 is vulnerable (CVE-2018-8048). Upgrade to 2.2.1."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 99
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0023",
+          "ruleIndex": 12,
+          "level": "error",
+          "message": {
+            "text": "User controlled method execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/users_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 76
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0108",
+          "ruleIndex": 13,
+          "level": "error",
+          "message": {
+            "text": "sprockets 3.5.2 has a path traversal vulnerability (CVE-2018-3760). Upgrade to sprockets 3.7.2 or newer."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 144
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0000",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "Possible SQL injection."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "lib/a_lib.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0000",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "Possible SQL injection."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/users_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 97
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0098",
+          "ruleIndex": 15,
+          "level": "error",
+          "message": {
+            "text": "rails-html-sanitizer 1.0.2 is vulnerable (CVE-2015-7579). Upgrade to rails-html-sanitizer 1.0.3."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Gemfile.lock",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 133
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0117",
+          "ruleIndex": 16,
+          "level": "error",
+          "message": {
+            "text": "Parameter value used directly in `ERB` template, which might enable remote code execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/models/user.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0024",
+          "ruleIndex": 17,
+          "level": "error",
+          "message": {
+            "text": "Unsafe reflection method `constantize` called with parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/widget_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped model attribute."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/layouts/users.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/controllers/widget_controller.rb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped model attribute."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/attributes.html.haml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 13
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/haml_test.html.haml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/no_html.haml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/show.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/users/sanitizing.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0002",
+          "ruleIndex": 18,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/users/sanitizing.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0053",
+          "ruleIndex": 19,
+          "level": "error",
+          "message": {
+            "text": "Unescaped parameter value in `content_tag`."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/content_tag.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0053",
+          "ruleIndex": 19,
+          "level": "warning",
+          "message": {
+            "text": "Unescaped parameter value in `content_tag`."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/widget/content_tag.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0004",
+          "ruleIndex": 20,
+          "level": "error",
+          "message": {
+            "text": "Unsafe parameter value in `link_to` href."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/users/show.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "BRAKE0004",
+          "ruleIndex": 20,
+          "level": "note",
+          "message": {
+            "text": "Potentially unsafe model attribute in `link_to` href."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/views/users/show.html.erb",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

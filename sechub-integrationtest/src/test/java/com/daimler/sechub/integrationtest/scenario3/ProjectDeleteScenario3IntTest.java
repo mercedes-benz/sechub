@@ -32,32 +32,37 @@ public class ProjectDeleteScenario3IntTest {
 	/* @formatter:off */
 	@Test
 	public void super_admin_deletes_project__deletes_also_access_entries_other_domains_and_user_rolecalculation_is_done() throws Exception {
-		/* check preconditions*/
-		assertUser(USER_1).
-			isAssignedToProject(PROJECT_1).
-			hasOwnerRole().
-			hasUserRole();
+	    /* check preconditions*/
+        assertUser(USER_1).
+            isAssignedToProject(PROJECT_1).
+            hasOwnerRole().
+            hasUserRole();
+        
+        assertUser(USER_1).
+            hasOwnerRole().
+            hasUserRole();
 
-		assertProject(PROJECT_1).
-			doesExist().
-			hasAccessEntriesInDomainSchedule(1). // user 1 is assigned and so has access to
-		    hasAccessEntriesInDomainScan(1); // user 1 is assigned and so has access to
+        assertProject(PROJECT_1).
+            doesExist().
+            hasAccessEntriesInDomainSchedule(1). // user 1 is assigned and so has access to
+            hasAccessEntriesInDomainScan(1); // user 1 is assigned and so has access to
 
-		/* execute */
-		as(SUPER_ADMIN).deleteProject(PROJECT_1);
+        /* execute */
+        as(SUPER_ADMIN).deleteProject(PROJECT_1);
+        as(SUPER_ADMIN).deleteProject(PROJECT_2);
 
-		/* test */
-		waitAsyncDeleteEventsDone();
+        /* test */
+        waitAsyncDeleteEventsDone();
 
-		assertProject(PROJECT_1).
-			doesNotExist().
-			hasAccessEntriesInDomainSchedule(0).
-			hasAccessEntriesInDomainScan(0); // no longer access
+        assertProject(PROJECT_1).
+            doesNotExist().
+            hasAccessEntriesInDomainSchedule(0).
+            hasAccessEntriesInDomainScan(0); // no longer access
 
-		assertUser(USER_1).
-			doesExist().
-			hasNotOwnerRole(). // no longer role owner - was only owner of project1
-			hasUserRole(); // still user
+        assertUser(USER_1).
+            doesExist().
+            hasNotOwnerRole(). // no longer role owner - was only owner of project1
+            hasUserRole(); // still user
 
 	}
 	/* @formatter:on */
@@ -71,10 +76,10 @@ public class ProjectDeleteScenario3IntTest {
 
 		/* prepare - just execute two jobs */
 		ExecutionResult result1 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_GREEN);
-		UUID sechubJobUUID1 = result1.getSechubJobUUD();
+		UUID sechubJobUUID1 = result1.getSechubJobUUID();
 
 		ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_YELLOW);
-		UUID sechubJobUUID2 = result2.getSechubJobUUD();
+		UUID sechubJobUUID2 = result2.getSechubJobUUID();
 
 		/* check preconditions */
 		assertNotNull(sechubJobUUID1);

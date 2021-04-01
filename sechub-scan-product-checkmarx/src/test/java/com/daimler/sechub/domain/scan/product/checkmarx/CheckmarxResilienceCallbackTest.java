@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.resilience.ResilienceContext;
 
 public class CheckmarxResilienceCallbackTest {
 
-    private CheckmarxResilienceCallback callBackToTest;
+    private CheckmarxResilienceCallback callbackToTest;
     private ProductExecutorContext executorContext;
     private CheckmarxExecutorConfigSuppport configSupport;
     private AdapterMetaDataCallback adapterMetaDataCallback;
@@ -28,14 +28,14 @@ public class CheckmarxResilienceCallbackTest {
         executorContext = mock(ProductExecutorContext.class);
         adapterMetaDataCallback=mock(AdapterMetaDataCallback.class);
         
-        when(executorContext.getCallBack()).thenReturn(adapterMetaDataCallback);
+        when(executorContext.getCallback()).thenReturn(adapterMetaDataCallback);
         metaData = mock(AdapterMetaData.class);
         when(executorContext.getCurrentMetaDataOrNull()).thenReturn(metaData);
         
-        callBackToTest = new CheckmarxResilienceCallback(configSupport,executorContext);
+        callbackToTest = new CheckmarxResilienceCallback(configSupport,executorContext);
         
         /* check precondition */
-        assertFalse(callBackToTest.isAlwaysFullScanEnabled());
+        assertFalse(callbackToTest.isAlwaysFullScanEnabled());
         
     }
     @Test
@@ -44,10 +44,10 @@ public class CheckmarxResilienceCallbackTest {
         when(configSupport2.isAlwaysFullScanEnabled()).thenReturn(true);
         
         /* prepare */
-        callBackToTest = new CheckmarxResilienceCallback(configSupport2,executorContext);
+        callbackToTest = new CheckmarxResilienceCallback(configSupport2,executorContext);
         
         /* test */
-        assertTrue(callBackToTest.isAlwaysFullScanEnabled());
+        assertTrue(callbackToTest.isAlwaysFullScanEnabled());
         
     }
 
@@ -58,10 +58,10 @@ public class CheckmarxResilienceCallbackTest {
         when(context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN)).thenReturn(true);
         
         /* execute */
-        callBackToTest.beforeRetry(context);
+        callbackToTest.beforeRetry(context);
         
         /* test */
-        assertTrue(callBackToTest.isAlwaysFullScanEnabled());
+        assertTrue(callbackToTest.isAlwaysFullScanEnabled());
         
         verify(metaData).setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, null);
         verify(metaData).setValue(CheckmarxMetaDataID.KEY_SCAN_ID, null);
@@ -79,10 +79,10 @@ public class CheckmarxResilienceCallbackTest {
         when(context.getValueOrNull(CheckmarxResilienceConsultant.CONTEXT_ID_FALLBACK_CHECKMARX_FULLSCAN)).thenReturn(false);
         
         /* execute */
-        callBackToTest.beforeRetry(context);
+        callbackToTest.beforeRetry(context);
         
         /* test */
-        assertFalse(callBackToTest.isAlwaysFullScanEnabled());
+        assertFalse(callbackToTest.isAlwaysFullScanEnabled());
         
         verify(metaData,never()).setValue(eq(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE), any());
         verify(metaData,never()).setValue(eq(CheckmarxMetaDataID.KEY_SCAN_ID), any());

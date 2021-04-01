@@ -50,7 +50,7 @@ class CheckmarxResilienceCallback implements ResilienceCallback {
             metaData.setValue(keyScanId, null);
             metaData.setValue(uploadKey, null);
             
-            executorContext.getCallBack().persist(metaData);
+            executorContext.getCallback().persist(metaData);
             CheckmarxProductExecutor.LOG.debug("persisted checkmarx adapter meta data");
         }
         /*

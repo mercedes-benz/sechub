@@ -6,6 +6,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
@@ -16,6 +19,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class AssertSecHubReport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AssertSecHubReport.class);
+
     private static String lastOutputLIne;
     private JSONTestSupport jsonTestSupport = JSONTestSupport.DEFAULT;
     private JsonNode jsonObj;
@@ -27,7 +33,8 @@ public class AssertSecHubReport {
             throw new RuntimeException("Not able to read json obj", e);
         }
     }
-
+    
+    @Deprecated // use assertReport instead (newer implementation has more details and uses common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
         return new AssertSecHubReport(json);
     }
@@ -51,9 +58,9 @@ public class AssertSecHubReport {
 
         private AssertFinding() {
         }
-        
+
         public AssertFinding severity(Severity severity) {
-            this.severity=severity;
+            this.severity = severity;
             return this;
         }
 
@@ -92,13 +99,16 @@ public class AssertSecHubReport {
             JsonNode f = r.get("findings");
             ArrayNode findings = (ArrayNode) f;
             JsonNode found = null;
-            
+
             for (int i = 0; i < findings.size(); i++) {
                 boolean atLeastAcceptedByOne = false;
                 JsonNode finding = findings.get(i);
                 /* --------------- name -------------------- */
                 if (name != null) {
-                    String foundName = finding.get("name").asText();
+                    String foundName = safeText(finding.get("name"));
+                    if (foundName == null) {
+                        continue;
+                    }
                     if (!foundName.equals(name)) {
                         continue;
                     }
@@ -108,7 +118,7 @@ public class AssertSecHubReport {
 
                 /* --------------- id -------------------- */
                 if (id != null) {
-                    int foundFindingId = finding.get("id").asInt();
+                    int foundFindingId = safeInt(finding.get("id"));
                     if (foundFindingId != id.intValue()) {
                         continue;
                     }
@@ -118,16 +128,22 @@ public class AssertSecHubReport {
 
                 /* --------------- description ----------- */
                 if (description != null) {
-                    String foundDescription = finding.get("description").asText();
+                    String foundDescription = safeText(finding.get("description"));
+                    if (foundDescription == null) {
+                        continue;
+                    }
                     if (!foundDescription.equals(description)) {
                         continue;
                     }
                     atLeastAcceptedByOne = true;
                 }
-                
+
                 /* --------------- severity ----------- */
                 if (severity != null) {
-                    String foundSeverity = finding.get("severity").asText();
+                    String foundSeverity = safeText(finding.get("severity"));
+                    if (foundSeverity == null) {
+                        continue;
+                    }
                     if (!foundSeverity.equals(severity.name())) {
                         continue;
                     }
@@ -135,7 +151,10 @@ public class AssertSecHubReport {
                 }
                 /* --------------- scanType ----------- */
                 if (scanType != null) {
-                    String foundScanTypeId = finding.get("type").asText();
+                    String foundScanTypeId = safeText(finding.get("type"));
+                    if (foundScanTypeId == null) {
+                        continue;
+                    }
                     if (!foundScanTypeId.equals(scanType.getId())) {
                         continue;
                     }
@@ -149,10 +168,24 @@ public class AssertSecHubReport {
                 }
             }
             if (found == null && expectedToBeFound) {
-                fail("Not found finding:"+this+"\n\nSource:"+jsonObj.toPrettyString());
+                fail("Not found finding:" + this + "\n\nSource:" + jsonObj.toPrettyString());
             } else if (found != null && !expectedToBeFound) {
-                fail("Did found entry:" + found.toPrettyString()+", by searching for :"+this+"\n\nSource:"+jsonObj.toPrettyString());
+                fail("Did found entry:" + found.toPrettyString() + ", by searching for :" + this + "\n\nSource:" + jsonObj.toPrettyString());
             }
+        }
+
+        private String safeText(JsonNode node) {
+            if (node == null) {
+                return null;
+            }
+            return node.asText();
+        }
+
+        private int safeInt(JsonNode node) {
+            if (node == null) {
+                return -1;
+            }
+            return node.asInt();
         }
 
         @Override
@@ -167,8 +200,6 @@ public class AssertSecHubReport {
         return new AssertFinding();
     }
 
-
-
     public AssertSecHubReport hasTrafficLight(TrafficLight trafficLight) {
         JsonNode r = jsonObj.get("trafficLight");
         if (r == null) {
@@ -176,6 +207,21 @@ public class AssertSecHubReport {
         }
         String trText = r.asText();
         assertEquals(trafficLight, TrafficLight.fromString(trText));
+        return this;
+    }
+
+    /**
+     * Dumps curren json content to log output - just for debugging, do not keep it
+     * inside tests
+     * 
+     * @return assert object
+     */
+    public AssertSecHubReport dump() {
+        LOG.info("--------------------------------------------------------------------------------------------------------");
+        LOG.info("-------------------------------------------------- DUMP -----------------------------------------------");
+        LOG.info("--------------------------------------------------------------------------------------------------------");
+        LOG.info(jsonObj.toPrettyString());
+        LOG.info("--------------------------------------------------------------------------------------------------------");
         return this;
     }
 

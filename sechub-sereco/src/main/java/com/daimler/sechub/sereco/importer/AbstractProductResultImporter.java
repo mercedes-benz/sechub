@@ -3,23 +3,35 @@ package com.daimler.sechub.sereco.importer;
 
 import com.daimler.sechub.sereco.ImportParameter;
 
-public abstract class AbstractProductResultImporter implements ProductResultImporter{
+public abstract class AbstractProductResultImporter implements ProductResultImporter {
 
-	private ImportSupport importSupport;
+    private ImportSupport importSupport;
 
-	public AbstractProductResultImporter() {
-		this.importSupport=createImportSupport();
-	}
+    public AbstractProductResultImporter() {
+        this.importSupport = createImportSupport();
+    }
 
-	protected abstract ImportSupport createImportSupport();
+    /**
+     * Creates an import support which helps to make some fast standard check if
+     * import is possible
+     * 
+     * @return import support
+     */
+    protected abstract ImportSupport createImportSupport();
 
-	protected ImportSupport getImportSupport() {
-		return importSupport;
-	}
+    protected ImportSupport getImportSupport() {
+        return importSupport;
+    }
 
-	public final ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
-		return importSupport.isAbleToImport(param);
-	}
-	
-	
+    /**
+     * The default implementation does only use the import support to
+     * check if import is possible or not. If this is not enough for a 100% check
+     * please override this method.<br>
+     * <h3>Originally the interface describes:</h3>
+     * {@inheritDoc}
+     */
+    public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+        return importSupport.isAbleToImport(param);
+    }
+
 }

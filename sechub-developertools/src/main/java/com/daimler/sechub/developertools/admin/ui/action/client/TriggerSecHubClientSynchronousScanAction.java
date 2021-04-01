@@ -56,7 +56,7 @@ public class TriggerSecHubClientSynchronousScanAction extends AbstractUIAction {
         output("synchronous scan done");
         output("RESULT:");
         output("- exitcode:" + result.getExitCode());
-        output("- sechub job UUID:" + result.getSechubJobUUD());
+        output("- sechub job UUID:" + result.getSechubJobUUID());
         output("- traffic light:" + result.getTrafficLight());
         output("- last outputline:" + result.getLastOutputLine());
         output("- report file location:" + result.getJSONReportFile());

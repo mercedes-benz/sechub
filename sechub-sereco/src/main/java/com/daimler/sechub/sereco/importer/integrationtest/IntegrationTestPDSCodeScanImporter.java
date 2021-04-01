@@ -20,8 +20,10 @@ import com.daimler.sechub.sharedkernel.Profiles;
 @Component
 @Profile(Profiles.INTEGRATIONTEST) // we provide this importer only at integration tests
 /**
- * Please read /sechub-integrationtest/src/test/resources/pds/codescan/upload/README.md for syntax
- * description integration test output - ProductImportAbility.
+ * Please read
+ * /sechub-integrationtest/src/test/resources/pds/codescan/upload/README.md for
+ * syntax description integration test output - ProductImportAbility.
+ * 
  * @author Albert Tregnaghi
  *
  */
@@ -35,47 +37,46 @@ public class IntegrationTestPDSCodeScanImporter implements ProductResultImporter
         String[] lines = simpleText.split("\n");
         SerecoMetaData metaData = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = metaData.getVulnerabilities();
-        int pseudoLineNumber =0;
-        for (String line: lines) {
+        int pseudoLineNumber = 0;
+        for (String line : lines) {
             pseudoLineNumber++; // we just reuse result line...
             if (line.startsWith("#")) {
                 continue;
             }
-            
+
             String[] splitted = line.split(":");
-            if (splitted.length<2) {
+            if (splitted.length < 2) {
                 continue;
             }
-            int pos=0;
+            int pos = 0;
             String severity = splitted[pos++];
-            String message= splitted[pos++];
-            
+            String message = splitted[pos++];
+
             SerecoCodeCallStackElement code = new SerecoCodeCallStackElement();
             code.setColumn(123);
             code.setLine(pseudoLineNumber);
             code.setLocation("data.txt");
             code.setRelevantPart("integrationtest");
             code.setSource("integration test code only!");
-            
+
             SerecoVulnerability vulnerability = new SerecoVulnerability();
             vulnerability.setDescription(message);
             vulnerability.setScanType(ScanType.CODE_SCAN);
             vulnerability.setCode(code);
-            
+
             vulnerability.setSeverity(SerecoSeverity.fromString(severity));
-            
+
             vulnerabilities.add(vulnerability);
         }
-            
-        
+
         return metaData;
     }
 
     @Override
     public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
-        
+
         String data = param.getImportData();
-        if (! data.startsWith(ID_PDS_INTTEST_PRODUCT_CODESCAN)) {
+        if (!data.startsWith(ID_PDS_INTTEST_PRODUCT_CODESCAN)) {
             return ProductImportAbility.NOT_ABLE_TO_IMPORT;
         }
         if (data.contains(ID_PDS_INTTEST_PRODUCT_CODESCAN_FAILED)) {
@@ -83,6 +84,5 @@ public class IntegrationTestPDSCodeScanImporter implements ProductResultImporter
         }
         return ProductImportAbility.ABLE_TO_IMPORT;
     }
-
 
 }

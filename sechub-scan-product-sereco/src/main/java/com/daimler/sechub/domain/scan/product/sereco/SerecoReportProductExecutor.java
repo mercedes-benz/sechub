@@ -55,10 +55,10 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
 	@Override
 	public List<ProductResult> execute(SecHubExecutionContext context,ProductExecutorContext executorContext) throws SecHubExecutionException {
-		return Collections.singletonList(createReport(context));
+		return Collections.singletonList(createReport(context, executorContext));
 	}
 
-	private ProductResult createReport(SecHubExecutionContext context) {
+	private ProductResult createReport(SecHubExecutionContext context, ProductExecutorContext executorContext) {
 		if (context == null) {
 			throw new IllegalArgumentException("context may not be null!");
 		}
@@ -71,19 +71,19 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
 		/* load the results by job uuid */
 		ProductIdentifier[] supportedProducts = getSupportedProducts();
-		List<ProductResult> foundProductResults = productResultRepository.findProductResults(secHubJobUUID,
+		List<ProductResult> foundProductResults = productResultRepository.findAllProductResults(secHubJobUUID,
 				supportedProducts);
 
 		if (foundProductResults.isEmpty()) {
 			LOG.warn("{} no product results for {} found, will return an empty sereco JSON as result! ", traceLogId, getSupportedProducts());
-			return new ProductResult(secHubJobUUID, projectId, getIdentifier(), "{}");
+			return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), "{}");
 		}
 
-		return createReport(projectId, secHubJobUUID, traceLogId, foundProductResults);
+		return createReport(projectId, secHubJobUUID, traceLogId, executorContext, foundProductResults);
 	}
 
 	private ProductResult createReport(String projectId, UUID secHubJobUUID, UUIDTraceLogID traceLogId,
-			List<ProductResult> foundProductResults) {
+			ProductExecutorContext executorContext, List<ProductResult> foundProductResults) {
 		Workspace workspace = sechubReportCollector.createWorkspace(projectId);
 
 		for (ProductResult productResult : foundProductResults) {
@@ -91,7 +91,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 		}
 		String json = workspace.createReport();
 		/* fetch + return all vulnerabilities as JSON */
-		return new ProductResult(secHubJobUUID, projectId, getIdentifier(), json);
+		return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
 	}
 
 	private void importProductResult(UUIDTraceLogID traceLogId, Workspace workspace, ProductResult productResult) {
@@ -102,7 +102,7 @@ public class SerecoReportProductExecutor implements ScanReportProductExecutor {
 
 		UUID uuid = productResult.getUUID();
 		String docId = uuid.toString();
-		LOG.debug("{} start to import result '{}' from product '{}'", traceLogId, docId, productId);
+		LOG.debug("{} start to import result '{}' from product '{}' , config:{}", traceLogId, docId, productId, productResult.getProductExecutorConfigUUID());
 
 		/* @formatter:off */
 		try {

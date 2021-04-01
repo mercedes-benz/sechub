@@ -6,15 +6,20 @@ import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario4.Scenario4.*;
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.adapter.AdapterMetaData;
+import com.daimler.sechub.adapter.mock.AbstractMockedAdapter;
+import com.daimler.sechub.integrationtest.api.AssertFullScanData;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 
 /**
  * Integration tests, recording events and check happens as expected
@@ -155,15 +160,15 @@ public class RestartJobScenario4IntTest {
     @Test
     /**
      * We simulate a JVM crash where a product result was already written to
-     * database. 
+     * database.
      */
     public void restart__simulate_jvm_crash_long_running_job() {
         /* @formatter:off */
         /* prepare */
         clearMetaDataInspection();
-
-        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
-        waitForJobRunning(project, sechubJobUUID);
+        
+        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        waitForJobRunning(project, sechubJobUUD);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
@@ -188,6 +193,23 @@ public class RestartJobScenario4IntTest {
             containsFile("SERECO.json").
             containsFile("metadata_SERECO.json").
             containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
+
+        File file = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUD);
+
+        UUID uuid = IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid;
+
+        String metaDataFileName = "metadata_CHECKMARX_" + uuid + ".json";
+
+        AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(file);
+        assertFullScanDataZipFile.dumpDownloadFilePath().containsFile("CHECKMARX_" + uuid + ".xml").containsFile(metaDataFileName).containsFile("SERECO.json")
+                .containsFile("metadata_SERECO.json").containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
+
+        /*
+         * check adapter persistence of reused meta data update has been called 4 times
+         * (because we have a re-run and every run does adds 2 "+1" to the value
+         */
+        AdapterMetaData metaData1 = assertFullScanDataZipFile.resolveFile(metaDataFileName).asAdapterMetaData();
+        assertEquals("+1+1+1+1", metaData1.getValue(AbstractMockedAdapter.KEY_METADATA_REUSED));
     }
 
     @Test
@@ -215,7 +237,6 @@ public class RestartJobScenario4IntTest {
         /* @formatter:on */
     }
 
-    
     private void simulateJobIsStillRunningAndUploadAvailable(UUID sechubJobUUD) {
         assertNotNull(sechubJobUUD);
         /*

@@ -5,8 +5,8 @@ import java.awt.event.ActionEvent;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.developertools.admin.ui.action.integrationtestserver.IntegrationTestAction;
-import com.daimler.sechub.integrationtest.api.AssertExecutionResult;
 import com.daimler.sechub.integrationtest.api.TestAPI;
+import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
 import com.daimler.sechub.integrationtest.scenario3.Scenario3;
 
 public class TriggerNewInfraScanJobScenario3User1Action extends IntegrationTestAction {
@@ -18,10 +18,10 @@ public class TriggerNewInfraScanJobScenario3User1Action extends IntegrationTestA
 
 	@Override
 	protected void executeImplAfterRestHelperSwitched(ActionEvent e) {
-		AssertExecutionResult assertResult = TestAPI.as(Scenario3.USER_1).withSecHubClient().createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
+		ExecutionResult result = TestAPI.as(Scenario3.USER_1).withSecHubClient().createInfraScanAndFetchScanData(Scenario3.PROJECT_1);
 		
-		outputAsTextOnSuccess("Job executed, data fetched, last output line:"+assertResult.getResult().getLastOutputLine());
-		outputAsTextOnSuccess("Job UID was:"+assertResult.getResult().getSechubJobUUD());
+		outputAsTextOnSuccess("Job executed, data fetched, last output line:"+result.getLastOutputLine());
+		outputAsTextOnSuccess("Job UID was:"+result.getSechubJobUUID());
 	}
 
 }

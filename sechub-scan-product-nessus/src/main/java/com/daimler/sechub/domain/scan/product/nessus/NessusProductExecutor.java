@@ -74,12 +74,13 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 				setTargetIPs(data.getIPs()).
 				setTargetURIs(data.getURIs()).build();
 		/* @formatter:on */
-        String projectId = context.getConfiguration().getProjectId();
 
         /* execute NESSUS by adapter and return product result */
-        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallBack());
-        ProductResult result = new ProductResult(context.getSechubJobUUID(), projectId, getIdentifier(), xml);
-        return Collections.singletonList(result);
+        String xml = nessusAdapter.start(nessusConfig, executorContext.getCallback());
+        
+        ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
+        productResult.setResult(xml);
+        return Collections.singletonList(productResult);
     }
 
     @Override

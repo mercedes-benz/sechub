@@ -39,12 +39,12 @@ public class ResilientActionExecutor<R> {
         return this.executeResilient(action, null);
     }
 
-    public R executeResilient(ActionWhichShallBeResilient<R> action, ResilienceCallback callBack) throws Exception {
+    public R executeResilient(ActionWhichShallBeResilient<R> action, ResilienceCallback callback) throws Exception {
         Objects.requireNonNull(action, "action may not be null!");
 
         fallThroughSupport.handleFallThrough();
 
-        ResilienctActionContext context = new ResilienctActionContext(callBack);
+        ResilienctActionContext context = new ResilienctActionContext(callback);
 
         R result = null;
         do {
@@ -64,7 +64,7 @@ public class ResilientActionExecutor<R> {
         LOG.info("Handle exception of type:{}", e.getClass().getName());
 
         context.prepareForNextCheck(e);
-        ResilienceCallback callBack = context.getCallBack();
+        ResilienceCallback callback = context.getCallback();
 
         ResilienceProposal proposal = findFirstProposalFromConsultants(context);
         if (proposal == null) {
@@ -88,8 +88,8 @@ public class ResilientActionExecutor<R> {
                 Thread.sleep(retryProposal.getMillisecondsToWaitBeforeRetry());
                 LOG.info("Retry {}/{}:{}", context.getAlreadyDoneRetries(), maxRetries, proposal.getInfo());
 
-                if (callBack != null) {
-                    callBack.beforeRetry(context);
+                if (callback != null) {
+                    callback.beforeRetry(context);
                 }
             }
         } else if (proposal instanceof FallthroughResilienceProposal) {
@@ -125,11 +125,11 @@ public class ResilientActionExecutor<R> {
         private Exception currentError;
         private int retriesCount;
         private boolean retryNecessary;
-        private ResilienceCallback callBack;
+        private ResilienceCallback callback;
         private Map<String, Object> map = new HashMap<>(1);
 
-        public ResilienctActionContext(ResilienceCallback callBack) {
-            this.callBack = callBack;
+        public ResilienctActionContext(ResilienceCallback callback) {
+            this.callback = callback;
         }
 
         public void prepareForNextCheck(Exception e) {
@@ -168,8 +168,8 @@ public class ResilientActionExecutor<R> {
         /**
          * @return callback or <code>null</code>
          */
-        public ResilienceCallback getCallBack() {
-            return callBack;
+        public ResilienceCallback getCallback() {
+            return callback;
         }
 
         @Override

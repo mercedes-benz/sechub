@@ -24,22 +24,34 @@ public class ProductExecutorContext {
 
     private ProductExecutorConfig executorConfig;
 
+    
+    ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults) {
+        notNull(executorConfig, "executorConfig may not be null");
+        notNull(formerResults, "formerResults may not be null");
+
+        this.executorConfig=executorConfig;
+        this.formerResults=formerResults;
+    }
+        
     /**
      * Creates executor context. Does also setup first former result as current result
      * @param config 
      * @param formerResults
      * @param callback
      */
-    public ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults, ProductExecutorCallback callback) {
+    ProductExecutorContext(ProductExecutorConfig executorConfig, List<ProductResult> formerResults, ProductExecutorCallback callback) {
         notNull(executorConfig, "executorConfig may not be null");
         notNull(formerResults, "formerResults may not be null");
-        notNull(callback, "callback may not be null");
 
         this.executorConfig=executorConfig;
         this.formerResults=formerResults;
         this.callback=callback;
         
-        useFirstFormerResult();
+        afterCallbackSet();
+    }
+    
+    void setCallback(ProductExecutorCallback callback) {
+        this.callback = callback;
     }
 
     /**
@@ -53,7 +65,7 @@ public class ProductExecutorContext {
         return executorConfig;
     }
     
-    public AdapterMetaDataCallback getCallBack() {
+    public AdapterMetaDataCallback getCallback() {
         return callback;
     }
 
@@ -64,7 +76,11 @@ public class ProductExecutorContext {
         return null;
     }
     
-    public void useFirstFormerResult() {
+    void afterCallbackSet() {
+        useFirstFormerResult();
+    }
+    
+    private void useFirstFormerResult() {
         callback.setCurrentProductResult(getFormerProductResultOrNull());
     }
     

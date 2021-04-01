@@ -39,92 +39,93 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectCreationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectCreationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectCreationService.class);
 
-	@Autowired
-	UserContextService userContext;
+    @Autowired
+    UserContextService userContext;
 
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    DomainMessageService eventBus;
 
-	@Autowired
-	DomainMessageService eventBus;
+    @Autowired
+    ProjectTransactionService persistenceService;
 
-	@Autowired
-	ProjectTransactionService persistenceService;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    URIValidation uriValidation;
 
-	@Autowired
-	URIValidation uriValidation;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Autowired
-	UserInputAssertion assertion;
-
-	@Validated
-	/* @formatter:off */
+    @Validated
+    /* @formatter:off */
 	@UseCaseAdministratorCreatesProject(
 			@Step(number = 2,
 			name = "Create project",
 			description = "The service will create the project when not already existing with such name."))
 	/* @formatter:on */
-	public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist, @NotNull ProjectMetaData metaData) {
-		LOG.info("Administrator {} triggers create of project:{}, having owner:{}",userContext.getUserId(),projectId,owner);
+    public void createProject(@NotNull String projectId, @NotNull String description, @NotNull String owner, @NotNull Set<URI> whitelist,
+            @NotNull ProjectMetaData metaData) {
+        LOG.info("Administrator {} triggers create of project:{}, having owner:{}", userContext.getUserId(), projectId, owner);
 
-		assertion.isValidProjectId(projectId);
-		assertion.isValidUserId(owner);
-		assertion.isvalidProjectDescription(description);
+        assertion.isValidProjectId(projectId);
+        assertion.isValidUserId(owner);
+        assertion.isvalidProjectDescription(description);
 
-		/* assert found */
-		Optional<Project> foundProject = projectRepository.findById(projectId);
-		if (foundProject.isPresent()) {
-			throw new AlreadyExistsException("Project '" + projectId + "' already exists");
-		}
+        /* assert found */
+        Optional<Project> foundProject = projectRepository.findById(projectId);
+        if (foundProject.isPresent()) {
+            throw new AlreadyExistsException("Project '" + projectId + "' already exists");
+        }
 
-		Optional<User> foundOwner = userRepository.findById(owner);
-		if (!foundOwner.isPresent()) {
-			throw new NotFoundException("Owner '" + owner + "' not found");
-		}
+        Optional<User> foundOwner = userRepository.findById(owner);
+        if (!foundOwner.isPresent()) {
+            throw new NotFoundException("Owner '" + owner + "' not found");
+        }
 
-		/* setup */
-		Project project = new Project();
-		project.id = projectId;
-		project.description = description;
+        /* setup */
+        Project project = new Project();
+        project.id = projectId;
+        project.description = description;
 
-		User ownerUser = foundOwner.get();
-		project.owner=ownerUser;
-		/** add only accepted/valid URIs - sanitize */
-		whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
-		
-		List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream().map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
-		
-		project.metaData.addAll(metaDataEntities);
-		
-		/* store */
-		persistenceService.saveInOwnTransaction(project);
+        User ownerUser = foundOwner.get();
+        project.owner = ownerUser;
+        /** add only accepted/valid URIs - sanitize */
+        whitelist.stream().filter(uri -> uriValidation.validate(uri).isValid()).forEach(project.getWhiteList()::add);
 
-		sendProjectCreatedEvent(projectId, whitelist);
-		sendRefreshUserAuth(ownerUser);
+        List<ProjectMetaDataEntity> metaDataEntities = metaData.getMetaDataMap().entrySet().stream()
+                .map(entry -> new ProjectMetaDataEntity(projectId, entry.getKey(), entry.getValue())).collect(Collectors.toList());
 
-	}
+        project.metaData.addAll(metaDataEntities);
 
-	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
-	private void sendRefreshUserAuth(User ownerUser) {
-		eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
-	}
+        /* store */
+        persistenceService.saveInOwnTransaction(project);
 
-	@IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
-	private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
-		DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
-		ProjectMessage message = new ProjectMessage();
-		message.setProjectId(projectId);
-		message.setWhitelist(whitelist);
-		
-		request.set(MessageDataKeys.PROJECT_CREATION_DATA,message);
+        sendProjectCreatedEvent(projectId, whitelist);
+        sendRefreshUserAuth(ownerUser);
 
-		eventBus.sendAsynchron(request);
-	}
+    }
+
+    @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
+    private void sendRefreshUserAuth(User ownerUser) {
+        eventBus.sendAsynchron(DomainMessageFactory.createRequestRoleCalculation(ownerUser.getName()));
+    }
+
+    @IsSendingAsyncMessage(MessageID.PROJECT_CREATED)
+    private void sendProjectCreatedEvent(String projectId, Set<URI> whitelist) {
+        DomainMessage request = new DomainMessage(MessageID.PROJECT_CREATED);
+        ProjectMessage message = new ProjectMessage();
+        message.setProjectId(projectId);
+        message.setWhitelist(whitelist);
+
+        request.set(MessageDataKeys.PROJECT_CREATION_DATA, message);
+
+        eventBus.sendAsynchron(request);
+    }
 
 }
