@@ -167,8 +167,8 @@ public class RestartJobScenario4IntTest {
         /* prepare */
         clearMetaDataInspection();
         
-        UUID sechubJobUUD = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
-        waitForJobRunning(project, sechubJobUUD);
+        UUID sechubJobUUID = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(project,IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        waitForJobRunning(project, sechubJobUUID);
         waitMilliSeconds(1000); // let the old job run (so not accidently running at same time)
 
         /* execute */
@@ -184,25 +184,21 @@ public class RestartJobScenario4IntTest {
         /* @formatter:on */
 
         assertInspections().hasAmountOfInspections(2);
-        
-        as(SUPER_ADMIN).
-            downloadFullScanDataFor(sechubJobUUID).
-            dumpDownloadFilePath().
-            containsFile("CHECKMARX.xml").
-            containsFile("metadata_CHECKMARX.json").
-            containsFile("SERECO.json").
-            containsFile("metadata_SERECO.json").
-            containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
 
-        File file = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUD);
+        File file = as(SUPER_ADMIN).downloadFullScanDataFor(sechubJobUUID);
 
         UUID uuid = IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1.uuid;
 
         String metaDataFileName = "metadata_CHECKMARX_" + uuid + ".json";
 
         AssertFullScanData assertFullScanDataZipFile = assertFullScanDataZipFile(file);
-        assertFullScanDataZipFile.dumpDownloadFilePath().containsFile("CHECKMARX_" + uuid + ".xml").containsFile(metaDataFileName).containsFile("SERECO.json")
-                .containsFile("metadata_SERECO.json").containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
+        assertFullScanDataZipFile.
+            dumpDownloadFilePath().
+            containsFile("CHECKMARX_" + uuid + ".xml").
+            containsFile(metaDataFileName).
+            containsFile("SERECO.json").
+            containsFile("metadata_SERECO.json").
+            containsFiles(6); // 4 + 2 log files, no duplicates of product results!!
 
         /*
          * check adapter persistence of reused meta data update has been called 4 times
