@@ -51,7 +51,7 @@ public class ScheduleJobMarkerServiceTest {
     @Test
     public void markNextJobExecutedByThisPOD__calls_jobrepository_getjob_executed() throws Exception {
         /* execute */
-        serviceToTest.markNextJobToExecuteByThisPOD();
+        serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
         verify(jobRepository).getJob(uuid);
@@ -63,7 +63,7 @@ public class ScheduleJobMarkerServiceTest {
         when(jobRepository.save(secHubJob)).thenReturn(secHubJob);
 
         /* execute */
-        ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisPOD();
+        ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
         verify(result).setStarted(any());

@@ -3,15 +3,11 @@ package com.daimler.sechub.integrationtest.scenario2;
 
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import java.util.UUID;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 import org.springframework.test.context.TestPropertySource;
-
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.AssertJobScheduler.TestExecutionResult;
@@ -82,40 +78,40 @@ public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
         assignUserToProject(USER_1, PROJECT_2);
         
         /* execute */
-        UUID jobId1Project1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
-        UUID jobId1Project2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_2, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID project1jobId1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID project2jobId1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_2, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
-        UUID jobId2Project1 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);                
-        UUID jobId2Project2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_2, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
+        UUID project1jobId2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_1, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);                
+        UUID project2jobId2 = as(USER_1).triggerAsyncCodeScanWithPseudoZipUpload(PROJECT_2, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__LONG_RUNNING);
         
         waitSeconds(1);
         
         /* test */
         
-        waitForJobDone(PROJECT_1, jobId1Project1);
-        waitForJobDone(PROJECT_2, jobId1Project2);
+        waitForJobDone(PROJECT_1, project1jobId1);
+        waitForJobDone(PROJECT_2, project2jobId1);
         
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_1).
-            canFindJob(jobId1Project1).
+            canFindJob(project1jobId1).
             havingExecutionResult(TestExecutionResult.OK);
         
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_2).
-            canFindJob(jobId1Project2).
+            canFindJob(project2jobId1).
             havingExecutionResult(TestExecutionResult.OK);
         
-        waitForJobRunning(PROJECT_1, jobId2Project1);
-        waitForJobRunning(PROJECT_2, jobId2Project2);
+        waitForJobRunning(PROJECT_1, project1jobId2);
+        waitForJobRunning(PROJECT_2, project2jobId2);
         
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_1).
-            canFindJob(jobId2Project1).
+            canFindJob(project1jobId2).
             havingExecutionState(TestExecutionState.STARTED);
         
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_1).
-            canFindJob(jobId2Project1).
+            canFindJob(project1jobId2).
             havingExecutionState(TestExecutionState.STARTED);            
 
         
@@ -123,12 +119,12 @@ public class SchedulerOnlyOneScanPerProjectStrategyScenario2IntTest {
         
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_1).
-            canFindJob(jobId2Project1).
+            canFindJob(project1jobId2).
             havingExecutionResult(TestExecutionResult.OK);
        
         assertUser(SUPER_ADMIN).
             onJobScheduling(PROJECT_2).
-            canFindJob(jobId2Project2).
+            canFindJob(project2jobId2).
             havingExecutionResult(TestExecutionResult.OK);
         /* @formatter:on */
     }

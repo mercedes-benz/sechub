@@ -22,10 +22,10 @@ class SchedulerStrategyIdTest {
     @Test
     void test_unknown_value_to_enum_failure() {
         /* prepare */
-        SchedulerStrategyId gibberish = SchedulerStrategyId.getId("gibberish");
+        SchedulerStrategyId strategyId = SchedulerStrategyId.getId("gibberish");
 
         /* test */
-        assertNull(gibberish);
+        assertNull(strategyId);
     }
 
 }

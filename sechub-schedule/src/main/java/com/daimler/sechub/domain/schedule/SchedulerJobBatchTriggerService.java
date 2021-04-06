@@ -117,7 +117,7 @@ public class SchedulerJobBatchTriggerService {
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
             try {
-                ScheduleSecHubJob next = markerService.markNextJobToExecuteByThisPOD();
+                ScheduleSecHubJob next = markerService.markNextJobToExecuteByThisInstance();
                 retryContext.executionDone();
                 if (next == null) {
                     return;

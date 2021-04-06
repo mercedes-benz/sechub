@@ -40,7 +40,7 @@ public class ScheduleJobMarkerService {
 	 * @return either schedule job to execute, or <code>null</code> if no one has to be executed
 	 */
 	@Transactional
-	public ScheduleSecHubJob markNextJobToExecuteByThisPOD() {
+	public ScheduleSecHubJob markNextJobToExecuteByThisInstance() {
 	    
 	    if (schedulerStrategy == null) {
 	        schedulerStrategy = schedulerStrategyFactory.build();
