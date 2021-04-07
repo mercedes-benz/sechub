@@ -8,7 +8,7 @@ import org.junit.Test;
 public class NetsparkerHtmlToAsciiDocConverterTest {
 
     @Test
-    public void single_paragragph() {
+    public void single_paragraph() {
         /* prepare */
         String html = "<p>This is text.</p>\n";
         String expected = "This is text.";
@@ -21,7 +21,7 @@ public class NetsparkerHtmlToAsciiDocConverterTest {
     }
 
     @Test
-    public void many_paragragphs() {
+    public void many_paragraphs() {
         /* prepare */
         String html = "<p>First paragraph.</p>\n<p>Second paragraph.</p>\n<p>Third paragraph.</p>\n";
         String expected = "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.";
@@ -152,7 +152,7 @@ public class NetsparkerHtmlToAsciiDocConverterTest {
     }
 
     @Test
-    public void paragragph_with_strange_characters() {
+    public void paragraph_with_strange_characters() {
         /* prepare */
         String html = "<p>Netsparker Enterprise detected that a deprecated, insecureÂ transportation security protocol (TLS 1.1) is supported by your web server.</p>\n"
                 + "<p>TLS 1.1 will be considered as deprecated by major web browsers (i.e. Chrome, Firefox, Safari, Edge, Internet Explorer)Â starting in 2020.</p>";
