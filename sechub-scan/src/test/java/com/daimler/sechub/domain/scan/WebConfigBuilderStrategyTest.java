@@ -120,12 +120,12 @@ public class WebConfigBuilderStrategyTest {
 		Iterator<LoginScriptAction> iterator = actions.iterator();
 
 		LoginScriptAction action = iterator.next();
-		assertEquals("username", action.getAction().toString());
+		assertEquals("username", action.getActionType().toString());
 		assertEquals("#example_login_userid", action.getSelector());
 		assertEquals("user2", action.getValue());
 
 		action = iterator.next();
-        assertEquals("click", action.getAction().toString());
+        assertEquals("click", action.getActionType().toString());
         assertEquals("#next_button", action.getSelector());
         assertEquals(null, action.getValue());
 
@@ -135,17 +135,17 @@ public class WebConfigBuilderStrategyTest {
         Iterator<LoginScriptAction> iterator2 = actions2.iterator();
         
         action = iterator2.next();
-        assertEquals("wait", action.getAction().toString());
+        assertEquals("wait", action.getActionType().toString());
         assertEquals("2456", action.getValue());
         assertEquals(SecHubTimeUnit.MILLISECOND, action.getUnit());
 
         action = iterator2.next();
-        assertEquals("password", action.getAction().toString());
+        assertEquals("password", action.getActionType().toString());
         assertEquals("#example_login_pwd", action.getSelector());
         assertEquals("pwd2", action.getValue());
 
         action = iterator2.next();
-        assertEquals("click", action.getAction().toString());
+        assertEquals("click", action.getActionType().toString());
         assertEquals("#example_login_login_button", action.getSelector());
         assertEquals(null, action.getValue());
 	}

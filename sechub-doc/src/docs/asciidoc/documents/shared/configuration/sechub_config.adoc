@@ -178,7 +178,7 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
 <1> URL for web login.
 <2> Start of form based login.
 <3> Script definition.
-<4> Pages section. A page is visible a page. Some logins need more than one page.
+<4> Pages section. A page is a visible page. Some logins need more than one page.
 <5> The actions which should be executed on each page. 
 <6> Type of action. Valid types are : +
     - `username` +
@@ -195,7 +195,7 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
 <8> Value, used by most actions (`username|password|input|wait`). +
     In this examples you see variables
     in `go template` format. This is {sechub} client specific.
-    If you use REST API directly, you must you must use real values!
+    If you use the REST API directly, you must use real values!
 <9> A description can be added to explain an action.
 <10> The time the next action will be delayed.
 <11> Define the unit of time. 

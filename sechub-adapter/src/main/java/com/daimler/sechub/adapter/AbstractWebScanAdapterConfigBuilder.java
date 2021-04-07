@@ -81,7 +81,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
                     private LoginScriptAction action = new LoginScriptAction();
 
                     public FormScriptLoginActionBuilder(ActionType action) {
-                        this.action.action = action;
+                        this.action.actionType = action;
                     }
 
                     public FormScriptLoginActionBuilder select(String css) {
@@ -183,9 +183,11 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
         if (currentLoginBuilder == null) {
             return;
         }
+        
         if (currentLoginBuilder.createdLoginConfig == null) {
             return;
         }
+        
         config.loginConfig = currentLoginBuilder.createdLoginConfig;
         config.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
     }

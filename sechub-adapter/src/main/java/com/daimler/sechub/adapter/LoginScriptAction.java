@@ -7,7 +7,7 @@ import com.daimler.sechub.commons.core.security.CryptoAccess;
 
 public class LoginScriptAction {
 
-	ActionType action;
+	ActionType actionType;
 	String selector;
 	String description;
 	SealedObject value;
@@ -25,28 +25,28 @@ public class LoginScriptAction {
 		return CryptoAccess.CRYPTO_STRING.unseal(value);
 	}
 
-	public ActionType getAction() {
-		return action;
+	public ActionType getActionType() {
+		return actionType;
 	}
 	
 	public boolean isWait() {
-	    return "wait".equalsIgnoreCase(action.name());
+	    return getActionType() == ActionType.WAIT;
 	}
 
 	public boolean isInput() {
-		return "input".equalsIgnoreCase(action.name());
+	    return getActionType() == ActionType.INPUT;
 	}
 
 	public boolean isUserName() {
-		return "username".equalsIgnoreCase(action.name());
+	    return getActionType() == ActionType.USERNAME;
 	}
 
 	public boolean isPassword() {
-		return "password".equalsIgnoreCase(action.name());
+	    return getActionType() == ActionType.PASSWORD;
 	}
 
 	public boolean isClick() {
-		return "click".equalsIgnoreCase(action.name());
+	    return getActionType() == ActionType.CLICK;
 	}
 	
     public String getDescription() {

@@ -10,23 +10,21 @@ public class Action {
 
     ActionType type;
 
-	Optional<String> selector = Optional.empty();
+    Optional<String> selector = Optional.empty();
 
-	Optional<String> value = Optional.empty();
-	
-	Optional<String> description = Optional.empty();
-	
-	Optional<SecHubTimeUnit> unit = Optional.empty();
+    Optional<String> value = Optional.empty();
 
-    /**
-	 * @return type of action as string (e.g. "input", "click")
-	 */
-	public ActionType getType() {
-		return type;
-	}
-	public Optional<String> getSelector() {
-		return selector;
-	}
+    Optional<String> description = Optional.empty();
+
+    Optional<SecHubTimeUnit> unit = Optional.empty();
+
+    public ActionType getType() {
+        return type;
+    }
+
+    public Optional<String> getSelector() {
+        return selector;
+    }
 
     public Optional<String> getValue() {
         return value;
@@ -35,7 +33,7 @@ public class Action {
     public Optional<String> getDescription() {
         return description;
     }
-    
+
     public Optional<SecHubTimeUnit> getUnit() {
         return unit;
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Page {
-    Optional<List<Action>> actions = Optional.empty();
+    protected Optional<List<Action>> actions = Optional.empty();
     
     public Optional<List<Action>> getActions() {
         return actions;

@@ -76,9 +76,6 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 //	  },
 
 		FormScriptLoginConfig asFormScript = config.asFormScript();
-		
-		
-		//String script = scriptGenerator.generate(asFormScript.getSteps());
 
 		Map<String, Object> formAuthenticationSettingModel = new TreeMap<>();
 		rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);

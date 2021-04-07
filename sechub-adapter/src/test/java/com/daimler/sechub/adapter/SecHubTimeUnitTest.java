@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -40,10 +42,10 @@ public class SecHubTimeUnitTest {
         });
     }
     
-    @Test
-    public void from_json_millisecond() throws JsonMappingException, JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {"\"MILLISECOND\"", "\"millisecond\"", "\"milliseconds\"", "\"MILLISECONDS\""})
+    public void from_json_millisecond(String json) throws JsonMappingException, JsonProcessingException {
         /* prepare */
-        String json = "\"millisecond\"";
         ObjectMapper objectMapper = new ObjectMapper();
         
         /* execute */
@@ -53,23 +55,36 @@ public class SecHubTimeUnitTest {
         assertEquals(SecHubTimeUnit.MILLISECOND, unit);
     }
     
-    @Test
-    public void from_json_milliseconds() throws JsonMappingException, JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {"\"SECOND\"", "\"second\"", "\"seconds\"", "\"SECONDS\""})
+    public void from_json_second(String json) throws JsonMappingException, JsonProcessingException {
         /* prepare */
-        String json = "\"milliseconds\"";
         ObjectMapper objectMapper = new ObjectMapper();
         
         /* execute */
         SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
         
         /* test */
-        assertEquals(SecHubTimeUnit.MILLISECOND, unit);
+        assertEquals(SecHubTimeUnit.SECOND, unit);
     }
     
-    @Test
-    public void from_json_hour() throws JsonMappingException, JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {"\"MINUTE\"", "\"minute\"", "\"minutes\"", "\"MINUTES\""})
+    public void from_json_minute(String json) throws JsonMappingException, JsonProcessingException {
         /* prepare */
-        String json = "\"HOUR\"";
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        /* execute */
+        SecHubTimeUnit unit = objectMapper.readValue(json, SecHubTimeUnit.class);  
+        
+        /* test */
+        assertEquals(SecHubTimeUnit.MINUTE, unit);
+    }
+       
+    @ParameterizedTest
+    @ValueSource(strings = {"\"HOUR\"", "\"hour\"", "\"hours\"", "\"HOURS\""})
+    public void from_json_hours(String json) throws JsonMappingException, JsonProcessingException {
+        /* prepare */
         ObjectMapper objectMapper = new ObjectMapper();
         
         /* execute */
@@ -79,10 +94,10 @@ public class SecHubTimeUnitTest {
         assertEquals(SecHubTimeUnit.HOUR, unit);
     }
     
-    @Test
-    public void from_json_days() throws JsonMappingException, JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {"\"DAY\"", "\"day\"", "\"days\"", "\"DAYS\""})
+    public void from_json_days(String json) throws JsonMappingException, JsonProcessingException {
         /* prepare */
-        String json = "\"days\"";
         ObjectMapper objectMapper = new ObjectMapper();
         
         /* execute */

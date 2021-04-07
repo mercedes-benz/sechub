@@ -39,7 +39,7 @@ public class SecHubTimeUnitData {
     
     @JsonIgnore
     public long getTimeInHours() {
-        return (long)(getTimeInMilliseconds() / (60*60*1000));
+        return (long) Math.ceil(getTimeInMilliseconds() / (double)(60*60*1000));
     }
     
     @Override

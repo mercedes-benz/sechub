@@ -25,12 +25,12 @@ public class NetsparkerAdapterTestApplication {
 	public static void main(String[] args) throws Exception {
 	    SecHubTimeUnitData maxScanDuration = null;
 	    
-	    String maxScanDurationDuration = getSystemProperty("sechub.adapter.netsparker.maxscanduration.duration");
-	    String maxScanDurationUnit = getSystemProperty("sechub.adapter.netsparker.maxscanduration.unit");
+	    String maxScanDurationDurationProperty = getSystemProperty("sechub.adapter.netsparker.maxscanduration.duration");
+	    String maxScanDurationUnitProperty = getSystemProperty("sechub.adapter.netsparker.maxscanduration.unit");
 	    
-	    if (maxScanDurationDuration != null && maxScanDurationUnit != null) {
-	        int duration = Integer.valueOf(maxScanDurationDuration);
-	        SecHubTimeUnit unit = SecHubTimeUnit.valueOf(maxScanDurationUnit);
+	    if (maxScanDurationDurationProperty != null && maxScanDurationUnitProperty != null) {
+	        int duration = Integer.valueOf(maxScanDurationDurationProperty);
+	        SecHubTimeUnit unit = SecHubTimeUnit.valueOf(maxScanDurationUnitProperty);
 	        
 	        maxScanDuration = SecHubTimeUnitData.of(duration, unit);
 	    }

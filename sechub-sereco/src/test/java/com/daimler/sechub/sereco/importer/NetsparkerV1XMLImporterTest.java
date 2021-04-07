@@ -151,7 +151,7 @@ public class NetsparkerV1XMLImporterTest {
                     capec("459").
                     pci32("6.5.4").
                     and().
-                withDescriptionContaining("Netsparker Enterprise identified an invalid SSL certificate.\n \n" + 
+                withDescriptionContaining("Netsparker Enterprise identified an invalid SSL certificate.\n\n" + 
                         "An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.").
                 isContained().
                
@@ -164,8 +164,8 @@ public class NetsparkerV1XMLImporterTest {
                     owasp("A5").
                     wasc("4").
                     and().
-                withDescriptionContaining("Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.\n \n" + 
-                        "HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.\n \n" + 
+                withDescriptionContaining("Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.\n\n" + 
+                        "HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.\n\n" + 
                         "For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS.").
                 isContained();
         /* @formatter:on */
@@ -197,10 +197,10 @@ public class NetsparkerV1XMLImporterTest {
                     wasc("15").
                     cwe("16").
                     and().
-                withDescriptionContaining("Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.\n\n\n" +
+                withDescriptionContaining("Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.\n\n" +
                         ".Table\n" +
                         "|=========================\n" +
-                        "| Error | Resolution \n" +
+                        "| Error | Resolution\n" +
                         "\n" +
                         "| preload directive not present\n" +
                         "| Submit domain for inclusion in browsers' HTTP Strict Transport Security (HSTS) preload list.\n" +

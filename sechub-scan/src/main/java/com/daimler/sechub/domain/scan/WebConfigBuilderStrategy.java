@@ -48,15 +48,15 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> void configure(B configBuilder) {
-        if (configBuilder instanceof AbstractWebScanAdapterConfigBuilder) {
-            AbstractWebScanAdapterConfigBuilder webConfigBuilder = (AbstractWebScanAdapterConfigBuilder) configBuilder;
-            coinfigureImpl(webConfigBuilder);
-        } else {
+        if (!(configBuilder instanceof AbstractWebScanAdapterConfigBuilder)) {
             throw new IllegalArgumentException("Wrong usage in code: Only accetable for web scan adapters!");
         }
+        
+        AbstractWebScanAdapterConfigBuilder webConfigBuilder = (AbstractWebScanAdapterConfigBuilder) configBuilder;
+        configureImpl(webConfigBuilder);
     }
 
-    private <B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig> void coinfigureImpl(B configBuilder) {
+    private <B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig> void configureImpl(B configBuilder) {
         /* check precondition : login configured */
         SecHubConfiguration configuration = context.getConfiguration();
         if (configuration == null) {

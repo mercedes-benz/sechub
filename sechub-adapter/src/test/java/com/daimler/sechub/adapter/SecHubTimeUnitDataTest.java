@@ -169,10 +169,22 @@ public class SecHubTimeUnitDataTest {
     @Test
     public void get_time_in_hours_61_minutes() {
         /* prepare */
+        long hours = 2;
+        
+        /* execute */
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(61, SecHubTimeUnit.MINUTE);
+        
+        /* test */
+        assertEquals(hours, timeUnitData.getTimeInHours());
+    }
+    
+    @Test
+    public void get_time_in_hours_60_minutes() {
+        /* prepare */
         long hours = 1;
         
         /* execute */
-        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(73, SecHubTimeUnit.MINUTE);
+        SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(60, SecHubTimeUnit.MINUTE);
         
         /* test */
         assertEquals(hours, timeUnitData.getTimeInHours());
@@ -181,7 +193,7 @@ public class SecHubTimeUnitDataTest {
     @Test
     public void get_time_in_hours_59_minutes() {
         /* prepare */
-        long hours = 0;
+        long hours = 1;
         
         /* execute */
         SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(59, SecHubTimeUnit.MINUTE);
@@ -193,7 +205,7 @@ public class SecHubTimeUnitDataTest {
     @Test
     public void get_time_in_hours_1_millisecond() {
         /* prepare */
-        long hours = 0;
+        long hours = 1;
         
         /* execute */
         SecHubTimeUnitData timeUnitData = SecHubTimeUnitData.of(1, SecHubTimeUnit.MILLISECOND);

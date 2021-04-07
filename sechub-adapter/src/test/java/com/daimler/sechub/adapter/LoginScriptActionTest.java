@@ -13,6 +13,7 @@ public class LoginScriptActionTest {
 		ActionType action = ActionType.INPUT;
 
 		/* test */
+		assertEquals(ActionType.INPUT, step(action).getActionType());
 		assertTrue(step(action).isInput());
 
 		assertFalse(step(action).isClick());
@@ -27,11 +28,13 @@ public class LoginScriptActionTest {
 		ActionType action = ActionType.USERNAME;
 
 		/* test */
+		assertEquals(ActionType.USERNAME, step(action).getActionType());
 		assertTrue(step(action).isUserName());
 
 		assertFalse(step(action).isClick());
 		assertFalse(step(action).isPassword());
 		assertFalse(step(action).isInput());
+		assertFalse(step(action).isWait());
 	}
 
 	@Test
@@ -40,12 +43,29 @@ public class LoginScriptActionTest {
 		ActionType action = ActionType.PASSWORD;
 
 		/* test */
+		assertEquals(ActionType.PASSWORD, step(action).getActionType());
 		assertTrue(step(action).isPassword());
 
 		assertFalse(step(action).isClick());
 		assertFalse(step(action).isInput());
 		assertFalse(step(action).isUserName());
+		assertFalse(step(action).isWait());
 	}
+
+    @Test
+    public void step_wait_getter_check() {
+        /* prepare */
+        ActionType action = ActionType.WAIT;
+
+        /* test */
+        assertEquals(ActionType.WAIT, step(action).getActionType());
+        assertTrue(step(action).isWait());
+
+        assertFalse(step(action).isClick());
+        assertFalse(step(action).isInput());
+        assertFalse(step(action).isUserName());
+        assertFalse(step(action).isPassword());
+    }
 
 	@Test
 	public void step_click_getter_check() {
@@ -53,11 +73,13 @@ public class LoginScriptActionTest {
 		ActionType action = ActionType.CLICK;
 
 		/* test */
+		assertEquals(ActionType.CLICK, step(action).getActionType());
 		assertTrue(step(action).isClick());
 
 		assertFalse(step(action).isPassword());
 		assertFalse(step(action).isInput());
 		assertFalse(step(action).isUserName());
+	    assertFalse(step(action).isWait());
 	}
 	
 	@Test
@@ -82,9 +104,9 @@ public class LoginScriptActionTest {
         assertEquals(description, step.getDescription());
     }
 
-	private LoginScriptAction step(ActionType action) {
-		LoginScriptAction step = new LoginScriptAction();
-		step.action=action;
-		return step;
-	}
+    private LoginScriptAction step(ActionType action) {
+        LoginScriptAction step = new LoginScriptAction();
+        step.actionType = action;
+        return step;
+    }
 }
