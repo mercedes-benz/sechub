@@ -147,7 +147,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_two_hours_expected.json");
+        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
         assertEquals(expected, json);
     }
 
@@ -157,9 +157,9 @@ public class NetsparkerAdapterV1Test {
      * rounded down to 2 hours (120 minutes).
      */
     @Test
-    public void build_json_for_new_scan_with_max_scan_duration_179_minutes() throws Exception {
+    public void build_json_for_new_scan_with_max_scan_duration_180_minutes() throws Exception {
         /* prepare */
-        SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(179, SecHubTimeUnit.MINUTE);
+        SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(180, SecHubTimeUnit.MINUTE);
         when(config.getMaxScanDuration()).thenReturn(maxScanDuration);
         when(config.hasMaxScanDuration()).thenReturn(true);
 
@@ -167,7 +167,7 @@ public class NetsparkerAdapterV1Test {
         String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
 
         /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_two_hours_expected.json");
+        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/max_duration_three_hours_expected.json");
         assertEquals(expected, json);
     }
 
