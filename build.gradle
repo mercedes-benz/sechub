@@ -12,7 +12,6 @@ buildscript{
     }else{
     	repositories {
     	     mavenCentral()
-    		 jcenter()
     	}
     }
 
@@ -61,7 +60,6 @@ allprojects {
     }else{
         repositories {
              mavenCentral()
-             jcenter()
         }
     }
 
