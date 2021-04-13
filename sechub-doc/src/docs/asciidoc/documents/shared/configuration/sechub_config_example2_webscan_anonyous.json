@@ -5,8 +5,13 @@
   "user"     : "alice",
 
   "project"  : "gamechanger",
-
+     
   "webScan"  : {//<1>
       "uris": ["https://www.gamechanger.example.org"]//<2>
   }
+  
+  "maxScanDuration": { //<3>
+    "duration": 1,
+    "unit": "hour" //<4>
+  },
 }

@@ -7,6 +7,9 @@
  */
  
 dependencies {
+	compile library.jsoup
+	    
+    compile project(':sechub-shared-kernel')
 
 	compile library.contrastsecurity_sarif
     compile project(':sechub-shared-kernel')

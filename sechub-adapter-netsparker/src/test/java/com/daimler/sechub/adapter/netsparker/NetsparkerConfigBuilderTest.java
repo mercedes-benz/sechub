@@ -14,6 +14,8 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
@@ -220,9 +222,42 @@ public class NetsparkerConfigBuilderTest {
 	public void config_is_child_of_abstract_adapter_config() {
 		assertTrue(AbstractAdapterConfig.class.isAssignableFrom(NetsparkerConfig.class));
 	}
+	
+	@Test
+	public void getMaxScanDuration_returns_builder_value() {
+	    /* prepare */
+	    SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(98, SecHubTimeUnit.MINUTE);
+	    
+	    /* execute */
+	    NetsparkerAdapterConfig adapterConfig = validConfigAnd().setMaxScanDuration(maxScanDuration).build();
+	    
+	    /* test */
+        assertEquals(maxScanDuration, adapterConfig.getMaxScanDuration());
+    }
 
+    @Test
+    public void hasMaxScanDuration_returns_true() {
+        /* prepare */
+        SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(1, SecHubTimeUnit.HOUR);
 
-	private NetsparkerConfigBuilder validConfigAnd() {
+        /* execute */
+        NetsparkerAdapterConfig adapterConfig = validConfigAnd().setMaxScanDuration(maxScanDuration).build();
+
+        /* test */
+        assertTrue(adapterConfig.hasMaxScanDuration());
+    }
+	   
+    @Test
+    public void hasMaxScanDuration_returns_false() throws Exception {
+        /* prepare */
+        /* execute */
+        NetsparkerAdapterConfig adapterConfig = validConfigAnd().build();
+
+        /* test */
+        assertFalse(adapterConfig.hasMaxScanDuration());
+    }
+
+    private NetsparkerConfigBuilder validConfigAnd() {
 		/* @formatter:off */
 		return NetsparkerConfig.builder().
 					setPasswordOrAPIToken("apiToken").

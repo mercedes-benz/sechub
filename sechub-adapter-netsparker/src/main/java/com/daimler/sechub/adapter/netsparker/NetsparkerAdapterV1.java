@@ -46,6 +46,7 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	private static final String APICALL_CREATE_NEW_SCAN = "scans/new";
 	private static final String APICALL_GET_SCAN_STATUS = "scans/status/";
 	private static final String APICALL_GET_SCAN_REPORT = "scans/report/";
+	private static final String MAX_SCAN_DURATION = "MaxScanDuration";
 
 	private static final Logger LOG = LoggerFactory.getLogger(NetsparkerAdapterV1.class);
 
@@ -140,19 +141,32 @@ public class NetsparkerAdapterV1 extends AbstractAdapter<NetsparkerAdapterContex
 	}
 
 	String buildJsonForCreateNewScan(JSONAdapterSupport jsonAdapterSupport, NetsparkerAdapterConfig config) throws AdapterException {
-		Map<String, Object> map = new TreeMap<>();
-		map.put(TARGET_URI, config.getTargetAsString());
-		if (config.hasAgentGroup()) {
-			map.put(AGENT_GROUP_NAME, config.getAgentGroupName());
-		} else {
-			map.put(AGENT_NAME, config.getAgentName());
-		}
-		map.put(POLICY_ID, config.getPolicyId());
+        Map<String, Object> map = new TreeMap<>();
+        
+        map.put(TARGET_URI, config.getTargetAsString());
+        map.put(POLICY_ID, config.getPolicyId());
+        
+        if (config.hasAgentGroup()) {
+            map.put(AGENT_GROUP_NAME, config.getAgentGroupName());
+        } else {
+            map.put(AGENT_NAME, config.getAgentName());
+        }
+        
+        if (config.hasMaxScanDuration()) {
+            long maxScanDurationInHours = config.getMaxScanDuration().getTimeInHours();
+            
+            // the minimum for the maxScanDuration in Netsparker is 1
+            if (maxScanDurationInHours < 1) {
+                maxScanDurationInHours = 1;
+            }
+            
+            map.put(MAX_SCAN_DURATION, maxScanDurationInHours);
+        }
 		
 		// This parameter is not configurable, because without it the 
 		// form authentication and script authentication does not work.
 		// In addition, the basic authentication takes twice as much time.
-		// This problem exists in version Netsparker version: 1.9.0.x, 1.9.1.x and 1.9.2.x
+		// This problem exists in Netsparker version: 1.9.0.x, 1.9.1.x and 1.9.2.x
 		map.put(EXCLUDE_AUTHENTICATION_PAGES, "true");
 
 		webLoginSupport.addAuthorizationInfo(config, map);

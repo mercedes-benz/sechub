@@ -1,29 +1,37 @@
 {
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",
-            "form": {
-                "script": [
-                    {
-                        "step": "input",
-                        "selector": "#example_login_userid",
-                        "value": "user2"
-                    },
-                    {
-                        "step": "input",
-                        "selector": "#example_login_pwd",
-                        "value": "pwd2"
-                    },
-                    {
-                        "step": "click",
-                        "selector": "#example_login_login_button"
-                    }
-                ]
-            }
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "uris" : [ "https://productfailure.demo.example.org" ],
+    "login" : {
+      "url" : "https://productfailure.demo.example.org/login",
+      "form" : {
+        "script" : {
+          "pages" : [ {
+            "actions" : [ {
+              "type" : "username",
+              "selector" : "#example_login_userid",
+              "value" : "user2",
+              "description" : "This is a description."
+            }, {
+              "type" : "click",
+              "selector" : "#next_button"
+            } ]
+          }, {
+            "actions" : [ {
+              "type" : "wait",
+              "value" : 2456,
+              "unit" : "milliseconds"
+            }, {
+              "type" : "password",
+              "selector" : "#example_login_pwd",
+              "value" : "pwd2"
+            }, {
+              "type" : "click",
+              "selector" : "#example_login_login_button"
+            } ]
+          } ]
         }
+      }
     }
+  }
 }

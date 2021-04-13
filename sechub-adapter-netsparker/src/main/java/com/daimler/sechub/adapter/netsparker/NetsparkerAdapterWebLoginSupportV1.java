@@ -2,14 +2,19 @@
 package com.daimler.sechub.adapter.netsparker;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.daimler.sechub.adapter.FormAutoDetectLoginConfig;
 import com.daimler.sechub.adapter.FormScriptLoginConfig;
 import com.daimler.sechub.adapter.LoginConfig;
+import com.daimler.sechub.adapter.LoginScriptPage;
 import com.daimler.sechub.adapter.WebScanAdapterConfig;
 
 public class NetsparkerAdapterWebLoginSupportV1 {
@@ -40,7 +45,10 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 	private void addFormScriptAuthorization(LoginConfig config, Map<String, Object> rootMap) {
 //		"FormAuthenticationSettingModel": {
 //	    "CustomScripts": [
-//		    "Value" : "....your script ...."
+//		    "Value" : "....your script for page 1 ....",
+//	        "Value" : "....your script for page 2 ....",
+//	        ...
+//          "Value" : "....your script for page n ....",
 //		],
 //	    "DefaultPersonaValidation": true,
 //	    "DetectBearerToken": true,
@@ -67,24 +75,18 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 //	    "PersonasValidation": true
 //	  },
 
-		NetsparkerLoginScriptGenerator scriptGenerator = new NetsparkerLoginScriptGenerator();
 		FormScriptLoginConfig asFormScript = config.asFormScript();
-		String script = scriptGenerator.generate(asFormScript.getSteps());
 
 		Map<String, Object> formAuthenticationSettingModel = new TreeMap<>();
 		rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);
 
 		formAuthenticationSettingModel.put("LoginFormUrl", asFormScript.getLoginURL());
-		List<Map<String,Object>> customScripts = new ArrayList<Map<String,Object>>();
-		Map<String, Object> customScript = new TreeMap<>();
-		customScript.put("Value", script);
-		customScripts.add(customScript);
+		List<Pair<String, String>> customScripts = generateCustomScripts(asFormScript.getPages());
+
 		formAuthenticationSettingModel.put("DefaultPersonaValidation", true);
 		formAuthenticationSettingModel.put("CustomScripts", customScripts);
 		formAuthenticationSettingModel.put("IsEnabled", true);
 		formAuthenticationSettingModel.put("PersonasValidation", true);
-
-
 
 		List<Map<String,Object>> personas = new ArrayList<Map<String,Object>>();
 		Map<String, Object> entry = new TreeMap<>();
@@ -93,10 +95,20 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 		entry.put("IsActive", true);
 		personas.add(entry);
 		formAuthenticationSettingModel.put("Personas", personas);
-
-
-
 	}
+	
+private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> pages) {
+  NetsparkerLoginScriptGenerator scriptGenerator = new NetsparkerLoginScriptGenerator();
+  
+  List<Pair<String, String>> customScripts = new LinkedList<Pair<String,String>>();
+  
+  for (LoginScriptPage page : pages) {
+      String script = scriptGenerator.generate(page.getActions());
+      customScripts.add(new ImmutablePair<String, String>("Value", script));
+  }
+  
+  return customScripts;
+}
 
 	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New
 	private void addFormAutodetectAuthorization(LoginConfig config, Map<String, Object> rootMap) {

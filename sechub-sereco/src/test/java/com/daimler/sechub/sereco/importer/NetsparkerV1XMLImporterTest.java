@@ -78,7 +78,7 @@ public class NetsparkerV1XMLImporterTest {
 					capec("170").
 					hipaa("164.306(a), 164.308(a)").
 					and().
-				withDescriptionContaining("<p>Netsparker Cloud identified a version disclosure (Apache) in the target").
+				withDescriptionContaining("Netsparker Cloud identified a version disclosure (Apache) in the target").
 				isContained().
 			vulnerability().
 				withSeverity(SerecoSeverity.MEDIUM).
@@ -151,8 +151,8 @@ public class NetsparkerV1XMLImporterTest {
                     capec("459").
                     pci32("6.5.4").
                     and().
-                withDescriptionContaining("<p>Netsparker Enterprise identified an invalid SSL certificate.</p>\n" + 
-                        "<p>An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.</p>").
+                withDescriptionContaining("Netsparker Enterprise identified an invalid SSL certificate.\n\n" + 
+                        "An SSL certificate can be created and signed by anyone. You should have a valid SSL certificate to make your visitors sure about the secure communication between your website and them. If you have an invalid certificate, your visitors will have trouble distinguishing between your certificate and those of attackers.").
                 isContained().
                
            vulnerability().
@@ -164,9 +164,47 @@ public class NetsparkerV1XMLImporterTest {
                     owasp("A5").
                     wasc("4").
                     and().
-                withDescriptionContaining("<p>Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.</p>\n" + 
-                        "<p>HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.</p>\n" + 
-                        "<p>For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS. </p>").
+                withDescriptionContaining("Netsparker Enterprise identified that the target website allows web browsers to access to the website over HTTP and doesn't redirect them to HTTPS.\n\n" + 
+                        "HSTS is implemented in the target website however HTTP requests are not redirected to HTTPS. This decreases the value of HSTS implementation significantly.\n\n" + 
+                        "For example visitors who haven't visited the HTTPS version of the website previously will not be able to take advantage of HSTS.").
+                isContained();
+        /* @formatter:on */
+
+    }
+    
+    @Test
+    public void test_xml_import_netsparker_1_9_1_977_contains_specific_vulnerability_with_table() throws Exception{
+        /* prepare */
+        String xml = support.loadTestFile(SerecoTestFileSupport.NETSPARKER_V1_9_1_977_XML_TESTFILE);
+
+        /* execute */
+        SerecoMetaData result = importerToTest.importResult(xml);
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        for (SerecoVulnerability vulnerability: vulnerabilities) {
+            assertEquals(ScanType.WEB_SCAN, vulnerability.getScanType());
+        }
+        
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            vulnerability().
+                withSeverity(SerecoSeverity.MEDIUM).
+                withURL("https://app.example.org:8082/").
+                withType("HstsErrors").
+                classifiedBy().
+                    owasp("A5").
+                    wasc("15").
+                    cwe("16").
+                    and().
+                withDescriptionContaining("Netsparker Enterprise detected errors during parsing of Strict-Transport-Security header.\n\n" +
+                        ".Table\n" +
+                        "|=========================\n" +
+                        "| Error | Resolution\n" +
+                        "\n" +
+                        "| preload directive not present\n" +
+                        "| Submit domain for inclusion in browsers' HTTP Strict Transport Security (HSTS) preload list.\n" +
+                        "|=========================").
                 isContained();
         /* @formatter:on */
 

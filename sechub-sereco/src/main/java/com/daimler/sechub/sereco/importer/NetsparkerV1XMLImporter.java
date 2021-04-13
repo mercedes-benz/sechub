@@ -45,7 +45,7 @@ public class NetsparkerV1XMLImporter extends AbstractProductResultImporter {
 			vulnerability.setSeverity(NetsparkerServerityConverter.convert(vulnerabilityElement.elementText("severity")));
 			vulnerability.setUrl(vulnerabilityElement.elementText("url"));
 			vulnerability.setType(vulnerabilityElement.elementText("type"));
-			vulnerability.setDescription(vulnerabilityElement.elementText("description"));
+			vulnerability.setDescription(NetsparkerHtmlToAsciiDocConverter.convert(vulnerabilityElement.elementText("description")));
 			vulnerability.setScanType(ScanType.WEB_SCAN);
 
 			Element classificationElement = vulnerabilityElement.element("classification");
