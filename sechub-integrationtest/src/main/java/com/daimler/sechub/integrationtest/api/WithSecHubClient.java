@@ -15,16 +15,13 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ClientAction;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
-import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.test.TestFileSupport;
 import com.daimler.sechub.test.TestUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This test class uses former build sechub client for execution.
@@ -74,29 +71,36 @@ public class WithSecHubClient {
         return this;
     }
 
-    public AssertJobReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
-        return new AssertJobReport(project, jobUUID, location.getPath());
+    @Deprecated // use startDownloadReport instead (newer implementation uses AssertReport which has more details and uses common SecHubReport object inside)
+    public AssertSecHubReport startDownloadJobReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+        ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
+        String report = reportLoader.loadReport();
+        return TestAPI.assertSecHubReport(report);
     }
-
-    public class AssertJobReport {
+    
+    public AssertReport startDownloadReport(TestProject project, UUID jobUUID, IntegrationTestJSONLocation location) {
+        ClientJobReportLoader reportLoader = new ClientJobReportLoader(project, jobUUID, location.getPath());
+        String report = reportLoader.loadReport();
+        return TestAPI.assertReport(report);
+    }
+    
+    private class ClientJobReportLoader {
         UUID jobUUID;
         TestProject project;
         String jsonConfigfile;
-        TrafficLight trafficLight;
 
-        public AssertJobReport(TestProject project, UUID jobUUID, String jsonConfigfile) {
+        public ClientJobReportLoader(TestProject project, UUID jobUUID, String jsonConfigfile) {
             this.jobUUID = jobUUID;
             this.project = project;
             this.jsonConfigfile = jsonConfigfile;
-
+        }
+        
+        public String loadReport() {
             String path = executeReportDownloadAndGetPathOfFile();
             File file = new File(path);
             String report = TestFileSupport.loadTextFile(file, "\n");
             LOG.debug("loaded report:{}", report);
-            JsonNode data = TestJSONHelper.get().readTree(report);
-            JsonNode tl = data.get("trafficLight");
-            String trafficLightText = tl.asText();
-            this.trafficLight = TrafficLight.fromString(trafficLightText);
+            return report;
         }
 
         private String executeReportDownloadAndGetPathOfFile() {
@@ -123,10 +127,7 @@ public class WithSecHubClient {
             return path;
         }
 
-        public AssertJobReport hasTrafficLight(TrafficLight expected) {
-            assertEquals(expected, trafficLight);
-            return this;
-        }
+       
 
     }
 
@@ -383,13 +384,13 @@ public class WithSecHubClient {
      * @param project
      * @return
      */
-    public AssertExecutionResult startAndWaitForCodeScan(TestProject project) {
+    public ExecutionResult startAndWaitForCodeScan(TestProject project) {
         return startAndWaitForCodeScan(project, IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_GREEN);
     }
 
-    public AssertExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
+    public ExecutionResult startAndWaitForCodeScan(TestProject project, IntegrationTestJSONLocation location) {
         ExecutionResult result = startSynchronScanFor(project, location);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     /**
@@ -402,9 +403,9 @@ public class WithSecHubClient {
      * @param project
      * @return execution result
      */
-    public AssertExecutionResult createInfraScanAndFetchScanData(TestProject project) {
+    public ExecutionResult createInfraScanAndFetchScanData(TestProject project) {
         ExecutionResult result = startSynchronScanFor(project, IntegrationTestJSONLocation.CLIENT_JSON_INFRASCAN);
-        return AssertExecutionResult.assertResult(result);
+        return result;
     }
 
     public void markAsFalsePositive(TestProject project, IntegrationTestJSONLocation location, String pathToJSONFile) {

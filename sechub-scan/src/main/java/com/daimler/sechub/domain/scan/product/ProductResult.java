@@ -17,6 +17,8 @@ import javax.persistence.Version;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigInfo;
+
 /**
  * Represents a product result for a SecHub job UUID
  *
@@ -43,6 +45,9 @@ public class ProductResult {
     public static final String COLUMN_STARTED = "STARTED";
     public static final String COLUMN_ENDED = "ENDED";
     public static final String COLUMN_META_DATA = "META_DATA";
+    
+    public static final String COLUMN_PRODUCT_CONFIG_UUID="PRODUCT_CONFIG_UUID";
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -50,6 +55,7 @@ public class ProductResult {
 
     public static final String PROPERTY_SECHUB_JOB_UUID = "secHubJobUUID";
     public static final String PROPERTY_PRODUCT_IDENTIFIER = "productIdentifier";
+    public static final String PROPERTY_PRODUCT_CONFIG_UUID = "productExecutorConfigUUID";
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -92,6 +98,9 @@ public class ProductResult {
     @Type(type = "text")
     @Column(name = COLUMN_META_DATA, nullable = true)
     String metaData;
+    
+    @Column(name = COLUMN_PRODUCT_CONFIG_UUID, nullable = true) // when null it means we got (old) entries or SERECO fallback
+    UUID productExecutorConfigUUID;
 
     ProductResult() {
         // jpa only
@@ -105,16 +114,22 @@ public class ProductResult {
      * @param productIdentifier
      * @param result            as string
      */
-    public ProductResult(UUID secHubJobUUID, String projectId, ProductIdentifier productIdentifier, String result) {
+    public ProductResult(UUID secHubJobUUID, String projectId, ProductExecutorConfigInfo productExecutorInfo, String result) {
         if (secHubJobUUID == null) {
             throw new IllegalArgumentException("SecHub JOB UUID may not be null!");
         }
+        if (productExecutorInfo == null) {
+            throw new IllegalArgumentException("Product executor config info may not be null!");
+        }
+        this.productIdentifier = productExecutorInfo.getProductIdentifier();
+        
         if (productIdentifier == null) {
             throw new IllegalArgumentException("Product identifier not be null!");
         }
+        this.productExecutorConfigUUID=productExecutorInfo.getUUID();
+        
         this.secHubJobUUID = secHubJobUUID;
         this.projectId = projectId;
-        this.productIdentifier = productIdentifier;
         this.result = result;
 
     }
@@ -161,6 +176,14 @@ public class ProductResult {
 
     public String getMetaData() {
         return metaData;
+    }
+    
+    public void setProductExecutorConfigUUID(UUID productExecutorConfigUUID) {
+        this.productExecutorConfigUUID = productExecutorConfigUUID;
+    }
+    
+    public UUID getProductExecutorConfigUUID() {
+        return productExecutorConfigUUID;
     }
 
     @Override

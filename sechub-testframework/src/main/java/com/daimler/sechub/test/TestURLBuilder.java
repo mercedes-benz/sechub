@@ -150,6 +150,10 @@ public class TestURLBuilder {
         public String buildAdminGetServerConfiguration() {
             return buildUrl(API_PDS_ADMIN, "config/server");
         }
+
+        public String buildBaseUrl() {
+            return buildUrl("");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -302,11 +306,15 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
 
-    public String buildAdminAssignsUserToProjectUrl(String userId, String projectId) {
+    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+    }
+    
+    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 
-    public String buildAdminUnassignsUserFromProjectUrl(String userId, String projectId) {
+    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
     }
 
@@ -316,6 +324,10 @@ public class TestURLBuilder {
 
     public String buildUpdateProjectWhiteListUrl(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
+    }
+    
+    public String buildUpdateProjectMetaData(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
     }
 
     public String buildAdminDeletesProject(String projectId) {
@@ -345,12 +357,12 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_JOBS, "running");
     }
 
-    public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID jobUUID) {
-        return buildAdminDownloadsZipFileContainingFullScanDataFor(jobUUID.toString());
+    public String buildAdminDownloadsZipFileContainingFullScanDataFor(UUID sechubJobUUID) {
+        return buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID.toString());
     }
     
-    public String buildAdminDownloadsZipFileContainingFullScanDataFor(String jobUUID) {
-        return buildUrl(API_ADMIN_SCAN, "download", jobUUID);
+    public String buildAdminDownloadsZipFileContainingFullScanDataFor(String sechubJobUUID) {
+        return buildUrl(API_ADMIN_SCAN, "download", sechubJobUUID);
     }
 
     public String buildAdminCancelsJob(UUID jobUUID) {
@@ -640,4 +652,9 @@ public class TestURLBuilder {
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
     }
+
+    public String buildBaseURL() {
+        return buildUrl("");
+    }
+
 }

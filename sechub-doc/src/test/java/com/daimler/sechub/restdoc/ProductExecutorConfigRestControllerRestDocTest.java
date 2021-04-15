@@ -147,7 +147,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
 	    		post(apiEndpoint).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(configFromUser))
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isCreated()).
 	    			andExpect(content().string(randomUUID.toString())).
 	    			andDo(document(RestDocFactory.createPath(useCase),
@@ -203,7 +203,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
                 put(apiEndpoint,randomUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(configFromUser))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(UseCaseAdminUpdatesExecutorConfig.class),
                             resource(
@@ -263,7 +263,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(apiEndpoint,uuid).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -306,7 +306,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 delete(apiEndpoint, configUUID).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -343,7 +343,7 @@ public class ProductExecutorConfigRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(

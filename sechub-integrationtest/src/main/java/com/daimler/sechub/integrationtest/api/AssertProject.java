@@ -4,11 +4,11 @@ package com.daimler.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -176,6 +176,38 @@ public class AssertProject extends AbstractAssert {
             fail("adapter json failure:" + e.getMessage());
         }
         assertArrayEquals(expectedArray, found.toArray(new String[found.size()]));
+        return this;
+    }
+    
+    public AssertProject hasNoMetaData() {
+        return hasMetaData(new HashMap<>());
+    }
+    
+    public AssertProject hasMetaData(Map<String, String> expectedMap) {
+        String content = fetchProjectDetails();
+        
+        Map<String, String> found = new HashMap<>();
+        JsonNode metaDataNode;
+        try {
+            metaDataNode = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fetch("metaData", content).asNode();
+            metaDataNode.fieldNames().forEachRemaining(key -> {
+                
+                JsonNode element = metaDataNode.get(key);
+                
+                if (element.isTextual()) {
+                    String value = element.textValue();
+                    found.put(key, value);
+                }
+                
+            });
+        }
+        catch (AdapterException e) {
+            e.printStackTrace();
+            fail("adapter jso failure:" + e.getMessage());
+        }
+        
+        assertEquals(expectedMap, found);
+        
         return this;
     }
 

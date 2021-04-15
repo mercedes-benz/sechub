@@ -49,8 +49,12 @@ public enum IntegrationTestMockMode {
 	
 
 	NOT_PREDEFINED(null), 
-	
 
+	/**
+	 * Just do no mocking!
+	 */
+	NOT_MOCKED(null), 
+	
 	;
 
 	private String target;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
-import org.springframework.util.StringUtils;
+import static com.daimler.sechub.commons.core.util.SimpleStringUtils.*;
 
 /**
  * Abstract base class for scans where INTERNET and INTRANET scans will be done by complete different installations
@@ -12,28 +12,25 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	@Override
 	protected void init(ScanInfo info) {
-		boolean canScanDaimlerIntranet = notEmpty(getBaseURLWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getUsernameWhenDaimlerIntranetTarget());
-		canScanDaimlerIntranet=canScanDaimlerIntranet && notEmpty(getPasswordWhenDaimlerIntranetTarget());
+		boolean canScanIntranet = isNotEmpty(getBaseURLWhenIntranetTarget());
+		canScanIntranet=canScanIntranet && isNotEmpty(getUsernameWhenIntranetTarget());
+		canScanIntranet=canScanIntranet && isNotEmpty(getPasswordWhenIntranetTarget());
 		
-		info.canScanIntranet=canScanDaimlerIntranet;
+		info.canScanIntranet=canScanIntranet;
 		
-		boolean canScanInternet = notEmpty(getBaseURLWhenInternetTarget());
-		canScanInternet=canScanInternet && notEmpty(getUsernameWhenInternetTarget());
-		canScanInternet=canScanInternet && notEmpty(getPasswordWhenInternetTarget());
+		boolean canScanInternet = isNotEmpty(getBaseURLWhenInternetTarget());
+		canScanInternet=canScanInternet && isNotEmpty(getUsernameWhenInternetTarget());
+		canScanInternet=canScanInternet && isNotEmpty(getPasswordWhenInternetTarget());
 		
 		info.canScanInternet=canScanInternet;
 		
 	}
 	
-	private boolean notEmpty(Object object) {
-		return ! StringUtils.isEmpty(object);
-	}
 	
 	@Override
 	public final String getBaseURL(TargetType type) {
 		if (isIntranet(type)) {
-			return getBaseURLWhenDaimlerIntranetTarget();
+			return getBaseURLWhenIntranetTarget();
 		}
 		if (isInternet(type)) {
 			return getBaseURLWhenInternetTarget();
@@ -44,7 +41,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	@Override
 	public final String getUserId(TargetType type) {
 		if (isIntranet(type)) {
-			return getUsernameWhenDaimlerIntranetTarget();
+			return getUsernameWhenIntranetTarget();
 		}
 		if (isInternet(type)) {
 			return getUsernameWhenInternetTarget();
@@ -55,7 +52,7 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 	@Override
 	public final String getPassword(TargetType target) {
 		if (isIntranet(target)) {
-			return getPasswordWhenDaimlerIntranetTarget();
+			return getPasswordWhenIntranetTarget();
 		}
 		if (isInternet(target)) {
 			return getPasswordWhenInternetTarget();
@@ -65,15 +62,15 @@ public abstract class AbstractTargetIdentifyingMultiInstallSetup extends Abstrac
 
 	protected abstract String getBaseURLWhenInternetTarget();
 
-	protected abstract String getBaseURLWhenDaimlerIntranetTarget();
+	protected abstract String getBaseURLWhenIntranetTarget();
 	
 	protected abstract String getUsernameWhenInternetTarget();
 
-	protected abstract String getUsernameWhenDaimlerIntranetTarget();
+	protected abstract String getUsernameWhenIntranetTarget();
 
 	protected abstract String getPasswordWhenInternetTarget();
 
-	protected abstract String getPasswordWhenDaimlerIntranetTarget();
+	protected abstract String getPasswordWhenIntranetTarget();
 	
 	
 

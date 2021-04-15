@@ -24,41 +24,41 @@ func Execute() {
 
 	context := InitializeContext()
 
-	// print logo after context was build
-	// InitializeContext() can be escaping
-	printLogoWithVersion(os.Stdout)
+	printLogoWithVersion(context)
 
 	switch context.config.action {
-	case ActionExecuteSynchron:
-		{
-			commonWayToApprove(context)
-			waitForSecHubJobDoneAndFailOnTrafficLight(context)
-		}
-	case ActionExecuteAsynchron:
-		{
-			commonWayToApprove(context)
-			fmt.Println(context.config.secHubJobUUID)
-		}
-	case ActionExecuteGetStatus:
+	case scanAction:
+		commonWayToApprove(context)
+		waitForSecHubJobDoneAndFailOnTrafficLight(context)
+	case scanAsynchronAction:
+		commonWayToApprove(context)
+		fmt.Println(context.config.secHubJobUUID)
+	case getStatusAction:
 		fmt.Println(getSecHubJobState(context, true, false, false))
-	case ActionExecuteGetReport:
+	case getReportAction:
 		downloadSechubReport(context)
-	case ActionExecuteGetFalsePositives:
+	case getFalsePositivesAction:
 		downloadFalsePositivesList(context)
-	case ActionExecuteMarkFalsePositives:
+	case markFalsePositivesAction:
 		uploadFalsePositivesFromFile(context)
-	case ActionExecuteInteractiveMarkFalsePositives:
+	case interactiveMarkFalsePositivesAction:
 		interactiveMarkFalsePositives(context)
-	case ActionExecuteUnmarkFalsePositives:
+	case unmarkFalsePositivesAction:
 		unmarkFalsePositivesFromFile(context)
-	case ActionExecuteInteractiveUnmarkFalsePositives:
+	case interactiveUnmarkFalsePositivesAction:
 		interactiveUnmarkFalsePositives(context)
-	default:
-		{
-			fmt.Printf("Unknown action '%s'\n", context.config.action)
-			showHelpHint()
-			os.Exit(ExitCodeIllegalAction)
+	case showHelpAction:
+		PrintUsage(os.Stdout)
+	case showVersionAction:
+		if context.config.quiet {
+			// Print ONLY in quiet mode, because otherwise the version is already printed along with the banner
+			fmt.Println(Version())
 		}
+		// We show the version every time - so nothing more to do here
+	default:
+		fmt.Printf("Unknown action '%s'\n", context.config.action)
+		showHelpHint()
+		os.Exit(ExitCodeIllegalAction)
 	}
 	os.Exit(ExitCodeOK)
 }
@@ -82,7 +82,7 @@ func handleCodeScanParts(context *Context) {
 	if !context.isUploadingSourceZip() {
 		return
 	}
-	fmt.Printf("- Uploading source zip file\n")
+	sechubUtil.Log("Uploading source zip file", context.config.quiet)
 	uploadSourceZipFile(context)
 }
 
@@ -94,7 +94,7 @@ func handleCodeScan(context *Context) {
 	json.CodeScan.SourceCodePatterns = append(json.CodeScan.SourceCodePatterns, DefaultZipAllowedFilePatterns...)
 
 	// add default exclude patterns to exclude list
-	if !ignoreDefaultExcludes {
+	if !context.config.ignoreDefaultExcludes {
 		json.CodeScan.Excludes = append(json.CodeScan.Excludes, DefaultZipExcludeDirPatterns...)
 	}
 
@@ -118,10 +118,9 @@ func handleCodeScan(context *Context) {
 		Excludes:           json.CodeScan.Excludes,
 		SourceCodePatterns: json.CodeScan.SourceCodePatterns,
 		Debug:              context.config.debug} // pass through debug flag
-	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config)
+	err := sechubUtil.ZipFolders(context.sourceZipFileName, &config, context.config.quiet)
 	if err != nil {
-		fmt.Printf("%s\n", err)
-		fmt.Print("Exiting due to fatal error...\n")
+		sechubUtil.LogError(fmt.Sprintf("%s\nExiting due to fatal error...\n", err))
 		os.Remove(context.sourceZipFileName) // cleanup zip file
 		os.Exit(ExitCodeFailed)
 	}
@@ -135,7 +134,7 @@ func downloadSechubReport(context *Context) string {
 	if context.config.reportFormat == "html" {
 		fileEnding = ".html"
 	}
-	fileName := "sechub_report_" + context.config.secHubJobUUID + fileEnding
+	fileName := "sechub_report_" + context.config.projectID + "_" + context.config.secHubJobUUID + fileEnding
 
 	report := ReportDownload{serverResult: getSecHubJobReport(context), outputFolder: context.config.outputFolder, outputFileName: fileName}
 	report.save(context)

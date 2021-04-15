@@ -26,8 +26,7 @@ public abstract class AbstractInstallSetup implements InstallSetup{
 		}else if (isInternet(type)) {
 			return info.canScanInternet;
 		}else if (isCode(type)){
-			/* code has no restriction is always scannable */
-			return true;
+			return info.canScanCode;
 		}else {
 			return false;
 		}
@@ -76,7 +75,9 @@ public abstract class AbstractInstallSetup implements InstallSetup{
 
 		protected boolean canScanIntranet;
 		protected boolean canScanInternet;
+		protected boolean canScanCode;
 
+		
 	}
 
 }

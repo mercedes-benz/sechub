@@ -16,11 +16,17 @@ a simple setup of
   _(describes what this mapping is used for - just for information)_
 
 ==== Domain handling
-The `Administration` domain will know every mapping and provide the 
+
+===== Global mappings
+The `Administration` domain will know every global mapping (e.g. scan configuration) and provide the 
 corresponding REST API for administrators.
 
-Changes of mappings will be sent from administration domain to other
+Changes of global mappings will be sent from administration domain to other
 domains via event bus and a message with ID: <<section-gen-messaging-mapping_configuration_changed,MAPPING_CONFIGURATION_CHANGED>>.
 
-Dedicated message handlers inside other domains will recognize wanted parts and store informatino when
+Dedicated message handlers inside other domains will recognize wanted parts and store information when
 necessary.
+
+===== Product executor parameter mappings
+This will not lead to any domain event. The product executors will inspect the mapping information always again before a job has been started.
+The mapping data is stored inside executor configurations, which is always available inside a job execution, so there is no need of any domain events. 

@@ -74,7 +74,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -99,7 +99,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocFactory.createPath(useCase),
                     resource(
@@ -124,7 +124,7 @@ public class SchedulerAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(https(PORT_USED).buildAdminEnablesSchedulerJobProcessing()).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isAccepted()).
 		andDo(document(RestDocFactory.createPath(useCase),
                     resource(

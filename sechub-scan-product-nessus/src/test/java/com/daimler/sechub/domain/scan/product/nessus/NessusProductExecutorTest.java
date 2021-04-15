@@ -20,6 +20,9 @@ import com.daimler.sechub.adapter.nessus.NessusAdapter;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
+import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.ProductResult;
+import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
@@ -42,6 +45,7 @@ public class NessusProductExecutorTest {
 	private Target target3;
 	private NessusInstallSetup installSetup;
     private ProductExecutorContext executorContext;
+    private ProductExecutorConfig executorConfig;
 
 	@Before
 	public void before() throws Exception {
@@ -59,6 +63,11 @@ public class NessusProductExecutorTest {
 
 		nessusAdapter = mock(NessusAdapter.class);
 		executorContext=mock(ProductExecutorContext.class);
+		executorConfig=mock(ProductExecutorConfig.class);
+	
+		ProductResult productResult = mock(ProductResult.class);
+		when(executorContext.getExecutorConfig()).thenReturn(executorConfig);
+		when(executorContext.getCurrentProductResult()).thenReturn(productResult);
 		
 		installSetup= mock(NessusInstallSetup.class);
 		when(installSetup.getBaseURL(any())).thenReturn("baseURL");
@@ -81,6 +90,7 @@ public class NessusProductExecutorTest {
 	public void when_three_root_urls_are_configured_and_apter_can_handle_target_the_adapter_is_called_1_times()
 			throws Exception {
 		/* prepare */
+	    when(executorConfig.getProductIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 		when(installSetup.isAbleToScan(TargetType.INTERNET)).thenReturn(true);
 		when(installSetup.isAbleToScan(TargetType.INTRANET)).thenReturn(false);
 
@@ -97,6 +107,7 @@ public class NessusProductExecutorTest {
 	public void when_three_root_urls_are_configured_and_apter_can_handle_3_targets_with_two_different_types_the_adapter_is_called_1_time()
 			throws Exception {
 		/* prepare */
+	    when(executorConfig.getProductIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 		Target target2ButIntranet = new Target(URI_2, TargetType.INTRANET);
 		when(targetResolver.resolveTarget(URI_2)).thenReturn(target2ButIntranet);
 		
@@ -116,6 +127,7 @@ public class NessusProductExecutorTest {
 	public void when_three_root_urls_are_configured_and_apter_can_handle_2_targets_of_same_type_the_adapter_is_called_1_times()
 			throws Exception {
 		/* prepare */
+	    when(executorConfig.getProductIdentifier()).thenReturn(ProductIdentifier.NETSPARKER);
 		Target target2ButIntranet = new Target(URI_2, TargetType.INTRANET);
 		when(targetResolver.resolveTarget(URI_2)).thenReturn(target2ButIntranet);
 		
@@ -133,6 +145,7 @@ public class NessusProductExecutorTest {
 	@Test
 	public void nessus_resolves_ip_from_infrascan() throws Exception{
 		/* prepare */
+	    when(executorConfig.getProductIdentifier()).thenReturn(ProductIdentifier.NESSUS);
 		SecHubInfrastructureScanConfiguration infraScan = mock(SecHubInfrastructureScanConfiguration.class);
 		List<InetAddress> expectedIPList = new ArrayList<>();
 		when(infraScan.getIps()).thenReturn(expectedIPList);

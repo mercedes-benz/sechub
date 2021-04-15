@@ -1,6 +1,18 @@
 pkg
+
 # We currently cannot setup this eclipse project by gradle so commiting .project and .settings in oldschool way to git...
 .settings
 .project
+
+# generated files:
 src/daimler.com/sechub/cli/version.go
+
+# vscode files:
 .vscode
+__debug_bin
+
+# ignore testing artifacts:
+sechub*.json
+
+# ignore all generated go parts
+*_gen.go

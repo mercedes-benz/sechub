@@ -19,6 +19,7 @@ This guide describes how to get started with SecHub.
 The following topics are covered:
 
 * [x] Getting SecHub
+* [x] Building SecHub
 * [x] Starting SecHub in Integration Test Server mode
 * [x] Getting default passwords
 * [x] Working with the REST API and https://curl.haxx.se/[cURL]
@@ -30,22 +31,35 @@ The following topics are covered:
 * Git
 * cURL
 
-Ubuntu 18.04 & 20.04:
+==== Alpine Linux 3.10, 3.11 & 3.12:
+
+Java 8:
+----
+apk add openjdk8 curl git bash
+----
+
+Java 11:
 
 ----
-sudo apt install git openjdk-8-jdk curl
+apk add openjdk11 curl git bash
 ----
 
-Debian 10:
+==== Debian 10:
 
 ----
 sudo apt install git openjdk-11-jdk curl
 ----
 
-CentOS 8 & Fedora 31:
+==== Fedora 32 & 33 and CentOS 8:
 
 ----
 sudo dnf install git java-1.8.0-openjdk-devel curl
+----
+
+==== Ubuntu 18.04 & 20.04:
+
+----
+sudo apt install git openjdk-8-jdk curl
 ----
 
 === Instructions
@@ -56,8 +70,6 @@ Let's start with:
 +
 ----
 $ cd ~
-$ mkdir develop
-$ cd develop
 $ git clone https://github.com/Daimler/sechub.git
 $ cd sechub
 ----

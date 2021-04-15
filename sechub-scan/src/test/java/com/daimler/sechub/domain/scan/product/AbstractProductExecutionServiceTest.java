@@ -25,13 +25,14 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class AbstractProductExecutionServiceTest {
 
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
 
-	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.FARRADAY;
+	private static final ProductIdentifier USED_PRODUCT_IDENTIFIER = ProductIdentifier.NESSUS;
 	private AbstractProductExecutionService serviceToTest;
 	private UUIDTraceLogID traceLogID;
 	private SecHubExecutionContext context;
@@ -45,6 +46,8 @@ public class AbstractProductExecutionServiceTest {
     private ProductExecutorContext productExecutorContext;
 
     private int USED_PRODUCT_EXECUTOR_VERSION=1;
+
+    private ProductExecutorConfig config1;
 
 	@Before
 	public void before() throws Exception {
@@ -69,7 +72,7 @@ public class AbstractProductExecutionServiceTest {
 		ProductExecutorConfigRepository productExecutorConfigRepository = mock(ProductExecutorConfigRepository.class);
         serviceToTest.productExecutorConfigRepository=productExecutorConfigRepository;
 		
-        ProductExecutorConfig config1 = new ProductExecutorConfig(USED_PRODUCT_IDENTIFIER, 0, new ProductExecutorConfigSetup());
+        config1 = new ProductExecutorConfig(USED_PRODUCT_IDENTIFIER, 0, new ProductExecutorConfigSetup());
         when(productExecutorConfigRepository.findExecutableConfigurationsForProject(any(), eq(USED_PRODUCT_IDENTIFIER), eq(USED_PRODUCT_EXECUTOR_VERSION))).thenReturn(Arrays.asList(config1));
         
 		productResultRepository=mock(ProductResultRepository.class);
@@ -97,17 +100,19 @@ public class AbstractProductExecutionServiceTest {
 
 	@Test
 	public void executeAndPersistResults_a_non_null_result_saves_the_result_no_error_logging() throws Exception{
+	    /* prepare */
 		ProductResult result = mock(ProductResult.class);
+		
 		ArgumentCaptor<ProductExecutorContext> executorContext = ArgumentCaptor.forClass(ProductExecutorContext.class); 
 		
-		/* prepare */
 		when(executor.execute(eq(context),executorContext.capture())).thenReturn(Collections.singletonList(result));
 
 		/* execute */
 		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
-		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
+		verify(productResultRepository).findProductResults(sechubJobUUID,config1);
+		verify(productExecutorContext).getExecutorConfig();
 		verify(productExecutorContext).persist(result);
 		verify(logger,never()).error(any(), eq(USED_PRODUCT_IDENTIFIER), eq(traceLogID));
 
@@ -115,8 +120,9 @@ public class AbstractProductExecutionServiceTest {
 
 	@Test
 	public void sechub_execution_error_on_execution_shall_not_break_the_build_but_safe_fallbackresult() throws Exception{
+	    /* prepare */
 		ArgumentCaptor<ProductResult> productResultCaptor = ArgumentCaptor.forClass(ProductResult.class);
-		/* prepare */
+		
 		SecHubExecutionException exception = new SecHubExecutionException("an-error occurred on execution, but this should not break at all!");
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 
@@ -124,7 +130,7 @@ public class AbstractProductExecutionServiceTest {
 		serviceToTest.runOnAllAvailableExecutors(executors, context, traceLogID);
 
 		/* test */
-		verify(productResultRepository).findProductResults(sechubJobUUID,USED_PRODUCT_IDENTIFIER);
+		verify(productResultRepository).findProductResults(sechubJobUUID,config1);
 		verify(productExecutorContext).persist(productResultCaptor.capture());
 
 		ProductResult captured = productResultCaptor.getValue();
@@ -139,8 +145,9 @@ public class AbstractProductExecutionServiceTest {
 
 	@Test
 	public void runtime__error_on_execution_shall_not_break_the_build() throws Exception{
+	    /* prepare */
 		ArgumentCaptor<ProductResult> productResultCaptor = ArgumentCaptor.forClass(ProductResult.class);
-		/* prepare */
+
 		RuntimeException exception = new RuntimeException("an-error occurred on execution, but this should not break at all!");
 		when(executor.execute(context,productExecutorContext)).thenThrow(exception);
 

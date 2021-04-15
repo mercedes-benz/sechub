@@ -38,7 +38,7 @@ type FileSystemConfig struct {
 	Folders []string `json:"folders"`
 }
 
-// fillTemplate - Fill in environment variables vis go-templating
+// fillTemplate - Fill in environment variables via go-templating
 // templateSource: content of json config file
 // data: environment variables
 func fillTemplate(templateSource string, data map[string]string) []byte {
@@ -48,7 +48,7 @@ func fillTemplate(templateSource string, data map[string]string) []byte {
 	err := t.Execute(&tpl, data)
 
 	if err != nil {
-		fmt.Println("sechub confiuration json is is not a valid template")
+		sechubUtil.LogError("SecHub configuration json is not a valid template")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -61,7 +61,7 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 	/* transform text to json */
 	err := json.Unmarshal(bytes, &sechubConfig)
 	if err != nil {
-		fmt.Println("sechub confiuration json is not valid json")
+		sechubUtil.LogError("SecHub configuration json is not valid json")
 		showHelpHint()
 		os.Exit(ExitCodeMissingConfigFile)
 	}
@@ -69,19 +69,20 @@ func newSecHubConfigFromBytes(bytes []byte) SecHubConfig {
 }
 
 func showHelpHint() {
-	fmt.Println("Hint: Call sechub with -help option to show correct usage and examples")
+	fmt.Fprint(os.Stderr, "\nHint: Call sechub with -help option to show usage and examples\n")
 }
 
-func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubConfig {
-	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
+func newSecHubConfigurationFromFile(context *Context, filePath string) (SecHubConfig, bool) {
+	fileWasRead := false
 
 	/* open file and check exists */
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Loading config file: '%s'", filePath))
 	jsonFile, err := os.Open(filePath)
 	defer jsonFile.Close()
 
-	if sechubUtil.HandleIOError(err) {
-		showHelpHint()
-		os.Exit(ExitCodeMissingConfigFile)
+	if err != nil {
+		emptyConfig := SecHubConfig{}
+		return emptyConfig, fileWasRead
 	}
 
 	/* read text content as "unfilled byte value". This will be used for debug outputs,
@@ -94,21 +95,25 @@ func newSecHubConfigurationFromFile(context *Context, filePath string) SecHubCon
 	}
 
 	if len(context.inputForContentProcessing) >= MaximumBytesOfSecHubConfig {
-		sechubUtil.LogError("Given SecHub json config file is too big!")
+		sechubUtil.LogError("Given SecHub config file '" + context.config.configFilePath + "' is too big!")
 		os.Exit(ExitCodeInvalidConfigFile)
 	}
 
 	if !sechubUtil.IsValidJSON(context.inputForContentProcessing) {
-		sechubUtil.LogError("Given SecHub json config file is not correct JSON!")
+		sechubUtil.LogError("Given SecHub config file '" + context.config.configFilePath + "' is not correct JSON!")
 		os.Exit(ExitCodeInvalidConfigFile)
+	} else {
+		fileWasRead = true
 	}
 
+	// Apply Go templating to config file
 	data, _ := envToMap()
 	context.contentToSend = fillTemplate(string(context.inputForContentProcessing), data)
 
-	return newSecHubConfigFromBytes(context.contentToSend)
+	return newSecHubConfigFromBytes(context.contentToSend), fileWasRead
 }
 
+// envToMap - read all environment variables from OS into a map structure
 func envToMap() (map[string]string, error) {
 	envMap := make(map[string]string)
 	var err error

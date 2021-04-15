@@ -15,10 +15,11 @@ import org.mockito.ArgumentCaptor;
 
 import com.daimler.sechub.pds.PDSNotAcceptableException;
 import com.daimler.sechub.pds.PDSNotFoundException;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class PDSUpdateJobTransactionServiceTest {
     @Rule
-    public ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedExceptionFactory.none();
     
     private PDSJobTransactionService serviceToTest;
     private UUID jobUUID;

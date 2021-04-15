@@ -11,7 +11,7 @@ public enum ExecutionState {
 
 	CANCEL_REQUESTED("A cancel was requested - but not ended now"),
 
-	ENDED("");
+	ENDED("Has ended - with failure or success");
 
 	private String description;
 

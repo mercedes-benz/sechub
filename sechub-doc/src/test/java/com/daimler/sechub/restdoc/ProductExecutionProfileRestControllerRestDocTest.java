@@ -132,7 +132,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    		post(apiEndpoint, profileId).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(JSONConverter.get().toJSON(profile))
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isCreated()).
 	    			andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -182,7 +182,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
                 put(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE).
                     content(JSONConverter.get().toJSON(profile))
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -225,7 +225,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 post(apiEndpoint, profileId,projectId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isCreated()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -316,7 +316,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -364,7 +364,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
 	    this.mockMvc.perform(
                 delete(apiEndpoint, profileId).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(
@@ -410,7 +410,7 @@ public class ProductExecutionProfileRestControllerRestDocTest {
         this.mockMvc.perform(
                 get(apiEndpoint).
                     contentType(MediaType.APPLICATION_JSON_VALUE)
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andDo(document(RestDocFactory.createPath(useCase),
                             resource(

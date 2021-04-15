@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -30,15 +31,19 @@ public class Project {
 	/* +-----------------------------------------------------------------------+ */
 	public static final String TABLE_NAME = "ADM_PROJECT";
 	public static final String TABLE_NAME_PROJECT_TO_USER = "ADM_PROJECT_TO_USER";
+	public static final String TABLE_NAME_PROJECT_TO_METADATA = "ADM_PROJECT_TO_METADATA";
 	public static final String TABLE_NAME_PROJECT_WHITELIST_URI = "ADM_PROJECT_WHITELIST_URI";
+	public static final String TABLE_NAME_PROJECT_METADATA = "ADM_PROJECT_METADATA";
 
 	public static final String COLUMN_PROJECT_ID = "PROJECT_ID";
 	public static final String COLUMN_PROJECT_OWNER = "PROJECT_OWNER";
 	public static final String COLUMN_PROJECT_DESCRIPTION = "PROJECT_DESCRIPTION";
 	public static final String COLUMN_WHITELIST_URIS = "PROJECT_WHITELIST_URIS";
+	public static final String COLUMN_METADATA = "METADATA_KEY";
 
 	public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
 	public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
+	public static final String ASSOCIATE_PROJECT_TO_METADATA_COLUMN_PROJECT_ID = "PROJECT_ID";
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ JPQL .....................................+ */
@@ -49,7 +54,6 @@ public class Project {
 	public static final String PROPERTY_OWNER = "owner";
 	public static final String PROPERTY_ID = "id";
 
-
 	@Id
 	@Column(name = COLUMN_PROJECT_ID)
 	String id;
@@ -58,13 +62,15 @@ public class Project {
 	String description;
 
 	// no merge cascade or persist, because owner and user in set
-	// otherwise leading to "java.lang.IllegalStateException: Multiple representations of the same entity ... are being merged"
-	@ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	// otherwise leading to "java.lang.IllegalStateException: Multiple
+	// representations of the same entity ... are being merged"
+	@ManyToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	@JoinTable(name = TABLE_NAME_PROJECT_TO_USER)
 	Set<User> users = new HashSet<>();
 
-	// we do not CascadeType.Persist or ALL because otherwise user will be persisted again and leads to unique constraint violation
-	@ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+	// we do not CascadeType.Persist or ALL because otherwise user will be persisted
+	// again and leads to unique constraint violation
+	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	@JoinColumn(name = COLUMN_PROJECT_OWNER, nullable = false)
 	User owner;
 
@@ -73,18 +79,26 @@ public class Project {
 	@CollectionTable(name = TABLE_NAME_PROJECT_WHITELIST_URI)
 	Set<URI> whiteList = new HashSet<>();
 
+	@OneToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER, mappedBy = "projectId")
+	Set<ProjectMetaDataEntity> metaData = new HashSet<>();
+
 	@Version
 	@Column(name = "VERSION")
 	Integer version;
 
 	/**
-	 * Returns white list entries. Why URIs and not URIs and IPs? Because an
-	 * IP can be contained as LITERALS inside a URI (v4 and v6)- see {@link URI}
-	 * for details
+	 * Returns white list entries. Why URIs and not URIs and IPs? Because an IP can
+	 * be contained as LITERALS inside a URI (v4 and v6)- see {@link URI} for
+	 * details
+	 * 
 	 * @return a set with white lists.
 	 */
 	public Set<URI> getWhiteList() {
 		return whiteList;
+	}
+	
+	public Set<ProjectMetaDataEntity> getMetaData() {
+		return metaData;
 	}
 
 	public Set<User> getUsers() {
@@ -128,6 +142,5 @@ public class Project {
 		}
 		return true;
 	}
-
 
 }

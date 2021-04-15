@@ -1,15 +1,19 @@
 // SPDX-License-Identifier: MIT
-=== Scan configuration
 [[scan-config-about]]
+=== Scan configuration
 Sometimes it is necessary to provide special scan configuration setup, e.g. when
 initializing scan operations at server side.
 
 This can be done by a special scan configuration which is defined as JSON.
 
-[NOTE]
-====
-Do not confuse with `SecHub configuration` which is always on client side. 
-====
+Please don't be confused this configuration with `SecHub configuration` which is always on client side. 
+
+The scan configuration feature was established before the runtime configuration
+by profiles and executor configurations was introduced.
+
+NOTE: The scan configuration is a *global configuration* for scan behaviour. At the 
+moment there is no need any more for this - *now deprecated* - feature. Maybe it will be removed in the future
+But we explain the concept and its possibilities here.
 
 ==== General
 ===== Name pattern ID providers
@@ -19,7 +23,9 @@ to identifiers. By this very generic approach dedicated adapters can fetch ident
 ==== Mapping
 Scan configuration can be changed by {sechub} `mapping` - look at <<mapping-technical-details, mapping>> for more information.
 
+
 NOTE: Just use the `provider` ID as mapping ID.
+
 
 ifdef::techdoc[]
 ===== Technical details
@@ -38,90 +44,5 @@ Synchronization inside cluster is done over database and a special scheduler ser
 `ScanConfigRefreshTriggerService` . This servcie checks periodically if current `scan configuration`
 has been changed by administrators. If so the name pattern provider will be rebuild.
 
-*About old JSON setup*
-
-Before introducing <<concept-mapping,mapping concept>> we had to define scan config by JSON directly
-inside a environment property on startup - but this is no longer necessary.
-
-Here an example of former style:
-[[scan-config-namepatternidprovider-example1]]
-[source, json]
-----
-include::scan_config_namepattern_provider_example1.json[]
-----
-
-
 endif::techdoc[]
 
-==== Overview of possible configurations
-[options="header",cols="1,1,1"]
-|===
-|Provider ID   |Provides   |Description   
-//----------------------
-|checkmarx.newproject.presetid   |name pattern   |checkmarx project names being matched by regexp are mapped to preset ID   
-|checkmarx.newproject.teamid   |name pattern   |checkmarx project names being matched by regexp are mapped to team ID   
-|===
-
-
-==== Checkmarx
-===== Project creation with dedicated checkmarx preset and team
-When a user starts a scan and a `checkmarx` project does not already exist, it will be created.
-So far so good.
-
-But maybe it is shall not be created with the default Checkmarx "preset" because in some scenarios this is not very suitable
-- e.g. when creating many projects, we do not want to assign all presetIds manually to the project.
-(A preset is something like a profile in Checkmarx where scope of scan can be defined at project level).
-
-Also there should be an automated assignment to dedicated teams when
-the project is new created.
- 
-This can be done by name pattern providers `checkmarx.newproject.presetid` and `checkmarx.newproject.teamid`
-as shown in following example:
-
-*An example scan configuration:*
-
-Define mapping with `checkmarx.newproject.presetid`
-[[scan-config-example1-checkmarx]]
-[source, json]
-----
-include::scan_config_example1_checkmarx-preset-id.json[]
-----
-Define mapping with `checkmarx.newproject.teamid`
-[[scan-config-example2-checkmarx]]
-[source, json]
-----
-include::scan_config_example2_checkmarx-team-id.json[]
-----
-
-On lazy project creation time, depending on project name in sechub, after checkmarx project creation the project will automatically be assigned to the pattern specific presetId.
-
-*For example:*
-
-* project named in sechub with `my-java-project-marvelous1` will have preset id `100021` and will have teamId `e2e4e8f4-ba17-453b-b194-c736c605700d`.
-* project named in sechub with `a-go-project-super-cli` will have preset id `100031` and will have teamId `e2e4e8f4-ba17-453b-b194-d836c605700d`.
-* project named in sechub with `something-else`will have preset id `100001` and teamId `f2c4g8f4-ba17-453b-b194-c746c605700d`
-
-[IMPORTANT]
-====
-First matching part will be used! So ordering is important!
-====
-
-ifdef::techdoc[]
-====== Technical details
-Checkmarx install setup does use the `ScanConfigService` to provide `presetId` and `teamId` to adapter.
-Adapter will use `presetId` (if defined) and `teamId` _(mandatory as before)_ when project creation is necessary
-endif::techdoc[]
-
-===== How to obtain preset id
-Unfortunately the preset ID is necessary for REST calls, but not
-visible at Checkmarx UI.
-
-You can either directly access the DB or inspect the web page by
-web tools in you browser (e.g. enable network monitoring and change prest at UI...)  
-
-===== How to obtain team id
-Unfortunately the team ID is necessary for REST calls, but not
-visible at Checkmarx UI.
-
-You can either directly access the DB or inspect the web page by
-web tools in you browser (e.g. enable network monitoring and change team at UI...)  

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
-import org.springframework.util.StringUtils;
-
+import static com.daimler.sechub.commons.core.util.SimpleStringUtils.*;
 /**
  * Abstract base class for scans where INTERNET and INTRANET scans will be done by ONE installation.
  * The installation must have the ability to to scan both parts by using an identifier. 
@@ -14,18 +13,14 @@ public abstract class AbstractTargetIdentifyingOneInstallSetup extends AbstractI
 
 	@Override
 	protected void init(ScanInfo info) {
-		info.canScanIntranet=notEmpty(getIdentifierWhenDaimlerIntranetTarget());
-		info.canScanInternet=notEmpty(getIdentifierWhenInternetTarget());
-	}
-	
-	private boolean notEmpty(Object object) {
-		return ! StringUtils.isEmpty(object);
+		info.canScanIntranet=isNotEmpty(getIdentifierWhenIntranetTarget());
+		info.canScanInternet=isNotEmpty(getIdentifierWhenInternetTarget());
 	}
 	
 	@Override
 	public final String getIdentifier(TargetType target) {
 		if (isIntranet(target)) {
-			return getIdentifierWhenDaimlerIntranetTarget();
+			return getIdentifierWhenIntranetTarget();
 		}
 		if (isInternet(target)) {
 			return getIdentifierWhenInternetTarget();
@@ -35,7 +30,7 @@ public abstract class AbstractTargetIdentifyingOneInstallSetup extends AbstractI
 
 	protected abstract String getIdentifierWhenInternetTarget();
 
-	protected abstract String getIdentifierWhenDaimlerIntranetTarget();
+	protected abstract String getIdentifierWhenIntranetTarget();
 	
 	
 

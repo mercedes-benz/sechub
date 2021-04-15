@@ -49,6 +49,9 @@ public class UseCaseAsciiDocGenerator {
         Context context = new Context();
         context.diagramsGenFolder = diagramsGenFolder;
         int h = 3;
+        context.addLine("");
+        context.addLine(":usecasedoc:");
+        context.addLine("");
         context.addLine("[[section-usecases]]");
         context.addLine(headline(h++) + "Use cases");
         context.addLine("");

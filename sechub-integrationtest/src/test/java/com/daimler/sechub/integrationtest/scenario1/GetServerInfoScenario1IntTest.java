@@ -14,7 +14,9 @@ import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
 public class GetServerInfoScenario1IntTest {
 
-	private static final Pattern PATTERN_ONLY_MAJOR_MINOR_HOTFIX = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+.*");
+	private static final String VERSIONPATTERN_MAJOR_MINOR_HOTFIX = "[0-9]+\\.[0-9]+\\.[0-9]+.*";
+
+    private static final Pattern PATTERN_ONLY_MAJOR_MINOR_HOTFIX = Pattern.compile(VERSIONPATTERN_MAJOR_MINOR_HOTFIX);
 
 	@Rule
 	public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario1.class);
@@ -42,7 +44,7 @@ public class GetServerInfoScenario1IntTest {
 		assertFalse(version.startsWith("v"));
 		assertFalse(version.endsWith("-server"));
 		/* check format is like regexp */
-		assertTrue(PATTERN_ONLY_MAJOR_MINOR_HOTFIX.matcher(version).matches());
+		assertTrue("Given version is not accepted:"+version+"\nExpected format like:"+VERSIONPATTERN_MAJOR_MINOR_HOTFIX, PATTERN_ONLY_MAJOR_MINOR_HOTFIX.matcher(version).matches());
 	}
 
 }

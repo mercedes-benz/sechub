@@ -65,7 +65,7 @@ public class PDSAdminMonitoringRestControllerMockTest {
         /* @formatter:off */
         this.mockMvc.perform(
                 get(https(PORT_USED).pds().buildAdminGetMonitoringStatus())
-                )./*andDo(print()).*/
+                ).
                     andExpect(status().isOk()).
                     andExpect(content().json(expectedJSON)
                 );

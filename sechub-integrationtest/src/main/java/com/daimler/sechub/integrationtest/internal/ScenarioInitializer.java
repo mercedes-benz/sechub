@@ -36,25 +36,45 @@ public class ScenarioInitializer {
 	    return this;
 	}
 	
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_2_PDS(TestProject ...projects) {
+        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_2_ID,projects);
+        return this;
+    }
+	
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_3_PDS_SARIF(TestProject ...projects) {
+        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_3_ID,projects);
+        return this;
+    }
+    
+	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
 	    return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_1);
 	}
 	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_2_PDS_codescan() {
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN);
+    }
+	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_3_PDS_codescan_sarif() {
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF);
+    }
+	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
-	    if (TestAPI.isExecutionProfileExisting(profile.id)) {
+	    if (TestAPI.canReloadExecutionProfileData(profile)){
 	        return this;
 	    }
 	    Set<TestExecutorConfig> realConfigurations = new LinkedHashSet<>();
 
-	    /* we iterate over initial list, where all defaults are insdie - but UUID is null...*/
+	    /* we iterate over initial list, where all defaults are inside - but UUID is null...*/
 	    for (TestExecutorConfig config: profile.initialConfigurationsWithoutUUID) {
 	        UUID uuid = TestAPI.as(SUPER_ADMIN).createProductExecutorConfig(config);
-	        config.uuid=uuid; // set uuid from service to this so available 
+	        config.uuid=uuid; // set UUID from service to this so available 
 	        realConfigurations.add(config);
 	    }
 	    /* define profile */
 	    TestAPI.as(TestAPI.SUPER_ADMIN).createProductExecutionProfile(profile.id, profile);
 	    TestExecutionProfile realProfile = TestAPI.as(TestAPI.SUPER_ADMIN).fetchProductExecutionProfile(profile.id);
+	    
 	    /* now we create real configurations having correct uuids etc. */
 	    realProfile.configurations.addAll(realConfigurations);
 	    TestAPI.as(TestAPI.SUPER_ADMIN).updateProductExecutionProfile(profile.id, realProfile);
@@ -84,22 +104,6 @@ public class ScenarioInitializer {
 
 		return this;
 	}
-
-//	public ScenarioInitializer waitUntilUserCanAccessProject(TestUser user, TestProject project) {
-//		return waitUntilUserCanAccessProject(user,project, DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);
-//	}
-//
-//	@SuppressWarnings("unchecked")
-//	public ScenarioInitializer waitUntilUserCanAccessProject(TestUser user, TestProject project, int seconds) {
-//		TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(user,seconds,HttpClientErrorException.class) {
-//			@Override
-//			public boolean runImpl() throws Exception {
-//				assertUser(user).can(project);
-//				return true;
-//			}
-//		});
-//		return this;
-//	}
 
 	public ScenarioInitializer waitUntilUserCanLogin(TestUser user) {
 		return waitUntilUserCanLogin(user,DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION);

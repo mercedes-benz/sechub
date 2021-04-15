@@ -149,7 +149,7 @@ public class AsPDSUser {
         }
         sb.append("]}}");
 
-        String result = restHelper.postJSon(url, sb.toString());
+        String result = restHelper.postJson(url, sb.toString());
         return result;
     }
 

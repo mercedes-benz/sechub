@@ -67,7 +67,7 @@ public class AnonymousUserRequestsNewApiTokenRestDocTest {
         this.mockMvc.perform(
         		post(apiEndpoint,"emailAdress@test.com").
         		contentType(MediaType.APPLICATION_JSON_VALUE)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
         	                resource(

@@ -38,7 +38,7 @@ public class AdministrationAPIConstants{
 	public static final String API_SCHEDULER_ENABLE_JOB_PROCESSING = API_ADMINISTRATION + "scheduler/enable/job-processing";
 
 
-	/* TODO Albert Tregnaghi, 2020-03-16: next ones are inside amin layer not scheduler! so we should rename these constants! */
+	/* TODO Albert Tregnaghi, 2020-03-16: next ones are inside admin layer not scheduler! so we should rename these constants! */
 	/**
 	 * Refresh scheduler status
 	 */
@@ -77,6 +77,8 @@ public class AdministrationAPIConstants{
 	// inspired by https://developer.github.com/v3/orgs/members/#add-or-update-organization-membership
 	private static final String COMMON_API_PROJECT_MEMBERSHIPS = API_ADMINISTRATION+"project/{projectId}/membership/{userId}";
 
+	public static final String API_ASSIGN_OWNER_TO_PROJECT = API_ADMINISTRATION+"project/{projectId}/owner/{userId}";
+	
 	public static final String API_ASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
 	public static final String API_UNASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
 
@@ -88,6 +90,7 @@ public class AdministrationAPIConstants{
 	public static final String API_SHOW_PROJECT_DETAILS = API_ADMINISTRATION+"project/{projectId}";
 	public static final String API_DELETE_PROJECT= API_ADMINISTRATION+"project/{projectId}";
 	public static final String API_UPDATE_PROJECT_WHITELIST=API_ADMINISTRATION+"project/{projectId}/whitelist";
+	public static final String API_UPDATE_PROJECT_METADATA=API_ADMINISTRATION+"project/{projectId}/metadata";
 
 	public static final String API_LIST_JOBS_RUNNING = API_ADMINISTRATION+"jobs/running";
 	

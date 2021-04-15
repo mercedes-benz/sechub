@@ -56,6 +56,17 @@ public class ImportSupport {
 			return this;
 		}
 
+		/**
+		 * A simple way to identify something inside a text which is identifying the
+		 * product importer can import this. Be aware! This is the most simple approach
+		 * and works only when you can 100% identify this by this way!<br><br>
+		 * For example: when you have to importers being able to import <pre>&lt;fancyReport&gt;</pre> but
+		 * one is for version 1.0 the other is for version 2.0... The importer would say "I am able
+		 * to import" but if will fail because wrong version... <br><b>In those cases you MUST implement 
+		 * logic inside the importer itself and use this import support only as a first check</b>
+		 * @param contentIdentifier
+		 * @return
+		 */
 		public ImportSupportBuilder contentIdentifiedBy(String contentIdentifier) {
 			this.contentIdentifier = contentIdentifier;
 			return this;

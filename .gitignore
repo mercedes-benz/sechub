@@ -19,8 +19,14 @@ src-gen/
 *.ipr
 *.iws
 
+# vscode parts
+.vscode/
+
 # gradle parts
 .gradle/
+
+# vi parts
+.*.swp
 
 # Build artifacts at all
 *.class

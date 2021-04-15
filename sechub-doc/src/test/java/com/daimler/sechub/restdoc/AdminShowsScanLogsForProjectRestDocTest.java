@@ -93,7 +93,7 @@ public class AdminShowsScanLogsForProjectRestDocTest {
 		this.mockMvc.perform(
 				get(apiEndpoint,PROJECT1).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
 				/* we do not document more, because its binary / zip file...*/

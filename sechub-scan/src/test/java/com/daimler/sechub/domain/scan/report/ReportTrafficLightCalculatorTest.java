@@ -16,6 +16,7 @@ import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 /**
  * 2018-02-20 we defined following logic which is tested here:
@@ -55,8 +56,8 @@ public class ReportTrafficLightCalculatorTest {
 	private ScanReportTrafficLightCalculator calculatorToTest;
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
-
+	public ExpectedException expected = ExpectedExceptionFactory.none();
+	
 	@Before
 	public void before() {
 		calculatorToTest = new ScanReportTrafficLightCalculator();

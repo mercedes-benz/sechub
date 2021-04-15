@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.docgen.spring;
 
-import org.springframework.util.StringUtils;
+import com.daimler.sechub.commons.core.util.SimpleStringUtils;
 
 public class SpringValueExtractor {
 
@@ -52,7 +52,7 @@ public class SpringValueExtractor {
 		String[] splitted = string.split("\\$\\{");
 		String firstNotEmpty=null;
 		for (String split: splitted) {
-			if (! StringUtils.isEmpty(split)) {
+			if (SimpleStringUtils.isNotEmpty(split)) {
 				firstNotEmpty=split.trim();
 				if (firstNotEmpty.length()>1 && firstNotEmpty.endsWith("}")) {
 					firstNotEmpty=firstNotEmpty.substring(0,firstNotEmpty.length()-1);
@@ -84,7 +84,7 @@ public class SpringValueExtractor {
 	}
 
 	public boolean isSpringValue(String string) {
-		if (StringUtils.isEmpty(string)) {
+		if (SimpleStringUtils.isEmpty(string)) {
 			return false;
 		}
 		return (string.startsWith("${") && string.endsWith("}"));

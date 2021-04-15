@@ -40,7 +40,7 @@ const TargetZipFileLoop = "Target zipfile would be part of zipped content, leadi
 // zip of sub1 and sub2 will result in "text1.txt,text2.txt,sub3/text3.txt" !
 // This is optimized for sourcecode zipping when having multiple source folders
 //
-func ZipFolders(filePath string, config *ZipConfig) (err error) {
+func ZipFolders(filePath string, config *ZipConfig, silent bool) (err error) {
 	filename, _ := filepath.Abs(filePath)
 
 	/* create zip file */
@@ -61,7 +61,7 @@ func ZipFolders(filePath string, config *ZipConfig) (err error) {
 
 	/* for each folder */
 	for _, folder := range config.Folders {
-		err = zipOneFolderRecursively(zipWriter, folder, zipcontext)
+		err = zipOneFolderRecursively(zipWriter, folder, zipcontext, silent)
 		if err != nil {
 			return err
 		}
@@ -73,12 +73,12 @@ func ZipFolders(filePath string, config *ZipConfig) (err error) {
 	return nil
 }
 
-func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zipcontext) error {
+func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zipcontext, silent bool) error {
 	filepathAbs, err := filepath.Abs(folder)
 	if _, err := os.Stat(filepathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + filepathAbs + ")")
 	}
-	fmt.Printf("Zipping folder: %s (%s)", folder, filepathAbs)
+	Log(fmt.Sprintf("Zipping folder: %s (%s)", folder, filepathAbs), silent)
 
 	err = filepath.Walk(folder, func(filePath string, info os.FileInfo, err error) error {
 		if info == nil {

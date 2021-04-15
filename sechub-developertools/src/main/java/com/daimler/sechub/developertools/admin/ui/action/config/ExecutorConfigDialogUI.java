@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.developertools.admin.ui.action.config;
 
+import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraintsFactory.*;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
@@ -20,18 +19,26 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import com.daimler.sechub.developertools.admin.ui.UIContext;
+import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogConfig;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ProductExecutorTemplatesDialogUI.TemplatesDialogResult;
+import com.daimler.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
+import com.daimler.sechub.developertools.admin.ui.util.SortedMapToTextConverter;
+import com.daimler.sechub.developertools.admin.ui.util.TextToSortedMapConverter;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
 import com.daimler.sechub.test.executorconfig.TestExecutorSetupJobParam;
-import static com.daimler.sechub.developertools.admin.ui.DialogGridBagConstraintsFactory.*;
 
 public class ExecutorConfigDialogUI {
 
@@ -53,6 +60,9 @@ public class ExecutorConfigDialogUI {
     private String title;
     private JTextField uuidTextField;
     private String buttonOkText;
+    private SortedMapToTextConverter mapToTextConverter = new SortedMapToTextConverter();
+    private TextToSortedMapConverter textToMapConverter = new TextToSortedMapConverter();
+    private JScrollPane jobParameterScrollPane;
 
     public ExecutorConfigDialogUI(UIContext context, String title) {
         this(context, title, createExampleConfig());
@@ -62,7 +72,7 @@ public class ExecutorConfigDialogUI {
         this.context = context;
         this.config = config;
         this.title = title;
-        this.buttonOkText="Ok";
+        this.buttonOkText = "Ok";
     }
 
     UIContext getContext() {
@@ -96,13 +106,16 @@ public class ExecutorConfigDialogUI {
 
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
-
+        
+        
         dialog.setTitle(title);
         dialog.setModal(true);
-        dialog.setSize(new Dimension(600, 400));
-        dialog.setLocationRelativeTo(context.getFrame());
-        dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+        dialog.pack();
+        dialog.setLocationRelativeTo(context.getFrame());
+
+        SwingUtilities.invokeLater(()->scrollToLeftTopOfJobParameters());
+        dialog.setVisible(true);
     }
 
     private void createButtonPanel(JDialog dialog) {
@@ -111,7 +124,7 @@ public class ExecutorConfigDialogUI {
         buttonOk = new JButton(buttonOkText);
         buttonOk.addActionListener((event) -> {
             String name = getNameFromUI();
-            if (name==null || name.isEmpty()) {
+            if (name == null || name.isEmpty()) {
                 nameTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
                 return;
             }
@@ -124,6 +137,9 @@ public class ExecutorConfigDialogUI {
     }
 
     private void createMainPanel() {
+
+        ActionSupport actionSupport = ActionSupport.getInstance();
+
         mainPanel = new JPanel(new GridBagLayout());
 
         int row = 0;
@@ -152,8 +168,8 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(new JLabel("Product identifier"), createLabelConstraint(row));
         mainPanel.add(productIdentifierCombobox, createComponentConstraint(row++));
 
-        SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 9999, 1);
-        executorVersionTextField = new JSpinner(model);
+        SpinnerNumberModel versionSpinnerModel = new SpinnerNumberModel(1, 0, 9999, 1);
+        executorVersionTextField = new JSpinner(versionSpinnerModel);
         executorVersionTextField.setValue(config.executorVersion);
         mainPanel.add(new JLabel("Executor version"), createLabelConstraint(row));
         mainPanel.add(executorVersionTextField, createComponentConstraint(row++));
@@ -162,6 +178,7 @@ public class ExecutorConfigDialogUI {
         baseURLTextField = new JTextField(config.setup.baseURL);
         mainPanel.add(new JLabel("Product base url"), createLabelConstraint(row));
         mainPanel.add(baseURLTextField, createComponentConstraint(row++));
+        actionSupport.provideUndoRedo(baseURLTextField);
 
         /* credentials */
         userTextField = new JTextField(config.setup.credentials.user);
@@ -172,35 +189,79 @@ public class ExecutorConfigDialogUI {
         mainPanel.add(new JLabel("Product password/apitoken:"), createLabelConstraint(row));
         mainPanel.add(pwdTextField, createComponentConstraint(row++));
 
+        /* template button */
+        JButton button = new JButton("Edit parameters");
+
+        mainPanel.add(button, createComponentConstraint(row++));
+
         /* job parameters */
-        jobParametersTextArea = new JTextArea(convertJobParamsToString());
-        mainPanel.add(new JLabel("Job parameters:"), createLabelConstraint(row));
-        GridBagConstraints jobParameterGridDataConstraints = createComponentConstraint(row++);
-        jobParameterGridDataConstraints.weighty = 0.0;
-        mainPanel.add(new JScrollPane(jobParametersTextArea), jobParameterGridDataConstraints);
+        jobParametersTextArea = new JTextArea(resolveInitialJobParamsAsString());
+        actionSupport.installAllTextActionsAsPopupTo(jobParametersTextArea);
+
+        mainPanel.add(new JLabel("Parameters:"), createLabelConstraint(row));
+
+        jobParameterScrollPane = new JScrollPane(jobParametersTextArea);
+        GridBagConstraints jobParameterScrollPaneGridDataConstraints = createComponentConstraint(row++);
+        jobParameterScrollPaneGridDataConstraints.gridheight = 140;
+        jobParameterScrollPaneGridDataConstraints.weighty = 0.0;
+        jobParameterScrollPaneGridDataConstraints.fill = GridBagConstraints.BOTH;
+
+        jobParameterScrollPane.setPreferredSize(new Dimension(400, 300));
+        jobParameterScrollPane.setMinimumSize(new Dimension(400, 300));
+
+        mainPanel.add(jobParameterScrollPane, jobParameterScrollPaneGridDataConstraints);
+        
+        button.addActionListener(e -> {
+            ProductIdentifier procutIdentifier = (ProductIdentifier) comboBoxModel.getSelectedItem();
+            int version = (int) versionSpinnerModel.getNumber();
+            ShowProductExecutorTemplatesDialogAction action = context.getCommandUI().resolveShowProductExecutorMappingDialogActionOrNull(procutIdentifier,
+                    version);
+            if (action == null) {
+                JOptionPane.showMessageDialog(context.getFrame(), "No special parameter editor dialog available for " + procutIdentifier + " v" + version);
+                return;
+            }
+
+            TemplatesDialogConfig config = new TemplatesDialogConfig();
+            config.inputContent = jobParametersTextArea.getText();
+            config.provideExportAllButton = true;
+            config.provideExportAllButtonText = "Apply";
+
+            /* open template dialog, auto import clipboard content and add apply button */
+            TemplatesDialogResult result = action.openDialog(config);
+            if (result.provideExportAllButtonPressed) {
+                jobParametersTextArea.setText(result.outputContent);
+
+                scrollToLeftTopOfJobParameters();
+
+            }
+
+        });
+
+    }
+
+    private void scrollToLeftTopOfJobParameters() {
+        // scroll back to left top...
+        JScrollBar vscrollbar = jobParameterScrollPane.getVerticalScrollBar();
+        vscrollbar.setValue(vscrollbar.getMinimum());
+
+        JScrollBar hscrollbar = jobParameterScrollPane.getHorizontalScrollBar();
+        hscrollbar.setValue(hscrollbar.getMinimum());
     }
 
     public void setTextForOKButton(String text) {
-        buttonOkText=text;
+        buttonOkText = text;
     }
-    
-    private String convertJobParamsToString() {
-        Properties p = new Properties();
+
+    protected String resolveInitialJobParamsAsString() {
+        TreeMap<String, String> map = new TreeMap<>();
         for (TestExecutorSetupJobParam param : config.setup.jobParameters) {
-            p.put(param.key, param.value);
+            map.put(param.key, param.value);
         }
-        StringWriter out = new StringWriter();
-        try {
-            p.store(out, "Define here your keys in java properties format:");
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        return out.getBuffer().toString();
+        return mapToTextConverter.convertToText(map);
     }
 
     public TestExecutorConfig getUpdatedConfig() {
         Integer execVersionObj = (Integer) executorVersionTextField.getValue();
-        ;
 
         config.productIdentifier = productIdentifierCombobox.getSelectedItem().toString();
         config.enabled = enabledCheckBox.isSelected();
@@ -222,23 +283,13 @@ public class ExecutorConfigDialogUI {
     }
 
     private void writeJobParamsStringBackToConfig() {
-        Properties p = new Properties();
-        try {
-            p.load(new StringReader(jobParametersTextArea.getText()));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+
+        SortedMap<String, String> map = textToMapConverter.convertFromText(jobParametersTextArea.getText());
+
         config.setup.jobParameters.clear();
-        for (Entry<Object, Object> entry : p.entrySet()) {
-            Object key = entry.getKey();
-            if (key == null) {
-                continue;
-            }
-            Object value = entry.getValue();
-            if (value == null) {
-                continue;
-            }
-            config.setup.jobParameters.add(new TestExecutorSetupJobParam(key.toString(), value.toString()));
+        for (String key : map.keySet()) {
+            String value = map.get(key);
+            config.setup.jobParameters.add(new TestExecutorSetupJobParam(key, value));
 
         }
     }

@@ -71,7 +71,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenRestControllerRestDocTest {
 		this.mockMvc.perform(
 				get(apiEndpoint,"oneTimeToken1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(

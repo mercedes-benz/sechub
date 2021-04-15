@@ -19,7 +19,7 @@ public class CheckIsAliveScenario1IntTest {
 	/* +-----------------------------------------------------------------------+ */
 
 	@Test
-	public void get_server_version() {
+	public void get_is_alive() {
 		/* execute */
 		boolean alive= as(ANONYMOUS).getIsAlive();
 

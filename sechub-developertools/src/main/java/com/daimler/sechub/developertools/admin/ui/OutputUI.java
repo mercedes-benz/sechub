@@ -3,12 +3,8 @@ package com.daimler.sechub.developertools.admin.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -18,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class OutputUI {
-    
+
     private static final String OUTPUT_FONT_SETTINGS = ConfigurationSetup.getOutputFontSettings("courier 10");
     private JPanel panel;
     private JTextArea outputTextArea;
@@ -34,20 +30,10 @@ public class OutputUI {
 
         outputTextArea = new JTextArea();
         outputTextArea.setFont(Font.decode(OUTPUT_FONT_SETTINGS));
-        JPopupMenu popup = new JPopupMenu();
-        outputTextArea.setComponentPopupMenu(popup);
 
-        ActionSupport support = new ActionSupport();
-        support.apply(popup, support.createDefaultCutCopyAndPastActions());
-        popup.addSeparator();
-        popup.add(createCleanAction());
-
+        ActionSupport.getInstance().installAllTextActionsAsPopupTo(outputTextArea);
         panel.add(new JScrollPane(outputTextArea), BorderLayout.CENTER);
 
-    }
-    
-    public CleanOutputAreaAction createCleanAction() {
-        return new CleanOutputAreaAction();
     }
 
     public void output(String text) {
@@ -68,21 +54,6 @@ public class OutputUI {
             output(t.toString());
             output(">> Look into your shell or IDE console output for details!");
         }
-    }
-    
-    private class CleanOutputAreaAction extends AbstractAction{
-
-        private static final long serialVersionUID = 1L;
-        
-        private CleanOutputAreaAction() {
-            putValue(Action.NAME,"Clean");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            outputTextArea.setText("");
-        }
-        
     }
 
 }

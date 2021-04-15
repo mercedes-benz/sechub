@@ -22,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestFileSupport;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class FileUploadSizeScenario2IntTest {
 
@@ -32,7 +33,7 @@ public class FileUploadSizeScenario2IntTest {
 	public Timeout timeOut = Timeout.seconds(240);
 
 	@Rule
-	public ExpectedException expected = ExpectedException.none();
+	public ExpectedException expected = ExpectedExceptionFactory.none();
 
 	private FileChecksumSHA256Service checksumSHA256Service;
 

@@ -31,7 +31,7 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 
 	/* prepare */
 	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
-	HandleHTTPError(err1)
+	sechubUtil.HandleHTTPError(err1, ExitCodeHTTPError)
 	req.SetBasicAuth(context.config.user, context.config.apiToken)
 
 	for key := range header {

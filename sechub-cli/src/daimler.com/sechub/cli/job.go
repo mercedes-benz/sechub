@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	sechubUtil "daimler.com/sechub/util"
@@ -17,26 +18,26 @@ import (
  * --------------------------------------------------
  */
 func createNewSecHubJob(context *Context) {
-	fmt.Printf("- Creating new sechub job\n")
+	sechubUtil.Log("Creating new sechub job", context.config.quiet)
 	response := sendWithDefaultHeader("POST", buildCreateNewSecHubJobAPICall(context), context)
 
 	data, err := ioutil.ReadAll(response.Body)
-	HandleError(err)
+	sechubUtil.HandleError(err, ExitCodeFailed)
 
 	var result jobScheduleResult
 	jsonErr := json.Unmarshal(data, &result)
-	HandleError(jsonErr)
+	sechubUtil.HandleError(jsonErr, ExitCodeFailed)
 
 	context.config.secHubJobUUID = result.JobID
 }
 
 // approveSecHubJob - Approve Job
 func approveSecHubJob(context *Context) {
-	fmt.Printf("- Approve sechub job\n")
+	sechubUtil.Log("Approve sechub job", context.config.quiet)
 	response := sendWithDefaultHeader("PUT", buildApproveSecHubJobAPICall(context), context)
 
 	_, err := ioutil.ReadAll(response.Body)
-	HandleError(err)
+	sechubUtil.HandleError(err, ExitCodeFailed)
 }
 
 func waitForSecHubJobDoneAndFailOnTrafficLight(context *Context) string {
@@ -44,7 +45,6 @@ func waitForSecHubJobDoneAndFailOnTrafficLight(context *Context) string {
 }
 
 func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight bool, downloadReport bool) string {
-	fmt.Printf("- Waiting for job %s to be done", context.config.secHubJobUUID)
 	//    {
 	//    "jobUUID": "e21b13fc-591e-4abd-b119-755d473c5625",
 	//    "owner": "developer",
@@ -72,30 +72,26 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 
 	newLine := true
 	cursor := 0
-	/* PROGRESS bar ... 80 chars with dot, then next line... */
+
+	if checkOnlyOnce {
+		done = true
+	} else {
+		sechubUtil.Log(fmt.Sprintf("Waiting for job %s to be done", context.config.secHubJobUUID), context.config.quiet)
+	}
+
 	for {
-		if newLine {
-			fmt.Print("\n  ")
-			newLine = false
-		}
-		done = checkOnlyOnce
-		fmt.Print(".")
-		cursor++
-		if cursor == 80 {
-			cursor = 0
-			newLine = true
-		}
+		// request SecHub job state from server
 		response := sendWithDefaultHeader("GET", buildGetSecHubJobStatusAPICall(context), context)
 
 		data, err := ioutil.ReadAll(response.Body)
-		HandleHTTPError(err)
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 		if context.config.debug {
 			sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("get job status :%s", string(data)))
 		}
 
 		/* transform text to json */
 		err = json.Unmarshal(data, &status)
-		HandleHTTPError(err)
+		sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
 		if status.State == ExecutionStateEnded {
 			done = true
@@ -106,37 +102,47 @@ func getSecHubJobState(context *Context, checkOnlyOnce bool, checkTrafficLight b
 			}
 			break
 		} else {
+			// PROGRESS bar ... 50 chars with dot, then next line...
+			if newLine {
+				sechubUtil.PrintIfNotSilent(strings.Repeat(" ", 29), context.config.quiet)
+				newLine = false
+			}
+			sechubUtil.PrintIfNotSilent(".", context.config.quiet)
+			if cursor++; cursor == 50 {
+				sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
+				cursor = 0
+				newLine = true
+			}
 			time.Sleep(time.Duration(context.config.waitNanoseconds))
 		}
 	}
-	fmt.Print("\n")
+	sechubUtil.PrintIfNotSilent("\n", context.config.quiet)
 
 	if downloadReport {
 		downloadSechubReport(context)
 	}
 
-	/* FAIL mode */
-	if status.TrafficLight == "" {
-		fmt.Println("  No traffic light available! Seems job has been broken.")
+	/* Evaluate traffic light */
+	switch status.TrafficLight {
+	case "RED":
+		fmt.Fprintln(os.Stderr, "  RED alert - security vulnerabilities identified (critical or high)")
 		os.Exit(ExitCodeFailed)
-	}
-	if status.TrafficLight == "RED" {
-		fmt.Println("  RED alert - security vulnerabilities identified (critical or high)")
-		os.Exit(ExitCodeFailed)
-	}
-	if status.TrafficLight == "YELLOW" {
-		fmt.Println("  YELLOW alert - security vulnerabilities identified (but not critical or high)")
+	case "YELLOW":
+		yellowMessage := "  YELLOW alert - security vulnerabilities identified (but not critical or high)"
 		if context.config.stopOnYellow == true {
+			fmt.Fprintln(os.Stderr, yellowMessage)
 			os.Exit(ExitCodeFailed)
 		} else {
-			return ""
+			fmt.Println(yellowMessage)
 		}
+	case "GREEN":
+		fmt.Println("  GREEN - no severe security vulnerabilities identified")
+	case "":
+		sechubUtil.LogError("No traffic light available! Please check server logs.")
+		os.Exit(ExitCodeFailed)
+	default:
+		sechubUtil.LogError(fmt.Sprintln("UNKNOWN traffic light:", status.TrafficLight, "- Expected one of: RED, YELLOW, GREEN."))
+		os.Exit(ExitCodeFailed)
 	}
-	if status.TrafficLight == "GREEN" {
-		fmt.Println("  GREEN - no security vulnerabilities identified")
-		return ""
-	}
-	fmt.Printf("UNKNOWN traffic light:%s\n", status.TrafficLight)
-	os.Exit(ExitCodeFailed)
-	return "" // dummy - will never happen
+	return ""
 }

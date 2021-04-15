@@ -195,7 +195,7 @@ public class AbstractInstallSetupProductExecutorTest {
 
         @Override
         public ProductIdentifier getIdentifier() {
-            return ProductIdentifier.FARRADAY;
+            return ProductIdentifier.CHECKMARX;
         }
 
         @Override

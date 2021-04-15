@@ -21,6 +21,7 @@ import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 public class SchedulerUploadServiceTest {
 
@@ -33,7 +34,7 @@ public class SchedulerUploadServiceTest {
 	private MultipartFile file;
 
 	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	public ExpectedException expectedException = ExpectedExceptionFactory.none();
 	private JobStorage storage;
 	private ZipSupport mockedZipSupport;
 

@@ -79,7 +79,7 @@ public class SignupAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint)
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
         	                resource(
@@ -110,7 +110,7 @@ public class SignupAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		delete(apiEndpoint,"userId1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
                             resource(

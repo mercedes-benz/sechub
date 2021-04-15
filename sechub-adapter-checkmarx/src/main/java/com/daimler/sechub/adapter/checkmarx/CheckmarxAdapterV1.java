@@ -37,9 +37,9 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     public String execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
         try {
             assertNotInterrupted();
-            
+
             CheckmarxContext context = new CheckmarxContext(config, this, runtimeContext);
-            context.setFullScan(context.isNewProject());
+            context.setFullScan(context.isNewProject() || config.isAlwaysFullScanEnabled());
             CheckmarxOAuthSupport support = new CheckmarxOAuthSupport();
             support.loginAndGetOAuthToken(context);
 
@@ -80,16 +80,16 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
     private void uploadSourceCodeAndStartScan(CheckmarxContext context) throws AdapterException {
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE,true)){
+        if (!metaData.hasValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true)) {
             /* upload source code */
             CheckmarxUploadSupport uploadSupport = new CheckmarxUploadSupport();
             uploadSupport.uploadZippedSourceCode(context);
-            
-            /* after this - mark file upload done, so on a restart we don't need this */ 
+
+            /* after this - mark file upload done, so on a restart we don't need this */
             metaData.setValue(CheckmarxMetaDataID.KEY_FILEUPLOAD_DONE, true);
             context.getRuntimeContext().getCallback().persist(metaData);
-        }else {
-            LOG.info("Reuse existing upload for:{}",context.getTraceID());
+        } else {
+            LOG.info("Reuse existing upload for:{}", context.getTraceID());
         }
         /* start scan */
         CheckmarxScanSupport scanSupport = new CheckmarxScanSupport();

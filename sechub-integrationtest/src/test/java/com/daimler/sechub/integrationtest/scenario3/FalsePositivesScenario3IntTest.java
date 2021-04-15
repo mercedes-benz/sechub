@@ -39,10 +39,10 @@ public class FalsePositivesScenario3IntTest {
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         /***********/
         /* execute */
@@ -54,7 +54,7 @@ public class FalsePositivesScenario3IntTest {
         /********/
         ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result2).
-            containsNotFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
 
         /* @formatter:on */
@@ -69,10 +69,10 @@ public class FalsePositivesScenario3IntTest {
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         /***********/
         /* execute */
@@ -84,7 +84,7 @@ public class FalsePositivesScenario3IntTest {
         /********/
         ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result2).
-            containsNotFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
 
         /* @formatter:on */
@@ -99,7 +99,7 @@ public class FalsePositivesScenario3IntTest {
         /***********/
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         /***********/
         /* execute */
@@ -131,14 +131,14 @@ public class FalsePositivesScenario3IntTest {
         /***********/
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
 
         // create scan + fetch report again (check filtering of false positive works as a precondition */
         ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result2).
-            containsNotFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
         
         /***********/
@@ -153,7 +153,7 @@ public class FalsePositivesScenario3IntTest {
         // create scan + fetch report again
         ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result3).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().  
             hasTrafficLight(TrafficLight.YELLOW);
 
         /* @formatter:on */
@@ -167,14 +167,14 @@ public class FalsePositivesScenario3IntTest {
         /***********/
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
 
         // create scan + fetch report again (check filtering of false positive works as a precondition */
         ExecutionResult result2 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result2).
-            containsNotFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isNotContained().
             hasTrafficLight(TrafficLight.GREEN);
         
         /***********/
@@ -189,7 +189,7 @@ public class FalsePositivesScenario3IntTest {
         // create scan + fetch report again
         ExecutionResult result3 = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result3).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
         /* @formatter:on */
@@ -204,10 +204,10 @@ public class FalsePositivesScenario3IntTest {
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
 
@@ -233,10 +233,10 @@ public class FalsePositivesScenario3IntTest {
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
-            containsFinding(1, "Absolute Path Traversal").
+            finding().id(1).name("Absolute Path Traversal").isContained().
             hasTrafficLight(TrafficLight.YELLOW);
 
-        UUID jobUUID = result.getSechubJobUUD();
+        UUID jobUUID = result.getSechubJobUUID();
 
         as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
 

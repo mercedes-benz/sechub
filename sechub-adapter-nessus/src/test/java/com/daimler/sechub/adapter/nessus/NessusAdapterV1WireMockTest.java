@@ -268,14 +268,14 @@ public class NessusAdapterV1WireMockTest {
 //                .willSetStateTo(chain.getStateAfter())
         		);
 
-        AdapterMetaDataCallback callBack = mock(AdapterMetaDataCallback.class);
+        AdapterMetaDataCallback callback = mock(AdapterMetaDataCallback.class);
         /* @formatter:on */
         
         
         
         
 		/* execute */
-		String result = adapterToTest.start(config,callBack);
+		String result = adapterToTest.start(config,callback);
 
 		/* test */
 		history.assertAllRememberedUrlsWereRequested();

@@ -19,7 +19,7 @@ import com.daimler.sechub.adapter.netsparker.NetsparkerMetaDataID;
 import com.daimler.sechub.domain.scan.OneInstallSetupConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
-import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
+import com.daimler.sechub.domain.scan.WebConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.product.AbstractWebScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
@@ -67,7 +67,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 		    
 			NetsparkerAdapterConfig netsparkerConfig = NetsparkerConfig.builder().
 					configure(createAdapterOptionsStrategy(context)).
-				    configure(new WebLoginConfigBuilderStrategy(context)).
+				    configure(new WebConfigBuilderStrategy(context)).
 				    configure(new OneInstallSetupConfigBuilderStrategy(setup)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getScanResultCheckPeriodInMinutes()).
 					setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
@@ -80,7 +80,7 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 			/* @formatter:on */
 
 			/* execute NETSPARKER by adapter and return product result */
-			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallBack());
+			String xml = netsparkerAdapter.start(netsparkerConfig, executorContext.getCallback());
 			
 			ProductResult currentProductResult = executorContext.getCurrentProductResult();
             currentProductResult.setResult(xml);

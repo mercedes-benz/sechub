@@ -41,7 +41,7 @@ public class CreateProjectMassCSVImporter {
             throw new IllegalStateException("A project id must be not empty! But did happen in row:" + rowNumber);
         }
         String owner = it.next().cell.trim();
-        administration.createProject(projectId, "Project " + projectId, owner.trim().toLowerCase(), Collections.emptyList());
+        administration.createProject(projectId, "Project " + projectId, owner.trim().toLowerCase(), Collections.emptyList(), Collections.emptyMap());
         if (size == 2) {
             return;
         }

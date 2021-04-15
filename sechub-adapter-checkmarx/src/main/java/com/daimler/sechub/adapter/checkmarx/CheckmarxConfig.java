@@ -8,23 +8,17 @@ import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
 
 public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements CheckmarxAdapterConfig {
 
-    /**
-     * This is the "client secret" is listed at <a href=
-     * "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up"
-     * >public Checkmarx documentation</a>
-     *
-     * Being not really a secret but just a visible constant in public space it's
-     * okay to contain this inside code.
-     */
-    public static final String DEFAULT_CLIENT_SECRET = "014DF517-39D1-4453-B7B3-9930C563627C";
+    public static final String DEFAULT_CLIENT_SECRET = CheckmarxConstants.DEFAULT_CLIENT_SECRET;
 
     private String teamIdForNewProjects;
     private InputStream sourceCodeZipFileInputStream;
     public Long presetIdForNewProjects;
     private String clientSecret;// client secret just ensures it is a checkmarx instance - we use default value,
                                 // but we make it configurable if this changes ever in future
-    
+
     private String engineConfigurationName;
+
+    private boolean alwaysFullScanEnabled;
 
     private CheckmarxConfig() {
     }
@@ -52,7 +46,11 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
     public String getEngineConfigurationName() {
         return engineConfigurationName;
     }
-    
+
+    public boolean isAlwaysFullScanEnabled() {
+        return alwaysFullScanEnabled;
+    }
+
     public static CheckmarxConfigBuilder builder() {
         return new CheckmarxConfigBuilder();
     }
@@ -62,11 +60,12 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
         private String teamIdForNewProjects;
         private Long presetIdForNewProjects;
         private InputStream sourceCodeZipFileInputStream;
-        
+
         private String clientSecret = DEFAULT_CLIENT_SECRET; // per default use default client secret
 
         private String engineConfigurationName = CheckmarxConstants.DEFAULT_CHECKMARX_ENGINECONFIGURATION_MULTILANGANGE_SCAN_NAME;
-        
+        private boolean alwaysFullScanEnabled;
+
         /**
          * When we create a new project this is the team ID to use
          * 
@@ -82,7 +81,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
             this.clientSecret = newClientSecret;
             return this;
         }
-        
+
         public CheckmarxConfigBuilder setEngineConfigurationName(String engineConfigurationName) {
             this.engineConfigurationName = engineConfigurationName;
             return this;
@@ -104,6 +103,11 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
             return this;
         }
 
+        public CheckmarxConfigBuilder setAlwaysFullScan(boolean alwaysFullScanEnabled) {
+            this.alwaysFullScanEnabled = alwaysFullScanEnabled;
+            return this;
+        }
+
         @Override
         protected void customBuild(CheckmarxConfig config) {
             config.teamIdForNewProjects = teamIdForNewProjects;
@@ -111,6 +115,7 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.clientSecret = clientSecret;
             config.engineConfigurationName = engineConfigurationName;
+            config.alwaysFullScanEnabled = alwaysFullScanEnabled;
         }
 
         @Override
@@ -131,5 +136,6 @@ public class CheckmarxConfig extends AbstractCodeScanAdapterConfig implements Ch
                 throw new IllegalStateException("no team id given");
             }
         }
+
     }
 }

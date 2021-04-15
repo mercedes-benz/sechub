@@ -88,7 +88,7 @@ public class ScanReportRestControllerRestDocTest {
 	    		get(apiEndpoint,PROJECT1_ID,jobUUID).
 	    		    accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
 
@@ -130,7 +130,7 @@ public class ScanReportRestControllerRestDocTest {
         		get(apiEndpoint,PROJECT1_ID,jobUUID).
         		    accept(MediaType.APPLICATION_XHTML_XML).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  /*andDo(print()).*/
+        		).  
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).

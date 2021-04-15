@@ -1,0 +1,264 @@
+// SPDX-License-Identifier: MIT
+[[section-executor-configuration]]
+=== Executor configuration
+{sechub} uses `product executors` to call security products by dedicated `product adapters`.
+Each used security product has at least one executor configuration.
+
+Inside such a configuration, we can define properties and parameters which are used when it comes
+to {sechub} job execution. The data is evaluated and used by product executors at runtime and no server restart is necessary.
+
+So for example you can easily change a base URL of a product location and it will automatically be
+used by next job execution.
+
+[WARNING]
+====
+At the moment `NESSUS` and `NETSPARKER` product executors do not use
+ all executor configuration data.
+
+They ignore
+
+- Base URL
+- Credentials
+- Parameter content
+  
+You still have to configure the ignored parts by system environment variables 
+(or system properties) in a global way and you can't change these settings at runtime.
+====
+
+
+==== Data structure
+
+===== Name
+Just the name of the executor configuration. Can be changed.
+
+===== Enabled
+Only when the executor configuration is enabled, it will be used (of course
+it has also be added to an enabled profile and this to a project).
+
+===== UUID
+Unmodifiaable unique ID of an executor configuration. Cannot be changed. 
+
+===== Product identifier
+The product identifier for the product executor to use.
+Examples are: 
+
+- `CHECKMARX`
+- `NESSUS`
+- `NETSPARKER`
+- `PDS_CODESCAN`
+- `PDS_WEBSCAN`
+- `PDS_INFRASCAN`
+
+===== Executor version
+At the moment all product executors exists only in version `1` and as long as there is no
+breaking change the exisitng product executor will be extended and the existing version will be kept.
+
+When there are breaking changes - e.g. the communication between {sechub} and a new version of the security
+product becomes completely different, or parameters have a complete other meaning, an additional
+product executor with another version will be available.
+
+===== Product base URL
+Here we define the base URL to the security product including port number.
+
+As an example: `https://checkmarx.example.org:6011`
+
+===== Product credentials
+To use a security product, we always need login credentials.
+These credentials must be defined inside the configuration.
+
+[[executor-config-env-variable-references]]
+====== Environment variable references
+To store no real credentials in {sechub} database, you can reference {sechub} server environment
+variables instead - just use the pattern `env:${variableName}`.
+
+{sechub} server will store the given pattern in database, but the content of the
+environment variable will be used at runtime when it comes to authentication.
+
+[TIP]
+====
+*Example for an environment variable reference:* 
+
+Let's assume a have a running PDS server which accepts _"exampleToken"_ as API token for 
+technical user. 
+
+You would add
+---- 
+export PDS_CODESCAN1_APITOKEN=exampleToken
+----
+at the beginning of your start script for {sechub} server.
+
+In your executor configuration you would set the API token field to `env:PDS_CODESCAN1_APITOKEN`.
+When a {sechub} job has beend started, {sechub} server will use `exampleToken` as
+API token for communication with this PDS server.
+====
+
+
+====== User
+The user name used by {sechub} to authenticate at security product.
+
+====== Password or API token
+The password or API token used by {sechub} to authenticate at security product.
+
+WARNING: It is strongly recommended to use <<executor-config-env-variable-references,environment variable references>>  environment variable references here instead of plain text. 
+
+
+===== Parameters
+Parameters are used at job execution runtime to setup product adapters and to change security
+product behaviours.
+
+====== Mappings
+Some product executors do need special mappings - e.g for new project creations. Please look at
+<<mapping-technical-details, mapping>> for more details about the
+concept and the format. 
+
+
+====== Key values
+It is also possible to provide just dedicated key value parameters.
+
+ifdef::usecasedoc[]
+==== Usecases
+Following usecases are supported:
+
+- <<section-usecase-UC_047,UC_047-Admin creates an executor configuration>>
+
+- <<section-usecase-UC_048,UC_048-Admin deletes executor configuration>>
+
+- <<section-usecase-UC_049,UC_049-Admin fetches executor configuration list>>
+
+- <<section-usecase-UC_050,UC_050-Admin fetches executor configuration>>
+
+- <<section-usecase-UC_051,UC_051-Admin updates executor configuration>>
+endif::usecasedoc[]
+
+==== Product specific details
+
+===== Checkmarx
+====== Mapping teams and presets for new projects
+When a user starts a scan and a `checkmarx` project does not already exist, it will be created.
+
+In some cases, however, it should not be created with the default Checkmarx "preset" but a dedicated one.
+And when creating many projects we do not want to assign all other presetIds manually to the project
+_(a preset is something like a profile in Checkmarx where scope of scan can be defined at project level)_.
+
+Also there should be an automated assignment to dedicated teams when the project is newly created.
+
+This can be done by name pattern providers `checkmarx.newproject.presetid.mapping` and `checkmarx.newproject.teamid.mapping`
+as shown in following example:
+
+*An example parameter configuration:*
+
+Define mapping for key `checkmarx.newproject.presetid.mapping`
+[[scan-config-example1-checkmarx]]
+[source, json]
+----
+include::scan_config_example1_checkmarx-preset-id.json[]
+----
+Define mapping for key `checkmarx.newproject.teamid.mapping`
+[[scan-config-example2-checkmarx]]
+[source, json]
+----
+include::scan_config_example2_checkmarx-team-id.json[]
+----
+
+On lazy project creation time, depending on project name in sechub, after checkmarx project creation the project will automatically be assigned to the pattern specific presetId.
+
+*For example:*
+
+* project named in sechub with `my-java-project-marvelous1` will have preset id `100021` and teamId `1`.
+* project named in sechub with `a-go-project-super-cli` will have preset id `100031` and teamId `2`.
+* project named in sechub with `something-else`will have preset id `100001` and teamId `3`
+
+[IMPORTANT]
+====
+First matching part will be used! So ordering is important!
+====
+
+ifdef::techdoc[]
+======= Technical details
+Checkmarx install setup does use a dedicated configuration support to provide `presetId` and `teamId` 
+to adapter. Adapter will use `presetId` (if defined) and `teamId` _(mandatory as before)_ when 
+project creation is necessary
+endif::techdoc[]
+
+====== How to obtain preset id
+Unfortunately the preset ID is necessary for REST calls, but not
+visible at Checkmarx UI.
+
+You can either directly access the DB or inspect the web page by
+web tools in you browser (e.g. enable network monitoring and change preset id at UI...)  
+
+====== How to obtain team id
+Unfortunately the team ID is necessary for REST calls, but not
+visible at Checkmarx UI.
+
+You can either directly access the DB or inspect the web page by
+web tools in you browser _(e.g. enable network monitoring and change team at UI...)_
+
+==== Examples
+NOTE: As long as there is no dedicated Web UI for administration we use the
+Developer Admin UI for example screenshots:
+
+For every example you have either to create a new executor configuration or edit an an
+existing one.
+
+To edit an existing one, select main menu entry "Edit executor configuration" as shown
+in next figure:
+
+image::sechub-daui-config-edit-executor-config-menuentry.png[]
+
+This will result in a selection dialog.
+
+image::sechub-daui-select-executor-config-to-edit.png[width=75%]
+
+===== Checkmarx configuration
+At the configuration editor dialog you can change the data structure.
+Parameters are inside a simple text field. But there exists also a button "Edit parameters".
+
+image::sechub-daui-checkmarx-executor-config-example.png[width=75%]
+
+[WARNING]
+====
+If you edit directly inside the `Parameters` text area be aware that only one line per key is allowed.
+====
+
+When you press the "Edit parameters" button, a dedicated parameter editor will appear:
+
+image::sechub-daui-checkmarx-executor-parameter-editor-mappings-example.png[width=75%]
+On last figure the type, the necessarity and a short description of the parameters are
+shown above the text component. This makes it easier to configure values.
+
+At the mapping tab pane you can edit the JSON data. With "Test mapping" button you can also
+check if the naming pattern are correct and the expected values are resulting.
+ 
+For the "normal" key value pairs we got the "key/values" tab pane. Here the content is normally
+only simple text. For example `checkmarx.fullscan.always` could contain
+like "true" or "false" or simply nothing.
+
+image::sechub-daui-checkmarx-executor-parameter-editor-key-values-example.png[width=75%]
+
+After pressing the `Apply` button the changed data is set inside executor configuration in correct
+format. 
+
+
+===== PDS code scan configuration
+Here we got an example for a configuration with selected product identifier `PDS_CODESCAN`:
+
+image::sechub-daui-pds-executor-parameter-editor-key-values-example.png[]
+
+The `pds.config.productidentifier` which is an mandatory value is marked *red* because it must be
+sent to PDS server to identify which product shall be used on the other side.
+
+Optional, but wellknown PDS key value pairs are shown in *black* - the parameters `example.key1` and 
+`example.key2` are marked *yellow*. Reason: Those keys are unknown by 
+SecHub and so normally custom parameters. 
+ 
+===== Sereco configuration
+`Sereco` is *the only product which needs no configuration at all*, because it is an embedded "product".
+
+
+It also needs no profile setup or something else - as long as there is no other reporting product
+available/configured for a {sechub} job, an automated fallback will always call `Sereco` at the end to ensure a report
+result is created.
+
+But `Sereco` is the one and only exception!
+

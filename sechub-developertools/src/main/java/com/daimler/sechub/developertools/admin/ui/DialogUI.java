@@ -30,10 +30,8 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.developertools.admin.ui.action.ActionSupport;
 
 public class DialogUI {
-    
 
     private static final Logger LOG = LoggerFactory.getLogger(DialogUI.class);
-
 
     private JFrame frame;
     private JFileChooser fileChooser = new JFileChooser();
@@ -45,6 +43,11 @@ public class DialogUI {
     public boolean confirm(String message) {
         int x = JOptionPane.showConfirmDialog(frame, message, "Please confirm", JOptionPane.OK_OPTION);
         return x == JOptionPane.OK_OPTION;
+    }
+
+    public void inform(String message) {
+        JOptionPane.showMessageDialog(frame, message, "Warning", JOptionPane.INFORMATION_MESSAGE);
+
     }
 
     public void warn(String message) {
@@ -76,12 +79,18 @@ public class DialogUI {
         }
         DialogState state = new DialogState();
         try {
-            SwingUtilities.invokeAndWait(() -> {
-                state.result = fileChooser.showOpenDialog(frame);
 
-            });
+            if (SwingUtilities.isEventDispatchThread()) {
+                /* we are already inside EDT */
+                state.result = fileChooser.showOpenDialog(frame);
+            } else {
+                /* outside EDT, so ensure action is executed inside EDT and blocks until result available*/
+                SwingUtilities.invokeAndWait(() -> {
+                    state.result = fileChooser.showOpenDialog(frame);
+                });
+            }
         } catch (InvocationTargetException | InterruptedException e) {
-            LOG.error("Filechooser selection failed",e);
+            LOG.error("Filechooser selection failed", e);
         }
         if (state.result != JFileChooser.APPROVE_OPTION) {
             return null;
@@ -89,8 +98,8 @@ public class DialogUI {
         return fileChooser.getSelectedFile();
 
     }
-    
-    private class DialogState{
+
+    private class DialogState {
         int result;
     }
 
@@ -137,7 +146,7 @@ public class DialogUI {
         dialog.setToolTip("Use this text as multi line editor");
         dialog.setVisible(true);
 
-        if (!dialog.isOkPresssed()) {
+        if (!dialog.isOkPressed()) {
             return Optional.empty();/* NOSONAR */
         }
         return Optional.ofNullable(dialog.getText());
@@ -164,7 +173,7 @@ public class DialogUI {
         dialog.setToolTip("Each line represents a list entry!");
         dialog.setVisible(true);
 
-        if (!dialog.isOkPresssed()) {
+        if (!dialog.isOkPressed()) {
             return null;/* NOSONAR */
         }
 
@@ -183,6 +192,20 @@ public class DialogUI {
         return result;
     }
 
+    public String editString(String title, String inputString) {
+        SimpleTextDialog dialog = new SimpleTextDialog(title);
+
+        dialog.setText(inputString);
+        dialog.setToolTip("Each line represents a list entry!");
+        dialog.setVisible(true);
+
+        if (!dialog.isOkPressed()) {
+            return null;/* NOSONAR */
+        }
+
+        return dialog.getText();
+    }
+
     private class SimpleTextDialog /* NOSONAR */extends JDialog {
 
         private static final long serialVersionUID = 1L;
@@ -197,7 +220,8 @@ public class DialogUI {
             this.textArea.setPreferredSize(new Dimension(500, 200));
             JPopupMenu popup = new JPopupMenu();
             textArea.setComponentPopupMenu(popup);
-            ActionSupport support = new ActionSupport();
+            
+            ActionSupport support = ActionSupport.getInstance();
             support.apply(popup, support.createDefaultCutCopyAndPastActions());
 
             add(new JScrollPane(textArea), BorderLayout.CENTER);
@@ -217,7 +241,7 @@ public class DialogUI {
             textArea.setToolTipText(text);
         }
 
-        public boolean isOkPresssed() {
+        public boolean isOkPressed() {
             return okPresssed;
         }
 
@@ -235,4 +259,5 @@ public class DialogUI {
             return null;
         }
     }
+
 }

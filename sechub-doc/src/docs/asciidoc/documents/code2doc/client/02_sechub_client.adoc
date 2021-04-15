@@ -6,15 +6,61 @@
 The `{sechub}` client program is an executable binary which can be used from command
 line or in a build tool of your choice.
 
-It's very easy to use and using the client you have not to handle and REST-API calls by yourself.
+It's very easy to use and you do not have to handle all the REST-API calls by yourself.
 
-NOTE: Currently the client only supports only basic authentication, but of course always only over https.
+NOTE: Currently the client only supports basic authentication, but of course always only over https.
 
 === Download
 Download the binary for your operating system where you want to trigger `{sechub}` scanning.
 You will have no dependencies, just place the single binary file to a location inside your path variable.
 
 The latest releases can be found at {projectSite}/wiki/releases . For documentation please look at {webPage}[{secHub} web page] .
+
+=== Supported Platforms
+
+The SecHub Client is available for a number of platforms. A platform is a combination of an operating system and a CPU architecture.
+
+.Supported platforms
+|===
+|Name |OS |CPU Architecture |Description
+
+|darwin-amd64
+|macOS
+|AMD and Intel 64-bit
+|The **macOS client**.
+
+|linux-386
+|Linux
+|AMD and Intel 32-bit
+|For old hardware running Linux as operating system.
+
+|linux-amd64
+|Linux
+|AMD and Intel 64-bit
+|The **Linux client**, unless you are using older hardware or an ARM system.
+
+|linux-arm
+|Linux
+|ARM 32-bit
+|For ARM 32-bit systems. For example, single board computers such as the Raspberry PIs, older Nvidia Jetson boards and many more.
+
+|linux-arm64
+|Linux
+|ARM 64-bit
+|For ARM 64-bit systems, such as ARM based servers and some single board computers. Examples include newer models of the Nvidia Jetson series, newer Raspberry PI models, servers from the Marvell ThunderX series and Amazon AWS EC2 A1, T4g, M6g, C6g, and R6g instances.
+
+|windows-386
+|Windows
+|AMD and Intel 32-bit
+|For older hardware running Windows as operating system.
+
+|windows-amd64
+|Windows
+|AMD and Intel 64-bit
+|The **Windows client**, unless you are using older 32-bit hardware.
+|===
+
+In case your platform is not included in the table, you might be able to compile the SecHub Client for your platform. The SecHub Client is written in the Go programming language. Go supports more platforms. For a full list of supported platforms have a look at the Go documentation: https://golang.org/doc/install/source#environment[Optional environment variables].
 
 === Usage
 
@@ -167,6 +213,52 @@ Your choices are:
 See also <<section-client-interactiveMarkFalsePositives-mark,example for interactiveMarkFalsePositives>> 
 
 
+==== Configuration overview
+Basically parameters can be passed to the `{sechub}` client in three ways:
+
+- commandline options (overrides below)
+- environment variables (overrides config file)
+- configuration file (default `sechub.json`)
+
+In below table, there is an overview of what can be defined where.
+|===
+| *parameter* | *cmdline option* | *environment variable* | *config json file*
+| api token | -apitoken _(!! not recommended !!)_ | SECHUB_APITOKEN |
+| code scan config ||| codeScan
+| configuration file | -configfile ||
+| file | -file ||
+| job uuid | -jobUUID ||
+| network timeout | -timeout||
+| output folder | -output ||
+| poll interval | -wait | SECHUB_WAITTIME_DEFAULT |
+| project id | -project | SECHUB_PROJECT |project
+| quiet mode | -quiet | SECHUB_QUIET |
+| report format | -reportformat||
+| server url | -server | SECHUB_SERVER | server
+| stop on yellow | -stop-on-yellow||
+| user id | -user | SECHUB_USERID | user
+| web scan config ||| webScan
+|===
+
+
+==== Mandatory parameters
+Here is an overview of mandatory parameter for each `action`:
+|===
+| *action* | *mandatory parameters*
+| scan |server + user + api token + projectID + configFile 
+| scanAsync |server + user + api token + projectID + configFile 
+| getStatus |server + user + api token + projectID + secHubJobUUID 
+| getReport |server + user + api token + projectID + secHubJobUUID 
+| getFalsePositives |server + user + api token + projectID
+| markFalsePositives |server + user + api token + projectID + file 
+| unmarkFalsePositives |server + user + api token + projectID + file 
+| interactiveMarkFalsePositives |server + user + api token + projectID + (file only if no report file is in current dir)
+| interactiveUnmarkFalsePositives |server + user + apiToken + projectID 
+| help |
+| version |
+|===
+
+
 ==== Commandline Options
 
 - `-apitoken <string>` +
@@ -174,6 +266,8 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
   Can *NOT* be defined in config file
 - `-configfile <string>` +
   Path to `{sechub}` config file, if not defined `sechub.json` will be used in current directory
+- `-file <string>` +
+  Defines file to read from for actions `markFalsePositives` or `interactiveMarkFalsePositives` or `unmarkFalsePositives`
 - `-help` +
   Shows help and terminates
 - `-jobUUID <string>` +
@@ -181,28 +275,54 @@ See also <<section-client-interactiveMarkFalsePositives-mark,example for interac
 - `-output <string>` +
   Output folder for reports etc. per default current dir
 - `-project <string>` +
-  Unique project id - mandatory, but can also be defined in config file
+  Unique project id - mandatory, but can also be defined in config file or via environment variable.
+- `-quiet` +
+  Quiet mode - Suppress all informative output. Can also be defined via environment variable `SECHUB_QUIET=true`. +
+  Only print filenames written to, errors and explicitely requested informations (job-UUID, version, status).
 - `-reportformat <string>` +
   Output format for reports, supported currently: [html,json]. If not a wellknown format json will always be the fallback. (default "json")
 - `-server <string>` +
   Server url of `{sechub}` server to use - e.g. https//example.com:8081. Mandatory, but can also be defined in config file or via environment variable.
+- `-stop-on-yellow` +
+  Makes a yellow traffic light in the scan result also break the build
+- `-timeout <integer>` +
+  Timeout for network communication in seconds. (default 120)
 - `-user <string>` +
   Username - mandatory, but can also be defined in config file or via environment variable.
 - `-version` +
   Shows version info and terminates
 - `-wait <integer>` + 
        wait time in seconds (default 60). 
-       Will be used for automatic status checks etc. when action=`scan`.
+       Will be used for periodic status checks when action=`scan`.
 
 ==== Environment variables
 Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
 
-- `SECHUB_USERID` +
-  The SecHub username. (same as `-user` option)
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_PROJECT` +
+  The SecHub project id. (same as `-project` option)
+- `SECHUB_QUIET` +
+  Quiet mode (`true` or `false` / unset) - Suppress all informative output. (same as `-quiet` option)
 - `SECHUB_SERVER` +
   The SecHub server url. (same as `-server` option)
+- `SECHUB_USERID` +
+  The SecHub username. (same as `-user` option)
+- `SECHUB_TRUSTALL` +
+  When set to `true`, then HTTPS certificate checking will be disabled. May be useful when using self-signed certificates. Please try to avoid this setting for security reasons.
+
+Settings for debugging/client development:
+
+- `SECHUB_DEBUG` +
+  When set to `true` then log as much as possible
+- `SECHUB_IGNORE_DEFAULT_EXCLUDES` +
+  When set to `true` then default exclude folders `+{"**/test/**", "**/.git/**"}+` will be included for code scan. In this case, you should declare your own exclude list in the config json.
+- `SECHUB_KEEP_TEMPFILES` +
+  When set to `true` then .zip files for code scan will not be removed, so you can check, what was uploaded to the `{sechub}` server
+- `SECHUB_WAITTIME_DEFAULT` +
+  Wait time in seconds (default 60). Will be used for automatic status checks etc. when action=`scan`.
+  Try to avoid setting it shorter than 60 seconds, because the load on the `{sechub}` server will be increased.
+
 
 ==== Proxy support
 The environment variables `http_proxy`, `https_proxy` and `no_proxy` (or the uppercase versions thereof) can be set to use a proxy for accessing the `{sechub}` server.
@@ -221,12 +341,13 @@ Examples (Linux/Mac):
 [[section-client-configuration-file]]
 
 === Client configuration file
-If not defined, secHub client will load `sechub.json` file from current directory
-and use it as sechub configuration. There must be always a valid configuration
-file - otherwise client will not work.
+If not defined by option `-configfile`, secHub client will attempt to load `sechub.json` file from current directory
+and use it as sechub configuration.
+
+For scan actions, a valid configuration file is needed. Other actions like getReport or false-positives handling need no configuration file.
 
 ==== Variables inside configuration files
-All environment variables are available inside your configuration file in go
+For advanced users: All environment variables are available inside your configuration file in go
 template syntax:
 
 `{{ .ENV_VARIABLE_NAME }}`
@@ -300,7 +421,7 @@ with corresponding `sechub.json` config file: <<sechub-config-example-infrascan-
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json markFalsePositives
+sechub -file mark-fp.json markFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,Mark false positives JSON format>> 
 
@@ -308,7 +429,7 @@ with a corresponding `mark-fp.json` - see <<section-client-false-positives-mark,
 [source, bash]
 ----
 SECHUB_APITOKEN=7536a8c4aa82407da7e06bdbEXAMPLE
-sechub -f mark-fp.json unmarkFalsePositives
+sechub -file mark-fp.json unmarkFalsePositives
 ----
 with a corresponding `mark-fp.json` - see <<section-client-false-positives-unmark,Unmark false positives JSON format>> 
 

@@ -81,7 +81,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
 	    			accept(MediaType.APPLICATION_JSON_VALUE).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
 	    			content(config.toJSON())
-	    		)./*andDo(print()).*/
+	    		).
 	    			andExpect(status().isOk()).
 	    			andDo(document(RestDocFactory.createPath(useCase),
 	    	                resource(
@@ -117,7 +117,7 @@ public class ScanProjectMockDataRestControllerRestDocTest {
         		get(apiEndpoint, PROJECT1_ID).
         			accept(MediaType.APPLICATION_JSON_VALUE).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
-        		).  /*andDo(print()).*/
+        		).  
         			andExpect(status().isOk()).
         			andExpect(jsonPath("$.codeScan.result").value("RED")).
         			andExpect(jsonPath("$.webScan.result").value("YELLOW")).

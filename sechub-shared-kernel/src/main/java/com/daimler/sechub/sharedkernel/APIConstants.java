@@ -22,7 +22,7 @@ public class APIConstants {
 	}
 
 	/**
-	 * API starting with this all is accessible - even anonmyous!
+	 * API starting with this all is accessible - even anonymous!
 	 */
 	public static final String API_ANONYMOUS = "/api/anonymous/";
 

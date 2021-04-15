@@ -27,6 +27,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 	private SecHubEnvironment mockedEnvironment;
 	private DomainMessageService mockedEventBusService;
 	private UserRepository mockedUserRepository;
+    private UserInputAssertion mockedUserAssertion;
 
 	@Before
 	public void before() {
@@ -34,6 +35,7 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 		mockedEnvironment = mock(SecHubEnvironment.class);
 		mockedEventBusService = mock(DomainMessageService.class);
 		mockedUserRepository = mock(UserRepository.class);
+		mockedUserAssertion = mock(UserInputAssertion.class);
 		when(mockedOneTimeTokenGenerator.generateNewOneTimeToken()).thenReturn(FAKE_ONE_TIME_TOKEN);
 
 		serviceToTest = new AnonymousUserRequestsNewApiTokenService();
@@ -42,19 +44,29 @@ public class AnonymousUserRequestsNewApiTokenServiceTest {
 		serviceToTest.eventBusService = mockedEventBusService;
 		serviceToTest.userRepository=mockedUserRepository;
 		serviceToTest.logSanitizer=mock(LogSanitizer.class);
-		serviceToTest.assertion=mock(UserInputAssertion.class);
+        serviceToTest.assertion=mockedUserAssertion;
 	}
 
 	@Test
-	public void when_emailadress_not_found_no_exception_is_thrown() throws Exception {
-
-		/* prepare*/
-		when(mockedUserRepository.findByEmailAdress("user@test.com")).thenReturn(Optional.empty());
-
+	public void service_uses_assertion_validate_mail() throws Exception {
 		/* execute */
 		serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
 
+		/* test */
+		verify(mockedUserAssertion).isValidEmailAddress("user@test.com");
 	}
+	
+	@Test
+    public void when_emailadress_not_found_no_exception_is_thrown() throws Exception {
+
+        /* prepare*/
+        when(mockedUserRepository.findByEmailAdress("user@test.com")).thenReturn(Optional.empty());
+
+        /* execute */
+        serviceToTest.anonymousRequestToGetNewApiTokenForUserMailAdress("user@test.com");
+
+    }
+
 
 
 	@Test

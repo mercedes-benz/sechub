@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.daimler.sechub.adapter.ActionType;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.TestWebConfigurationBuilder;
 
 public class TestWebLoginConfigurationBuilder {
@@ -45,40 +47,101 @@ public class TestWebLoginConfigurationBuilder {
 		return mainBuilder.login(loginConfig);
 	}
 
-	public ScriptEntryBuilder formScripted(String user, String login) {
-		FormLoginConfiguration formLogin = new FormLoginConfiguration();
-		loginConfig.form = Optional.of(formLogin);
-		ScriptEntryBuilder builder = new ScriptEntryBuilder();
-		return builder;
-	}
+    public ScriptPageEntryBuilder formScripted(String user, String login) {
+        FormLoginConfiguration formLogin = new FormLoginConfiguration();
+        loginConfig.form = Optional.of(formLogin);
+        ScriptPageEntryBuilder builder = new ScriptPageEntryBuilder();
+        return builder;
+    }
 
-	public class ScriptEntryBuilder {
+    public class ScriptPageEntryBuilder {
+        private List<Page> pages = new ArrayList<>();
+        
+        private ScriptPageEntryBuilder() {
+            
+        }
+        
+        public ScriptPageBuilder createPage() {
+            return new ScriptPageBuilder();
+        }
+        
+        public class ScriptPageBuilder {
+            private Page page;
+            private List<Action> actions = new ArrayList<>();
+            
+            private ScriptPageBuilder() {
+                page = new Page();
+            }
 
-		private List<ScriptEntry> entries = new ArrayList<>();
+            public ScriptStepBuilder createAction() {
+                return new ScriptStepBuilder();
+            }
 
-		private ScriptEntryBuilder() {
+            public class ScriptStepBuilder {
+                private Action action ;
+                private ScriptStepBuilder() {
+                    action = new Action();
+                }
+                
+                public ScriptStepBuilder type(ActionType actionType) {
+                    action.type = actionType;
+                    return this;
+                }
+                
+                public ScriptStepBuilder selector(String selector) {
+                    action.selector = Optional.ofNullable(selector);
+                    return this;
+                }
+                
+                public ScriptStepBuilder value(String value) {
+                    action.value = Optional.ofNullable(value);
+                    return this;
+                }
+                
+                public ScriptStepBuilder description(String description) {
+                    action.description = Optional.ofNullable(description);
+                    return this;
+                }
+                
+                /**
+                 * The time unit
+                 * 
+                 * E. g. "hour", "millisecond" etc.
+                 * 
+                 * @param unit
+                 * @return
+                 */
+                public ScriptStepBuilder unit(SecHubTimeUnit unit) {
+                    action.unit = Optional.ofNullable(unit);
+                    return this;
+                }
+                
+                public ScriptPageBuilder add() {
+                    actions.add(action);
+                    return ScriptPageBuilder.this;
+                }
+            }
+            
+            public ScriptPageEntryBuilder add() {
+                page.actions = Optional.of(actions);
+                pages.add(page);
+                return ScriptPageEntryBuilder.this;
+            }
 
-		}
+        }
 
-		public ScriptEntryBuilder step(String type, String selector, String value) {
-			ScriptEntry entry = new ScriptEntry();
-			entry.step = type;
-			entry.selector = Optional.ofNullable(selector);
-			entry.value = Optional.ofNullable(value);
+        public TestWebConfigurationBuilder done() {
+            FormLoginConfiguration formLogin = new FormLoginConfiguration();
 
-			entries.add(entry);
-			return this;
-		}
+            Script script = new Script();
+            script.pages = Optional.of(pages);
+            Optional<Script> optionalScript = Optional.of(script);
+            
+            formLogin.script = optionalScript;
+            WebLoginConfiguration config = TestWebLoginConfigurationBuilder.this.loginConfig;
 
-		public TestWebConfigurationBuilder done() {
-			FormLoginConfiguration formLogin = new FormLoginConfiguration();
-			Optional<List<ScriptEntry>> scriptOption = Optional.of(entries);
-			formLogin.script = scriptOption;
-			WebLoginConfiguration config = TestWebLoginConfigurationBuilder.this.loginConfig;
-
-			config.form = Optional.of(formLogin);
-			return mainBuilder.login(loginConfig);
-		}
-	}
-
+            config.form = Optional.of(formLogin);
+            return mainBuilder.login(loginConfig);
+        }
+    }
 }

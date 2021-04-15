@@ -4,6 +4,10 @@
 :checkmarx: Checkmarx
 == Security Products
 
+TIP: You must only setup those products you have listed inside your
+     profiles. See <<section-initial-profile-and-executors,execution profiles and executor configurations>> 
+  
+
 === {checkmarx}
 
 ==== What does the adapter do?
@@ -14,6 +18,32 @@ include::../shared/adapter/checkmarx_adapter_flow.adoc[]
 . If users shall have access to {checkmarx} UI you must add them to used {checkmarx} team (manual)
 
 
+===== What can be configured for SecHub ?
+
+====== Environment
+Please look at <<section-gen-config-scope-checkmarx,checkmarx config>>  section.
+
+====== Runtime
+WARNING: Standard properties (like base URL, user id etc.) are currently NOT used from 
+         existing product executor configurations but only the environment configuration is used at the moment.  
+
+[options="header",cols="1,1,1"]
+|===
+|Parameter                   |Type     |Description   
+//--------------------------------------------------
+|checkmarx.fullscan.always   |boolean  |When 'true' every scan will be done as a full scan and delta scan is not used. 
+
+                                        Use this only where a delta scan is not possible/ always rejected by checkmarx. 
+                                        When 'false' or any other value, delta scan feature is used. 
+                                        
+                                        _If a scan fails because checkmarx has detected too many changes there will be a 
+                                        retry with fullscan. If you have permanent problems with delta scanning for a 
+                                        project you should set this option to 'true' in your checkmarx executor 
+                                        configuration._ 
+                              
+   
+|===
+
 ==== Summary
 . Projects are initially created and reused automatically
 . Old scans are *NOT* automatically deleted
@@ -23,6 +53,7 @@ include::../shared/adapter/checkmarx_adapter_flow.adoc[]
 // TODO 2019-10-02, Albert Tregnaghi: change here and text block before when team id handling is improved
 IMPORTANT: Fix team ID will change in future to provide grouping of results in
            product(for multi tenancy).
+
 
 === {netsparker}
 

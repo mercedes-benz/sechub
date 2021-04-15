@@ -8,14 +8,14 @@ import javax.swing.AbstractAction;
 public abstract class AbstractAdapterDialogAction extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
-    private AdapterDialogUI dialogUI;
+    private ProductExecutorTemplatesDialogUI dialogUI;
 
-    public AbstractAdapterDialogAction(String text, AdapterDialogUI ui) {
+    public AbstractAdapterDialogAction(String text, ProductExecutorTemplatesDialogUI ui) {
         super(text);
         this.dialogUI = ui;
     }
 
-    protected AdapterDialogUI getDialogUI() {
+    protected ProductExecutorTemplatesDialogUI getDialogUI() {
         return dialogUI;
     }
     

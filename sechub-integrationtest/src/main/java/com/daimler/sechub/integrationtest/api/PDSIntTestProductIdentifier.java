@@ -15,6 +15,8 @@ public enum PDSIntTestProductIdentifier {
     
     PDS_INTTEST_WEBSCAN("PDS_INTTEST_PRODUCT_WEBSCAN"),
     
+    PDS_INTTEST_PRODUCT_CS_SARIF("PDS_INTTEST_PRODUCT_CS_SARIF"),// we must reduce product identifier, because only 30 chars are allowed...
+    
     ;
 
     private String id;
@@ -23,7 +25,7 @@ public enum PDSIntTestProductIdentifier {
         this.id=id;
     }
     
-    String getId() {
+    public String getId() {
         return id;
     }
 }

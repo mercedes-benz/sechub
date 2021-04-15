@@ -41,6 +41,7 @@ import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.CreateProjectInputValidator;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
+import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
@@ -48,6 +49,7 @@ import com.daimler.sechub.domain.administration.project.ProjectDetailInformation
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformationService;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectWhiteList;
+import com.daimler.sechub.domain.administration.project.ProjectMetaDataEntity;
 import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
@@ -62,6 +64,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsA
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -71,43 +74,46 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @ContextConfiguration(classes = { ProjectAdministrationRestController.class,
 		ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
-@ActiveProfiles({Profiles.TEST, Profiles.ADMIN_ACCESS})
-@AutoConfigureRestDocs(uriScheme="https",uriHost=ExampleConstants.URI_SECHUB_SERVER,uriPort=443)
+@ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
 public class ProjectAdministrationRestControllerRestDocTest {
 
-	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+    private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
+    @MockBean
+    ProjectUpdateWhitelistService mockedProjectUpdateWhiteListService;
 
-	@MockBean
-	ProjectCreationService creationService;
+    @MockBean
+    ProjectCreationService creationService;
 
-	@MockBean
-	ProjectAssignUserService assignUserService;
+    @MockBean
+    ProjectAssignOwnerService assignOwnerService;
 
-	@MockBean
-	ProjectDeleteService projectDeleteService;
+    @MockBean
+    ProjectAssignUserService assignUserService;
 
-	@MockBean
-	ProjectUnassignUserService unassignUserService;
+    @MockBean
+    ProjectDeleteService projectDeleteService;
 
-	@MockBean
-	ProjectDetailInformationService detailService;
+    @MockBean
+    ProjectUnassignUserService unassignUserService;
 
-	@MockBean
-	ProjectRepository mockedProjectRepository;
+    @MockBean
+    ProjectDetailInformationService detailService;
 
-	@MockBean
-	CreateProjectInputValidator createProjectInputvalidator;
+    @MockBean
+    ProjectRepository mockedProjectRepository;
 
-	@Before
-	public void before() {
-		when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
-	}
+    @MockBean
+    CreateProjectInputValidator createProjectInputvalidator;
+
+    @Before
+    public void before() {
+        when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
+    }
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdminCreatesProject.class)
@@ -121,7 +127,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
 				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -148,11 +154,10 @@ public class ProjectAdministrationRestControllerRestDocTest {
         String apiEndpoint = https(PORT_USED).buildAdminListsProjectsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsAllProjects.class;
 
-		/* execute + test @formatter:off */
+        /* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint).
         		contentType(MediaType.APPLICATION_JSON_VALUE)).
-        		/*andDo(print()).*/
                     andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
         	                resource(
@@ -169,7 +174,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         			        ));
 
 		/* @formatter:on */
-	}
+    }
 
 
 	@Test
@@ -183,7 +188,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				delete(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -199,7 +204,27 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectOwner.class)
+    public void restdoc_assign_owner2project() throws Exception {
+	// WARNING: Change this.
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectOwner.class),
+                pathParameters(
+                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                        parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
+                        )
+                ));
+
+        /* @formatter:on */
+    }
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdminAssignsUserToProject.class)
@@ -210,10 +235,10 @@ public class ProjectAdministrationRestControllerRestDocTest {
         
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(apiEndpoint,"userId1", "projectId1").
+				post(apiEndpoint, "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
-		andExpect(status().isCreated()).
+				).
+		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
                         ResourceSnippetParameters.builder().
@@ -229,7 +254,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdminUnassignsUserFromProject.class)
@@ -242,7 +267,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				delete(apiEndpoint,"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -259,7 +284,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 				));
 
 		/* @formatter:on */
-	}
+    }
 
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAdminShowsProjectDetails.class)
@@ -268,29 +293,36 @@ public class ProjectAdministrationRestControllerRestDocTest {
         String apiEndpoint = https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminShowsProjectDetails.class;
         
-		Project project = mock(Project.class);
-		when(project.getId()).thenReturn("projectId1");
+        Project project = mock(Project.class);
+        when(project.getId()).thenReturn("projectId1");
 
-		Set<User> users = new LinkedHashSet<>();
-		User user1 = mock(User.class);
-		when(user1.getName()).thenReturn("name1");
+        Set<User> users = new LinkedHashSet<>();
+        User user1 = mock(User.class);
+        when(user1.getName()).thenReturn("name1");
 
-		User user2 = mock(User.class);
-		when(user2.getName()).thenReturn("name2");
+        User user2 = mock(User.class);
+        when(user2.getName()).thenReturn("name2");
 
-		users.add(user1);
-		users.add(user2);
+        users.add(user1);
+        users.add(user2);
 
-		when(project.getUsers()).thenReturn(users);
-		when(project.getOwner()).thenReturn(user1);
-		Set<URI> whiteList = new LinkedHashSet<>();
-		whiteList.add(new URI("http://www.sechub.example.org"));
-		when(project.getWhiteList()).thenReturn(whiteList);
-		ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
+        when(project.getUsers()).thenReturn(users);
+        when(project.getOwner()).thenReturn(user1);
+        Set<URI> whiteList = new LinkedHashSet<>();
+        whiteList.add(new URI("http://www.sechub.example.org"));
+        when(project.getWhiteList()).thenReturn(whiteList);
 
-		when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
+        Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
+        ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
+        metaData.add(entry);
 
-		/* execute + test @formatter:off */
+        when(project.getMetaData()).thenReturn(metaData);
+
+        ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
+
+        when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -312,19 +344,21 @@ public class ProjectAdministrationRestControllerRestDocTest {
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!")
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+			            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+				    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
                             ).
                             build()
                          )
 				));
 
 		/* @formatter:on */
-	}
+    }
 
-	@Profile(Profiles.TEST)
-	@EnableAutoConfiguration
-	public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
+    @Profile(Profiles.TEST)
+    @EnableAutoConfiguration
+    public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
 
-	}
+    }
 
 }

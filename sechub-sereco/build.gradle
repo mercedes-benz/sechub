@@ -5,11 +5,14 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+ 
 dependencies {
-
+	compile library.jsoup
+	    
     compile project(':sechub-shared-kernel')
 
+	compile library.contrastsecurity_sarif
+    compile project(':sechub-shared-kernel')
+    
     testCompile project(':sechub-testframework')
-
 }
-

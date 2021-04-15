@@ -1,38 +1,56 @@
 {
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",
-            "basic": {
-                "realm": "realm0",
-                "user": "user0",
-                "password": "pwd0"
-            },
-            "form": {
-                "autodetect": {
-                    "user": "user1",
-                    "password": "pwd1"
-                },
-                "script": [
-                    {
-                        "step": "input",
-                        "selector": "#example_login_userid",
-                        "value": "user2"
-                    },
-                    {
-                        "step": "input",
-                        "selector": "#example_login_pwd",
-                        "value": "pwd2"
-                    },
-                    {
-                        "step": "click",
-                        "selector": "#example_login_login_button"
-                    }
-                ]
-            }
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "uris" : [ "https://productfailure.demo.example.org" ],
+    "maxScanDuration" : {
+      "duration" : 2,
+      "unit" : "hours"
+    },
+    "login" : {
+      "url" : "https://productfailure.demo.example.org/login",
+      "basic" : {
+        "realm" : "realm0",
+        "user" : "user0",
+        "password" : "pwd0"
+      },
+      "form" : {
+        "autodetect" : {
+          "user" : "user1",
+          "password" : "pwd1"
+        },
+        "script" : {
+          "pages" : [ {
+            "actions" : [ {
+              "type" : "username",
+              "selector" : "#example_login_userid",
+              "value" : "user2",
+              "description" : "This is an example description"
+            }, {
+              "type" : "click",
+              "selector" : "#next_button",
+              "description" : "Click the next button to go to the password field"
+            } ]
+          }, {
+            "actions" : [ {
+              "type" : "wait",
+              "value" : 3200,
+              "unit" : "milliseconds"
+            }, {
+              "type" : "input",
+              "selector" : "#email_field",
+              "value" : "user@example.org",
+              "description" : "The user's email address."
+            }, {
+              "type" : "password",
+              "selector" : "#example_login_pwd",
+              "value" : "pwd2"
+            }, {
+              "type" : "click",
+              "selector" : "#example_login_login_button"
+            } ]
+          } ]
         }
+      }
     }
+  }
 }

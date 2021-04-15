@@ -49,12 +49,15 @@ public class FullScanDataService {
 
 		List<ProductResult> results = productResultService.fetchAllResultsForJob(sechubJobUUID);
 		for (ProductResult result:results) {
-			ScanData d = new ScanData();
-			d.productId=result.getProductIdentifier().toString();
-			d.result=result.getResult();
-			d.metaData=result.getMetaData();
+			ScanData scanData = new ScanData();
+			scanData.productId=result.getProductIdentifier().toString();
+			scanData.executorConfigUUID=result.getProductExecutorConfigUUID();
 			
-			data.allScanData.add(d);
+			scanData.result=result.getResult();
+			
+			scanData.metaData=result.getMetaData();
+			
+			data.allScanData.add(scanData);
 			
 		}
 		return data;

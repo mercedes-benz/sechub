@@ -40,8 +40,36 @@ public class CheckmarxV1XMLImporterTest {
 		ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
 
 		/* test */
-		assertEquals("Was able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
+		assertEquals("Was NOT able to import xml!", ProductImportAbility.ABLE_TO_IMPORT, ableToImport);
 	}
+	
+	@Test
+    public void emptyXMLcanNotBeImported() {
+        /* prepare */
+        String xml = "<?xml version='1.0'?>";
+
+        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Checkmarx").build();
+
+        /* execute */
+        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+
+        /* test */
+        assertEquals("Was able to import xml!", ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport);
+    }
+	
+	@Test
+    public void bookStoreExampleXMLcanNotBeImported() {
+        /* prepare */
+        String xml = "<?xml version='1.0'?><bookstore><available><book name='lord of the rings' id='!'/></available></bookstore>";
+
+        ImportParameter param = ImportParameter.builder().importData(xml).importId("id1").productId("Checkmarx").build();
+
+        /* execute */
+        ProductImportAbility ableToImport = importerToTest.isAbleToImportForProduct(param);
+
+        /* test */
+        assertEquals("Was able to import xml!", ProductImportAbility.NOT_ABLE_TO_IMPORT, ableToImport);
+    }
 
 	@Test
 	public void xmlReportFromCheckmarxVhasNoDescriptionButCodeInfo() throws Exception {

@@ -139,7 +139,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint,TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -167,7 +167,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
                 resource(
@@ -194,7 +194,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		post(apiEndpoint, "user1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isCreated()).
         			andDo(document(RestDocFactory.createPath(useCase),
         	                resource(
@@ -229,7 +229,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
 				get(apiEndpoint)
-				)./*andDo(print()).*/
+				).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(UseCaseAdminListsAllUsers.class),
                 resource(
@@ -306,7 +306,7 @@ public class UserAdministrationRestControllerRestDocTest {
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
         		get(apiEndpoint, "user1")
-        		)./*andDo(print()).*/
+        		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
         	                resource(
