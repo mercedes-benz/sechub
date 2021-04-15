@@ -400,18 +400,17 @@ public class SchedulerRestControllerRestDocTest {
 	
 	@Test
 	@UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = "Web Scan login form scripted")
-	public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
-		// TODO: Work on this
-		/* prepare */
+    public void restDoc_userCreatesNewJob_webScan_login_form_script() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
-        
-		UUID randomUUID = UUID.randomUUID();
-		SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
 
-		/* execute + test @formatter:off */
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
 	    this.mockMvc.perform(
 	    		post(apiEndpoint,PROJECT1_ID).
 	    			contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -455,11 +454,11 @@ public class SchedulerRestControllerRestDocTest {
 	    					build().
 	    					toJSON())
 	    		).
-	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
-	    			andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form scripted"),
-                            resource(
-                                    ResourceSnippetParameters.builder().
+	    		andExpect(status().isOk()).
+	    		andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+	    		andDo(document(RestDocFactory.createPath(useCase,"Web Scan login form scripted"),
+	    		        resource(
+	    		                ResourceSnippetParameters.builder().
                                         summary(RestDocFactory.createSummary(useCase)).
                                         description(RestDocFactory.createDescription(useCase)).
                                         tag(RestDocFactory.extractTag(apiEndpoint)).
@@ -469,19 +468,18 @@ public class SchedulerRestControllerRestDocTest {
                                                 parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
                                         ).
                                         requestFields(
-fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT).description("script").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].type").description("action type: username, password, input, click, wait").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].selector").description("css selector").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].value").description("value").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].description").description("description").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional()
-						),
+                                            fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+    										fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT).description("script").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].type").description("action type: username, password, input, click, wait").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].selector").description("css selector").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].value").description("value").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].description").description("description").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional()
                                         ).
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
@@ -490,9 +488,8 @@ fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only
                                         build()
                                     )
 	    		    ));
-
 	    /* @formatter:on */
-	}
+    }
 	
 	@Test
 	@UseCaseRestDoc(useCase = UseCaseUserUploadsSourceCode.class)

@@ -64,7 +64,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsA
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -202,27 +202,35 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             build()
                          )
 				));
-
 		/* @formatter:on */
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectOwner.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectOwner.class)
     public void restdoc_assign_owner2project() throws Exception {
-	// WARNING: Change this.
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
+        
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement()), "projectId1", "userId1").
+                post(apiEndpoint, "projectId1", "userId1").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectOwner.class),
-                pathParameters(
-                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
-                        parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
-                        )
+        andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
+                            ).
+                            build()
+                         )
                 ));
-
         /* @formatter:on */
     }
 
@@ -230,7 +238,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase=UseCaseAdminAssignsUserToProject.class)
 	public void restdoc_assign_user2project() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
         
 		/* execute + test @formatter:off */

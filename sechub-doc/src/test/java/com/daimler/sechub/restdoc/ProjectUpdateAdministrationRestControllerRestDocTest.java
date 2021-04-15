@@ -116,26 +116,34 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseUpdateProjectMetaData.class)
 	public void restdoc_update_metadata_for_project() throws Exception {
-
-	// TODO: Work on this
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUpdateProjectMetaData(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUpdateProjectMetaData.class;
+        
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).
-        				buildUpdateProjectMetaData(PROJECT_ID.pathElement()),"projectId1").
+        		post(apiEndpoint, "projectId1").
         				contentType(MediaType.APPLICATION_JSON_VALUE).
         				content("{\"apiVersion\":\"1.0\", \"metaData\":{\"key1\":\"value1\"}}")
         		).
-        			andExpect(status().isOk()).
-        			andDo(
-        				document(RestDocPathFactory.createPath(UseCaseUpdateProjectMetaData.class),
-	        				pathParameters(
-	        					parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
-	        				),
-	        				requestFields(
-								fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-								fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("Metadata object. Contains key-value pairs."),
-								fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key.")
-							)
+        	    andExpect(status().isOk()).
+        		andDo(document(RestDocFactory.createPath(useCase),
+                        resource(
+                                ResourceSnippetParameters.builder().
+                                    summary(RestDocFactory.createSummary(useCase)).
+                                    description(RestDocFactory.createDescription(useCase)).
+                                    tag(RestDocFactory.extractTag(apiEndpoint)).
+                                    requestSchema(OpenApiSchema.PROJECT_WHITELIST.getSchema()).
+                                    pathParameters(
+                                            parameterWithName(PROJECT_ID.paramName()).description("The id of the project for which metadata shall be updated")
+                                    ).
+                                    requestFields(
+                                            fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                            fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("Metadata object. Contains key-value pairs."),
+                                            fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key.")
+                                    ).
+                                    build()
+                                 )
         				)
         			);
 

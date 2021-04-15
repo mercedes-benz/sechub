@@ -17,9 +17,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_OWNER,
 		group=UseCaseGroup.USER_ADMINISTRATION,
+		apiName="adminChangesProjectOwner",
 		title="Admin changes owner of a project", 
 		description="An administrator changes the owner of an existing sechub project.")
-public @interface UseCaseAdministratorChangesProjectOwner {
+public @interface UseCaseAdminChangesProjectOwner {
 	
 	Step value();
 }

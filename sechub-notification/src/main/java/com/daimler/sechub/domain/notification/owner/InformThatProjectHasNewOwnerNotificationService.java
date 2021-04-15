@@ -15,7 +15,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 
 @Service
 public class InformThatProjectHasNewOwnerNotificationService {
@@ -28,7 +28,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InformThatProjectHasNewOwnerNotificationService.class);
 
-    @UseCaseAdministratorChangesProjectOwner(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
+    @UseCaseAdminChangesProjectOwner(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 
