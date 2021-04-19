@@ -1,20 +1,23 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario2;
 
-import static com.daimler.sechub.integrationtest.api.TestAPI.*;
-import static com.daimler.sechub.integrationtest.scenario2.Scenario2.*;
+import static com.daimler.sechub.integrationtest.api.TestAPI.SUPER_ADMIN;
+import static com.daimler.sechub.integrationtest.api.TestAPI.as;
+import static com.daimler.sechub.integrationtest.api.TestAPI.assertUser;
+import static com.daimler.sechub.integrationtest.api.TestAPI.waitSeconds;
+import static com.daimler.sechub.integrationtest.scenario2.Scenario2.PROJECT_1;
+import static com.daimler.sechub.integrationtest.scenario2.Scenario2.USER_1;
 
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
-import org.springframework.test.context.TestPropertySource;
 
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 
-@TestPropertySource(properties = {"sechub.scheduler.strategy.id=first-come-first-serve"})
 public class SchedulerFifoStrategyScenario2IntTest {
     
     @Rule
@@ -30,6 +33,8 @@ public class SchedulerFifoStrategyScenario2IntTest {
     @Test
     public void when_fifo_scheduler_defined_jobs_can_run_parallel_for_same_project() {
         /* @formatter:off */
+        
+        TestAPI.switchSchedulerStrategy("first-come-first-serve");
         
         /* prepare */
                 
@@ -50,6 +55,9 @@ public class SchedulerFifoStrategyScenario2IntTest {
         assertUser(SUPER_ADMIN).
             onJobAdministration().
             canFindRunningJob(jobId2);
+        
+        // set to nonsense to ensure it falls back to default
+        TestAPI.switchSchedulerStrategy("nonsense");
         
         /* @formatter:on */
     }
