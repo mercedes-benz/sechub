@@ -9,11 +9,14 @@ public enum SchedulerStrategyId {
 
     SchedulerStrategyId(String strategyString) {
 
-        if (strategyString == null || strategyString.isEmpty()) {
+        if (strategyString == null ) {
             throw new IllegalArgumentException("strategyString may not be null!");
         }
+        if (strategyString.isEmpty()) {
+            throw new IllegalArgumentException("strategyString may not be empty!");
+        }
+        
         this.strategy = strategyString;
-
     }
 
     public static SchedulerStrategyId getId(String strategyString) {

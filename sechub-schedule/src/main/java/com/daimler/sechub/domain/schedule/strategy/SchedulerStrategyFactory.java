@@ -20,18 +20,36 @@ public class SchedulerStrategyFactory {
 
     @Value("${sechub.scheduler.strategy.id:}")
     private String strategyId;
+    
+    private SchedulerStrategyId currentStrategyId;
 
     public SchedulerStrategy build() {
-        
+               
         SchedulerStrategyId strategy = SchedulerStrategyId.getId(strategyId);
-                
+        
         if (strategy == null) {
-            LOG.info("SCHEDULER STRATEGY : NULL. Defaulting to " + SchedulerStrategyId.FirstComeFirstServe.toString());
-            return fifoStrategy;
+            strategy = SchedulerStrategyId.FirstComeFirstServe;
         }
         
-        LOG.info("SCHEDULER STRATEGY : " + strategy.toString());
-        switch (strategy) {
+        if (currentStrategyId != null && strategy != null && currentStrategyId == strategy) {
+            return getStrategy(currentStrategyId);
+        }
+        
+        if (currentStrategyId != strategy) {
+            LOG.info("SCHEDULER STRATEGY : " + strategy.toString());
+        }
+        
+        currentStrategyId = strategy;
+        
+        return getStrategy(strategy);
+    }
+    
+    public void setStrategyId(String strategyId) {
+        this.strategyId = strategyId;
+    }
+    
+    private SchedulerStrategy getStrategy(SchedulerStrategyId id) {
+        switch (id) {
         case FirstComeFirstServe:
             return fifoStrategy;
         case OnlyOneScanPerProjectAtATime:

@@ -10,7 +10,7 @@ class SchedulerStrategyIdTest {
 
     @Test
     void test_value_to_enum_mapping_succesful() {
-        /* prepare */
+        /* execute */
         SchedulerStrategyId fifoServe = SchedulerStrategyId.getId("first-come-first-serve");
         SchedulerStrategyId onlyOneScanAtATime = SchedulerStrategyId.getId("only-one-scan-per-project-at-a-time");
 

@@ -41,10 +41,8 @@ public class ScheduleJobMarkerService {
 	 */
 	@Transactional
 	public ScheduleSecHubJob markNextJobToExecuteByThisInstance() {
-	    
-	    if (schedulerStrategy == null) {
-	        schedulerStrategy = schedulerStrategyFactory.build();
-	    }
+	    	
+	    schedulerStrategy = schedulerStrategyFactory.build();
 
 		if (LOG.isTraceEnabled()) {
 			/*NOSONAR*/LOG.trace("Trigger execution of next job started");

@@ -45,7 +45,7 @@ public class ScheduleJobMarkerServiceTest {
 
         when(factory.build()).thenReturn(strategy);
         when(strategy.nextJobId()).thenReturn(uuid);
-        when(jobRepository.getJob(any())).thenReturn(Optional.of(secHubJob));
+        when(jobRepository.getJob(uuid)).thenReturn(Optional.of(secHubJob));
     }
 
     @Test
@@ -66,8 +66,9 @@ public class ScheduleJobMarkerServiceTest {
         ScheduleSecHubJob result = serviceToTest.markNextJobToExecuteByThisInstance();
 
         /* test */
-        verify(result).setStarted(any());
-        verify(result).setExecutionState(eq(ExecutionState.STARTED));
+        
+        verify(secHubJob).setStarted(any());
+        verify(secHubJob).setExecutionState(eq(ExecutionState.STARTED));
 
         assertEquals(secHubJob, result);
     }

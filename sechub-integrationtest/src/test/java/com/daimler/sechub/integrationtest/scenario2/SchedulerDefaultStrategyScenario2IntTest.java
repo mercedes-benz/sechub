@@ -14,8 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 
-@TestPropertySource(properties = {"sechub.scheduler.strategy.id="})
-public class SchedulerDefaultStrategyScenario2IntTest2 {
+public class SchedulerDefaultStrategyScenario2IntTest {
     
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario2.class);
