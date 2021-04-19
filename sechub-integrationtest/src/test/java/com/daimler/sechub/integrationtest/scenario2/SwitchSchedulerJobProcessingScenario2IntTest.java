@@ -46,7 +46,7 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 		/* prepare */
 		waitSeconds(1); // give event handling a chance...
 		UUID jobUUID = assertUser(USER_1).
-			canCreateWebScan(PROJECT_1,IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
+			canCreateWebScan(PROJECT_1, IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__LONG_RUNNING);// we use long running job (10seconds) - necessary, see comment beyond
 
 		assertUser(USER_1).canApproveJob(PROJECT_1, jobUUID);
 
@@ -64,8 +64,8 @@ public class SwitchSchedulerJobProcessingScenario2IntTest {
 
 		/* test */
 		assertUser(SUPER_ADMIN).
-			onJobAdministration().canFindRunningJob(jobUUID); // means here, the job is not executed at all.. we know this, because we used long running job (10s) */
-		assertMailToAdminsExists("SecHub: Scheduler job processing disabled");
+			onJobAdministration().canFindRunningJob(jobUUID); // means here, the job is executed. we know this, because we used long running job (10s) */
+		assertMailToAdminsExists("SecHub: Scheduler job processing enabled");
 
 		/* @formatter:on */
 

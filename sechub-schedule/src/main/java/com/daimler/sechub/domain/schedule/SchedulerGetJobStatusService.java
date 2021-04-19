@@ -15,25 +15,23 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class SchedulerGetJobStatusService {
 
-	@Autowired
-	ScheduleAssertService scheduleAssert;
+    @Autowired
+    ScheduleAssertService scheduleAssert;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	@Validated
-	@UseCaseUserChecksJobStatus(@Step(number = 2, name = "Try to find project and fail or return job status"))
-	public ScheduleJobStatus getJobStatus(String projectId, UUID jobUUID) {
-		assertion.isValidProjectId(projectId);
-		assertion.isValidJobUUID(jobUUID);
+    @Validated
+    @UseCaseUserChecksJobStatus(@Step(number = 2, name = "Try to find project and fail or return job status"))
+    public ScheduleJobStatus getJobStatus(String projectId, UUID jobUUID) {
+        assertion.isValidProjectId(projectId);
+        assertion.isValidJobUUID(jobUUID);
 
-		scheduleAssert.assertUserHasAccessToProject(projectId);
+        scheduleAssert.assertUserHasAccessToProject(projectId);
 
-		ScheduleSecHubJob secHubJob = scheduleAssert.assertJob(projectId, jobUUID);
+        ScheduleSecHubJob secHubJob = scheduleAssert.assertJob(projectId, jobUUID);
 
-		return new ScheduleJobStatus(secHubJob);
-	}
-
-
+        return new ScheduleJobStatus(secHubJob);
+    }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleAccessCountService;
+import com.daimler.sechub.domain.schedule.strategy.SchedulerStrategyFactory;
 import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 
@@ -30,6 +31,9 @@ public class IntegrationTestSchedulerRestController {
 	
 	@Autowired
     private IntegrationTestSchedulerService integrationTestSchedulerService;
+	
+	@Autowired
+	private SchedulerStrategyFactory schedulerStrategyFactory;
 
 	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/project/{projectId}/schedule/access/count", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public long countProjectAccess(@PathVariable("projectId") String projectId) {
@@ -50,5 +54,10 @@ public class IntegrationTestSchedulerRestController {
     public void revertJobAsStillNotApproved(@PathVariable("sechubJobUUID") UUID sechubJobUUID) {;
         integrationTestSchedulerService.revertJobAsStillNotApproved(sechubJobUUID);
     }
+	
+	@RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/scheduler/strategy/{strategyId}", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void setSchedulerStrategy(@PathVariable("strategyId") String strategyId) {
+	    schedulerStrategyFactory.setStrategyId(strategyId);
+	}
 
 }
