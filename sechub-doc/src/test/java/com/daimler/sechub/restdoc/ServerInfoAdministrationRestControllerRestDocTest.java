@@ -78,6 +78,7 @@ public class ServerInfoAdministrationRestControllerRestDocTest {
 	                                        summary(RestDocFactory.createSummary(useCase)).
 	                                        description(RestDocFactory.createDescription(useCase)).
 	                                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                                            responseSchema(OpenApiSchema.SERVER_VERSION.getSchema()).
 	                                        build()
 	                                    )
 					));

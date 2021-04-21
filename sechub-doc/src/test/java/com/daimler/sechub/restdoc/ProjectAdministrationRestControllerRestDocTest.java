@@ -126,7 +126,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
-				content("{\"apiVersion\":\"1.0\", \"name\":\"projectId\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
+				content("{\"apiVersion\":\"1.0\", "
+				        + "\"name\":\"projectId\", "
+				        + "\"description\":\"A description of the project.\", "
+				        + "\"owner\":\"ownerName1\", "
+				        + "\"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}, "
+				        + "\"metaData\":{\"key1\":\"value1\", \"key2\":\"value2\"}}")
 				).
 		andExpect(status().isCreated()).
 		andDo(document(RestDocFactory.createPath(useCase),
@@ -138,8 +143,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             requestSchema(OpenApiSchema.PROJECT.getSchema()).
                             requestFields(
                                     fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!"),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_DESCRIPTION).description("The description of the project.").optional(),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIs used now for whitelisting. Former parts will be replaced completely!"),
-                                    fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!")
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project").optional(),
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".*").description("An arbitrary metadata key").optional()
                             ).
                             build()
                          )
@@ -334,8 +343,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		this.mockMvc.perform(
 				get(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
-				)./*
-				*/
+		).
 		andDo(print()).
 		andExpect(status().isOk()).
 		andDo(document(RestDocFactory.createPath(useCase),
@@ -353,8 +361,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
-			            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-				    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
                             ).
                             build()
                          )

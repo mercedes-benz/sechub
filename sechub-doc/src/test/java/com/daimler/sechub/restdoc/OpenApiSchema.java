@@ -31,7 +31,8 @@ enum OpenApiSchema {
     FALSE_POSITVES("FalsePositives"),
     FULL_SCAN_DATA_ZIP("FullScanDataZIP"),
     USER_SIGNUP("UserSignup"),
-    PROJECT_SCAN_LOGS("ProjectScanLogs");
+    PROJECT_SCAN_LOGS("ProjectScanLogs"),
+    SERVER_VERSION("ServerVersion");
     
     private final Schema schema;
     
