@@ -40,7 +40,7 @@ import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorA
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 
 /**
- * The rest api for user administration done by a super admin.
+ * The rest API for project administration done by a super admin.
  *
  * @author Albert Tregnaghi
  *

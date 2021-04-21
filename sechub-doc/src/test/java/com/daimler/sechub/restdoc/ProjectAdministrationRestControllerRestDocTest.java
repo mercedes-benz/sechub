@@ -255,6 +255,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
+        
+        when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
 
@@ -273,12 +275,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
 						),
 				responseFields(
-							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
 						)
 					)
 				);
