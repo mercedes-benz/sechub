@@ -15,7 +15,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_SHOWS_PROJECT_DETAILS,
-		group=UseCaseGroup.USER_ADMINISTRATION,
+		group=UseCaseGroup.PROJECT_ADMINISTRATION,
 		title="Admin shows project details", 
 		description="An administrator downloads a json file containing json with project details")
 public @interface UseCaseAdministratorShowsProjectDetails {

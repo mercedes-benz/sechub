@@ -10,20 +10,16 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseDefinition;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
-
 /* @formatter:off */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_DOWNLOADS_FULL_DETAILS_ABOUT_SCAN_JOB,
-		group=UseCaseGroup.JOB_ADMINISTRATION,
-		title="Admin downloads all details about a scan job",
-		description="An administrator downloads a zip file containing full details of a scan. "+
-		"Main reason for this use case is for debugging when there are problems with security products."+
-		"Another reason is for developers to adopt new security products easier."
-				    )
-public @interface UseCaseAdministratorDownloadsFullScanDataForJob {
-
+		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_DETAILS,
+		group=UseCaseGroup.PROJECT_ADMINISTRATION,
+		title="Admin changes project details", 
+		description="An administrator changes project details")
+public @interface UseCaseAdministratorChangesProjectDetails {
+	
 	Step value();
 }
 /* @formatter:on */

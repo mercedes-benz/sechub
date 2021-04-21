@@ -67,7 +67,10 @@ public class ProjectAdministrationRestController {
     ProjectDeleteService deleteService;
 
     @Autowired
-    ProjectDetailInformationService detailsService;
+    ProjectDetailInformationService detailsInformationService;
+    
+    @Autowired
+    ProjectDetailChangeService detailsChangeService;
 
     @Autowired
     ProjectRepository repository;
@@ -107,7 +110,15 @@ public class ProjectAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_SHOW_PROJECT_DETAILS, method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ProjectDetailInformation showProjectDetails(@PathVariable(name="projectId") String projectId) {
 		/* @formatter:on */
-        return detailsService.fetchDetails(projectId);
+        return detailsInformationService.fetchDetails(projectId);
+    }
+	
+	/* @formatter:off */
+    @UseCaseAdministratorShowsProjectDetails(@Step(number = 1,name="Rest call", description = "Changes project with given data. Json returned containing details about changed project", needsRestDoc = true))
+    @RequestMapping(path = AdministrationAPIConstants.API_CHANGE_PROJECT_DETAILS, method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ProjectDetailInformation changeProjectDetails(@PathVariable(name = "projectId") String projectId, @RequestBody ProjectJsonInput project) {
+        /* @formatter:on */
+        return detailsChangeService.changeDetails(projectId, project);
     }
 
     /* @formatter:off */

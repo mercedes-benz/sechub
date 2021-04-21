@@ -195,7 +195,7 @@ public class AsUser {
     public AsUser updateProductExecutionProfile(String profileId, TestExecutionProfile profile) {
         String url = getUrlBuilder().buildAdminUpdatesProductExecutionProfile(profileId);
         String json = JSONConverter.get().toJSON(profile);
-        getRestHelper().putJSon(url, json);
+        getRestHelper().putJSON(url, json);
         return this;
     }
 
@@ -297,7 +297,7 @@ public class AsUser {
     public void updateProdcutExecutorConfig(UUID uuid, TestExecutorConfig config) {
         String url = getUrlBuilder().buildAdminUpdatesProductExecutorConfig(uuid);
         String json = JSONConverter.get().toJSON(config);
-        getRestHelper().putJSon(url, json);
+        getRestHelper().putJSON(url, json);
     }
 
     public AsUser deleteProductExecutorConfig(UUID uuid) {
@@ -727,7 +727,7 @@ public class AsUser {
 
     public AsUser setProjectMockConfiguration(TestProject project, String json) {
         String url = getUrlBuilder().buildSetProjectMockConfiguration(project.getProjectId());
-        getRestHelper().putJSon(url, json);
+        getRestHelper().putJSON(url, json);
         return this;
     }
 
@@ -739,7 +739,7 @@ public class AsUser {
 
     public AsUser updateMapping(String mappingId, MappingData mappingData) {
         String url = getUrlBuilder().buildUpdateMapping(mappingId);
-        getRestHelper().putJSon(url, mappingData.toJSON());
+        getRestHelper().putJSON(url, mappingData.toJSON());
         return this;
     }
 
@@ -955,7 +955,7 @@ public class AsUser {
             String json = buildJSON();
 
             String url = getUrlBuilder().buildUserAddsFalsePositiveJobDataListForProject(project.getProjectId());
-            getRestHelper().putJSon(url, json);
+            getRestHelper().putJSON(url, json);
         }
 
         public void unmarkFalsePositive() {

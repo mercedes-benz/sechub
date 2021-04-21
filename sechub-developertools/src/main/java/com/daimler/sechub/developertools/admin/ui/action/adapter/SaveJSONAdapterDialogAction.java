@@ -30,7 +30,7 @@ public class SaveJSONAdapterDialogAction extends AbstractAdapterDialogMappingAct
         }
         
         
-        adm.getRestHelper().putJSon(url, json);
+        adm.getRestHelper().putJSON(url, json);
         
         getDialogUI().getContext().getOutputUI().output("Updated mapping:"+getMappingUI().getMappingId());
         
