@@ -12,12 +12,12 @@ end box
 box "schedule" #F8F8FF
    participant ScheduleMessageHandler
 end box
-box "authorization" #C8C8CF
-end box
-box "notification" #F8F8FF
-end box
 box "administration" #C8C8CF
    participant JobRestartRequestService
+end box
+box "authorization" #F8F8FF
+end box
+box "notification" #C8C8CF
 end box
 autonumber 1
 JobRestartRequestService ->> EventBus:REQUEST_JOB_RESTART_HARD
@@ -31,9 +31,9 @@ PlantUML version 1.2018.13(Mon Nov 26 17:11:51 UTC 2018)
 (APACHE source distribution)
 Java Runtime: OpenJDK Runtime Environment
 JVM: OpenJDK 64-Bit Server VM
-Java Version: 1.8.0_282-b08
+Java Version: 1.8.0_292-b10
 Operating System: Linux
-OS Version: 5.4.0-1041-azure
+OS Version: 5.4.0-1043-azure
 Default Encoding: UTF-8
 Language: en
 Country: 
