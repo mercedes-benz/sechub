@@ -109,7 +109,11 @@ include::sechub_config_example2_webscan_anonyous.json[]
 ----
 <1> Define web scan
 <2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
-
+<3> *Optional*: Define the maximum duration the scan can take. 
+    Scanning a "large" web page/application can take several hours or even days. 
+    This option ensures the scan will only run for a limited time.
+<4> Define the unit of time. 
+    The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 ===== Login
 A web scan does work very much better if it has got access to all content
@@ -171,11 +175,12 @@ include::sechub_config_example4_webscan_login_form_autodetect.json[]
 ----
 include::sechub_config_example5_webscan_login_from_sript.json[]
 ----
-<1> URL for web login
-<2> Start of form based login
-<3> Script definition parts. Contains step entries which are executed
-    in given order
-<4> Type of step. Valid steps are : +
+<1> URL for web login.
+<2> Start of form based login.
+<3> Script definition.
+<4> Pages section. A page is a visible page. Some logins need more than one page.
+<5> The actions which should be executed on each page. 
+<6> Type of action. Valid types are : +
     - `username` +
       name of user used for login
     - `password` +
@@ -184,11 +189,17 @@ include::sechub_config_example5_webscan_login_from_sript.json[]
       setup value for a field on UI
     - `click` +
       will simulate a mouse click on UI
-<5> Selector (CSS) to identify web element
-<6> Value , used by input steps (`username|password|input`). +
+    - `wait` + 
+      time to wait before executing the next action
+<7> Selector (CSS) to identify web element.
+<8> Value, used by most actions (`username|password|input|wait`). +
     In this examples you see variables
     in `go template` format. This is {sechub} client specific.
-    If you use REST API directly, you must you must use real values!
+    If you use the REST API directly, you must use real values!
+<9> A description can be added to explain an action.
+<10> The time the next action will be delayed.
+<11> Define the unit of time. 
+     The unit can be: `millisecond`, `second`, `minute`, `hour`, `day`.
 
 WARNING: `username` and `password` are like input but {sechub} tries
          to hide these information in logs or at UI where possible.

@@ -19,7 +19,7 @@ import com.daimler.sechub.adapter.pds.PDSWebScanConfig;
 import com.daimler.sechub.adapter.pds.PDSWebScanConfigImpl;
 import com.daimler.sechub.domain.scan.TargetRegistry.TargetRegistryInfo;
 import com.daimler.sechub.domain.scan.TargetType;
-import com.daimler.sechub.domain.scan.WebLoginConfigBuilderStrategy;
+import com.daimler.sechub.domain.scan.WebConfigBuilderStrategy;
 import com.daimler.sechub.domain.scan.product.AbstractWebScanProductExecutor;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
@@ -83,7 +83,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 			        setProductBaseUrl(configSupport.getProductBaseURL()).
 			        setSecHubJobUUID(context.getSechubJobUUID()).
 					configure(createAdapterOptionsStrategy(context)).
-				    configure(new WebLoginConfigBuilderStrategy(context)).
+				    configure(new WebConfigBuilderStrategy(context)).
 					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
 					setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
 					setTraceID(context.getTraceLogIdAsString()).

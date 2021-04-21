@@ -7,8 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
 
 /**
@@ -20,6 +23,19 @@ import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBu
 public class NetsparkerAdapterTestApplication {
 
 	public static void main(String[] args) throws Exception {
+	    SecHubTimeUnitData maxScanDuration = null;
+	    
+	    String maxScanDurationDurationProperty = getSystemProperty("sechub.adapter.netsparker.maxscanduration.duration");
+	    String maxScanDurationUnitProperty = getSystemProperty("sechub.adapter.netsparker.maxscanduration.unit");
+	    
+	    if (maxScanDurationDurationProperty != null && maxScanDurationUnitProperty != null) {
+	        int duration = Integer.valueOf(maxScanDurationDurationProperty);
+	        SecHubTimeUnit unit = SecHubTimeUnit.valueOf(maxScanDurationUnitProperty);
+	        
+	        maxScanDuration = SecHubTimeUnitData.of(duration, unit);
+	    }
+
+	    
 		/* @formatter:off */
 		NetsparkerConfigBuilder builder = NetsparkerConfig.builder().
 				setUser(getSystemProperty("sechub.adapter.netsparker.user")).
@@ -29,7 +45,8 @@ public class NetsparkerAdapterTestApplication {
 				setPolicyID(getSystemProperty("sechub.adapter.netsparker.policyid")).
 				setProductBaseUrl(getSystemProperty("sechub.adapter.netsparker.baseurl")).
 				setLicenseID(getSystemProperty("sechub.adapter.netsparker.licenseid","none")).
-				setTargetURI(new URI(getSystemProperty("sechub.adapter.netsparker.targeturi")));
+				setTargetURI(new URI(getSystemProperty("sechub.adapter.netsparker.targeturi"))).
+				setMaxScanDuration(maxScanDuration);
 
 		/* @formatter:on */
 		String loginType = getSystemProperty("sechub.adapter.netsparker.login.type","<none>");
@@ -78,17 +95,19 @@ public class NetsparkerAdapterTestApplication {
 				url(new URL(getSystemProperty("sechub.adapter.netsparker.login.url"))).
 				form().
 					script().
-						addStep("username").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.step1.input.selector","#username")).
-							enterValue(getSystemProperty("sechub.adapter.netsparker.login.user")).
-					    endStep().
-					    addStep("password").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.step2.input.selector","#password")).
-							enterValue(getSystemProperty("sechub.adapter.netsparker.login.password")).
-						endStep().
-						addStep("click").
-							select(getSystemProperty("sechub.adapter.netsparker.login.script.step3.click.selector","#doLogin")).
-						endStep().
+					    addPage().
+    						addAction(ActionType.USERNAME).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action1.input.selector","#username")).
+    							enterValue(getSystemProperty("sechub.adapter.netsparker.login.user")).
+    					    endStep().
+    					    addAction(ActionType.PASSWORD).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action2.input.selector","#password")).
+    							enterValue(getSystemProperty("sechub.adapter.netsparker.login.password")).
+    						endStep().
+    						addAction(ActionType.CLICK).
+    							select(getSystemProperty("sechub.adapter.netsparker.login.script.page1.action3.click.selector","#doLogin")).
+    						endStep().
+    					doEndPage().
 				endLogin();
 		/* @formatter:on */
 	}

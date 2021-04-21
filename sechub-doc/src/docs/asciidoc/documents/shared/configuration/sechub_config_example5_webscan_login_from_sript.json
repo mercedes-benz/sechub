@@ -1,34 +1,52 @@
 {
-    "apiVersion": "1.0",
-    "webScan": {
-        "uris": [
-            "https://productfailure.demo.example.org"
-        ],
-        "login": {
-            "url": "https://productfailure.demo.example.org/login",//<1>
-            "form": {//<2>
-                "script": [//<3>
-                    {
-                        "step": "username", //<4>
-                        "selector": "#example_login_userid",//<5>
-                        "value": "${{ .LOGIN_USER }}"//<6>
-                    },
-                    {
-                        "step": "password",
-                        "selector": "#example_login_pwd",
-                        "value": "${{ .LOGIN_PWD }}"
-                    },
-                    {
-                        "step": "input",
-                        "selector": "#example_other_inputfield",
-                        "value": "${{ .OTHER_VALUE }}"
-                    },
-                    {
-                        "step": "click",
-                        "selector": "#example_login_login_button"
-                    }
-                ]
-            }
+  "apiVersion" : "1.0",
+  "webScan" : {
+    "uris" : [ "https://productfailure.demo.example.org" ],
+    "login" : {
+      "url" : "https://productfailure.demo.example.org/login", //<1>
+      "form" : { //<2>
+        "script" : { //<3>
+          "pages" : [ //<4>
+	          {
+	            "actions" : [ //<5> 
+		            {
+		              "type" : "username", //<6>
+		              "selector" : "#example_login_userid", //<7>
+		              "value" : "${{ .LOGIN_USER }}" //<8>
+		            }, 
+		            {
+		              "type" : "password",
+		              "selector" : "#example_login_pwd",
+		              "value" : "${{ .LOGIN_PWD }}"
+		            },
+		            {
+		              "type" : "click",
+		              "selector" : "#next",
+		              "description" : "Click to go to next page" //<9>
+		            }
+		         ]
+	          },
+	          {
+	            "actions" : [
+		            {
+		              "type" : "input",
+		              "selector" : "#example_other_inputfield",
+		              "value" : "${{ .OTHER_VALUE }}"
+		            }, 
+		            {
+		              "type" : "wait", //<10>
+		              "value" : "1",
+		              "unit" : "second" //<11>
+		            }, 
+		            {
+		              "type" : "click",
+		              "selector" : "#doLogin",
+		            } 
+	            ]
+	         } 
+          ]
         }
+      }
     }
+  }
 }

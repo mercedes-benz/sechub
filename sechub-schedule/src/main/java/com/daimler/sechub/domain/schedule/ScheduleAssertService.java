@@ -54,7 +54,7 @@ public class ScheduleAssertService {
 		Optional<ScheduleSecHubJob> secHubJob = jobRepository.findForProject(projectId, jobUUID);
 		if (!secHubJob.isPresent()) {
 			// we say "... or you have no access - just to obfuscate... so it's not clear to
-			// bad guys the got a target...
+			// malicious actors they got a target...
 			throw new NotFoundException("Job does not exist, or you have no access.");
 		}
 		return secHubJob.get();

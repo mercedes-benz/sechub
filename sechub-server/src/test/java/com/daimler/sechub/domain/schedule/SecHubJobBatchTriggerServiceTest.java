@@ -53,7 +53,7 @@ public class SecHubJobBatchTriggerServiceTest {
 		serviceToTest.triggerExecutionOfNextJob();
 
 		/* test */
-		verify(markerService).markNextJobExecutedByThisPOD();
+		verify(markerService).markNextJobToExecuteByThisInstance();
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class SecHubJobBatchTriggerServiceTest {
 			throws Exception {
 		/* prepare */
 		ScheduleSecHubJob job = mock(ScheduleSecHubJob.class);
-		when(markerService.markNextJobExecutedByThisPOD()).thenReturn(job);
+		when(markerService.markNextJobToExecuteByThisInstance()).thenReturn(job);
 		when(configService.isJobProcessingEnabled()).thenReturn(false);
 
 		/* execute */
@@ -76,7 +76,7 @@ public class SecHubJobBatchTriggerServiceTest {
 			throws Exception {
 		/* prepare */
 		ScheduleSecHubJob job = mock(ScheduleSecHubJob.class);
-		when(markerService.markNextJobExecutedByThisPOD()).thenReturn(job);
+		when(markerService.markNextJobToExecuteByThisInstance()).thenReturn(job);
 		when(configService.isJobProcessingEnabled()).thenReturn(true);
 
 		/* execute */
@@ -91,7 +91,7 @@ public class SecHubJobBatchTriggerServiceTest {
 			throws Exception {
 		/* prepare */
 		when(configService.isJobProcessingEnabled()).thenReturn(true);
-		when(markerService.markNextJobExecutedByThisPOD()).thenReturn(null);
+		when(markerService.markNextJobToExecuteByThisInstance()).thenReturn(null);
 
 		/* execute */
 		serviceToTest.triggerExecutionOfNextJob();

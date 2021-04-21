@@ -495,6 +495,10 @@ public class TestURLBuilder {
     public String buildResetAllMockMailsUrl() {
         return buildUrl(API_ANONYMOUS, "integrationtest/mock/emails");
     }
+    
+    public String buildSetSchedulerStrategyIdUrl(String strategyId) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/scheduler/strategy/" + strategyId);
+    }
 
     /**
      * Integration test only URL!

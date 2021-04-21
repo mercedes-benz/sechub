@@ -1,0 +1,40 @@
+{
+    "apiVersion": "1.0",
+    "webScan": {
+        "uris": [
+            "https://productfailure.demo.example.org"
+        ],
+        "login": {
+            "url": "https://productfailure.demo.example.org/login",
+            "form": {
+                "script": {
+                	"pages": [
+	                	{
+	                		"actions": [
+			                    {
+			                        "type": "input",
+			                        "selector": "#example_login_userid",
+			                        "value": "user2"
+			                    },
+			                    {
+			                        "type": "wait",
+			                        "value": "1458",
+			                        "unit": "millisecond"
+			                    },
+			                    {
+			                        "type": "input",
+			                        "selector": "#example_login_pwd",
+			                        "value": "pwd2"
+			                    },
+			                    {
+			                        "type": "click",
+			                        "selector": "#example_login_login_button"
+			                    }
+			            	]
+	                    }
+                    ]
+                }
+            }
+        }
+    }
+}

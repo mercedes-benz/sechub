@@ -55,7 +55,6 @@ public class IntegrationTestSchedulerService {
         job.setEnded(null);
         job.setTrafficLight(null);
         
-        repository.save(job);
-        
+        repository.save(job);        
     }
 }

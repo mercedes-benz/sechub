@@ -1,0 +1,21 @@
+{
+    "apiVersion": "1.0",
+    "webScan": {
+        "uris": [
+            "https://productfailure.demo.example.org"
+        ],
+        "maxScanDuration": {
+			"duration" : 1,
+			"unit" : "hours"
+		},
+        "login": {
+            "url": "https://productfailure.demo.example.org/login",
+            "form": {
+                "autodetect": {
+                    "user": "user1",
+                    "password": "pwd1"
+                }
+            }
+        }
+    }
+}

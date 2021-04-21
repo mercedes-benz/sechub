@@ -840,6 +840,9 @@ public class TestAPI {
         }
         as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
     }
-
-
+    
+    public static void switchSchedulerStrategy(String strategyId) {
+        String url = getURLBuilder().buildSetSchedulerStrategyIdUrl(strategyId);
+        getSuperAdminRestHelper().put(url);
+    }
 }

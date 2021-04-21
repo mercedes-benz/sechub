@@ -9,9 +9,9 @@ import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTe
  * In this scenario following is automatically initialized:
  *
  * <pre>
- * USER_1, is automatically registrated, created and ready to go... but not assigned to any project
+ * USER_1, is automatically registered, created and ready to go... but not assigned to any project
  * PROJECT_1_ is automatically created
- * USER_2, is automatically registrated, created and ready to go... but not assigned to any project
+ * USER_2, is automatically registered, created and ready to go... but not assigned to any project
  * PROJECT_2_ is automatically created
  * </pre>
  *

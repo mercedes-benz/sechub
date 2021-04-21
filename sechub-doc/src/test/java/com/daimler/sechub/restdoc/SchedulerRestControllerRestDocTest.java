@@ -1,17 +1,32 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.*;
-import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.PROPERTY_API_VERSION;
+import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.PROPERTY_CODE_SCAN;
+import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.PROPERTY_INFRA_SCAN;
+import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.PROPERTY_WEB_SCAN;
+import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.configureSecHub;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -37,6 +52,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
+import com.daimler.sechub.adapter.ActionType;
+import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.docgen.util.RestDocPathFactory;
 import com.daimler.sechub.docgen.util.RestDocTestFileSupport;
@@ -62,6 +79,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfigurationValidato
 import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
+import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
@@ -83,6 +101,9 @@ public class SchedulerRestControllerRestDocTest {
 	private static final String PROJECT1_ID = "project1";
 
 	private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getRestDocTestPort();
+	
+    private static final String FORM = WebLoginConfiguration.PROPERTY_FORM;
+    private static final String SCRIPT = FormLoginConfiguration.PROPERTY_SCRIPT;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -350,9 +371,36 @@ public class SchedulerRestControllerRestDocTest {
 	    						addURI("https://localhost/mywebapp").
 	    						login("https://localhost/mywebapp/login").
 	    						  formScripted("username1","password1").
-	    							step("input", "#example_login_userid", "username1").
-	    							step("input", "#example_login_pwd", "password").
-	    							step("click", "#example_login_button", "").
+	    						    createPage().
+    	    						    createAction().
+    	    						        type(ActionType.USERNAME).
+    	    						        selector("#example_login_userid").
+    	    						        value("username1").
+    	    						        description("the username field").
+    	    						        add().
+    	    						    createAction().
+    	    						        type(ActionType.INPUT).
+    	    						        selector("#example_login_email_id").
+    	    						        value("user@example.com").
+    	    						        description("The email id field.").
+    	    						        add().
+                                        add().
+                                   createPage().
+    	    						    createAction().
+    	    						        type(ActionType.WAIT).
+    	    						        value("2345").
+    	    						        unit(SecHubTimeUnit.MILLISECOND).
+    	    						        add().
+    	    						    createAction().
+    	    						        type(ActionType.PASSWORD).
+    	    						        selector("#example_login_pwd").
+    	    						        value("Super$ecret234!").
+    	    						        add().
+    	    						    createAction().
+    	    						        type(ActionType.CLICK).
+    	    						        selector("#example_login_button").
+    	    						        add().
+    	                                add().
 	    						  done().
 	    					build().
 	    					toJSON())
@@ -369,16 +417,16 @@ public class SchedulerRestControllerRestDocTest {
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URIS).description("Webscan URIs to scan for").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
 										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM).description("form login definition").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script").description("login field auto detection").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].step").description("type of step").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].selector").description("css selector").optional(),
-										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_FORM+".script[].value").description("value").optional()
-
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM).description("form login definition").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT).description("script").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].type").description("action type: username, password, input, click, wait").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].selector").description("css selector").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].value").description("value").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].description").description("description").optional(),
+										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional()
 										),
 	    						responseFields(
 	    								fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id"))
-
 	    						)
 	    		);
 

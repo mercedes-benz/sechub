@@ -39,37 +39,35 @@ import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsS
  */
 @RestController
 @EnableAutoConfiguration
-@RequestMapping(APIConstants.API_PROJECT+"{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
-@RolesAllowed({RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN})
+@RequestMapping(APIConstants.API_PROJECT + "{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
+@RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
 public class SchedulerRestController {
 
-	@Autowired
-	private SchedulerApproveJobService approveJobService;
+    @Autowired
+    private SchedulerApproveJobService approveJobService;
 
-	@Autowired
-	private SchedulerCreateJobService createJobService;
+    @Autowired
+    private SchedulerCreateJobService createJobService;
 
-	@Autowired
-	private SchedulerUploadService uploadService;
+    @Autowired
+    private SchedulerUploadService uploadService;
 
-	@Autowired
-	private SchedulerGetJobStatusService jobStatusService;
+    @Autowired
+    private SchedulerGetJobStatusService jobStatusService;
 
-	@Autowired
-	private SecHubConfigurationValidator validator;
+    @Autowired
+    private SecHubConfigurationValidator validator;
 
-	@Validated
-	@RolesAllowed(RoleConstants.ROLE_USER)
-	@UseCaseUserStartsSynchronousScanByClient(@Step(number=1, next= {2,3}, name="create new job"))
-	@UseCaseUserCreatesNewJob(@Step(number=1, name="Authenticated REST call",needsRestDoc=true))
-	@RequestMapping(path = "/job", method = RequestMethod.POST)
-	public SchedulerResult createJob(@PathVariable("projectId") String projectId,
-			@RequestBody @Valid SecHubConfiguration configuration) {
-		return createJobService.createJob(projectId, configuration);
-	}
+    @Validated
+    @RolesAllowed(RoleConstants.ROLE_USER)
+    @UseCaseUserStartsSynchronousScanByClient(@Step(number = 1, next = { 2, 3 }, name = "create new job"))
+    @UseCaseUserCreatesNewJob(@Step(number = 1, name = "Authenticated REST call", needsRestDoc = true))
+    @RequestMapping(path = "/job", method = RequestMethod.POST)
+    public SchedulerResult createJob(@PathVariable("projectId") String projectId, @RequestBody @Valid SecHubConfiguration configuration) {
+        return createJobService.createJob(projectId, configuration);
+    }
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@RolesAllowed(RoleConstants.ROLE_USER)
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=2, name="upload sourcecode"))
@@ -81,12 +79,11 @@ public class SchedulerRestController {
 				@RequestParam("file") MultipartFile file,
 				@RequestParam("checkSum") String checkSum
 			) {
-		uploadService.uploadSourceCode(projectId,jobUUID,file,checkSum);
+		uploadService.uploadSourceCode(projectId, jobUUID, file, checkSum);
 	}
 	/* @formatter:on */
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@RolesAllowed(RoleConstants.ROLE_USER)
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=3, name="approve job"))
@@ -99,8 +96,7 @@ public class SchedulerRestController {
 	}
 	/* @formatter:on */
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@Validated
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="get job status"))
 	@UseCaseUserChecksJobStatus(@Step(number=1,name="Authenticated REST call",needsRestDoc=true))
@@ -110,12 +106,12 @@ public class SchedulerRestController {
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		return jobStatusService.getJobStatus(projectId, jobUUID);
+        return jobStatusService.getJobStatus(projectId, jobUUID);
 
-	}
+    }
 
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		binder.setValidator(validator);
-	}
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+    }
 }

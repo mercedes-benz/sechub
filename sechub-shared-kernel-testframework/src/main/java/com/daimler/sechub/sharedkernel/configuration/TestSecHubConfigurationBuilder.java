@@ -73,6 +73,12 @@ public class TestSecHubConfigurationBuilder {
 			TestSecHubConfigurationBuilder.this.data.webConfig.getUris().add(URI.create(uri));
 			return this;
 		}
+		
+        public TestWebConfigurationBuilder maxScanDuration(WebScanDurationConfiguration maxScanDuration) {
+            TestSecHubConfigurationBuilder.this.data.webConfig.maxScanDuration = Optional.ofNullable(maxScanDuration);
+            return this;
+        }
+        
 		public TestWebLoginConfigurationBuilder login(String loginURL) {
 			return new TestWebLoginConfigurationBuilder(loginURL,this);
 		}
@@ -133,10 +139,9 @@ public class TestSecHubConfigurationBuilder {
 			return this;
 		}
 	}
+
 	public TestSecHubConfigurationBuilder projectId(String projectId) {
 		TestSecHubConfigurationBuilder.this.data.projectId=projectId;
 		return this;
 	}
-	
-
 }

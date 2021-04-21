@@ -30,7 +30,8 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
 
 /**
- * This service is only responsible of job execution for given {@link ScheduleSecHubJob}
+ * This service is only responsible of job execution for given
+ * {@link ScheduleSecHubJob}
  *
  * @author Albert Tregnaghi
  *
@@ -38,68 +39,67 @@ import com.daimler.sechub.sharedkernel.usecases.job.UseCaseSchedulerStartsJob;
 @Service
 public class ScheduleJobLauncherService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScheduleJobLauncherService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScheduleJobLauncherService.class);
 
-	@Autowired
-	@Lazy
-	DomainMessageService eventBus;
+    @Autowired
+    @Lazy
+    DomainMessageService eventBus;
 
-	@Autowired
-	AsyncJobLauncher jobLauncher;
+    @Autowired
+    AsyncJobLauncher jobLauncher;
 
-	@Autowired
-	Job job;
-	
-	@Autowired
+    @Autowired
+    Job job;
+
+    @Autowired
     SecHubBatchJobParameterBuilder parameterBuilder;
 
-	@UseCaseSchedulerStartsJob(@Step(number = 2, next = { 3,
-			4 },
-			name = "Execution",
-			description = "Starts a spring boot batch job which does execute the scan asynchronous. If spring boot batch job cannot be started the next steps will not be executed."))
-	public void executeJob(ScheduleSecHubJob secHubJob) {
-		UUID secHubJobUUID = secHubJob.getUUID();
-		
+    @UseCaseSchedulerStartsJob(@Step(number = 2, next = { 3,
+            4 }, name = "Execution", description = "Starts a spring boot batch job which does execute the scan asynchronous. If spring boot batch job cannot be started the next steps will not be executed."))
+    public void executeJob(ScheduleSecHubJob secHubJob) {
+        UUID secHubJobUUID = secHubJob.getUUID();
+
         LOG.debug("Execute job:{}", secHubJobUUID);
 
-		try {
-			/* prepare batch job */
-			JobParameters jobParameters = parameterBuilder.buildParams(secHubJobUUID);
+        try {
+            /* prepare batch job */
+            JobParameters jobParameters = parameterBuilder.buildParams(secHubJobUUID);
 
-			/* launch batch job */
-			LOG.debug("Trigger batch job launch :{}", secHubJobUUID);
-			JobExecution execution = jobLauncher.run(job, jobParameters);
+            /* launch batch job */
+            LOG.debug("Trigger batch job launch :{}", secHubJobUUID);
+            JobExecution execution = jobLauncher.run(job, jobParameters);
 
-			/* job is launched - inspect batch job internal id */
-			Long batchJobId = execution.getJobId();
-			LOG.debug("Execution triggered: {} has batch-ID:{}", secHubJobUUID, batchJobId);
+            /* job is launched - inspect batch job internal id */
+            Long batchJobId = execution.getJobId();
+            LOG.debug("Execution triggered: {} has batch-ID:{}", secHubJobUUID, batchJobId);
 
-			/* send domain event */
-			sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getJsonConfiguration(), secHubJob.getOwner());
+            /* send domain event */
+            sendJobStarted(secHubJob.getProjectId(), secHubJobUUID, secHubJob.getJsonConfiguration(), secHubJob.getOwner());
 
-		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-			/*
-			 * we do not need to send a "jobEnded" event, because in this case job was never started
-			 */
-			LOG.error("Not able to run batch job for sechhub :{}", secHubJobUUID);
-			throw new ScheduleFailedException(e);
-		}
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+            /*
+             * we do not need to send a "jobEnded" event, because in this case job was never
+             * started
+             */
+            LOG.error("Not able to run batch job for sechhub :{}", secHubJobUUID);
+            throw new ScheduleFailedException(e);
+        }
 
-	}
+    }
 
-	@IsSendingAsyncMessage(MessageID.JOB_STARTED)
-	private void sendJobStarted(String projectId, UUID jobUUID, String configuration, String owner) {
-		DomainMessage request = new DomainMessage(MessageID.JOB_STARTED);
-		JobMessage message = new JobMessage();
-		message.setProjectId(projectId);
-		message.setJobUUID(jobUUID);
-		message.setConfiguration(configuration);
-		message.setOwner(owner);
-		message.setSince(LocalDateTime.now());
+    @IsSendingAsyncMessage(MessageID.JOB_STARTED)
+    private void sendJobStarted(String projectId, UUID jobUUID, String configuration, String owner) {
+        DomainMessage request = new DomainMessage(MessageID.JOB_STARTED);
+        JobMessage message = new JobMessage();
+        message.setProjectId(projectId);
+        message.setJobUUID(jobUUID);
+        message.setConfiguration(configuration);
+        message.setOwner(owner);
+        message.setSince(LocalDateTime.now());
 
-		request.set(MessageDataKeys.JOB_STARTED_DATA, message);
+        request.set(MessageDataKeys.JOB_STARTED_DATA, message);
 
-		eventBus.sendAsynchron(request);
-	}
+        eventBus.sendAsynchron(request);
+    }
 
 }
