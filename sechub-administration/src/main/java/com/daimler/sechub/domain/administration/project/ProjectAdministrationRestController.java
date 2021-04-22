@@ -31,6 +31,7 @@ import com.daimler.sechub.domain.administration.project.ProjectJsonInput.Project
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDetails;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
@@ -114,7 +115,7 @@ public class ProjectAdministrationRestController {
     }
 	
 	/* @formatter:off */
-    @UseCaseAdministratorShowsProjectDetails(@Step(number = 1,name="Rest call", description = "Changes project with given data. Json returned containing details about changed project", needsRestDoc = true))
+    @UseCaseAdministratorChangesProjectDetails(@Step(number = 1,name="Rest call", description = "Changes project with given data. Json returned containing details about changed project", needsRestDoc = true))
     @RequestMapping(path = AdministrationAPIConstants.API_CHANGE_PROJECT_DETAILS, method = RequestMethod.PUT, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ProjectDetailInformation changeProjectDetails(@PathVariable(name = "projectId") String projectId, @RequestBody ProjectJsonInput project) {
         /* @formatter:on */

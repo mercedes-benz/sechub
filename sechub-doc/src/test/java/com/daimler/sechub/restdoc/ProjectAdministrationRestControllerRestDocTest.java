@@ -98,7 +98,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
     @MockBean
     ProjectDetailInformationService detailInformationService;
     
-    @Autowired
+    @MockBean
     ProjectDetailChangeService detailsChangeService;
 
     @MockBean
@@ -326,8 +326,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
         when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
-
-        when(detailInformationService.fetchDetails("projectId1")).thenReturn(detailInformation);
+        
+        when(detailsChangeService.changeDetails(any(), any())).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -341,7 +341,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsProjectDetails.class),
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDetails.class),
                 pathParameters(
                             parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
                         ),

@@ -36,6 +36,14 @@ public class UpdateProjectDescriptionAction extends AbstractUIAction {
         String newDescription = optDescription.get();
 
         getContext().getAdministration().updateProjectDescription(projectId, newDescription);
+        
+        // fetching the changed projectDetails and displaying them in the outputText
+        
+        String data = getContext().getAdministration().fetchProjectInfo(asSecHubId(projectId));
+        outputAsBeautifiedJSONOnSuccess(data);
+        
+        data = DataCollectorUtils.fetchProfileInformationAboutProject(projectId, getContext());
+        outputAsTextOnSuccess(data);
     }
 
 }
