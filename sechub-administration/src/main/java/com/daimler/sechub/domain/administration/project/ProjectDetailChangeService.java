@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDetails;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
@@ -29,7 +28,7 @@ public class ProjectDetailChangeService {
 
     @Autowired
     UserInputAssertion assertion;
-    
+
     @Autowired
     ProjectTransactionService transactionService;
 
@@ -41,23 +40,17 @@ public class ProjectDetailChangeService {
 				description = "The service will change project details"))
 	/* @formatter:on */
     public ProjectDetailInformation changeDetails(String projectId, ProjectJsonInput projectJson) {
-	    
-	    String jsonProjectId = projectJson.getName();
-	    
-	    if (!projectId.equals(jsonProjectId)) {
-	        throw new NotAcceptableException("projectId of path must be equal to projectId of JSON body");
-	    }
-	    
+
+        assertion.isValidProjectId(projectId);
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("fetching project details for project:{}", logSanitizer.sanitize(jsonProjectId, 30));
+            LOG.debug("changing project details for project:{}", logSanitizer.sanitize(projectId, 30));
         }
 
-        assertion.isValidProjectId(jsonProjectId);
+        Project project = projectRepository.findOrFailProject(projectId);
 
-        Project project = projectRepository.findOrFailProject(jsonProjectId);
-        
         project.description = projectJson.getDescription();
-        
+
         Project storedProject = transactionService.saveInOwnTransaction(project);
 
         return new ProjectDetailInformation(storedProject);

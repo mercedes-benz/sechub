@@ -1,18 +1,27 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.administration.project;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.PROJECT_ID;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.matches;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -35,6 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
+import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -69,12 +79,15 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @MockBean
     ProjectDetailInformationService detailService;
-    
+
     @MockBean
     ProjectDetailChangeService detailChangeService;
 
     @MockBean
     ProjectRepository mockedProjectRepository;
+    
+    @MockBean
+    ProjectTransactionService transactionService;
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
@@ -165,6 +178,53 @@ public class ProjectAdministrationRestControllerMockTest {
         verify(projectDeleteService).deleteProject("projectId1");
     }
 
+    @Test
+    public void change_project_calls_change_details() throws Exception {
+
+        /* execute + test @formatter:off */
+
+        Project project1 = new Project();
+        project1.id = "project1";
+        project1.description = "old description";
+        
+        Project project2 = new Project();
+        project2.id = "project1";
+        project2.description = "new description";
+        project2.owner = new User();
+        project2.users = Set.of();
+        project2.whiteList = Set.of();
+        project2.metaData = Set.of();
+                
+        when(mockedProjectRepository.findOrFailProject("project1")).thenReturn(project1);
+        when(transactionService.saveInOwnTransaction(any())).thenReturn(project2);
+        
+        this.mockMvc.perform(
+                put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                content("{\"description\":\"new description\"}")
+                ).
+        andExpect(status().isOk());
+                
+        verify(detailChangeService).changeDetails(matches("project1"), any());
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void when_admin_tries_to_change_project_description_but_request_body_is_missing() throws Exception {
+
+        /* execute + test @formatter:off */
+        
+        this.mockMvc.perform(
+                put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
+                contentType(MediaType.APPLICATION_JSON).
+                content("")
+                ).
+        andExpect(status().isBadRequest());
+        
+        /* @formatter:on */
+    }
+    
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
