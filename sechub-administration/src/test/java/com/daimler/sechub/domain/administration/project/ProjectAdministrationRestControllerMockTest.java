@@ -182,21 +182,6 @@ public class ProjectAdministrationRestControllerMockTest {
     public void change_project_calls_change_details() throws Exception {
 
         /* execute + test @formatter:off */
-
-        Project project1 = new Project();
-        project1.id = "project1";
-        project1.description = "old description";
-        
-        Project project2 = new Project();
-        project2.id = "project1";
-        project2.description = "new description";
-        project2.owner = new User();
-        project2.users = Set.of();
-        project2.whiteList = Set.of();
-        project2.metaData = Set.of();
-                
-        when(mockedProjectRepository.findOrFailProject("project1")).thenReturn(project1);
-        when(transactionService.saveInOwnTransaction(any())).thenReturn(project2);
         
         this.mockMvc.perform(
                 put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
