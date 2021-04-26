@@ -350,7 +350,7 @@ public class DeveloperAdministration {
     public String createProject(String projectId, String description, String owner, List<String> whiteListURLs, Map<String, String> metaData) {
         /* @formatter:off */
 		StringBuilder json = new StringBuilder();
-		if (description==null) {
+		if (description == null) {
 			description = "";
 		}
 		TestJSONHelper jsonHelper = TestJSONHelper.get();
@@ -362,9 +362,9 @@ public class DeveloperAdministration {
 		if (! whiteListURLs.isEmpty()) {
 			json.append(",\n \"whiteList\" : {\"uris\":[");
 
-			for (Iterator<String> it = whiteListURLs.iterator();it.hasNext();) {
+			for (Iterator<String> it = whiteListURLs.iterator(); it.hasNext();) {
 				String url = it.next();
-				json.append("\""+url+"\"");
+				json.append("\"" + url + "\"");
 				if (it.hasNext()){
 					json.append(",");
 				}
@@ -411,12 +411,12 @@ public class DeveloperAdministration {
 
     public String fetchProjectDescription(String projectId) {
         String json = fetchProjectInfo(projectId);
-        
+
         TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(json);
         return jsonNode.get("description").textValue();
     }
-    
+
     public String fetchUserInfo(String userId) {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
     }
@@ -500,15 +500,12 @@ public class DeveloperAdministration {
 
         getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
-    
+
     public void updateProjectDescription(String projectId, String description) {
-        String json = "{\n"
-                + "  \"name\" : \"" + projectId +"\", \n"
-                + "  \"description\" : \"" + description +"\"\n"
-                + "}";
-        
-        String url = getUrlBuilder().buildAdminChangesProjectDescriptionUrl(projectId);
-        
+        String json = "{\n" + "  \"name\" : \"" + projectId + "\", \n" + "  \"description\" : \"" + description + "\"\n" + "}";
+
+        String url = getUrlBuilder().buildAdminChangesProjectUrl(projectId);
+
         getRestHelper().putJSON(url, json);
     }
 
@@ -516,7 +513,7 @@ public class DeveloperAdministration {
         getRestHelper().post(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(projectId, userId));
         return "assigned " + userId + " as new owner to project " + projectId;
     }
-    
+
     public String assignUserToProject(String userId, String projectId) {
         getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
@@ -609,12 +606,12 @@ public class DeveloperAdministration {
         String url = getUrlBuilder().buildGetMapping(mappingId);
         return getRestHelper().getJSon(url);
     }
-    
+
     public String updateGlobalMappings(String mappingId, String mappingDataAsJSON) {
         String url = getUrlBuilder().buildUpdateMapping(mappingId);
         return getRestHelper().putJSON(url, mappingDataAsJSON);
     }
-    
+
     public String triggerDownloadReport(String projectId, UUID sechubJobUUID) {
         String url = getUrlBuilder().buildFetchReport(projectId, sechubJobUUID);
         return commonTriggerDownloadInBrowser(url);

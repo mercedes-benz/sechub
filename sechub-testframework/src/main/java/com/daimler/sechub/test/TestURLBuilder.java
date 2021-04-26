@@ -302,7 +302,7 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
     
-    public String buildAdminChangesProjectDescriptionUrl(String projectId) {
+    public String buildAdminChangesProjectUrl(String projectId) {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
 

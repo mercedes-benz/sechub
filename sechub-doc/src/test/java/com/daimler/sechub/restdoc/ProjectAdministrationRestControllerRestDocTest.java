@@ -296,7 +296,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectDetails.class)
-    public void restdoc_change_project_description() throws Exception {
+    public void restdoc_change_project_details() throws Exception {
         /* prepare */
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
@@ -331,9 +331,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "projectId1").
+                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "projectId1").
                 content("{\n"
-                        + "  \"name\" : \"projectId1\", \n"
                         + "  \"description\" : \"new description\"\n"
                         + "}").
                 contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -343,7 +342,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         andExpect(status().isOk()).
         andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDetails.class),
                 pathParameters(
-                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
+                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
                         ),
                 responseFields(
                             fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),

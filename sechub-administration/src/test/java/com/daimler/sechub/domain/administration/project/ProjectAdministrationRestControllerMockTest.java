@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -44,7 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
-import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -182,9 +180,8 @@ public class ProjectAdministrationRestControllerMockTest {
     public void change_project_calls_change_details() throws Exception {
 
         /* execute + test @formatter:off */
-        
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
+                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 content("{\"description\":\"new description\"}")
@@ -201,7 +198,7 @@ public class ProjectAdministrationRestControllerMockTest {
         /* execute + test @formatter:off */
         
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
+                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
                 contentType(MediaType.APPLICATION_JSON).
                 content("")
                 ).
