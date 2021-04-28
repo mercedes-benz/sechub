@@ -331,7 +331,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "projectId1").
+                patch(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "projectId1").
                 content("{\n"
                         + "  \"description\" : \"new description\"\n"
                         + "}").

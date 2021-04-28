@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDetails;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
@@ -37,9 +38,14 @@ public class ProjectDetailChangeService {
 			@Step(
 				number = 2,
 				name = "Service changes project details.",
-				description = "The service will change project details"))
+				description = "The service will change project details."))
 	/* @formatter:on */
     public ProjectDetailInformation changeDetails(String projectId, ProjectJsonInput projectJson) {
+	    String description = projectJson.getDescription();
+	    
+	    if (description == null) {
+	        throw new NotAcceptableException("description field has to be set");
+	    }
 
         assertion.isValidProjectId(projectId);
 
@@ -49,7 +55,7 @@ public class ProjectDetailChangeService {
 
         Project project = projectRepository.findOrFailProject(projectId);
 
-        project.description = projectJson.getDescription();
+        project.description = description;
 
         Project storedProject = transactionService.saveInOwnTransaction(project);
 

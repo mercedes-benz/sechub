@@ -501,12 +501,12 @@ public class DeveloperAdministration {
         getRestHelper().postJson(getUrlBuilder().buildUpdateProjectMetaData(projectId), sb.toString());
     }
 
-    public void updateProjectDescription(String projectId, String description) {
+    public String updateProjectDescription(String projectId, String description) {
         String json = "{\n" + "  \"name\" : \"" + projectId + "\", \n" + "  \"description\" : \"" + description + "\"\n" + "}";
 
         String url = getUrlBuilder().buildAdminChangesProjectUrl(projectId);
 
-        getRestHelper().putJSON(url, json);
+        return getRestHelper().patchJSON(url, json);
     }
 
     public String assignOwnerToProject(String userId, String projectId) {

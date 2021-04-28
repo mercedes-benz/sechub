@@ -11,8 +11,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
+import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -59,7 +61,7 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @Autowired
     private MockMvc mockMvc;
-
+    
     @MockBean
     ProjectCreationService creationService;
 
@@ -177,17 +179,47 @@ public class ProjectAdministrationRestControllerMockTest {
     }
 
     @Test
+    public void get_project_details_returns_project_details() throws Exception {
+                
+        Project project = new Project();
+        project.id = "project1";
+        project.description = "description";
+        project.owner = new User();
+        
+        ProjectDetailInformation details = new ProjectDetailInformation(project);
+        
+        when(detailService.fetchDetails(matches("project1"))).thenReturn(details);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(https(PORT_USED).buildAdminFetchProjectInfoUrl(PROJECT_ID.pathElement()), "project1").
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andExpect(jsonPath("$.projectId", CoreMatchers.equalTo("project1"))).
+        andExpect(jsonPath("$.description", CoreMatchers.equalTo("description"))).
+        andExpect(jsonPath("$.owner", CoreMatchers.nullValue())).
+        andExpect(jsonPath("$.users", CoreMatchers.notNullValue()));
+        
+        verify(detailService).fetchDetails(matches("project1"));
+        /* @formatter:on */
+    }
+    
+    @Test
     public void change_project_calls_change_details() throws Exception {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
+                patch(https(PORT_USED).buildAdminChangesProjectUrl("project1")).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 content("{\"description\":\"new description\"}")
                 ).
-        andExpect(status().isOk());
-                
+        andDo(print()).
+        andExpect(status().isOk()).
+        andReturn();
+        
         verify(detailChangeService).changeDetails(matches("project1"), any());
         /* @formatter:on */
     }
@@ -198,14 +230,14 @@ public class ProjectAdministrationRestControllerMockTest {
         /* execute + test @formatter:off */
         
         this.mockMvc.perform(
-                put(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
+                patch(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
                 contentType(MediaType.APPLICATION_JSON).
                 content("")
                 ).
         andExpect(status().isBadRequest());
         
         /* @formatter:on */
-    }
+    }    
     
     @TestConfiguration
     @Profile(Profiles.TEST)
