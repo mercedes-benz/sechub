@@ -14,9 +14,9 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ListProjectsService {
     @Autowired
-    ProjectRepository repository;
+    ProjectRepository projectRepository;
     
     public List<String> listProjects() {
-        return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
+        return projectRepository.findAll().stream().map(Project::getId).collect(Collectors.toList());
     }
 }
