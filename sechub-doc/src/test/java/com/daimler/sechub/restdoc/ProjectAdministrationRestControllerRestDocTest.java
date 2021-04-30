@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -39,6 +41,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.CreateProjectInputValidator;
+import com.daimler.sechub.domain.administration.project.ListProjectsService;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
@@ -71,8 +74,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class,
-		ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -109,20 +111,23 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
+    
+    @MockBean
+    ListProjectsService listProjectsService;
 
     @Before
     public void before() {
         when(createProjectInputvalidator.supports(ProjectJsonInput.class)).thenReturn(true);
     }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminCreatesProject.class)
-	public void restdoc_create_project() throws Exception {
-	    /* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminCreatesProject.class)
+    public void restdoc_create_project() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminCreatesProjectUrl();
         Class<? extends Annotation> useCase = UseCaseAdminCreatesProject.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -148,20 +153,27 @@ public class ProjectAdministrationRestControllerRestDocTest {
                                     fieldWithPath(ProjectJsonInput.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIs used now for whitelisting. Former parts will be replaced completely!"),
                                     fieldWithPath(ProjectJsonInput.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project").optional(),
-                                    fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".*").description("An arbitrary metadata key").optional()
+                                    fieldWithPath(ProjectJsonInput.PROPERTY_METADATA + ".*").description("An arbitrary metadata key-value pair").optional()
                             ).
                             build()
                          )
 				));
 
 		/* @formatter:on */
-	}
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminListsAllProjects.class)
-	public void restdoc_list_all_projects() throws Exception {
-	    /* prepare */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminListsAllProjects.class)
+    public void restdoc_list_all_projects() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminListsProjectsUrl();
         Class<? extends Annotation> useCase = UseCaseAdminListsAllProjects.class;
+
+        List<String> ids = new LinkedList<>();
+        ids.add("project1");
+        ids.add("project2");
+
+        when(listProjectsService.listProjects()).thenReturn(ids);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -185,15 +197,14 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		/* @formatter:on */
     }
 
-
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminDeleteProject.class)
-	public void restdoc_delete_project() throws Exception {
-	    /* prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminDeleteProject.class)
+    public void restdoc_delete_project() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminDeletesProject(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminDeleteProject.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint,"projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -220,7 +231,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
-        
+
         /* execute + test @formatter:off */
         this.mockMvc.perform(
                 post(apiEndpoint, "projectId1", "userId1").
@@ -243,14 +254,14 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* @formatter:on */
     }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminAssignsUserToProject.class)
-	public void restdoc_assign_user2project() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminAssignsUserToProject.class)
+    public void restdoc_assign_user2project() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				post(apiEndpoint, "projectId1", "userId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -273,14 +284,14 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		/* @formatter:on */
     }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminUnassignsUserFromProject.class)
-	public void restdoc_unassign_userFromProject() throws Exception {
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminUnassignsUserFromProject.class)
+    public void restdoc_unassign_userFromProject() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(),PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
-        
-		/* execute + test @formatter:off */
+
+        /* execute + test @formatter:off */
 		this.mockMvc.perform(
 				delete(apiEndpoint,"userId1", "projectId1").
 				contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -303,13 +314,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		/* @formatter:on */
     }
 
-	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdminShowsProjectDetails.class)
-	public void restdoc_show_project_details() throws Exception {
-		/*  prepare */
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdminShowsProjectDetails.class)
+    public void restdoc_show_project_details() throws Exception {
+        /* prepare */
         String apiEndpoint = https(PORT_USED).buildAdminShowsProjectDetailsUrl(PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminShowsProjectDetails.class;
-        
+
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
 
@@ -325,8 +336,10 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         when(project.getUsers()).thenReturn(users);
         when(project.getOwner()).thenReturn(user1);
+
         Set<URI> whiteList = new LinkedHashSet<>();
         whiteList.add(new URI("http://www.sechub.example.org"));
+        whiteList.add(new URI("http://www.sechub.example.com"));
         when(project.getWhiteList()).thenReturn(whiteList);
 
         Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();

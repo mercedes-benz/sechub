@@ -6,8 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
@@ -70,10 +68,10 @@ public class ProjectAdministrationRestController {
     ProjectDetailInformationService detailsService;
 
     @Autowired
-    ProjectRepository repository;
-
-    @Autowired
     CreateProjectInputValidator validator;
+    
+    @Autowired
+    ListProjectsService listProjectsService;
     
 	/* @formatter:off */
 	@UseCaseAdminCreatesProject(
@@ -115,7 +113,7 @@ public class ProjectAdministrationRestController {
 	@RequestMapping(path = AdministrationAPIConstants.API_LIST_ALL_PROJECTS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> listProjects() {
 		/* @formatter:on */
-		return repository.findAll().stream().map(Project::getId).collect(Collectors.toList());
+		return listProjectsService.listProjects();
 	}
 	
     /* @formatter:off */
