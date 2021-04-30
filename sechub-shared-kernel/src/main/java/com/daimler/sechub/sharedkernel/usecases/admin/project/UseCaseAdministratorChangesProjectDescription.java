@@ -18,7 +18,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
 		title="Admin changes project details", 
 		description="An administrator changes project details")
-public @interface UseCaseAdministratorChangesProjectDetails {
+public @interface UseCaseAdministratorChangesProjectDescription {
 	
 	Step value();
 }

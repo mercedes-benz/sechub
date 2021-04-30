@@ -53,7 +53,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
@@ -295,8 +295,8 @@ public class ProjectAdministrationRestControllerRestDocTest {
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectDetails.class)
-    public void restdoc_change_project_details() throws Exception {
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectDescription.class)
+    public void restdoc_change_project_description() throws Exception {
         /* prepare */
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
@@ -327,11 +327,11 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
         
-        when(detailsChangeService.changeDetails(any(), any())).thenReturn(detailInformation);
+        when(detailsChangeService.changeProjectDescription(any(), any())).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                patch(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "projectId1").
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "projectId1").
                 content("{\n"
                         + "  \"description\" : \"new description\"\n"
                         + "}").
@@ -340,7 +340,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDetails.class),
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDescription.class),
                 pathParameters(
                             parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
                         ),

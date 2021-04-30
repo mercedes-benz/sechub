@@ -211,7 +211,7 @@ public class ProjectAdministrationRestControllerMockTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                patch(https(PORT_USED).buildAdminChangesProjectUrl("project1")).
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl("project1")).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 accept(MediaType.APPLICATION_JSON_VALUE).
                 content("{\"description\":\"new description\"}")
@@ -220,7 +220,7 @@ public class ProjectAdministrationRestControllerMockTest {
         andExpect(status().isOk()).
         andReturn();
         
-        verify(detailChangeService).changeDetails(matches("project1"), any());
+        verify(detailChangeService).changeProjectDescription(matches("project1"), any());
         /* @formatter:on */
     }
     
@@ -230,7 +230,7 @@ public class ProjectAdministrationRestControllerMockTest {
         /* execute + test @formatter:off */
         
         this.mockMvc.perform(
-                patch(https(PORT_USED).buildAdminChangesProjectUrl(PROJECT_ID.pathElement()), "project1").
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
                 contentType(MediaType.APPLICATION_JSON).
                 content("")
                 ).

@@ -38,7 +38,8 @@ public class ProjectDetailChangeServiceTest {
     }
 
     @Test
-    public void change_description() {
+    public void when_change_description_called_changed_project_will_be_stored() {
+        /* prepare */
         Project project = new Project();
         project.id = PROJECT_ID;
         project.description = "old";
@@ -52,15 +53,17 @@ public class ProjectDetailChangeServiceTest {
         when(projectRepository.findOrFailProject(PROJECT_ID)).thenReturn(project);
         when(transactionService.saveInOwnTransaction(project)).thenReturn(project);
 
-        serviceToTest.changeDetails(PROJECT_ID, withNewDescription);
+        /* execute */
+        serviceToTest.changeProjectDescription(PROJECT_ID, withNewDescription);
 
+        /* test */
         verify(transactionService).saveInOwnTransaction(project);
-
     }
 
     @Test
     public void change_something_else_than_description() {
 
+        /* prepare */
         Project project = new Project();
         project.id = PROJECT_ID;
         project.description = "old";
@@ -70,12 +73,14 @@ public class ProjectDetailChangeServiceTest {
 
         when(projectRepository.findOrFailProject(PROJECT_ID)).thenReturn(project);
 
+        /* execute + test */
         assertThrows(NotAcceptableException.class, () -> {
 
+            // to avoid `should be final`error this object is created within this scope
             ProjectJsonInput withNewOwner = new ProjectJsonInput();
             withNewOwner = withNewOwner.fromJSON(json);
 
-            serviceToTest.changeDetails("project2", withNewOwner);
+            serviceToTest.changeProjectDescription("project2", withNewOwner);
         });
 
     }
@@ -83,16 +88,18 @@ public class ProjectDetailChangeServiceTest {
     @Test
     public void change_description_but_project_does_not_exist() {
 
+        /* prepare */
         String json = "{\"description\": \"new\"}";
 
         when(projectRepository.findOrFailProject("project2")).thenThrow(new NotFoundException());
 
+        /* execut + test */
         assertThrows(NotFoundException.class, () -> {
 
             ProjectJsonInput withNewDescription = new ProjectJsonInput();
             withNewDescription = withNewDescription.fromJSON(json);
 
-            serviceToTest.changeDetails("project2", withNewDescription);
+            serviceToTest.changeProjectDescription("project2", withNewDescription);
         });
 
     }

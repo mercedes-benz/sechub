@@ -12,7 +12,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -34,13 +34,13 @@ public class ProjectDetailChangeService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdministratorChangesProjectDetails(
+	@UseCaseAdministratorChangesProjectDescription(
 			@Step(
 				number = 2,
 				name = "Service changes project details.",
 				description = "The service will change project details."))
 	/* @formatter:on */
-    public ProjectDetailInformation changeDetails(String projectId, ProjectJsonInput projectJson) {
+    public ProjectDetailInformation changeProjectDescription(String projectId, ProjectJsonInput projectJson) {
 	    String description = projectJson.getDescription();
 	    
 	    if (description == null) {
