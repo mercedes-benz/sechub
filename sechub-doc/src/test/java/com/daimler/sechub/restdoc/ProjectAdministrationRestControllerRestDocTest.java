@@ -39,6 +39,7 @@ import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerServic
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
+import com.daimler.sechub.domain.administration.project.ProjectDetailChangeService;
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformation;
 import com.daimler.sechub.domain.administration.project.ProjectDetailInformationService;
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput;
@@ -52,6 +53,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
@@ -94,7 +96,10 @@ public class ProjectAdministrationRestControllerRestDocTest {
     ProjectUnassignUserService unassignUserService;
 
     @MockBean
-    ProjectDetailInformationService detailService;
+    ProjectDetailInformationService detailInformationService;
+    
+    @MockBean
+    ProjectDetailChangeService detailsChangeService;
 
     @MockBean
     ProjectRepository mockedProjectRepository;
@@ -255,10 +260,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
+        
+        when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
 
-        when(detailService.fetchDetails("projectId1")).thenReturn(detailInformation);
+        when(detailInformationService.fetchDetails("projectId1")).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
 		this.mockMvc.perform(
@@ -273,12 +280,13 @@ public class ProjectAdministrationRestControllerRestDocTest {
 							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
 						),
 				responseFields(
-							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key")
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
 						)
 					)
 				);
@@ -286,6 +294,71 @@ public class ProjectAdministrationRestControllerRestDocTest {
 		/* @formatter:on */
     }
 
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectDescription.class)
+    public void restdoc_change_project_description() throws Exception {
+        /* prepare */
+        Project project = mock(Project.class);
+        when(project.getId()).thenReturn("projectId1");
+
+        Set<User> users = new LinkedHashSet<>();
+        User user1 = mock(User.class);
+        when(user1.getName()).thenReturn("name1");
+
+        User user2 = mock(User.class);
+        when(user2.getName()).thenReturn("name2");
+
+        users.add(user1);
+        users.add(user2);
+
+        when(project.getUsers()).thenReturn(users);
+        when(project.getOwner()).thenReturn(user1);
+        Set<URI> whiteList = new LinkedHashSet<>();
+        whiteList.add(new URI("http://www.sechub.example.org"));
+        when(project.getWhiteList()).thenReturn(whiteList);
+
+        Set<ProjectMetaDataEntity> metaData = new LinkedHashSet<>();
+        ProjectMetaDataEntity entry = new ProjectMetaDataEntity("projectId1", "key1", "value1");
+        metaData.add(entry);
+
+        when(project.getMetaData()).thenReturn(metaData);
+        
+        when(project.getDescription()).thenReturn("description");
+
+        ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
+        
+        when(detailsChangeService.changeProjectDescription(any(), any())).thenReturn(detailInformation);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "projectId1").
+                content("{\n"
+                        + "  \"description\" : \"new description\"\n"
+                        + "}").
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                )./*
+                */
+        andDo(print()).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDescription.class),
+                pathParameters(
+                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
+                        ),
+                responseFields(
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
+                        )
+                    )
+                );
+
+        /* @formatter:on */
+    }
+    
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
     public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {

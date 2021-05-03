@@ -18,34 +18,33 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 public class ProjectDetailInformationService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectDetailInformationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDetailInformationService.class);
 
-	@Autowired
-	ProjectRepository projectRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	LogSanitizer logSanitizer;
+    @Autowired
+    LogSanitizer logSanitizer;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-
-	/* @formatter:off */
+    /* @formatter:off */
 	@UseCaseAdministratorShowsProjectDetails(
 			@Step(
 				number = 2,
 				name = "Service fetches project details.",
 				description = "The service will fetch project details"))
 	/* @formatter:on */
-	public ProjectDetailInformation fetchDetails(String projectId) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("fetching project details for project:{}",logSanitizer.sanitize(projectId, 30));
-		}
+    public ProjectDetailInformation fetchDetails(String projectId) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("fetching project details for project:{}", logSanitizer.sanitize(projectId, 30));
+        }
 
-		assertion.isValidProjectId(projectId);
+        assertion.isValidProjectId(projectId);
 
-		Project project = projectRepository.findOrFailProject(projectId);
+        Project project = projectRepository.findOrFailProject(projectId);
 
-		return new ProjectDetailInformation(project);
-	}
+        return new ProjectDetailInformation(project);
+    }
 }
