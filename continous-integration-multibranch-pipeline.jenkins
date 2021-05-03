@@ -67,52 +67,57 @@ pipeline {
                }
             }
         }
-        stage('Integration tests') {
-            environment {
-               /* against build race conditions - See TestPortProvider.java */
-               SERVER_PORT= getJenkinsExecutorPort(8243)
-               PDS_PORT= getJenkinsExecutorPort(8543)
 
-               /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
-               SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
-               SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
-               SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
-               SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+        stage("test & security") {
+            parallel {
+                stage('Integration tests') {
+                    environment {
+                    /* against build race conditions - See TestPortProvider.java */
+                    SERVER_PORT= getJenkinsExecutorPort(8243)
+                    PDS_PORT= getJenkinsExecutorPort(8543)
 
-               SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+                    /* setup s3 storage when defined as secrets - otherwise sharedvolume will be used with temp */
+                    SECHUB_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                    SECHUB_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                    SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
+                    SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
-            }
+                    SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
 
-            steps {
-              script{
-                  // start integration tests and also create combined test report after all
-                  callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
-               }
-            }
-        }
-        stage('Security scan') {
-            when{
-                not {
-                    environment name: 'SECHUB_SCAN_ENABLED', value: 'undefined'
+                    }
+
+                    steps {
+                    script{
+                        // start integration tests and also create combined test report after all
+                        callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                    }
+                    }
+                }
+                stage('Security scan') {
+                    when{
+                        not {
+                            environment name: 'SECHUB_SCAN_ENABLED', value: 'undefined'
+                        }
+                    }
+
+
+                    environment {
+                    SECHUB_USERID = credentials('sechub-userid')
+                    SECHUB_APITOKEN = credentials('sechub-api-token')
+                    SECHUB_SERVER= credentials('sechub-server')
+
+                    }
+                    steps {
+
+                    script{
+                        executeSecHubScan()
+                    }
+                    }
+
                 }
             }
-
-
-            environment {
-               SECHUB_USERID = credentials('sechub-userid')
-               SECHUB_APITOKEN = credentials('sechub-api-token')
-               SECHUB_SERVER= credentials('sechub-server')
-
-            }
-            steps {
-
-              script{
-                 executeSecHubScan()
-               }
-            }
-
         }
-
+        
         stage('Build Documentation') {
             steps {
               script{
