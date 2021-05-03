@@ -37,8 +37,8 @@ public class ProjectDetailChangeService {
 	@UseCaseAdministratorChangesProjectDescription(
 			@Step(
 				number = 2,
-				name = "Service changes project details.",
-				description = "The service will change project details."))
+				name = "Service changes project description.",
+				description = "The service will change project description."))
 	/* @formatter:on */
     public ProjectDetailInformation changeProjectDescription(String projectId, ProjectJsonInput projectJson) {
 	    String description = projectJson.getDescription();
@@ -50,7 +50,7 @@ public class ProjectDetailChangeService {
         assertion.isValidProjectId(projectId);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("changing project details for project:{}", logSanitizer.sanitize(projectId, 30));
+            LOG.debug("changing project description for project: {}", logSanitizer.sanitize(projectId, 30));
         }
 
         Project project = projectRepository.findOrFailProject(projectId);

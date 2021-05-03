@@ -14,10 +14,10 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @UseCaseDefinition(
-		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_DETAILS,
+		id=UseCaseIdentifier.UC_ADMIN_CHANGES_PROJECT_DESCRIPTION,
 		group=UseCaseGroup.PROJECT_ADMINISTRATION,
-		title="Admin changes project details", 
-		description="An administrator changes project details")
+		title="Admin changes project description", 
+		description="An administrator changes project description")
 public @interface UseCaseAdministratorChangesProjectDescription {
 	
 	Step value();

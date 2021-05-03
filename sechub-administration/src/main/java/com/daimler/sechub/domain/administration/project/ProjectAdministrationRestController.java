@@ -115,7 +115,7 @@ public class ProjectAdministrationRestController {
     }
 	
 	/* @formatter:off */
-    @UseCaseAdministratorChangesProjectDescription(@Step(number = 1, name="Rest call", description = "Changes project details. Json returned containing details about changed project", needsRestDoc = true))
+    @UseCaseAdministratorChangesProjectDescription(@Step(number = 1, name="Rest call", description = "Changes project description. Json returned containing details about changed project", needsRestDoc = true))
     @RequestMapping(path = AdministrationAPIConstants.API_CHANGE_PROJECT_DETAILS, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ProjectDetailInformation changeProjectDescription(@PathVariable(name = "projectId") String projectId, @RequestBody ProjectJsonInput project) {
         /* @formatter:on */
