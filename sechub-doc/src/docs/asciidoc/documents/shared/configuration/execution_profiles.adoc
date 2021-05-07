@@ -28,7 +28,7 @@ otherwise you will have always a "green" scan result.
 ifdef::usecasedoc[]
 Following usecases are supported:
 
-- <<section-usecase-UC_052,UC_052-Admin creates an execution proflie>>
+- <<section-usecase-UC_052,UC_052-Admin creates an execution profile>>
 
 - <<section-usecase-UC_053,UC_053-Admin deletes execution profile>>
 
@@ -36,7 +36,7 @@ Following usecases are supported:
 
 - <<section-usecase-UC_055,UC_055-Admin fetches execution profile>>
 
-- <<section-usecase-UC_056,UC_056-Admin fetches execution proflie list>>
+- <<section-usecase-UC_056,UC_056-Admin fetches execution profile list>>
 
 - <<section-usecase-UC_057,UC_057-Admin assigns execution profile to project>>
 
