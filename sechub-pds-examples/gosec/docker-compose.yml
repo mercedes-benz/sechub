@@ -1,0 +1,10 @@
+version: "3"
+services:
+    sechub:
+        build:
+            context: .
+        volumes:
+            - ./workspace:/workspace
+        container_name: gosec
+        ports:
+            - "8444:8444"

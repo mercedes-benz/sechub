@@ -1,0 +1,44 @@
+java -Dspring.profiles.active=server,h2 \
+     -Dserver.ssl.keyStoreType=PKCS12 \
+     -Dserver.ssl.key-store=file:localhost-keystore.p12 \
+     -Dserver.ssl.key-store-password=123456 \
+     -Dserver.ssl.key-alias=tomcat \
+     -Dsechub.pds.workspace.rootfolder=/workspace/ \
+     -jar sechub-pds-0.20.0.jar
+
+java -Dspring.profiles.active=server,dev,h2 \
+     -Dserver.ssl.keyStoreType=PKCS12 \
+     -Dserver.ssl.key-store=file:localhost-keystore.p12 \
+     -Dserver.ssl.key-store-password=123456 \
+     -Dserver.ssl.key-alias=tomcat \
+     -Dsechub.pds.workspace.rootfolder=/workspace/ \
+     -jar sechub-pds-0.20.0.jar
+
+java -Dspring.profiles.active=localserver,h2 \
+     -Dsechub.pds.workspace.rootfolder=/workspace/ \
+     -jar sechub-pds-0.20.0.jar
+
+java -Dspring.profiles.active=integrationtest \
+     -Dsechub.pds.workspace.rootfolder=/workspace/ \
+     -jar sechub-pds-0.20.0.jar
+
+java -Dspring.profiles.active=dev \
+     -Dserver.ssl.keyStoreType=PKCS12 \
+     -Dserver.ssl.key-store=file:localhost-keystore.p12 \
+     -Dserver.ssl.key-store-password=123456 \
+     -Dserver.ssl.key-alias=tomcat \
+     -Dsechub.pds.workspace.rootfolder=./ \
+     -jar sechub-pds-0.20.0.jar
+
+
+java -Dspring.profiles.active=integrationtest -Dsechub.pds.workspace.rootfolder=./ -jar sechub-pds-0.20.0.jar
+
+java -Dspring.profiles.active=pds_localserver \
+     -DsecHub.pds.techuser.userid=pds-dev-techuser \
+     -Dsechub.pds.techuser.apitoken="{noop}pds-dev-apitoken" \
+     -DsecHub.pds.admin.userid=pds-dev-admin \
+     -Dsechub.pds.admin.apitoken="{noop}pds-dev-apitoken" \
+     -Dsechub.pds.workspace.rootfolder=/workspace \
+     -Dserver.port=8444 \
+     -Dserver.address=0.0.0.0 \
+     -jar sechub-pds-0.20.0.jar
