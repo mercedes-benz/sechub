@@ -204,7 +204,6 @@ function sechub_scheduler_enable {
 
 
 function sechub_scheduler_status {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT | jq '.[0]'
 }
 
