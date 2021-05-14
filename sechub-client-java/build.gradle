@@ -34,7 +34,7 @@ openApiGenerate {
     generatorName = "java"
     
     inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java/src/main/java-gen"
+    outputDir = "$rootDir/sechub-client-java"
     apiPackage = "org.openapi.example.api"
     invokerPackage = "org.openapi.example.invoker"
     modelPackage = "org.openapi.example.model"
@@ -65,7 +65,8 @@ openApiGenerate {
             apiPackage           : "com.daimler.sechub.client.java.api",
             modelPackage         : "com.daimler.sechub.client.java.api.model",
             invokerPackage       : "com.daimler.sechub.client.java.api",
-            interfaceOnly        : "true"
+            interfaceOnly        : "true",
+            sourceFolder         : "src/main/java-gen"
     ]
 }
 
@@ -91,7 +92,7 @@ task buildJavaClientAll(type: Jar) {
 sourceSets {
     main{
         java {
-           srcDirs 'src/main/java/','src/main/java-gen'   
+           srcDirs 'src/main/java-gen', 'src/main/java/'
         }
 
     }
