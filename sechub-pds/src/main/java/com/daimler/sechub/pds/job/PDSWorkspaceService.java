@@ -56,6 +56,7 @@ public class PDSWorkspaceService {
      * 
      * @param jobUUID
      * @return upload folder
+     * @throws IllegalStateException when workspace folder does not exist but cannot be created!
      */
     public File getWorkspaceFolder(UUID jobUUID) {
         Path jobWorkspacePath = Paths.get(uploadBasePath, "workspace", jobUUID.toString());

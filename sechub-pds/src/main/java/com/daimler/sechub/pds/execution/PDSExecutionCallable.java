@@ -5,6 +5,7 @@ import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,7 +188,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.environment().putAll(buildEnvironmentMap);
 
         File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
-        builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
+        Path workspaceFolderPath = workspaceFolder.toPath();
+        Path workspaceFolderRealPth = workspaceFolderPath.toRealPath();
+        
+        String workspaceLocation = workspaceFolderRealPth.toString();
+        
+        builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceLocation);
         try {
             LOG.debug("Create process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
             process = builder.start();
