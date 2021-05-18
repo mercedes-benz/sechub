@@ -126,7 +126,9 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         /* test */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
-        assertTrue(report.contains("CRITICAL"));
+        if (!report.contains("CRITICAL")) {
+            fail("Report contains not CRITICAL, but:\n"+report);
+        }
         
         /* @formatter:on */
     }

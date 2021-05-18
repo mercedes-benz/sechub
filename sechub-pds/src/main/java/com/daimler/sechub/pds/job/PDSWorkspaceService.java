@@ -167,5 +167,42 @@ public class PDSWorkspaceService {
     public String getFileEncoding(UUID jobUUID) {
         return "UTF-8"; // currently only UTF-8 expected
     }
+    
+
+    public WorkspaceLocationData createLocationData(UUID jobUUID) {
+        File workspaceFolder = getWorkspaceFolder(jobUUID);
+        Path workspaceFolderPath = workspaceFolder.toPath();
+        WorkspaceLocationData locationData = new WorkspaceLocationData();
+        
+        try {
+            
+            locationData.workspaceLocation = createWorkspacePath(workspaceFolderPath,null);
+            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, "output/result.txt");
+            locationData.unzippedSourceLocation = createWorkspacePath(workspaceFolderPath,"upload/unzipped/sourcecode");
+            locationData.zippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/sourcecode.zip");
+            
+        }catch(IOException e) {
+            throw new IllegalStateException("Was not able to create pathes");
+        }
+
+        return locationData;
+    }
+    
+    private String createWorkspacePath(Path workspaceLocation, String subPath) throws IOException {
+        Path workspaceChildPath;
+        if (subPath == null) {
+            workspaceChildPath = workspaceLocation;
+        } else {
+            workspaceChildPath = workspaceLocation.resolve(subPath);
+        }
+        Path parentFolder = workspaceChildPath.getParent();
+        if (!Files.exists(parentFolder)) {
+            Files.createDirectories(parentFolder);
+        }
+        Path parentRealPath = parentFolder.toRealPath();
+        Path childPath = parentRealPath.resolve(workspaceChildPath.getFileName());
+        String result = childPath.toString();
+        return result;
+    }
 
 }

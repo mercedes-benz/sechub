@@ -5,7 +5,6 @@ import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
+import com.daimler.sechub.pds.job.WorkspaceLocationData;
 import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
@@ -184,16 +184,19 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
          * add parts from PDS job configuration - means data defined by caller before
          * job was marked as ready to start
          */
-        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
-        builder.environment().putAll(buildEnvironmentMap);
+        Map<String, String> environment = builder.environment();
 
-        File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
-        Path workspaceFolderPath = workspaceFolder.toPath();
-        Path workspaceFolderRealPth = workspaceFolderPath.toRealPath();
+        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
+        environment.putAll(buildEnvironmentMap);
+
         
-        String workspaceLocation = workspaceFolderRealPth.toString();
+        WorkspaceLocationData locationData = workspaceService.createLocationData(jobUUID);
+     
+        environment.put("PDS_JOB_WORKSPACE_LOCATION", locationData.getWorkspaceLocation());
+        environment.put("PDS_JOB_RESULT_FILE", locationData.getResultFileLocation());
+        environment.put("PDS_JOB_SOURCECODE_ZIP_FILE", locationData.getZippedSourceLocation());
+        environment.put("PDS_JOB_SOURCECODE_UNZIPPED_FOLDER", locationData.getUnzippedSourceLocation());
         
-        builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceLocation);
         try {
             LOG.debug("Create process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
             process = builder.start();
@@ -202,6 +205,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             throw e;
         }
     }
+
+    
 
     /**
      * Is called before cancel operation on caller / task side
