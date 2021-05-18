@@ -1,4 +1,4 @@
-java -Dspring.profiles.active=pds_localserver \
+java -Dspring.profiles.active=pds_localserver,pds_debug \
      -DsecHub.pds.techuser.userid=pds-dev-techuser \
      -Dsechub.pds.techuser.apitoken="{noop}pds-dev-apitoken" \
      -DsecHub.pds.admin.userid=pds-dev-admin \
