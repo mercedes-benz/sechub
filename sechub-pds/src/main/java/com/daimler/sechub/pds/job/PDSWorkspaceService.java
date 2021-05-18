@@ -4,6 +4,7 @@ package com.daimler.sechub.pds.job;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -57,10 +58,17 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getWorkspaceFolder(UUID jobUUID) {
-        Path p = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
-        File file = p.toFile();
-        file.mkdirs();
-        return file;
+        Path jobWorkspacePath = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
+        File jobWorkspaceFolder = jobWorkspacePath.toFile();
+
+        if (! jobWorkspaceFolder.exists()) {
+            try {
+                Files.createDirectories(jobWorkspacePath);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to create workspace job folder:"+ jobWorkspacePath,e);
+            }
+        }
+        return jobWorkspaceFolder;
     }
 
     public void unzipUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config) throws IOException {
@@ -149,7 +157,7 @@ public class PDSWorkspaceService {
 
     public long getMinutesToWaitForResult(PDSJobConfiguration config) {
         PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(config.getProductId());
-        if (productSetup==null) {
+        if (productSetup == null) {
             return -1;
         }
         return productSetup.getMinutesToWaitForProductResult();
@@ -158,5 +166,5 @@ public class PDSWorkspaceService {
     public String getFileEncoding(UUID jobUUID) {
         return "UTF-8"; // currently only UTF-8 expected
     }
-    
+
 }
