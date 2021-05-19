@@ -105,9 +105,9 @@ include::product_delegation_server_config_example1.json[]
 |Variable name                      |Description   
 //-------------------------------------------------------------------------------------------------
 |PDS_JOB_WORKSPACE_LOCATION         | The workspace job root location 
-|PDS_JOB_RESULT_FILE                | The absolute path to the result file (must contain security output)
-|PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded `sourcecode.zip file` 
-|PDS_JOB_SOURCECODE_UNZIPPED_FOLDER | When auto unzipping is enabled (default) the uploaded sourcecode was unzipped to this folder 
+|PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
+|PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file 
+|PDS_JOB_SOURCECODE_UNZIPPED_FOLDER | When auto unzipping is enabled (default) the uploaded source code is unzipped to this folder 
 |===
 
 ==== Parameter variables

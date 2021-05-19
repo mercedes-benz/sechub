@@ -25,13 +25,13 @@ import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 
 @Service
 public class PDSWorkspaceService {
-    
+
     private static final String UPLOAD = "upload";
     public static final String OUTPUT = "output";
     public static final String RESULT_TXT = "result.txt";
     public static final String SYSTEM_OUT_LOG = "system-out.log";
     public static final String SYSTEM_ERROR_LOG = "system-error.log";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
@@ -64,17 +64,19 @@ public class PDSWorkspaceService {
      * 
      * @param jobUUID
      * @return upload folder
-     * @throws IllegalStateException when workspace folder does not exist but cannot be created!
+     * @throws IllegalStateException in case the workspace folder does not exist and
+     *                               cannot be created (e.g. because of missing
+     *                               permissions)
      */
     public File getWorkspaceFolder(UUID jobUUID) {
         Path jobWorkspacePath = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
         File jobWorkspaceFolder = jobWorkspacePath.toFile();
 
-        if (! jobWorkspaceFolder.exists()) {
+        if (!jobWorkspaceFolder.exists()) {
             try {
                 Files.createDirectories(jobWorkspacePath);
             } catch (IOException e) {
-                throw new IllegalStateException("Was not able to create workspace job folder:"+ jobWorkspacePath,e);
+                throw new IllegalStateException("Was not able to create workspace job folder: " + jobWorkspacePath, e);
             }
         }
         return jobWorkspaceFolder;
@@ -107,13 +109,14 @@ public class PDSWorkspaceService {
         }
         File unzipFolder = new File(uploadFolder, "unzipped");
         for (File zipFile : zipFiles) {
+
             File destDir = new File(unzipFolder, FilenameUtils.getBaseName(zipFile.getName()));
-            UnzipResult r = fileUnzipSupport.unzipArchive(zipFile, destDir);
-            
-            LOG.info("Unzipped {} files to {}",r.getExtractedFilesCount(),r.getTargetLocation());
-            
+            UnzipResult unzipResult = fileUnzipSupport.unzipArchive(zipFile, destDir);
+
+            LOG.info("Unzipped {} files to {}", unzipResult.getExtractedFilesCount(), unzipResult.getTargetLocation());
+
             if (deleteOriginZipFiles) {
-                LOG.debug("Forcing delete of origin zip file {} ",zipFile);
+                LOG.debug("Forcing delete of origin zip file {} ", zipFile);
                 FileUtils.forceDelete(zipFile);
             }
         }
@@ -179,27 +182,26 @@ public class PDSWorkspaceService {
     public String getFileEncoding(UUID jobUUID) {
         return "UTF-8"; // currently only UTF-8 expected
     }
-    
 
     public WorkspaceLocationData createLocationData(UUID jobUUID) {
         File workspaceFolder = getWorkspaceFolder(jobUUID);
         Path workspaceFolderPath = workspaceFolder.toPath();
         WorkspaceLocationData locationData = new WorkspaceLocationData();
-        
+
         try {
-            
-            locationData.workspaceLocation = createWorkspacePath(workspaceFolderPath,null);
-            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, OUTPUT+File.separator+RESULT_TXT);
-            locationData.unzippedSourceLocation = createWorkspacePath(workspaceFolderPath,"upload/unzipped/sourcecode");
+
+            locationData.workspaceLocation = createWorkspacePath(workspaceFolderPath, null);
+            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, OUTPUT + File.separator + RESULT_TXT);
+            locationData.unzippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/unzipped/sourcecode");
             locationData.zippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/sourcecode.zip");
-            
-        }catch(IOException e) {
+
+        } catch (IOException e) {
             throw new IllegalStateException("Was not able to create pathes");
         }
 
         return locationData;
     }
-    
+
     private String createWorkspacePath(Path workspaceLocation, String subPath) throws IOException {
         Path workspaceChildPath;
         if (subPath == null) {

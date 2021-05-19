@@ -57,12 +57,13 @@ public class PDSFileUnzipSupport {
         result.sourceLocation = file.getAbsolutePath();
 
         LOG.debug("start unzipping of {} into {}", result.sourceLocation, result.targetLocation);
+
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
 
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
                 File newFile = newFile(result, destDir, zipEntry);
-                copy(result, zis, newFile);
+                copy(zis, newFile);
                 zipEntry = zis.getNextEntry();
             }
             zis.closeEntry();
@@ -70,7 +71,7 @@ public class PDSFileUnzipSupport {
         return result;
     }
 
-    private void copy(UnzipResult c, ZipInputStream zis, File newFile) throws FileNotFoundException, IOException {
+    private void copy(ZipInputStream zis, File newFile) throws FileNotFoundException, IOException {
         LOG.trace("Handle", newFile);
 
         if (newFile.isDirectory()) {
@@ -78,11 +79,11 @@ public class PDSFileUnzipSupport {
             LOG.trace("Skipped, because directory:{}", newFile);
             return;
         }
-        
+
         /* create/copy file from zip content */
         try (FileOutputStream fos = new FileOutputStream(newFile)) {
             LOG.trace("Create:{}", newFile);
-            
+
             IOUtils.copy(zis, fos);
         }
     }

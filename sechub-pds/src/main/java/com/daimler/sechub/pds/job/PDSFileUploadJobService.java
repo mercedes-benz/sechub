@@ -25,7 +25,7 @@ import com.daimler.sechub.pds.usecase.UseCaseUserUploadsJobData;
 import com.daimler.sechub.pds.util.PDSFileChecksumSHA256Service;
 
 @Service
-@RolesAllowed({PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER})
+@RolesAllowed({ PDSRoleConstants.ROLE_SUPERADMIN, PDSRoleConstants.ROLE_USER })
 public class PDSFileUploadJobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
@@ -34,28 +34,28 @@ public class PDSFileUploadJobService {
 
     @Autowired
     PDSFileChecksumSHA256Service checksumService;
-    
+
     @Autowired
     PDSWorkspaceService workspaceService;
 
     @Autowired
     PDSJobRepository repository;
 
-    @UseCaseUserUploadsJobData(@PDSStep(name="service call",description = "uploaded file be stored in job workspace upload location. Also checksum is validated",number=2))
+    @UseCaseUserUploadsJobData(@PDSStep(name = "service call", description = "uploaded file be stored in job workspace upload location. Also checksum is validated", number = 2))
     public void upload(UUID jobUUID, String fileName, MultipartFile file, String checkSum) {
         notNull(jobUUID, "job uuid may not be null");
         notNull(file, "file may not be null");
         notNull(checkSum, "checkSum may not be null");
         validateFileName(fileName);
 
-        PDSJob job = assertJobFound(jobUUID,repository);
-        assertJobIsInState(job,PDSJobStatusState.CREATED);
+        PDSJob job = assertJobFound(jobUUID, repository);
+        assertJobIsInState(job, PDSJobStatusState.CREATED);
 
         File jobFolder = workspaceService.getUploadFolder(jobUUID);
         File uploadFile = new File(jobFolder, fileName);
 
         try {
-            LOG.info("Upload file {} for job {} to {}",fileName,jobUUID, uploadFile.getAbsolutePath());
+            LOG.info("Upload file {} for job {} to {}", fileName, jobUUID, uploadFile.getAbsolutePath());
             FileUtils.copyInputStreamToFile(file.getInputStream(), uploadFile);
         } catch (IOException e) {
             LOG.error("Was not able to store {} for job {}, reason:", fileName, jobUUID, e.getMessage());
@@ -65,7 +65,6 @@ public class PDSFileUploadJobService {
         assertCheckSumCorrect(checkSum, uploadFile.toPath());
     }
 
-    
     private void assertCheckSumCorrect(String checkSum, Path path) {
         if (!checksumService.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
             LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
@@ -100,6 +99,5 @@ public class PDSFileUploadJobService {
             }
         }
     }
-
 
 }

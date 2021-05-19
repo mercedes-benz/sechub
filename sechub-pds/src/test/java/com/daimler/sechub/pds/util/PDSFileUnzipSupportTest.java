@@ -89,12 +89,12 @@ class PDSFileUnzipSupportTest {
         for (File child : children) {
             if (child.getName().equals(subFolder)) {
                 if (!child.isDirectory()) {
-                    fail("Subfolder:" + subFolder + " found but is not a directory:"+child);
+                    fail("Subfolder:" + subFolder + " found but is not a directory: "+child);
                 }
                 return child;
             }
         }
-        fail("Subfolder:" + subFolder + " not found inside directory:"+folder);
+        fail("Subfolder:" + subFolder + " not found inside directory: "+folder);
         throw new IllegalStateException("Should not be called");
 
     }
@@ -113,7 +113,7 @@ class PDSFileUnzipSupportTest {
         /* test names contained */
         for (String childName : childNames) {
             if (!foundChildNames.contains(childName)) {
-                fail("Child:" + childName + " not found found inside list, but:" + foundChildNames);
+                fail("Child: " + childName + " not found found inside list, but: " + foundChildNames);
             }
         }
 
