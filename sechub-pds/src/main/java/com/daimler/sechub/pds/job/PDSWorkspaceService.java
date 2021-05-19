@@ -21,6 +21,7 @@ import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport;
+import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 
 @Service
 public class PDSWorkspaceService {
@@ -100,8 +101,12 @@ public class PDSWorkspaceService {
         File unzipFolder = new File(uploadFolder, "unzipped");
         for (File zipFile : zipFiles) {
             File destDir = new File(unzipFolder, FilenameUtils.getBaseName(zipFile.getName()));
-            fileUnzipSupport.unzipArchive(zipFile, destDir);
+            UnzipResult r = fileUnzipSupport.unzipArchive(zipFile, destDir);
+            
+            LOG.info("Unzipped {} files to {}",r.getExtractedFilesCount(),r.getTargetLocation());
+            
             if (deleteOriginZipFiles) {
+                LOG.debug("Forcing delete of origin zip file {} ",zipFile);
                 FileUtils.forceDelete(zipFile);
             }
         }

@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
+
 class PDSFileUnzipSupportTest {
 
     private PDSFileUnzipSupport supportToTest;
@@ -27,10 +29,12 @@ class PDSFileUnzipSupportTest {
         targetFolder.mkdirs();
 
         /* execute */
-        supportToTest.unzipArchive(singleZipfile, targetFolder);
+        UnzipResult result = supportToTest.unzipArchive(singleZipfile, targetFolder);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go");
+        assertEquals(1,result.getExtractedFilesCount());
+        assertEquals(0,result.getCreatedFoldersCount());
     }
 
     @Test
@@ -41,10 +45,12 @@ class PDSFileUnzipSupportTest {
         targetFolder.mkdirs();
 
         /* execute */
-        supportToTest.unzipArchive(twoFilesZipfile, targetFolder);
+        UnzipResult result = supportToTest.unzipArchive(twoFilesZipfile, targetFolder);
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go", "README.md");
+        assertEquals(2,result.getExtractedFilesCount());
+        assertEquals(0,result.getCreatedFoldersCount());
     }
 
     @Test
@@ -56,7 +62,7 @@ class PDSFileUnzipSupportTest {
         targetFolder.mkdirs();
 
         /* execute */
-        supportToTest.unzipArchive(abcZipfile, targetFolder);
+        UnzipResult result = supportToTest.unzipArchive(abcZipfile, targetFolder);
 
         /* test */
         assertContainsFiles(targetFolder, "abc");
@@ -70,6 +76,8 @@ class PDSFileUnzipSupportTest {
         File ghiFolder = assertFolderExists(defFolder, "ghi");
         assertContainsFiles(ghiFolder, "README-ghi.md");
 
+        assertEquals(4,result.getExtractedFilesCount());
+        assertEquals(3,result.getCreatedFoldersCount());
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

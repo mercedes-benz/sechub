@@ -3,11 +3,14 @@ package com.daimler.sechub.pds.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,35 +20,71 @@ public class PDSFileUnzipSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUnzipSupport.class);
 
-    public void unzipArchive(File file, File destDir) throws IOException {
-        if (! file.exists()) {
-            LOG.error("cannot unzip {} because zip file does not exist!",file.getAbsolutePath());
-            return;
-        }
-        if (! destDir.exists()) {
-            destDir.mkdirs();
+    public class UnzipResult{
+        private int extractedFilesCount;
+        private int createdFoldersCount;
+
+        private String sourceLocation;
+        private String targetLocation;
+        
+        public int getExtractedFilesCount() {
+            return extractedFilesCount;
         }
         
-        LOG.debug("start unzipping of {} into {}",file.getAbsolutePath(), destDir.getAbsolutePath());
-        byte[] buffer = new byte[1024];
-        try(ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
-            
+        public int getCreatedFoldersCount() {
+            return createdFoldersCount;
+        }
+        
+        public String getSourceLocation() {
+            return sourceLocation;
+        }
+        
+        public String getTargetLocation() {
+            return targetLocation;
+        }
+    }
+    
+    public UnzipResult unzipArchive(File file, File destDir) throws IOException {
+        UnzipResult result = new UnzipResult();
+        if (!file.exists()) {
+            LOG.error("cannot unzip {} because zip file does not exist!", file.getAbsolutePath());
+            return result;
+        }
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        result.targetLocation= destDir.getAbsolutePath();
+        result.sourceLocation=file.getAbsolutePath();
+        
+        LOG.debug("start unzipping of {} into {}", result.sourceLocation, result.targetLocation);
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
+
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File newFile = newFile(destDir, zipEntry);
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
+                File newFile = newFile(result,destDir, zipEntry);
+                copy(result, zis, newFile);
                 zipEntry = zis.getNextEntry();
             }
             zis.closeEntry();
         }
+        return result;
     }
 
-    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    private void copy(UnzipResult c, ZipInputStream zis, File newFile) throws FileNotFoundException, IOException {
+        LOG.trace("Handle", newFile);
+        
+        if (newFile.isDirectory()) {
+            /* we do not copy directory streams... */
+            LOG.trace("Skipped, because directory:{}", newFile);
+            return;
+        }
+        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+            LOG.trace("Create:{}", newFile);
+            IOUtils.copy(zis, fos);
+        }
+    }
+
+    private File newFile(UnzipResult c, File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
         String destDirPath = destinationDir.getCanonicalPath();
@@ -54,7 +93,14 @@ public class PDSFileUnzipSupport {
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
-
+        /* ensure directory exists */
+        if (zipEntry.isDirectory()) {
+            c.createdFoldersCount++;
+            Files.createDirectories(destFile.toPath());
+            return destFile;
+        }else {
+            c.extractedFilesCount++;
+        }
         return destFile;
     }
 }
