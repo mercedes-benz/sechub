@@ -34,6 +34,7 @@ public class PDSJobTransactionService {
     /* mark as running - no matter of state before */
     @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
     public void markReadyToStartInOwnTransaction(UUID jobUUID) {
+        LOG.info("Mark job {} as ready to start", jobUUID);
         updateJobInOwnTransaction(jobUUID, null, null, null, PDSJobStatusState.READY_TO_START, PDSJobStatusState.CREATED);
     }
 

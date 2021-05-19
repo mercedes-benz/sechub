@@ -4,6 +4,7 @@ package com.daimler.sechub.pds.job;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -20,9 +21,17 @@ import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport;
+import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 
 @Service
 public class PDSWorkspaceService {
+
+    private static final String UPLOAD = "upload";
+    public static final String OUTPUT = "output";
+    public static final String RESULT_TXT = "result.txt";
+    public static final String SYSTEM_OUT_LOG = "system-out.log";
+    public static final String SYSTEM_ERROR_LOG = "system-error.log";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
@@ -45,7 +54,7 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getUploadFolder(UUID jobUUID) {
-        File file = new File(getWorkspaceFolder(jobUUID), "upload");
+        File file = new File(getWorkspaceFolder(jobUUID), UPLOAD);
         file.mkdirs();
         return file;
     }
@@ -55,12 +64,22 @@ public class PDSWorkspaceService {
      * 
      * @param jobUUID
      * @return upload folder
+     * @throws IllegalStateException in case the workspace folder does not exist and
+     *                               cannot be created (e.g. because of missing
+     *                               permissions)
      */
     public File getWorkspaceFolder(UUID jobUUID) {
-        Path p = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
-        File file = p.toFile();
-        file.mkdirs();
-        return file;
+        Path jobWorkspacePath = Paths.get(uploadBasePath, "workspace", jobUUID.toString());
+        File jobWorkspaceFolder = jobWorkspacePath.toFile();
+
+        if (!jobWorkspaceFolder.exists()) {
+            try {
+                Files.createDirectories(jobWorkspacePath);
+            } catch (IOException e) {
+                throw new IllegalStateException("Was not able to create workspace job folder: " + jobWorkspacePath, e);
+            }
+        }
+        return jobWorkspaceFolder;
     }
 
     public void unzipUploadsWhenConfigured(UUID jobUUID, PDSJobConfiguration config) throws IOException {
@@ -90,9 +109,14 @@ public class PDSWorkspaceService {
         }
         File unzipFolder = new File(uploadFolder, "unzipped");
         for (File zipFile : zipFiles) {
+
             File destDir = new File(unzipFolder, FilenameUtils.getBaseName(zipFile.getName()));
-            fileUnzipSupport.unzipArchive(zipFile, destDir);
+            UnzipResult unzipResult = fileUnzipSupport.unzipArchive(zipFile, destDir);
+
+            LOG.info("Unzipped {} files to {}", unzipResult.getExtractedFilesCount(), unzipResult.getTargetLocation());
+
             if (deleteOriginZipFiles) {
+                LOG.debug("Forcing delete of origin zip file {} ", zipFile);
                 FileUtils.forceDelete(zipFile);
             }
         }
@@ -124,15 +148,15 @@ public class PDSWorkspaceService {
     }
 
     public File getSystemErrorFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "system-error.log");
+        return new File(getOutputFolder(jobUUID), SYSTEM_ERROR_LOG);
     }
 
     public File getSystemOutFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "system-out.log");
+        return new File(getOutputFolder(jobUUID), SYSTEM_OUT_LOG);
     }
 
     public File getResultFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "result.txt");
+        return new File(getOutputFolder(jobUUID), RESULT_TXT);
     }
 
     /**
@@ -142,14 +166,14 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getOutputFolder(UUID jobUUID) {
-        File outputFolder = new File(getWorkspaceFolder(jobUUID), "output");
+        File outputFolder = new File(getWorkspaceFolder(jobUUID), OUTPUT);
         outputFolder.mkdirs();
         return outputFolder;
     }
 
     public long getMinutesToWaitForResult(PDSJobConfiguration config) {
         PDSProductSetup productSetup = serverConfigService.getProductSetupOrNull(config.getProductId());
-        if (productSetup==null) {
+        if (productSetup == null) {
             return -1;
         }
         return productSetup.getMinutesToWaitForProductResult();
@@ -158,5 +182,41 @@ public class PDSWorkspaceService {
     public String getFileEncoding(UUID jobUUID) {
         return "UTF-8"; // currently only UTF-8 expected
     }
-    
+
+    public WorkspaceLocationData createLocationData(UUID jobUUID) {
+        File workspaceFolder = getWorkspaceFolder(jobUUID);
+        Path workspaceFolderPath = workspaceFolder.toPath();
+        WorkspaceLocationData locationData = new WorkspaceLocationData();
+
+        try {
+
+            locationData.workspaceLocation = createWorkspacePath(workspaceFolderPath, null);
+            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, OUTPUT + File.separator + RESULT_TXT);
+            locationData.unzippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/unzipped/sourcecode");
+            locationData.zippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/sourcecode.zip");
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Was not able to create pathes");
+        }
+
+        return locationData;
+    }
+
+    private String createWorkspacePath(Path workspaceLocation, String subPath) throws IOException {
+        Path workspaceChildPath;
+        if (subPath == null) {
+            workspaceChildPath = workspaceLocation;
+        } else {
+            workspaceChildPath = workspaceLocation.resolve(subPath);
+        }
+        Path parentFolder = workspaceChildPath.getParent();
+        if (!Files.exists(parentFolder)) {
+            Files.createDirectories(parentFolder);
+        }
+        Path parentRealPath = parentFolder.toRealPath();
+        Path childPath = parentRealPath.resolve(workspaceChildPath.getFileName());
+        String result = childPath.toString();
+        return result;
+    }
+
 }

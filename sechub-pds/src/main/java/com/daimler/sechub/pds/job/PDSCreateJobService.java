@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import javax.annotation.security.RolesAllowed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import com.daimler.sechub.pds.usecase.UseCaseUserCreatesJob;
 @Service
 @RolesAllowed({PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN})
 public class PDSCreateJobService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PDSCreateJobService.class);
 
     @Autowired
     PDSUserContextService userContextService;
@@ -50,6 +54,8 @@ public class PDSCreateJobService {
             throw new PDSNotAcceptableException("Configuration conversion failure:"+e.getMessage());
         }
         job = repository.save(job);
+        
+        LOG.info("Job {} has been created", job.getUUID());
 
         return new PDSJobCreateResult(job.getUUID());
     }
