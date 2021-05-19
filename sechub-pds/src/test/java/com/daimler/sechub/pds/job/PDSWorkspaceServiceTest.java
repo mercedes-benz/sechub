@@ -3,13 +3,12 @@ package com.daimler.sechub.pds.job;
 import static java.io.File.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.Files;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import wiremock.com.google.common.io.Files;
 
 class PDSWorkspaceServiceTest {
     
@@ -22,9 +21,9 @@ class PDSWorkspaceServiceTest {
 
     @Test
     @DisplayName("createLocationData method contains expected pathes when using temp directory for upload")
-    void createLocationData_contains_expected_pathes_when_using_temp_directory_as_upload_base_path() {
+    void createLocationData_contains_expected_pathes_when_using_temp_directory_as_upload_base_path() throws Exception{
         /* prepare */
-        String path = Files.createTempDir().getAbsolutePath();
+        String path = Files.createTempDirectory("pds_ws_test").toAbsolutePath().toString();
         serviceToTest.uploadBasePath=path;
         
         UUID jobUUID = UUID.randomUUID();

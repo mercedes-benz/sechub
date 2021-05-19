@@ -1,0 +1,2 @@
+# We accept zip filesl here inside GIT, because necessary for testing (and also very small)
+!*.zip
