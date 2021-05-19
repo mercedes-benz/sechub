@@ -55,8 +55,8 @@ public class PDSFileUploadJobService {
         File uploadFile = new File(jobFolder, fileName);
 
         try {
+            LOG.info("Upload file {} for job {} to {}",fileName,jobUUID, uploadFile.getAbsolutePath());
             FileUtils.copyInputStreamToFile(file.getInputStream(), uploadFile);
-            LOG.debug("Uploaded file {} for job {} to {}",fileName,jobUUID, uploadFile.getAbsolutePath());
         } catch (IOException e) {
             LOG.error("Was not able to store {} for job {}, reason:", fileName, jobUUID, e.getMessage());
             throw new IllegalArgumentException("Cannot store given file", e);

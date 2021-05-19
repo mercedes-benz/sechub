@@ -59,7 +59,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     @Override
     public PDSExecutionResult call() throws Exception {
-        LOG.debug("Start execution of job with uuid:{}", jobUUID);
+        LOG.info("Start execution of job {}", jobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
         try {
             updateWithRetriesOnOptimisticLocks(UpdateState.RUNNING);
@@ -82,6 +82,9 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             createProcess(jobUUID, config, path);
 
             waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult);
+            
+            LOG.info("Finished execution of job {}", jobUUID);
+            
         } catch (Exception e) {
             LOG.error("Execution of job uuid:{} failed", jobUUID, e);
             result.failed = true;
