@@ -109,6 +109,7 @@ class PDSFileUnzipSupportTest {
         for (File child : children) {
             foundChildNames.add(child.getName());
         }
+        
         /* test names contained */
         for (String childName : childNames) {
             if (!foundChildNames.contains(childName)) {

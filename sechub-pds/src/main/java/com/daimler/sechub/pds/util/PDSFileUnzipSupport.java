@@ -20,30 +20,30 @@ public class PDSFileUnzipSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUnzipSupport.class);
 
-    public class UnzipResult{
+    public class UnzipResult {
         private int extractedFilesCount;
         private int createdFoldersCount;
 
         private String sourceLocation;
         private String targetLocation;
-        
+
         public int getExtractedFilesCount() {
             return extractedFilesCount;
         }
-        
+
         public int getCreatedFoldersCount() {
             return createdFoldersCount;
         }
-        
+
         public String getSourceLocation() {
             return sourceLocation;
         }
-        
+
         public String getTargetLocation() {
             return targetLocation;
         }
     }
-    
+
     public UnzipResult unzipArchive(File file, File destDir) throws IOException {
         UnzipResult result = new UnzipResult();
         if (!file.exists()) {
@@ -53,15 +53,15 @@ public class PDSFileUnzipSupport {
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-        result.targetLocation= destDir.getAbsolutePath();
-        result.sourceLocation=file.getAbsolutePath();
-        
+        result.targetLocation = destDir.getAbsolutePath();
+        result.sourceLocation = file.getAbsolutePath();
+
         LOG.debug("start unzipping of {} into {}", result.sourceLocation, result.targetLocation);
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
 
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
-                File newFile = newFile(result,destDir, zipEntry);
+                File newFile = newFile(result, destDir, zipEntry);
                 copy(result, zis, newFile);
                 zipEntry = zis.getNextEntry();
             }
@@ -72,19 +72,22 @@ public class PDSFileUnzipSupport {
 
     private void copy(UnzipResult c, ZipInputStream zis, File newFile) throws FileNotFoundException, IOException {
         LOG.trace("Handle", newFile);
-        
+
         if (newFile.isDirectory()) {
             /* we do not copy directory streams... */
             LOG.trace("Skipped, because directory:{}", newFile);
             return;
         }
+        
+        /* create/copy file from zip content */
         try (FileOutputStream fos = new FileOutputStream(newFile)) {
             LOG.trace("Create:{}", newFile);
+            
             IOUtils.copy(zis, fos);
         }
     }
 
-    private File newFile(UnzipResult c, File destinationDir, ZipEntry zipEntry) throws IOException {
+    private File newFile(UnzipResult unzipResult, File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
         String destDirPath = destinationDir.getCanonicalPath();
@@ -93,14 +96,18 @@ public class PDSFileUnzipSupport {
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
-        /* ensure directory exists */
+
         if (zipEntry.isDirectory()) {
-            c.createdFoldersCount++;
+            unzipResult.createdFoldersCount++;
+
+            /* ensure directory exists */
             Files.createDirectories(destFile.toPath());
-            return destFile;
-        }else {
-            c.extractedFilesCount++;
+
+        } else {
+
+            unzipResult.extractedFilesCount++;
         }
+
         return destFile;
     }
 }

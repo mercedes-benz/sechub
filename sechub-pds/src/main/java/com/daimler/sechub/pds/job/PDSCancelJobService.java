@@ -41,7 +41,7 @@ public class PDSCancelJobService {
         }
         assertJobIsInState(job, PDSJobStatusState.RUNNING);
 
-        LOG.debug("Trigger cancel for job {} ", jobUUID);
+        LOG.info("Trigger cancel for job {} ", jobUUID);
         executionService.cancel(jobUUID);
 
         job.setState(PDSJobStatusState.CANCEL_REQUESTED);

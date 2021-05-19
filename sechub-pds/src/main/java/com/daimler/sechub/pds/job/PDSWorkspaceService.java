@@ -25,6 +25,13 @@ import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 
 @Service
 public class PDSWorkspaceService {
+    
+    private static final String UPLOAD = "upload";
+    public static final String OUTPUT = "output";
+    public static final String RESULT_TXT = "result.txt";
+    public static final String SYSTEM_OUT_LOG = "system-out.log";
+    public static final String SYSTEM_ERROR_LOG = "system-error.log";
+    
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
@@ -47,7 +54,7 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getUploadFolder(UUID jobUUID) {
-        File file = new File(getWorkspaceFolder(jobUUID), "upload");
+        File file = new File(getWorkspaceFolder(jobUUID), UPLOAD);
         file.mkdirs();
         return file;
     }
@@ -138,15 +145,15 @@ public class PDSWorkspaceService {
     }
 
     public File getSystemErrorFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "system-error.log");
+        return new File(getOutputFolder(jobUUID), SYSTEM_ERROR_LOG);
     }
 
     public File getSystemOutFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "system-out.log");
+        return new File(getOutputFolder(jobUUID), SYSTEM_OUT_LOG);
     }
 
     public File getResultFile(UUID jobUUID) {
-        return new File(getOutputFolder(jobUUID), "result.txt");
+        return new File(getOutputFolder(jobUUID), RESULT_TXT);
     }
 
     /**
@@ -156,7 +163,7 @@ public class PDSWorkspaceService {
      * @return upload folder
      */
     public File getOutputFolder(UUID jobUUID) {
-        File outputFolder = new File(getWorkspaceFolder(jobUUID), "output");
+        File outputFolder = new File(getWorkspaceFolder(jobUUID), OUTPUT);
         outputFolder.mkdirs();
         return outputFolder;
     }
@@ -182,7 +189,7 @@ public class PDSWorkspaceService {
         try {
             
             locationData.workspaceLocation = createWorkspacePath(workspaceFolderPath,null);
-            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, "output/result.txt");
+            locationData.resultFileLocation = createWorkspacePath(workspaceFolderPath, OUTPUT+File.separator+RESULT_TXT);
             locationData.unzippedSourceLocation = createWorkspacePath(workspaceFolderPath,"upload/unzipped/sourcecode");
             locationData.zippedSourceLocation = createWorkspacePath(workspaceFolderPath, "upload/sourcecode.zip");
             
