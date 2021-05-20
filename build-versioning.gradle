@@ -39,6 +39,7 @@ def buildVersionFiles(){
     // we got vX.Y.Z-server and vX.Y.Z-client tags
     def serverVersionCommitTag = versionCommitTags.find{ it.name.contains("-server") }
     def clientVersionCommitTag = versionCommitTags.find{ it.name.contains("-client") }
+    def pdsVersionCommitTag = versionCommitTags.find{ it.name.contains("-pds") }
 
     def unstagedChanges = git.status().unstaged
     def stagedChanges = git.status().staged
@@ -76,7 +77,7 @@ def buildVersionFiles(){
     // ------------------------
     // - PDS
     // ------------------------
-    def pdsVersion = buildVersionString(serverVersionCommitTag, hasChanged,buildNumber)
+    def pdsVersion = buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber)
     def reducedPDSVersion = simplifiedVersion(pdsVersion);
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
