@@ -85,6 +85,9 @@ public class PDSServerConfigurationService {
     }
 
     public String getServerId() {
+        if (configuration == null) {
+            return "undefined-no-configuration";
+        }
         return configuration.getServerId();
     }
 

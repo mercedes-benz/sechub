@@ -104,7 +104,7 @@ public class PDSWorkspaceService {
          * "uploadStoragePath") and the sechub server does not the upload but only send
          * this, we would save upoad time and memory
          */
-        return null;
+        return config.getExternalStoragePath();
     }
 
     /**
