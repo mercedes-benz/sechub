@@ -17,6 +17,9 @@ dependencies {
 def integrationTestServerPortValue = 8443;
 def integrationTestPDSPortValue = 8444;
 
+def pdsVersion = VersionData.getPdsVersion()
+def serverVersion = VersionData.getServerVersion()
+
 task copyIntegrationTestResults(type: Copy) {
         with{
             from "${project.projectDir}/build/test-results/integrationtest"
@@ -84,7 +87,7 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
     description 'Starts an integration test server - if already a server is running we will wait until timout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
-        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), project.version.toString(),"$integrationTestServerPortValue")
+        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), "$serverVersion","$integrationTestServerPortValue")
     }
 
 }
@@ -98,7 +101,7 @@ task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
     description 'Starts an integration PDS server - if already a server is running we will wait until timout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
-        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), project.version.toString(),"$integrationTestPDSPortValue")
+        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), "$pdsVersion", "$integrationTestPDSPortValue")
     }
 
 }
