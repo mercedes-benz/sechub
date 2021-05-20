@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 0.23.0</span>
+<span id="revnumber"> Server 0.24.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -927,15 +927,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#section-usecase-UC_049">10.6.50. UC_049-Admin fetches executor configuration list</a></li>
 <li><a href="#section-usecase-UC_050">10.6.51. UC_050-Admin fetches executor configuration</a></li>
 <li><a href="#section-usecase-UC_051">10.6.52. UC_051-Admin updates executor configuration setup</a></li>
-<li><a href="#section-usecase-UC_052">10.6.53. UC_052-Admin creates an execution proflie</a></li>
+<li><a href="#section-usecase-UC_052">10.6.53. UC_052-Admin creates an execution profile</a></li>
 <li><a href="#section-usecase-UC_053">10.6.54. UC_053-Admin deletes execution profile</a></li>
 <li><a href="#section-usecase-UC_054">10.6.55. UC_054-Admin updates execution profile</a></li>
 <li><a href="#section-usecase-UC_055">10.6.56. UC_055-Admin fetches execution profile</a></li>
-<li><a href="#section-usecase-UC_056">10.6.57. UC_056-Admin fetches execution proflie list</a></li>
+<li><a href="#section-usecase-UC_056">10.6.57. UC_056-Admin fetches execution profile list</a></li>
 <li><a href="#section-usecase-UC_057">10.6.58. UC_057-Admin assigns execution profile to project</a></li>
 <li><a href="#section-usecase-UC_058">10.6.59. UC_058-Admin unassigns execution profile from project</a></li>
 <li><a href="#section-usecase-UC_059">10.6.60. UC_059-Update project metadata</a></li>
 <li><a href="#section-usecase-UC_060">10.6.61. UC_060-Admin changes owner of a project</a></li>
+<li><a href="#section-usecase-UC_061">10.6.62. UC_061-Admin changes project description</a></li>
 </ul>
 </li>
 </ul>
@@ -969,18 +970,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#admin-unassigns-user-from-project">11.1.5. Admin unassigns user from project</a></li>
 <li><a href="#admin-shows-user-details">11.1.6. Admin shows user details</a></li>
 <li><a href="#admin-deletes-a-user">11.1.7. Admin deletes a user</a></li>
-<li><a href="#admin-shows-project-details">11.1.8. Admin shows project details</a></li>
-<li><a href="#admin-downloads-all-details-about-a-scan-job">11.1.9. Admin downloads all details about a scan job</a></li>
-<li><a href="#admin-grants-admin-rights-to-user">11.1.10. Admin grants admin rights to user</a></li>
-<li><a href="#admin-revokes-admin-rights-from-an-admin">11.1.11. Admin revokes admin rights from an admin</a></li>
-<li><a href="#admin-lists-all-admins">11.1.12. Admin lists all admins</a></li>
-<li><a href="#admin-changes-owner-of-a-project">11.1.13. Admin changes owner of a project</a></li>
-<li><a href="#admin-creates-a-project">11.1.14. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">11.1.15. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">11.1.16. Admin deletes a project</a></li>
-<li><a href="#update-project-whitelist">11.1.17. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">11.1.18. Admin shows scan logs for project</a></li>
-<li><a href="#update-project-metadata">11.1.19. Update project metadata</a></li>
+<li><a href="#admin-grants-admin-rights-to-user">11.1.8. Admin grants admin rights to user</a></li>
+<li><a href="#admin-revokes-admin-rights-from-an-admin">11.1.9. Admin revokes admin rights from an admin</a></li>
+<li><a href="#admin-lists-all-admins">11.1.10. Admin lists all admins</a></li>
+<li><a href="#admin-changes-owner-of-a-project">11.1.11. Admin changes owner of a project</a></li>
+<li><a href="#admin-creates-a-project">11.1.12. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">11.1.13. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">11.1.14. Admin deletes a project</a></li>
+<li><a href="#admin-shows-project-details">11.1.15. Admin shows project details</a></li>
+<li><a href="#update-project-whitelist">11.1.16. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">11.1.17. Admin shows scan logs for project</a></li>
+<li><a href="#update-project-metadata">11.1.18. Update project metadata</a></li>
+<li><a href="#admin-changes-project-description">11.1.19. Admin changes project description</a></li>
 <li><a href="#user-clicks-link-to-get-new-api-token">11.1.20. User clicks link to get new api token</a></li>
 <li><a href="#user-creates-a-new-sechub-job">11.1.21. User creates a new sechub job</a>
 <ul class="sectlevel4">
@@ -1010,30 +1011,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#admin-deletes-user-signup">11.1.32. Admin deletes user signup</a></li>
 <li><a href="#user-requests-new-api-token">11.1.33. User requests new API token</a></li>
 <li><a href="#admin-lists-all-running-jobs">11.1.34. Admin lists all running jobs</a></li>
-<li><a href="#admin-cancels-a-job">11.1.35. Admin cancels a job</a></li>
-<li><a href="#admin-restarts-a-job">11.1.36. Admin restarts a job</a></li>
-<li><a href="#admin-restarts-a-job-hard">11.1.37. Admin restarts a job (hard)</a></li>
-<li><a href="#user-defines-mock-data-configuration-for-project">11.1.38. User defines mock data configuration for project</a></li>
-<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.39. User retrieves mock data configuration for project</a></li>
-<li><a href="#admin-updates-mapping-configuration">11.1.40. Admin updates mapping configuration</a></li>
-<li><a href="#admin-fetches-mapping-configuration">11.1.41. Admin fetches mapping configuration</a></li>
-<li><a href="#admin-creates-an-executor-configuration">11.1.42. Admin creates an executor configuration</a></li>
-<li><a href="#admin-deletes-executor-configuration">11.1.43. Admin deletes executor configuration</a></li>
-<li><a href="#admin-fetches-executor-configuration-list">11.1.44. Admin fetches executor configuration list</a></li>
-<li><a href="#admin-fetches-executor-configuration">11.1.45. Admin fetches executor configuration</a></li>
-<li><a href="#admin-updates-executor-configuration-setup">11.1.46. Admin updates executor configuration setup</a></li>
-<li><a href="#admin-creates-an-execution-proflie">11.1.47. Admin creates an execution proflie</a></li>
-<li><a href="#admin-deletes-execution-profile">11.1.48. Admin deletes execution profile</a></li>
-<li><a href="#admin-updates-execution-profile">11.1.49. Admin updates execution profile</a></li>
-<li><a href="#admin-fetches-execution-profile">11.1.50. Admin fetches execution profile</a></li>
-<li><a href="#admin-fetches-execution-proflie-list">11.1.51. Admin fetches execution proflie list</a></li>
-<li><a href="#admin-assigns-execution-profile-to-project">11.1.52. Admin assigns execution profile to project</a></li>
-<li><a href="#admin-unassigns-execution-profile-from-project">11.1.53. Admin unassigns execution profile from project</a></li>
-<li><a href="#admin-disables-job-processing-in-scheduler">11.1.54. Admin disables job processing in scheduler</a></li>
-<li><a href="#admin-enables-scheduler-job-processing">11.1.55. Admin enables scheduler job processing</a></li>
-<li><a href="#admin-get-scheduler-status">11.1.56. Admin get scheduler status</a></li>
-<li><a href="#admin-lists-status-information">11.1.57. Admin lists status information</a></li>
-<li><a href="#admin-checks-server-version">11.1.58. Admin checks server version</a></li>
+<li><a href="#admin-downloads-all-details-about-a-scan-job">11.1.35. Admin downloads all details about a scan job</a></li>
+<li><a href="#admin-cancels-a-job">11.1.36. Admin cancels a job</a></li>
+<li><a href="#admin-restarts-a-job">11.1.37. Admin restarts a job</a></li>
+<li><a href="#admin-restarts-a-job-hard">11.1.38. Admin restarts a job (hard)</a></li>
+<li><a href="#user-defines-mock-data-configuration-for-project">11.1.39. User defines mock data configuration for project</a></li>
+<li><a href="#user-retrieves-mock-data-configuration-for-project">11.1.40. User retrieves mock data configuration for project</a></li>
+<li><a href="#admin-updates-mapping-configuration">11.1.41. Admin updates mapping configuration</a></li>
+<li><a href="#admin-fetches-mapping-configuration">11.1.42. Admin fetches mapping configuration</a></li>
+<li><a href="#admin-creates-an-executor-configuration">11.1.43. Admin creates an executor configuration</a></li>
+<li><a href="#admin-deletes-executor-configuration">11.1.44. Admin deletes executor configuration</a></li>
+<li><a href="#admin-fetches-executor-configuration-list">11.1.45. Admin fetches executor configuration list</a></li>
+<li><a href="#admin-fetches-executor-configuration">11.1.46. Admin fetches executor configuration</a></li>
+<li><a href="#admin-updates-executor-configuration-setup">11.1.47. Admin updates executor configuration setup</a></li>
+<li><a href="#admin-creates-an-execution-profile">11.1.48. Admin creates an execution profile</a></li>
+<li><a href="#admin-deletes-execution-profile">11.1.49. Admin deletes execution profile</a></li>
+<li><a href="#admin-updates-execution-profile">11.1.50. Admin updates execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile">11.1.51. Admin fetches execution profile</a></li>
+<li><a href="#admin-fetches-execution-profile-list">11.1.52. Admin fetches execution profile list</a></li>
+<li><a href="#admin-assigns-execution-profile-to-project">11.1.53. Admin assigns execution profile to project</a></li>
+<li><a href="#admin-unassigns-execution-profile-from-project">11.1.54. Admin unassigns execution profile from project</a></li>
+<li><a href="#admin-disables-job-processing-in-scheduler">11.1.55. Admin disables job processing in scheduler</a></li>
+<li><a href="#admin-enables-scheduler-job-processing">11.1.56. Admin enables scheduler job processing</a></li>
+<li><a href="#admin-get-scheduler-status">11.1.57. Admin get scheduler status</a></li>
+<li><a href="#admin-lists-status-information">11.1.58. Admin lists status information</a></li>
+<li><a href="#admin-checks-server-version">11.1.59. Admin checks server version</a></li>
 </ul>
 </li>
 </ul>
@@ -1193,7 +1195,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.23.0-20210421155328</code></p>
+<p>Documentation version: <code>Server 0.24.0-20210520182527</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1753,7 +1755,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2422" height="230">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="230">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1790,7 +1792,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1402" height="270">
+<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1318" height="270">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -1803,7 +1805,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">3.1.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1439" height="268">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1376" height="268">
 </div>
 <div class="title">Figure 4. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -6006,7 +6008,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">10.5.2.25. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2280" height="378">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="378">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6208,7 +6210,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">10.5.2.36. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1161" height="233">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1171" height="233">
 </div>
 </div>
 </div>
@@ -6224,7 +6226,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">10.5.2.38. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="623" height="204">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="633" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6327,7 +6329,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_roles_changed">10.5.2.43. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="526" height="174">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="546" height="174">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -6442,12 +6444,6 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_018">UC_018-Admin deletes a user</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_021">UC_021-Admin shows project details</a></p>
-</li>
-<li>
-<p><a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job</a></p>
-</li>
-<li>
 <p><a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user</a></p>
 </li>
 <li>
@@ -6482,6 +6478,9 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_020">UC_020-Admin deletes a project</a></p>
 </li>
 <li>
+<p><a href="#section-usecase-UC_021">UC_021-Admin shows project details</a></p>
+</li>
+<li>
 <p><a href="#section-usecase-UC_022">UC_022-Update project whitelist</a></p>
 </li>
 <li>
@@ -6489,6 +6488,9 @@ The complete documentation about use cases is generated. If you want to change c
 </li>
 <li>
 <p><a href="#section-usecase-UC_059">UC_059-Update project metadata</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_061">UC_061-Admin changes project description</a></p>
 </li>
 </ul>
 </div>
@@ -6579,6 +6581,9 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs</a></p>
 </li>
 <li>
+<p><a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job</a></p>
+</li>
+<li>
 <p><a href="#section-usecase-UC_034">UC_034-Admin cancels a job</a></p>
 </li>
 <li>
@@ -6651,7 +6656,7 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_052">UC_052-Admin creates an execution proflie</a></p>
+<p><a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile</a></p>
@@ -6663,7 +6668,7 @@ The complete documentation about use cases is generated. If you want to change c
 <p><a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile</a></p>
 </li>
 <li>
-<p><a href="#section-usecase-UC_056">UC_056-Admin fetches execution proflie list</a></p>
+<p><a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project</a></p>
@@ -7748,6 +7753,13 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -7758,16 +7770,9 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign owner</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it</p>
 <p class="tableblock"><em>This step is defined at method <code>assignOwnerToProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -7874,18 +7879,18 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
-<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
+<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -10430,7 +10435,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -10438,7 +10443,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service updates existing executor configuration</p>
-<p class="tableblock"><em>This step is defined at method <code>updateExecutionProfile</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutionProfileService`</em></p></td>
+<p class="tableblock"><em>This step is defined at method <code>updateProductExecutorSetup</code> in class `com.daimler.sechub.domain.scan.product.config.UpdateProductExecutorConfigService`</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -10447,7 +10452,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_052">10.6.53. UC_052-Admin creates an execution proflie</h4>
+<h4 id="section-usecase-UC_052">10.6.53. UC_052-Admin creates an execution profile</h4>
 <div class="paragraph">
 <p>An administrator creates an execution profile</p>
 </div>
@@ -10497,7 +10502,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#section-ucrestdoc-uc-UC_052">REST API documentation for usecase UC_052-Admin creates an execution proflie </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_052">REST API documentation for usecase UC_052-Admin creates an execution profile </a></p>
 </div>
 </div>
 <div class="sect3">
@@ -10655,7 +10660,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-UC_056">10.6.57. UC_056-Admin fetches execution proflie list</h4>
+<h4 id="section-usecase-UC_056">10.6.57. UC_056-Admin fetches execution profile list</h4>
 <div class="paragraph">
 <p>An administrator fetches execution profile list</p>
 </div>
@@ -10705,7 +10710,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#section-ucrestdoc-uc-UC_056">REST API documentation for usecase UC_056-Admin fetches execution proflie list </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_056">REST API documentation for usecase UC_056-Admin fetches execution profile list </a></p>
 </div>
 </div>
 <div class="sect3">
@@ -10922,6 +10927,60 @@ This will NOT change any former job report where the false positive to unmark ha
 <div class="paragraph">
 <p><a href="#section-ucrestdoc-uc-UC_060">REST API documentation for usecase UC_060-Admin changes owner of a project </a></p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="section-usecase-UC_061">10.6.62. UC_061-Admin changes project description</h4>
+<div class="paragraph">
+<p>An administrator changes project description</p>
+</div>
+<div class="paragraph">
+<p><strong>Technical information</strong></p>
+</div>
+<div class="paragraph">
+<p>You will find relevant code parts by searching for references of <code>@com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Steps</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Nr</th>
+<th class="tableblock halign-left valign-top">Title</th>
+<th class="tableblock halign-left valign-top">Role(s)</th>
+<th class="tableblock halign-left valign-top">Next</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Changes project description. Json returned containing details about changed project</p>
+<p class="tableblock"><em>This step is defined at method <code>changeProjectDescription</code> in class `com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service changes project description.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will change project description.</p>
+<p class="tableblock"><em>This step is defined at method <code>changeProjectDescription</code> in class `com.daimler.sechub.domain.administration.project.ProjectDetailChangeService`</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><a href="#section-ucrestdoc-uc-UC_061">REST API documentation for usecase UC_061-Admin changes project description </a></p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -10983,12 +11042,6 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_018">REST API for UC_018-Admin deletes a user </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_021">REST API for UC_021-Admin shows project details </a></p>
-</li>
-<li>
-<p><a href="#section-ucrestdoc-uc-UC_026">REST API for UC_026-Admin downloads all details about a scan job </a></p>
-</li>
-<li>
 <p><a href="#section-ucrestdoc-uc-UC_027">REST API for UC_027-Admin grants admin rights to user </a></p>
 </li>
 <li>
@@ -11023,6 +11076,9 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_020">REST API for UC_020-Admin deletes a project </a></p>
 </li>
 <li>
+<p><a href="#section-ucrestdoc-uc-UC_021">REST API for UC_021-Admin shows project details </a></p>
+</li>
+<li>
 <p><a href="#section-ucrestdoc-uc-UC_022">REST API for UC_022-Update project whitelist </a></p>
 </li>
 <li>
@@ -11030,6 +11086,9 @@ The complete documentation about REST API is generated. If you want to change co
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_059">REST API for UC_059-Update project metadata </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_061">REST API for UC_061-Admin changes project description </a></p>
 </li>
 </ul>
 </div>
@@ -11117,6 +11176,9 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
 </li>
 <li>
+<p><a href="#section-ucrestdoc-uc-UC_026">REST API for UC_026-Admin downloads all details about a scan job </a></p>
+</li>
+<li>
 <p><a href="#section-ucrestdoc-uc-UC_034">REST API for UC_034-Admin cancels a job </a></p>
 </li>
 <li>
@@ -11173,7 +11235,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_051">REST API for UC_051-Admin updates executor configuration setup </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_052">REST API for UC_052-Admin creates an execution proflie </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_052">REST API for UC_052-Admin creates an execution profile </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_053">REST API for UC_053-Admin deletes execution profile </a></p>
@@ -11185,7 +11247,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><a href="#section-ucrestdoc-uc-UC_055">REST API for UC_055-Admin fetches execution profile </a></p>
 </li>
 <li>
-<p><a href="#section-ucrestdoc-uc-UC_056">REST API for UC_056-Admin fetches execution proflie list </a></p>
+<p><a href="#section-ucrestdoc-uc-UC_056">REST API for UC_056-Admin fetches execution profile list </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_057">REST API for UC_057-Admin assigns execution profile to project </a></p>
@@ -11463,15 +11525,15 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-project-details">11.1.8. Admin shows project details</h4>
-<div id="section-ucrestdoc-uc-UC_021" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
+<h4 id="admin-grants-admin-rights-to-user">11.1.8. Admin grants admin rights to user</h4>
+<div id="section-ucrestdoc-uc-UC_027" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
 </div>
-<div id="section-ucrestdoc-UC_021-default" class="paragraph">
+<div id="section-ucrestdoc-UC_027-default" class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 26. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11484,57 +11546,8 @@ The complete documentation about REST API is generated. If you want to change co
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to show details for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all users having access to the project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username of the owner ofthis project. An owner is the person in charge.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all whitelisted URIs. Only these ones can be scanned for the project!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An JSON object containing metadata key-value pairs defined for this project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who becomes admin</p></td>
 </tr>
 </tbody>
 </table>
@@ -11543,32 +11556,16 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/grant/superadmin' -i -X POST</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-all-details-about-a-scan-job">11.1.9. Admin downloads all details about a scan job</h4>
-<div id="section-ucrestdoc-uc-UC_026" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
+<h4 id="admin-revokes-admin-rights-from-an-admin">11.1.9. Admin revokes admin rights from an admin</h4>
+<div id="section-ucrestdoc-uc-UC_028" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
 </div>
-<div id="section-ucrestdoc-UC_026-default" class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/904c6d66-2c04-4a1a-a976-37a26e339771' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-grants-admin-rights-to-user">11.1.10. Admin grants admin rights to user</h4>
-<div id="section-ucrestdoc-uc-UC_027" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
-</div>
-<div id="section-ucrestdoc-UC_027-default" class="paragraph">
+<div id="section-ucrestdoc-UC_028-default" class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -11600,43 +11597,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-revokes-admin-rights-from-an-admin">11.1.11. Admin revokes admin rights from an admin</h4>
-<div id="section-ucrestdoc-uc-UC_028" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
-</div>
-<div id="section-ucrestdoc-UC_028-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who becomes admin</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/grant/superadmin' -i -X POST</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-lists-all-admins">11.1.12. Admin lists all admins</h4>
+<h4 id="admin-lists-all-admins">11.1.10. Admin lists all admins</h4>
 <div id="section-ucrestdoc-uc-UC_029" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
 </div>
@@ -11650,7 +11611,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-changes-owner-of-a-project">11.1.13. Admin changes owner of a project</h4>
+<h4 id="admin-changes-owner-of-a-project">11.1.11. Admin changes owner of a project</h4>
 <div id="section-ucrestdoc-uc-UC_060" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project </a></p>
 </div>
@@ -11658,7 +11619,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
+<caption class="title">Table 28. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11691,7 +11652,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-a-project">11.1.14. Admin creates a project</h4>
+<h4 id="admin-creates-a-project">11.1.12. Admin creates a project</h4>
 <div id="section-ucrestdoc-uc-UC_013" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
 </div>
@@ -11741,7 +11702,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-projects">11.1.15. Admin lists all projects</h4>
+<h4 id="admin-lists-all-projects">11.1.13. Admin lists all projects</h4>
 <div id="section-ucrestdoc-uc-UC_014" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
 </div>
@@ -11756,7 +11717,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-a-project">11.1.16. Admin deletes a project</h4>
+<h4 id="admin-deletes-a-project">11.1.14. Admin deletes a project</h4>
 <div id="section-ucrestdoc-uc-UC_020" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
 </div>
@@ -11764,7 +11725,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. https://localhost:8081/api/admin/project/{projectId}</caption>
+<caption class="title">Table 29. https://localhost:8081/api/admin/project/{projectId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -11793,7 +11754,98 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">11.1.17. Update project whitelist</h4>
+<h4 id="admin-shows-project-details">11.1.15. Admin shows project details</h4>
+<div id="section-ucrestdoc-uc-UC_021" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
+</div>
+<div id="section-ucrestdoc-UC_021-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 30. https://localhost:8081/api/admin/project/{projectId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to show details for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all users having access to the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username of the owner ofthis project. An owner is the person in charge.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all whitelisted URIs. Only these ones can be scanned for the project!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An JSON object containing metadata key-value pairs defined for this project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project description.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="update-project-whitelist">11.1.16. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
@@ -11860,7 +11912,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">11.1.18. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">11.1.17. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
@@ -11924,7 +11976,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-metadata">11.1.19. Update project metadata</h4>
+<h4 id="update-project-metadata">11.1.18. Update project metadata</h4>
 <div id="section-ucrestdoc-uc-UC_059" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_059">UC_059-Update project metadata </a></p>
 </div>
@@ -11996,6 +12048,100 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
+<h4 id="admin-changes-project-description">11.1.19. Admin changes project description</h4>
+<div id="section-ucrestdoc-uc-UC_061" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_061">UC_061-Admin changes project description </a></p>
+</div>
+<div id="section-ucrestdoc-UC_061-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 33. https://localhost:8081/api/admin/project/{projectId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to change details for</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response fields</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all users having access to the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username of the owner ofthis project. An owner is the person in charge.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all whitelisted URIs. Only these ones can be scanned for the project!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An JSON object containing metadata key-value pairs defined for this project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project description.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{
+  &quot;description&quot; : &quot;new description&quot;
+}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="user-clicks-link-to-get-new-api-token">11.1.20. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
@@ -12004,7 +12150,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
+<caption class="title">Table 34. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12043,7 +12189,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12136,7 +12282,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12234,7 +12380,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 37. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12327,7 +12473,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 38. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12445,7 +12591,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 39. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12568,7 +12714,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. https://localhost:8081/api/project/{projectId}/job</caption>
+<caption class="title">Table 40. https://localhost:8081/api/project/{projectId}/job</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12710,7 +12856,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
+<caption class="title">Table 41. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12737,7 +12883,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/ea3e63a3-5b4d-4d4c-a39b-e21ec82933d9/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d8653de5-c6d2-4cf1-bd05-110b02a919d1/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -12756,7 +12902,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
+<caption class="title">Table 42. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12783,7 +12929,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b0df4176-b068-4843-bd74-53e21d478f3f/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/851144fd-9e3b-42b3-ae48-36a81b32acd3/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12797,7 +12943,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
+<caption class="title">Table 43. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -12883,7 +13029,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/e438a1ea-1287-4307-936c-d76303e867f8' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/941d95e3-ddef-469b-964e-74c0a7e204bc' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -12900,7 +13046,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5fa22e4e-66f1-470b-804a-9386617acd92' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/11c91490-8e43-4797-a39b-8dd114d5dcbb' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -12913,7 +13059,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/5b9c1c44-535c-4f04-95de-4cb26bf25fe0' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e54b6d37-4b99-4087-b22c-6d6842f953ee' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -12929,7 +13075,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 44. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13016,7 +13162,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
+<caption class="title">Table 45. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13060,7 +13206,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. https://localhost:8081/api/project/{projectId}/false-positives</caption>
+<caption class="title">Table 46. https://localhost:8081/api/project/{projectId}/false-positives</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13294,7 +13440,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
+<caption class="title">Table 47. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13330,7 +13476,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. https://localhost:8081/api/admin/signup/{userId}</caption>
+<caption class="title">Table 48. https://localhost:8081/api/admin/signup/{userId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13366,7 +13512,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
+<caption class="title">Table 49. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13459,7 +13605,22 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-cancels-a-job">11.1.35. Admin cancels a job</h4>
+<h4 id="admin-downloads-all-details-about-a-scan-job">11.1.35. Admin downloads all details about a scan job</h4>
+<div id="section-ucrestdoc-uc-UC_026" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_026-default" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/6e1a817f-cc6b-4295-9cf8-b10a8a41c481' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-cancels-a-job">11.1.36. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
@@ -13468,13 +13629,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/1d359551-a468-4a0c-a1da-284741ba5fe5' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/fcdaf56b-9412-4cc4-931b-98759f500647' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job">11.1.36. Admin restarts a job</h4>
+<h4 id="admin-restarts-a-job">11.1.37. Admin restarts a job</h4>
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
@@ -13483,13 +13644,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/08ebbd19-a7ef-496f-81b2-5324675117b3' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/40e8e496-c0ee-4a6c-8d99-74ea3e212c60' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-restarts-a-job-hard">11.1.37. Admin restarts a job (hard)</h4>
+<h4 id="admin-restarts-a-job-hard">11.1.38. Admin restarts a job (hard)</h4>
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
@@ -13498,13 +13659,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/28f15219-2f30-448e-81df-c20627d7a19e' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/9a9551fd-b33f-4f85-b2dd-c30e14c055d7' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-defines-mock-data-configuration-for-project">11.1.38. User defines mock data configuration for project</h4>
+<h4 id="user-defines-mock-data-configuration-for-project">11.1.39. User defines mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
@@ -13521,7 +13682,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.39. User retrieves mock data configuration for project</h4>
+<h4 id="user-retrieves-mock-data-configuration-for-project">11.1.40. User retrieves mock data configuration for project</h4>
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
@@ -13537,7 +13698,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-mapping-configuration">11.1.40. Admin updates mapping configuration</h4>
+<h4 id="admin-updates-mapping-configuration">11.1.41. Admin updates mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
@@ -13545,7 +13706,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
+<caption class="title">Table 50. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13609,7 +13770,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-mapping-configuration">11.1.41. Admin fetches mapping configuration</h4>
+<h4 id="admin-fetches-mapping-configuration">11.1.42. Admin fetches mapping configuration</h4>
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
@@ -13658,7 +13819,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-executor-configuration">11.1.42. Admin creates an executor configuration</h4>
+<h4 id="admin-creates-an-executor-configuration">11.1.43. Admin creates an executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
@@ -13738,7 +13899,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-executor-configuration">11.1.43. Admin deletes executor configuration</h4>
+<h4 id="admin-deletes-executor-configuration">11.1.44. Admin deletes executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
@@ -13746,7 +13907,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 51. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13769,13 +13930,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/54bb4942-03af-4767-874e-a9f7159e8f1a' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/41e8aaf1-e321-43e1-b4f8-c4c4cfdaa447' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration-list">11.1.44. Admin fetches executor configuration list</h4>
+<h4 id="admin-fetches-executor-configuration-list">11.1.45. Admin fetches executor configuration list</h4>
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
@@ -13829,7 +13990,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-executor-configuration">11.1.45. Admin fetches executor configuration</h4>
+<h4 id="admin-fetches-executor-configuration">11.1.46. Admin fetches executor configuration</h4>
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
@@ -13837,7 +13998,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 52. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -13929,13 +14090,13 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/67b23981-eaec-4b5e-8313-e9a3cf72aa1e' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/0d353d97-9fc9-47ce-bebe-2f7cbb90b234' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-executor-configuration-setup">11.1.46. Admin updates executor configuration setup</h4>
+<h4 id="admin-updates-executor-configuration-setup">11.1.47. Admin updates executor configuration setup</h4>
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
@@ -13943,7 +14104,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
+<caption class="title">Table 53. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14030,22 +14191,22 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/9225fccb-3592-4692-b010-fd4735e9cf9d' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/11998dc0-fb7f-46c6-84b1-0ed719bbdb68' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-creates-an-execution-proflie">11.1.47. Admin creates an execution proflie</h4>
+<h4 id="admin-creates-an-execution-profile">11.1.48. Admin creates an execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution proflie </a></p>
+<p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
 <div id="section-ucrestdoc-UC_052-default" class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 54. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14114,7 +14275,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-execution-profile">11.1.48. Admin deletes execution profile</h4>
+<h4 id="admin-deletes-execution-profile">11.1.49. Admin deletes execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
@@ -14122,7 +14283,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 55. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14151,7 +14312,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-updates-execution-profile">11.1.49. Admin updates execution profile</h4>
+<h4 id="admin-updates-execution-profile">11.1.50. Admin updates execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
@@ -14159,7 +14320,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 56. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14218,12 +14379,12 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;5119a6a0-5452-423a-a291-5e50c1417a39&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;42a863f3-62d8-4e4c-915a-110011c31959&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-profile">11.1.50. Admin fetches execution profile</h4>
+<h4 id="admin-fetches-execution-profile">11.1.51. Admin fetches execution profile</h4>
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
@@ -14231,7 +14392,7 @@ The complete documentation about REST API is generated. If you want to change co
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
+<caption class="title">Table 57. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14319,9 +14480,9 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-fetches-execution-proflie-list">11.1.51. Admin fetches execution proflie list</h4>
+<h4 id="admin-fetches-execution-profile-list">11.1.52. Admin fetches execution profile list</h4>
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution proflie list </a></p>
+<p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
 <div id="section-ucrestdoc-UC_056-default" class="paragraph">
 <p><strong>Response fields</strong></p>
@@ -14373,52 +14534,11 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-assigns-execution-profile-to-project">11.1.52. Admin assigns execution profile to project</h4>
+<h4 id="admin-assigns-execution-profile-to-project">11.1.53. Admin assigns execution profile to project</h4>
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
 <div id="section-ucrestdoc-UC_057-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-unassigns-execution-profile-from-project">11.1.53. Admin unassigns execution profile from project</h4>
-<div id="section-ucrestdoc-uc-UC_058" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
-</div>
-<div id="section-ucrestdoc-UC_058-default" class="paragraph">
 <p><strong>Path parameters</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -14455,7 +14575,48 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-disables-job-processing-in-scheduler">11.1.54. Admin disables job processing in scheduler</h4>
+<h4 id="admin-unassigns-execution-profile-from-project">11.1.54. Admin unassigns execution profile from project</h4>
+<div id="section-ucrestdoc-uc-UC_058" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_058-default" class="paragraph">
+<p><strong>Path parameters</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 59. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-disables-job-processing-in-scheduler">11.1.55. Admin disables job processing in scheduler</h4>
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
@@ -14470,7 +14631,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-enables-scheduler-job-processing">11.1.55. Admin enables scheduler job processing</h4>
+<h4 id="admin-enables-scheduler-job-processing">11.1.56. Admin enables scheduler job processing</h4>
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
@@ -14485,7 +14646,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-get-scheduler-status">11.1.56. Admin get scheduler status</h4>
+<h4 id="admin-get-scheduler-status">11.1.57. Admin get scheduler status</h4>
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
@@ -14500,7 +14661,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-status-information">11.1.57. Admin lists status information</h4>
+<h4 id="admin-lists-status-information">11.1.58. Admin lists status information</h4>
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
@@ -14544,7 +14705,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-checks-server-version">11.1.58. Admin checks server version</h4>
+<h4 id="admin-checks-server-version">11.1.59. Admin checks server version</h4>
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
@@ -15310,7 +15471,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.23.0<br>
+ Server 0.24.0<br>
 </div>
 </div>
 <style>

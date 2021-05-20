@@ -13,9 +13,9 @@ end box
 box "schedule" #F8F8FF
    participant ScanExecutionTasklet
 end box
-box "administration" #C8C8CF
+box "authorization" #C8C8CF
 end box
-box "authorization" #F8F8FF
+box "administration" #F8F8FF
 end box
 box "notification" #C8C8CF
 end box
@@ -39,7 +39,7 @@ Java Runtime: OpenJDK Runtime Environment
 JVM: OpenJDK 64-Bit Server VM
 Java Version: 1.8.0_292-b10
 Operating System: Linux
-OS Version: 5.4.0-1043-azure
+OS Version: 5.4.0-1047-azure
 Default Encoding: UTF-8
 Language: en
 Country: 

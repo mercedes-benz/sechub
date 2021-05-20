@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.22.0</span>
+<span id="revnumber"> PDS 0.21.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -477,15 +477,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#section-pds-server-config-file">3.5. Server configuration file</a></li>
 <li><a href="#launcher-scripts">3.6. Launcher scripts</a>
 <ul class="sectlevel3">
-<li><a href="#default-variables">3.6.1. Default variables</a>
+<li><a href="#generated-variables">3.6.1. Generated variables</a></li>
+<li><a href="#parameter-variables">3.6.2. Parameter variables</a></li>
+<li><a href="#file-locations">3.6.3. File locations</a>
 <ul class="sectlevel4">
-<li><a href="#pds_job_workspace_location">3.6.1.1. PDS_JOB_WORKSPACE_LOCATION</a></li>
-</ul>
-</li>
-<li><a href="#file-locations">3.6.2. File locations</a>
-<ul class="sectlevel4">
-<li><a href="#upload">3.6.2.1. Upload</a></li>
-<li><a href="#output">3.6.2.2. Output</a></li>
+<li><a href="#upload">3.6.3.1. Upload</a></li>
+<li><a href="#output">3.6.3.2. Output</a></li>
 </ul>
 </li>
 </ul>
@@ -593,7 +590,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.22.0-20210325104603</code></p>
+<p>Documentation version: <code>PDS 0.21.0-pds-20210520182527</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -1030,7 +1027,7 @@ SecHub will</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>defines if PDS will automatically unzip zip files. default is <code>true</code>. When <code>true</code> the content
+<td>defines if PDS will automatically extract ZIP files - default is <code>true</code>. When <code>true</code> the content
 of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}</code></td>
 </tr>
 </table>
@@ -1039,19 +1036,53 @@ of the unzipped files will be available inside <code>$PDS_JOB_WORKSPACE_LOCATION
 <div class="sect2">
 <h3 id="launcher-scripts">3.6. Launcher scripts</h3>
 <div class="sect3">
-<h4 id="default-variables">3.6.1. Default variables</h4>
-<div class="sect4">
-<h5 id="pds_job_workspace_location">3.6.1.1. PDS_JOB_WORKSPACE_LOCATION</h5>
-<div class="paragraph">
-<p>The variable <code>PDS_JOB_WORKSPACE_LOCATION</code> is always available and
-points to the job location.</p>
+<h4 id="generated-variables">3.6.1. Generated variables</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Variable name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_WORKSPACE_LOCATION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The workspace job root location</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_RESULT_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the result file <em>(this file contains security findings)</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_SOURCECODE_ZIP_FILE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absolute path to the uploaded "sourcecode.zip" file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS_JOB_SOURCECODE_UNZIPPED_FOLDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When auto unzipping is enabled (default) the uploaded source code is unzipped to this folder</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+<div class="sect3">
+<h4 id="parameter-variables">3.6.2. Parameter variables</h4>
+<div class="paragraph">
+<p>The parameters described at <a href="#section-pds-server-example-config-file">configuration</a> are defined in
+Product executor configurations. At execution time these parameters are available inside
+launcher scripts.</p>
+</div>
+<div class="paragraph">
+<p>Mandatory parts are always present, optional ones can be empty - dependeing on the executor configuration.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="file-locations">3.6.2. File locations</h4>
+<h4 id="file-locations">3.6.3. File locations</h4>
 <div class="sect4">
-<h5 id="upload">3.6.2.1. Upload</h5>
+<h5 id="upload">3.6.3.1. Upload</h5>
 <div class="paragraph">
 <p><code>$PDS_JOB_WORKSPACE_LOCATION/upload/</code></p>
 </div>
@@ -1061,23 +1092,24 @@ points to the job location.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="output">3.6.2.2. Output</h5>
+<h5 id="output">3.6.3.2. Output</h5>
 <div class="paragraph">
 <p>Following files are reserved</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>system-err.log <em>(created automatically)</em><br>
+<p>system-err.log <em>(created automatically by PDS)</em><br>
 <code>$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log</code></p>
 </li>
 <li>
-<p><code>system-out.log <em>(created automatically)</em>+
+<p><code>system-out.log <em>(created automatically by PDS)</em>+
 $PDS_JOB_WORKSPACE_LOCATION/output/system-out.log</code></p>
 </li>
 <li>
-<p><strong>result.txt</strong> - this is the result file which must be created by the executed script<br>
-<code>$PDS_JOB_WORKSPACE_LOCATION/output/result.txt</code></p>
+<p><strong>result.txt</strong> - this is the result file which <strong>must be created by the executed script</strong><br>
+<code>$PDS_JOB_WORKSPACE_LOCATION/output/result.txt</code>.
+The path is represented by the variable <code>PDS_JOB_RESULT_FILE</code></p>
 </li>
 </ul>
 </div>
@@ -1281,7 +1313,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.22.0<br>
+ PDS 0.21.0<br>
 </div>
 </div>
 <style>

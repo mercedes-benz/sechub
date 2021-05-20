@@ -643,7 +643,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Client 0.0.0-9049273-20210325104603</code></p>
+<p>Documentation version: <code>Client 0.0.0-03a4f45-20210520182527</code></p>
 </div>
 <hr>
 <div style="page-break-after: always;"></div>
@@ -1915,6 +1915,11 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
   <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>  : {<i class="conum" data-value="1"></i><b>(1)</b>
       <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.gamechanger.example.org</span><span class="delimiter">&quot;</span></span>]<i class="conum" data-value="2"></i><b>(2)</b>
   }
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">maxScanDuration</span><span class="delimiter">&quot;</span></span>: { <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">duration</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">hour</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="4"></i><b>(4)</b>
+  },
 }</code></pre>
 </div>
 </div>
@@ -1927,6 +1932,17 @@ URI must be one of the whitelisted URLs of your project. Otherwise it will be re
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>The <code>URI</code> s to scan. Every <code>URI</code> listed here must be white listed in <code>SecHub</code> project.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><strong>Optional</strong>: Define the maximum duration the scan can take.
+Scanning a "large" web page/application can take several hours or even days.
+This option ensures the scan will only run for a limited time.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Define the unit of time.
+The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</code>, <code>hour</code>, <code>day</code>.</td>
 </tr>
 </table>
 </div>
@@ -2087,38 +2103,56 @@ If you use REST API directly, you must you must use real values!</td>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span>: {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span>: [
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span>
-        ],
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span>: {
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span>: {<i class="conum" data-value="2"></i><b>(2)</b>
-                <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span>: [<i class="conum" data-value="3"></i><b>(3)</b>
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="4"></i><b>(4)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>,<i class="conum" data-value="5"></i><b>(5)</b>
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span><i class="conum" data-value="6"></i><b>(6)</b>
-                    },
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
-                    },
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_other_inputfield</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .OTHER_VALUE }}</span><span class="delimiter">&quot;</span></span>
-                    },
-                    {
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">step</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
-                        <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_login_button</span><span class="delimiter">&quot;</span></span>
-                    }
-                ]
-            }
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">webScan</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">uris</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org</span><span class="delimiter">&quot;</span></span> ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">login</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">https://productfailure.demo.example.org/login</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">form</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">script</span><span class="delimiter">&quot;</span></span> : { <i class="conum" data-value="3"></i><b>(3)</b>
+          <span class="key"><span class="delimiter">&quot;</span><span class="content">pages</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="4"></i><b>(4)</b>
+                  {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [ <i class="conum" data-value="5"></i><b>(5)</b>
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">username</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="6"></i><b>(6)</b>
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_userid</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="7"></i><b>(7)</b>
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_USER }}</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="8"></i><b>(8)</b>
+                            },
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_login_pwd</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .LOGIN_PWD }}</span><span class="delimiter">&quot;</span></span>
+                            },
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#next</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">Click to go to next page</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="9"></i><b>(9)</b>
+                            }
+                         ]
+                  },
+                  {
+                    <span class="key"><span class="delimiter">&quot;</span><span class="content">actions</span><span class="delimiter">&quot;</span></span> : [
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">input</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#example_other_inputfield</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">${{ .OTHER_VALUE }}</span><span class="delimiter">&quot;</span></span>
+                            },
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">wait</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="10"></i><b>(10)</b>
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">second</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="11"></i><b>(11)</b>
+                            },
+                            {
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">click</span><span class="delimiter">&quot;</span></span>,
+                              <span class="key"><span class="delimiter">&quot;</span><span class="content">selector</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">#doLogin</span><span class="delimiter">&quot;</span></span>,
+                            }
+                    ]
+                 }
+          ]
         }
+      }
     }
+  }
 }</code></pre>
 </div>
 </div>
@@ -2126,20 +2160,27 @@ If you use REST API directly, you must you must use real values!</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>URL for web login</td>
+<td>URL for web login.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Start of form based login</td>
+<td>Start of form based login.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Script definition parts. Contains step entries which are executed
-in given order</td>
+<td>Script definition.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Type of step. Valid steps are :<br>
+<td>Pages section. A page is a visible page. Some logins need more than one page.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The actions which should be executed on each page.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Type of action. Valid types are :<br>
 <div class="ulist">
 <ul>
 <li>
@@ -2158,19 +2199,36 @@ setup value for a field on UI</p>
 <p><code>click</code><br>
 will simulate a mouse click on UI</p>
 </li>
+<li>
+<p><code>wait</code><br>
+time to wait before executing the next action</p>
+</li>
 </ul>
 </div></td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Selector (CSS) to identify web element</td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Selector (CSS) to identify web element.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Value , used by input steps (<code>username|password|input</code>).<br>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Value, used by most actions (<code>username|password|input|wait</code>).<br>
 In this examples you see variables
 in <code>go template</code> format. This is SecHub client specific.
-If you use REST API directly, you must you must use real values!</td>
+If you use the REST API directly, you must use real values!</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>A description can be added to explain an action.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The time the next action will be delayed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Define the unit of time.
+The unit can be: <code>millisecond</code>, <code>second</code>, <code>minute</code>, <code>hour</code>, <code>day</code>.</td>
 </tr>
 </table>
 </div>
