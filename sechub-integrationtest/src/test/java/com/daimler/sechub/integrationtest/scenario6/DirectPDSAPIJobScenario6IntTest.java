@@ -49,6 +49,29 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         /* @formatter:on */
     }
+    
+    @Test
+    public void pds_techuser_creates_job_and_marks_as_ready_without_upload() {
+        /* @formatter:off */
+        /* prepare */
+
+        UUID sechubJobUUID = UUID.randomUUID();
+        String result = asPDSUser(PDS_TECH_USER).
+            createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+        
+        UUID pdsJobUUID = assertPDSJobCreateResult(result).getJobUUID();
+        
+        asPDSUser(PDS_TECH_USER).
+            markJobAsReadyToStart(pdsJobUUID);
+        
+        /* execute */
+        String jobReport = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
+        
+        /* test */
+        assertTrue(jobReport.contains("#PDS_INTTEST_PRODUCT_CODESCAN"));
+        
+        /* @formatter:on */
+    }
 
     @Test
     public void pds_techuser_can_get_job_status_of_created_job_and_is_CREATED() {
@@ -103,7 +126,9 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         /* test */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
-        assertTrue(report.contains("CRITICAL"));
+        if (!report.contains("CRITICAL")) {
+            fail("Report contains not CRITICAL, but:\n"+report);
+        }
         
         /* @formatter:on */
     }
