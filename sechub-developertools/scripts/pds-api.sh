@@ -27,6 +27,7 @@ ACTION [PARAMETERS] - EXPLANATION
 check_alive - Check if the server is running.
 create_job <product-id> <sechub-job-uuid> - Create a new job using <product-id> and a <sechub-job-uuid>.
 create_job_from_json <json-file> - Create a new job using a <json-file> JSON file.
+upload_zip <job-uuid> <zip-file> - Upload a <zip-file> ZIP file for an existing job <job-uuid>.
 mark_job_ready_to_start <job-uuid> - Mark a job with <job-uuid> as ready to start.
 job_status <job-uuid> - Get the status of a job using the <job-uuid>.
 monitoring_status - Monitoring information about the server and jobs
@@ -61,11 +62,12 @@ function job_status {
 function job_result {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -i -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/result" | $RESULT_FILTER | $JSON_FORMATTER
+  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/result"
+  echo ""
 }
 
 function monitoring_status {
-    curl $CURL_AUTH $CURL_PARAMS -i -X GET --header "Accept: application/json" "$PDS_SERVER/api/admin/monitoring/status" | $RESULT_FILTER | $JSON_FORMATTER
+  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/admin/monitoring/status" | $RESULT_FILTER | $JSON_FORMATTER
 }
 
 function create_job {
@@ -94,6 +96,29 @@ function generate_pds_job_data {
   "productId":"$2"
 }
 EOF
+}
+
+function upload_zip {
+  local jobUUID=$1
+  local zip_file=$2
+
+  if [[ ! -f "$zip_file" ]] ; then
+    echo "File \"$zip_file\" does not exist."
+    exit 1
+  fi
+
+  local checkSum=$(sha256sum $zip_file | cut --delimiter=' ' --fields=1)
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: multipart/form-data" \
+    --form "file=@$zip_file" \
+    --form "checkSum=$checkSum" \
+    "$PDS_SERVER/api/job/${jobUUID}/upload/sourcecode.zip" | $RESULT_FILTER
+
+  if [[ "$?" == "0" ]] ; then
+    echo "File \"$zip_file\" uploaded."
+  else
+    echo "Upload failed."
+  fi
 }
 
 ########
@@ -177,6 +202,11 @@ case "$action" in
   create_job_from_json)
     JSON_FILE="$1" ; check_parameter JSON_FILE
     [ $FAILED == 0 ] && create_job_from_json "$JSON_FILE" 
+    ;;
+  upload_zip)
+    SECHUB_JOB_UUID="$1" ; check_parameter SECHUB_JOB_UUID
+    ZIP_FILE="$2" ; check_parameter ZIP_FILE
+    [ $FAILED == 0 ] && upload_zip "$SECHUB_JOB_UUID" "$ZIP_FILE" 
     ;;
   mark_job_ready_to_start)
     JOB_UUID="$1"   ; check_parameter JOB_UUID
