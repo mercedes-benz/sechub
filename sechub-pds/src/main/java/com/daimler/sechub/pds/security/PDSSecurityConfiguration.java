@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import com.daimler.sechub.pds.PDSMustBeDocumented;
+
 @Configuration
 @EnableGlobalMethodSecurity(jsr250Enabled = true)
 @EnableWebSecurity
@@ -21,18 +23,22 @@ public class PDSSecurityConfiguration extends AbstractAllowPDSAPISecurityConfigu
     /* TODO Albert Tregnaghi, 2020-06-18: extreme simple approach: we just allow ONE user at the moment
      * which is a technical user only. Enough for communication at the beginning, but should be improved later */
     
+    @PDSMustBeDocumented("Techuser user id")
     @Value("${sechub.pds.techuser.userid}")
     String techUserId;
     
+    @PDSMustBeDocumented("Techuser user api token")
     @Value("${sechub.pds.techuser.apitoken}")
     String techUserApiToken;
     
     /* TODO Albert Tregnaghi, 2020-07-05: extreme simple approach: we just allow ONE admin at the moment
      * Enough for communication at the beginning, but should be improved later */
     
+    @PDSMustBeDocumented("Administrator user id")
     @Value("${sechub.pds.admin.userid}")
     String adminUserId;
     
+    @PDSMustBeDocumented("Administrator api token")
     @Value("${sechub.pds.admin.apitoken}")
     String adminApiToken;
     

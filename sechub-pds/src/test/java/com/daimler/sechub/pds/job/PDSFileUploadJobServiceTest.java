@@ -187,25 +187,6 @@ public class PDSFileUploadJobServiceTest {
         
     }
     
-    @Test
-    public void upload_and_delete_jobdata_jobfolder_has_been_removed() {
-        /* prepare */
-        String result = "content data";
-        MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
-
-        serviceToTest.upload(jobUUID, "fileName1.zip", multiPart, ACCEPTED_CHECKSUM);
-        
-        /* check precondition */
-        assertTrue(jobFolder().exists());
-        
-        /* execute */
-        serviceToTest.deleteAllUploads(jobUUID);
-        
-        /* test */
-        assertFalse(jobFolder().exists());
-        
-        
-    }
     private void assertFileUploaded(String fileName) {
         File file= new File(jobFolder(),fileName);
         if (!file.exists()) {

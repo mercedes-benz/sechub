@@ -1,14 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-
-import com.daimler.sechub.adapter.SecHubTimeUnit;
-import com.daimler.sechub.adapter.SecHubTimeUnitData;
 
 public class SecHubTimeUnitDataTest {
     @Test

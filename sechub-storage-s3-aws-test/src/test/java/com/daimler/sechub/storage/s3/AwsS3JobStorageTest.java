@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -27,132 +28,159 @@ import com.daimler.sechub.test.TestPortProvider;
 
 public class AwsS3JobStorageTest {
 
-	@ClassRule
-	public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().
-			withHttpPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpPort()).
-			withHttpsPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpsPort()).
+    @ClassRule
+    public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().withHttpPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpPort())
+            .withHttpsPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpsPort()).
 //			silent().
-			build();
+            build();
 
-	private static AmazonS3 amazonTestClient;
+    private static AmazonS3 amazonTestClient;
 
-	@BeforeClass
-	public static void beforeClass() throws Exception {
-		amazonTestClient = S3_MOCK_RULE.createS3Client();
-	}
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        amazonTestClient = S3_MOCK_RULE.createS3Client();
+    }
 
-	@Test
-	public void a_new_storage_does_not_create_a_new_bucket() throws Exception {
+    @Test
+    public void a_new_storage_does_not_create_a_new_bucket() throws Exception {
 
-		/* execute */
-		new AwsS3JobStorage(amazonTestClient, "bucket1", "projectName", UUID.randomUUID());
+        /* execute */
+        new AwsS3JobStorage(amazonTestClient, "bucket1", "jobstorage/projectName", UUID.randomUUID());
 
-		/* test */
-		assertTrue(amazonTestClient.listBuckets().isEmpty()); // also no bucket2 from former test execution...
+        /* test */
+        assertTrue(amazonTestClient.listBuckets().isEmpty()); // also no bucket2 from former test execution...
 
-	}
+    }
 
-	@Test
-	public void after_store_the_inputstream_is_closed() throws Exception {
+    @Test
+    public void after_store_the_inputstream_is_closed() throws Exception {
 
-		/* prepare */
-		AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "projectName", UUID.randomUUID());
+        /* prepare */
+        AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", UUID.randomUUID());
 
-		Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        Path tmpFile = Files.createTempFile("storage_test", ".txt");
 
-		/* execute */
-		InputStream inputStream = new FileInputStream(tmpFile.toFile());
-		InputStream inputStreamSpy = Mockito.spy(inputStream);
-		storage.store("testB", inputStreamSpy);
+        /* execute */
+        InputStream inputStream = new FileInputStream(tmpFile.toFile());
+        InputStream inputStreamSpy = Mockito.spy(inputStream);
+        storage.store("testB", inputStreamSpy);
 
-		/* test */
-		Mockito.verify(inputStreamSpy,Mockito.atLeast(1)).close(); // stream must be closed
+        /* test */
+        Mockito.verify(inputStreamSpy, Mockito.atLeast(1)).close(); // stream must be closed
 
-	}
+    }
 
-	@Test
-	public void store_stores_textfile_correct_and_can_be_fetched() throws Exception {
+    @Test
+    public void store_stores_textfile_correct_and_can_be_fetched() throws Exception {
 
-		/* prepare */
-		UUID jobjUUID = UUID.randomUUID();
-		String testContent="line1\nline2";
-		AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "projectName", jobjUUID);
+        /* prepare */
+        UUID jobjUUID = UUID.randomUUID();
+        String testContent = "line1\nline2";
+        AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", jobjUUID);
 
-		Path tmpFile = Files.createTempFile("storage_test", ".txt");
-		BufferedWriter bw = Files.newBufferedWriter(tmpFile);
+        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        BufferedWriter bw = Files.newBufferedWriter(tmpFile);
 
-		bw.write(testContent);
-		bw.close();
+        bw.write(testContent);
+        bw.close();
 
-		/* execute */
-		storage.store("testA", new FileInputStream(tmpFile.toFile()));
+        /* execute */
+        storage.store("testA", new FileInputStream(tmpFile.toFile()));
 
-		/* test */
-		String objectName = "jobstorage/projectName/"+jobjUUID+"/testA";
-		assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName)); // test location is as expected
+        /* test */
+        String objectName = "jobstorage/projectName/" + jobjUUID + "/testA";
+        assertTrue("Object must exist after storage", amazonTestClient.doesObjectExist("bucket2", objectName)); // test location is as expected
 
-		AwsS3JobStorage storage2 = new AwsS3JobStorage(amazonTestClient, "bucket2", "projectName", jobjUUID);
-		InputStream loadedStream = storage2.fetch("testA");
-		StringWriter writer = new StringWriter();
-		IOUtils.copy(loadedStream, writer,Charset.defaultCharset());
+        AwsS3JobStorage storage2 = new AwsS3JobStorage(amazonTestClient, "bucket2", "jobstorage/projectName", jobjUUID);
+        InputStream loadedStream = storage2.fetch("testA");
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(loadedStream, writer, Charset.defaultCharset());
 
-		String loaded = writer.toString();
+        String loaded = writer.toString();
 
-		assertEquals(testContent,loaded); //  test content can be fetched
+        assertEquals(testContent, loaded); // test content can be fetched
 
-	}
+    }
 
-	@Test
-	public void stored_object_is_deleted_by_deleteall() throws Exception {
-		/* prepare */
-		UUID jobUUID = UUID.randomUUID();
-		AwsS3JobStorage storage = storeTestData(jobUUID);
+    @Test
+    public void stored_object_is_deleted_by_deleteall() throws Exception {
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+        AwsS3JobStorage storage = storeTestData(jobUUID);
 
-		String objectName = "jobstorage/projectName/"+jobUUID+"/testC";
-		assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName));
+        String objectName = "jobstorage/projectName/" + jobUUID + "/testC";
+        assertTrue("Precondition not fullfilled, jobstorage not found", amazonTestClient.doesObjectExist("bucket2", objectName));
 
-		/* execute */
-		storage.deleteAll();
+        /* execute */
+        storage.deleteAll();
 
-		/* test */
-		assertFalse(amazonTestClient.doesObjectExist("bucket2", objectName));
+        /* test */
+        assertFalse(amazonTestClient.doesObjectExist("bucket2", objectName));
 
-	}
+    }
 
-	@Test
-	public void two_jobstorages_with_one_stored_object_one_storage_is_deleted_by_deleteall_other_still_exists() throws Exception {
-		/* prepare */
-		UUID jobUUID = UUID.randomUUID();
-		UUID jobUUID2 = UUID.randomUUID();
+    @Test
+    public void two_jobstorages_with_one_stored_object_one_storage_is_deleted_by_deleteall_other_still_exists() throws Exception {
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+        UUID jobUUID2 = UUID.randomUUID();
 
-		AwsS3JobStorage storage = storeTestData(jobUUID);
-		storeTestData(jobUUID2);
+        AwsS3JobStorage storage = storeTestData(jobUUID);
+        storeTestData(jobUUID2);
 
-		String objectName = "jobstorage/projectName/"+jobUUID+"/testC";
-		String objectName2 = "jobstorage/projectName/"+jobUUID2+"/testC";
+        String objectName = "jobstorage/projectName/" + jobUUID + "/testC";
+        String objectName2 = "jobstorage/projectName/" + jobUUID2 + "/testC";
 
-		assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName));
-		assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName2));
+        assertTrue("storage object1 not found", amazonTestClient.doesObjectExist("bucket2", objectName));
+        assertTrue("storage object1 not found", amazonTestClient.doesObjectExist("bucket2", objectName2));
 
-		/* execute */
-		storage.deleteAll();
+        /* execute */
+        storage.deleteAll();
 
-		/* test */
-		assertFalse(amazonTestClient.doesObjectExist("bucket2", objectName));
-		assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName2)); // still exists
+        /* test */
+        assertFalse(amazonTestClient.doesObjectExist("bucket2", objectName));
+        assertTrue(amazonTestClient.doesObjectExist("bucket2", objectName2)); // still exists
 
-	}
+    }
 
-	private AwsS3JobStorage storeTestData(UUID jobUUID) throws IOException, FileNotFoundException {
-		AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, "bucket2", "projectName", jobUUID);
+    @Test
+    public void job_storage_storing_alpha_and_beta__listNames__call_returns_alpha_and_beta() throws Exception {
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
 
-		Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        AwsS3JobStorage storage = storeTestData(jobUUID, "bucket2", "test/data/1", "alpha.txt");
+        storeTestData(jobUUID, "bucket2", "test/data/1", "beta.txt");
 
-		/* execute */
-		InputStream inputStream = new FileInputStream(tmpFile.toFile());
-		InputStream inputStreamSpy = Mockito.spy(inputStream);
-		storage.store("testC", inputStreamSpy);
-		return storage;
-	}
+        String objectName1 = "test/data/1/" + jobUUID + "/alpha.txt";
+        String objectName2 = "test/data/1/" + jobUUID + "/beta.txt";
+
+        assertTrue("storage object1 not found", amazonTestClient.doesObjectExist("bucket2", objectName1));
+        assertTrue("storage object2 not found", amazonTestClient.doesObjectExist("bucket2", objectName2));
+
+        /* execute */
+        Set<String> result = storage.listNames();
+
+        /* test */
+        assertEquals(2, result.size());
+        assertTrue(result.contains("alpha.txt"));
+        assertTrue(result.contains("beta.txt"));
+
+    }
+    
+    private AwsS3JobStorage storeTestData(UUID jobUUID) throws IOException, FileNotFoundException {
+        return storeTestData(jobUUID, "bucket2", "jobstorage/projectName", "testC");
+    }
+
+    private AwsS3JobStorage storeTestData(UUID jobUUID, String bucket, String storagePath, String filename) throws IOException, FileNotFoundException {
+        AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, bucket, storagePath, jobUUID);
+
+        Path tmpFile = Files.createTempFile("storage_test", ".txt");
+
+        /* execute */
+        InputStream inputStream = new FileInputStream(tmpFile.toFile());
+        InputStream inputStreamSpy = Mockito.spy(inputStream);
+        storage.store(filename, inputStreamSpy);
+        return storage;
+    }
 
 }
