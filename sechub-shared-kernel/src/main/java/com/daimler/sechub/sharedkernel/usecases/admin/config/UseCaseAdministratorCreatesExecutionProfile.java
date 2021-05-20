@@ -17,7 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ADMIN_CREATES_EXECUTION_PROFILE,
 		group=UseCaseGroup.CONFIGURATION,
-		title="Admin creates an execution proflie",
+		title="Admin creates an execution profile",
 		description="An administrator creates an execution profile")
 public @interface UseCaseAdministratorCreatesExecutionProfile{
 
