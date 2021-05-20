@@ -7,6 +7,8 @@
 
 # Tip: Set PDS_SERVER, PDS_USERID and PDS_APITOKEN as environment variables
 
+PDS_API_VERSION="1.0"
+
 function usage {
   cat - <<EOF
 ---
@@ -24,8 +26,10 @@ ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
 check_alive - Check if the server is running.
 create_job <product-id> <sechub-job-uuid> - Create a new job using <product-id> and a <sechub-job-uuid>.
+create_job_from_json <json-file> - Create a new job using a <json-file> JSON file.
 mark_job_ready_to_start <job-uuid> - Mark a job with <job-uuid> as ready to start.
 job_status <job-uuid> - Get the status of a job using the <job-uuid>.
+monitoring_status - Monitoring information about the server and jobs
 
 EOF
 }
@@ -69,14 +73,23 @@ function create_job {
   local sechubJobUUID=$2
 
   curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: application/json" \
-    -d "$(generate_pds_job_data $sechubJobUUID $productId)" \
+    --data "$(generate_pds_job_data $sechubJobUUID $productId)" \
     "$PDS_SERVER/api/job/create" | $RESULT_FILTER | $JSON_FORMATTER
 }
+
+function create_job_from_json {
+  local json_file=$1
+
+  curl $CURL_AUTH $CURL_PARAMS -i -X POST --header "Content-Type: application/json" \
+    --data "@$json_file" \
+    "$PDS_SERVER/api/job/create" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
 
 function generate_pds_job_data {
   cat <<EOF
 {
-  "apiVersion":"$SECHUB_API_VERSION",
+  "apiVersion":"$PDS_API_VERSION",
   "sechubJobUUID":"$1",
   "productId":"$2"
 }
@@ -160,6 +173,10 @@ case "$action" in
     PDS_PRODUCT_ID="$1" ; check_parameter PDS_PRODUCT_ID
     SECHUB_JOB_UUID="$2" ; check_parameter SECHUB_JOB_UUID
     [ $FAILED == 0 ] && create_job "$PDS_PRODUCT_ID" "$SECHUB_JOB_UUID" 
+    ;;
+  create_job_from_json)
+    JSON_FILE="$1" ; check_parameter JSON_FILE
+    [ $FAILED == 0 ] && create_job_from_json "$JSON_FILE" 
     ;;
   mark_job_ready_to_start)
     JOB_UUID="$1"   ; check_parameter JOB_UUID

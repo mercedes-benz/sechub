@@ -1,0 +1,2 @@
+# The start mode
+START_MODE=debug, localserver

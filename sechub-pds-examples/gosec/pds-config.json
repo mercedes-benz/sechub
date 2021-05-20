@@ -5,17 +5,9 @@
     "products" : [
         {
             "id" : "PDS_GOSEC",
-            "path" : "/home/developer/dev/projects/sechub/sechub-pds-examples/gosec/gosec.sh",
+            "path" : "/tool/gosec.sh",
             "scanType" : "codeScan",
             "description" : "Runs gosec"
-        },
-        {
-
-            "id" : "PDS_WEBSCAN",
-            "path" : "/home/developer/dev/projects/sechub/sechub-pds-examples/gosec/gosec.sh",
-            "scanType" : "webScan",
-            "description" : "Runs script",
-            "unzipUploads" : false
         }
     ]
 }

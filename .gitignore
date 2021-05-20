@@ -39,3 +39,5 @@ sechub_report*.json
 sechub-false-positives*.json
 #!sechub.json
 
+# Docker container
+.env

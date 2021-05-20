@@ -52,9 +52,8 @@ RUN mkdir -p $TOOL_FOLDER
 COPY gosec.sh $TOOL_FOLDER/gosec.sh
 RUN chmod +x $TOOL_FOLDER/gosec.sh
 
-# Set the PDS workspace
-RUN echo "workspace: $WORKSPACE"
-VOLUME $WORKSPACE        # pds workspace 
+# Create the PDS workspace
+RUN mkdir -p $WORKSPACE
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
