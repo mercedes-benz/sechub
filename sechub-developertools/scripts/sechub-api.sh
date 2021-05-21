@@ -166,10 +166,9 @@ EOF
 }
 
 function sechub_project_create {
-  generate_sechub_project_create_data $1 $2 $3  # Show what is sent
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
-    -d "$(generate_sechub_project_create_data $1 $2 $3)" \
-    "$SECHUB_SERVER/api/admin/project"
+  JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
+  echo $JSON_DATA  # Show what is sent
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project"
 }
 
 
