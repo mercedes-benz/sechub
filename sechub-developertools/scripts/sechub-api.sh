@@ -37,7 +37,7 @@ profile_details <profile-id> - Show details of execution profile <profile-id> (e
 profile_list - List all existing execution profiles (json format)
 project_assign_profile <project-id> <profile-id> - Assign execution profile <profile-id> to project <project-id>
 project_assign_user <project-id> <user-id> - Assign user to project (allow scanning)
-project_create <project-id> <owner> ["<project short description>"] - Create a new project; short description is optional
+project_create <project-id> <owner> ["<project short description>"] - Create a new project. The short description is optional.
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
 project_details_all <project-id> - project_details plus assigned execution profiles
 project_falsepositives_list <project-id> - Get defined false-positives for project <project-id> (json format)
