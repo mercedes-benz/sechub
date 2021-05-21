@@ -20,7 +20,7 @@ Shell front end to selected SecHub API calls.
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option.
 
-You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environmet variables
+You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
 so you can omit setting them via options which is better, because your secrets will not be revealed in the process list.
 
 List of actions and mandatory parameters:
@@ -326,6 +326,10 @@ while [[ "${opt:0:1}" == "-" ]] ; do
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
     shift
     ;;
+  -h|-help)
+    usage
+    exit 0
+    ;;
   -p|-plain)
     JSON_FORMATTER="$NOFORMAT_PIPE"
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
@@ -342,6 +346,11 @@ while [[ "${opt:0:1}" == "-" ]] ; do
   -v|-verbose)
     echo "### Connecting as $SECHUB_USERID to $SECHUB_SERVER"
     shift
+    ;;
+  *)
+    echo "Unknown option: \"$opt\""
+    usage
+    exit 1
     ;;
   esac
   opt="$1"
