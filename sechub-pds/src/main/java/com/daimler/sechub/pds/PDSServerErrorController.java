@@ -25,7 +25,7 @@ public class PDSServerErrorController implements ErrorController {
 
     private static final String PATH = "/error"; // NOSONAR
 
-    @PDSMustBeDocumented("When enabled, additional debug information are returned in case of failures. Do NOT use this in production.")
+    @PDSMustBeDocumented(value="When enabled, additional debug information are returned in case of failures. Do NOT use this in production.",scope="development")
     @Value("${sechub.pds.server.debug:false}")
     private boolean debug;
 

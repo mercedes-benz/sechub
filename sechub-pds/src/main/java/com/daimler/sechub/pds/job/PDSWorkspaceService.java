@@ -41,7 +41,7 @@ public class PDSWorkspaceService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
-    @PDSMustBeDocumented("Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.")
+    @PDSMustBeDocumented(value="Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.",scope="execution")
     @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
     String uploadBasePath = WORKSPACE_PARENT_FOLDER_PATH;
 
@@ -54,7 +54,7 @@ public class PDSWorkspaceService {
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
 
-    @PDSMustBeDocumented("Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)")
+    @PDSMustBeDocumented(value="Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)",scope="execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
 

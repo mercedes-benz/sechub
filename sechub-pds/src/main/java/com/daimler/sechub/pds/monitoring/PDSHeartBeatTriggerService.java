@@ -47,15 +47,15 @@ public class PDSHeartBeatTriggerService {
     @Autowired
     PDSServerConfigurationService serverConfigService;
 
-    @PDSMustBeDocumented("Initial delay for heartbeat checks")
+    @PDSMustBeDocumented(value="Initial delay for heartbeat checks",scope="monitoring")
     @Value("${sechub.pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
-    @PDSMustBeDocumented("Delay for heartbeat checks")
+    @PDSMustBeDocumented(value="Delay for heartbeat checks",scope="monitoring")
     @Value("${sechub.pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
-    @PDSMustBeDocumented("Configure if heartbeat checks are enabled")
+    @PDSMustBeDocumented(value="Configure if heartbeat checks are enabled",scope="monitoring")
     @Value("${sechub.pds.config.heartbeat.enable:"+DEFAULT_SCHEDULING_ENABLED+"}")
     boolean heartbeatEnabled=DEFAULT_SCHEDULING_ENABLED;
 

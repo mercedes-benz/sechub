@@ -15,7 +15,7 @@
 :projectSite: https://github.com/daimler/sechub
 :webPage: https://daimler.github.io/sechub
 :sechub: SecHub
-
+:pds: PDS
 
 :launchServerPackageName: com.daimler.sechub
 :launchServerClassName: SecHubServerApplication

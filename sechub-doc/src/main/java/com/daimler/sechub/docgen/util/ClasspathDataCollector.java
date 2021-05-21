@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.daimler.sechub.docgen.DocAnnotationData;
 import com.daimler.sechub.docgen.MustBeDocumentedDataCollector;
+import com.daimler.sechub.docgen.PDSMustBeDocumentedDataCollector;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModel;
 import com.daimler.sechub.docgen.messaging.DomainMessagingModelDataCollector;
 import com.daimler.sechub.docgen.reflections.Reflections;
@@ -32,11 +33,12 @@ public class ClasspathDataCollector {
 	private UseCaseModelDataCollector useCaseModelDataCollector;
 	private PDSUseCaseModelDataCollector pdsUseCaseModelDataCollector;
 	private UseCaseRestDocModelDataCollector useCaseRestDocModelDataCollector;
+    private PDSMustBeDocumentedDataCollector pdsMustbeDocumentedDataCollector;
 	
 	public ClasspathDataCollector(){
 		/* @formatter:off*/
 		reflections = ReflectionsFactory.create();
-		
+		pdsMustbeDocumentedDataCollector = new PDSMustBeDocumentedDataCollector(reflections);
 		mustbeDocumentedDataCollector = new MustBeDocumentedDataCollector(reflections);
 		mockedAdaptersSprintValueDataCollector = new MockedAdaptersSpringValueDataCollector(reflections);
 		domainMessagingModelDataCollector= new DomainMessagingModelDataCollector(reflections);
@@ -48,6 +50,10 @@ public class ClasspathDataCollector {
 	public List<DocAnnotationData> fetchMustBeDocumentParts(){
 		return mustbeDocumentedDataCollector.collect();
 	}
+	
+	public List<DocAnnotationData> fetchPDSMustBeDocumentParts(){
+        return pdsMustbeDocumentedDataCollector.collect();
+    }
 	
 	public List<DocAnnotationData> fetchMockAdapterSpringValueDocumentationParts(){
 		return mockedAdaptersSprintValueDataCollector.collect();

@@ -27,7 +27,7 @@ public class PDSServerConfigurationService {
 
     private static final String DEFAULT_PATH = "./pds-config.json";
 
-    @PDSMustBeDocumented("Define path to PDS configuration file")
+    @PDSMustBeDocumented(value="Define path to PDS configuration file",scope="startup")
     @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
     String pathToConfigFile;
 

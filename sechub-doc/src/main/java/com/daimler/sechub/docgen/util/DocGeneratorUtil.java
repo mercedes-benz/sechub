@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.daimler.sechub.docgen.DocAnnotationData;
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 public class DocGeneratorUtil {
@@ -33,6 +34,21 @@ public class DocGeneratorUtil {
 		}
 		return data;
 	}
+	
+	public static DocAnnotationData buildDataForPDSMustBeDocumented(PDSMustBeDocumented info,AnnotatedElement element) {
+        DocAnnotationData data = new DocAnnotationData();
+        data.scope=info.scope();
+        data.isSecret=info.secret();
+        data.description = info.value();
+        buildSpringValueParts(data, element);
+        buildSpringScheduledParts(data,element);
+        
+        /* when class name shall be used... */
+        if (MustBeDocumented.SCOPE_USE_DEFINED_CLASSNAME_LOWERCASED.equals(data.scope)) {
+            data.scope=toCamelOne(fetchClass(element)).toLowerCase();
+        }
+        return data;
+    }
 
 	public static void newLine(StringBuilder sb,String text) {
 		sb.append(text);

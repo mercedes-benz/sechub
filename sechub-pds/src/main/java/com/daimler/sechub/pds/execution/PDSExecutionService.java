@@ -64,11 +64,11 @@ public class PDSExecutionService {
     private final PDSExecutionWatcher watcher = new PDSExecutionWatcher();
     private final Map<UUID, Future<PDSExecutionResult>> jobsInQueue = new LinkedHashMap<>();
 
-    @PDSMustBeDocumented("Set amount of worker threads used for exeuctions")
+    @PDSMustBeDocumented(value="Set amount of worker threads used for exeuctions", scope="execution")
     @Value("${sechub.pds.config.execute.worker.thread.count:" + DEFAULT_WORKER_THREAD_COUNT + "}")
     int workerThreadCount = DEFAULT_WORKER_THREAD_COUNT;
 
-    @PDSMustBeDocumented("Set amount of maximum executed parts in queue for same time")
+    @PDSMustBeDocumented(value="Set amount of maximum executed parts in queue for same time", scope="execution")
     @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
 

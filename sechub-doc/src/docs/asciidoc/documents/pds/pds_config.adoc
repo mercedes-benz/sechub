@@ -2,6 +2,8 @@
 [[section-pds-configuration]]
 === Configuration
 
+include::../shared/pds_options.adoc[]
+
 === Tech user credentials
 
 Either use system properties
