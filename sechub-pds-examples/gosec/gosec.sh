@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-# PDS_JOB_WORKSPACE_LOCATION -> contains the `PDS-Job-UUID`
-# `/output/result.txt` -> needs to be written
-GO111MODULE=on gosec -fmt=sarif -out="$PDS_JOB_WORKSPACE_LOCATION/output/result.txt" "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/"
+# GoSec needs access to the go binary
+export PATH="$PATH:/usr/local/go/bin"
+GO111MODULE=on gosec -fmt=sarif -out="$PDS_JOB_RESULT_FILE" "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER/..."

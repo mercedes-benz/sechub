@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 ARG WORKSPACE="/workspace"
 ARG PDS_FOLDER="/pds"
 ARG TOOL_FOLDER="/tool"
+ARG PDS_VERSION=0.21.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -38,11 +39,14 @@ RUN cd /tmp && \
 RUN mkdir -p pds && \
     cd /pds && \
     # create checksum file
-    echo "5337a7b4e30bb9dd24f63625c3563925e3a2be2bdc210b6f01f25aec0e9704bb  sechub-pds-0.20.0.jar" > sechub-pds-0.20.0.jar.sha256sum && \
+    echo "f3101a6a2a96b39edf493249f2300c627fa01fcb7a6b96c5ae1edfbe70a31d46  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
     # download pds
-    wget https://github.com/Daimler/sechub/releases/download/v0.20.0-pds/sechub-pds-0.20.0.jar && \
+    wget https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-0.20.0.jar.sha256sum
+    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+
+# Create the PDS workspace
+RUN mkdir -p $WORKSPACE
 
 # Copy PDS configfile
 COPY pds-config.json /$PDS_FOLDER/pds-config.json
@@ -51,9 +55,6 @@ COPY pds-config.json /$PDS_FOLDER/pds-config.json
 RUN mkdir -p $TOOL_FOLDER
 COPY gosec.sh $TOOL_FOLDER/gosec.sh
 RUN chmod +x $TOOL_FOLDER/gosec.sh
-
-# Create the PDS workspace
-RUN mkdir -p $WORKSPACE
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh

@@ -18,7 +18,7 @@ Shell front end for the Product Delegation Server (PDS)
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option.
 
-You are encouraged to set PDS_SERVER, PDS_USERID and PDS_APITOKEN as environmet variables
+You are encouraged to set PDS_SERVER, PDS_USERID and PDS_APITOKEN as environment variables
 so you can omit setting them via options which is better, because your secrets will not be revealed in the process list.
 
 List of actions and mandatory parameters:
@@ -154,6 +154,10 @@ while [[ "${opt:0:1}" == "-" ]] ; do
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
     shift
     ;;
+  -h|-help)
+    usage
+    exit 0
+    ;;
   -p|-plain)
     JSON_FORMATTER="$NOFORMAT_PIPE"
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
@@ -227,10 +231,10 @@ case "$action" in
     usage
     ;;
   *)
-  echo "Unknown action: \"$action\""
-  usage
-  exit 1
-  ;;
+    echo "Unknown action: \"$action\""
+    usage
+    exit 1
+    ;;
 esac
 
 # add missing newline if not formatted

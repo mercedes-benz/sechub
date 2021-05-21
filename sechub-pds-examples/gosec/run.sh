@@ -19,7 +19,7 @@ function localserver {
          -Dsechub.pds.config.file=/pds/pds-config.json \
          -Dserver.port=8444 \
          -Dserver.address=0.0.0.0 \
-         -jar /pds/sechub-pds-0.20.0.jar
+         -jar /pds/sechub-pds-0.21.0.jar
 }
 
 if [[ "$START_MODE" == "localserver" ]]
