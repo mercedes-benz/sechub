@@ -72,7 +72,7 @@ public class PDSWorkspaceService {
         JobStorage storage = fetchStorage(jobUUID, config);
         Set<String> names = storage.listNames();
 
-        LOG.debug("For jobUUID={} following names are found in storage:{}", names);
+        LOG.debug("For jobUUID={} following names are found in storage:{}", jobUUID, names);
 
         for (String name : names) {
 

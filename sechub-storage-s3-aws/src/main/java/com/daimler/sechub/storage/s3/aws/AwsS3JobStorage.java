@@ -57,7 +57,10 @@ public class AwsS3JobStorage implements JobStorage {
                 client.createBucket(bucketName);
             }
             ObjectMetadata meta = new ObjectMetadata();
-            client.putObject(bucketName, getObjectName(name), stream, meta);
+            String objectName = getObjectName(name);
+            LOG.debug("store objectName={}",objectName+" on bucket {}",objectName,bucketName);
+            
+            client.putObject(bucketName, objectName, stream, meta);
 
         } catch (Exception e) {
             throw new IOException("Store of " + name + " to s3 failed", e);
