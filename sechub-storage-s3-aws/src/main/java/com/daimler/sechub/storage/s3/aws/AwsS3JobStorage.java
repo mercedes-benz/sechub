@@ -74,7 +74,7 @@ public class AwsS3JobStorage implements JobStorage {
             return Collections.emptySet();
         }
         Set<String> set = new LinkedHashSet<>();
-        ObjectListing data = client.listObjects(bucketName, storagePath);
+        ObjectListing data = client.listObjects(bucketName, getObjectPrefix());
 
         String prefix = getObjectPrefix();
         int prefixLength = prefix.length();
