@@ -68,7 +68,11 @@ public class DirectPDSAPIJobScenario6IntTest {
         String jobReport = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
         
         /* test */
-        assertTrue(jobReport.contains("#PDS_INTTEST_PRODUCT_CODESCAN"));
+        String expectedIdentifier = "#PDS_INTTEST_PRODUCT_CODESCAN";
+        
+        if (! jobReport.contains(expectedIdentifier)){
+            fail("job report does not contain expected identifier:"+expectedIdentifier+"\nbut was:"+jobReport);
+        }
         
         /* @formatter:on */
     }
