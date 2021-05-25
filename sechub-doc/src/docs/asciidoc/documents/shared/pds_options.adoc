@@ -11,7 +11,7 @@ E.g. a key like `sechub.pds.admin.apitoken` can be set with
 java ... -Dsechub.pds.admin.apitoken={noop}12345exampleToken
 ----
 
-or with an environment entry `SECHUB_PDS_ADMIN_APITOOKEN` which
+or with an environment entry `SECHUB_PDS_ADMIN_APITOKEN` which
 is e.g. more suitable for a `kubernetes` cluster deployment.
 
 The next text blocks describe the keys available on {pds}:

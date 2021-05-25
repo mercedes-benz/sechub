@@ -29,8 +29,8 @@ public class SharedVolumeJobStorage implements JobStorage {
     private Path volumePath;
 
     public SharedVolumeJobStorage(Path rootLocation, String storagePath, UUID jobUUID) {
-        requireNonNull(rootLocation, "rootlocation may not be null");
-        requireNonNull(storagePath, "projectId may not be null");
+        requireNonNull(rootLocation, "rootLocation may not be null");
+        requireNonNull(storagePath, "storagePath may not be null");
         requireNonNull(jobUUID, "jobUUID may not be null");
 
         this.storagePath = storagePath;
@@ -65,12 +65,14 @@ public class SharedVolumeJobStorage implements JobStorage {
         }
         LOG.info("job:{}: storing {} in path {}", jobUUID, name, storagePath);
 
+        Path pathToFile = getPathToFile(name);
+        
         try (InputStream inputStream = stream) {
-            Path pathToFile = getPathToFile(name);
             Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
+            
             LOG.debug("Stored:{} at {}", name, pathToFile);
         } catch (ResourceAccessException e) {
-            throw new IOException("Provided file exceeds file limit.", e);
+            throw new IOException("Was not able to store input stream into file "+ pathToFile, e);
         }
     }
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +  Initial AsciiDoc editor configuration file - V1.0  +
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++

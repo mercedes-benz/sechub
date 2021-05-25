@@ -48,42 +48,42 @@ public class PDSUseCaseAsciiDocGenerator {
 
         Context context = new Context();
         context.diagramsGenFolder = diagramsGenFolder;
-        int h = 3;
+        int headlineLevel = 3;
         context.addLine("");
         context.addLine(":usecasedoc:");
         context.addLine("");
         context.addLine("[[section-usecases]]");
-        context.addLine(headline(h++) + "Use cases");
+        context.addLine(headline(headlineLevel++) + "Use cases");
         context.addLine("");
         context.addLine("ifdef::techdoc[]");
         context.addLine("TIP: The complete documentation about use cases is generated. If you want to change content, please search for ");
         context.addLine("     `@UseCaseDefinition` references in source code and make necessary changes inside code!");
         context.addLine("endif::techdoc[]");
         context.addLine("");
-        generateOverview(model, context, h);
-        generateDetails(model, context, h);
+        generateOverview(model, context, headlineLevel);
+        generateDetails(model, context, headlineLevel);
 
         return context.getAsciiDoc();
     }
 
-    private void generateDetails(UseCaseModel model, Context context, int h) {
+    private void generateDetails(UseCaseModel model, Context context, int headlineLevel) {
         for (UseCaseEntry entry : model.getUseCases()) {
-            generateUseCase(context, h, entry);
+            generateUseCase(context, headlineLevel, entry);
         }
     }
 
-    private void generateOverview(UseCaseModel model, Context context, int h) {
-        context.addLine(headline(h) + "Overview about usecase groups");
+    private void generateOverview(UseCaseModel model, Context context, int headlineLevel) {
+        context.addLine(headline(headlineLevel) + "Overview about usecase groups");
         UseCaseModelType type = model.getType();
         switch (type) {
         case SECHUB:
-            for (UseCaseGroup g : UseCaseGroup.values()) {
-                generateGroupUseCaseLinks(context, h, model.getGroup(g));
+            for (UseCaseGroup useCaseGroup : UseCaseGroup.values()) {
+                generateGroupUseCaseLinks(context, headlineLevel, model.getGroup(useCaseGroup));
             }
             break;
         case PDS:
-            for (PDSUseCaseGroup g : PDSUseCaseGroup.values()) {
-                generateGroupUseCaseLinks(context, h, model.getGroup(g));
+            for (PDSUseCaseGroup useCaseGroup : PDSUseCaseGroup.values()) {
+                generateGroupUseCaseLinks(context, headlineLevel, model.getGroup(useCaseGroup));
             }
             break;
         default:
@@ -91,12 +91,12 @@ public class PDSUseCaseAsciiDocGenerator {
         }
     }
 
-    private void generateGroupUseCaseLinks(Context context, int h, UseCaseDefGroup group) {
+    private void generateGroupUseCaseLinks(Context context, int headlineLevel, UseCaseDefGroup group) {
         SortedSet<UseCaseEntry> entries = group.getUseCases();
         if (entries.isEmpty()) {
             return;
         }
-        context.addLine(headline(h + 1) + group.title);
+        context.addLine(headline(headlineLevel + 1) + group.title);
         context.addLine(group.description);
         context.addLine("");
         for (UseCaseEntry entry : entries) {
@@ -105,9 +105,9 @@ public class PDSUseCaseAsciiDocGenerator {
         context.addLine("");
     }
 
-    private void generateUseCase(Context context, int h, UseCaseEntry entry) {
+    private void generateUseCase(Context context, int headlineLevel, UseCaseEntry entry) {
         context.addLine(UseCaseAsciiDocFactory.createAnker(entry));
-        context.addLine(headline(h) + entry.getId() + "-" + entry.getTitle());
+        context.addLine(headline(headlineLevel) + entry.getId() + "-" + entry.getTitle());
         context.addLine(entry.getDescription());
         context.addLine("");
 

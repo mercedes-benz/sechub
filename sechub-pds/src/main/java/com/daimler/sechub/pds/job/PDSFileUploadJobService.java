@@ -127,7 +127,7 @@ public class PDSFileUploadJobService {
 
     private void assertCheckSumCorrect(String checkSum, Path path) {
         if (!checksumService.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
-            LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
+            LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
             throw new PDSNotAcceptableException("Sourcecode checksum check failed");
         }
     }
@@ -136,7 +136,7 @@ public class PDSFileUploadJobService {
         if (!zipSupport.isZipFile(path)) {
             Path fileName = path.getFileName();
 
-            LOG.error("uploaded file {} is NOT a valid ZIP file! Doing garbage control!", fileName);
+            LOG.error("uploaded file {} is NOT a valid ZIP file!", fileName);
             throw new PDSNotAcceptableException(fileName + " is not a valid zip file");
         }
     }

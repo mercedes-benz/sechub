@@ -47,7 +47,7 @@ public class PDSMultiStorageService implements StorageService {
         }
 
         if (jobStorageFactory == null) {
-            throw new IllegalStateException("Did not found any available storage setup! At least one must be correct set!");
+            throw new IllegalStateException("Did not found any available storage setup! At least one must be set!");
         }
         LOG.info("Created storage factory: {}", jobStorageFactory.getClass().getSimpleName());
 

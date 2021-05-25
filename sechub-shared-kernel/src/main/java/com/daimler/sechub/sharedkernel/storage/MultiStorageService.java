@@ -51,7 +51,7 @@ public class MultiStorageService implements StorageService {
 		}
 		
 		if (jobStorageFactory == null) {
-			throw new IllegalStateException("Did not found any available storage setup! At least one must be correct set!");
+			throw new IllegalStateException("Did not found any available storage setup! At least one must be set!");
 		}
 		LOG.info("Created storage factory: {}", jobStorageFactory.getClass().getSimpleName());
 
@@ -60,7 +60,7 @@ public class MultiStorageService implements StorageService {
 	@Override
 	public JobStorage getJobStorage(String projectId, UUID jobUUID) {
 	    /* we use here "jobstorage/${projectId} - so we have same job storage path as before in sechub itself
-	     * - for PDS own prefix (storageId) is used ubsude storagePath. We could have changed to
+	     * - for PDS own prefix (storageId) is used insdide storagePath. We could have changed to
 	     * something like "sechub/jobstarge/${projectId}" but this would have forced migration issues. So we keep this
 	     * "old style"
 	     */

@@ -75,17 +75,16 @@ public class PDSFileUploadJobServiceTest {
         when(checksumService.hasCorrectChecksum(eq(ACCEPTED_CHECKSUM), any())).thenReturn(true);
         when(checksumService.hasCorrectChecksum(eq(NOT_ACCEPTED_CHECKSUM), any())).thenReturn(false);
     }
-    
-    
+
     @Test
     void upload_works_when_uploads_valid_zipfile_so_given_content_is_given_to_storage() throws Exception {
         /* prepare */
         String result = CONTENT_DATA;
         ExtendedMockMultipartFile multiPart = new ExtendedMockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-        assertEquals(40, allowedNameWithMaxLength.length());
+
         when(zipSupport.isZipFile(any())).thenReturn(true);
-        
+
         /* execute */
         serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, ACCEPTED_CHECKSUM);
 
@@ -95,14 +94,13 @@ public class PDSFileUploadJobServiceTest {
         verify(storage).store(eq("123456789-123456789_123456789.123456.zip"), eq(usedFileInputStream));
 
     }
-    
+
     @Test
     void upload_works_when_uploads_is_not_valid_zipfile_but_ends_not_with_zip_so_given_content_is_given_to_storage() throws Exception {
         /* prepare */
         String result = CONTENT_DATA;
         ExtendedMockMultipartFile multiPart = new ExtendedMockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.1234561234";
-        assertEquals(40, allowedNameWithMaxLength.length());
 
         /* execute */
         serviceToTest.upload(jobUUID, allowedNameWithMaxLength, multiPart, ACCEPTED_CHECKSUM);
@@ -120,7 +118,6 @@ public class PDSFileUploadJobServiceTest {
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "1234567890123456789012345678901234567890";
-        assertEquals(40, fileName.length());// check precondition
 
         PDSNotFoundException exception = assertThrows(PDSNotFoundException.class, () -> {
 
@@ -141,7 +138,6 @@ public class PDSFileUploadJobServiceTest {
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "1234567890123456789012345678901234567890";
-        assertEquals(40, fileName.length());// check precondition
         job.setState(PDSJobStatusState.READY_TO_START);
 
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
@@ -156,12 +152,12 @@ public class PDSFileUploadJobServiceTest {
     }
 
     @Test
-    void upload_fails_when_containing_filename_length_41_throws_illegal_argument_exception() {
+    void upload_fails_when_containing_filename_length_41_so_filename_length_too_long_throws_illegal_argument_exception() {
         /* prepare */
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "12345678901234567890123456789012345678901";
-        assertEquals(41, fileName.length());// check precondition
+        assertEquals(41, fileName.length());// check test string has really 41 (just a sanity check)
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
 
@@ -179,14 +175,12 @@ public class PDSFileUploadJobServiceTest {
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "123456789/123456789012345678901234567890";
-        assertEquals(40, fileName.length());// check precondition
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
 
             /* execute */
             serviceToTest.upload(jobUUID, fileName, multiPart, ACCEPTED_CHECKSUM);
         });
-
 
         /* test */
         assertTrue(exception.getMessage().contains("[a-zA-Z"));
@@ -198,7 +192,6 @@ public class PDSFileUploadJobServiceTest {
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String fileName = "123456789\\123456789012345678901234567890";
-        assertEquals(40, fileName.length());// check precondition
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
 
@@ -216,9 +209,9 @@ public class PDSFileUploadJobServiceTest {
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-        assertEquals(40, allowedNameWithMaxLength.length());
+
         when(zipSupport.isZipFile(any())).thenReturn(true);
-        
+
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
 
             /* execute */
@@ -227,20 +220,20 @@ public class PDSFileUploadJobServiceTest {
 
         /* test */
         String message = exception.getMessage();
-        
+
         assertTrue(message.contains("checksum"));
         assertTrue(message.contains("failed"));
     }
-    
+
     @Test
     void upload_fails_when_not_a_zipfile_but_checksum_service_says_not_correct_checksum() {
         /* prepare */
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.txt";
-        assertEquals(40, allowedNameWithMaxLength.length());
+
         when(zipSupport.isZipFile(any())).thenReturn(false); // would always fail but may not matter, because not a ZIP file...
-        
+
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
 
             /* execute */
@@ -249,19 +242,17 @@ public class PDSFileUploadJobServiceTest {
 
         /* test */
         String message = exception.getMessage();
-        
+
         assertTrue(message.contains("checksum"));
         assertTrue(message.contains("failed"));
     }
-    
-    
+
     @Test
     void upload_fails_when_filename_ends_with_zip_but_is_not_valid_zip_file() {
         /* prepare */
         String result = CONTENT_DATA;
         MockMultipartFile multiPart = new MockMultipartFile("file", result.getBytes());
         String allowedNameWithMaxLength = "123456789-123456789_123456789.123456.zip";
-        assertEquals(40, allowedNameWithMaxLength.length());
 
         PDSNotAcceptableException exception = assertThrows(PDSNotAcceptableException.class, () -> {
 
@@ -271,7 +262,7 @@ public class PDSFileUploadJobServiceTest {
 
         /* test */
         String message = exception.getMessage();
-        
+
         assertTrue(message.contains("zip"));
         assertTrue(message.contains("valid"));
     }

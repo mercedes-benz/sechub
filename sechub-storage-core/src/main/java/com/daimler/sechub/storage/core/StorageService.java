@@ -21,7 +21,7 @@ public interface StorageService {
      * 
      * @param storagePath - defines the storage path. Must be a convertible into a
      *                    valid path structure from storage root location. Usage
-     *                    examples:, e.g. just simple project id, or something more
+     *                    examples: Either just a simple identifier (e.g. a project id), or something more
      *                    complex like "pds/gosec-cluster" . When <code>null</code>
      *                    the implementation decides default storage path.
      * @param jobUUID     job UUID
