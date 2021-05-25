@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: MIT
+In PDS we need to store job data (e.g. zipped source code).
+
+*At least one storage setup must be defined*- otherwise {pds} server will not start!
+You can either define a shared volume (normally a NFS) or a S3 storage.
+
+Look at <<section-gen-config-scope-storage,Storage configuration>> for configuration details.

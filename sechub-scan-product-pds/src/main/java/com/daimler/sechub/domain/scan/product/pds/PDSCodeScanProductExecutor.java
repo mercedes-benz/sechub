@@ -31,8 +31,8 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 @Service
 public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {

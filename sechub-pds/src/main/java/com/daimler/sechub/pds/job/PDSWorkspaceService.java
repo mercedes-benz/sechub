@@ -4,9 +4,11 @@ package com.daimler.sechub.pds.job;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -17,26 +19,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
+import com.daimler.sechub.pds.storage.PDSMultiStorageService;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
+import com.daimler.sechub.storage.core.JobStorage;
 
 @Service
 public class PDSWorkspaceService {
 
-    private static final String UPLOAD = "upload";
     public static final String OUTPUT = "output";
     public static final String RESULT_TXT = "result.txt";
     public static final String SYSTEM_OUT_LOG = "system-out.log";
     public static final String SYSTEM_ERROR_LOG = "system-error.log";
 
+    private static final String UPLOAD = "upload";
+
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
+    @PDSMustBeDocumented(value = "Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
     @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
     String uploadBasePath = WORKSPACE_PARENT_FOLDER_PATH;
+
+    @Autowired
+    PDSMultiStorageService storageService;
 
     @Autowired
     PDSServerConfigurationService serverConfigService;
@@ -44,8 +54,62 @@ public class PDSWorkspaceService {
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
 
+    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
+
+    /**
+     * Prepares workspace:
+     * <ol>
+     * <li><Fetch data from storage and copy to local workspace</li>
+     * </ol>
+     * 
+     * @param config
+     */
+    public void prepareWorkspace(UUID jobUUID, PDSJobConfiguration config) throws IOException {
+        File jobFolder = getUploadFolder(jobUUID);
+
+        JobStorage storage = fetchStorage(jobUUID, config);
+        Set<String> names = storage.listNames();
+
+        LOG.debug("For jobUUID={} following names are found in storage:{}", jobUUID, names);
+
+        for (String name : names) {
+
+            InputStream fetchedInputStream = storage.fetch(name);
+            File uploadFile = new File(jobFolder, name);
+
+            try {
+                FileUtils.copyInputStreamToFile(fetchedInputStream, uploadFile);
+                LOG.debug("Imported file {} for job {} from storage to {}", name, jobUUID, uploadFile.getAbsolutePath());
+            } catch (IOException e) {
+                LOG.error("Was not able to import {} for job {}, reason:", name, jobUUID, e.getMessage());
+                throw new IllegalArgumentException("Cannot import given file from storage", e);
+            }
+
+        }
+
+    }
+
+    private JobStorage fetchStorage(UUID jobUUID, PDSJobConfiguration config) {
+        String storagePath = findStoragePath(config);// undefined, so use new PDS location - we need to set this for #435...
+
+        LOG.debug("Feching storage for storagePath = {} and jobUUID:{}", storagePath, jobUUID);
+
+        JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
+        return storage;
+    }
+
+    private String findStoragePath(PDSJobConfiguration config) {
+        /*
+         * TODO Albert Tregnaghi, 2021-05-20: this is point where we could reuse
+         * existing sechub uploads. See https://github.com/Daimler/sechub/issues/435
+         * (reuse data) when have the storagePath inside the config (as a sent parameter
+         * "uploadStoragePath") and the sechub server does not the upload but only send
+         * this, we would save upoad time and memory
+         */
+        return config.getExternalStoragePath();
+    }
 
     /**
      * Resolves upload folder - if not existing it will be created
@@ -123,8 +187,26 @@ public class PDSWorkspaceService {
 
     }
 
-    public void cleanup(UUID jobUUID) throws IOException {
+    public void cleanup(UUID jobUUID, PDSJobConfiguration config) throws IOException {
         FileUtils.deleteDirectory(getWorkspaceFolder(jobUUID));
+        LOG.info("Removed workspace folder for job {}", jobUUID);
+
+        String externalStoragePath = null;
+        if (config != null) {
+            externalStoragePath = config.getExternalStoragePath();
+        }
+
+        boolean cleanupStorageAutomatically = externalStoragePath == null;
+
+        if (cleanupStorageAutomatically) {
+            JobStorage storage = fetchStorage(jobUUID, config);
+            storage.deleteAll();
+            LOG.info("Removed storage for job {}", jobUUID);
+
+        } else {
+            LOG.info("Removed NOT storage for job {} because external location {}", jobUUID, externalStoragePath);
+        }
+
     }
 
     public String getProductPathFor(PDSJobConfiguration config) {

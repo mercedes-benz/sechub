@@ -82,6 +82,12 @@ pipeline {
                     SECHUB_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')
                     SECHUB_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
+                    // we setup PDS storage with same s3 bucket data
+                    SECHUB_PDS_STORAGE_S3_ACCESSKEY = getStringCredentialsOrUndefined('sechub-storage-s3-accesskey')
+                    SECHUB_PDS_STORAGE_S3_SECRETKEY = getStringCredentialsOrUndefined('sechub-storage-s3-secretkey')
+                    SECHUB_PDS_STORAGE_S3_BUCKETNAME = getStringCredentialsOrUndefined('sechub-storage-s3-bucketname')               
+                    SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
+                    
                     SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
 
                     }

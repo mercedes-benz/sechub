@@ -8,12 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.daimler.sechub.sharedkernel.storage.filesystem.SharedVolumeJobStorageFactory;
 import com.daimler.sechub.storage.core.JobStorage;
 import com.daimler.sechub.storage.core.JobStorageFactory;
 import com.daimler.sechub.storage.core.S3Setup;
 import com.daimler.sechub.storage.core.SharedVolumeSetup;
+import com.daimler.sechub.storage.core.StorageService;
 import com.daimler.sechub.storage.s3.aws.AwsS3JobStorageFactory;
+import com.daimler.sechub.storage.sharevolume.spring.SharedVolumeJobStorageFactory;
 
 /**
  * MultiStorageService - will provide job storage objects depending on
@@ -40,13 +41,17 @@ public class MultiStorageService implements StorageService {
 
 	@Autowired
 	public MultiStorageService(SharedVolumeSetup sharedVolumeSetup, S3Setup s3Setup) {
+	    
 		if (s3Setup.isAvailable()) {
-			jobStorageFactory = new AwsS3JobStorageFactory(s3Setup);
+		    jobStorageFactory = new AwsS3JobStorageFactory(s3Setup);
+			
 		} else if (sharedVolumeSetup.isAvailable()) {
-			jobStorageFactory = new SharedVolumeJobStorageFactory(sharedVolumeSetup);
+		    jobStorageFactory = new SharedVolumeJobStorageFactory(sharedVolumeSetup);
+			
 		}
+		
 		if (jobStorageFactory == null) {
-			throw new IllegalStateException("Did not found any available storage setup! At least one must be correct set!");
+			throw new IllegalStateException("Did not found any available storage setup! At least one must be set!");
 		}
 		LOG.info("Created storage factory: {}", jobStorageFactory.getClass().getSimpleName());
 
@@ -54,7 +59,12 @@ public class MultiStorageService implements StorageService {
 
 	@Override
 	public JobStorage getJobStorage(String projectId, UUID jobUUID) {
-		return jobStorageFactory.createJobStorage(projectId, jobUUID);
+	    /* we use here "jobstorage/${projectId} - so we have same job storage path as before in sechub itself
+	     * - for PDS own prefix (storageId) is used insdide storagePath. We could have changed to
+	     * something like "sechub/jobstarge/${projectId}" but this would have forced migration issues. So we keep this
+	     * "old style"
+	     */
+		return jobStorageFactory.createJobStorage("jobstorage/"+projectId, jobUUID);
 	}
 
 }

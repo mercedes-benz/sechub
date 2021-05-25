@@ -42,8 +42,8 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 /**
  * Scan service - main entry point for scans

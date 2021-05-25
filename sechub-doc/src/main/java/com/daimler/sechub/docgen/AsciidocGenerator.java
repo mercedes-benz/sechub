@@ -59,6 +59,8 @@ public class AsciidocGenerator implements Generator {
 		File diagramsGenFolder = new File(diagramsFolder, "gen");
 
 		File systemProperitesFile = createSystemProperyTargetFile(documentsGenFolder);
+		File pdsSystemProperitesFile = createPDSSystemProperyTargetFile(documentsGenFolder);
+		
 		File javaLaunchExampleFile = createJavaLaunchExampleTargetFile(documentsGenFolder);
 		File scheduleDescriptionFile = createScheduleDescriptionTargetFile(documentsGenFolder);
 		File specialMockValuePropertiesFile = createSpecialMockConfigurationPropertiesTargetFile(documentsGenFolder);
@@ -80,6 +82,7 @@ public class AsciidocGenerator implements Generator {
         /* ----------------------- */
 		AsciidocGenerator generator = new AsciidocGenerator();
 		
+		/* SECHUB */
 		generator.generateExampleFiles(documentsGenFolder);
 		generator.generateClientParts(documentsGenFolder);
 		generator.fetchMustBeDocumentParts();
@@ -89,8 +92,12 @@ public class AsciidocGenerator implements Generator {
 		generator.generateMockPropertiesDescription(specialMockValuePropertiesFile);
 		generator.generateMessagingFiles(messagingFile, diagramsGenFolder);
 		generator.generateUseCaseFiles(documentsGenFolder,diagramsGenFolder);
-		generator.generatePDSUseCaseFiles(documentsGenFolder,diagramsGenFolder);
 		generator.generateProfilesOverview(diagramsGenFolder);
+
+		/* PDS*/
+		generator.generatePDSUseCaseFiles(documentsGenFolder,diagramsGenFolder);
+		generator.generatePDSSystemPropertiesDescription(pdsSystemProperitesFile);
+		
 	}
 
 
@@ -193,6 +200,10 @@ public class AsciidocGenerator implements Generator {
 	static File createSystemProperyTargetFile(File genFolder) {
 		return new File(genFolder, "gen_systemproperties.adoc");
 	}
+	
+	static File createPDSSystemProperyTargetFile(File genFolder) {
+        return new File(genFolder, "gen_pds_systemproperties.adoc");
+    }
 
 	static File createJavaLaunchExampleTargetFile(File genFolder) {
 		return new File(genFolder, "gen_javalaunchexample.adoc");
@@ -221,6 +232,11 @@ public class AsciidocGenerator implements Generator {
 		String text = propertiesGenerator.generate(getCollector().fetchMustBeDocumentParts());
 		writer.save(targetFile, text);
 	}
+	
+	public void generatePDSSystemPropertiesDescription(File targetFile) throws IOException {
+        String text = propertiesGenerator.generate(getCollector().fetchPDSMustBeDocumentParts());
+        writer.save(targetFile, text);
+    }
 
 	public void generateJavaLaunchExample(File targetFile) throws IOException {
 		String text = javaLaunchExampleGenerator.generate(getCollector().fetchMustBeDocumentParts());

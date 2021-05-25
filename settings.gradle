@@ -53,7 +53,9 @@ include 'sechub-cli',
 
 'sechub-scan-testframework',
 'sechub-shared-kernel-testframework',
+
 'sechub-storage-core',
+'sechub-storage-sharedvolume-spring',
 'sechub-storage-s3-aws',
 'sechub-storage-s3-aws-test',
 
