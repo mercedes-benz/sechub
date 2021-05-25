@@ -103,7 +103,10 @@ public class AwsS3JobStorage implements JobStorage {
     @Override
     public InputStream fetch(String name) throws IOException {
         try {
-            return client.getObject(bucketName, getObjectName(name)).getObjectContent();
+            String objectName = getObjectName(name);
+            LOG.debug("Fetching objectName={} from bucket={}", objectName, bucketName);
+            
+            return client.getObject(bucketName, objectName).getObjectContent();
         } catch (Exception e) {
             throw new IOException("Was not able to fetch object from s3 bucket:" + name);
         }

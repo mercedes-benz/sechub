@@ -41,7 +41,7 @@ public class PDSWorkspaceService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSWorkspaceService.class);
     private static final String WORKSPACE_PARENT_FOLDER_PATH = "./";
 
-    @PDSMustBeDocumented(value="Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.",scope="execution")
+    @PDSMustBeDocumented(value = "Set pds workspace root folder path. Inside this path the sub directory `workspace` will be created.", scope = "execution")
     @Value("${sechub.pds.workspace.rootfolder:" + WORKSPACE_PARENT_FOLDER_PATH + "}")
     String uploadBasePath = WORKSPACE_PARENT_FOLDER_PATH;
 
@@ -54,7 +54,7 @@ public class PDSWorkspaceService {
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
 
-    @PDSMustBeDocumented(value="Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)",scope="execution")
+    @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
     private boolean workspaceAutoCleanDisabled;
 
@@ -71,6 +71,8 @@ public class PDSWorkspaceService {
 
         JobStorage storage = fetchStorage(jobUUID, config);
         Set<String> names = storage.listNames();
+
+        LOG.debug("For jobUUID={} following names are found in storage:{}", names);
 
         for (String name : names) {
 
@@ -91,6 +93,8 @@ public class PDSWorkspaceService {
 
     private JobStorage fetchStorage(UUID jobUUID, PDSJobConfiguration config) {
         String storagePath = findStoragePath(config);// undefined, so use new PDS location - we need to set this for #435...
+
+        LOG.debug("Feching storage for storagePath = {} and jobUUID:{}", storagePath, jobUUID);
 
         JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
         return storage;

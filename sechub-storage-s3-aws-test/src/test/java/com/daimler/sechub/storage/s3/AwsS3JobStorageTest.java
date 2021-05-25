@@ -3,11 +3,14 @@ package com.daimler.sechub.storage.s3;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -27,6 +30,8 @@ import com.daimler.sechub.storage.s3.aws.AwsS3JobStorage;
 import com.daimler.sechub.test.TestPortProvider;
 
 public class AwsS3JobStorageTest {
+
+    private static final String TEST_DATA = "TEST-DATA";
 
     @ClassRule
     public static final S3MockRule S3_MOCK_RULE = S3MockRule.builder().withHttpPort(TestPortProvider.DEFAULT_INSTANCE.getS3MockServerHttpPort())
@@ -144,6 +149,27 @@ public class AwsS3JobStorageTest {
     }
 
     @Test
+    public void two_jobstorages_inside_different_jobs_are_fetachable() throws Exception {
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+        UUID jobUUID2 = UUID.randomUUID();
+
+        AwsS3JobStorage storage1 = new AwsS3JobStorage(amazonTestClient, "bucket-1", "pds/test1", jobUUID);
+        AwsS3JobStorage storage2 = new AwsS3JobStorage(amazonTestClient, "bucket-1", "pds/test1", jobUUID2);
+        storeCreatedTestDataFile("file1.txt", storage1);
+        storeCreatedTestDataFile("file2.txt", storage2);
+
+        /* execute */
+        InputStream fetched1 = storage1.fetch("file1.txt");
+        InputStream fetched2 = storage2.fetch("file2.txt");
+
+        /* test */
+        assertNotNull(fetched1);
+        assertNotNull(fetched2);
+
+    }
+
+    @Test
     public void job_storage_storing_alpha_and_beta__listNames__call_returns_alpha_and_beta() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.randomUUID();
@@ -166,7 +192,30 @@ public class AwsS3JobStorageTest {
         assertTrue(result.contains("beta.txt"));
 
     }
-    
+
+    @Test
+    public void job_storage_storing_alpha__alpha_is_listed_and_can_be_fetched() throws Exception {
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID();
+
+        String name = "alpha.txt";
+        AwsS3JobStorage storage = storeTestData(jobUUID, "bucket2", "test/data/1", name);
+
+        /* check precondition - listed as name */
+        Set<String> result = storage.listNames();
+        assertTrue(result.contains(name));
+
+        /* execute again */
+        InputStream fetched = storage.fetch(name);
+
+        /* test */
+        InputStreamReader reader = new InputStreamReader(fetched);
+        BufferedReader br = new BufferedReader(reader);
+        String line = br.readLine();
+        assertEquals(TEST_DATA, line);
+
+    }
+
     private AwsS3JobStorage storeTestData(UUID jobUUID) throws IOException, FileNotFoundException {
         return storeTestData(jobUUID, "bucket2", "jobstorage/projectName", "testC");
     }
@@ -174,12 +223,19 @@ public class AwsS3JobStorageTest {
     private AwsS3JobStorage storeTestData(UUID jobUUID, String bucket, String storagePath, String filename) throws IOException, FileNotFoundException {
         AwsS3JobStorage storage = new AwsS3JobStorage(amazonTestClient, bucket, storagePath, jobUUID);
 
+        return storeCreatedTestDataFile(filename, storage);
+    }
+
+    private AwsS3JobStorage storeCreatedTestDataFile(String name, AwsS3JobStorage storage) throws IOException, FileNotFoundException {
         Path tmpFile = Files.createTempFile("storage_test", ".txt");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFile.toFile()))) {
+            bw.write(TEST_DATA);
+        }
 
         /* execute */
         InputStream inputStream = new FileInputStream(tmpFile.toFile());
         InputStream inputStreamSpy = Mockito.spy(inputStream);
-        storage.store(filename, inputStreamSpy);
+        storage.store(name, inputStreamSpy);
         return storage;
     }
 
