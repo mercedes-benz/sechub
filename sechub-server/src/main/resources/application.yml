@@ -61,10 +61,10 @@ server:
   port:
     8443
   ssl:
-    enabled:
-      true # alwasy enabled
-# keystore, alias etc. must be defined outside
-
+    enabled: true # alwasy enabled
+    protocol: TLS
+    enabled-protocols: TLSv1.2,TLSv1.3
+    # keystore, alias etc. must be defined outside
 management:
   server:
     port:
