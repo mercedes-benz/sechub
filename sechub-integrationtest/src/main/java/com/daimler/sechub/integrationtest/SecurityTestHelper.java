@@ -1,4 +1,4 @@
-package com.daimler.sechub.integrationtest.api;
+package com.daimler.sechub.integrationtest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,83 +17,46 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
+public class SecurityTestHelper {
 
-class ServerEncryptionTest {
-    private static final Logger LOG = LoggerFactory.getLogger(ServerEncryptionTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityTestHelper.class);
 
-    private static final String TLS_V1_0 = "TLSv1";
-    private static final String TLS_V1_3 = "TLSv1.3";
-    private static final String TLS_V1_2 = "TLSv1.2";
-    private static final String TLS_V1_1 = "TLSv1.1";
+    
+    public static final String TLS_V1_0 = "TLSv1";
+    public static final String TLS_V1_3 = "TLSv1.3";
+    public static final String TLS_V1_2 = "TLSv1.2";
+    public static final String TLS_V1_1 = "TLSv1.1";
 
-    @Test
-    @DisplayName("Test JDK really fetches different instances for ssl context")
-    // "Test that JDK fetches different instances for ssl context, so it's clear we
-    // do not change it globally inside our test")
-    void sanity_check_SSLContext_getInstance_returns_always_new_objects() throws Exception {
-        /* prepare */
-        String sslToCheck = TLS_V1_2;
 
-        /* execute */
-        SSLContext scA = SSLContext.getInstance(sslToCheck);
-        SSLContext scB = SSLContext.getInstance(sslToCheck);
+    private URL testURL;
 
-        /* test */
-        Assertions.assertNotSame(scA, scB);
+    public SecurityTestHelper(URL testURL) {
+        this.testURL=testURL;
+    }
+    
+    public void assertProtocolNOTAccepted(String protocol) throws Exception {
+        callTestURLWithProtocol(protocol, true);
     }
 
-    @Test
-    void tls_1_2_must_be_accepted() throws Exception {
-        assertProtocolAccepted(TLS_V1_2);
-
+    public void assertProtocolAccepted(String protocol) throws Exception {
+        callTestURLWithProtocol(protocol, false);
     }
 
-    @Test
-    void tls_1_3_must_be_accepted() throws Exception {
-        assertProtocolAccepted(TLS_V1_3);
-
-    }
-
-    @Test
-    void tls_1_1_is_not_accepted() throws Exception {
-        assertProtocolNOTAccepted(TLS_V1_1);
-
-    }
-
-    @Test
-    void tls_1_0_is_not_accepted() throws Exception {
-        assertProtocolNOTAccepted(TLS_V1_0);
-
-    }
-
-    private void assertProtocolNOTAccepted(String protocol) throws Exception {
-        testCheckIsAliveURL(protocol, true);
-    }
-
-    private void assertProtocolAccepted(String protocol) throws Exception {
-        testCheckIsAliveURL(protocol, false);
-    }
-
-    private void testCheckIsAliveURL(String protocol, boolean expectProtocolNotAccepted) throws Exception {
-        LOG.info("********** Start test for protocol:{}, expect to be accepted:{} *********", protocol, !expectProtocolNotAccepted);
+    private void callTestURLWithProtocol(String protocol, boolean expectProtocolNotAccepted) throws Exception {
+        LOG.info("******************************************************");
+        LOG.info("** Start test for protocol:{}, expect to be accepted:{}", protocol, !expectProtocolNotAccepted);
+        LOG.info("** TestURL: {}*********", testURL);
+        LOG.info("******************************************************");
         SSLContext sc = SSLContext.getInstance(protocol);
 
         TrustManager tm = createAcceptAllTrustManger();
         sc.init(null, new TrustManager[] { tm }, null);
 
-        IntegrationTestContext context = IntegrationTestContext.get();
-
-        String checkAlive = context.getUrlBuilder().buildCheckIsAliveUrl();
-        URL url = new URL(checkAlive);
-
-        URLConnection urlConnection = url.openConnection();
+        
+        URLConnection urlConnection = testURL.openConnection();
         HttpsURLConnection httpsConnection = (HttpsURLConnection) urlConnection;
 
         httpsConnection.setSSLSocketFactory(sc.getSocketFactory());
@@ -191,5 +154,4 @@ class ServerEncryptionTest {
         };
         return tm;
     }
-
 }

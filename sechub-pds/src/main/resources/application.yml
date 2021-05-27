@@ -61,6 +61,7 @@ server:
   port:
     8444
   ssl:
-    enabled:
-      true # alwasy enabled
+    enabled: true # always enabled
+    protocol: TLS
+    enabled-protocols: TLSv1.2,TLSv1.3
 # keystore, alias etc. must be defined outside
