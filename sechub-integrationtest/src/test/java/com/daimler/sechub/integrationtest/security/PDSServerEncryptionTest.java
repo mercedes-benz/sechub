@@ -45,5 +45,11 @@ class PDSServerEncryptionTest {
         securityTestHelper.assertProtocolNOTAccepted(TLS_V1_0);
 
     }
+    
+    @Test
+    void sslv3_is_not_accepted() throws Exception {
+        securityTestHelper.assertProtocolNOTAccepted(SSL_V3);
+
+    }
 
 }

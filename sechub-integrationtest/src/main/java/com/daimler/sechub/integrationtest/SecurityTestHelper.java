@@ -25,10 +25,14 @@ public class SecurityTestHelper {
     private static final Logger LOG = LoggerFactory.getLogger(SecurityTestHelper.class);
 
     
+    /* no longer accepted */
+    public static final String SSL_V3 = "sslv3";
     public static final String TLS_V1_0 = "TLSv1";
+    public static final String TLS_V1_1 = "TLSv1.1";
+
+    /* accepted */
     public static final String TLS_V1_3 = "TLSv1.3";
     public static final String TLS_V1_2 = "TLSv1.2";
-    public static final String TLS_V1_1 = "TLSv1.1";
 
 
     private URL testURL;
