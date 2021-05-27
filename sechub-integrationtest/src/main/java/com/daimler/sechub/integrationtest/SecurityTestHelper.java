@@ -50,10 +50,10 @@ public class SecurityTestHelper {
     }
 
     private void callTestURLWithProtocol(String protocol, boolean expectProtocolNotAccepted) throws Exception {
-        LOG.info("******************************************************");
+        LOG.info("********************************************************************************");
         LOG.info("** Start test for protocol:{}, expect to be accepted:{}", protocol, !expectProtocolNotAccepted);
-        LOG.info("** TestURL: {}*********", testURL);
-        LOG.info("******************************************************");
+        LOG.info("** TestURL: {}", testURL);
+        LOG.info("********************************************************************************");
         SSLContext sc = SSLContext.getInstance(protocol);
 
         TrustManager tm = createAcceptAllTrustManger();
