@@ -51,9 +51,9 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
         data.add("pds.productexecutor.forbidden.targettype.internet", Type.KEY_VALUE, Necessarity.OPTIONAL,
                 "When this key is set to true, than this pds instance does not scan internet", "true");
         data.add("pds.productexecutor.timetowait.nextcheck.minute", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "<html>The value will be used to wait for next check on PDS server.<br>When not set the default from PDS install is used instead.</html>");
+                "The value will be used to wait for next check on PDS server.<br>When not defined, the default from PDS install setup is used instead.");
         data.add("pds.productexecutor.timeout.minutes", Type.KEY_VALUE, Necessarity.OPTIONAL,
-                "<html>The value will be used to define timeout for PDS communication.<br>When not define the default from PDS install is used instead.</html>");
+                "The value will be used to define timeout for PDS communication.<br>When not defined, the default from PDS install setup is used instead.");
         data.add("pds.productexecutor.trustall.certificates", Type.KEY_VALUE, Necessarity.OPTIONAL,
                 "When 'true' then all certificates are accepted. Do not use this in production!");
 

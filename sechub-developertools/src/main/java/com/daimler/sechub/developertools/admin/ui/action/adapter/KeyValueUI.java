@@ -5,11 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
+import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.Necessarity;
 import com.daimler.sechub.developertools.admin.ui.action.adapter.TemplatesDialogData.TemplateData;
 
 public class KeyValueUI implements TemplateDataUIPart {
@@ -22,15 +24,41 @@ public class KeyValueUI implements TemplateDataUIPart {
         this.panel = new KeyValuePanel(new BorderLayout());
         this.data = data;
 
-        JPanel panel2 = new JPanel(new BorderLayout());
-        panel2.add(new JLabel("Type: " + data.type), BorderLayout.NORTH);
-        panel2.add(new JLabel("Necessarity: " + data.necessarity), BorderLayout.CENTER);
-        panel2.add(new JLabel("Description: " + (data.description==null ? "<no description available>" : data.description)), BorderLayout.SOUTH);
-
-        panel.add(panel2, BorderLayout.NORTH);
-
+        JPanel descriptionPanel = new JPanel(new BorderLayout());
+       
+        String text = "<html><body>\n";
+        text +="<b><u>Description:</u></b><br>" + (data.description==null ? "<no description available>" : data.description);
+        text +="<br><br>";
+        text +=createNecessarityHTML(data);
+        text +=" <i>(Type:</b> " + data.type+")</i>";
+        text +="</body></html>";
+                
+        JEditorPane descriptionTextArea = new JEditorPane();
+        descriptionTextArea.setContentType("text/html");
+        descriptionTextArea.setText(text);
+        descriptionTextArea.setEditable(false);
+        
+        descriptionPanel.add(new JScrollPane(descriptionTextArea), BorderLayout.CENTER);
+        
         textArea = new JTextArea();
-        this.panel.add(new JScrollPane(textArea));
+        JSplitPane splitPane = new JSplitPane(0, descriptionPanel, textArea);
+        
+        this.panel.add(splitPane, BorderLayout.CENTER);
+    }
+    
+    private String createNecessarityHTML(TemplateData data) {
+        String additional="";
+        additional+="Necessarity:<b><span";
+
+        if (data.necessarity.equals(Necessarity.MANDATORY)) {
+            additional+= " style='color:red'";
+        } else if (data.necessarity.equals(Necessarity.UNKNOWN)) {
+            additional+= " style='color:orange'";
+        }
+        additional+=">";
+        additional+=data.necessarity;
+        additional+="</span></b>";
+        return additional;
     }
 
     public JComponent getComponent() {
