@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.job;
 
 import com.daimler.sechub.pds.execution.PDSExecutionParameterEntry;
