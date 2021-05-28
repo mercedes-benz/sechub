@@ -64,6 +64,90 @@ openApiGenerate {
     ]
 }
 
+/*
+// Generate a JavaScript client
+openApiGenerate {
+    generatorName = "javascript"
+    
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-client-java/gen-javascript"
+    apiPackage = "com.daimler.sechub.client.javascript.api"
+    invokerPackage = "com.daimler.sechub.client.javascript.api"
+    modelPackage = "com.daimler.sechub.client.javascript.api.model"
+    modelFilesConstrainedTo = [
+            "Error"
+    ]
+    globalProperties = [
+            validateSpec   : "true",
+            modelDocs      : "false",
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
+    ]
+    configOptions = [
+            licenseName : "MIT",
+            developerOrganization : "Daimler"
+            
+    ]
+}
+*/
+
+/*
+// Python client -> works not pretty
+openApiGenerate {
+    generatorName = "python"
+    
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-client-java/gen-python"
+    apiPackage = "com.daimler.sechub.client.python.api"
+    invokerPackage = "com.daimler.sechub.client.python.api"
+    modelPackage = "com.daimler.sechub.client.python.api.model"
+    modelFilesConstrainedTo = [
+            "Error"
+    ]
+    globalProperties = [
+            validateSpec   : "true",
+            modelDocs      : "false",
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
+    ]
+    configOptions = [
+            licenseName : "MIT",
+            developerOrganization : "Daimler",
+            packageName : "Sechub-Client-Library",
+            packageVersion : "0.1.0"
+    ]
+}*/
+
+/*
+// Go client
+openApiGenerate {
+    generatorName = "go"
+    
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-client-java/gen-go"
+    apiPackage = "com.daimler.sechub.client.go.api"
+    invokerPackage = "com.daimler.sechub.client.go.api"
+    modelPackage = "com.daimler.sechub.client.go.api.model"
+    modelFilesConstrainedTo = [
+            "Error"
+    ]
+    globalProperties = [
+            validateSpec   : "true",
+            modelDocs      : "false",
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
+    ]
+    configOptions = [
+            licenseName : "MIT",
+            developerOrganization : "Daimler",
+            packageName : "Sechub-Client-Library",
+            packageVersion : "0.1.0"
+    ]
+}*/
+
 tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     outputs.upToDateWhen { false }
     outputs.cacheIf { false }
