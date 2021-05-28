@@ -87,9 +87,9 @@ public class ProjectUpdateAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(apiEndpoint, "projectId1").
-        		contentType(MediaType.APPLICATION_JSON_VALUE).
-        		content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
+        		    post(apiEndpoint, "projectId1").
+        		    contentType(MediaType.APPLICATION_JSON_VALUE).
+        		    content("{\"apiVersion\":\"1.0\", \"whiteList\":{\"uris\":[\"192.168.1.1\",\"https://my.special.server.com/myapp1/\"]}}")
         		).
         			andExpect(status().isOk()).
         			andDo(document(RestDocFactory.createPath(useCase),
