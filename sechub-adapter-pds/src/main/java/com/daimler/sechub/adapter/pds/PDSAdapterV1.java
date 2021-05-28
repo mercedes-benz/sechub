@@ -81,9 +81,12 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             case FAILED:
             case CANCELED:
                 jobEnded = true;
-                break;
+                break; // break case...
                 default:
                     //just do nothing else
+            }
+            if (jobEnded) {
+                break; // break while...
             }
             assertNotInterrupted();
             try {
@@ -149,10 +152,18 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private void uploadJobData(PDSContext context) throws AdapterException {
 
         PDSAdapterConfig config = context.getConfig();
+        /* TODO Albert Tregnaghi, 2021-05-28: hmm.. in future not only PDSSourceZipConfig but more: */
         if (!(config instanceof PDSSourceZipConfig)) {
             /* no upload necessary */
             return;
         }
+        
+        String useeSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        if (Boolean.parseBoolean(useeSecHubStorage)) {
+            LOG.info("Not uploading job data because configuration wants to use SecHub storage");
+            return;
+        }
+        
         PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         if (!metaData.hasValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
