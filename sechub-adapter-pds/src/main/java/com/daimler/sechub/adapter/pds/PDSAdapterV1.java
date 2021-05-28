@@ -20,6 +20,7 @@ import com.daimler.sechub.adapter.pds.data.PDSJobData;
 import com.daimler.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.daimler.sechub.commons.core.util.SecHubStorageUtil;
 
 /**
  * This component is able to handle PDS API V1
@@ -74,16 +75,16 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         while (!jobEnded && isNotTimeout(config, started)) {
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
-            
+
             PDSAdapterJobStatusState state = jobstatus.state;
-            switch(state) {
+            switch (state) {
             case DONE:
             case FAILED:
             case CANCELED:
                 jobEnded = true;
                 break; // break case...
-                default:
-                    //just do nothing else
+            default:
+                // just do nothing else
             }
             if (jobEnded) {
                 break; // break while...
@@ -100,8 +101,8 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         if (!jobEnded) {
             long elapsedTimeInMilliseconds = calculateElapsedTime(started);
             throw new IllegalStateException("Even after " + count + " retries, every waiting " + timeToWaitForNextCheckOperationInMilliseconds
-                    + " ms, no job report state acceppted as END was found.!\nElapsed time were"+elapsedTimeInMilliseconds+" ms.\nLAST fetched jobstatus for " + jobUUID + ", PDS job uuid: " + uuid + " was:\n"
-                    + jobstatus);
+                    + " ms, no job report state acceppted as END was found.!\nElapsed time were" + elapsedTimeInMilliseconds
+                    + " ms.\nLAST fetched jobstatus for " + jobUUID + ", PDS job uuid: " + uuid + " was:\n" + jobstatus);
         }
 
     }
@@ -135,7 +136,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     private PDSJobStatus getJobStatus(PDSContext context) {
         String url = context.getUrlBuilder().buildGetJobStatus(context.getPdsJobUUID());
-        
+
         ResponseEntity<PDSJobStatus> response = context.getRestOperations().getForEntity(url, PDSJobStatus.class);
         return response.getBody();
     }
@@ -152,18 +153,33 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
     private void uploadJobData(PDSContext context) throws AdapterException {
 
         PDSAdapterConfig config = context.getConfig();
-        /* TODO Albert Tregnaghi, 2021-05-28: hmm.. in future not only PDSSourceZipConfig but more: */
+        /*
+         * TODO Albert Tregnaghi, 2021-05-28: hmm.. in future not only
+         * PDSSourceZipConfig but more:
+         */
         if (!(config instanceof PDSSourceZipConfig)) {
             /* no upload necessary */
             return;
         }
-        
-        String useeSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
-        if (Boolean.parseBoolean(useeSecHubStorage)) {
+
+        String useSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        if (Boolean.parseBoolean(useSecHubStorage)) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
+
+            String projectId = config.getProjectId();
+            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+
+            if (!(config instanceof JobParameterAccessProvider)) {
+                throw new IllegalStateException(
+                        "User wants to use sechub storage, but config is not a JobParameterAccessProvider implementation:" + config.getClass());
+            }
+            JobParameterAccessProvider provider = (JobParameterAccessProvider) config;
+            Map<String, String> parameters = provider.getJobParameterAccess().getModifiableJobParameters();
+            parameters.put(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH, sechubStoragePath);
+
             return;
         }
-        
+
         PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         if (!metaData.hasValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {

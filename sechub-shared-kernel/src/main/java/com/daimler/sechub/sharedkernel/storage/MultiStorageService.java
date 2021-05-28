@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.commons.core.util.SecHubStorageUtil;
 import com.daimler.sechub.storage.core.JobStorage;
 import com.daimler.sechub.storage.core.JobStorageFactory;
 import com.daimler.sechub.storage.core.S3Setup;
@@ -64,7 +65,7 @@ public class MultiStorageService implements StorageService {
 	     * something like "sechub/jobstarge/${projectId}" but this would have forced migration issues. So we keep this
 	     * "old style"
 	     */
-		return jobStorageFactory.createJobStorage("jobstorage/"+projectId, jobUUID);
+		return jobStorageFactory.createJobStorage(SecHubStorageUtil.createStoragePath(projectId), jobUUID);
 	}
 
 }
