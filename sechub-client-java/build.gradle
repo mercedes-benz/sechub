@@ -34,39 +34,33 @@ openApiGenerate {
     generatorName = "java"
     
     inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java"
-    apiPackage = "org.openapi.example.api"
-    invokerPackage = "org.openapi.example.invoker"
-    modelPackage = "org.openapi.example.model"
+    outputDir = "$rootDir/sechub-client-java/gen"
+    apiPackage = "com.daimler.sechub.client.java.api"
+    invokerPackage = "com.daimler.sechub.client.java.api"
+    modelPackage = "com.daimler.sechub.client.java.api.model"
     modelFilesConstrainedTo = [
             "Error"
     ]
-    systemProperties = [
+    globalProperties = [
             validateSpec   : "true",
             modelDocs      : "false",
-            models         : "",
-            apis           : "",
-            supportingFiles: "false"
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
     ]
     configOptions = [
-            useOptional          : "true",
-            swaggerDocketConfig  : "false",
             performBeanValidation: "false",
             useBeanValidation    : "false",
-            useTags              : "true",
-            singleContentTypes   : "true",
-            basePackage          : "com.daimler.sechub.client.java.api",
-            configPackage        : "com.daimler.sechub.client.java.api",
-            title                : rootProject.name,
             java8                : "true",
             dateLibrary          : "java8",
             serializableModel    : "true",
+            serializationLibrary : "jackson",
             artifactId           : rootProject.name,
-            apiPackage           : "com.daimler.sechub.client.java.api",
-            modelPackage         : "com.daimler.sechub.client.java.api.model",
-            invokerPackage       : "com.daimler.sechub.client.java.api",
-            interfaceOnly        : "true",
-            sourceFolder         : "src/main/java-gen"
+            legacyDiscriminatorBehavior : "false",
+            library : "jersey2",
+            licenseName : "MIT",
+            developerOrganization : "Daimler"
+            
     ]
 }
 
