@@ -25,8 +25,21 @@ public enum PDSConfigDataKeyProvider implements PDSSecHubConfigDataKeyProvider<P
     PDS_TARGET_TYPE(new PDSConfigDataKey(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE,
             "Contains the target type (depending on scan type) and will be just an additional information for PDS from SecHub.").markGenerated()),
 
+    
+    /**
+     * Special key inside executor configuration which will be used to define if PDS will reuse SecHub storage locations.
+     * When storage location is reused the PDS executor will not upload job data to PDS again and PDS server will reuse the SecHub storage directly.
+     */
+    PDS_USE_SECHUB_STORAGE(new PDSConfigDataKey("pds.config.use.sechub.storage",
+            "When 'true' the SecHub storage will be reused by PDS server. In this case SecHub will not upload job data to PDS.\n"
+            + "But it's crucial to have same root storage setup on PDS server side (e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).\n"+
+                    "When not `true` or not defined, pds will use its own storage locations"))
+    
     ;
 
+    
+    
+    
     private PDSConfigDataKey key;
 
     PDSConfigDataKeyProvider(PDSConfigDataKey key) {

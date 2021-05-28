@@ -45,6 +45,12 @@ public class ShowProductExecutorTemplatesDialogActionFactory {
 
         data.add("pds.config.productidentifier", Type.KEY_VALUE, Necessarity.MANDATORY,
                 "Contains the product identifier, so PDS knows which part is to call on it's side.", "product-id");
+        data.add("pds.config.use.sechub.storage", Type.KEY_VALUE, Necessarity.RECOMMENDED,
+                " When <code>true</code> the SecHub storage will be reused by PDS server. <br>"
+                        + "In this case SecHub will not upload job data to PDS but reuse data<br>"
+                        + "<b>But be aware:</b> It's crucial to have same root storage setup on PDS server side "
+                        + "(e.g. same s3 bucket for S3 storage, or same NFS base for shared volumes).<br><br>"
+                        + "When not <code>true</code> or not defined, PDS will use its own storage locations",null,"true");
 
         data.add("pds.productexecutor.forbidden.targettype.intranet", Type.KEY_VALUE, Necessarity.OPTIONAL,
                 "When this key is set to true, than this pds instance does not scan intranet", "true");

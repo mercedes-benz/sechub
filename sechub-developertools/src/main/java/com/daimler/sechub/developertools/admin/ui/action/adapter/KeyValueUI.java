@@ -25,40 +25,53 @@ public class KeyValueUI implements TemplateDataUIPart {
         this.data = data;
 
         JPanel descriptionPanel = new JPanel(new BorderLayout());
-       
+
         String text = "<html><body>\n";
-        text +="<b><u>Description:</u></b><br>" + (data.description==null ? "<no description available>" : data.description);
-        text +="<br><br>";
-        text +=createNecessarityHTML(data);
-        text +=" <i>(Type:</b> " + data.type+")</i>";
-        text +="</body></html>";
-                
+        text += "<b><u>Description:</u></b><br>" + (data.description == null ? "<no description available>" : data.description);
+        text += "<br><br>";
+        text += createNecessarityHTML(data);
+        text += " <i>(Type:</b> " + data.type + ")</i>";
+        text += "</body></html>";
+
         JEditorPane descriptionTextArea = new JEditorPane();
         descriptionTextArea.setContentType("text/html");
         descriptionTextArea.setText(text);
         descriptionTextArea.setEditable(false);
-        
+
         descriptionPanel.add(new JScrollPane(descriptionTextArea), BorderLayout.CENTER);
-        
+
         textArea = new JTextArea();
-        JSplitPane splitPane = new JSplitPane(0, descriptionPanel, textArea);
         
+        /* when recommended, we provide the recommended value initially - will be overridden when defined */
+        if (data.necessarity == Necessarity.RECOMMENDED) {
+            if (data.recommendedValue != null || !data.recommendedValue.isEmpty()) {
+                textArea.setText(data.recommendedValue);
+            }
+
+        }
+        JSplitPane splitPane = new JSplitPane(0, descriptionPanel, textArea);
+
         this.panel.add(splitPane, BorderLayout.CENTER);
     }
-    
+
     private String createNecessarityHTML(TemplateData data) {
-        String additional="";
-        additional+="Necessarity:<b><span";
+        String html = "";
+        html += "Necessarity:<b><span";
 
         if (data.necessarity.equals(Necessarity.MANDATORY)) {
-            additional+= " style='color:red'";
+            html += " style='color:red'";
         } else if (data.necessarity.equals(Necessarity.UNKNOWN)) {
-            additional+= " style='color:orange'";
+            html += " style='color:orange'";
+        } else if (data.necessarity.equals(Necessarity.RECOMMENDED)) {
+            html += " style='color:blue'";
         }
-        additional+=">";
-        additional+=data.necessarity;
-        additional+="</span></b>";
-        return additional;
+        html += ">";
+        html += data.necessarity;
+        if (data.necessarity.equals(Necessarity.RECOMMENDED)) {
+            html +="=>"+data.recommendedValue;
+        }
+        html += "</span></b>";
+        return html;
     }
 
     public JComponent getComponent() {
