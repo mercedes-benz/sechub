@@ -148,7 +148,7 @@ task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopInt
     doLast{
          def pathString = tempDirPath.toString();
          println (">> CLEANUP temp dir: $pathString")
-         new IntegrationTestScriptAccess().deleteTmpFolder("$pathString")
+         new IntegrationTestScriptAccess().deleteTmpFolder(new File("${project.projectDir}"),"$pathString")
     }
 
 }
@@ -194,7 +194,7 @@ class IntegrationTestScriptAccess extends CmdExecutor{
             executeScript("waitForStop",workingDir,null,-1,port,"")
        }
        
-       public void deleteTmpFolder(String pathToDelete){
+       public void deleteTmpFolder(File workingDir, String pathToDelete){
             executeScript("deleteTmpFolder",workingDir,null,-1,-1,pathToDelete)
        }
 
