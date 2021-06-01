@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# define fd 3 to log into console and log file
+exec 3>&1 1>>integrationtest-console.log 2>&1
+
 # --------------------------------------------------
 #  Start / Stop script for integartion test server
 # --------------------------------------------------
@@ -141,13 +144,13 @@ function stopServer(){
 # Starts integration test server, needs server version as first parameter to identify jar to start with...
 function startServer(){
     if [ -z "$SERVER_VERSION" ] ; then
-        echo "Version is missing as second parameter!"
+        echo "Version is missing as second parameter!" | tee /dev/fd/3
         usage
         exit 1
     fi
 
     currentDir=$(pwd)
-    echo "working directory: $currentDir"
+    echo "working directory: $currentDir" | tee /dev/fd/3
     # e.g. curl -sSf https://localhost:8443/api/integrationtest/alive > /dev/null
     checkAlive
 
@@ -182,7 +185,7 @@ function startServer(){
 function defineSharedVolumeBasePath(){
     if [ -z "$1" ] ; then
         SHARED_VOLUME_BASEDIR="temp"
-        echo "> no shared volume defined, using fallback:temp"
+        echo "> no shared sechub volume defined, using fallback:temp" | tee /dev/fd/3
     else
         SHARED_VOLUME_BASEDIR="$1"
     fi
@@ -191,7 +194,7 @@ function defineSharedVolumeBasePath(){
 function defineServerPort(){
     if [ -z "$1" ] ; then
         SERVER_PORT=8443
-        echo "> no port defined, using fallback"
+        echo "> no port defined, using fallback" | tee /dev/fd/3
     else
         SERVER_PORT="$1"
     fi
@@ -200,7 +203,7 @@ function defineServerPort(){
 function defineServerVersion(){
     if [ -z "$1" ] ; then
         SERVER_VERSION="0.0.0"
-        echo "> no server version defined, using fallback"
+        echo "> no server version defined, using fallback" | tee /dev/fd/3
     else
         SERVER_VERSION="$1"
     fi
@@ -227,8 +230,11 @@ function handleArguments() {
     echo "Using port $SERVER_PORT for integration test server"
 
 }
-
-handleArguments $1 $2 $3
+echo "*********************************************************************************************************************" | tee /dev/fd/3
+echo " START integration SecHub server" | tee /dev/fd/3
+echo "*********************************************************************************************************************" | tee /dev/fd/3
+echo "Start handling arguments: 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+handleArguments $1 $2 $3 $4
 
 case "$SERVER_COMMAND" in
     start) startServer ;;

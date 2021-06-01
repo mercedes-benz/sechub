@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# define fd 3 to log into console and log file
+exec 3>&1 1>>integrationtest-console.log 2>&1
+
 # --------------------------------------------------
 #  Start / Stop script for integartion test server
 # --------------------------------------------------
@@ -184,7 +187,7 @@ function startServer(){
 function defineSharedVolumeBasePath(){
     if [ -z "$1" ] ; then
         SHARED_VOLUME_BASEDIR="temp"
-        echo "> no shared volume defined, using fallback:temp"
+        echo "> no shared PDS volume defined, using fallback:temp" | tee /dev/fd/3
     else
         SHARED_VOLUME_BASEDIR="$1"
     fi
@@ -194,7 +197,7 @@ function defineSharedVolumeBasePath(){
 function defineServerPort(){
     if [ -z "$1" ] ; then
         SERVER_PORT=8543
-        echo "> no port defined, using fallback"
+        echo "> no port defined, using fallback" | tee /dev/fd/3
     else
         SERVER_PORT="$1"
     fi
@@ -203,7 +206,7 @@ function defineServerPort(){
 function defineServerVersion(){
     if [ -z "$1" ] ; then
         PDS_VERSION="0.0.0"
-        echo "> no server version defined, using fallback"
+        echo "> no server version defined, using fallback" | tee /dev/fd/3
     else
         PDS_VERSION="$1"
     fi
@@ -231,7 +234,11 @@ function handleArguments() {
 
 }
 
-handleArguments $1 $2 $3
+echo "*********************************************************************************************************************" | tee /dev/fd/3
+echo " START integration PDS server" | tee /dev/fd/3
+echo "*********************************************************************************************************************" | tee /dev/fd/3
+echo "Start handling arguments: 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+handleArguments $1 $2 $3 $4
 
 case "$SERVER_COMMAND" in
     start) startServer ;;
