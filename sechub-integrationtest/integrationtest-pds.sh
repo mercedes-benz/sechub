@@ -190,6 +190,7 @@ function defineSharedVolumeBasePath(){
         echo "> no shared PDS volume defined, using fallback:temp" | tee /dev/fd/3
     else
         SHARED_VOLUME_BASEDIR="$1"
+        echo "> shared PDS volume defined with: $SHARED_VOLUME_BASEDIR" | tee /dev/fd/3
     fi
 }
 
@@ -234,10 +235,9 @@ function handleArguments() {
 
 }
 
-echo "*********************************************************************************************************************" | tee /dev/fd/3
-echo " START integration PDS server" | tee /dev/fd/3
-echo "*********************************************************************************************************************" | tee /dev/fd/3
-echo "Start handling arguments: 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+echo ">> integrationtest-server.sh 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+echo ">> *************************" | tee /dev/fd/3
+
 handleArguments $1 $2 $3 $4
 
 case "$SERVER_COMMAND" in

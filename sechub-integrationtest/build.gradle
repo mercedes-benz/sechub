@@ -146,9 +146,9 @@ task stopIntegrationTestPDS(dependsOn: configureIntegrationTestServer){
 task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopIntegrationTestPDS]){
 
     doLast{
-         println (">> CLEANUP temp dir: $tempDirPath")
-         Files.delete(tempDirPath);
-         println (">> DELETED temp dir: $tempDirPath")
+         def pathString = tempDirPath.toString();
+         println (">> CLEANUP temp dir: $pathString")
+         new IntegrationTestScriptAccess().deleteTmpFolder("$pathString")
     }
 
 }
@@ -193,6 +193,10 @@ class IntegrationTestScriptAccess extends CmdExecutor{
        public void waitForStop(File workingDir, String port) throws Exception{
             executeScript("waitForStop",workingDir,null,-1,port,"")
        }
+       
+       public void deleteTmpFolder(String pathToDelete){
+            executeScript("deleteTmpFolder",workingDir,null,-1,-1,pathToDelete)
+       }
 
        public void stop(File workingDir,String port) throws Exception{
             executeScript("stop",workingDir,null,60,port,"")
@@ -201,10 +205,11 @@ class IntegrationTestScriptAccess extends CmdExecutor{
        public void start(File workingDir, String useVersion,String port,String sharedVolumeBaseDir) throws Exception{
             executeScript("start",workingDir,useVersion,300,port, sharedVolumeBaseDir); /* max 5 minutes */
        }
-
+       
        private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port, String sharedVolumeBaseDir) throws Exception{
           CmdExecutor exec = new CmdExecutor();
           exec.setTimeOutInSeconds(timeOutInSeconds);
+          
           if (OSUtil.isWindows()){
              exec.getCommand().add("cmd");
              exec.getCommand().add("/c");
@@ -213,6 +218,12 @@ class IntegrationTestScriptAccess extends CmdExecutor{
              exec.getCommand().add("./"+scriptName+".sh");
           }
           exec.getCommand().add(command);
+          
+          if (command.equals("deleteTmpFolder")){
+             exec.getCommand().add("$sharedVolumeBaseDir");
+             return;
+          }
+          
           if (command.equals("start")){
              exec.getCommand().add("$useVersion");
           }

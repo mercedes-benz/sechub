@@ -45,6 +45,12 @@ function status(){
     fi
 }
 
+function deleteTmpFolder(){
+    echo "start delete folder: $DELETE_TMP_FOLDER" | tee /dev/fd/3
+    rm "$DELETE_TMP_FOLDER" -rf 
+    
+}
+
 # We use this function to wait for another integration test server to be stopped.
 # This can happen on a multi branch pipeline build
 #
@@ -188,6 +194,17 @@ function defineSharedVolumeBasePath(){
         echo "> no shared sechub volume defined, using fallback:temp" | tee /dev/fd/3
     else
         SHARED_VOLUME_BASEDIR="$1"
+        echo "> shared sechub volume defined with: $SHARED_VOLUME_BASEDIR" | tee /dev/fd/3
+    fi
+}
+
+function defineDeleteTmpFolder(){
+    if [ -z "$1" ] ; then
+        echo "> no tmpFolder to delete deinfed - so cannot delete anything!" | tee /dev/fd/3
+        exit 3
+    else
+        DELETE_TMP_FOLDER="$1"
+        echo "> tmpFolder to delete defined with: $DELETE_TMP_FOLDER" | tee /dev/fd/3
     fi
 }
 
@@ -218,6 +235,9 @@ function handleArguments() {
             defineServerPort $3
             defineSharedVolumeBasePath $4
             ;;
+        deleteTmpFolder)
+            defineDeleteTmpFolder $1
+            ;;
         *)
             # other port
             defineServerPort $2
@@ -230,10 +250,9 @@ function handleArguments() {
     echo "Using port $SERVER_PORT for integration test server"
 
 }
-echo "*********************************************************************************************************************" | tee /dev/fd/3
-echo " START integration SecHub server" | tee /dev/fd/3
-echo "*********************************************************************************************************************" | tee /dev/fd/3
-echo "Start handling arguments: 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+echo ">> integrationtest-server.sh 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+echo ">> *************************" | tee /dev/fd/3
+
 handleArguments $1 $2 $3 $4
 
 case "$SERVER_COMMAND" in
@@ -242,5 +261,6 @@ case "$SERVER_COMMAND" in
     waitForStop) waitForStop ;;
     waitForAlive) waitForAlive ;;
     status) status ;;
+    deleteTmpFolder) deleteTmpFolder ;;
     *) usage ;;
 esac
