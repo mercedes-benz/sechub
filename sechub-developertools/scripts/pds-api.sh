@@ -30,6 +30,7 @@ create_job_from_json <json-file> - Create a new job using a <json-file> JSON fil
 upload_zip <job-uuid> <zip-file> - Upload a <zip-file> ZIP file for an existing job <job-uuid>.
 mark_job_ready_to_start <job-uuid> - Mark a job with <job-uuid> as ready to start.
 job_status <job-uuid> - Get the status of a job using the <job-uuid>.
+job_result <job-uuid> - Get the job result using the <job-uuid>
 monitoring_status - Monitoring information about the server and jobs
 
 EOF
