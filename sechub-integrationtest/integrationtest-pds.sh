@@ -3,8 +3,10 @@
 # --------------------------------------------------
 #  Start / Stop script for integartion test server
 # --------------------------------------------------
+cd `dirname $0`
+
 function usage(){
-    echo "usage: integrationtest-pds <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {pdsVersion>}|{<pdsPort>}"
+    echo "usage: integrationtest-pds <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {pdsVersion>}|{<pdsPort>}{sharedTempSharedVolumeFolder}"
     echo "       (PDS version is only necessary for start command"
     echo "       (when no serverPort is set, this port will be used, otherwise 8443 as default)"
 }
@@ -157,7 +159,7 @@ function startServer(){
     echo "starting a sechub-pds $PDS_VERSION in integration test mode"
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
-    export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR=temp
+    export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
 
     pathToJar="./../sechub-pds/build/libs/sechub-pds-$PDS_VERSION.jar"
     if [ ! -f $pathToJar ]; then
@@ -177,6 +179,17 @@ function startServer(){
     waitForAlive
     exit 0
 }
+
+
+function defineSharedVolumeBasePath(){
+    if [ -z "$1" ] ; then
+        SHARED_VOLUME_BASEDIR="temp"
+        echo "> no shared volume defined, using fallback:temp"
+    else
+        SHARED_VOLUME_BASEDIR="$1"
+    fi
+}
+
 
 function defineServerPort(){
     if [ -z "$1" ] ; then
@@ -203,6 +216,7 @@ function handleArguments() {
             # start version port
             defineServerVersion $2
             defineServerPort $3
+            defineSharedVolumeBasePath $4
             ;;
         *)
             # other port

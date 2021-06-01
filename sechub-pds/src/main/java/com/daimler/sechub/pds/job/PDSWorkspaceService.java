@@ -24,6 +24,7 @@ import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.storage.PDSMultiStorageService;
+import com.daimler.sechub.pds.storage.PDSStorageInfoCollector;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -53,6 +54,9 @@ public class PDSWorkspaceService {
 
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
+    
+    @Autowired
+    PDSStorageInfoCollector storageInfoCollector;
 
     @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
@@ -107,9 +111,11 @@ public class PDSWorkspaceService {
             jobUUID = pdsJobUUID;
         }
 
-        LOG.debug("PDS job {}: feching storage for storagePath = {} and jobUUID:{}, useSecHubStorage={}", pdsJobUUID, jobUUID, useSecHubStorage);
-
+        LOG.debug("PDS job {}: feching storage for storagePath = {} and jobUUID:{}, useSecHubStorage={}", pdsJobUUID, storagePath, jobUUID, useSecHubStorage);
         JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
+        
+        storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
+        
         return storage;
     }
 

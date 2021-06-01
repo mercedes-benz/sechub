@@ -2,7 +2,6 @@
 package com.daimler.sechub.adapter.pds;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayInputStream;
@@ -144,44 +143,22 @@ public class PDSAdapterV1WireMockTest {
 
     }
 
-    @Test
-    public void when_pds_config_use_sechub_store_set_to_true__the_sechub_storage_path_is_set() throws Exception {
-        /* @formatter:off */
-        
-        /* prepare */
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE,"");
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE,"true");
-        
-        
-        PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
-                simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
-                //no simulate upload here!
-                simulateMarkReadyToStart().
-                simulateFetchJobStatus(PDSAdapterJobStatusState.DONE).
-                simulateFetchJobResultOk("testresult").
-                build();
-        
-        testSupport.startPDSServerSimulation();
-        
-        PDSAdapterConfig config = createCodeScanConfiguration(testSupport);
-        /* @formatter:on */
-
-        /* execute */
-        adapterToTest.start(config, callback);
-
-        /* test */
-        assertTrue(config.getJobParameters().containsKey(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH));
-        assertEquals("jobstorage/" + TEST_PROJECT_ID, config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH));
-
-    }
-
+    /* @formatter:off */
     private PDSAdapterConfig createCodeScanConfiguration(PDSWiremockTestSupport testSupport) {
         String baseURL = testSupport.getTestBaseUrl();
-        PDSAdapterConfig config = PDSCodeScanConfigImpl.builder().setUser("testuser").setTrustAllCertificates(true).setPasswordOrAPIToken("examplepwd")
-                .setProjectId(TEST_PROJECT_ID).setPDSProductIdentifier(productIdentifier).setProductBaseUrl(baseURL).setJobParameters(expectedJobParameters)
-                .setSecHubJobUUID(sechubJobUUID).setSourceCodeZipFileInputStream(new ByteArrayInputStream("test".getBytes()))
-                .setSourceZipFileChecksum("fakeChecksumForfakeServer").build();
+        PDSAdapterConfig config = PDSCodeScanConfigImpl.builder().
+                setUser("testuser").
+                setTrustAllCertificates(true).
+                setPasswordOrAPIToken("examplepwd").
+                setProjectId(TEST_PROJECT_ID).
+                setPDSProductIdentifier(productIdentifier).
+                setProductBaseUrl(baseURL).
+                setJobParameters(expectedJobParameters).
+                setSecHubJobUUID(sechubJobUUID).
+                setSourceCodeZipFileInputStream(new ByteArrayInputStream("test".getBytes())).
+                setSourceZipFileChecksum("fakeChecksumForfakeServer").build();
         return config;
     }
+    /* @formatter:on */
 
 }

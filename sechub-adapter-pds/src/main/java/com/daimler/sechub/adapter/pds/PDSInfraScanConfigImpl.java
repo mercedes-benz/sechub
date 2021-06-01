@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.pds;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 
-public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig, JobParameterAccessProvider{
+public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig{
 
-  
+    Map<String, String> jobParameters;
     UUID sechubJobUUID;
     String pdsProductIdentifier;
-    
-    PDSJobParameterConfigAccess paramAccess;
     
     private PDSInfraScanConfigImpl() {
     }
@@ -40,7 +39,7 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
         @Override
         protected void customBuild(PDSInfraScanConfigImpl config) {
             jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            config.paramAccess=new PDSJobParameterConfigAccess(jobParameters);
+            config.jobParameters=Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID=sechubJobUUID;
             config.pdsProductIdentifier=pdsProductIdentifier;
         }
@@ -88,16 +87,11 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
     
     @Override
     public Map<String, String> getJobParameters() {
-        return paramAccess.getUnmodifiableJobParameters();
+        return jobParameters;
     }
     
     @Override
     public UUID getSecHubJobUUID() {
         return sechubJobUUID;
-    }
-
-    @Override
-    public PDSJobParameterConfigAccess getJobParameterAccess() {
-        return paramAccess;
     }
 }

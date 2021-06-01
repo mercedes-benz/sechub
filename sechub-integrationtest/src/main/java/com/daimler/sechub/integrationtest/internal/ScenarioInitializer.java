@@ -45,6 +45,10 @@ public class ScenarioInitializer {
         TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_3_ID,projects);
         return this;
     }
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_4_PDS_SARIF_NOT_USING_SECHUB_STORAGE(TestProject ...projects) {
+	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_4_ID,projects);
+	    return this;
+	}
     
 	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
@@ -57,6 +61,10 @@ public class ScenarioInitializer {
 	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_3_PDS_codescan_sarif() {
         return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF);
+    }
+	
+	public  ScenarioInitializer ensureDefaultExecutionProfile_4_PDS_codescan_sarif_no_sechub_storage_used() {
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_4_PDS_CODESCAN_SARIF_NO_SECHUB_STORAGE_USED);
     }
 	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {

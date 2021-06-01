@@ -67,7 +67,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         
         List<ProductResult> results = new ArrayList<>();
 
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS();
+        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
         /* we currently scan always only ONE url at the same time */
         for (URI targetURI : targetURIs) {
             /* @formatter:off */

@@ -3,23 +3,29 @@ package com.daimler.sechub.adapter.pds;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 
-public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig, JobParameterAccessProvider{
+public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig{
 
     private String websiteName;
 
+    private Map<String, String> jobParameters;
+
     private UUID sechubJobUUID;
     private String pdsProductIdentifier;
-    
-    PDSJobParameterConfigAccess paramAccess;
 
     public String getWebsiteName() {
         return websiteName;
+    }
+    
+    @Override
+    public Map<String, String> getJobParameters() {
+        return jobParameters;
     }
     
     public String getPdsProductIdentifier() {
@@ -33,10 +39,6 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         return new PDSWebScanConfigBuilder();
     }
 
-    @Override
-    public Map<String, String> getJobParameters() {
-        return paramAccess.getUnmodifiableJobParameters();
-    }
 
     public static class PDSWebScanConfigBuilder
             extends AbstractWebScanAdapterConfigBuilder<PDSWebScanConfigBuilder, PDSWebScanConfigImpl> {
@@ -73,7 +75,7 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         protected void customBuild(PDSWebScanConfigImpl config) {
             jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             config.pdsProductIdentifier=pdsProductIdentifier;
-            config.paramAccess=new PDSJobParameterConfigAccess(jobParameters);
+            config.jobParameters=Collections.unmodifiableMap(jobParameters);
             
             int size = config.getRootTargetURIs().size();
             if (size!=1) {
@@ -128,11 +130,6 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
     @Override
     public UUID getSecHubJobUUID() {
         return sechubJobUUID;
-    }
-
-    @Override
-    public PDSJobParameterConfigAccess getJobParameterAccess() {
-        return paramAccess;
     }
 
 }

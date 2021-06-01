@@ -20,7 +20,6 @@ import com.daimler.sechub.adapter.pds.data.PDSJobData;
 import com.daimler.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
-import com.daimler.sechub.commons.core.util.SecHubStorageUtil;
 
 /**
  * This component is able to handle PDS API V1
@@ -165,18 +164,6 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         String useSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
         if (Boolean.parseBoolean(useSecHubStorage)) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
-
-            String projectId = config.getProjectId();
-            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
-
-            if (!(config instanceof JobParameterAccessProvider)) {
-                throw new IllegalStateException(
-                        "User wants to use sechub storage, but config is not a JobParameterAccessProvider implementation:" + config.getClass());
-            }
-            JobParameterAccessProvider provider = (JobParameterAccessProvider) config;
-            Map<String, String> parameters = provider.getJobParameterAccess().getModifiableJobParameters();
-            parameters.put(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH, sechubStoragePath);
-
             return;
         }
 
