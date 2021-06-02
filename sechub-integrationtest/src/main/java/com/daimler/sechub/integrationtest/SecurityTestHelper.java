@@ -13,6 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -42,28 +43,44 @@ public class SecurityTestHelper {
     }
     
     public void assertProtocolNOTAccepted(String protocol) throws Exception {
-        callTestURLWithProtocol(protocol, true);
+        SSLTestContext context = new SSLTestContext();
+        context.protocol=protocol;
+        context.expectProtocolNotAccepted=true;
+        
+        callTestURLWithProtocol(context);
     }
 
     public void assertProtocolAccepted(String protocol) throws Exception {
-        callTestURLWithProtocol(protocol, false);
+        SSLTestContext context = new SSLTestContext();
+        context.protocol=protocol;
+        context.expectProtocolNotAccepted=false;
+        
+        callTestURLWithProtocol(context);
     }
+    
+    private class SSLTestContext{
+        String protocol;
+        boolean expectProtocolNotAccepted;
+    }
+    
 
-    private void callTestURLWithProtocol(String protocol, boolean expectProtocolNotAccepted) throws Exception {
+    private void callTestURLWithProtocol(SSLTestContext context) throws Exception {
         LOG.info("********************************************************************************");
-        LOG.info("** Start test for protocol:{}, expect to be accepted:{}", protocol, !expectProtocolNotAccepted);
+        LOG.info("** Start test for protocol:{}, expect to be accepted:{}", context.protocol, !context.expectProtocolNotAccepted);
         LOG.info("** TestURL: {}", testURL);
         LOG.info("********************************************************************************");
-        SSLContext sc = SSLContext.getInstance(protocol);
+        SSLContext sslContext = SSLContext.getInstance(context.protocol);
 
         TrustManager tm = createAcceptAllTrustManger();
-        sc.init(null, new TrustManager[] { tm }, null);
+        sslContext.init(null, new TrustManager[] { tm }, null);
 
         
         URLConnection urlConnection = testURL.openConnection();
         HttpsURLConnection httpsConnection = (HttpsURLConnection) urlConnection;
 
-        httpsConnection.setSSLSocketFactory(sc.getSocketFactory());
+        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+        httpsConnection.setSSLSocketFactory(socketFactory);
+        
         /*
          * next fetch of conent is also necessary and we do also getotherwise we have a
          * "java.lang.IllegalStateException: connection not yet open"
@@ -75,7 +92,7 @@ public class SecurityTestHelper {
          */
         httpsConnection.connect();
 
-        fetchContentAndCheckForSSLHandshakeFailures(protocol, httpsConnection, expectProtocolNotAccepted);
+        fetchContentAndCheckForSSLHandshakeFailures(context, httpsConnection);
     }
 
     private void print_content(HttpsURLConnection con) {
@@ -101,7 +118,7 @@ public class SecurityTestHelper {
 
     }
 
-    private void fetchContentAndCheckForSSLHandshakeFailures(String protocol, HttpsURLConnection con, boolean expectSSLhandShakeFailure) {
+    private void fetchContentAndCheckForSSLHandshakeFailures(SSLTestContext context, HttpsURLConnection con) {
         if (con == null) {
             throw new IllegalArgumentException("con may not be null!");
         }
@@ -126,14 +143,14 @@ public class SecurityTestHelper {
         } catch (IOException e) {
             throw new IllegalStateException("should not happen in test case");
         }
-        if (expectSSLhandShakeFailure) {
+        if (context.expectProtocolNotAccepted) {
             if (handshakeException == null) {
-                Assert.fail("Protocol " + protocol + " was accepted! There was no handshake exception !");
+                Assert.fail("Protocol " + context.protocol + " was accepted! There was no handshake exception !");
             }
         } else {
             if (handshakeException != null) {
                 handshakeException.printStackTrace();
-                Assert.fail("Protocol " + protocol + " was NOT accepted! There was a handshake exception:" + handshakeException.getMessage());
+                Assert.fail("Protocol " + context.protocol + " was NOT accepted! There was a handshake exception:" + handshakeException.getMessage());
             }
         }
 
