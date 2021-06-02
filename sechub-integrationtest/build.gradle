@@ -148,7 +148,7 @@ task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopInt
     doLast{
          def pathString = tempDirPath.toString();
          println (">> CLEANUP temp dir: $pathString")
-         new IntegrationTestScriptAccess().deleteTmpFolder(new File("${project.projectDir}"),"$pathString")
+         new IntegrationTestServerScriptAccess().deleteTmpFolder(new File("${project.projectDir}"),"$pathString")
     }
 
 }
@@ -195,7 +195,7 @@ class IntegrationTestScriptAccess extends CmdExecutor{
        }
        
        public void deleteTmpFolder(File workingDir, String pathToDelete){
-            executeScript("deleteTmpFolder",workingDir,null,-1,-1,pathToDelete)
+            executeScript("deleteTmpFolder",workingDir,null,-1,"",pathToDelete)
        }
 
        public void stop(File workingDir,String port) throws Exception{
@@ -221,14 +221,17 @@ class IntegrationTestScriptAccess extends CmdExecutor{
           
           if (command.equals("deleteTmpFolder")){
              exec.getCommand().add("$sharedVolumeBaseDir");
-             return;
-          }
+             
+          }else{
           
-          if (command.equals("start")){
-             exec.getCommand().add("$useVersion");
+              if (command.equals("start")){
+                 exec.getCommand().add("$useVersion");
+              }
+
+              exec.getCommand().add("$port");
+              exec.getCommand().add("$sharedVolumeBaseDir");
+              
           }
-          exec.getCommand().add("$port");
-          exec.getCommand().add("$sharedVolumeBaseDir");
           
 
           exec.execute(workingDir)
