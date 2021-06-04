@@ -31,7 +31,7 @@ public class SchedulerJobBatchTriggerService {
 
     private static final int MINIMUM_RETRY_TIME_MS_TO_WAIT = 10;
     private static final int DEFAULT_TRIES = 5;
-    private static final int DEFAULT_RETRIY_MAX_MILLIS = 300;
+    private static final int DEFAULT_RETRY_MAX_MILLIS = 300;
     private static final int DEFAULT_INITIAL_DELAY_MILLIS = 5000;
     private static final int DEFAULT_FIXED_DELAY_MILLIS = 10000;
 
@@ -49,8 +49,8 @@ public class SchedulerJobBatchTriggerService {
             + "Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. "
             + "So having here a max value will result in a randomized wait time so cluster members will do "
             + "fetch operations time shifted and automatically reduce collisions!")
-    @Value("${sechub.config.trigger.nextjob.maxwaitretry:" + DEFAULT_RETRIY_MAX_MILLIS + "}")
-    private int markNextJobWaitBeforeRetryMillis = DEFAULT_RETRIY_MAX_MILLIS;
+    @Value("${sechub.config.trigger.nextjob.maxwaitretry:" + DEFAULT_RETRY_MAX_MILLIS + "}")
+    private int markNextJobWaitBeforeRetryMillis = DEFAULT_RETRY_MAX_MILLIS;
 
     @MustBeDocumented("Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.")
     @Value("${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
@@ -89,7 +89,7 @@ public class SchedulerJobBatchTriggerService {
     }
 
     // default 10 seconds delay and 5 seconds initial
-    @MustBeDocumented("Job scheduling is triggered by a cron job operation - default is 10000 seconds to delay after last execution. " + "The initial delay is "
+    @MustBeDocumented("Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. " + "The initial delay is "
             + DEFAULT_INITIAL_DELAY_MILLIS + " milliseconds is defined. It can be configured different,so when you need to startup a cluster "
             + "time shifted, simply change the initial delay values in your wanted way.")
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
@@ -117,7 +117,7 @@ public class SchedulerJobBatchTriggerService {
         RetryContext retryContext = new RetryContext(markNextJobRetries);
         do {
             try {
-                ScheduleSecHubJob next = markerService.markNextJobExecutedByThisPOD();
+                ScheduleSecHubJob next = markerService.markNextJobToExecuteByThisInstance();
                 retryContext.executionDone();
                 if (next == null) {
                     return;

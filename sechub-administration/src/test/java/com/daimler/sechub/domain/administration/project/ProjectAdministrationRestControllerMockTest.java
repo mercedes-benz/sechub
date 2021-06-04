@@ -6,6 +6,7 @@ import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.net.URI;
@@ -35,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
 import com.daimler.sechub.domain.administration.project.ProjectJsonInput.ProjectMetaData;
+import com.daimler.sechub.domain.administration.user.User;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -51,7 +53,7 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @Autowired
     private MockMvc mockMvc;
-
+    
     @MockBean
     ProjectCreationService creationService;
 
@@ -70,10 +72,14 @@ public class ProjectAdministrationRestControllerMockTest {
     @MockBean
     ProjectDetailInformationService detailService;
 
-    //@MockBean
-    //ProjectRepository mockedProjectRepository;
+    @MockBean
+    ProjectDetailChangeService detailChangeService;
+
     @MockBean
     ListProjectsService listProjectsService;
+    
+    @MockBean
+    ProjectTransactionService transactionService;
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
@@ -86,9 +92,13 @@ public class ProjectAdministrationRestControllerMockTest {
     @Test
     public void when_admin_tries_to_list_all_projects_all_2_projects_from_repo_are_returned_in_string_array() throws Exception {
         /* prepare */
-        List<String> projects = new ArrayList<>();
-        projects.add("project1");
-        projects.add("project2");
+        List<Project> projects = new ArrayList<>();
+        Project project1 = new Project();
+        project1.id = "project1";
+        Project project2 = new Project();
+        project2.id = "project2";
+        projects.add(project1);
+        projects.add(project2);
         
         when(listProjectsService.listProjects()).thenReturn(projects);
 
@@ -161,6 +171,67 @@ public class ProjectAdministrationRestControllerMockTest {
         verify(projectDeleteService).deleteProject("projectId1");
     }
 
+    @Test
+    public void get_project_details_returns_project_details() throws Exception {
+                
+        Project project = new Project();
+        project.id = "project1";
+        project.description = "description";
+        project.owner = new User();
+        
+        ProjectDetailInformation details = new ProjectDetailInformation(project);
+        
+        when(detailService.fetchDetails(matches("project1"))).thenReturn(details);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                get(https(PORT_USED).buildAdminFetchProjectInfoUrl(PROJECT_ID.pathElement()), "project1").
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andExpect(jsonPath("$.projectId", CoreMatchers.equalTo("project1"))).
+        andExpect(jsonPath("$.description", CoreMatchers.equalTo("description"))).
+        andExpect(jsonPath("$.owner", CoreMatchers.nullValue())).
+        andExpect(jsonPath("$.users", CoreMatchers.notNullValue()));
+        
+        verify(detailService).fetchDetails(matches("project1"));
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void change_project_calls_change_details() throws Exception {
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl("project1")).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                content("{\"description\":\"new description\"}")
+                ).
+        andDo(print()).
+        andExpect(status().isOk()).
+        andReturn();
+        
+        verify(detailChangeService).changeProjectDescription(matches("project1"), any());
+        /* @formatter:on */
+    }
+    
+    @Test
+    public void when_admin_tries_to_change_project_description_but_request_body_is_missing() throws Exception {
+
+        /* execute + test @formatter:off */
+        
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "project1").
+                contentType(MediaType.APPLICATION_JSON).
+                content("")
+                ).
+        andExpect(status().isBadRequest());
+        
+        /* @formatter:on */
+    }    
+    
     @TestConfiguration
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration

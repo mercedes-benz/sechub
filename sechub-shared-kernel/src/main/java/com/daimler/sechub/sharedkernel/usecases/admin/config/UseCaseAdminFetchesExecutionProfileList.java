@@ -18,9 +18,9 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 		id=UseCaseIdentifier.UC_ADMIN_FETCHES_EXECUTION_PROFILE_LIST,
 		group=UseCaseGroup.CONFIGURATION,
 		apiName="adminFetchesExecutionProfileList",
-		title="Admin fetches execution proflie list",
+		title="Admin fetches execution profile list",
 		description="An administrator fetches execution profile list")
-public @interface UseCaseAdminFetchesExecutionProfileList{
+public @interface UseCaseAdminFetchesExecutionProfileList {
 
 	Step value();
 }

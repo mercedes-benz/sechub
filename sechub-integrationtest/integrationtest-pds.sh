@@ -157,7 +157,7 @@ function startServer(){
     echo "starting a sechub-pds $PDS_VERSION in integration test mode"
     export SPRING_PROFILES_ACTIVE=pds_integrationtest,pds_h2
     export SECHUB_SERVER_DEBUG=true
-    export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR=temp
+    export SECHUB_PDS_STORAGE_SHAREDVOLUME_UPLOAD_DIR=temp
 
     pathToJar="./../sechub-pds/build/libs/sechub-pds-$PDS_VERSION.jar"
     if [ ! -f $pathToJar ]; then

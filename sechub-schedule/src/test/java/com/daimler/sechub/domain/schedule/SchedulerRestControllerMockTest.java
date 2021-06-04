@@ -203,7 +203,7 @@ public class SchedulerRestControllerMockTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(1234).buildAddJobUrl(PROJECT1_ID)).
+        		post(https(PORT_USED).buildAddJobUrl(PROJECT1_ID)).
         			contentType(MediaType.APPLICATION_JSON_VALUE)
         		)./*andDo(print()). */
         			andExpect(status().isBadRequest());

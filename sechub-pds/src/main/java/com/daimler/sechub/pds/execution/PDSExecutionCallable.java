@@ -18,9 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
+import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
+import com.daimler.sechub.pds.job.WorkspaceLocationData;
 import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 
@@ -58,20 +60,23 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     @Override
     public PDSExecutionResult call() throws Exception {
-        LOG.debug("Start execution of job with uuid:{}", jobUUID);
+        LOG.info("Prepare execution of job {}", jobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
+        PDSJobConfiguration config = null;
         try {
             updateWithRetriesOnOptimisticLocks(UpdateState.RUNNING);
 
             String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
 
-            PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
+            config = PDSJobConfiguration.fromJSON(configJSON);
+
             long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
             if (minutesToWaitForResult < 1) {
                 throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
             }
 
             LOG.debug("Handle source upload for job with uuid:{}", jobUUID);
+            workspaceService.prepareWorkspace(jobUUID, config);
             workspaceService.unzipUploadsWhenConfigured(jobUUID, config);
             String path = workspaceService.getProductPathFor(config);
             if (path == null) {
@@ -81,13 +86,20 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             createProcess(jobUUID, config, path);
 
             waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult);
+
         } catch (Exception e) {
+
             LOG.error("Execution of job uuid:{} failed", jobUUID, e);
+
             result.failed = true;
             result.result = "Execution of job uuid:" + jobUUID + " failed. Please look into PDS logs for details and search for former string.";
+
         } finally {
-            cleanUpWorkspace(jobUUID);
+
+            cleanUpWorkspace(jobUUID, config);
         }
+        LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
+
         return result;
     }
 
@@ -183,14 +195,25 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
          * add parts from PDS job configuration - means data defined by caller before
          * job was marked as ready to start
          */
-        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
-        builder.environment().putAll(buildEnvironmentMap);
+        Map<String, String> environment = builder.environment();
 
-        File workspaceFolder = workspaceService.getWorkspaceFolder(jobUUID);
-        builder.environment().put("PDS_JOB_WORKSPACE_LOCATION", workspaceFolder.toPath().toRealPath().toString());
+        Map<String, String> buildEnvironmentMap = environmentService.buildEnvironmentMap(config);
+        environment.putAll(buildEnvironmentMap);
+
+        WorkspaceLocationData locationData = workspaceService.createLocationData(jobUUID);
+
+        environment.put("PDS_JOB_WORKSPACE_LOCATION", locationData.getWorkspaceLocation());
+        environment.put("PDS_JOB_RESULT_FILE", locationData.getResultFileLocation());
+        environment.put("PDS_JOB_SOURCECODE_ZIP_FILE", locationData.getZippedSourceLocation());
+        environment.put("PDS_JOB_SOURCECODE_UNZIPPED_FOLDER", locationData.getUnzippedSourceLocation());
+
+        LOG.debug("Prepared launcher script process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
+
+        LOG.info("Start launcher script for job {}", jobUUID);
         try {
-            LOG.debug("Create process for job with uuid:{}, path={}, env={}", jobUUID, path, buildEnvironmentMap);
+
             process = builder.start();
+
         } catch (IOException e) {
             LOG.error("Process start failed for jobUUID:{}. Current directory was:{}", jobUUID, currentDir.getAbsolutePath());
             throw e;
@@ -211,18 +234,27 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.info("Cancelation of process: {} will destroy underlying process forcibly");
             process.destroyForcibly();
         } finally {
-            cleanUpWorkspace(jobUUID);
+
+            String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
+
+            try {
+                PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
+                cleanUpWorkspace(jobUUID, config);
+            } catch (PDSJSONConverterException e) {
+                LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", jobUUID, e);
+            }
+
         }
 
     }
 
-    private void cleanUpWorkspace(UUID jobUUID) {
+    private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {
         if (workspaceService.isWorkspaceAutoCleanDisabled()) {
             LOG.info("Auto cleanup is disabled, so keep files at {}", workspaceService.getWorkspaceFolder(jobUUID));
             return;
         }
         try {
-            workspaceService.cleanup(jobUUID);
+            workspaceService.cleanup(jobUUID, config);
             LOG.debug("workspace cleanup done for job:{}", jobUUID);
         } catch (IOException e) {
             LOG.error("workspace cleanup failed for job:{}!", jobUUID);

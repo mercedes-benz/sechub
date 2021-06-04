@@ -8,7 +8,7 @@
 dependencies {
 
     compile project(':sechub-commons-model')
-    compile project(':sechub-storage-core')
+    compile project(':sechub-storage-sharedvolume-spring')
     compile project(':sechub-storage-s3-aws')
     compile project(':sechub-adapter')
 

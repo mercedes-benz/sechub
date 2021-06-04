@@ -498,7 +498,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestChangeMappingDirectlyURL(mappingId);
 
-        IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSon(url, data.toJSON());
+        IntegrationTestContext.get().getRestHelper(ANONYMOUS).putJSON(url, data.toJSON());
 
     }
 
@@ -840,6 +840,9 @@ public class TestAPI {
         }
         as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
     }
-
-
+    
+    public static void switchSchedulerStrategy(String strategyId) {
+        String url = getURLBuilder().buildSetSchedulerStrategyIdUrl(strategyId);
+        getSuperAdminRestHelper().put(url);
+    }
 }

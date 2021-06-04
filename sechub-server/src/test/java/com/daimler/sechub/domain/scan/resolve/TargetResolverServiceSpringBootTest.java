@@ -61,7 +61,7 @@ public class TargetResolverServiceSpringBootTest {
 	}
 
 	@Test
-	public void somtething_intranet_example_org__is_INTRANET() {
+	public void something_intranet_example_org__is_INTRANET() {
 		/* prepare */
 		URI uri = URI.create("https://something.intranet.example.org");
 

@@ -48,8 +48,8 @@ import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.metadata.DefaultMetaDataInspector;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { CheckmarxProductExecutor.class, CheckmarxResilienceConsultant.class,

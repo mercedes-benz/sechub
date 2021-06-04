@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.PDSJSONConverterException;
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.pds.PDSShutdownService;
 
 @Service
@@ -26,6 +27,7 @@ public class PDSServerConfigurationService {
 
     private static final String DEFAULT_PATH = "./pds-config.json";
 
+    @PDSMustBeDocumented(value="Define path to PDS configuration file",scope="startup")
     @Value("${sechub.pds.config.file:" + DEFAULT_PATH + "}")
     String pathToConfigFile;
 
@@ -36,6 +38,8 @@ public class PDSServerConfigurationService {
     PDSServerConfigurationValidator serverConfigurationValidator;
 
     private PDSServerConfiguration configuration;
+
+    private String storageId;
 
     @PostConstruct
     protected void postConstruct() {
@@ -59,9 +63,12 @@ public class PDSServerConfigurationService {
             LOG.error("No config file found at {} !", file.getAbsolutePath());
         }
         if (configuration == null) {
-            LOG.error("PDS configuration failure\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
+            LOG.error(
+                    "PDS configuration failure\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
             shutdownService.shutdownApplication();
         }
+        /* define storage id */
+        storageId = "pds/" + getServerId();
     }
 
     public PDSServerConfiguration getServerConfiguration() {
@@ -78,7 +85,17 @@ public class PDSServerConfigurationService {
     }
 
     public String getServerId() {
+        if (configuration == null) {
+            return "undefined-no-configuration";
+        }
         return configuration.getServerId();
+    }
+
+    /**
+     * @return storage ID to use for this PDS server - is always "pds/${serverId}"
+     */
+    public String getStorageId() {
+        return storageId;
     }
 
 }

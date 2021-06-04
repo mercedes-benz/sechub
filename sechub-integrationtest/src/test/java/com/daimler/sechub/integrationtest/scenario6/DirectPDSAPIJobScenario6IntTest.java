@@ -49,9 +49,36 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         /* @formatter:on */
     }
+    
+    @Test
+    public void pds_techuser_creates_job_and_marks_as_ready_without_upload() {
+        /* @formatter:off */
+        /* prepare */
+
+        UUID sechubJobUUID = UUID.randomUUID();
+        String result = asPDSUser(PDS_TECH_USER).
+            createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
+        
+        UUID pdsJobUUID = assertPDSJobCreateResult(result).getJobUUID();
+        
+        asPDSUser(PDS_TECH_USER).
+            markJobAsReadyToStart(pdsJobUUID);
+        
+        /* execute */
+        String jobReport = asPDSUser(PDS_ADMIN).getJobReportOrErrorText(pdsJobUUID);
+        
+        /* test */
+        String expectedIdentifier = "#PDS_INTTEST_PRODUCT_CODESCAN";
+        
+        if (! jobReport.contains(expectedIdentifier)){
+            fail("job report does not contain expected identifier:"+expectedIdentifier+"\nbut was:"+jobReport);
+        }
+        
+        /* @formatter:on */
+    }
 
     @Test
-    public void pds_techuser_can_get_job_status_of_created_job_and_is_CREATED() {
+    public void pds_techuser_can_get_job_status_of_created_job_and_status_is_CREATED() {
         /* @formatter:off */
         /* prepare */
 
@@ -78,11 +105,8 @@ public class DirectPDSAPIJobScenario6IntTest {
         String createResult = asPDSUser(PDS_TECH_USER).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
-        /* execute */
+        /* execute + test just no error happend*/
         asPDSUser(PDS_TECH_USER).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
-        
-        /* test */
-        assertPDSWorkspace().hasUploadedFile(pdsJobUUID, "sourcecode.zip");
         
         /* @formatter:on */
     }
@@ -103,8 +127,11 @@ public class DirectPDSAPIJobScenario6IntTest {
         
         /* test */
         String report = asPDSUser(PDS_TECH_USER).getJobReport(pdsJobUUID);
-        assertTrue(report.contains("CRITICAL"));
-        
+        if (!report.contains("CRITICAL")) {
+            fail("Report contains not CRITICAL, but:\n"+report);
+        }
+        // next line tests, that the extracted files is no longer available - so auto clean worked */
+        assertPDSWorkspace().containsNOTFile(pdsJobUUID, "upload/unzipped/sourcecode","data.txt");
         /* @formatter:on */
     }
 
@@ -143,7 +170,7 @@ public class DirectPDSAPIJobScenario6IntTest {
     }
 
     @Test
-    public void pds_admin_can_upload_content_to_PDS() {
+    public void pds_admin_can_upload_sourcecode_zip_to_PDS() {
         /* @formatter:off */
         /* prepare */
 
@@ -152,11 +179,8 @@ public class DirectPDSAPIJobScenario6IntTest {
         String createResult = asPDSUser(PDS_ADMIN).createJobFor(sechubJobUUID, PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
         UUID pdsJobUUID = assertPDSJobCreateResult(createResult).hasJobUUID().getJobUUID();
 
-        /* execute */
+        /* execute - test just no error */
         asPDSUser(PDS_ADMIN).upload(pdsJobUUID, "sourcecode.zip", "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip");
-        
-        /* test */
-        assertPDSWorkspace().hasUploadedFile(pdsJobUUID, "sourcecode.zip");
         
         /* @formatter:on */
     }

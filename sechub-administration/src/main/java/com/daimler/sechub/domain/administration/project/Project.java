@@ -112,6 +112,10 @@ public class Project {
 	public String getId() {
 		return id;
 	}
+	
+	public String getDescription() {
+	    return description;
+	}
 
 	@Override
 	public int hashCode() {

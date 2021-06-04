@@ -11,6 +11,8 @@ projectType = [
                project(':sechub-client-java'),
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
+               project(':sechub-storage-core'),
+               
             ],
 
             /* any project using spring parts but not already in other spring boot group must be defined here */
@@ -20,9 +22,11 @@ projectType = [
                     project(':sechub-integrationtest'),
                     project(':sechub-developertools'),
                     project(':sechub-test'),
-                    /* only necessary, because otherwise we get the (older)
+                    
+                    project(':sechub-storage-sharedvolume-spring'),
+                    
+                    /* next projects added as spring boot projects only, because otherwise we get the (older)
                        dependencies from aws as compiled projects in IDEs: */
-                    project(':sechub-storage-core'),
                     project(':sechub-storage-s3-aws'),
                     project(':sechub-storage-s3-aws-test'),
             ],

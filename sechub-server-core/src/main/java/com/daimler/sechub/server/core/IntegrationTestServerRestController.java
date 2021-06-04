@@ -38,10 +38,10 @@ import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorSe
 import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
 import com.daimler.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 /**
  * Contains additional rest call functionality for integration test server

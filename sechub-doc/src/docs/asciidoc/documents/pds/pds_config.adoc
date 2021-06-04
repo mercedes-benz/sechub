@@ -2,6 +2,8 @@
 [[section-pds-configuration]]
 === Configuration
 
+include::../shared/pds_options.adoc[]
+
 === Tech user credentials
 
 Either use system properties
@@ -93,15 +95,31 @@ include::product_delegation_server_config_example1.json[]
 
 <10> optional parameters
 
-<11> defines if PDS will automatically unzip zip files. default is `true`. When `true` the content
+<11> defines if PDS will automatically extract ZIP files - default is `true`. When `true` the content
    of the unzipped files will be available inside `$PDS_JOB_WORKSPACE_LOCATION/uploads/unzipped/${nameOfUploadFileWithoutZipExt}`
    
 === Launcher scripts
 
-==== Default variables
-===== PDS_JOB_WORKSPACE_LOCATION
-The variable `PDS_JOB_WORKSPACE_LOCATION` is always available and
-points to the job location.
+==== Generated variables
+
+[options="header",cols="1,1"]
+|===
+|Variable name                      |Description   
+//-------------------------------------------------------------------------------------------------
+|PDS_JOB_WORKSPACE_LOCATION         | The workspace job root location 
+|PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
+|PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file 
+|PDS_JOB_SOURCECODE_UNZIPPED_FOLDER | When auto unzipping is enabled (default) the uploaded source code is unzipped to this folder 
+|===
+
+==== Parameter variables
+The parameters described at <<section-pds-server-example-config-file,configuration>> are defined in
+Product executor configurations. At execution time these parameters are available inside
+launcher scripts.
+
+Mandatory parts are always present, optional ones can be empty - dependeing on the executor configuration. 
+
+
 
 ==== File locations
 
@@ -115,13 +133,15 @@ Automatically unzipped content is available inside +
 
 Following files are reserved
 
-- system-err.log _(created automatically)_ +
+- system-err.log _(created automatically by PDS)_ +
   `$PDS_JOB_WORKSPACE_LOCATION/output/system-err.log`
 
-- `system-out.log _(created automatically)_+
+- `system-out.log _(created automatically by PDS)_+
    $PDS_JOB_WORKSPACE_LOCATION/output/system-out.log`
-- *result.txt* - this is the result file which must be created by the executed script +
-  `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`
+   
+- *result.txt* - this is the result file which *must be created by the executed script* +
+  `$PDS_JOB_WORKSPACE_LOCATION/output/result.txt`.
+  The path is represented by the variable `PDS_JOB_RESULT_FILE`
 
 
 

@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.execution.PDSExecutionStatus;
@@ -46,12 +47,15 @@ public class PDSHeartBeatTriggerService {
     @Autowired
     PDSServerConfigurationService serverConfigService;
 
+    @PDSMustBeDocumented(value="Initial delay for heartbeat checks",scope="monitoring")
     @Value("${sechub.pds.config.trigger.heartbeat.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
+    @PDSMustBeDocumented(value="Delay for heartbeat checks",scope="monitoring")
     @Value("${sechub.pds.config.trigger.heartbeat.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
+    @PDSMustBeDocumented(value="Configure if heartbeat checks are enabled",scope="monitoring")
     @Value("${sechub.pds.config.heartbeat.enable:"+DEFAULT_SCHEDULING_ENABLED+"}")
     boolean heartbeatEnabled=DEFAULT_SCHEDULING_ENABLED;
 
