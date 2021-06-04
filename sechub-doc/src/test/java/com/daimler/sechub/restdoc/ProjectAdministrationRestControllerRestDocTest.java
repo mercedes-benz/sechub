@@ -3,7 +3,8 @@ package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -57,7 +58,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
@@ -378,7 +379,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
                                     fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
-				    fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
                             ).
                             build()
                          )
@@ -388,9 +389,12 @@ public class ProjectAdministrationRestControllerRestDocTest {
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectDescription.class)
+    @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectDescription.class)
     public void restdoc_change_project_description() throws Exception {
         /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminChangesProjectDescription.class;
+        
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
 
@@ -424,7 +428,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminChangesProjectDescriptionUrl(PROJECT_ID.pathElement()), "projectId1").
+                post(apiEndpoint, "projectId1").
                 content("{\n"
                         + "  \"description\" : \"new description\"\n"
                         + "}").
@@ -433,21 +437,28 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 */
         andDo(print()).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectDescription.class),
-                pathParameters(
-                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
-                        ),
-                responseFields(
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
-                            fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
-                        )
-                    )
-                );
+        andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
+                            pathParameters(
+                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
+                            ).
+                            responseFields(
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+                                    fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
+                            ).
+                            build()
+                         )
+                ));
 
         /* @formatter:on */
     }

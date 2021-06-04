@@ -242,7 +242,7 @@ openapi3 {
 }
 
 
-task postProcessOpenapi() {
+task generateOpenapi() {
 	/*
 	 * Generate the OpenAPI file and perform some post processing steps
 	 *
@@ -250,6 +250,9 @@ task postProcessOpenapi() {
 	 * This is necessary, because arrays cannot be properly declared in Spring RESTDoc:
 	 * - https://github.com/ePages-de/restdocs-api-spec/issues/147
 	 */
+	group 'sechub'
+	description 'Generate the OpenAPI file'
+	
 	dependsOn 'openapi3'
 	
     doLast {

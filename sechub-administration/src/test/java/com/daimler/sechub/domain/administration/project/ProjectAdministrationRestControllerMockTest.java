@@ -92,13 +92,9 @@ public class ProjectAdministrationRestControllerMockTest {
     @Test
     public void when_admin_tries_to_list_all_projects_all_2_projects_from_repo_are_returned_in_string_array() throws Exception {
         /* prepare */
-        List<Project> projects = new ArrayList<>();
-        Project project1 = new Project();
-        project1.id = "project1";
-        Project project2 = new Project();
-        project2.id = "project2";
-        projects.add(project1);
-        projects.add(project2);
+        List<String> projects = new ArrayList<>();
+        projects.add("project1");
+        projects.add("project2");
         
         when(listProjectsService.listProjects()).thenReturn(projects);
 
