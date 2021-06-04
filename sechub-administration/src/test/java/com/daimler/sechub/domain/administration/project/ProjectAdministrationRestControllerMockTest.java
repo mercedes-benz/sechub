@@ -79,6 +79,9 @@ public class ProjectAdministrationRestControllerMockTest {
     ListProjectsService listProjectsService;
     
     @MockBean
+    ProjectRepository mockedProjectRepository;
+    
+    @MockBean
     ProjectTransactionService transactionService;
 
     @MockBean
