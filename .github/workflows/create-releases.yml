@@ -257,9 +257,8 @@ jobs:
         asset_path: ./sechub-doc/build/docs/asciidoc/sechub-restapi.pdf
         asset_name: sechub-restapi-${{ github.event.inputs.server-version }}.pdf
         asset_content_type: application/pdf
-    
-    # sechub-openapi.json
-    - name: Upload sechub-openapi3.yaml release asset
+
+    - name: Upload sechub-openapi3.json release asset
       id: upload-sechub-doc-openapi3-release-asset 
       if: github.event.inputs.server-version != ''
       uses: actions/upload-release-asset@v1
@@ -267,8 +266,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_server_release.outputs.upload_url }}  
-        asset_path: ./sechub-doc/build/api-spec/openapi3.yaml
-        asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.yaml
+        asset_path: ./sechub-doc/build/api-spec/openapi3.json
+        asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.json
         asset_content_type: text/plain
     
     # ******************************************  

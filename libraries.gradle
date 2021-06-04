@@ -13,7 +13,7 @@ ext {
 
    libraryVersion= [
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec: "0.11.3"
+      restDocsApiSpec: "0.11.4"
    ]
 
    library = [

@@ -5,7 +5,7 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
- 
+
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile library.slf4j
@@ -24,13 +24,14 @@ dependencies {
 // see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
 apply plugin: 'org.openapi.generator'
 
-def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
+def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
 
 openApiValidate {
     inputSpec = "$specFilePath"
 }
 
-openApiGenerate {
+// see: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+task generateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName = "java"
     
     inputSpec = "$specFilePath"
@@ -38,9 +39,7 @@ openApiGenerate {
     apiPackage = "com.daimler.sechub.client.java.api"
     invokerPackage = "com.daimler.sechub.client.java.api"
     modelPackage = "com.daimler.sechub.client.java.api.model"
-    modelFilesConstrainedTo = [
-            "Error"
-    ]
+    
     globalProperties = [
             validateSpec   : "true",
             modelDocs      : "false",
@@ -49,104 +48,29 @@ openApiGenerate {
             supportingFiles: ""  // generate all
     ]
     configOptions = [
-            performBeanValidation: "false",
-            useBeanValidation    : "false",
-            java8                : "true",
-            dateLibrary          : "java8",
-            serializableModel    : "true",
-            serializationLibrary : "jackson",
-            artifactId           : rootProject.name,
+    		groupId 					: "com.daimler.sechub", 
+            performBeanValidation		: "false",
+            useBeanValidation    		: "false",
+            java8                		: "true",
+            dateLibrary          		: "java8",
+            serializableModel    		: "true",
+            serializationLibrary 		: "jackson",
+            artifactId           		: "sechub-client-java",
+            artifactDescription			: "The SecHub API client library for Java",
+            artifactUrl					: "https://github.com/Daimler/sechub",
             legacyDiscriminatorBehavior : "false",
-            library : "jersey2",
-            licenseName : "MIT",
-            developerOrganization : "Daimler"
-            
+            library 					: "jersey2",
+            licenseName 				: "MIT",
+            licenseUrl					: "https://github.com/Daimler/sechub/blob/develop/LICENSE",
+            developerEmail				: "",
+            developerName				: "",
+            developerOrganization 		: "Daimler TSS",
+            developerOrganizationUrl	: "https://www.daimler-tss.com/",
+            scmConnection				: "",
+            scmDeveloperConnection		: "",
+            scmUrl						: "https://github.com/daimler/sechub"
     ]
 }
-
-/*
-// Generate a JavaScript client
-openApiGenerate {
-    generatorName = "javascript"
-    
-    inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java/gen-javascript"
-    apiPackage = "com.daimler.sechub.client.javascript.api"
-    invokerPackage = "com.daimler.sechub.client.javascript.api"
-    modelPackage = "com.daimler.sechub.client.javascript.api.model"
-    modelFilesConstrainedTo = [
-            "Error"
-    ]
-    globalProperties = [
-            validateSpec   : "true",
-            modelDocs      : "false",
-            models         : "",  // generate all
-            apis           : "", // generate all
-            supportingFiles: ""  // generate all
-    ]
-    configOptions = [
-            licenseName : "MIT",
-            developerOrganization : "Daimler"
-            
-    ]
-}
-*/
-
-/*
-// Python client -> works not pretty
-openApiGenerate {
-    generatorName = "python"
-    
-    inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java/gen-python"
-    apiPackage = "com.daimler.sechub.client.python.api"
-    invokerPackage = "com.daimler.sechub.client.python.api"
-    modelPackage = "com.daimler.sechub.client.python.api.model"
-    modelFilesConstrainedTo = [
-            "Error"
-    ]
-    globalProperties = [
-            validateSpec   : "true",
-            modelDocs      : "false",
-            models         : "",  // generate all
-            apis           : "", // generate all
-            supportingFiles: ""  // generate all
-    ]
-    configOptions = [
-            licenseName : "MIT",
-            developerOrganization : "Daimler",
-            packageName : "Sechub-Client-Library",
-            packageVersion : "0.1.0"
-    ]
-}*/
-
-/*
-// Go client
-openApiGenerate {
-    generatorName = "go"
-    
-    inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java/gen-go"
-    apiPackage = "com.daimler.sechub.client.go.api"
-    invokerPackage = "com.daimler.sechub.client.go.api"
-    modelPackage = "com.daimler.sechub.client.go.api.model"
-    modelFilesConstrainedTo = [
-            "Error"
-    ]
-    globalProperties = [
-            validateSpec   : "true",
-            modelDocs      : "false",
-            models         : "",  // generate all
-            apis           : "", // generate all
-            supportingFiles: ""  // generate all
-    ]
-    configOptions = [
-            licenseName : "MIT",
-            developerOrganization : "Daimler",
-            packageName : "Sechub-Client-Library",
-            packageVersion : "0.1.0"
-    ]
-}*/
 
 tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     outputs.upToDateWhen { false }
@@ -170,24 +94,65 @@ task buildJavaClientAll(type: Jar) {
 sourceSets {
     main{
         java {
-           srcDirs 'src/main/java-gen', 'src/main/java/'
+           srcDirs 'src/main/java/'
         }
 
     }
 
 }
 
-/**
- * Create folder for genareted sources
- */
-tasks.eclipse.dependsOn << {
-  	String sourceFolder = "src/main/java-gen"
-  	def resourceDir = new File(project.projectDir, sourceFolder)
-  		
-  	if( !resourceDir.exists() && ! resourceDir.mkdirs() ) {
-  		logger.info("Not able to create eclipse resource dir: %1",resourceDir);
-  	}
+task buildJavaClient(type:Exec) {
+  group 'sechub'
+  dependsOn 'generateJavaClient'
+  
+  workingDir = "${project.projectDir}"
+
+  commandLine './generateClient.sh', "${project.projectDir}/gen"
 }
+
+/*
+apply plugin: 'maven-publish'
+
+version =   VersionData.getServerVersion()
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+            from components.java
+
+            pom {
+                name = 'SecHub Java Client'
+                description = 'SecHub Java Client as a Spring Boot JAR. Ready to use.'
+
+                scm {
+                    url = 'https://github.com/daimler/sechub'
+                }
+
+                 licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/daimler/sechub/blob/master/LICENSE'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url =  project.hasProperty("mavenTargetRepoUrl") ? project.properties['mavenTargetRepoUrl'] : System.getProperty("user.home")+"/.m2/repository"
+
+            if (project.hasProperty("mavenRepoUserName") && project.hasProperty("mavenRepoPassword")) {
+                credentials(PasswordCredentials) {
+                    username project.properties['mavenRepoUserName']
+                    password project.properties['mavenRepoPassword']
+                }
+            }
+        }
+    }
+}
+*/
 
 
 
