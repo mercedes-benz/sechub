@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.security;
 
 import static com.daimler.sechub.integrationtest.SecurityTestHelper.*;

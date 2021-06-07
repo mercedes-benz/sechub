@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.security;
 
 import static com.daimler.sechub.integrationtest.SecurityTestHelper.*;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.daimler.sechub.integrationtest.SecurityTestHelper;
+import com.daimler.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 
 class PDSServerEncryptionTest {
@@ -19,7 +21,7 @@ class PDSServerEncryptionTest {
         IntegrationTestContext context = IntegrationTestContext.get();
 
         String checkAlive = context.getPDSUrlBuilder().buildCheckIsAliveUrl();
-        securityTestHelper = new SecurityTestHelper(new URL(checkAlive));
+        securityTestHelper =  new SecurityTestHelper(TestTargetType.PDS_SERVER,new URL(checkAlive));
     }
 
     @Test

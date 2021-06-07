@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -8,6 +10,9 @@ import java.net.URLConnection;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -21,11 +26,26 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class SecurityTestHelper {
+
+    public enum TestTargetType {
+        PDS_SERVER("pds"),
+
+        SECHUB_SERVER("server"),
+
+        ;
+
+        private String id;
+
+        private TestTargetType(String id) {
+            this.id = id;
+        }
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityTestHelper.class);
 
-    
     /* no longer accepted */
     public static final String SSL_V3 = "sslv3";
     public static final String TLS_V1_0 = "TLSv1";
@@ -35,34 +55,37 @@ public class SecurityTestHelper {
     public static final String TLS_V1_3 = "TLSv1.3";
     public static final String TLS_V1_2 = "TLSv1.2";
 
-
     private URL testURL;
 
-    public SecurityTestHelper(URL testURL) {
-        this.testURL=testURL;
+    private TestTargetType targetType;
+
+    private CipherTestData cipherTestData;
+
+    public SecurityTestHelper(TestTargetType targetType, URL testURL) {
+        this.testURL = testURL;
+        this.targetType = targetType;
     }
-    
+
     public void assertProtocolNOTAccepted(String protocol) throws Exception {
         SSLTestContext context = new SSLTestContext();
-        context.protocol=protocol;
-        context.expectProtocolNotAccepted=true;
-        
+        context.protocol = protocol;
+        context.expectProtocolNotAccepted = true;
+
         callTestURLWithProtocol(context);
     }
 
     public void assertProtocolAccepted(String protocol) throws Exception {
         SSLTestContext context = new SSLTestContext();
-        context.protocol=protocol;
-        context.expectProtocolNotAccepted=false;
-        
+        context.protocol = protocol;
+        context.expectProtocolNotAccepted = false;
+
         callTestURLWithProtocol(context);
     }
-    
-    private class SSLTestContext{
+
+    private class SSLTestContext {
         String protocol;
         boolean expectProtocolNotAccepted;
     }
-    
 
     private void callTestURLWithProtocol(SSLTestContext context) throws Exception {
         LOG.info("********************************************************************************");
@@ -74,13 +97,12 @@ public class SecurityTestHelper {
         TrustManager tm = createAcceptAllTrustManger();
         sslContext.init(null, new TrustManager[] { tm }, null);
 
-        
         URLConnection urlConnection = testURL.openConnection();
         HttpsURLConnection httpsConnection = (HttpsURLConnection) urlConnection;
 
         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
         httpsConnection.setSSLSocketFactory(socketFactory);
-        
+
         /*
          * next fetch of conent is also necessary and we do also getotherwise we have a
          * "java.lang.IllegalStateException: connection not yet open"
@@ -174,5 +196,106 @@ public class SecurityTestHelper {
             }
         };
         return tm;
+    }
+
+    public void assertOnlyAcceptedSSLCiphers(String... cipherNames) throws Exception {
+        ensureCipherTestDone();
+
+        for (String cipherName : cipherNames) {
+            assertSSLCipher(cipherName, true);
+        }
+
+        int verified = 0;
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if ("true".equals(check.verified)) {
+                verified++;
+            }
+        }
+
+        Assert.assertEquals("Amount of verified not as expected", cipherNames.length, verified);
+
+    }
+
+    public void assertSSLCipherNotAccepted(String cipherName) throws Exception {
+        assertSSLCipher(cipherName, false);
+    }
+
+    public void assertSSLCipherAccepted(String cipherName) throws Exception {
+        assertSSLCipher(cipherName, true);
+    }
+
+    private void assertSSLCipher(String cipherName, boolean cipherShallBeVerifiedWithTrue) throws Exception {
+        ensureCipherTestDone();
+
+        boolean found = false;
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if (!cipherName.equals(check.cipher)) {
+                continue;
+            }
+            found = true;
+            if ("true".equalsIgnoreCase(check.verified)) {
+                if (cipherShallBeVerifiedWithTrue) {
+                    return;
+                } else {
+                    Assert.fail("Cipher:" + cipherName + " was accepted by " + targetType + ", but should not!");
+                }
+            } else if ("false".equalsIgnoreCase(check.verified)) {
+                if (!cipherShallBeVerifiedWithTrue) {
+                    return;
+                } else {
+                    Assert.fail("Cipher:" + cipherName + " was NOT accepted by " + targetType + ", but should!");
+                }
+            }
+            throw new IllegalStateException("The expected cipher was found in cipher test data, but it was not possible to check verification :" + cipherName
+                    + " was verified as " + check.verified);
+        }
+        if (!found) {
+            throw new IllegalStateException("The expected cipher:" + cipherName + " \n was NOT found in cipher test data:" + cipherName + " at " + targetType
+                    + "\n" + collectionOfSupportedCiphers());
+        }
+    }
+
+    private String collectionOfSupportedCiphers() throws Exception {
+        ensureCipherTestDone();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Accepted ciphers from server:\n");
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if ("true".equalsIgnoreCase(check.verified)) {
+                sb.append(check.cipher);
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    private void ensureCipherTestDone() throws Exception {
+        if (cipherTestData != null) {
+            return;
+        }
+        List<String> commands = new ArrayList<>();
+        commands.add("./ciphertest.sh");
+        commands.add("localhost:" + testURL.getPort());
+        commands.add(targetType.id);
+
+        /*
+         * now we call ciphertest.sh with parameters - will create
+         * /sechub-integrationtest/build/testresult/ciphertest/sechub-pds.json or
+         * /sechub-integrationtest/build/testresult/ciphertest/sechub-server.json
+         */
+
+        ProcessBuilder pb = new ProcessBuilder(commands);
+        Process process = pb.start();
+        boolean exited = process.waitFor(10, TimeUnit.SECONDS);
+        if (!exited) {
+            throw new IllegalStateException("Was not able to wait for ciphertest.sh result");
+        }
+        TextFileReader reader = new TextFileReader();
+        File file = new File("./build/test-results/ciphertest/sechub-" + targetType.id + ".json");
+        String text = reader.loadTextFile(file);
+
+        ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
+        cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);
+
     }
 }
