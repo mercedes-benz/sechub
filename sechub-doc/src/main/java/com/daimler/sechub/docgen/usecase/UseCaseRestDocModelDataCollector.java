@@ -131,19 +131,18 @@ public class UseCaseRestDocModelDataCollector {
 		return model;
 	}
 	
-	private File copyToDocumentationProject(File projectRestDocGenFolder, String id) {
-		File targetFolder = new File(sechHubDoc, "src/docs/asciidoc/"+DOCUMENTS_GEN + id);
-		try {
-			if (targetFolder.exists() && !FileSystemUtils.deleteRecursively(targetFolder)) {
-					throw new IOException("target folder exists but not deletable!");
-			}
-			FileSystemUtils.copyRecursively(projectRestDocGenFolder, targetFolder);
-			return targetFolder;
-		} catch (IOException e) {
-			throw new IllegalStateException(
-					"copy restdoc parts not possible from:\n" + projectRestDocGenFolder + "\nto\n" + targetFolder, e);
-		}
-	}
+    private File copyToDocumentationProject(File projectRestDocGenFolder, String id) {
+        File targetFolder = new File(sechHubDoc, "src/docs/asciidoc/" + DOCUMENTS_GEN + id);
+        try {
+            if (targetFolder.exists() && !FileSystemUtils.deleteRecursively(targetFolder)) {
+                throw new IOException("target folder exists but not deletable!");
+            }
+            FileSystemUtils.copyRecursively(projectRestDocGenFolder, targetFolder);
+            return targetFolder;
+        } catch (IOException e) {
+            throw new IllegalStateException("copy restdoc parts not possible from:\n" + projectRestDocGenFolder + "\nto\n" + targetFolder, e);
+        }
+    }
 
 	private File scanForSpringRestDocGenFolder(UseCaseRestDocEntry entry) {
 		File lastTry=null;

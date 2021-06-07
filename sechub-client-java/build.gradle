@@ -123,7 +123,7 @@ publishing {
 
             pom {
                 name = 'SecHub Java Client'
-                description = 'SecHub Java Client as a Spring Boot JAR. Ready to use.'
+                description = 'SecHub Java Client as JAR.'
 
                 scm {
                     url = 'https://github.com/daimler/sechub'
@@ -153,8 +153,6 @@ publishing {
     }
 }
 */
-
-
 
 
 

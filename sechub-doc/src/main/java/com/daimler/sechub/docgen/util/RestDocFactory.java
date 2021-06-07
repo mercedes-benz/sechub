@@ -69,7 +69,7 @@ public class RestDocFactory {
     public static String createIdentifier(Class<? extends Annotation> useCase) {
         UseCaseDefinition usecaseAnnotation = useCase.getAnnotation(UseCaseDefinition.class);
         if (usecaseAnnotation == null) {
-            throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :" + useCase);
+            throw new IllegalArgumentException("given use case must have annotation of use case definition inside but has not: " + useCase);
         }
         String usecaseIdentifier = usecaseAnnotation.apiName();
         if (usecaseIdentifier == null) {
@@ -83,7 +83,7 @@ public class RestDocFactory {
         
         StringBuilder sb = new StringBuilder();
         if (usecaseAnnotation == null) {
-            throw new IllegalArgumentException("given use case must have annotation of use case defintiion inside but hasnot :" + useCase);
+            throw new IllegalArgumentException("given use case must have annotation of use case definition inside but has not: " + useCase);
         } else {
             sb.append(usecaseAnnotation.title());
         }
