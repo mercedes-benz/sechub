@@ -65,6 +65,16 @@ server:
     protocol: TLS
     enabled-protocols: TLSv1.2,TLSv1.3
     # keystore, alias etc. must be defined outside
+    ciphers: 
+     - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+     - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+     - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+     - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+     - TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+     - TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+     - TLS_AES_128_GCM_SHA256
+     - TLS_AES_256_GCM_SHA384
+     - TLS_AES_128_CCM_SHA256
 management:
   server:
     port:
