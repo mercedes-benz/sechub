@@ -55,7 +55,7 @@ task generateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.Gen
             dateLibrary          		: "java8",
             serializableModel    		: "true",
             serializationLibrary 		: "jackson",
-            artifactId           		: "sechub-client-java",
+            artifactId           		: "sechub-client-java-api",
             artifactDescription			: "The SecHub API client library for Java",
             artifactUrl					: "https://github.com/Daimler/sechub",
             legacyDiscriminatorBehavior : "false",
