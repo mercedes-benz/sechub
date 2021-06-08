@@ -27,11 +27,6 @@ subprojects{
 		return;
     }
     
-    test {
-        /* enable junit5 support in gradle! some of our tests are now written in junit5*/
-        useJUnitPlatform()
-    }
-
     apply plugin: 'java'
 
 	/* Setup UTF-8 for compile AND test compilation*/
@@ -44,9 +39,12 @@ subprojects{
     def wireMockHttpPortValue = 8180;
     def wireMockHttpsPortValue = 8143;
 
-	/* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
     test {
+	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
         ignoreFailures = true
+        
+        /* enable junit5 support in gradle! some of our tests are now written in junit5*/
+        useJUnitPlatform()
 
         def wireMockHttpPortProperty="sechub.test.wiremock.http_port";
         if ( project.hasProperty(wireMockHttpPortProperty)){
