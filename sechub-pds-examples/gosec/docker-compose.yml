@@ -2,9 +2,11 @@ version: "3"
 services:
     pds_gosec:
         build:
+            args:
+                - BASE_IMAGE=ubuntu:focal
             context: .
         env_file:
             - .env
-        container_name: gosec
+        container_name: pds_gosec
         ports:
             - "8444:8444"

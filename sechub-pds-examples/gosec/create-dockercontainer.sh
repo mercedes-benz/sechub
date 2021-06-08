@@ -2,17 +2,26 @@
 
 if [[ -z "$1" ]]
 then
-  echo ""
+  echo "Please provide a docker registry server."
+  exit 1
 fi
 
 if [[ -z "$2" ]]
 then
-  echo ""
+  echo "Please provide a version for the container."
+  exit 1
 fi
 
 REGISTRY="$1"
 VERSION="$2"
+BASE_IMAGE="$3"
 
-docker build -t $REGISTRY:$VERSION -f dockerfile .
-docker tag $REGISTRY:$VERSION $REGISTRY:latest
+if [[ -z "$BASE_IMAGE" ]]
+then
+    BASE_IMAGE="ubuntu:focal"
+fi
+
+echo ">> Base image: $BASE_IMAGE"
+docker build --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file Dockerfile .
+docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
 

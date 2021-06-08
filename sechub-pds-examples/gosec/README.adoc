@@ -1,0 +1,330 @@
+= GoSec
+
+== Run Locally
+
+=== Container
+
+Start container
+
+```
+docker-compose up --build
+```
+
+=== Scan
+
+. Go to PDS Bash command line (CLI) script
++
+----
+cd ../../sechub-developertools/scripts
+----
++
+The folder contains a `pds-api.sh` script.
+
+. Set variables
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=pds-dev-admin
+export PDS_APITOKEN=pds-dev-apitoken
+----
+
+. Check if server is alive and running
++
+----
+./pds-api.sh check_alive
+HTTP/1.1 200 <1>
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Tue, 08 Jun 2021 16:38:02 GMT
+----
++
+<1> The `HTTP/1.1 200` tells you the server is alive and running.
+
+. Create a new job to get the PDS JobUUID
++
+----
+./pds-api.sh create_job PDS_GOSEC "288607bf-ac81-4088-842c-005d5702a9e9"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+}
+----
+
+. Upload a ZIP file with Go code
++
+----
+./pds-api.sh upload_zip "8d4236cf-b512-40bc-bb70-c247fa4c9c37" /home/<myuser>/go_code.zip
+----
++
+TIP: GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
+
+. Mark the job ready to start
++
+----
+./pds-api.sh mark_job_ready_to_start "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
+
+. Check if the job is `DONE`
++
+----
+./pds-api.sh job_status "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37",
+  "owner": "pds-dev-admin",
+  "created": "2021-06-08T16:45:00.111031",
+  "started": "2021-06-08T16:52:42.407752",
+  "ended": "2021-06-08T16:52:43.663005",
+  "state": "DONE" <1>
+}
+----
++
+<1> Job is `DONE`
+
+. Download the job result
++
+----
+$ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+{
+	"runs": [
+		{
+			"results": [
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "code/hardcoded_password.go"
+								},
+								"region": {
+									"endColumn": 9,
+									"endLine": 7,
+									"snippet": {
+										"text": "6:     username := \"admin\"\n7:     var password = \"f62e5bcda4fae4f82370da0c6f20697b8f8447ef\"\n8: \n"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 9,
+									"startLine": 7
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "Potential hardcoded credentials"
+					},
+					"ruleId": "G101"
+				},
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "code/sql_injection.go"
+								},
+								"region": {
+									"endColumn": 10,
+									"endLine": 12,
+									"snippet": {
+										"text": "11:     }\n12:     q := fmt.Sprintf(\"SELECT * FROM foo where name = '%s'\", os.Args[1])\n13:     rows, err := db.Query(q)\n"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 10,
+									"startLine": 12
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "SQL string formatting"
+					},
+					"ruleId": "G201",
+					"ruleIndex": 1
+				}
+			],
+			"taxonomies": [
+				{
+					"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
+					"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+					"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
+					"isComprehensive": true,
+					"language": "en",
+					"minimumRequiredLocalizedDataSemanticVersion": "4.4",
+					"name": "CWE",
+					"organization": "MITRE",
+					"releaseDateUtc": "2021-03-15",
+					"shortDescription": {
+						"text": "The MITRE Common Weakness Enumeration"
+					},
+					"taxa": [
+						{
+							"fullDescription": {
+								"text": "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data."
+							},
+							"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
+							"helpUri": "https://cwe.mitre.org/data/definitions/798.html",
+							"id": "798",
+							"shortDescription": {
+								"text": "Use of Hard-coded Credentials"
+							}
+						},
+						{
+							"fullDescription": {
+								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+							},
+							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+							"id": "89",
+							"shortDescription": {
+								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+							}
+						}
+					],
+					"version": "4.4"
+				}
+			],
+			"tool": {
+				"driver": {
+					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
+					"informationUri": "https://github.com/securego/gosec/",
+					"name": "gosec",
+					"rules": [
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
+								"text": "Potential hardcoded credentials"
+							},
+							"help": {
+								"text": "Potential hardcoded credentials\nSeverity: HIGH\nConfidence: LOW\n"
+							},
+							"id": "G101",
+							"name": "Potential hardcoded credentials",
+							"properties": {
+								"precision": "low",
+								"tags": [
+									"security",
+									"HIGH"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
+										"id": "798",
+										"toolComponent": {
+											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+											"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "Potential hardcoded credentials"
+							}
+						},
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
+								"text": "SQL string formatting"
+							},
+							"help": {
+								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
+							},
+							"id": "G201",
+							"name": "SQL string formatting",
+							"properties": {
+								"precision": "high",
+								"tags": [
+									"security",
+									"MEDIUM"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+										"id": "89",
+										"toolComponent": {
+											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+											"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "SQL string formatting"
+							}
+						}
+					],
+					"semanticVersion": "2.8.0",
+					"supportedTaxonomies": [
+						{
+							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+							"name": "CWE"
+						}
+					],
+					"version": "2.8.0"
+				}
+			}
+		}
+	],
+	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	"version": "2.1.0"
+}
+----
++
+NOTE: This is an example output. The output can be very different in your case.
+
+=== Troubleshooting
+
+Access the container:
+
+----
+docker exec -it pds_gosec bash
+----
+
+== Build Image & Push to Registry
+
+=== Build Image
+
+. Using the default image: 
++
+----
+./create-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+. Using your own base image:
++
+----
+./create-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+----
+
+=== Push to Registry
+
+----
+./push-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+=== Kubernetes
+
+Requierments: 
+- Helm
+
+
+
+

@@ -1,7 +1,6 @@
 # The image argument needs to be placed on top
-ARG IMAGE=ubuntu:20.04
-
-FROM $IMAGE
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
@@ -9,6 +8,8 @@ ARG WORKSPACE="/workspace"
 ARG PDS_FOLDER="/pds"
 ARG TOOL_FOLDER="/tool"
 ARG PDS_VERSION=0.21.0
+ARG GOSEC_VERSION=2.8.0
+ARG GO=go1.16.5.linux-amd64.tar.gz
 
 # non-root user
 # using fixed group and user ids
@@ -30,28 +31,33 @@ RUN chmod +x $TOOL_FOLDER/gosec.sh
 # Install Go
 RUN cd /tmp && \
     # create checksum file
-    echo "013a489ebb3e24ef3d915abe5b94c3286c070dfe0818d5bca8108f1d6e8440d2 go1.16.linux-amd64.tar.gz" > go1.16.linux-amd64.tar.gz.sha256sum && \
+    echo "b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061 $GO" > $GO.sha256sum && \
     # download Go
-    wget https://dl.google.com/go/go1.16.linux-amd64.tar.gz && \
+    wget https://dl.google.com/go/${GO} && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check go1.16.linux-amd64.tar.gz.sha256sum && \
+    sha256sum --check $GO.sha256sum && \
     # extract Go
-    tar --extract --file go1.16.linux-amd64.tar.gz --directory "/usr/local/" && \
+    tar --extract --file $GO --directory "/usr/local/" && \
+    # remove go tar.gz
+    rm $GO && \
     # add Go to path
     echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
 
 # Install GoSec
 RUN cd /tmp && \
     # download gosec
-    wget https://github.com/securego/gosec/releases/download/v2.7.0/gosec_2.7.0_linux_amd64.tar.gz && \
+    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
     # download checksum
-    wget https://github.com/securego/gosec/releases/download/v2.7.0/gosec_2.7.0_checksums.txt && \
+    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
     # verify checksum
-    sha256sum --check --ignore-missing gosec_2.7.0_checksums.txt && \
+    sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
     # create gosec folder
     mkdir -p "$TOOL_FOLDER/gosec" && \
     # unpack gosec
-    tar --extract --ungzip --file gosec_2.7.0_linux_amd64.tar.gz --directory "$TOOL_FOLDER/gosec"
+    tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
+    # Remove gosec tar.gz
+    rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
+    
 
 # Install the Product Delegation Server (PDS)
 RUN mkdir -p pds && \
