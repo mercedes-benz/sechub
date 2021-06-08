@@ -144,8 +144,16 @@ So it's easier to find and also possible to use package private fields for mocki
 ====== Fields
 We prefer fields to local variables, fields have to be rebuild by an `@Before` method.
 
-====== Junit 4
-We use currently junit4 as testframework and not junit5.
+====== Junit versions
+Our integration tests and most of the "normal" existing unit tests do currently use Junit4 
+as testframework and not Junit5. Because having some special Junit4 Rules for integration 
+testing, those tests will be still written in Junit 4, but for new "normal" unit tests you 
+should prefer to use Junit5.
+
+NOTE: It is planned to migrate existing tests to Junit5 in future, because of some benefits.
+      But unfortunately some method signatures have changed (e.g. "Assert.assertEquals(...) 
+      - especially for the message string) so this will take some time. 
+
 
 ====== Maintainable tests
 *Structure*

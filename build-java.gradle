@@ -26,6 +26,11 @@ subprojects{
     if (! projectType.javaProjects.contains(project)){
 		return;
     }
+    
+    test {
+        /* enable junit5 support in gradle! some of our tests are now written in junit5*/
+        useJUnitPlatform()
+    }
 
     apply plugin: 'java'
 
