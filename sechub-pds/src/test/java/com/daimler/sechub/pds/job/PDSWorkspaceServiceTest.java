@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import com.daimler.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.daimler.sechub.pds.storage.PDSMultiStorageService;
+import com.daimler.sechub.pds.storage.PDSStorageInfoCollector;
 import com.daimler.sechub.storage.core.JobStorage;
 
 class PDSWorkspaceServiceTest {
@@ -24,17 +25,20 @@ class PDSWorkspaceServiceTest {
     private PDSWorkspaceService serviceToTest;
     private PDSMultiStorageService storageService;
     private JobStorage storage;
+    private PDSStorageInfoCollector storageInfoCollector;
 
     @BeforeEach
     void beforeEach() {
         
         storageService=mock(PDSMultiStorageService.class);
         storage=mock(JobStorage.class);
+        storageInfoCollector=mock(PDSStorageInfoCollector.class);
         
         when(storageService.getJobStorage(any(),any())).thenReturn(storage);
         
         serviceToTest = new PDSWorkspaceService();
         serviceToTest.storageService=storageService;
+        serviceToTest.storageInfoCollector=storageInfoCollector;
     }
 
     @Test
