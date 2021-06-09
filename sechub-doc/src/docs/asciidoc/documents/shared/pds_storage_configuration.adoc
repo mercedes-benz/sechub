@@ -8,7 +8,7 @@ Look at <<section-gen-config-scope-storage,Storage configuration>> for configura
 
 ==== Usage of SecHub storage
 
-When using own storage for PDS servers, {secHub}  has to upload already pesisted job data _(e.g. zipped sourcecode for SAST scannings)_
+When using own storage for PDS servers, {secHub} has to upload already pesisted job data _(e.g. zipped sourcecode for SAST scannings)_
 again to {pds} storage-
 
 This is a good separation between PDS instances and SecHub, but it does duplicate storage memory and also upload time

@@ -83,8 +83,8 @@ class PDSWorkspaceServiceTest {
     
     private PDSExecutionParameterEntry createEntry(String key, String value) {
         PDSExecutionParameterEntry entry = new PDSExecutionParameterEntry();
-        entry.setKey(key);;
-        entry.setValue(value);;
+        entry.setKey(key);
+        entry.setValue(value);
         return entry;
     }
 

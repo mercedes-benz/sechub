@@ -24,7 +24,6 @@ public class PDSWiremockTestSupport {
     private WiremockUrlHistory history;
     private static final String APPLICATION_JSON = "application/json";
 
-//    private IcrementalAdditionalPrefixAPIURLSupport apiURLSupport;
     private WireMockServer server;
     private PDSUrlBuilder pdsURLBuilder;
     public UUID sechubJobUUID;
@@ -38,7 +37,6 @@ public class PDSWiremockTestSupport {
     public PDSWiremockTestSupport(WireMockServer server) {
         this.server = server;
         this.history = new WiremockUrlHistory();
-//        this.apiURLSupport = new IcrementalAdditionalPrefixAPIURLSupport("pds_wmt_support");
         this.pdsURLBuilder = new PDSUrlBuilder("");
         this.pdsTestSupport = new PDSTestSupport();
     }
@@ -56,10 +54,6 @@ public class PDSWiremockTestSupport {
         int exitCode;
         boolean failed;
     }
-
-//    public IcrementalAdditionalPrefixAPIURLSupport getApiURLSupport() {
-//        return apiURLSupport;
-//    }
 
     public static PDSWiremockTestSupportBuilder builder(WireMockServer server) {
         return new PDSWiremockTestSupportBuilder(server);
@@ -84,9 +78,7 @@ public class PDSWiremockTestSupport {
                 simulateGetResult(pdsFetchJobResult);
             }
 
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("unexpected:" + e.getMessage(), e);
         }
 
@@ -101,11 +93,13 @@ public class PDSWiremockTestSupport {
         }
         /* @formatter:off */
         String url = pdsURLBuilder.buildGetJobResult(pdsJobUUID);
+        String jobResultFailedString = Boolean.valueOf(pdsFetchJobResult.failed).toString().toLowerCase();
+        
         stubFor(get(urlEqualTo(history.rememberGET(url))).
                 willReturn(aResponse()
                     .withStatus(HttpStatus.OK.value())
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody("{\"exitCode\" : "+pdsFetchJobResult.exitCode+", \"failed\" : \""+Boolean.valueOf(pdsFetchJobResult.failed).toString().toLowerCase()+"\", \"result\" : \""+pdsFetchJobResult.result+"\" }"))
+                    .withBody("{\"exitCode\" : "+pdsFetchJobResult.exitCode+", \"failed\" : \""+jobResultFailedString+"\", \"result\" : \""+pdsFetchJobResult.result+"\" }"))
                 );
         /* @formatter:on */
     }
@@ -144,7 +138,6 @@ public class PDSWiremockTestSupport {
         /* @formatter:off */
         String url = pdsURLBuilder.buildUpload(pdsJobUUID, uploadFileName);
         stubFor(post(urlEqualTo(history.rememberPOST(url)))
-                // .inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
                 .withHeader("content-type", containing("multipart/form-data;charset=UTF-8")).withRequestBody(containing(uploadFileName))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON)
                         .withBody("{\"jobUUID\" : \"" + pdsJobUUID.toString() + "\"}")));
@@ -167,7 +160,6 @@ public class PDSWiremockTestSupport {
         /* @formatter:off */
         String requestBody = JSONTestUtil.toJSONContainingNullValues(map);
         stubFor(post(urlEqualTo(history.rememberPOST(url)))
-                // .inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())
                 .withHeader("content-type", equalTo(APPLICATION_JSON)).
                 withRequestBody(equalToJson(requestBody))
                 .willReturn(aResponse().
@@ -212,7 +204,7 @@ public class PDSWiremockTestSupport {
             current.stateRequestsResults.add(info);
             return this;
         }
-        
+
         public PDSWiremockTestSupportBuilder simulateFetchJobResultOk(String result) {
             return simulateFetchJobResult(result, false, 0);
         }

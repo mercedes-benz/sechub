@@ -36,11 +36,12 @@ plantuml::diagrams/diagram_concept_product_delgation_server_bigpicture.puml[]
 [[pds-storage-and-sharing]]
 ==== Storage and sharing
 
-{pds} needs - like {sechub} - the possiblity to store job data in a central way when operating
-inside a cluster _(it's not clear which cluster member uploads job data and which one does execute 
+{pds} needs - like {sechub} - the possiblity to store job data in a central storage location when 
+operating inside a cluster _(it's not clear which cluster member uploads job data and which one does execute 
 the job and need the data at exectuion time)._
 
-For {secHub} there were already existing (and autark) storage mechanism for S3 and for shared volumes.
+{pds} does use the already existing `sechub-storage-*` libraries which provide storage mechanism for S3 and 
+for shared volumes.
 
 [TIP]
 ====
@@ -50,7 +51,7 @@ but of course this applies to multiple clusters for different products as well
 
 [NOTE]
 ====
-For non clustered environment "shared volumes" can also be normal local file system pathes like
+For non clustered environment "shared volumes" can also be local file system paths like
 `/opt/storage/pds/XYZ`
 ====
 
@@ -65,18 +66,20 @@ For example: a base path for a shared volume could look like: `/media/mounted-st
 
 
 ===== Shared S3 storage
-In the next example PDS and SecHub are using same S3 bucket as storage.
+
+In the <<section-pds-s3-storage-example-shared-s3-buckets,next example>> PDS and SecHub are using the same S3 bucket to store files uploaded by the user.
 
 We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a  {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
+  - The user uploads job data for a {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
   - When {secHub} job is starting it will create a {pds} job but does not upload any additional data. 
-  - When PDS job is starting the  PDS server will fetch workspace files from existing {secHub} job data _(red lines)_. 
+  - When PDS job is starting the PDS server will fetch workspace files from existing {secHub} job data _(red lines)_. 
   - The storage path location is for {pds} and {secHub}  `${sharedS3Bucket}/jobstorage/${secHubJobUUID}/`
   
 
+[[section-pds-s3-storage-example-shared-s3-buckets]]
 plantuml::diagrams/diagram_concept_pds_storage_example_shared_s3_bucket.puml[]
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
@@ -86,13 +89,13 @@ plantuml::diagrams/diagram_concept_pds_storage_example_shared_s3_bucket.puml[]
   
 [[pds-storage-different-s3]]
 ===== Different S3 storages
-In the next example PDS and SecHub are using different S3 buckets as storage.
+In the <<section-pds-s3-storage-example-diff-s3-buckets,next example>> PDS and SecHub are using different S3 buckets as storage.
 
 We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a  {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
+  - The user uploads job data for a {secHub} job and it is stored at shared S3 bucket _(blue lines)_.
   - The storage path location for {secHub} is `${sechubS3Bucket}/jobstorage/${secHubJobUUID}/` 
   - When {secHub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API. 
     This will store job data at {pds} storage. _(green lines)_.
@@ -100,26 +103,27 @@ We have two different scenarios here:
   - The storage path location for {pds} is `${pdsS3Bucket}/pds/${pdsProductIdentifier}/${pdsJobUUID}/` 
 
 
+[[section-pds-s3-storage-example-diff-s3-buckets]]
 plantuml::diagrams/diagram_concept_pds_storage_example_different_s3_buckets.puml[]
 
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true`
 
-WARNING: This will NOT WORK! The job storage will not be found and a error will happen at job execution time.
+WARNING: This will NOT WORK! The job storage will not be found and an error will be thrown at job execution time.
  
 ===== Same shared volume (NFS)
-In the next example PDS server and SecHub are using same shared volume as storage.
+In the <<section-pds-s3-storage-example-shared-nfs,next example>> PDS server and SecHub are using same shared volume as storage.
 
 We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a  {secHub} job and it is stored at shared volume _(blue lines)_.
+  - The user uploads job data for a {secHub} job and it is stored at shared volume _(blue lines)_.
   - When {secHub} job is starting it will create a {pds} job but does not upload any additional data. 
-  - When PDS job is starting the  PDS server will fetch workspace files from existing {secHub} job data _(red lines)_. 
+  - When PDS job is starting the PDS server will fetch workspace files from existing {secHub} job data _(red lines)_. 
   - The storage path location is for {pds} and {secHub}  `${sharedVolumeBasePath}/jobstorage/${secHubJobUUID}/`
   
-
+[[section-pds-s3-storage-example-shared-nfs]]
 plantuml::diagrams/diagram_concept_pds_storage_example_shared_nfs.puml[]
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
@@ -129,35 +133,36 @@ plantuml::diagrams/diagram_concept_pds_storage_example_shared_nfs.puml[]
   
 [[pds-storage-different-sharedvolume]]
 ===== Different shared volumes (NFS)
-In the next example PDS and SecHub are using different shared volumes as storage.
+In the <<section-pds-s3-storage-example-diff-nfs,next example>> PDS and SecHub are using different shared volumes as storage.
 
 We have two different scenarios here:
 
 * Product executor configuration `pds.config.use.sechub.storage` is NOT `true` +
   In this case the way is exactly as shown in next picture: +
-  - The user uploads job data for a  {secHub} job and it is stored at sechub shared volume _(blue lines)_.
+  - The user uploads job data for a {secHub} job and it is stored at sechub shared volume _(blue lines)_.
   - The storage path location for {secHub} is `${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/` 
   - When {secHub} job is starting it will create and initialize a {pds} job by uploading all existing job data by {pds} rest API. 
     This will store job data at {pds} storage. _(green lines)_.
   - When PDS job is starting, the  PDS server will fetch workspace files from its {pds} job data _(red lines)_. 
   - The storage path location for {pds} is `${pdsSharedVolumeBasePath}/pds/${pdsProductIdentifier}/${pdsJobUUID}/` 
  
- 
+[[section-pds-s3-storage-example-diff-nfs]]
 plantuml::diagrams/diagram_concept_pds_storage_example_different_nfs.puml[]
 
 
 * Product executor configuration `pds.config.use.sechub.storage` is `true`
 
-WARNING: This will NOT WORK! The job storage will not be found and a error will happen at job execution time.
+WARNING: This will NOT WORK! The job storage will not be found and an error will be thrown at job execution time.
  
 [[pds-storage-mixing-sharedvolume-and-s3]]
 ===== Mixing S3 and shared volume (NFS) 
-Only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes: 
+This <<section-pds-s3-storage-example-s3-nfs-mixed,example>> is only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes: 
 `pds.config.use.sechub.storage` cannot be used in this case.
 
 When not reusing {secHub} storage, this scenario does work also well. In the next picture, {secHub} itself would use a S3 storage and he 
 PDS instances for product `XYZ` would use a NFS to store job data. But of course it could be also the other way. 
- 
+
+[[section-pds-s3-storage-example-s3-nfs-mixed]]
 plantuml::diagrams/diagram_concept_pds_storage_example_s3_and_nfs_mixed.puml[]
 
 

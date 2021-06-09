@@ -99,7 +99,7 @@ public class ProductExecutorTemplatesDialogUI {
             SwingUtilities.invokeLater(() -> importFromClipboardAction.importText(config.inputContent));
         }else {
             /* when new at all */
-            System.out.println("No input content found!!!");
+            System.out.println("No input content found!");
         }
 
         if (config.provideExportAllButton) {

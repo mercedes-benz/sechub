@@ -36,14 +36,11 @@ rectangle SecHub {
             
             rectangle XYZConfig as "Product executor config XYZ"
     }
-    
-
 }
 
 cloud " S3 storage" as s3Storage{
- rectangle "shared S3 bucket" <<$bucket>> as bucket1
+    rectangle "shared S3 bucket" <<$bucket>> as bucket1
 }
-
 
 rectangle pdsCluster as "PDS XYZ cluster " {
     
@@ -53,9 +50,7 @@ rectangle pdsCluster as "PDS XYZ cluster " {
     }
     rectangle pdsXyz2 as "PDS-XYZ member2" {
     }
-
 }
-
 
 secHubUser ..> scheduler3 #blue : "upload job data"
 
