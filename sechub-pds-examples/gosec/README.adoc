@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 = GoSec
 
 == Run Locally
@@ -89,6 +90,12 @@ TIP: GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201
 +
 ----
 $ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
++
+Output
++
+[source,json]
+----
 {
 	"runs": [
 		{
@@ -288,9 +295,9 @@ $ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 }
 ----
 +
-NOTE: This is an example output. The output can be very different in your case.
+NOTE: This is an example output. The output can be very different in your scan. The output depends on the uploaded `ZIP` file.
 
-=== Troubleshooting
+==== Troubleshooting
 
 Access the container:
 
@@ -305,26 +312,111 @@ docker exec -it pds_gosec bash
 . Using the default image: 
 +
 ----
-./create-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1
+./container-create.sh my.registry.example.org/sechub/pds_gosec v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./create-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+./container-create.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
 ----
 
 === Push to Registry
 
 ----
-./push-dockercontainer.sh my.registry.example.org/sechub/pds_gosec v0.1
+./container-push.sh my.registry.example.org/sechub/pds_gosec v0.1
 ----
 
 === Kubernetes
 
-Requierments: 
-- Helm
+==== Requierments:
 
+* https://helm.sh/docs/intro/install/[Helm] installed
+* `pds_gosec` image pushed to registry
 
+==== Installation
+
+. Install helm package from file system
+
+----
+helm install --set imageRegistry=my.registry.example.org/sechub/pds_gosec --set dockerTag=v0.1 --generate-name pds-gosec/
+----
+
+. List pods
+
+----
+kubectl get pods
+NAME                                                READY   STATUS      RESTARTS   AGE
+pds-gosec-749fcb8d7f-jjqwn                          1/1     Running     0          1m
+----
+
+. Forward port to own machine
+
+----
+kubectl port-forward pds-gosec-749fcb8d7f-jjqwn 8444:8444
+----
+
+. Scan as explained in <<_scan>>.
+
+==== Uninstall 
+
+. Helm list
+
+----
+helm list
+NAME                	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-gosec-1623249963	sechub-dev	1       	2021-06-09 16:46:04.512814568 +0200 CEST	deployed	pds-gosec-0.1.0                	0.1  
+----
+
+. Helm uninstall
+
+----
+helm uninstall pds-gosec-1623249963
+----
+
+==== Troubleshooting
+
+* Access deployment events
+
+----
+kubectl describe pod pds-gosec-749fcb8d7f-jjqwn
+…
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-gosec-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_gosec:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_gosec:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-gosec
+  Normal  Started    10s   kubelet            Started container pds-gosec
+----
+
+* Access container logs
+
+----
+kubectl logs pds-gosec-749fcb8d7f-jjqwn
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.4.0)
+
+2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-gosec-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by gosec in /workspace)
+2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
+2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
+2021-06-09 14:46:09.000  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-06-09 14:46:09.228  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-06-09 14:46:09.485  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-06-09 14:46:10.243  INFO 7 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2021-06-09 14:46:10.439  INFO 7 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
+2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+----
 
 

@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MIT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Chart.Name }}
+    labels:
+        app: pds-gosec
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: pds-gosec
+    template:
+        metadata:
+            labels:
+                app: pds-gosec
+        spec:
+            securityContext:
+                runAsUser: 2323 # uid of the gosec user. Set in the Dockerfile of pds-gosec.
+            containers:
+                - name: pds-gosec
+                  image: {{ .Values.imageRegistry }}:{{ .Values.dockerTag }}
+                  env:
+                    - name: START_MODE
+                      value: {{ .Values.startMode }}
+                  ports:
+                    - containerPort: 8444

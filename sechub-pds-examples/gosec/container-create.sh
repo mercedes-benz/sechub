@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
 if [[ -z "$1" ]]
 then
@@ -22,6 +23,6 @@ then
 fi
 
 echo ">> Base image: $BASE_IMAGE"
-docker build --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file Dockerfile .
+docker build --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/Dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
 

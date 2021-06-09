@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
 # GoSec needs access to the go binary
 export PATH="/tool/gosec:/usr/local/go/bin:$PATH"

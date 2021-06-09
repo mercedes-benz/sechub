@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 # The image argument needs to be placed on top
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
@@ -17,11 +19,13 @@ ARG GO=go1.16.5.linux-amd64.tar.gz
 RUN groupadd --gid 2323 gosec \
      && useradd --uid 2323 --no-log-init --create-home --gid gosec gosec
 
+# Update image and install dependencies
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
-RUN apt-get dist-upgrade --assume-yes
-RUN apt-get install --assume-yes wget openjdk-11-jre-headless
+RUN apt-get update && \
+    apt-get dist-upgrade --assume-yes && \
+    apt-get install --assume-yes wget openjdk-11-jre-headless && \
+    apt-get clean
 
 # Create tool folder
 RUN mkdir -p $TOOL_FOLDER
