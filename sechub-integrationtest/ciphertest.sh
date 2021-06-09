@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+#
+# This script creates a json file containing openssl verification meta data
+# which is used inside java unit tests via SecurityTesthelper.java
 if [ -z "$1" ] ; then
     echo "server is missing as first parameter!"
     usage
@@ -42,6 +45,7 @@ SERVER=$1
 
 ciphers=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/ /g')
 
+# convert existing pkcs12 file to a PEM file, so we can use it later to connect to localhost with self signed certificates....
 openssl pkcs12 -in $DEV_CERT_FILE -out $DEV_CERT_PEM -clcerts -nokeys -passin pass:$PSEUDO_PWD
 
 echo Obtaining cipher list from $(openssl version).
@@ -60,8 +64,14 @@ do
     count=$count+1
     
     echo -n "   { \"cipher\" : \"$cipher\", \"verified\" :\"" >> $OUTPUT_FILE
-
-    result=$(echo -n | openssl s_client -CAfile $DEV_CERT_PEM -cipher "$cipher" -connect $SERVER 2>&1)
+    # wyh -tls1_2? only when using tls_1_2 (or below) the given cipher is really used
+    #              otherwise client will accept tls1_3 fallback which are then verifified as true
+    #              and the test is not possible
+    #
+    # why -CAfile? We use our former generated PEM file for the self signed certificate
+    #              otherwise we have always unknown results because openssl does not
+    #              trust the self-signed certificates
+    result=$(echo -n | openssl s_client -CAfile $DEV_CERT_PEM -tls1_2 -cipher "$cipher" -connect $SERVER 2>&1)
     
     if [[ "$result" =~ ":error:" ]] ; then
 

@@ -22,7 +22,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +80,18 @@ public class SecurityTestHelper {
         context.expectProtocolNotAccepted = false;
 
         callTestURLWithProtocol(context);
+    }
+    
+    String getMac(CipherCheck check) {
+        String cipher  =check.cipher;
+        if (cipher==null) {
+            return null;
+        }
+        int lastIndex = cipher.lastIndexOf("-");
+        if (lastIndex==-1) {
+            return null;
+        }
+        return cipher.substring(lastIndex+1);
     }
 
     private class SSLTestContext {
@@ -167,12 +179,12 @@ public class SecurityTestHelper {
         }
         if (context.expectProtocolNotAccepted) {
             if (handshakeException == null) {
-                Assert.fail("Protocol " + context.protocol + " was accepted! There was no handshake exception !");
+                fail("Protocol " + context.protocol + " was accepted! There was no handshake exception !");
             }
         } else {
             if (handshakeException != null) {
                 handshakeException.printStackTrace();
-                Assert.fail("Protocol " + context.protocol + " was NOT accepted! There was a handshake exception:" + handshakeException.getMessage());
+                fail("Protocol " + context.protocol + " was NOT accepted! There was a handshake exception:" + handshakeException.getMessage());
             }
         }
 
@@ -197,6 +209,29 @@ public class SecurityTestHelper {
         };
         return tm;
     }
+    
+    public void assertNotContainedMacsInCiphers(String... notAllowedMacs) throws Exception {
+        ensureCipherTestDone();
+
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if ("true".equals(check.verified)) {
+                String mac = getMac(check);
+                
+                if (mac==null) {
+                    fail("mac is null in test cipher - should not happen!");
+                }
+                
+                for (String notAllowedMac: notAllowedMacs) {
+                    
+                    if (mac.equalsIgnoreCase(notAllowedMac)){
+                        fail("Not wanted mac:"+mac+" found inside verfified cipher:"+check.cipher);
+                    }
+                }
+            }
+        }
+
+
+    }
 
     public void assertOnlyAcceptedSSLCiphers(String... cipherNames) throws Exception {
         ensureCipherTestDone();
@@ -212,7 +247,7 @@ public class SecurityTestHelper {
             }
         }
 
-        Assert.assertEquals("Amount of verified not as expected", cipherNames.length, verified);
+        assertEquals("Amount of verified not as expected", cipherNames.length, verified);
 
     }
 
@@ -237,13 +272,13 @@ public class SecurityTestHelper {
                 if (cipherShallBeVerifiedWithTrue) {
                     return;
                 } else {
-                    Assert.fail("Cipher:" + cipherName + " was accepted by " + targetType + ", but should not!");
+                    fail("Cipher:" + cipherName + " was accepted by " + targetType + ", but should not!");
                 }
             } else if ("false".equalsIgnoreCase(check.verified)) {
                 if (!cipherShallBeVerifiedWithTrue) {
                     return;
                 } else {
-                    Assert.fail("Cipher:" + cipherName + " was NOT accepted by " + targetType + ", but should!");
+                    fail("Cipher:" + cipherName + " was NOT accepted by " + targetType + ", but should!");
                 }
             }
             throw new IllegalStateException("The expected cipher was found in cipher test data, but it was not possible to check verification :" + cipherName

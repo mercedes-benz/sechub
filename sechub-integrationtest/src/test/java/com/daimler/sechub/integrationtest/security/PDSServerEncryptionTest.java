@@ -2,6 +2,7 @@
 package com.daimler.sechub.integrationtest.security;
 
 import static com.daimler.sechub.integrationtest.SecurityTestHelper.*;
+import static org.junit.Assume.*;
 
 import java.net.URL;
 
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.daimler.sechub.integrationtest.SecurityTestHelper;
 import com.daimler.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
+import com.daimler.sechub.test.TestUtil;
 
 class PDSServerEncryptionTest {
 
@@ -24,6 +26,21 @@ class PDSServerEncryptionTest {
         securityTestHelper =  new SecurityTestHelper(TestTargetType.PDS_SERVER,new URL(checkAlive));
     }
 
+
+    @Test
+    void verified_ciphers_do_have_MAC_with_SHA_or_SHA1() throws Exception {
+        assumeFalse("Currently not supported at Windows",TestUtil.isWindows());
+        
+        securityTestHelper.assertNotContainedMacsInCiphers("SHA","SHA1");
+    }
+    
+    @Test
+    void verified_ciphers_do_have_MAC_with_MD5() throws Exception {
+        assumeFalse("Currently not supported at Windows",TestUtil.isWindows());
+        
+        securityTestHelper.assertNotContainedMacsInCiphers("MD5");
+    }
+    
     @Test
     void tls_1_2_must_be_accepted() throws Exception {
         securityTestHelper.assertProtocolAccepted(TLS_V1_2);

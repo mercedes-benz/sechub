@@ -6,4 +6,5 @@ public class CipherCheck {
     public String cipher;
     public String verified;
     public String error;
+    
 }

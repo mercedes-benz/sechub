@@ -5,7 +5,7 @@ import static com.daimler.sechub.integrationtest.SecurityTestHelper.*;
 
 import java.net.URL;
 
-import org.junit.Assume;
+import static org.junit.Assume.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,27 +27,17 @@ class ServerEncryptionTest {
     }
 
     @Test
-    void cipher_SSL_DHE_RSA_WITH_DES_CBC_SHA_is_not_accepted() throws Exception {
-        Assume.assumeFalse("Currently not supported at Windows",TestUtil.isWindows());
+    void verified_ciphers_do_have_MAC_with_SHA_or_SHA1() throws Exception {
+        assumeFalse("Currently not supported at Windows",TestUtil.isWindows());
         
-        securityTestHelper.assertSSLCipherNotAccepted("SSL_DHE_RSA_WITH_DES_CBC_SHA");
+        securityTestHelper.assertNotContainedMacsInCiphers("SHA","SHA1");
     }
     
     @Test
-    void wanted_ciphers_are_accepted() throws Exception {
-        Assume.assumeFalse("Currently not supported at Windows", TestUtil.isWindows());
+    void verified_ciphers_do_have_MAC_with_MD5() throws Exception {
+        assumeFalse("Currently not supported at Windows",TestUtil.isWindows());
         
-        securityTestHelper.assertOnlyAcceptedSSLCiphers(
-                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-                "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-                "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-                "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-                "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-                "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-                "TLS_AES_128_GCM_SHA256",
-                "TLS_AES_256_GCM_SHA384",
-                "TLS_AES_128_CCM_SHA256"
-                );
+        securityTestHelper.assertNotContainedMacsInCiphers("MD5");
     }
     
     @Test
