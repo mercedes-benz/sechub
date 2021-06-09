@@ -17,7 +17,6 @@ public class PDSJobConfiguration {
     private String productId;
 
     private List<PDSExecutionParameterEntry> parameters = new ArrayList<>();
-    private String externalStoragePath;
 
     public void setApiVersion(String apiVersion) {
         this.apiVersion = apiVersion;
@@ -56,14 +55,6 @@ public class PDSJobConfiguration {
 
     public String toJSON() throws PDSJSONConverterException {
         return PDSJSONConverter.get().toJSON(this);
-    }
-    
-    public void setExternalStoragePath(String externalStoragePath) {
-        this.externalStoragePath = externalStoragePath;
-    }
-
-    public String getExternalStoragePath() {
-        return externalStoragePath;
     }
 
 }

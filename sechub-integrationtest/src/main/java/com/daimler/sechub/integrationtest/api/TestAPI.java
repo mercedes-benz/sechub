@@ -148,6 +148,11 @@ public class TestAPI {
         String url = getPDSURLBuilder().buildIntegrationTestLogInfoUrl();
         getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url, text);
     }
+    
+    public static String getPDSStoragePathForJobUUID(UUID jobUUID) {
+        String url = getPDSURLBuilder().pds().buildIntegrationTestCheckStoragePath(jobUUID);
+        return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
+    }
 
     /**
      * Waits for sechub job being done (means status execution result is OK) - after

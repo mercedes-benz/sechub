@@ -109,6 +109,7 @@ public class TestURLBuilder {
 
         private static final String API_PDS_JOB = "/api/job";
         private static final String API_PDS_ANONYMOUS = "/api/anonymous";
+        private static final String API_PDS_INTEGRATIONTEST = "/api/anonymous/integrationtest";
         private static final String API_PDS_ADMIN = "/api/admin";
 
         public String buildCreateJob() {
@@ -153,6 +154,10 @@ public class TestURLBuilder {
 
         public String buildBaseUrl() {
             return buildUrl("");
+        }
+
+        public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "storage",jobUUID,"path");
         }
     }
 

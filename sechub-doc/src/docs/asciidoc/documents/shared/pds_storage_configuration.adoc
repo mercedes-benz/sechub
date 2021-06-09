@@ -5,3 +5,26 @@ In PDS we need to store job data (e.g. zipped source code).
 You can either define a shared volume (normally a NFS) or a S3 storage.
 
 Look at <<section-gen-config-scope-storage,Storage configuration>> for configuration details.
+
+==== Usage of SecHub storage
+
+When using own storage for PDS servers, {secHub} has to upload already pesisted job data _(e.g. zipped sourcecode for SAST scannings)_
+again to {pds} storage-
+
+This is a good separation between PDS instances and SecHub, but it does duplicate storage memory and also upload time
+which makes PDS job execution slower and can be a problem depending on the amount of jobs.
+
+To increase this, SecHub administrators are able to edit the PDS executor configurations with an optional (but recommended) 
+job execution parameter `pds.config.use.sechub.storage`. When set to `true`, SecHub will not upload job data and PDS will reuse the
+path locations from SecHub to obtain data to inspect. 
+
+See also <<pds-storage-and-sharing,PDS storage and sharing concepts>>.
+
+[WARNING]
+====
+If you have defined in your PDS product executor configuration to use {secHub} job storage you *YOU MUST use also SecHub same storage information*.
+Otherwise it will not work and job data is not found! For an S3 storage this means, you will
+have to use exact same S3 bucket and provide PDS servers with correct S3 credential settings!
+====
+
+

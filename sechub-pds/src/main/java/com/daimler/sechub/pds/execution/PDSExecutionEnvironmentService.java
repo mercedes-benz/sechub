@@ -48,14 +48,14 @@ public class PDSExecutionEnvironmentService {
 
     private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
         PDSProdutParameterSetup params = productSetup.getParameters();
-        if (isJobValid(jobParam, params.getMandatory()) || isJobValid(jobParam, params.getOptional())) {
+        if (isJobParameterValid(jobParam, params.getMandatory()) || isJobParameterValid(jobParam, params.getOptional())) {
             map.put(converter.convertKeyToEnv(jobParam.getKey()), jobParam.getValue());
         } else {
             LOG.warn("Ignored invalid job parameter key {} for product id:{} !", jobParam.getKey(), productSetup.getId());
         }
     }
 
-    private boolean isJobValid(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
+    private boolean isJobParameterValid(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
         for (PDSProdutParameterDefinition paramDef : definitions) {
             if (paramDef.getKey().equals(jobParam.getKey())) {
                 return true;

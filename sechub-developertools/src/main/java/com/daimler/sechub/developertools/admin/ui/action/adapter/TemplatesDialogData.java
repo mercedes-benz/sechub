@@ -15,12 +15,16 @@ public class TemplatesDialogData {
         add(key,type,necessarity,description,null);
     }
     public void add(String key, Type type, Necessarity necessarity, String description, String example) {
+        add(key,type,necessarity,description,example,null);
+    }
+    public void add(String key, Type type, Necessarity necessarity, String description, String example, String recommendedValue) {
         TemplateData data = new TemplateData();
         data.key=key;
         data.type=type;
         data.necessarity=necessarity;
         data.description=description;
         data.example=example;
+        data.recommendedValue=recommendedValue;
         
         map.put(key, data);
     }
@@ -59,6 +63,8 @@ public class TemplatesDialogData {
         OPTIONAL,
         UNKNOWN,
         MANDATORY,
+        
+        RECOMMENDED,
     }
     
     
@@ -68,6 +74,7 @@ public class TemplatesDialogData {
         public String key;
         public String description;
         public String example;
+        public String recommendedValue;
     }
 
 

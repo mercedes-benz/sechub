@@ -5,6 +5,7 @@ import static com.daimler.sechub.commons.model.TrafficLight.*;
 import static com.daimler.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 import static com.daimler.sechub.integrationtest.scenario9.Scenario9.*;
+import static org.junit.Assert.*;
 
 import java.util.UUID;
 
@@ -53,6 +54,16 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         waitForJobDone(project, jobUUID,30);
         
         /* test */
+        // test storage is a SecHub storage and no PDS storage
+        String storagePath = getPDSStoragePathForJobUUID(jobUUID); // this is a SecHub job UUID!
+        assertNotNull("Storage path not found for SecHub job UUID:"+jobUUID+" - wrong storage used!",storagePath); // storage path must be found for sechub job uuid, 
+        if (!storagePath.contains("jobstorage/"+project.getProjectId())){
+            fail("unexpected jobstorage path found:"+storagePath);
+        }
+        
+        // test content as expected
+        
+        
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
             dump().

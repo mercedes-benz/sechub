@@ -12,6 +12,8 @@ dependencies {
     compile project(':sechub-shared-kernel') // we want to have access to some shared kernel parts (e.g. trafficlight)
     compile library.springboot_starter_mail // to have easier access to email parts
 }
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /* defaults like set in `application-pds_integrationtest.yml` */
 def integrationTestServerPortValue = 8443;
@@ -19,6 +21,11 @@ def integrationTestPDSPortValue = 8444;
 
 def pdsVersion = VersionData.getPdsVersion()
 def serverVersion = VersionData.getServerVersion()
+
+// define dummy path (not existing, will be changed later in integrationTest task! 
+def tempDirPath = new File(System.getProperty("user.home"),"sechub-inttest").toPath();
+
+def intTestFolderPath = tempDirPath.toString();
 
 task copyIntegrationTestResults(type: Copy) {
         with{
@@ -43,13 +50,23 @@ task cleanLogFiles(type: Delete){
 }
 tasks.clean.dependsOn(tasks.cleanLogFiles)
 
-task configureIntegrationTestServer{
+// configures integration test shared volume
+task configureIntTestSharedVolume {
+    doFirst {
+            // at this point we create a new temp directory for integration tests
+            tempDirPath = Files.createTempDirectory("sechub-inttest")
+            println (">> CREATE temp dir: $tempDirPath")
+   }
+}
+
+task configureIntegrationTestServer(dependsOn: configureIntTestSharedVolume){
     def integrationTestServerPortProperty="sechub.integrationtest.serverport";
     if ( project.hasProperty(integrationTestServerPortProperty)){
         integrationTestServerPortValue = project.getProperty(integrationTestServerPortProperty)
     }
 }
-task configureIntegrationTestPDS{
+
+task configureIntegrationTestPDS(dependsOn: configureIntTestSharedVolume){
     def integrationTestPDSPortProperty="sechub.integrationtest.pdsport";
     if ( project.hasProperty(integrationTestPDSPortProperty)){
         integrationTestPDSPortValue = project.getProperty(integrationTestPDSPortProperty)
@@ -87,7 +104,8 @@ task startIntegrationTestServer(dependsOn: stopOldIntegrationTestServer){
     description 'Starts an integration test server - if already a server is running we will wait until timout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
-        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), "$serverVersion","$integrationTestServerPortValue")
+        def pathString = tempDirPath.toString();
+        new IntegrationTestServerScriptAccess().start(new File("${project.projectDir}"), "$serverVersion","$integrationTestServerPortValue","$pathString")
     }
 
 }
@@ -101,12 +119,14 @@ task startIntegrationTestPDS(dependsOn: stopOldIntegrationTestPDS){
     description 'Starts an integration PDS server - if already a server is running we will wait until timout (10 minutes). ' +
                 'When timeout build fails but "zombie server" will be stopped too!'
     doLast{
-        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), "$pdsVersion", "$integrationTestPDSPortValue")
+        def pathString = tempDirPath.toString();
+        new IntegrationTestPDSScriptAccess().start(new File("${project.projectDir}"), "$pdsVersion", "$integrationTestPDSPortValue","$pathString")
     }
 
 }
 
 task startIntegrationTestInstances(dependsOn: [startIntegrationTestServer, startIntegrationTestPDS]){
+   
 }
 
 
@@ -122,7 +142,15 @@ task stopIntegrationTestPDS(dependsOn: configureIntegrationTestServer){
     }
 }
 
+// Finalization part
 task stopIntegrationTestInstances(dependsOn: [stopIntegrationTestServer, stopIntegrationTestPDS]){
+
+    doLast{
+         def pathString = tempDirPath.toString();
+         println (">> CLEANUP temp dir: $pathString")
+         new IntegrationTestServerScriptAccess().deleteTmpFolder(new File("${project.projectDir}"),"$pathString")
+    }
+
 }
 
 
@@ -144,6 +172,7 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    systemProperty "sechub.integrationtest.longrunning", "true"
 
    finalizedBy "stopIntegrationTestInstances"
+   
 
 }
 
@@ -162,20 +191,25 @@ class IntegrationTestScriptAccess extends CmdExecutor{
        }
 
        public void waitForStop(File workingDir, String port) throws Exception{
-            executeScript("waitForStop",workingDir,null,-1,port)
+            executeScript("waitForStop",workingDir,null,-1,port,"")
+       }
+       
+       public void deleteTmpFolder(File workingDir, String pathToDelete){
+            executeScript("deleteTmpFolder",workingDir,null,-1,"",pathToDelete)
        }
 
        public void stop(File workingDir,String port) throws Exception{
-            executeScript("stop",workingDir,null,60,port)
+            executeScript("stop",workingDir,null,60,port,"")
        }
 
-       public void start(File workingDir, String useVersion,String port) throws Exception{
-            executeScript("start",workingDir,useVersion,300,port); /* max 5 minutes */
+       public void start(File workingDir, String useVersion,String port,String sharedVolumeBaseDir) throws Exception{
+            executeScript("start",workingDir,useVersion,300,port, sharedVolumeBaseDir); /* max 5 minutes */
        }
-
-       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port) throws Exception{
+       
+       private void executeScript(String command, File workingDir, String useVersion, int timeOutInSeconds,String port, String sharedVolumeBaseDir) throws Exception{
           CmdExecutor exec = new CmdExecutor();
           exec.setTimeOutInSeconds(timeOutInSeconds);
+          
           if (OSUtil.isWindows()){
              exec.getCommand().add("cmd");
              exec.getCommand().add("/c");
@@ -184,10 +218,21 @@ class IntegrationTestScriptAccess extends CmdExecutor{
              exec.getCommand().add("./"+scriptName+".sh");
           }
           exec.getCommand().add(command);
-          if (command.equals("start")){
-             exec.getCommand().add("$useVersion");
+          
+          if (command.equals("deleteTmpFolder")){
+             exec.getCommand().add("$sharedVolumeBaseDir");
+             
+          }else{
+          
+              if (command.equals("start")){
+                 exec.getCommand().add("$useVersion");
+              }
+
+              exec.getCommand().add("$port");
+              exec.getCommand().add("$sharedVolumeBaseDir");
+              
           }
-          exec.getCommand().add("$port");
+          
 
           exec.execute(workingDir)
         }

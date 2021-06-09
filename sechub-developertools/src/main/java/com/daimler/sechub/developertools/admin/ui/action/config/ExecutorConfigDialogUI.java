@@ -86,6 +86,7 @@ public class ExecutorConfigDialogUI {
     public static TestExecutorConfig createExampleConfig() {
         TestExecutorConfig config = new TestExecutorConfig();
         config.setup.baseURL = "https://newproduct.example.com";
+        
         config.setup.jobParameters.add(new TestExecutorSetupJobParam("example.key1", "value1"));
         config.setup.jobParameters.add(new TestExecutorSetupJobParam("example.key2", "value2"));
         config.setup.credentials.user = "env:EXAMPLE_USER_VARIABLE";

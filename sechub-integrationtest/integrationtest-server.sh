@@ -1,12 +1,15 @@
 #!/bin/bash
 
+# define fd 3 to log into console and log file
+exec 3>&1 1>>integrationtest-console.log 2>&1
+
 # --------------------------------------------------
 #  Start / Stop script for integartion test server
 # --------------------------------------------------
 cd `dirname $0`
 
 function usage(){
-    echo "usage: integrationtest-server <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {<serverVersion>}|{<serverPort>}"
+    echo "usage: integrationtest-server <cmd=start|stop|waitForStop|waitForAlive|status|checkAlive> {<serverVersion>}|{<serverPort>}{sharedTempSharedVolumeFolder}"
     echo "       (server version is only necessary for start command"
     echo "       (when no serverPort is set, this port will be used, otherwise 8443 as default)"
 }
@@ -40,6 +43,12 @@ function status(){
         echo "- check alive state=$SECHUB_ITS_ALIVE_HTTP_STATUS"
         echo "Integration test server is not running"
     fi
+}
+
+function deleteTmpFolder(){
+    echo "start delete folder: $DELETE_TMP_FOLDER" | tee /dev/fd/3
+    rm "$DELETE_TMP_FOLDER" -rf 
+    
 }
 
 # We use this function to wait for another integration test server to be stopped.
@@ -141,13 +150,13 @@ function stopServer(){
 # Starts integration test server, needs server version as first parameter to identify jar to start with...
 function startServer(){
     if [ -z "$SERVER_VERSION" ] ; then
-        echo "Version is missing as second parameter!"
+        echo "Version is missing as second parameter!" | tee /dev/fd/3
         usage
         exit 1
     fi
 
     currentDir=$(pwd)
-    echo "working directory: $currentDir"
+    echo "working directory: $currentDir" | tee /dev/fd/3
     # e.g. curl -sSf https://localhost:8443/api/integrationtest/alive > /dev/null
     checkAlive
 
@@ -159,7 +168,7 @@ function startServer(){
     echo "starting a sechub-server $SERVER_VERSION in integration test mode"
     export SPRING_PROFILES_ACTIVE=integrationtest,mocked_products,h2
     export SECHUB_SERVER_DEBUG=true
-    export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR=temp
+    export SECHUB_STORAGE_SHAREDVOLUME_UPLOAD_DIR="$SHARED_VOLUME_BASEDIR"
 
     pathToJar="./../sechub-server/build/libs/sechub-server-$SERVER_VERSION.jar"
     if [ ! -f $pathToJar ]; then
@@ -179,10 +188,30 @@ function startServer(){
     exit 0
 }
 
+function defineSharedVolumeBasePath(){
+    if [ -z "$1" ] ; then
+        SHARED_VOLUME_BASEDIR="temp"
+        echo "> no shared sechub volume defined, using fallback:temp" | tee /dev/fd/3
+    else
+        SHARED_VOLUME_BASEDIR="$1"
+        echo "> shared sechub volume defined with: $SHARED_VOLUME_BASEDIR" | tee /dev/fd/3
+    fi
+}
+
+function defineDeleteTmpFolder(){
+    if [ -z "$1" ] ; then
+        echo "> no tmpFolder to delete deinfed - so cannot delete anything!" | tee /dev/fd/3
+        exit 3
+    else
+        DELETE_TMP_FOLDER="$1"
+        echo "> tmpFolder to delete defined with: $DELETE_TMP_FOLDER" | tee /dev/fd/3
+    fi
+}
+
 function defineServerPort(){
     if [ -z "$1" ] ; then
         SERVER_PORT=8443
-        echo "> no port defined, using fallback"
+        echo "> no port defined, using fallback" | tee /dev/fd/3
     else
         SERVER_PORT="$1"
     fi
@@ -191,7 +220,7 @@ function defineServerPort(){
 function defineServerVersion(){
     if [ -z "$1" ] ; then
         SERVER_VERSION="0.0.0"
-        echo "> no server version defined, using fallback"
+        echo "> no server version defined, using fallback" | tee /dev/fd/3
     else
         SERVER_VERSION="$1"
     fi
@@ -204,6 +233,10 @@ function handleArguments() {
             # start version port
             defineServerVersion $2
             defineServerPort $3
+            defineSharedVolumeBasePath $4
+            ;;
+        deleteTmpFolder)
+            defineDeleteTmpFolder $1
             ;;
         *)
             # other port
@@ -217,8 +250,10 @@ function handleArguments() {
     echo "Using port $SERVER_PORT for integration test server"
 
 }
+echo ">> integrationtest-server.sh 1:$1, 2:$2, 3:$3, 4:$4" | tee /dev/fd/3
+echo ">> *************************" | tee /dev/fd/3
 
-handleArguments $1 $2 $3
+handleArguments $1 $2 $3 $4
 
 case "$SERVER_COMMAND" in
     start) startServer ;;
@@ -226,5 +261,6 @@ case "$SERVER_COMMAND" in
     waitForStop) waitForStop ;;
     waitForAlive) waitForAlive ;;
     status) status ;;
+    deleteTmpFolder) deleteTmpFolder ;;
     *) usage ;;
 esac

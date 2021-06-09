@@ -1,0 +1,82 @@
+@startuml
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Storage/AmazonS3/bucket/bucket>
+!include <aws/Storage/volume/volume>
+
+title Storage example for SecHub using S3 storage and PDS server for product `XYZ` uses a NFS
+
+'skinparam linetype polyline
+'skinparam linetype ortho
+
+actor secHubUser as "SecHub user"
+
+rectangle SecHub {
+
+    rectangle secHubCluster as "SecHub cluster" {
+    
+        rectangle secHub3 as "SecHub member3" {
+             control scheduler3 as "Scheduler"
+             component scanJob3 as "Scan job"
+             storage localFS3 as "Local filesystem"
+        }
+        rectangle secHub2 as "SecHub member2"{
+             control scheduler2 as "Scheduler"
+             component scanJob2 as "Scan job"
+             storage localFS2 as "Local filesystem"
+        }
+        rectangle secHub1 as "SecHub member1" {
+            control scheduler1 as "Scheduler"
+            component scanJob1 as "Scan job"
+            storage localFS1 as "Local filesystem"
+        }
+        
+    }
+    database secHubDB as "SecHub database" {
+            
+            rectangle XYZConfig as "Product executor config XYZ"
+    }
+    
+
+}
+
+cloud " S3 storage" as s3Storage{
+ rectangle "S3 bucket (SecHub)" <<$bucket>> as bucket1
+}
+cloud " Shared volume storage" as sharedVolumeStorage{
+  storage "NFS (PDS XYZ)" as nfs2
+}
+
+
+rectangle pdsCluster as "PDS XYZ cluster " {
+    
+    rectangle pdsXyz1 as "PDS-XYZ member1" #ff99aa {
+        storage workspace1 as "Local filesystem"
+        rectangle launcher1 as "Launcher"
+    }
+    rectangle pdsXyz2 as "PDS-XYZ member2" #lightgreen {
+        storage workspace2 as "Local filesystem"
+        rectangle upload2 as "Upload"
+    }
+
+}
+
+
+secHubUser ..> scheduler3 #blue : "uploads job data"
+
+secHubCluster -[hidden]- secHubDB 
+
+s3Storage -[hidden]- pdsCluster
+s3Storage -[hidden]- secHubCluster
+
+scheduler3 .[thickness=2].> bucket1 #blue : "stores job data"
+scanJob2 .[thickness=3].> bucket1 #green : "reads job data"
+
+scheduler2 --> scanJob2 
+scanJob2 ..> XYZConfig : "reads executor configuration" 
+scanJob2 --> pdsXyz2 #green : "1. upload PDS job data"
+scanJob2 --> pdsXyz1 : "2. wait for PDS product result"
+
+pdsXyz2 .[thickness=4,#green].> nfs2 : "reads job data into PDS workspaces" 
+nfs2 .[thickness=2].> pdsXyz1 : "read job data into PDS workspaces" 
+@enduml

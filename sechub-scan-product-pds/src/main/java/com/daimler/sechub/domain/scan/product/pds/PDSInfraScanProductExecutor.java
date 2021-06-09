@@ -64,7 +64,7 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 
         List<ProductResult> results = new ArrayList<>();
 
-        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS();
+        Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 
         for (URI targetURI : targetURIs) {
             /* @formatter:off */

@@ -101,7 +101,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 
                 /* @formatter:off */
 
-					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS();
+					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 					
                     PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
                             setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).

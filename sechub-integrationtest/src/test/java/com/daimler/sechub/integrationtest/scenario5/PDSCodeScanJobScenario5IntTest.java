@@ -24,7 +24,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecuto
  * @author Albert Tregnaghi
  *
  */
-public class PDSCodeScanJobIntTest {
+public class PDSCodeScanJobScenario5IntTest {
 
     public static final String PATH ="pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip";
     
