@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.storage.filesystem;
+package com.daimler.sechub.storage.sharevolume.spring;
 
 import static java.util.Objects.*;
 

@@ -31,8 +31,8 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
 import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 @Service
 public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<PDSInstallSetup> {
@@ -101,7 +101,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 
                 /* @formatter:off */
 
-					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS();
+					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
 					
                     PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
                             setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).

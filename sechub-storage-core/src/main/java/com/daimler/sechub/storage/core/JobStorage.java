@@ -3,6 +3,7 @@ package com.daimler.sechub.storage.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 
 public interface JobStorage {
@@ -34,5 +35,12 @@ public interface JobStorage {
 	 * @throws IOException
 	 */
 	public boolean isExisting(String name) throws IOException;
+	
+	/**
+	 * 
+	 * @return list with all object names
+	 * @throws IOException
+	 */
+	public Set<String> listNames() throws IOException;
 
 }
