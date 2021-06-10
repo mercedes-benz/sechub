@@ -226,7 +226,7 @@ public class SecurityTestHelper {
                 for (String notAllowedMac : notAllowedMacs) {
 
                     if (mac.equalsIgnoreCase(notAllowedMac)) {
-                        fail("Not wanted mac:" + mac + " found inside verfified cipher:" + check.cipher);
+                        fail("Not wanted mac: " + mac + " found inside verfified cipher: " + check.cipher);
                     }
                 }
             }
