@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +24,10 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.test.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SecurityTestHelper {
@@ -81,17 +83,17 @@ public class SecurityTestHelper {
 
         callTestURLWithProtocol(context);
     }
-    
+
     String getMac(CipherCheck check) {
-        String cipher  =check.cipher;
-        if (cipher==null) {
+        String cipher = check.cipher;
+        if (cipher == null) {
             return null;
         }
         int lastIndex = cipher.lastIndexOf("-");
-        if (lastIndex==-1) {
+        if (lastIndex == -1) {
             return null;
         }
-        return cipher.substring(lastIndex+1);
+        return cipher.substring(lastIndex + 1);
     }
 
     private class SSLTestContext {
@@ -209,27 +211,26 @@ public class SecurityTestHelper {
         };
         return tm;
     }
-    
+
     public void assertNotContainedMacsInCiphers(String... notAllowedMacs) throws Exception {
         ensureCipherTestDone();
 
         for (CipherCheck check : cipherTestData.cipherChecks) {
             if ("true".equals(check.verified)) {
                 String mac = getMac(check);
-                
-                if (mac==null) {
+
+                if (mac == null) {
                     fail("mac is null in test cipher - should not happen!");
                 }
-                
-                for (String notAllowedMac: notAllowedMacs) {
-                    
-                    if (mac.equalsIgnoreCase(notAllowedMac)){
-                        fail("Not wanted mac:"+mac+" found inside verfified cipher:"+check.cipher);
+
+                for (String notAllowedMac : notAllowedMacs) {
+
+                    if (mac.equalsIgnoreCase(notAllowedMac)) {
+                        fail("Not wanted mac:" + mac + " found inside verfified cipher:" + check.cipher);
                     }
                 }
             }
         }
-
 
     }
 
@@ -306,6 +307,7 @@ public class SecurityTestHelper {
 
     private void ensureCipherTestDone() throws Exception {
         if (cipherTestData != null) {
+            assertServerToTestHasBeenStarted();
             return;
         }
         List<String> commands = new ArrayList<>();
@@ -325,6 +327,23 @@ public class SecurityTestHelper {
         if (!exited) {
             throw new IllegalStateException("Was not able to wait for ciphertest.sh result");
         }
+        int exitCode = process.exitValue();
+        if (exitCode == 3) {
+            throw new IllegalStateException("No openssl installed at your machine - cannot test ciphers!");
+        } else if (exitCode != 0) {
+            String message = "`ciphertest.sh` script call failed with unexpected exit code:" + exitCode;
+            if (TestUtil.isWindows()) {
+                /* @formatter:off */
+                message += "\n"
+                        + "HINT: You are using windows and this test needs bash + open ssl\n"
+                        + "- bash executeable must be inside your PATH variable so it can be called!\n"
+                        + "- you also need a openssl installation\n" 
+                        + "> Proposal: Install gitbash for windows";
+                /* @formatter:on */
+            }
+            throw new IllegalStateException(message);
+        }
+
         TextFileReader reader = new TextFileReader();
         File file = new File("./build/test-results/ciphertest/sechub-" + targetType.id + ".json");
         String text = reader.loadTextFile(file);
@@ -332,5 +351,25 @@ public class SecurityTestHelper {
         ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);
 
+        assertServerToTestHasBeenStarted();
+
+    }
+
+    /* Sanity check - when no server is available we have only unknwon results */
+    private void assertServerToTestHasBeenStarted() {
+        boolean atLeastOneConnectionRefused = false;
+        for (CipherCheck check : cipherTestData.cipherChecks) {
+            if (check.error == null || check.error.isEmpty()) {
+                continue;
+            }
+            if (check.error.toLowerCase().indexOf("connection refused") != -1) {
+                atLeastOneConnectionRefused = true;
+                break;
+
+            }
+        }
+        if (atLeastOneConnectionRefused) {
+            throw new IllegalStateException("At least one cipher tests has a 'connection refused' - seems " + targetType + " has not been started!");
+        }
     }
 }

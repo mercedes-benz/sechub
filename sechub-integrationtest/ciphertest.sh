@@ -1,8 +1,33 @@
 #!/usr/bin/bash
 
-#
 # This script creates a json file containing openssl verification meta data
 # which is used inside java unit tests via SecurityTesthelper.java
+
+function usage(){
+    echo "usage: ciphertest <server:port> <server|pds>"
+    echo "       - second parameter is for taget type, currently only 'server' (sechub-server) and"
+    echo "         'pds' are supported"
+    
+}
+
+# check if open ssl is available at all
+# if not the function will exit with exit code 3
+function ensureOpenSSLInstalled(){
+     checkCommand="which openssl";
+     
+     foundOpenSSLPath=$($checkCommand)
+     
+     if [[ "$foundOpenSSLPath" = "" ]]; then
+       echo "Did not found a open SSL installation! So cannot check ciphers!"
+       exit 3
+    fi
+}
+
+# check and print openssl version
+ensureOpenSSLInstalled
+echo "Using installed $(openssl version)."
+
+
 if [ -z "$1" ] ; then
     echo "server is missing as first parameter!"
     usage
@@ -15,6 +40,7 @@ if [ -z "$2" ] ; then
     exit 1
 fi
 
+
 cd ..
 cd sechub-$2
 source ./dev-base.sh
@@ -25,13 +51,6 @@ cd sechub-integrationtest
 # OpenSSL requires the port number.
 
 DEV_CERT_PEM="$DEV_CERT_PATH/generated-dev-localhost-keystore.pem"
-
-function usage(){
-    echo "usage: ciphertest <server:port> <server|pds>"
-    echo "       - second parameter is for taget type, currently only 'server' (sechub-server) and"
-    echo "         'pds' are supported"
-    
-}
 
 OUTPUT_FOLDER="./build/test-results/ciphertest/"
 OUTPUT_FILE="$OUTPUT_FOLDER/sechub-$2.json"
@@ -48,7 +67,7 @@ ciphers=$(openssl ciphers 'ALL:eNULL' | sed -e 's/:/ /g')
 # convert existing pkcs12 file to a PEM file, so we can use it later to connect to localhost with self signed certificates....
 openssl pkcs12 -in $DEV_CERT_FILE -out $DEV_CERT_PEM -clcerts -nokeys -passin pass:$PSEUDO_PWD
 
-echo Obtaining cipher list from $(openssl version).
+echo Obtaining cipher list by openssl
 
 echo "{" > $OUTPUT_FILE
 echo "  \"cipherChecks\" : [" >> $OUTPUT_FILE
