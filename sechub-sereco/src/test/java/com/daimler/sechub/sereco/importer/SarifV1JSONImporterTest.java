@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sereco.importer;
 
+import static com.daimler.sechub.sereco.test.AssertVulnerabilities.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -23,13 +24,52 @@ public class SarifV1JSONImporterTest {
     private static String sarifBrakeman;
     private static String sarifEmptyResult;
     private static String sarifThreadflowsExample;
-    
+    private static String gosec2_8_0_taxonomyExample;
+
     @BeforeClass
     public static void before() {
         importerToTest = new SarifV1JSONImporter();
-        sarifBrakeman = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_brakeman.json");
-        sarifEmptyResult = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_empty_results.json");
-        sarifThreadflowsExample = SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/sarif_2.1.0_threadflows_example.json");
+        sarifBrakeman = loadSarifTestFile("sarif_2.1.0_brakeman.json");
+        sarifEmptyResult = loadSarifTestFile("sarif_2.1.0_empty_results.json");
+        sarifThreadflowsExample = loadSarifTestFile("sarif_2.1.0_threadflows_example.json");
+
+        gosec2_8_0_taxonomyExample = loadSarifTestFile("sarif_2.1.0_gosec_2.8.0_example_with_taxonomy.json");
+    }
+
+    @Test
+    public void go_sec_2_8_0_example_with_taxonomy__import_ability_is_true() {
+        /* prepare */
+
+        ImportParameter paramGoSec = ImportParameter.builder().importData(gosec2_8_0_taxonomyExample).importId("id1").productId("PDS_CODESCAN").build();
+
+        /* execute */
+        ProductImportAbility ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
+
+        /* test */
+        assertEquals("Has NOT the ability to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportGosec_2_8_0sarif);
+    }
+
+    @Test
+    public void go_sec_2_8_0_example_with_taxonomy__can_be_imported_and_contains_cwe_with_description() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(gosec2_8_0_taxonomyExample);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(1).
+            verifyVulnerability().
+                classifiedBy().
+                    cwe(89).
+                    and().
+                withSeverity(SerecoSeverity.HIGH).
+                withDescriptionContaining("SQL string formatting").
+            isContained();
+        
+        /* @formatter:on */
     }
 
     @Test
@@ -37,14 +77,14 @@ public class SarifV1JSONImporterTest {
         /* prepare */
 
         ImportParameter paramBrakeman = ImportParameter.builder().importData(sarifBrakeman).importId("id1").productId("PDS_CODESCAN").build();
-        
+
         /* execute */
         ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
-        
+
         /* test */
-        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif);    
+        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif);
     }
-    
+
     @Test
     public void threadflow_sarif_report_can_be_imported() {
         /* prepare */
@@ -56,7 +96,7 @@ public class SarifV1JSONImporterTest {
         /* test */
         assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif);
     }
-    
+
     @Test
     public void empty_json__can_NOT_be_imported() {
         /* prepare */
@@ -69,7 +109,7 @@ public class SarifV1JSONImporterTest {
         /* test */
         assertEquals("Not the expected ability!", ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility);
     }
-    
+
     @Test
     public void empty_string_is_recognized_as_product_failure() {
         /* prepare */
@@ -83,25 +123,25 @@ public class SarifV1JSONImporterTest {
         assertEquals("Not the expected ability!", ProductImportAbility.PRODUCT_FAILED, importAbility);
     }
 
-
     @Test
     public void empty_sarif_report_throws_exception() {
-        
+
         /* test */
         assertThrows(IOException.class, () -> {
-            importerToTest.importResult("");// here we call the importer directly with empty string, isAbleToImport is not used, so an exception is expected
+            importerToTest.importResult("");// here we call the importer directly with empty string, isAbleToImport is not
+                                            // used, so an exception is expected
         });
     }
-    
+
     @Test
     public void null_sarif_report_throws_exception() {
-        
+
         /* test */
         assertThrows(IOException.class, () -> {
             importerToTest.importResult(null);
         });
     }
-    
+
     @Test
     public void sarif_report_has_errorlevel() throws Exception {
         /* prepare */
@@ -135,12 +175,12 @@ public class SarifV1JSONImporterTest {
 
         /* execute */
         List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
-        
+
         /* test */
         assertTrue(vulnerabilities.isEmpty());
-        
+
     }
-    
+
     @Test
     public void sarif_report_has_code_info() throws Exception {
         /* prepare */
@@ -158,7 +198,7 @@ public class SarifV1JSONImporterTest {
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(21, vulnerabilities.size());
     }
-    
+
     @Test
     public void sarif_report_threadflow_locations() throws Exception {
         /* prepare */
@@ -175,11 +215,18 @@ public class SarifV1JSONImporterTest {
         assertEquals("3-Beyond-basics/bad-eval-with-code-flow.py", codeInfo.getLocation());
         assertEquals(3, codeInfo.getLine().intValue());
         assertEquals(1, vulnerabilities.size());
-        
+
         SerecoCodeCallStackElement subCodeInfo = codeInfo.getCalls();
         assertNotNull(subCodeInfo);
         assertEquals("3-Beyond-basics/bad-eval-with-code-flow.py", subCodeInfo.getLocation());
         assertEquals(4, subCodeInfo.getLine().intValue());
+    }
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* + ................Helpers......................... + */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    private static String loadSarifTestFile(String sarifTestFile) {
+        return SerecoTestFileSupport.INSTANCE.loadTestFile("sarif/" + sarifTestFile);
     }
 
     private SerecoVulnerability fetchFirstNonFalsePositive(List<SerecoVulnerability> vulnerabilities) {

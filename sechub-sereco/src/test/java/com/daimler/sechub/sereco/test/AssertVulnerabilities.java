@@ -30,6 +30,16 @@ public class AssertVulnerabilities {
         return new AssertVulnerabilities(list);
     }
 
+    
+    /**
+     * Same as {@link #vulnerability()} but easier to understand in tests and more like
+     * a "good taled story" part.
+     * @return
+     */
+    public VulnerabilityFinder verifyVulnerability() {
+        return vulnerability();
+    }
+    
     public VulnerabilityFinder vulnerability() {
         return new VulnerabilityFinder();
     }
@@ -259,6 +269,10 @@ public class AssertVulnerabilities {
             public AssertClassification cwe(String cwe) {
                 classification.setCwe(cwe);
                 return this;
+            }
+            
+            public AssertClassification cwe(int cwe) {
+                return cwe(""+cwe);
             }
 
             public AssertClassification capec(String capec) {
