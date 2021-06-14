@@ -7,42 +7,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.contrastsecurity.sarif.CodeFlow;
-import com.contrastsecurity.sarif.Location;
-import com.contrastsecurity.sarif.PhysicalLocation;
-import com.contrastsecurity.sarif.ReportingDescriptor;
-import com.contrastsecurity.sarif.ReportingDescriptorReference;
-import com.contrastsecurity.sarif.Result;
-import com.contrastsecurity.sarif.Result.Level;
-import com.contrastsecurity.sarif.Run;
-import com.contrastsecurity.sarif.SarifSchema210;
-import com.contrastsecurity.sarif.ThreadFlow;
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.sarif.SarifReportSupport;
+import com.daimler.sechub.sarif.model.ArtifactLocation;
+import com.daimler.sechub.sarif.model.CodeFlow;
+import com.daimler.sechub.sarif.model.Driver;
+import com.daimler.sechub.sarif.model.Level;
+import com.daimler.sechub.sarif.model.Location;
+import com.daimler.sechub.sarif.model.PhysicalLocation;
+import com.daimler.sechub.sarif.model.Region;
+import com.daimler.sechub.sarif.model.Report;
+import com.daimler.sechub.sarif.model.Result;
+import com.daimler.sechub.sarif.model.Rule;
+import com.daimler.sechub.sarif.model.Run;
+import com.daimler.sechub.sarif.model.ThreadFlow;
+import com.daimler.sechub.sarif.model.Tool;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This Importer supports SARIF Version 2.1.0
+ * This Importer supports SARIF
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
  */
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
-    private ObjectMapper mapper;
+    private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
 
     public SarifV1JSONImporter() {
-        mapper = new ObjectMapper();
     }
 
     public SerecoMetaData importResult(String data) throws IOException {
@@ -51,44 +52,77 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             data = "";
         }
 
-        SarifSchema210 sarif;
+        Report report = null;
 
         try {
-            sarif = readSarifSchema210(data);
+            report = new SarifReportSupport().loadReport(data);
         } catch (Exception e) {
             /*
              * here we can throw the exception - should never happen, because with
              * #isAbleToImportForProduct we already check this is possible. So there is
              * something odd here and we throw the exception
              */
-            throw new IOException("Import cannot parse sarif 2.1.0 json", e);
+            throw new IOException("Import cannot parse sarif json", e);
         }
-
         SerecoMetaData metaData = new SerecoMetaData();
 
-        sarif.getRuns().stream().forEach(run -> {
-
-            List<Result> results = resultsWithGroupedLocations(run.getResults());
-
-            results.stream().forEach(result -> {
-                SerecoVulnerability vulnerability = new SerecoVulnerability();
-
-                ResultData resultData = resolveData(run, result);
-                vulnerability.setType(resultData.shortName);
-                vulnerability.setDescription(resultData.description);
-                vulnerability.setSeverity(mapToSeverity(result.getLevel()));
-                vulnerability.getClassification().setCwe(cweIdFrom(result));
-
-                vulnerability.setCode(resolveCodeInfoFromResult(result));
-
-                // Static Analysis Results Format (SARIF) is only suitable for our CODE_SCAN
-                vulnerability.setScanType(ScanType.CODE_SCAN);
-
-                metaData.getVulnerabilities().add(vulnerability);
-            });
-        });
-
+        for (Run run : report.getRuns()) {
+            handleEachRun(run, metaData);
+        }
         return metaData;
+    }
+
+    private void handleEachRun(Run run, SerecoMetaData metaData) {
+        List<Result> results = run.getResults();
+        /*
+         * FIXME Albert Tregnaghi, 2021-06-14: discuss if this is really okay! just
+         * comment next line at start tests - one will find 31 vulnerabilities instead
+         * of 21. Unclear if correct or not!
+         */
+        results = resultsWithGroupedLocations(results);
+        for (Result result : results) {
+
+            SerecoVulnerability vulnerability = createSerecoVulnerability(run, result);
+            if (vulnerability != null) {
+                metaData.getVulnerabilities().add(vulnerability);
+            }
+        }
+    }
+
+    private SerecoVulnerability createSerecoVulnerability(Run run, Result result) {
+        if (result == null) {
+            return null;
+        }
+        // Each run has ONE tool, multiple results and taxonomies
+        Tool tool = run.getTool();
+        Driver driver = tool.getDriver();
+
+        List<Rule> rules = driver.getRules();
+
+        SerecoVulnerability vulnerability = new SerecoVulnerability();
+
+        String ruleId = result.getRuleId();
+
+        /* @formatter:off */
+        Rule ruleFound = 
+                        rules.
+                        stream().
+                        filter(rule ->rule.getId().equals(ruleId)).
+                        findFirst().orElse(null);
+        /* @formatter:on */
+
+        ResultData resultData = resolveData(ruleFound);
+        vulnerability.setType(resultData.shortName);
+        vulnerability.setDescription(resultData.description);
+        vulnerability.setSeverity(mapToSeverity(result.getLevel()));
+        vulnerability.getClassification().setCwe(cweIdFrom(result));
+
+        vulnerability.setCode(resolveCodeInfoFromResult(result));
+
+        // Static Analysis Results Format (SARIF) is only suitable for our CODE_SCAN
+        vulnerability.setScanType(ScanType.CODE_SCAN);
+
+        return vulnerability;
     }
 
     private class ResultData {
@@ -96,22 +130,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         String description;
     }
 
-    private ResultData resolveData(Run run, Result result) {
-        String ruleId = result.getRuleId();
-
-        Set<ReportingDescriptor> rules = run.getTool().getDriver().getRules();
-        /* @formatter:off */
-        ReportingDescriptor reportingDescription = 
-                        rules.
-                        stream().
-                        filter(r ->r.getId().equals(ruleId)).
-                        findFirst().orElse(null);
-        /* @formatter:on */
+    private ResultData resolveData(Rule rule) {
 
         ResultData data = new ResultData();
-        if (reportingDescription != null) {
-            data.shortName = resolveShortName(reportingDescription);
-            data.description = resolveDescription(reportingDescription);
+        if (rule != null) {
+            data.shortName = resolveShortName(rule);
+            data.description = resolveDescription(rule);
         }
         if (data.shortName == null) {
             data.shortName = "Undefined"; // at least we set this to indicate there is no name defined inside SARIF
@@ -120,12 +144,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         return data;
     }
 
-    private String resolveDescription(ReportingDescriptor reportingDescription) {
-        return reportingDescription.getFullDescription().getText();
+    private String resolveDescription(Rule rule) {
+        return rule.getFullDescription().getText();
     }
 
-    private String resolveShortName(ReportingDescriptor desc) {
-        String name = desc == null ? null : desc.getName();
+    private String resolveShortName(Rule rule) {
+        String name = rule == null ? null : rule.getName();
         int index = name.lastIndexOf("/");
         if (index != -1) {
             index++;
@@ -134,10 +158,6 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             }
         }
         return name;
-    }
-
-    private SarifSchema210 readSarifSchema210(String data) throws JsonProcessingException, JsonMappingException {
-        return mapper.readValue(data, SarifSchema210.class);
     }
 
     private SerecoCodeCallStackElement resolveCodeInfoFromResult(Result result) {
@@ -195,26 +215,36 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         locations.forEach(location -> {
 
             PhysicalLocation physicalLocation = location.getPhysicalLocation();
+            if (physicalLocation != null) {
 
-            SerecoCodeCallStackElement subCode = new SerecoCodeCallStackElement();
-            subCode.setLocation(physicalLocation.getArtifactLocation().getUri());
-            subCode.setLine(physicalLocation.getRegion().getStartLine());
-            subCode.setColumn(physicalLocation.getRegion().getStartColumn());
+                SerecoCodeCallStackElement subCode = new SerecoCodeCallStackElement();
+                ArtifactLocation artifactLocation = physicalLocation.getArtifactLocation();
+                if (artifactLocation != null) {
+                    subCode.setLocation(artifactLocation.getUri());
 
-            callstack.add(subCode);
+                }
+                Region region = physicalLocation.getRegion();
+                if (region != null) {
+                    subCode.setLine(region.getStartLine());
+                    subCode.setColumn(region.getStartColumn());
+                }
+
+                callstack.add(subCode);
+            }
         });
         return callstack;
     }
 
     private String cweIdFrom(Result result) {
-
-        Optional<ReportingDescriptorReference> taxa = result.getTaxa().stream().filter(comp -> comp.getToolComponent().getName() == "CWE").findFirst();
-
-        if (!taxa.isPresent()) {
-            return "";
-        }
-
-        return taxa.get().getId();
+//
+//        Optional<ReportingDescriptorReference> taxa = result.getTaxa().stream().filter(comp -> comp.getToolComponent().getName() == "CWE").findFirst();
+//
+//        if (!taxa.isPresent()) {
+//            return "";
+//        }
+//
+//        return taxa.get().getId();
+        return "";
     }
 
     private List<Result> resultsWithGroupedLocations(List<Result> results) {
@@ -234,6 +264,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private SerecoSeverity mapToSeverity(Level level) {
+        if (level == null) {
+            return SerecoSeverity.UNCLASSIFIED;
+        }
         switch (level) {
         case NONE:
         case NOTE:
@@ -256,14 +289,14 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         /* okay it's a json and it contains "runs" */
         try {
             /*
-             * Currently the easiest way to identify if this JSON content can be imported is
-             * to just try a JSON deserialization here. So we just read Sarif schema. If
-             * this is a SARIF file the read will be done twice, but this is something we
-             * have to live with. Reading this to a field is no option, because this is a
-             * component with standard spring injection scope, so only a singleton and we
-             * must be not stateful here.
+             * Level Currently the easiest way to identify if this JSON content can be
+             * imported is to just try a JSON deserialization here. So we just read Sarif
+             * schema. If this is a SARIF file the read will be done twice, but this is
+             * something we have to live with. Reading this to a field is no option, because
+             * this is a component with standard spring injection scope, so only a singleton
+             * and we must be not stateful here.
              */
-            readSarifSchema210(param.getImportData());
+            new SarifReportSupport().loadReport(param.getImportData());
         } catch (Exception e) {
             return ProductImportAbility.NOT_ABLE_TO_IMPORT;
         }

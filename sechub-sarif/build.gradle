@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: MIT
+dependencies {
+    implementation library.jackson_core
+    implementation library.jackson_databind
+    implementation library.slf4j
+    
+    testCompile library.junit
+}

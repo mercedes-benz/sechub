@@ -231,6 +231,9 @@ public class SarifV1JSONImporterTest {
 
     private SerecoVulnerability fetchFirstNonFalsePositive(List<SerecoVulnerability> vulnerabilities) {
         Iterator<SerecoVulnerability> vit = vulnerabilities.iterator();
+        if (!vit.hasNext()) {
+            fail("no vulnerability found at all!");
+        }
         SerecoVulnerability vulnerability = vit.next();
         while (vulnerability.isFalsePositive()) {
             /*

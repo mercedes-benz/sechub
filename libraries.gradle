@@ -108,8 +108,6 @@ ext {
          /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
          jsoup:									"org.jsoup:jsoup:1.13.1",
 
-		 /* contrastsecurity java-sarif - https://github.com/Contrast-Security-OSS/java-sarif */
-		 contrastsecurity_sarif:				"com.contrastsecurity:java-sarif:1.0"
    ]
 
 }
