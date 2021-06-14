@@ -9,7 +9,7 @@ public class RuleTest {
     @Test
     public void values_are_null() {
         /* prepare */
-        Rule rule = new Rule(null, null, null, null, null, null);
+        Rule rule = new Rule();
 
         /* execute */
         String id = rule.getId();

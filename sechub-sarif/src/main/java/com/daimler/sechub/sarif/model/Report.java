@@ -6,6 +6,17 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Sarif format documentation available at
+ * <ul>
+ * <li>https://sarifweb.azurewebsites.net/</li>
+ * <li>https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html</li>
+ * 
+ * </ul>
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 @JsonPropertyOrder({ "version", "$schema", "runs" })
 public class Report {
     private String version;
@@ -63,7 +74,6 @@ public class Report {
             return false;
         }
         Report other = (Report) obj;
-        return Objects.equals(runs, other.runs) && Objects.equals($schema, other.$schema)
-                && Objects.equals(version, other.version);
+        return Objects.equals(runs, other.runs) && Objects.equals($schema, other.$schema) && Objects.equals(version, other.version);
     }
 }

@@ -23,11 +23,14 @@ import com.daimler.sechub.sarif.model.Location;
 import com.daimler.sechub.sarif.model.PhysicalLocation;
 import com.daimler.sechub.sarif.model.Region;
 import com.daimler.sechub.sarif.model.Report;
+import com.daimler.sechub.sarif.model.ReportingDescriptorReference;
+import com.daimler.sechub.sarif.model.ReportingDescriptorRelationship;
 import com.daimler.sechub.sarif.model.Result;
 import com.daimler.sechub.sarif.model.Rule;
 import com.daimler.sechub.sarif.model.Run;
 import com.daimler.sechub.sarif.model.ThreadFlow;
 import com.daimler.sechub.sarif.model.Tool;
+import com.daimler.sechub.sarif.model.ToolComponentReference;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
@@ -42,8 +45,10 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
+    SarifReportSupport sarifSupport;
 
     public SarifV1JSONImporter() {
+        sarifSupport = new SarifReportSupport();
     }
 
     public SerecoMetaData importResult(String data) throws IOException {
@@ -55,7 +60,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         Report report = null;
 
         try {
-            report = new SarifReportSupport().loadReport(data);
+            report = sarifSupport.loadReport(data);
         } catch (Exception e) {
             /*
              * here we can throw the exception - should never happen, because with
@@ -115,11 +120,11 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         vulnerability.setType(resultData.shortName);
         vulnerability.setDescription(resultData.description);
         vulnerability.setSeverity(mapToSeverity(result.getLevel()));
-        vulnerability.getClassification().setCwe(cweIdFrom(result));
+        vulnerability.getClassification().setCwe(resultData.cweId);
 
         vulnerability.setCode(resolveCodeInfoFromResult(result));
 
-        // Static Analysis Results Format (SARIF) is only suitable for our CODE_SCAN
+        // Static Analysis Results Format (SARIF) is only suitable for type CODE_SCAN
         vulnerability.setScanType(ScanType.CODE_SCAN);
 
         return vulnerability;
@@ -128,6 +133,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     private class ResultData {
         String shortName;
         String description;
+        String cweId;
     }
 
     private ResultData resolveData(Rule rule) {
@@ -136,12 +142,41 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         if (rule != null) {
             data.shortName = resolveShortName(rule);
             data.description = resolveDescription(rule);
+
+            resolveTargetInformation(rule, data);
         }
         if (data.shortName == null) {
             data.shortName = "Undefined"; // at least we set this to indicate there is no name defined inside SARIF
         }
 
         return data;
+    }
+
+    private void resolveTargetInformation(Rule rule, ResultData data) {
+        List<ReportingDescriptorRelationship> relationShips = rule.getRelationships();
+        for (ReportingDescriptorRelationship relationShip : relationShips) {
+            ReportingDescriptorReference target = relationShip.getTarget();
+            if (target == null) {
+                continue;
+            }
+            String id = target.getId();
+            if (id == null) {
+                continue;
+            }
+            ToolComponentReference toolComponent = target.getToolComponent();
+            if (toolComponent == null) {
+                continue;
+            }
+            String toolComponentName = toolComponent.getName();
+            if (toolComponentName == null) {
+                continue;
+            }
+
+            if ("CWE".equalsIgnoreCase(toolComponentName)) {
+                /* cwe found, so lets look after the id */
+                data.cweId = id;
+            }
+        }
     }
 
     private String resolveDescription(Rule rule) {
@@ -235,18 +270,6 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         return callstack;
     }
 
-    private String cweIdFrom(Result result) {
-//
-//        Optional<ReportingDescriptorReference> taxa = result.getTaxa().stream().filter(comp -> comp.getToolComponent().getName() == "CWE").findFirst();
-//
-//        if (!taxa.isPresent()) {
-//            return "";
-//        }
-//
-//        return taxa.get().getId();
-        return "";
-    }
-
     private List<Result> resultsWithGroupedLocations(List<Result> results) {
 
         Map<Integer, Result> mappedResults = new HashMap<>();
@@ -282,31 +305,22 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
     public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
+        /* first we do the simple check...*/
         ProductImportAbility ability = super.isAbleToImportForProduct(param);
         if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
             return ability;
         }
-        /* okay it's a json and it contains "runs" */
-        try {
-            /*
-             * Level Currently the easiest way to identify if this JSON content can be
-             * imported is to just try a JSON deserialization here. So we just read Sarif
-             * schema. If this is a SARIF file the read will be done twice, but this is
-             * something we have to live with. Reading this to a field is no option, because
-             * this is a component with standard spring injection scope, so only a singleton
-             * and we must be not stateful here.
-             */
-            new SarifReportSupport().loadReport(param.getImportData());
-        } catch (Exception e) {
-            return ProductImportAbility.NOT_ABLE_TO_IMPORT;
+        /* okay, now test if its valid SARIF */
+        if (sarifSupport.isValidSarif(param.getImportData())) {
+            return ProductImportAbility.ABLE_TO_IMPORT;
         }
-
-        return ProductImportAbility.ABLE_TO_IMPORT;
+        LOG.debug("Simple check accepted data, but was not valid SARIF");
+        return ProductImportAbility.NOT_ABLE_TO_IMPORT;
     }
 
     @Override
     protected ImportSupport createImportSupport() {
-        return ImportSupport.builder().productId("PDS_CODESCAN").mustBeJSON().contentIdentifiedBy("\"runs\"").build();
+        return ImportSupport.builder().mustBeJSON().contentIdentifiedBy("\"runs\"").build();
     }
 
 }
