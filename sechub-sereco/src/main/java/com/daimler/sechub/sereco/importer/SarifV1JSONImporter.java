@@ -44,7 +44,10 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 @Component
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
+    private static final String CWE = "CWE";
+    
     private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
+    
     SarifReportSupport sarifSupport;
 
     public SarifV1JSONImporter() {
@@ -172,7 +175,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
                 continue;
             }
 
-            if ("CWE".equalsIgnoreCase(toolComponentName)) {
+            if (CWE.equalsIgnoreCase(toolComponentName)) {
                 /* cwe found, so lets look after the id */
                 data.cweId = id;
             }
@@ -275,10 +278,12 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         Map<Integer, Result> mappedResults = new HashMap<>();
 
         results.stream().forEach(result -> {
-            if (!mappedResults.containsKey(result.getRuleIndex())) {
-                mappedResults.put(result.getRuleIndex(), result);
+            int ruleIndex = result.getRuleIndex();
+            
+            if (!mappedResults.containsKey(ruleIndex)) {
+                mappedResults.put(ruleIndex, result);
             } else {
-                mappedResults.get(result.getRuleIndex()).getLocations().addAll(result.getLocations());
+                mappedResults.get(ruleIndex).getLocations().addAll(result.getLocations());
             }
 
         });
