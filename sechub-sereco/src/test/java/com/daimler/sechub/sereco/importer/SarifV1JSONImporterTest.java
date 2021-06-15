@@ -196,7 +196,7 @@ public class SarifV1JSONImporterTest {
         assertEquals("Cross-Site Scripting", vulnerability.getType());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
-        assertEquals(21, vulnerabilities.size());
+        assertEquals(32, vulnerabilities.size());
     }
 
     @Test

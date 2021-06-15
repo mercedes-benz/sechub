@@ -3,9 +3,7 @@ package com.daimler.sechub.sereco.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,12 +80,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private void handleEachRun(Run run, SerecoMetaData metaData) {
         List<Result> results = run.getResults();
-        /*
-         * FIXME Albert Tregnaghi, 2021-06-14: discuss if this is really okay! just
-         * comment next line at start tests - one will find 31 vulnerabilities instead
-         * of 21. Unclear if correct or not!
-         */
-        results = resultsWithGroupedLocations(results);
+        
         for (Result result : results) {
 
             SerecoVulnerability vulnerability = createSerecoVulnerability(run, result);
@@ -271,24 +264,6 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             }
         });
         return callstack;
-    }
-
-    private List<Result> resultsWithGroupedLocations(List<Result> results) {
-
-        Map<Integer, Result> mappedResults = new HashMap<>();
-
-        results.stream().forEach(result -> {
-            int ruleIndex = result.getRuleIndex();
-            
-            if (!mappedResults.containsKey(ruleIndex)) {
-                mappedResults.put(ruleIndex, result);
-            } else {
-                mappedResults.get(ruleIndex).getLocations().addAll(result.getLocations());
-            }
-
-        });
-
-        return new ArrayList<Result>(mappedResults.values());
     }
 
     private SerecoSeverity mapToSeverity(Level level) {
