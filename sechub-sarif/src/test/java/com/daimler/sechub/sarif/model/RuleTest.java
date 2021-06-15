@@ -1,13 +1,12 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-
-public class RuleTest {
+import org.junit.jupiter.api.Test;
+class RuleTest {
 
     @Test
-    public void values_are_null() {
+    void values_are_null() {
         /* prepare */
         Rule rule = new Rule();
 
@@ -29,7 +28,7 @@ public class RuleTest {
     }
 
     @Test
-    public void values_are_not_null() {
+    void values_are_not_null() {
         /* prepare */
         Rule rule = new Rule("123", "rule-name", new Message(), new Message(), new Message(), new Properties());
 
@@ -51,7 +50,7 @@ public class RuleTest {
     }
 
     @Test
-    public void test_setters() {
+    void test_setters() {
         /* prepare */
         Rule rule = new Rule("123", "rule-name", new Message(), new Message(), new Message(), new Properties());
 

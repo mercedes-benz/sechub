@@ -1,16 +1,19 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RunTest {
+import com.daimler.sechub.test.PojoTester;
+
+class RunTest {
 
     @Test
-    public void values_are_null() {
+    void values_are_null() {
         /* prepare */
         Run run = new Run(null, null);
 
@@ -24,7 +27,7 @@ public class RunTest {
     }
 
     @Test
-    public void values_are_not_null() {
+    void values_are_not_null() {
         /* prepare */
         Run run = new Run(new Tool(), new LinkedList<Result>());
 
@@ -38,17 +41,12 @@ public class RunTest {
     }
 
     @Test
-    public void test_setters() {
+    void test_setters() {
         /* prepare */
         Run run = new Run();
 
-        /* execute */
-        run.setTool(new Tool());
-        run.setResults(new LinkedList<Result>());
-
-        /* test */
-        assertEquals(run.getTool(), new Tool());
-        assertEquals(run.getResults(), new LinkedList<Result>());
+        /* execute +test */
+        PojoTester.testSetterAndGetter(run);
     }
 
 }

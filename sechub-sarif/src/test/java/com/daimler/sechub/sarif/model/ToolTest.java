@@ -1,13 +1,15 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ToolTest {
+import com.daimler.sechub.test.PojoTester;
+
+class ToolTest {
 
     @Test
-    public void value_is_null() {
+    void value_is_null() {
         /* prepare */
         Tool tool = new Tool(null);
 
@@ -19,7 +21,7 @@ public class ToolTest {
     }
 
     @Test
-    public void value_is_not_null() {
+    void value_is_not_null() {
         /* prepare */
         Tool tool = new Tool(new Driver());
 
@@ -31,15 +33,12 @@ public class ToolTest {
     }
 
     @Test
-    public void test_setter() {
+    void test_setter() {
         /* prepare */
         Tool tool = new Tool();
 
         /* execute */
-        tool.setDriver(new Driver());
-
-        /* test */
-        assertEquals(tool.getDriver(), new Driver());
+        PojoTester.testSetterAndGetter(tool);
     }
 
 }

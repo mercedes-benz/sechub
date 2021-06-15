@@ -10,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.mockito.Mockito;
@@ -66,27 +67,44 @@ public class PojoTester {
 					type = Class.forName(typeName);
 				}
 				Object mockedArgument = null;
-				try {
-					Constructor<?> constructor = type.getConstructor();
-					mockedArgument = constructor.newInstance();
-				} catch (Exception e) {
-					/* no default constructor available - fall back to Mockito ... */
-					try {
-						mockedArgument = Mockito.mock(type);
-					}catch(Exception e2) {
-						throw new IllegalStateException("No default constructor available for:"+type+"\nat method:"+readmethod+"\nDid try to creeate with mockito, but failed",e);
-					}
+				if (type.isPrimitive()) {
+                    if (type.equals(int.class)) {
+				        mockedArgument=42;
+				    }else if (type.equals(double.class)) {
+				        mockedArgument=(float)42;
+				    }else if (type.equals(byte.class)) {
+                        mockedArgument=(byte)42;
+                    }
+				}else if (type.isEnum()) {
+				    Object[] enumObjects = type.getEnumConstants();
+				    mockedArgument=enumObjects[0];
+				}else {
+				    try {
+				        Constructor<?> constructor = type.getConstructor();
+				        mockedArgument = constructor.newInstance();
+				    } catch (Exception e) {
+				        /* no default constructor available - fall back to Mockito ... */
+				        try {
+				            mockedArgument = Mockito.mock(type);
+				        }catch(Exception e2) {
+				            throw new IllegalStateException("No default constructor available for:"+type+"\nat method:"+readmethod+"\nDid try to creeate with mockito, but failed",e);
+				        }
+				    }
 				}
 				if (optional) {
 					mockedArgument=Optional.of(mockedArgument);
 				}
-				writeMethod.invoke(objectToTest, mockedArgument);
+				try {
+				    writeMethod.invoke(objectToTest, mockedArgument);
+				}catch(Exception e) {
+				    throw new IllegalStateException("Was not able to set mockedArgument:"+mockedArgument+"\ninto:"+objectToTest+"\nby writeMethod:"+writeMethod);
+				}
 
 				Object result = readmethod.invoke(objectToTest);
 
-				if (result != mockedArgument) {
-					fail("The getter/setter implementation of " + objectToTest.getClass() + " failed on property:"
-							+ descriptor.getName());
+				if (!Objects.equals(result, mockedArgument)) {
+					fail("The getter/setter implementation of " + objectToTest.getClass() + " failed!\nProperty:"
+							+ descriptor.getName()+"\nExpected:"+mockedArgument+"\nGot:"+result);
 				}
 
 			}

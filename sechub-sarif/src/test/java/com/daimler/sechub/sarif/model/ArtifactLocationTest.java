@@ -1,13 +1,13 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ArtifactLocationTest {
+class ArtifactLocationTest {
 
     @Test
-    public void values_are_null() {
+    void values_are_null() {
         /* prepare */
         ArtifactLocation artifactLocation = new ArtifactLocation(null, null);
 
@@ -21,7 +21,7 @@ public class ArtifactLocationTest {
     }
 
     @Test
-    public void values_are_not_null() {
+    void values_are_not_null() {
         /* prepare */
         ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/directory/",
                 "path/to/fileWithFinding.txt");
@@ -36,7 +36,7 @@ public class ArtifactLocationTest {
     }
 
     @Test
-    public void test_setters() {
+    void test_setters() {
         /* prepare */
         ArtifactLocation artifactLocation = new ArtifactLocation();
         String expectedUriBaseId = "file:///home/user/directory/";

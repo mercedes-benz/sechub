@@ -1,12 +1,12 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ReportTest {
+class ReportTest {
 
     @Test
     public void value_is_null() {
@@ -26,7 +26,7 @@ public class ReportTest {
     }
 
     @Test
-    public void value_is_not_null() {
+    void value_is_not_null() {
         /* prepare */
         Report report = new Report(SarifVersion.VERSION_210);
 

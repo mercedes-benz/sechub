@@ -1,15 +1,15 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PropertyBagTest {
+class PropertyBagTest {
 
     @Test
-    public void test_setter() {
+    void test_setter() {
         /* prepare */
         PropertyBag propertyBag = new PropertyBag();
 
@@ -21,7 +21,7 @@ public class PropertyBagTest {
     }
 
     @Test
-    public void test_adding_values() {
+    void test_adding_values() {
         /* prepare */
         PropertyBag propertyBag = new PropertyBag();
 

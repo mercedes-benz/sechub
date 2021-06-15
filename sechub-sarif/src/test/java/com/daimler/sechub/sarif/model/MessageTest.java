@@ -1,13 +1,15 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class MessageTest {
+import com.daimler.sechub.test.PojoTester;
+
+class MessageTest {
 
     @Test
-    public void value_is_null() {
+    void value_is_null() {
         /* prepare */
         Message message = new Message(null);
 
@@ -19,7 +21,7 @@ public class MessageTest {
     }
 
     @Test
-    public void value_is_not_null() {
+    void value_is_not_null() {
         /* prepare */
         Message message = new Message("Just a test message.");
 
@@ -31,15 +33,12 @@ public class MessageTest {
     }
 
     @Test
-    public void test_setter() {
+    void test_setter() {
         /* prepare */
         Message message = new Message();
 
-        /* execute */
-        message.setText("Just a test message.");
-
-        /* test */
-        assertEquals(message.getText(), "Just a test message.");
+        /* execute + test */
+        PojoTester.testSetterAndGetter(message);
     }
 
 }

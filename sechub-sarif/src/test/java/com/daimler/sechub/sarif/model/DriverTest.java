@@ -1,16 +1,18 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class DriverTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.daimler.sechub.test.PojoTester;
+
+class DriverTest {
 
     @Test
-    public void values_are_null() {
+    void values_are_null() {
         /* prepare */
         Driver driver = new Driver(null, null, null, null);
 
@@ -28,7 +30,7 @@ public class DriverTest {
     }
 
     @Test
-    public void values_are_not_null() {
+    void values_are_not_null() {
         /* prepare */
         Driver driver = new Driver("tool-name", "v1.9", "https://www.tool.org/documentation", new LinkedList<Rule>());
 
@@ -47,22 +49,13 @@ public class DriverTest {
     }
 
     @Test
-    public void test_setters() {
+    void test_setters() {
         /* prepare */
         Driver driver = new Driver();
 
-        /* execute */
-        driver.setName("tool-name");
-        driver.setVersion("v1.9");
-        driver.setInformationUri("https://www.tool.org/documentation");
-        driver.setRules(new LinkedList<Rule>());
 
-        /* test */
-        assertEquals(driver.getName(), "tool-name");
-        assertEquals(driver.getVersion(), "v1.9");
-        assertEquals(driver.getInformationUri(), "https://www.tool.org/documentation");
-
-        assertTrue(driver.getRules().isEmpty());
+        /* execute + test */
+        PojoTester.testSetterAndGetter(driver);
     }
 
 }

@@ -1,23 +1,18 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashSet;
+import com.daimler.sechub.test.PojoTester;
 
-import org.junit.Test;
-
-public class PropertiesTest {
+class PropertiesTest {
 
     @Test
-    public void test_setter() {
+    void test_setter() {
         /* prepare */
         Properties properties = new Properties();
 
-        /* execute */
-        properties.setTags(new LinkedHashSet<String>());
-
-        /* test */
-        assertTrue(properties.getTags().isEmpty());
+        /* execute + test */
+        PojoTester.testSetterAndGetter(properties);
     }
 
 }

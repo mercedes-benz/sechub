@@ -1,45 +1,57 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RegionTest {
+import com.daimler.sechub.test.PojoTester;
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_negative_startLine() {
-        /* test */
-        @SuppressWarnings("unused")
-        Region region = new Region(-1, 0);
-    }
+class RegionTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test_negative_startColumn() {
+    @Test
+    void test_negative_startLine() {
         /* test */
-        @SuppressWarnings("unused")
-        Region region = new Region(0, -1);
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void set_negative_startLine() {
-        /* prepare */
-        Region region = new Region();
-        
-        /* test */
-        region.setStartLine(-4);
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void set_negative_startColumn() {
-        /* prepare */
-        Region region = new Region();
-        
-        /* test */
-        region.setStartColumn(-5);
+        assertThrows(IllegalArgumentException.class,()->{
+                new Region(-1, 0);
+            }
+        );
     }
 
     @Test
-    public void test_zero() {
+    void test_negative_startColumn() {
+        /* test */
+        assertThrows(IllegalArgumentException.class,()->{
+                new Region(0, -1);
+            }
+        );
+    }
+
+    @Test
+    void set_negative_startLine() {
+        /* prepare */
+        Region region = new Region();
+
+        /* test */
+        assertThrows(IllegalArgumentException.class,()->{
+                region.setStartLine(-4);
+            }
+        );
+    }
+
+    @Test
+    void set_negative_startColumn() {
+        /* prepare */
+        Region region = new Region();
+
+        /* test */
+        assertThrows(IllegalArgumentException.class,()->{
+                region.setStartColumn(-5);
+            }
+        );
+    }
+
+    @Test
+    void test_zero() {
         /* prepare */
         Region region = new Region(0, 0);
 
@@ -53,7 +65,7 @@ public class RegionTest {
     }
 
     @Test
-    public void test_positive_values() {
+    void test_positive_values() {
         /* prepare */
         Region region = new Region(103, 17);
 
@@ -67,17 +79,12 @@ public class RegionTest {
     }
 
     @Test
-    public void test_get_and_set() {
+    void test_get_and_set() {
         /* prepare */
         Region region = new Region();
 
-        /* execute */
-        region.setStartLine(23);
-        region.setStartColumn(51);
-
-        /* test */
-        assertEquals(region.getStartLine(), 23);
-        assertEquals(region.getStartColumn(), 51);
+        /* execute + test */
+        PojoTester.testSetterAndGetter(region);
     }
 
 }

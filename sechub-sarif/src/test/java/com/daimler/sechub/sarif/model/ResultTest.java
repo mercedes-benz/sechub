@@ -1,16 +1,17 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ResultTest {
+import com.daimler.sechub.test.PojoTester;
+
+class ResultTest {
 
     @Test
-    public void values_are_null() {
+    void values_are_null() {
         /* prepare */
         Result result = new Result(null, null);
 
@@ -24,7 +25,7 @@ public class ResultTest {
     }
 
     @Test
-    public void values_are_not_null() {
+    void values_are_not_null() {
         /* prepare */
         Result result = new Result("123abc", new Message());
 
@@ -38,25 +39,16 @@ public class ResultTest {
     }
 
     @Test
-    public void test_setters() {
+    void test_setters() {
         /* prepare */
         Result result = new Result();
 
         /* execute */
-        result.setRuleId("123abc");
-        result.setMessage(new Message());
-        result.setLocations(new LinkedList<Location>());
-        result.setProperties(new PropertyBag());
-
-        /* test */
-        assertEquals(result.getRuleId(), "123abc");
-        assertEquals(result.getMessage(), new Message());
-        assertEquals(result.getLocations(), new LinkedList<Location>());
-        assertEquals(result.getProperties(), new PropertyBag());
+        PojoTester.testSetterAndGetter(result);
     }
 
     @Test
-    public void test_add_null_as_addtionalProperties() {
+    void test_add_null_as_addtionalProperties() {
         /* prepare */
         Result result = new Result();
 
@@ -71,7 +63,7 @@ public class ResultTest {
     }
 
     @Test
-    public void test_addAdditionalProperties_method() {
+    void test_addAdditionalProperties_method() {
         /* prepare */
         Result result = new Result();
 
@@ -85,7 +77,7 @@ public class ResultTest {
     }
 
     @Test
-    public void test_add_null_as_location() {
+    void test_add_null_as_location() {
         /* prepare */
         Result result = new Result();
 
@@ -98,7 +90,7 @@ public class ResultTest {
     }
 
     @Test
-    public void test_addLocation_method() {
+    void test_addLocation_method() {
         /* prepare */
         Result result = new Result();
 

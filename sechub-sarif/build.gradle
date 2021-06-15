@@ -2,7 +2,13 @@
 dependencies {
     implementation library.jackson_core
     implementation library.jackson_databind
-    implementation library.slf4j
     
-    testCompile library.junit
+    implementation library.slf4j
+    runtimeOnly library.logback_classic
+    
+    testImplementation project(':sechub-testframework')
+    testImplementation library.junit5_impl
+    testRuntimeOnly library.junit5_runtime
+    
+
 }

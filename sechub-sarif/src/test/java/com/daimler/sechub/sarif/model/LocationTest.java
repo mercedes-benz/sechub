@@ -1,13 +1,15 @@
 package com.daimler.sechub.sarif.model;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class LocationTest {
+import com.daimler.sechub.test.PojoTester;
+
+class LocationTest {
 
     @Test
-    public void value_is_null() {
+    void value_is_null() {
         /* prepare */
         Location location = new Location(null);
 
@@ -19,7 +21,7 @@ public class LocationTest {
     }
 
     @Test
-    public void value_is_not_null() {
+    void value_is_not_null() {
         /* prepare */
         Location location = new Location(new PhysicalLocation());
 
@@ -31,15 +33,12 @@ public class LocationTest {
     }
 
     @Test
-    public void test_setter() {
+    void test_setter() {
         /* prepare */
         Location location = new Location();
 
-        /* execute */
-        location.setPhysicalLocation(new PhysicalLocation());
-
-        /* test */
-        assertEquals(location.getPhysicalLocation(), new PhysicalLocation());
+        /* execute + test */
+        PojoTester.testSetterAndGetter(location);
     }
 
 }

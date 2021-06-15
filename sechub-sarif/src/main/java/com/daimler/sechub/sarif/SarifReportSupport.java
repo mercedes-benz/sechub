@@ -36,7 +36,7 @@ public class SarifReportSupport {
 
     public Report loadReport(File file) throws IOException {
         Objects.requireNonNull(file, "file may not be null!");
-        if (file.exists()) {
+        if (!file.exists()) {
             throw new FileNotFoundException("File does not exist:" + file.getAbsolutePath());
         }
 
