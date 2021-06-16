@@ -80,3 +80,18 @@ func Example_isConfigFieldFilledVerification() {
 	fmt.Println(r1, r2, r3, r4)
 	// Output: true false false true
 }
+
+func Example_willTrailingSlashBeRemovedFromUrl() {
+	// PREPARE
+	config := NewConfigByFlags()
+	config.server = "https://test.example.org/"
+	config.action = "version"
+	config.apiToken = "not empty"
+	config.projectID = "testproject"
+	config.user = "testuser"
+	// EXECUTE
+	assertValidConfig(config)
+	// TEST
+	fmt.Println(config.server)
+	// Output: https://test.example.org
+}
