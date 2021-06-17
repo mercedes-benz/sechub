@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	sechubUtil "daimler.com/sechub/util"
@@ -222,6 +223,8 @@ func assertValidConfig(configPtr *Config) {
 	// For convenience: lowercase user id and project id if needed
 	configPtr.user = lowercaseOrWarning(configPtr.user, "user id")
 	configPtr.projectID = lowercaseOrWarning(configPtr.projectID, "project id")
+	// Remove trailing slash from url if present
+	configPtr.server = strings.TrimSuffix(configPtr.server, "/")
 }
 
 // isConfigFieldFilled checks if field is not empty or is 'true' in case of boolean type
