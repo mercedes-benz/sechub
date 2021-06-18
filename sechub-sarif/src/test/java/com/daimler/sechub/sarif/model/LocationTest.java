@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class LocationTest {
-    
 
     @Test
     void constructor_with_params_null() {
@@ -36,7 +35,7 @@ class LocationTest {
     void test_setters() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
@@ -52,10 +51,9 @@ class LocationTest {
         location.setPhysicalLocation(createPhysicalLocation());
         return location;
     }
-    
+
     private PhysicalLocation createPhysicalLocation() {
         PhysicalLocation physicalLocation = new PhysicalLocation();
         return physicalLocation;
     }
 }
-

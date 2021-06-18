@@ -9,7 +9,7 @@ class ThreadFlowLocationTest {
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
@@ -19,7 +19,6 @@ class ThreadFlowLocationTest {
         /* @formatter:on */
 
     }
-
 
     private ThreadFlowLocation createExample() {
         ThreadFlowLocation threadFlowLocation = new ThreadFlowLocation();

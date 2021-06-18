@@ -9,7 +9,6 @@ public class PhysicalLocation {
     private ArtifactLocation artifactLocation;
     private Region region;
 
-
     public PhysicalLocation() {
     }
 
@@ -21,7 +20,7 @@ public class PhysicalLocation {
     public ArtifactLocation getArtifactLocation() {
         return artifactLocation;
     }
-    
+
     public Region getRegion() {
         return region;
     }
@@ -29,7 +28,7 @@ public class PhysicalLocation {
     public void setArtifactLocation(ArtifactLocation artifactLocation) {
         this.artifactLocation = artifactLocation;
     }
-    
+
     public void setRegion(Region region) {
         this.region = region;
     }

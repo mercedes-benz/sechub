@@ -11,7 +11,7 @@ public class Result {
     private String ruleId;
     private Message message;
     private Level level;
-    
+
     private int ruleIndex;
 
     private List<Location> locations;
@@ -26,17 +26,18 @@ public class Result {
     public Result(String ruleId, Message message) {
         this.ruleId = ruleId;
         this.message = message;
-        
+
         this.locations = new LinkedList<Location>();
         this.codeflows = new LinkedList<CodeFlow>();
     }
-    
+
     public void setRuleIndex(int ruleIndex) {
         this.ruleIndex = ruleIndex;
     }
-    
+
     /**
      * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317644
+     * 
      * @return rule index
      */
     public int getRuleIndex() {

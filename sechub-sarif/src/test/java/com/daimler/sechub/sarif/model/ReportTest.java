@@ -30,7 +30,7 @@ class ReportTest {
     @Test
     void constructor_param_version_set() {
         /* prepare */
-        Report report = new Report(SarifVersion.VERSION_210);
+        Report report = new Report(SarifVersion.VERSION_2_1_0);
 
         /* execute */
         String version = report.getVersion();
@@ -39,12 +39,11 @@ class ReportTest {
 
         /* test */
         assertEquals(version, "2.1.0");
-        assertEquals(schema,
-                "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json");
+        assertEquals(schema, "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json");
 
         assertTrue(runs.isEmpty());
     }
-    
+
     @Test
     void test_setter() {
         testSetterAndGetter(createExample());

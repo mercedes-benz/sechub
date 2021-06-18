@@ -10,17 +10,29 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public abstract class ReportingDescriptor {
 
     private String id;
+
+    // see
+    // https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128041
+    private ReportingConfiguration defaultConfiguration;
+
     private String name;
     private Message shortDescription;
     private Message fullDescription;
     private Message help;
     private Properties properties;
-    
-    
+
     private List<ReportingDescriptorRelationship> relationships;
 
     public ReportingDescriptor() {
-        this.relationships=new LinkedList<>();
+        this.relationships = new LinkedList<>();
+    }
+
+    public ReportingConfiguration getDefaultConfiguration() {
+        return defaultConfiguration;
+    }
+
+    public void setDefaultConfiguration(ReportingConfiguration defaultConfiguration) {
+        this.defaultConfiguration = defaultConfiguration;
     }
 
     public String getId() {
@@ -34,7 +46,7 @@ public abstract class ReportingDescriptor {
     public List<ReportingDescriptorRelationship> getRelationships() {
         return relationships;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -77,8 +89,8 @@ public abstract class ReportingDescriptor {
 
     @Override
     public String toString() {
-        return "Rule [id=" + id + ", name=" + name + ", shortDescription=" + shortDescription + ", fullDescription="
-                + fullDescription + ", help=" + help + ", properties=" + properties + "]";
+        return "Rule [id=" + id + ", name=" + name + ", shortDescription=" + shortDescription + ", fullDescription=" + fullDescription + ", help=" + help
+                + ", properties=" + properties + "]";
     }
 
     @Override

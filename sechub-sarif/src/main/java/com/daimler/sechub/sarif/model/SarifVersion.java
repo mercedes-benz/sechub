@@ -1,8 +1,12 @@
 package com.daimler.sechub.sarif.model;
 
 public enum SarifVersion {
-    VERSION_210("2.1.0", "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"),
-    
+    // see http://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
+    VERSION_2_1_0("2.1.0", "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"),
+
+    // see http://docs.oasis-open.org/sarif/sarif/v2.0/sarif-v2.0.html
+    VERSION_2_0("2.0", "https://github.com/oasis-tcs/sarif-spec/blob/master/Schemata/sarif-2.0.0-csd.2.beta.2019-01-24.json"),
+
     ;
 
     private String version;

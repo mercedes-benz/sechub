@@ -36,12 +36,12 @@ class ArtifactLocationTest {
         assertEquals(uri, "path/to/fileWithFinding.txt");
         assertEquals(uriBaseId, "file:///home/user/directory/");
     }
-    
+
     @Test
     void test_setters() {
         PojoTester.testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */

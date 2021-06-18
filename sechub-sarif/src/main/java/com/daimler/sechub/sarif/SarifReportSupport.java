@@ -5,12 +5,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.sarif.model.Driver;
+import com.daimler.sechub.sarif.model.Level;
 import com.daimler.sechub.sarif.model.Report;
+import com.daimler.sechub.sarif.model.ReportingConfiguration;
+import com.daimler.sechub.sarif.model.Result;
+import com.daimler.sechub.sarif.model.Rule;
+import com.daimler.sechub.sarif.model.Run;
+import com.daimler.sechub.sarif.model.Tool;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonFactoryBuilder;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -78,4 +86,52 @@ public class SarifReportSupport {
         return report;
 
     }
+
+    public Rule fetchRuleForResult(Result result, Run run) {
+        // Each run has ONE tool, multiple results and taxonomies
+        Tool tool = run.getTool();
+        Driver driver = tool.getDriver();
+
+        List<Rule> rules = driver.getRules();
+
+        String ruleId = result.getRuleId();
+
+        /* @formatter:off */
+        Rule ruleFound = 
+                        rules.
+                        stream().
+                        filter(rule ->rule.getId().equals(ruleId)).
+                        findFirst().orElse(null);
+        /* @formatter:on */
+        return ruleFound;
+    }
+
+    /**
+     * Tries first the result level. if not set, the level will be obtained by
+     * default configuration if available. If not found {@link Level#NONE} is
+     * returned
+     * 
+     * @param result
+     * @param run
+     * @return level, never null
+     */
+    public Level resolveLevel(Result result, Run run) {
+        Level level = result.getLevel();
+        if (level != null) {
+            return level;
+        }
+        /* first fetch default from rule */
+        Rule rule = fetchRuleForResult(result, run);
+        if (rule != null) {
+            ReportingConfiguration defaultConfiguration = rule.getDefaultConfiguration();
+            if (defaultConfiguration != null) {
+                level = defaultConfiguration.getLevel();
+            }
+        }
+        if (level == null) {
+            level = Level.NONE;
+        }
+        return level;
+    }
+
 }

@@ -3,14 +3,14 @@ package com.daimler.sechub.sarif.model;
 import static com.daimler.sechub.test.PojoTester.*;
 
 import org.junit.jupiter.api.Test;
-class RuleTest {
 
+class RuleTest {
 
     @Test
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
@@ -26,7 +26,6 @@ class RuleTest {
 
     }
 
-
     private Rule createExample() {
         Rule rule = new Rule();
 
@@ -36,7 +35,7 @@ class RuleTest {
         rule.setFullDescription(new Message());
         rule.setHelp(new Message());
         rule.setProperties(new Properties());
-        
+
         return rule;
     }
 

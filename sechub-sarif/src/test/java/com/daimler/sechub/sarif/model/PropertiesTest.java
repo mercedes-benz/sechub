@@ -13,8 +13,7 @@ class PropertiesTest {
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */

@@ -15,9 +15,9 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sarif.SarifReportSupport;
 import com.daimler.sechub.sarif.model.ArtifactLocation;
 import com.daimler.sechub.sarif.model.CodeFlow;
-import com.daimler.sechub.sarif.model.Driver;
 import com.daimler.sechub.sarif.model.Level;
 import com.daimler.sechub.sarif.model.Location;
+import com.daimler.sechub.sarif.model.Message;
 import com.daimler.sechub.sarif.model.PhysicalLocation;
 import com.daimler.sechub.sarif.model.Region;
 import com.daimler.sechub.sarif.model.Report;
@@ -27,7 +27,6 @@ import com.daimler.sechub.sarif.model.Result;
 import com.daimler.sechub.sarif.model.Rule;
 import com.daimler.sechub.sarif.model.Run;
 import com.daimler.sechub.sarif.model.ThreadFlow;
-import com.daimler.sechub.sarif.model.Tool;
 import com.daimler.sechub.sarif.model.ToolComponentReference;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
@@ -43,9 +42,9 @@ import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private static final String CWE = "CWE";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(SarifV1JSONImporter.class);
-    
+
     SarifReportSupport sarifSupport;
 
     public SarifV1JSONImporter() {
@@ -80,7 +79,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private void handleEachRun(Run run, SerecoMetaData metaData) {
         List<Result> results = run.getResults();
-        
+
         for (Result result : results) {
 
             SerecoVulnerability vulnerability = createSerecoVulnerability(run, result);
@@ -94,28 +93,15 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         if (result == null) {
             return null;
         }
-        // Each run has ONE tool, multiple results and taxonomies
-        Tool tool = run.getTool();
-        Driver driver = tool.getDriver();
-
-        List<Rule> rules = driver.getRules();
-
         SerecoVulnerability vulnerability = new SerecoVulnerability();
 
-        String ruleId = result.getRuleId();
+        Rule ruleFound = sarifSupport.fetchRuleForResult(result, run);
 
-        /* @formatter:off */
-        Rule ruleFound = 
-                        rules.
-                        stream().
-                        filter(rule ->rule.getId().equals(ruleId)).
-                        findFirst().orElse(null);
-        /* @formatter:on */
-
-        ResultData resultData = resolveData(ruleFound);
-        vulnerability.setType(resultData.shortName);
+        ResultData resultData = resolveData(ruleFound, run);
+        vulnerability.setType(resultData.identifiedType);
         vulnerability.setDescription(resultData.description);
-        vulnerability.setSeverity(mapToSeverity(result.getLevel()));
+
+        vulnerability.setSeverity(resolveSeverity(result, run));
         vulnerability.getClassification().setCwe(resultData.cweId);
 
         vulnerability.setCode(resolveCodeInfoFromResult(result));
@@ -126,29 +112,34 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         return vulnerability;
     }
 
+    private SerecoSeverity resolveSeverity(Result result, Run run) {
+        Level level = sarifSupport.resolveLevel(result, run);
+        return mapToSeverity(level);
+    }
+
     private class ResultData {
-        String shortName;
+        String identifiedType;
         String description;
         String cweId;
     }
 
-    private ResultData resolveData(Rule rule) {
+    private ResultData resolveData(Rule rule, Run run) {
 
         ResultData data = new ResultData();
         if (rule != null) {
-            data.shortName = resolveShortName(rule);
+            data.identifiedType = resolveType(rule, run);
             data.description = resolveDescription(rule);
 
-            resolveTargetInformation(rule, data);
+            resolveTargetInformation(rule, data, run);
         }
-        if (data.shortName == null) {
-            data.shortName = "Undefined"; // at least we set this to indicate there is no name defined inside SARIF
+        if (data.identifiedType == null) {
+            data.identifiedType = "Undefined"; // at least we set this to indicate there is no name defined inside SARIF
         }
 
         return data;
     }
 
-    private void resolveTargetInformation(Rule rule, ResultData data) {
+    private void resolveTargetInformation(Rule rule, ResultData data, Run run) {
         List<ReportingDescriptorRelationship> relationShips = rule.getRelationships();
         for (ReportingDescriptorRelationship relationShip : relationShips) {
             ReportingDescriptorReference target = relationShip.getTarget();
@@ -179,19 +170,23 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         return rule.getFullDescription().getText();
     }
 
-    private String resolveShortName(Rule rule) {
-        String name = rule == null ? null : rule.getName();
-        if (name ==null) {
-            name = rule == null ? null : rule.getId();
+    private String resolveType(Rule rule, Run run) {
+        if (rule == null) {
+            return "error:rule==null!";
         }
-        int index = name.lastIndexOf("/");
-        if (index != -1) {
-            index++;
-            if (index < name.length() - 1) {
-                name = name.substring(index);
-            }
+        String type = null;
+        Message shortDescription = rule.getShortDescription();
+        if (shortDescription != null) { 
+            type = shortDescription.getText();
         }
-        return name;
+        if (type == null) {
+            /*
+             * no type identifier found, so do fallback to id, we do not use "name" becaus this is for
+             * i18n!
+             */
+            type = rule.getId();
+        }
+        return type;
     }
 
     private SerecoCodeCallStackElement resolveCodeInfoFromResult(Result result) {
@@ -288,7 +283,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     @Override
     public ProductImportAbility isAbleToImportForProduct(ImportParameter param) {
-        /* first we do the simple check...*/
+        /* first we do the simple check... */
         ProductImportAbility ability = super.isAbleToImportForProduct(param);
         if (ability != ProductImportAbility.ABLE_TO_IMPORT) {
             return ability;

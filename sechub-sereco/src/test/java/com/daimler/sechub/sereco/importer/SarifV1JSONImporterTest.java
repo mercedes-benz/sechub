@@ -54,8 +54,9 @@ public class SarifV1JSONImporterTest {
                 classifiedBy().
                     cwe(79).
                     and().
-                withSeverity(SerecoSeverity.UNCLASSIFIED).
-                withDescriptionContaining("Cross-site scripting").
+                withSeverity(SerecoSeverity.HIGH).
+                withType("Cross-site scripting").
+                withDescriptionContaining("Untrusted user-supplied data").
             isContained();
         
         /* @formatter:on */
@@ -218,7 +219,8 @@ public class SarifV1JSONImporterTest {
 
         /* test */
         assertNotNull(codeInfo);
-        assertEquals("Cross-Site Scripting", vulnerability.getType());
+        assertEquals("BRAKE0102", vulnerability.getType()); //brakeman does not provide a short description, so fallback to id (which must be available) 
+        assertEquals("Checks for XSS in calls to content_tag.",vulnerability.getDescription());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(32, vulnerabilities.size());

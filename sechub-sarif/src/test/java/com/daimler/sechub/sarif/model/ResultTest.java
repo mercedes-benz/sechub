@@ -70,7 +70,7 @@ class ResultTest {
     private Result createExample() {
         return new Result();
     }
-    
+
     @Test
     void test_add_null_as_addtionalProperties() {
         /* prepare */
@@ -128,8 +128,7 @@ class ResultTest {
 
     private Location createLocation() {
         Location location = new Location();
-        ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/test/directory",
-                "path/to/fileWithFinding.txt");
+        ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/test/directory", "path/to/fileWithFinding.txt");
         PhysicalLocation physicalLocation = new PhysicalLocation();
         physicalLocation.setArtifactLocation(artifactLocation);
         location.setPhysicalLocation(physicalLocation);

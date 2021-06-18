@@ -29,7 +29,6 @@ public class Tool {
         return Objects.hash(driver);
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

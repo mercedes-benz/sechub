@@ -52,8 +52,7 @@ public class Driver {
 
     @Override
     public String toString() {
-        return "Driver [name=" + name + ", version=" + version + ", informationUri=" + informationUri + ", rules="
-                + rules + "]";
+        return "Driver [name=" + name + ", version=" + version + ", informationUri=" + informationUri + ", rules=" + rules + "]";
     }
 
     @Override

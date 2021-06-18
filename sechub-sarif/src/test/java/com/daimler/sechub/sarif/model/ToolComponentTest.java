@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 
 class ToolComponentTest {
 
-
     @Test
     void test_setter() {
         /* execute */
-        testSetterAndGetter( createExample());
+        testSetterAndGetter(createExample());
     }
 
     @Test

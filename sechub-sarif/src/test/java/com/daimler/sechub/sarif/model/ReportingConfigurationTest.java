@@ -4,8 +4,7 @@ import static com.daimler.sechub.test.PojoTester.*;
 
 import org.junit.jupiter.api.Test;
 
-class ReportingDescriptorRelationshipTest {
-
+class ReportingConfigurationTest {
     @Test
     void test_setter() {
         testSetterAndGetter(createExample());
@@ -16,13 +15,13 @@ class ReportingDescriptorRelationshipTest {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
 
-        testBothAreNOTEqual(createExample(), change(createExample(), (relationShip) -> relationShip.setTarget(new ReportingDescriptorReference())));
+        testBothAreNOTEqual(createExample(), change(createExample(), (config) -> config.setLevel(Level.WARNING)));
         /* @formatter:on */
 
     }
 
-    private ReportingDescriptorRelationship createExample() {
-        return new ReportingDescriptorRelationship();
+    private ReportingConfiguration createExample() {
+        return new ReportingConfiguration();
     }
 
 }

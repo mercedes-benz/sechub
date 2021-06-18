@@ -7,15 +7,15 @@ import java.util.Objects;
 public class ThreadFlow {
 
     private List<ThreadFlowLocation> locations;
-    
+
     public ThreadFlow() {
         locations = new LinkedList<>();
     }
-    
+
     public void setLocations(List<ThreadFlowLocation> locations) {
         this.locations = locations;
     }
-    
+
     public List<ThreadFlowLocation> getLocations() {
         return locations;
     }

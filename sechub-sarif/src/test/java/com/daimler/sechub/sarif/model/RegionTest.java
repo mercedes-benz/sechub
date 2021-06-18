@@ -10,19 +10,17 @@ class RegionTest {
     @Test
     void test_negative_startLine() {
         /* test */
-        assertThrows(IllegalArgumentException.class,()->{
-                new Region(-1, 0);
-            }
-        );
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Region(-1, 0);
+        });
     }
 
     @Test
     void test_negative_startColumn() {
         /* test */
-        assertThrows(IllegalArgumentException.class,()->{
-                new Region(0, -1);
-            }
-        );
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Region(0, -1);
+        });
     }
 
     @Test
@@ -31,10 +29,9 @@ class RegionTest {
         Region region = new Region();
 
         /* test */
-        assertThrows(IllegalArgumentException.class,()->{
-                region.setStartLine(-4);
-            }
-        );
+        assertThrows(IllegalArgumentException.class, () -> {
+            region.setStartLine(-4);
+        });
     }
 
     @Test
@@ -43,10 +40,9 @@ class RegionTest {
         Region region = new Region();
 
         /* test */
-        assertThrows(IllegalArgumentException.class,()->{
-                region.setStartColumn(-5);
-            }
-        );
+        assertThrows(IllegalArgumentException.class, () -> {
+            region.setStartColumn(-5);
+        });
     }
 
     @Test
@@ -76,13 +72,12 @@ class RegionTest {
         assertEquals(startLine, 103);
         assertEquals(startColumn, 17);
     }
-    
 
     @Test
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */

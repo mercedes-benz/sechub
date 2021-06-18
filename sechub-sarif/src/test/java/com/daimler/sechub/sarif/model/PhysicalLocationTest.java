@@ -42,7 +42,7 @@ class PhysicalLocationTest {
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
@@ -56,16 +56,15 @@ class PhysicalLocationTest {
 
     private PhysicalLocation createExample() {
         PhysicalLocation location = new PhysicalLocation();
-        
+
         ArtifactLocation artifactLocation = createArtifactLocation();
         location.setArtifactLocation(artifactLocation);
-        
+
         return location;
     }
 
     private ArtifactLocation createArtifactLocation() {
-        return new ArtifactLocation(DEFAULT_LOCATOINURL_BASE_ID,DEFAULT_LOCATION_URI);
+        return new ArtifactLocation(DEFAULT_LOCATOINURL_BASE_ID, DEFAULT_LOCATION_URI);
     }
-
 
 }

@@ -10,7 +10,7 @@ class CodeFlowTest {
     void test_setter() {
         testSetterAndGetter(createExample());
     }
-    
+
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
@@ -24,6 +24,5 @@ class CodeFlowTest {
     private CodeFlow createExample() {
         return new CodeFlow();
     }
-
 
 }

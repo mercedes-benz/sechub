@@ -9,10 +9,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
- * From <a href="https://github.com/microsoft/sarif-tutorials/blob/main/docs/2-Basics.md#property-bags">Sarif documentation</a>:
- * <quote> Before we go any further, let's address an issue that almost every
- * tool vendor cares about: What do I do if my tool produces information that
- * the SARIF specification doesn't mention?
+ * From <a href=
+ * "https://github.com/microsoft/sarif-tutorials/blob/main/docs/2-Basics.md#property-bags">Sarif
+ * documentation</a>: <quote> Before we go any further, let's address an issue
+ * that almost every tool vendor cares about: What do I do if my tool produces
+ * information that the SARIF specification doesn't mention?
  * 
  * The answer is that every object in the SARIF object model — from logs to runs
  * to results to locations to messages, without exception — defines a property

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 /**
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317875
+ * 
  * @author Albert Tregnaghi
  *
  */
