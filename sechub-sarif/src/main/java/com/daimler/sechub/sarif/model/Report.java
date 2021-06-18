@@ -66,14 +66,19 @@ public class Report {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash($schema, runs, version);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Report)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Report other = (Report) obj;
-        return Objects.equals(runs, other.runs) && Objects.equals($schema, other.$schema) && Objects.equals(version, other.version);
+        return Objects.equals($schema, other.$schema) && Objects.equals(runs, other.runs) && Objects.equals(version, other.version);
     }
 }

@@ -1,10 +1,9 @@
 package com.daimler.sechub.sarif.model;
 
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-
-import com.daimler.sechub.test.PojoTester;
 
 class RegionTest {
 
@@ -77,14 +76,26 @@ class RegionTest {
         assertEquals(startLine, 103);
         assertEquals(startColumn, 17);
     }
+    
 
     @Test
-    void test_get_and_set() {
-        /* prepare */
-        Region region = new Region();
+    void test_setter() {
+        testSetterAndGetter(createExample());
+    }
+    
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
 
-        /* execute + test */
-        PojoTester.testSetterAndGetter(region);
+        testBothAreNOTEqual(createExample(), change(createExample(), (region) -> region.setStartLine(42)));
+        testBothAreNOTEqual(createExample(), change(createExample(), (region) -> region.setStartColumn(42)));
+        /* @formatter:on */
+
+    }
+
+    private Region createExample() {
+        return new Region();
     }
 
 }

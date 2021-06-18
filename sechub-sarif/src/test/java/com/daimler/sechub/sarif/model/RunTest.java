@@ -1,6 +1,6 @@
 package com.daimler.sechub.sarif.model;
 
-
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.LinkedList;
@@ -8,12 +8,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.daimler.sechub.test.PojoTester;
-
 class RunTest {
 
     @Test
-    void values_are_null() {
+    void constructor_params_null() {
         /* prepare */
         Run run = new Run(null, null);
 
@@ -27,7 +25,7 @@ class RunTest {
     }
 
     @Test
-    void values_are_not_null() {
+    void constructor_params_not_null() {
         /* prepare */
         Run run = new Run(new Tool(), new LinkedList<Result>());
 
@@ -41,12 +39,22 @@ class RunTest {
     }
 
     @Test
-    void test_setters() {
-        /* prepare */
-        Run run = new Run();
-
-        /* execute +test */
-        PojoTester.testSetterAndGetter(run);
+    void test_setter() {
+        testSetterAndGetter(createExample());
     }
 
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
+
+        testBothAreNOTEqual(createExample(), change(createExample(), (rule) -> rule.setTool(new Tool())));
+        /* @formatter:on */
+
+    }
+
+    private Run createExample() {
+        Run run = new Run();
+        return run;
+    }
 }

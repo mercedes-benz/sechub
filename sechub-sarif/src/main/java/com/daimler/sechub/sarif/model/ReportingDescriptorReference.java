@@ -1,5 +1,7 @@
 package com.daimler.sechub.sarif.model;
 
+import java.util.Objects;
+
 // https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317862
 public class ReportingDescriptorReference {
 
@@ -33,6 +35,23 @@ public class ReportingDescriptorReference {
 
     public void setToolComponent(ToolComponentReference toolComponent) {
         this.toolComponent = toolComponent;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(guid, id, toolComponent);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ReportingDescriptorReference other = (ReportingDescriptorReference) obj;
+        return Objects.equals(guid, other.guid) && Objects.equals(id, other.id) && Objects.equals(toolComponent, other.toolComponent);
     }
 
 }

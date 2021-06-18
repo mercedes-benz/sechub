@@ -1,13 +1,16 @@
 package com.daimler.sechub.sarif.model;
 
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.test.PojoTester;
+
 class ArtifactLocationTest {
 
     @Test
-    void values_are_null() {
+    void constructor_with_params_null() {
         /* prepare */
         ArtifactLocation artifactLocation = new ArtifactLocation(null, null);
 
@@ -21,10 +24,9 @@ class ArtifactLocationTest {
     }
 
     @Test
-    void values_are_not_null() {
+    void constructor_with_params_not_null() {
         /* prepare */
-        ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/directory/",
-                "path/to/fileWithFinding.txt");
+        ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/directory/", "path/to/fileWithFinding.txt");
 
         /* execute */
         String uri = artifactLocation.getUri();
@@ -34,21 +36,25 @@ class ArtifactLocationTest {
         assertEquals(uri, "path/to/fileWithFinding.txt");
         assertEquals(uriBaseId, "file:///home/user/directory/");
     }
-
+    
     @Test
     void test_setters() {
-        /* prepare */
-        ArtifactLocation artifactLocation = new ArtifactLocation();
-        String expectedUriBaseId = "file:///home/user/directory/";
-        String expectedUri = "path/to/fileWithFinding.txt";
+        PojoTester.testSetterAndGetter(createExample());
+    }
+    
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode( createExample(), createExample());
+        
+        testBothAreNOTEqual( createExample(), change(createExample(), (location) -> location.setUriBaseId("other") ));
+        testBothAreNOTEqual( createExample(), change(createExample(), (location) -> location.setUri("other") ));
+        /* @formatter:on */
 
-        /* execute */
-        artifactLocation.setUriBaseId("file:///home/user/directory/");
-        artifactLocation.setUri("path/to/fileWithFinding.txt");
+    }
 
-        /* test */
-        assertEquals(expectedUriBaseId, artifactLocation.getUriBaseId());
-        assertEquals(expectedUri, artifactLocation.getUri());
+    private ArtifactLocation createExample() {
+        return new ArtifactLocation();
     }
 
 }

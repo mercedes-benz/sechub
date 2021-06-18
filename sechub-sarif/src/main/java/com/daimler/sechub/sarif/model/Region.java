@@ -1,5 +1,7 @@
 package com.daimler.sechub.sarif.model;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "startLine", "startColumn" })
@@ -73,14 +75,19 @@ public class Region {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(startColumn, startLine);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Region)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Region other = (Region) obj;
-        return startLine == other.startLine && startColumn == other.startColumn;
+        return startColumn == other.startColumn && startLine == other.startLine;
     }
 }

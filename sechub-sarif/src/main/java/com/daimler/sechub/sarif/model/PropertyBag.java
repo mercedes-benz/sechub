@@ -31,10 +31,6 @@ public class PropertyBag {
         this.additionalProperties = new HashMap<String, String>();
     }
 
-    public PropertyBag(Map<String, String> additionalProperties) {
-        this.additionalProperties = additionalProperties;
-    }
-
     /**
      * adds the key-value pair to the PropertyBag, if none of them equals null.
      * 
@@ -61,13 +57,18 @@ public class PropertyBag {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(additionalProperties);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof PropertyBag)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         PropertyBag other = (PropertyBag) obj;
         return Objects.equals(additionalProperties, other.additionalProperties);
     }

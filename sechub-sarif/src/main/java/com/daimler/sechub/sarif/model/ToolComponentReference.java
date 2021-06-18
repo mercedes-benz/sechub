@@ -1,5 +1,7 @@
 package com.daimler.sechub.sarif.model;
 
+import java.util.Objects;
+
 /**
  * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317875
  * @author Albert Tregnaghi
@@ -24,5 +26,22 @@ public class ToolComponentReference {
 
     public String getGuid() {
         return guid;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(guid, name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ToolComponentReference other = (ToolComponentReference) obj;
+        return Objects.equals(guid, other.guid) && Objects.equals(name, other.name);
     }
 }

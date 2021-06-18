@@ -108,7 +108,7 @@ public class Result {
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, locations, message, properties, ruleId);
+        return Objects.hash(codeflows, level, locations, message, properties, ruleId, ruleIndex);
     }
 
     @Override
@@ -120,8 +120,9 @@ public class Result {
         if (getClass() != obj.getClass())
             return false;
         Result other = (Result) obj;
-        return level == other.level && Objects.equals(locations, other.locations) && Objects.equals(message, other.message)
-                && Objects.equals(properties, other.properties) && Objects.equals(ruleId, other.ruleId);
+        return Objects.equals(codeflows, other.codeflows) && level == other.level && Objects.equals(locations, other.locations)
+                && Objects.equals(message, other.message) && Objects.equals(properties, other.properties) && Objects.equals(ruleId, other.ruleId)
+                && ruleIndex == other.ruleIndex;
     }
 
 }

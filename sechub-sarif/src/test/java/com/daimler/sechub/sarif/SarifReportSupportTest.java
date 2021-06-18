@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,6 +136,42 @@ class SarifReportSupportTest {
 
         List<CodeFlow> codeFlows = result.getCodeFlows();
         assertEquals(2, codeFlows.size());
+    }
+    
+    @Test
+    void microsoft_sarif_tutorial_taxonomies_example() throws IOException {
+        /* prepare */
+        File codeFlowReportFile = new File(sarifTutorialSamplesFolder, "Taxonomies.sarif");
+
+        /* execute */
+        Report report = supportToTest.loadReport(codeFlowReportFile);
+
+        /* test */
+        List<Run> runs = report.getRuns();
+        assertEquals(1, runs.size(), "there must be ONE run!");
+        Run run = runs.iterator().next();
+        
+        List<Result> results = run.getResults();
+        assertEquals(2, results.size(), "there must be two result!");
+        Iterator<Result> iterator = results.iterator();
+        
+        // sort results by tree map, so we can fetch wanted ones 
+        Map<String, Result> sortedMap = new TreeMap<>();
+        Result result = iterator.next();
+        sortedMap.put(result.getRuleId(),result);
+        result = iterator.next();
+        sortedMap.put(result.getRuleId(),result);
+            
+        Result result1 = sortedMap.get("TUT1001");
+        assertNotNull(result1);
+        assertEquals("TUT1001",result1.getRuleId());
+        assertEquals("This result violates a rule that is classified as 'Required'.",result1.getMessage().getText());
+
+        
+        Result result2 = sortedMap.get("TUT1002");
+        assertNotNull(result2);
+        assertEquals("TUT1002",result2.getRuleId());
+        assertEquals("This result violates a rule that is classified as 'Recommended'.",result2.getMessage().getText());
     }
 
 }

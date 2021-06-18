@@ -11,10 +11,6 @@ public class Properties {
         this.tags = new LinkedHashSet<String>();
     }
 
-    public Properties(Set<String> tags) {
-        this.tags = tags;
-    }
-
     public Set<String> getTags() {
         return tags;
     }
@@ -29,13 +25,18 @@ public class Properties {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(tags);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Properties)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Properties other = (Properties) obj;
         return Objects.equals(tags, other.tags);
     }

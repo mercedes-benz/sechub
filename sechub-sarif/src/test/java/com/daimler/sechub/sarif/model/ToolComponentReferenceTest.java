@@ -4,12 +4,12 @@ import static com.daimler.sechub.test.PojoTester.*;
 
 import org.junit.jupiter.api.Test;
 
-class ToolTest {
+class ToolComponentReferenceTest {
 
     @Test
     void test_setter() {
         /* prepare */
-        Tool tool = createExample();
+        ToolComponentReference tool = createExample();
 
         /* execute */
         testSetterAndGetter(tool);
@@ -20,13 +20,14 @@ class ToolTest {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
 
-        testBothAreNOTEqual(createExample(), change(createExample(), (tool) -> tool.setDriver((new Driver()))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (ref) -> ref.setGuid("42")));
+        testBothAreNOTEqual(createExample(), change(createExample(), (ref) -> ref.setName("name42")));
         /* @formatter:on */
 
     }
 
-    private Tool createExample() {
-        return new Tool();
+    private ToolComponentReference createExample() {
+        return new ToolComponentReference();
     }
 
 }

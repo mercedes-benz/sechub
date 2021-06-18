@@ -39,13 +39,18 @@ public class ArtifactLocation {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(uri, uriBaseId);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof ArtifactLocation)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         ArtifactLocation other = (ArtifactLocation) obj;
         return Objects.equals(uri, other.uri) && Objects.equals(uriBaseId, other.uriBaseId);
     }

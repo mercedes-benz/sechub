@@ -1,17 +1,17 @@
 package com.daimler.sechub.sarif.model;
 
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.daimler.sechub.test.PojoTester;
-
 class ResultTest {
 
     @Test
-    void values_are_null() {
+    void constructor_params_null() {
         /* prepare */
         Result result = new Result(null, null);
 
@@ -25,7 +25,7 @@ class ResultTest {
     }
 
     @Test
-    void values_are_not_null() {
+    void custructor_params_defined() {
         /* prepare */
         Result result = new Result("123abc", new Message());
 
@@ -44,9 +44,33 @@ class ResultTest {
         Result result = new Result();
 
         /* execute */
-        PojoTester.testSetterAndGetter(result);
+        testSetterAndGetter(result);
     }
 
+    @Test
+    void test_setter() {
+        testSetterAndGetter(createExample());
+    }
+
+    @Test
+    void test_equals_and_hashcode() {
+
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setLevel(Level.ERROR)));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setMessage(new Message("other"))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setProperties(change(new PropertyBag(), (bag) -> bag.addAdditionalProperty("key","value")))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setRuleId("other")));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setRuleIndex(42)));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setLocations(Collections.singletonList(createLocation()))));
+        /* @formatter:on */
+
+    }
+
+    private Result createExample() {
+        return new Result();
+    }
+    
     @Test
     void test_add_null_as_addtionalProperties() {
         /* prepare */
@@ -95,14 +119,14 @@ class ResultTest {
         Result result = new Result();
 
         /* execute */
-        result.addLocation(buildLocation());
+        result.addLocation(createLocation());
         List<Location> locations = result.getLocations();
 
         /* test */
         assertEquals(locations.size(), 1);
     }
 
-    private Location buildLocation() {
+    private Location createLocation() {
         Location location = new Location();
         ArtifactLocation artifactLocation = new ArtifactLocation("file:///home/user/test/directory",
                 "path/to/fileWithFinding.txt");

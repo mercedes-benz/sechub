@@ -40,13 +40,18 @@ public class PhysicalLocation {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(artifactLocation, region);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof PhysicalLocation)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         PhysicalLocation other = (PhysicalLocation) obj;
         return Objects.equals(artifactLocation, other.artifactLocation) && Objects.equals(region, other.region);
     }

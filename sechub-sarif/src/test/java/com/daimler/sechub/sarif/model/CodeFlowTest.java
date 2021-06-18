@@ -4,29 +4,26 @@ import static com.daimler.sechub.test.PojoTester.*;
 
 import org.junit.jupiter.api.Test;
 
-class ToolTest {
+class CodeFlowTest {
 
     @Test
     void test_setter() {
-        /* prepare */
-        Tool tool = createExample();
-
-        /* execute */
-        testSetterAndGetter(tool);
+        testSetterAndGetter(createExample());
     }
-
+    
     @Test
     void test_equals_and_hashcode() {
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
 
-        testBothAreNOTEqual(createExample(), change(createExample(), (tool) -> tool.setDriver((new Driver()))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (codeFlow) -> codeFlow.setMessage(new Message("other"))));
         /* @formatter:on */
 
     }
 
-    private Tool createExample() {
-        return new Tool();
+    private CodeFlow createExample() {
+        return new CodeFlow();
     }
+
 
 }

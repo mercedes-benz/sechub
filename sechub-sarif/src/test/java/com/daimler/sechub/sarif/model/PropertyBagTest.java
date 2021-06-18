@@ -1,5 +1,6 @@
 package com.daimler.sechub.sarif.model;
 
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
@@ -10,14 +11,18 @@ class PropertyBagTest {
 
     @Test
     void test_setter() {
-        /* prepare */
-        PropertyBag propertyBag = new PropertyBag();
+        testSetterAndGetter(createExample());
+    }
+    
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
+        testBothAreEqualAndHaveSameHashCode(createExample(), change(createExample(), (bag) -> bag.setAdditionalProperties(new HashMap<>())));
 
-        /* execute */
-        propertyBag.setAdditionalProperties(new HashMap<String, String>());
+        testBothAreNOTEqual(createExample(), change(createExample(), (bag) -> bag.setAdditionalProperties(null)));
+        /* @formatter:on */
 
-        /* test */
-        assertTrue(propertyBag.getAdditionalProperties().isEmpty());
     }
 
     @Test
@@ -34,4 +39,7 @@ class PropertyBagTest {
         assertEquals(propertyBag.getAdditionalProperties().size(), 3);
     }
 
+    private PropertyBag createExample() {
+        return new PropertyBag();
+    }
 }

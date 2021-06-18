@@ -18,13 +18,6 @@ public class Driver {
         this.rules = new LinkedList<Rule>();
     }
 
-    public Driver(String name, String version, String informationUri, List<Rule> rules) {
-        this.name = name;
-        this.version = version;
-        this.informationUri = informationUri;
-        this.rules = rules;
-    }
-
     public String getName() {
         return name;
     }
@@ -64,15 +57,20 @@ public class Driver {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(informationUri, name, rules, version);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Driver)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Driver other = (Driver) obj;
-        return Objects.equals(informationUri, other.informationUri) && Objects.equals(name, other.name)
-                && Objects.equals(rules, other.rules) && Objects.equals(version, other.version);
+        return Objects.equals(informationUri, other.informationUri) && Objects.equals(name, other.name) && Objects.equals(rules, other.rules)
+                && Objects.equals(version, other.version);
     }
 }

@@ -1,15 +1,17 @@
 package com.daimler.sechub.sarif.model;
 
+import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.Test;
 
-import com.daimler.sechub.test.PojoTester;
-
 class PhysicalLocationTest {
 
+    private static final String DEFAULT_LOCATION_URI = "uri1";
+    private static final String DEFAULT_LOCATOINURL_BASE_ID = "urlBaseId1";
+
     @Test
-    void value_is_null() {
+    void constructor_params_are_null() {
         /* prepare */
         PhysicalLocation physicalLocation = new PhysicalLocation(null, null);
 
@@ -23,7 +25,7 @@ class PhysicalLocationTest {
     }
 
     @Test
-    void value_is_not_null() {
+    void constructor_params_not_null() {
         /* prepare */
         PhysicalLocation physicalLocation = new PhysicalLocation(new ArtifactLocation(), new Region());
 
@@ -38,11 +40,32 @@ class PhysicalLocationTest {
 
     @Test
     void test_setter() {
-        /* prepare */
-        PhysicalLocation physicalLocation = new PhysicalLocation();
-
-        /* execute + test */
-        PojoTester.testSetterAndGetter(physicalLocation);
+        testSetterAndGetter(createExample());
     }
+    
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
+
+        testBothAreNOTEqual(createExample(), change(createExample(), (location) -> location.setArtifactLocation(change(createArtifactLocation(),(artifactLocation)->artifactLocation.setUri("other")))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (location) -> location.setArtifactLocation(change(createArtifactLocation(),(artifactLocation)->artifactLocation.setUriBaseId("otherBase")))));
+        /* @formatter:on */
+
+    }
+
+    private PhysicalLocation createExample() {
+        PhysicalLocation location = new PhysicalLocation();
+        
+        ArtifactLocation artifactLocation = createArtifactLocation();
+        location.setArtifactLocation(artifactLocation);
+        
+        return location;
+    }
+
+    private ArtifactLocation createArtifactLocation() {
+        return new ArtifactLocation(DEFAULT_LOCATOINURL_BASE_ID,DEFAULT_LOCATION_URI);
+    }
+
 
 }

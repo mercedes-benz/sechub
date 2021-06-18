@@ -11,10 +11,6 @@ public class Tool {
     public Tool() {
     }
 
-    public Tool(Driver driver) {
-        this.driver = driver;
-    }
-
     public Driver getDriver() {
         return driver;
     }
@@ -29,13 +25,19 @@ public class Tool {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(driver);
+    }
+
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Tool)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Tool other = (Tool) obj;
         return Objects.equals(driver, other.driver);
     }

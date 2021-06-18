@@ -53,13 +53,18 @@ public class Run {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(results, tool);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Run)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Run other = (Run) obj;
         return Objects.equals(results, other.results) && Objects.equals(tool, other.tool);
     }

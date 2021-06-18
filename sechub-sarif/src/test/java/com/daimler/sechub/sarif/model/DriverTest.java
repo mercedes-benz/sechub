@@ -1,61 +1,70 @@
 package com.daimler.sechub.sarif.model;
 
-import java.util.LinkedList;
+import static com.daimler.sechub.test.PojoTester.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.daimler.sechub.test.PojoTester;
 
 class DriverTest {
 
-    @Test
-    void values_are_null() {
-        /* prepare */
-        Driver driver = new Driver(null, null, null, null);
+    private Driver driverToTest;
 
+    @BeforeEach
+    void beforeEach() {
+        driverToTest = new Driver();
+    }
+
+    @Test
+    void check_initial_values() {
         /* execute */
-        String name = driver.getName();
-        String informationUri = driver.getInformationUri();
-        String version = driver.getVersion();
-        List<Rule> rules = driver.getRules();
+        String name = driverToTest.getName();
+        String informationUri = driverToTest.getInformationUri();
+        String version = driverToTest.getVersion();
+        List<Rule> rules = driverToTest.getRules();
 
         /* test */
         assertEquals(name, null);
         assertEquals(informationUri, null);
         assertEquals(version, null);
-        assertEquals(rules, null);
-    }
-
-    @Test
-    void values_are_not_null() {
-        /* prepare */
-        Driver driver = new Driver("tool-name", "v1.9", "https://www.tool.org/documentation", new LinkedList<Rule>());
-
-        /* execute */
-        String name = driver.getName();
-        String version = driver.getVersion();
-        String informationUri = driver.getInformationUri();
-        List<Rule> rules = driver.getRules();
-
-        /* test */
-        assertEquals(name, "tool-name");
-        assertEquals(version, "v1.9");
-        assertEquals(informationUri, "https://www.tool.org/documentation");
-
-        assertTrue(rules.isEmpty());
+        assertNotNull(rules);
     }
 
     @Test
     void test_setters() {
-        /* prepare */
-        Driver driver = new Driver();
 
+        PojoTester.testSetterAndGetter(driverToTest);
+    }
 
-        /* execute + test */
-        PojoTester.testSetterAndGetter(driver);
+    @Test
+    void test_equals_and_hashcode() {
+        /* @formatter:off */
+        testBothAreEqualAndHaveSameHashCode( createExample(), createExample());
+        
+        testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setInformationUri("other") ));
+        testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setName("other") ));
+        testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setRules(Collections.singletonList(new Rule())) ));
+        testBothAreNOTEqual( createExample(), change(createExample(), (driver) -> driver.setVersion("1.10") ));
+        /* @formatter:on */
+
+    }
+
+    private Driver createExample() {
+        return initDriverwithFixExampleData(new Driver());
+    }
+
+    private Driver initDriverwithFixExampleData(Driver driver) {
+        driver.setName("tool-name");
+        driver.setVersion("v1.9");
+        driver.setInformationUri("https://www.example.com/toool/documentation");
+        driver.setRules(new ArrayList<>());
+        return driver;
     }
 
 }

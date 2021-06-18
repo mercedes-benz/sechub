@@ -181,6 +181,9 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
     private String resolveShortName(Rule rule) {
         String name = rule == null ? null : rule.getName();
+        if (name ==null) {
+            name = rule == null ? null : rule.getId();
+        }
         int index = name.lastIndexOf("/");
         if (index != -1) {
             index++;

@@ -25,6 +25,7 @@ public class SarifV1JSONImporterTest {
     private static String sarifEmptyResult;
     private static String sarifThreadflowsExample;
     private static String gosec2_8_0_taxonomyExample;
+    private static String sarif_2_1_0_coverity_v8;
 
     @BeforeClass
     public static void before() {
@@ -34,8 +35,32 @@ public class SarifV1JSONImporterTest {
         sarifThreadflowsExample = loadSarifTestFile("sarif_2.1.0_threadflows_example.json");
 
         gosec2_8_0_taxonomyExample = loadSarifTestFile("sarif_2.1.0_gosec_2.8.0_example_with_taxonomy.json");
-    }
+        
+        sarif_2_1_0_coverity_v8 = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");    }
 
+    @Test
+    public void sarif_2_1_0_coverity_v8_can_be_imported_and_contains_cwe_with_description() throws Exception {
+        /* prepare */
+        SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_coverity_v8);
+
+        /* execute */
+        List<SerecoVulnerability> vulnerabilities = result.getVulnerabilities();
+
+        /* test */
+        /* @formatter:off */
+        assertVulnerabilities(vulnerabilities).
+            hasVulnerabilities(189).
+            verifyVulnerability().
+                classifiedBy().
+                    cwe(79).
+                    and().
+                withSeverity(SerecoSeverity.UNCLASSIFIED).
+                withDescriptionContaining("Cross-site scripting").
+            isContained();
+        
+        /* @formatter:on */
+    }
+    
     @Test
     public void go_sec_2_8_0_example_with_taxonomy__import_ability_is_true() {
         /* prepare */

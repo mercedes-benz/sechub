@@ -29,13 +29,18 @@ public class Location {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(physicalLocation);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Location)) {
+        if (obj == null)
             return false;
-        }
+        if (getClass() != obj.getClass())
+            return false;
         Location other = (Location) obj;
         return Objects.equals(physicalLocation, other.physicalLocation);
     }
