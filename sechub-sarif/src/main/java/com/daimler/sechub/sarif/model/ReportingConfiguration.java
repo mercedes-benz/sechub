@@ -3,7 +3,14 @@ package com.daimler.sechub.sarif.model;
 
 import java.util.Objects;
 
-// see https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128043
+/**
+ * Reporting configuration object, see <a href=
+ * "https://docs.oasis-open.org/sarif/sarif/v2.0/csprd02/sarif-v2.0-csprd02.html#_Toc10128043">SARIF
+ * 2.1.0 specification entry</a>
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 public class ReportingConfiguration {
 
     private Level level;

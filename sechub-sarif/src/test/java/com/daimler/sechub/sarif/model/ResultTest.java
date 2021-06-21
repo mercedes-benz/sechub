@@ -60,7 +60,7 @@ class ResultTest {
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
         testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setLevel(Level.ERROR)));
         testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setMessage(new Message("other"))));
-        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setProperties(change(new PropertyBag(), (bag) -> bag.addAdditionalProperty("key","value")))));
+        testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setProperties(change(new PropertyBag(), (bag) -> bag.put("key","value")))));
         testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setRuleId("other")));
         testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setRuleIndex(42)));
         testBothAreNOTEqual(createExample(), change(createExample(), (result) -> result.setLocations(Collections.singletonList(createLocation()))));
@@ -84,7 +84,7 @@ class ResultTest {
         PropertyBag properties = result.getProperties();
 
         /* test */
-        assertTrue(properties.getAdditionalProperties().isEmpty());
+        assertTrue(properties.isEmpty());
     }
 
     @Test
@@ -98,7 +98,7 @@ class ResultTest {
         PropertyBag properties = result.getProperties();
 
         /* test */
-        assertEquals(properties.getAdditionalProperties().size(), 2);
+        assertEquals(properties.size(), 2);
     }
 
     @Test

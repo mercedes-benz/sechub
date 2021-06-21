@@ -7,6 +7,14 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * /** Reporting descriptor reference, see <a href=
+ * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317638">SARIF
+ * 2.1.0 specification entry</a>
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 @JsonPropertyOrder({ "ruleId", "level", "message", "locations", "properties" })
 public class Result {
     private String ruleId;
@@ -57,7 +65,7 @@ public class Result {
 
     public void addAdditionalProperty(String name, String value) {
         if (name != null && value != null) {
-            this.properties.addAdditionalProperty(name, value);
+            this.properties.put(name, value);
         }
     }
 

@@ -35,7 +35,7 @@ class RuleTest {
         rule.setShortDescription(new Message());
         rule.setFullDescription(new Message());
         rule.setHelp(new Message());
-        rule.setProperties(new Properties());
+        rule.setProperties(new PropertyBag());
 
         return rule;
     }

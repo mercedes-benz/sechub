@@ -7,6 +7,14 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Reporting description object, see see <a href=
+ * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317836">SARIF
+ * 2.1.0 specification entry</a>
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 @JsonPropertyOrder({ "id", "name", "shortDescription", "fullDescription", "help", "properties" })
 public abstract class ReportingDescriptor {
 
@@ -20,7 +28,7 @@ public abstract class ReportingDescriptor {
     private Message shortDescription;
     private Message fullDescription;
     private Message help;
-    private Properties properties;
+    private PropertyBag properties;
 
     private List<ReportingDescriptorRelationship> relationships;
 
@@ -80,11 +88,11 @@ public abstract class ReportingDescriptor {
         this.help = help;
     }
 
-    public Properties getProperties() {
+    public PropertyBag getProperties() {
         return properties;
     }
 
-    public void setProperties(Properties properties) {
+    public void setProperties(PropertyBag properties) {
         this.properties = properties;
     }
 

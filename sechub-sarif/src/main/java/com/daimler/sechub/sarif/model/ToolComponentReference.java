@@ -4,7 +4,10 @@ package com.daimler.sechub.sarif.model;
 import java.util.Objects;
 
 /**
- * https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317875
+ * Tool component reference object, see <a href=
+ * "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317875">SARIF
+ * 2.1.0 specification entry</a>
+ * 
  * 
  * @author Albert Tregnaghi
  *

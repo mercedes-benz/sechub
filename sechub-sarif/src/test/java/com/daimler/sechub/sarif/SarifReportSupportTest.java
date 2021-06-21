@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.integrationtest.TextFileReader;
 import com.daimler.sechub.sarif.model.CodeFlow;
 import com.daimler.sechub.sarif.model.Level;
+import com.daimler.sechub.sarif.model.PropertyBag;
 import com.daimler.sechub.sarif.model.Report;
 import com.daimler.sechub.sarif.model.ReportingConfiguration;
 import com.daimler.sechub.sarif.model.Result;
@@ -34,7 +36,11 @@ class SarifReportSupportTest {
     private static TextFileReader reader;
     private static File sarifTutorialSamplesFolder;
 
+    private static File sarifSpecificationSnippetsFolder;
+
     private SarifReportSupport supportToTest;
+
+    private Object openSourceData;
 
     @BeforeAll
     static void init() {
@@ -47,11 +53,90 @@ class SarifReportSupportTest {
         };
         reader = new TextFileReader();
         sarifTutorialSamplesFolder = new File("./src/test/resources/examples/microsoft/sarif-tutorials/samples");
+        sarifSpecificationSnippetsFolder = new File("./src/test/resources/examples/specification");
     }
 
     @BeforeEach
     void beforeEach() {
         supportToTest = new SarifReportSupport();
+    }
+
+    @Test
+    void specification_examples_can_all_be_loaded() throws IOException {
+        /* prepare */
+        File folder = sarifSpecificationSnippetsFolder;
+
+        /* execute +test */
+        testReports(folder, 1, "2.1.0");
+
+    }
+
+    @Test
+    void specification_properties_snippet_properteis_contains_tags() throws IOException {
+        /* prepare */
+        File folder = sarifSpecificationSnippetsFolder;
+
+        /* execute */
+        Report report = supportToTest.loadReport(new File(folder, "specification-properties-snippet.sarif.json"));
+
+        /* test */
+        List<Result> results = report.getRuns().iterator().next().getResults();
+        Result result = results.iterator().next();
+        PropertyBag properties = result.getProperties();
+        assertNotNull(properties);
+        Object tags = properties.get("tags");
+        assertEquals(Collections.singletonList("openSource"), tags);
+
+    }
+
+    @Test
+    void specification_properties_snippet_properteis_contains_opensource_key_and_map_value() throws IOException {
+        /* prepare */
+        File folder = sarifSpecificationSnippetsFolder;
+
+        /* execute */
+        Report report = supportToTest.loadReport(new File(folder, "specification-properties-snippet.sarif.json"));
+
+        /* test */
+        List<Result> results = report.getRuns().iterator().next().getResults();
+        Result result = results.iterator().next();
+        PropertyBag properties = result.getProperties();
+        assertNotNull(properties);
+        openSourceData = properties.get("openSource");
+        if (openSourceData instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) openSourceData;
+            String informationUri = (String) map.get("informationUri");
+            assertEquals("http://www.example.com/procedures/usingOpenSource.html", informationUri);
+        } else {
+            fail("expected map but found:" + openSourceData);
+        }
+
+    }
+
+    @Test
+    void specification_properties_snippet_properteis_contains_opensource_key_and_map_value_and_can_bew_written() throws IOException {
+        /* prepare */
+        File folder = sarifSpecificationSnippetsFolder;
+
+        /* execute */
+        Report report = supportToTest.loadReport(new File(folder, "specification-properties-snippet.sarif.json"));
+
+        /* test */
+        List<Result> results = report.getRuns().iterator().next().getResults();
+        Result result = results.iterator().next();
+        PropertyBag properties = result.getProperties();
+        assertNotNull(properties);
+        openSourceData = properties.get("openSource");
+        if (openSourceData instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) openSourceData;
+            String informationUri = (String) map.get("informationUri");
+            assertEquals("http://www.example.com/procedures/usingOpenSource.html", informationUri);
+        } else {
+            fail("expected map but found:" + openSourceData);
+        }
+
     }
 
     @Test

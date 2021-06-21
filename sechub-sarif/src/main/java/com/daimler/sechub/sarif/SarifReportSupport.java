@@ -57,6 +57,14 @@ public class SarifReportSupport {
 
     }
 
+    public String toJSON(Report report) throws IOException {
+        if (report == null) {
+            return null;
+        }
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+    }
+
     public boolean isValidSarif(String json) {
         try {
             loadReport(json);
