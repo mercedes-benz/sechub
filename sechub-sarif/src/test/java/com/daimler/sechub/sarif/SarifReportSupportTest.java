@@ -190,15 +190,15 @@ class SarifReportSupportTest {
 
         List<Rule> rules = run.getTool().getDriver().getRules();
         Map<String, Rule> sortedMap = new TreeMap<>();
-        for (Rule rule: rules) {
-            sortedMap.put(rule.getId(),rule);
+        for (Rule rule : rules) {
+            sortedMap.put(rule.getId(), rule);
         }
         Rule rule1 = sortedMap.get("TUT0001");
         assertNotNull(rule1);
         ReportingConfiguration defaultConfig1 = rule1.getDefaultConfiguration();
         assertNotNull(defaultConfig1);
         assertEquals(Level.ERROR, defaultConfig1.getLevel());
-        
+
         Rule rule2 = sortedMap.get("TUT0002");
         assertNotNull(rule2);
         ReportingConfiguration defaultConfig2 = rule2.getDefaultConfiguration();

@@ -55,6 +55,11 @@ public class SarifV1JSONImporterTest {
                     cwe(79).
                     and().
                 withSeverity(SerecoSeverity.HIGH).
+                withCodeLocation("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
+                    calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
+                    calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",41,0).
+                    calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
+                    done().
                 withType("Cross-site scripting").
                 withDescriptionContaining("Untrusted user-supplied data").
             isContained();
