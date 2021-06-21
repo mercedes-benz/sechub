@@ -5,6 +5,11 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 public class Properties {
     private Set<String> tags;
 

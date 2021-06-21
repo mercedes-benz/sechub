@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * to results to locations to messages, without exception — defines a property
  * named properties. The spec calls a property named properties a property bag.
  * </quote>
+ * See also <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317448">SARIF 2.1.0 specification entry</a>
  * 
  * @author Albert Tregnaghi
  *
