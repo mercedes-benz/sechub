@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sarif.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sarif.model;
 
 import static com.daimler.sechub.test.PojoTester.*;

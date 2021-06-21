@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sarif;
 
 import static org.junit.jupiter.api.Assertions.*;
