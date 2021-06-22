@@ -4,7 +4,9 @@ package com.daimler.sechub.server.core;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,12 +20,16 @@ public class SecHubExceptionHandler {
     public String handleFileUploadSizeExceeded(SizeLimitExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
     }
-
+    
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseBody
     public String handleFileUploadSizeExceeded(MaxUploadSizeExceededException ex, HttpServletResponse response) {
         return commonHandleFileUploadSizeExceed(ex, response);
-
+    }
+    
+    @Bean
+    RequestRejectedHandler requestRejectedHandler() {
+       return new SecHubHttpStatusRequestRejectedHandler();
     }
 
     private String commonHandleFileUploadSizeExceed(Exception ex, HttpServletResponse response) {

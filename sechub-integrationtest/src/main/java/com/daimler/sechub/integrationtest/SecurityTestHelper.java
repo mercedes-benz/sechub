@@ -304,10 +304,29 @@ public class SecurityTestHelper {
         }
         return sb.toString();
     }
+    
+    public void sendCurlRequest(String url, String customRequestmethod) throws Exception {
+        List<String> commands = new ArrayList<>();
+        commands.add("./send_curl_request.sh");
+        commands.add(url);
+        commands.add(customRequestmethod);
+
+        ProcessBuilder pb = new ProcessBuilder(commands);
+        Process process = pb.start();
+        boolean exited = process.waitFor(10, TimeUnit.SECONDS);
+        if (!exited) {
+            throw new IllegalStateException("Was not able to wait for ciphertest.sh result");
+        }
+        int exitCode = process.exitValue();
+        if (exitCode != 0) {
+            throw new IllegalStateException("Was not able to execut curl, exit code was:"+exitCode);
+        }
+
+    }
 
     private void ensureCipherTestDone() throws Exception {
         if (cipherTestData != null) {
-            assertServerToTestHasBeenStarted();
+            assertNoConnectionHasBeenRefused();
             return;
         }
         List<String> commands = new ArrayList<>();
@@ -351,12 +370,12 @@ public class SecurityTestHelper {
         ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);
 
-        assertServerToTestHasBeenStarted();
+        assertNoConnectionHasBeenRefused();
 
     }
 
     /* Sanity check - when no server is available we have only unknwon results */
-    private void assertServerToTestHasBeenStarted() {
+    private void assertNoConnectionHasBeenRefused() {
         boolean atLeastOneConnectionRefused = false;
         for (CipherCheck check : cipherTestData.cipherChecks) {
             if (check.error == null || check.error.isEmpty()) {
