@@ -2,14 +2,13 @@
 package com.daimler.sechub.sereco.importer;
 
 import static com.daimler.sechub.sereco.test.AssertVulnerabilities.*;
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
@@ -18,7 +17,7 @@ import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 import com.daimler.sechub.sereco.test.SerecoTestFileSupport;
 
-public class SarifV1JSONImporterTest {
+class SarifV1JSONImporterTest {
 
     private static SarifV1JSONImporter importerToTest;
     private static String sarifBrakeman;
@@ -27,7 +26,7 @@ public class SarifV1JSONImporterTest {
     private static String gosec2_8_0_taxonomyExample;
     private static String sarif_2_1_0_coverity_v8;
 
-    @BeforeClass
+    @BeforeAll
     public static void before() {
         importerToTest = new SarifV1JSONImporter();
         sarifBrakeman = loadSarifTestFile("sarif_2.1.0_brakeman.json");
@@ -35,11 +34,12 @@ public class SarifV1JSONImporterTest {
         sarifThreadflowsExample = loadSarifTestFile("sarif_2.1.0_threadflows_example.json");
 
         gosec2_8_0_taxonomyExample = loadSarifTestFile("sarif_2.1.0_gosec_2.8.0_example_with_taxonomy.json");
-        
-        sarif_2_1_0_coverity_v8 = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");    }
+
+        sarif_2_1_0_coverity_v8 = loadSarifTestFile("sarif_2.1.0_coverity_20.21.03_example_with_taxonomy.json");
+    }
 
     @Test
-    public void sarif_2_1_0_coverity_v8_can_be_imported_and_contains_cwe_with_description() throws Exception {
+    void sarif_2_1_0_coverity_v8_can_be_imported_and_contains_cwe_with_description() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarif_2_1_0_coverity_v8);
 
@@ -66,9 +66,9 @@ public class SarifV1JSONImporterTest {
         
         /* @formatter:on */
     }
-    
+
     @Test
-    public void go_sec_2_8_0_example_with_taxonomy__import_ability_is_true() {
+    void go_sec_2_8_0_example_with_taxonomy__import_ability_is_true() {
         /* prepare */
 
         ImportParameter paramGoSec = ImportParameter.builder().importData(gosec2_8_0_taxonomyExample).importId("id1").productId("PDS_CODESCAN").build();
@@ -77,11 +77,11 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility ableToImportGosec_2_8_0sarif = importerToTest.isAbleToImportForProduct(paramGoSec);
 
         /* test */
-        assertEquals("Has NOT the ability to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportGosec_2_8_0sarif);
+        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportGosec_2_8_0sarif, "Has NOT the ability to import sarif!");
     }
 
     @Test
-    public void go_sec_2_8_0_example_with_taxonomy__can_be_imported_and_contains_cwe_with_description() throws Exception {
+    void go_sec_2_8_0_example_with_taxonomy__can_be_imported_and_contains_cwe_with_description() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(gosec2_8_0_taxonomyExample);
 
@@ -104,7 +104,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void brakeman_sarif_report_can_be_imported() {
+    void brakeman_sarif_report_can_be_imported() {
         /* prepare */
 
         ImportParameter paramBrakeman = ImportParameter.builder().importData(sarifBrakeman).importId("id1").productId("PDS_CODESCAN").build();
@@ -113,11 +113,11 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility ableToImportBrakemanSarif = importerToTest.isAbleToImportForProduct(paramBrakeman);
 
         /* test */
-        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif);
+        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportBrakemanSarif, "Was NOT able to import sarif!");
     }
 
     @Test
-    public void threadflow_sarif_report_can_be_imported() {
+    void threadflow_sarif_report_can_be_imported() {
         /* prepare */
         ImportParameter paramThreadFlows = ImportParameter.builder().importData(sarifThreadflowsExample).importId("id1").productId("PDS_CODESCAN").build();
 
@@ -125,11 +125,11 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility ableToImportThreadFlowSarif = importerToTest.isAbleToImportForProduct(paramThreadFlows);
 
         /* test */
-        assertEquals("Was NOT able to import sarif!", ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif);
+        assertEquals(ProductImportAbility.ABLE_TO_IMPORT, ableToImportThreadFlowSarif, "Was NOT able to import sarif!");
     }
 
     @Test
-    public void empty_json__can_NOT_be_imported() {
+    void empty_json__can_NOT_be_imported() {
         /* prepare */
 
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("{}").importId("id1").productId("PDS_CODESCAN").build();
@@ -138,11 +138,11 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals("Not the expected ability!", ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility);
+        assertEquals(ProductImportAbility.NOT_ABLE_TO_IMPORT, importAbility, "Not the expected ability!");
     }
 
     @Test
-    public void empty_string_is_recognized_as_product_failure() {
+    void empty_string_is_recognized_as_product_failure() {
         /* prepare */
 
         ImportParameter emptyJSONImportParam = ImportParameter.builder().importData("").importId("id1").productId("PDS_CODESCAN").build();
@@ -151,11 +151,11 @@ public class SarifV1JSONImporterTest {
         ProductImportAbility importAbility = importerToTest.isAbleToImportForProduct(emptyJSONImportParam);
 
         /* test */
-        assertEquals("Not the expected ability!", ProductImportAbility.PRODUCT_FAILED, importAbility);
+        assertEquals(ProductImportAbility.PRODUCT_FAILED, importAbility, "Not the expected ability!");
     }
 
     @Test
-    public void empty_sarif_report_throws_exception() {
+    void empty_sarif_report_throws_exception() {
 
         /* test */
         assertThrows(IOException.class, () -> {
@@ -165,7 +165,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void null_sarif_report_throws_exception() {
+    void null_sarif_report_throws_exception() {
 
         /* test */
         assertThrows(IOException.class, () -> {
@@ -174,7 +174,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void sarif_report_has_errorlevel() throws Exception {
+    void sarif_report_has_errorlevel() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
@@ -187,7 +187,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void sarif_report_has_simple_text_description() throws Exception {
+    void sarif_report_has_simple_text_description() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
@@ -200,7 +200,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void sarif_report_has_no_results() throws Exception {
+    void sarif_report_has_no_results() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifEmptyResult);
 
@@ -213,7 +213,7 @@ public class SarifV1JSONImporterTest {
     }
 
     @Test
-    public void sarif_report_has_code_info() throws Exception {
+    void sarif_report_has_code_info() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifBrakeman);
 
@@ -224,15 +224,16 @@ public class SarifV1JSONImporterTest {
 
         /* test */
         assertNotNull(codeInfo);
-        assertEquals("BRAKE0102", vulnerability.getType()); //brakeman does not provide a short description, so fallback to id (which must be available) 
-        assertEquals("Checks for XSS in calls to content_tag.",vulnerability.getDescription());
+        assertEquals("Cross-Site Scripting", vulnerability.getType()); // brakeman does not provide a short description, so fallback to id (which must
+                                                                       // be available)
+        assertEquals("Checks for XSS in calls to content_tag.", vulnerability.getDescription());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(32, vulnerabilities.size());
     }
 
     @Test
-    public void sarif_report_threadflow_locations() throws Exception {
+    void sarif_report_threadflow_locations() throws Exception {
         /* prepare */
         SerecoMetaData result = importerToTest.importResult(sarifThreadflowsExample);
 
