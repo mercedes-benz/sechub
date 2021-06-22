@@ -134,7 +134,7 @@ password: `int-test_onlyuser-pwd`
 [start=5]
 . Environment variables
 +
-Set search path and some environemt variables to ease handling later on (SecHub client and `sechub-api.sh` script):
+Set search path and some environment variables to ease handling later on (SecHub client and `sechub-api.sh` script):
 [source,bash]
 ----
 export SECHUB_SERVER=https://localhost:8443
@@ -173,7 +173,7 @@ The output of the api calls are omitted here for better readability:
 # Create "testproject"
 sechub-api.sh project_create testproject int-test_superadmin
 
-# Assign "test_superadmin" as scan user to our project
+# Assign "int-test_superadmin" as scan user to our project
 sechub-api.sh project_assign_user testproject int-test_superadmin
 
 # List project details
