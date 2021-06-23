@@ -29,7 +29,7 @@ The following topics are covered:
 
 === Requirements
 
-* Java 11 SDK
+* Java SDK (We are still compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.)
 * Git
 * cURL
 * jq
