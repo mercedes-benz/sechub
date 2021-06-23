@@ -1,15 +1,54 @@
 // SPDX-License-Identifier: MIT
-= GoSec
+
+= GoSec + PDS
+
+https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
+
+Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
 == Run Locally
 
-=== Container
+=== Requirements
 
-Start container
+Docker and Docker-Compose need to be installed:
 
-```
-docker-compose up --build
-```
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Run docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Start
+
+==== Automatic
+
+The folder contains a start script which does the <<_manually, manual>> steps for you:
+
+----
+./01-start-local.sh
+----
+
+==== Manually
+
+docker-compose --file pds_gosec_ubuntu.yml up --build
+
+. Copy `env` file to `.env`
+
+. Set values in `.env` file. The values are described in the `env` file.
+
+. Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+docker-compose --file pds_gosec_ubuntu.yaml up --build
+----
++
+or to start the Alpine Linux container:
++
+----
+docker-compose --file pds_gosec_alpine.yaml up --build
+----
 
 === Scan
 
@@ -295,55 +334,97 @@ Output
 }
 ----
 +
-NOTE: This is an example output. The output can be very different in your scan. The output depends on the uploaded `ZIP` file.
+NOTE: This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
 ==== Troubleshooting
 
-Access the container:
+Access the Ubuntu container:
 
 ----
-docker exec -it pds_gosec bash
+docker exec -it pds_gosec_ubuntu bash
+----
+
+or for Alpine Linux:
+
+----
+docker exec -it pds_gosec_alpine sh
 ----
 
 == Build Image & Push to Registry
 
 === Build Image
 
+==== Ubuntu
+
 . Using the default image: 
 +
 ----
-./container-create.sh my.registry.example.org/sechub/pds_gosec v0.1
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./container-create.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+----
+
+==== Alpine
+
+. Using the default image: 
++
+----
+./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+. Using your own base image:
++
+----
+./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
 ----
 
 === Push to Registry
 
+* Push the version tag only
++
 ----
-./container-push.sh my.registry.example.org/sechub/pds_gosec v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
 ----
 
-=== Kubernetes
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+----
 
-==== Requierments:
+== Kubernetes
+
+=== Requierments:
 
 * https://helm.sh/docs/intro/install/[Helm] installed
 * `pds_gosec` image pushed to registry
 
-==== Installation
+=== Installation
 
 . Install helm package from file system
-
++
 ----
-helm install --set imageRegistry=my.registry.example.org/sechub/pds_gosec --set dockerTag=v0.1 --generate-name pds-gosec/
+export REGISTRY="my.registry.example.org/sechub/pds_gosec"
+export TAG="v0.1"
+export ADMIN_APITOKEN=`openssl rand -base64 15`
+export TECHUSER_APITOKEN=`openssl rand -base64 15`
+helm install \
+	--set imageRegistry="$REGISTRY" \
+	--set dockerTag="$TAG" \
+	--set adminApiToken="$ADMIN_APITOKEN" \
+	--set techUserApiToken="$TECHUSER_APITOKEN" \
+	--generate-name pds-gosec/
 ----
++
+[TIP]
+Generate to generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''` or `openssl rand -base64 15`
 
 . List pods
-
++
 ----
 kubectl get pods
 NAME                                                READY   STATUS      RESTARTS   AGE
@@ -351,17 +432,17 @@ pds-gosec-749fcb8d7f-jjqwn                          1/1     Running     0       
 ----
 
 . Forward port to own machine
-
++
 ----
 kubectl port-forward pds-gosec-749fcb8d7f-jjqwn 8444:8444
 ----
 
 . Scan as explained in <<_scan>>.
 
-==== Uninstall 
+=== Uninstall 
 
 . Helm list
-
++
 ----
 helm list
 NAME                	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
@@ -369,15 +450,15 @@ pds-gosec-1623249963	sechub-dev	1       	2021-06-09 16:46:04.512814568 +0200 CES
 ----
 
 . Helm uninstall
-
++
 ----
 helm uninstall pds-gosec-1623249963
 ----
 
-==== Troubleshooting
+=== Troubleshooting
 
 * Access deployment events
-
++
 ----
 kubectl describe pod pds-gosec-749fcb8d7f-jjqwn
 …
@@ -392,7 +473,7 @@ Events:
 ----
 
 * Access container logs
-
++
 ----
 kubectl logs pds-gosec-749fcb8d7f-jjqwn
 
@@ -418,5 +499,3 @@ kubectl logs pds-gosec-749fcb8d7f-jjqwn
 2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
 2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----
-
-

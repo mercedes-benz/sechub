@@ -132,7 +132,7 @@ PDS_API_VERSION="1.0"
 NOFORMAT_PIPE="cat -"
 RESULT_FILTER="tail -1"
 if which jq >/dev/null 2>&1 ; then
-  JSON_FORMATTER="jq ."   # . is needed or pipeing the result is not possible
+  JSON_FORMATTER="jq ."   # . is needed or piping the result is not possible
   JSON_FORMAT_SORT="jq sort"
 else
   echo "### Hint: Install jq (https://github.com/stedolan/jq) to improve output." >&2  # appears only on stderr

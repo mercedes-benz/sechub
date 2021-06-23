@@ -2,13 +2,14 @@
 
 version: "3"
 services:
-    pds_gosec:
+    pds_gosec_ubuntu:
         build:
             args:
                 - BASE_IMAGE=ubuntu:focal
-            context: docker/
+            context: context/
+            dockerfile: Dockerfile-Ubuntu
         env_file:
             - .env
-        container_name: pds_gosec
+        container_name: pds_gosec_ubuntu
         ports:
             - "8444:8444"

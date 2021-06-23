@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
 # GoSec needs access to the go binary
