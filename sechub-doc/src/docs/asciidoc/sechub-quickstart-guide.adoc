@@ -148,7 +148,7 @@ export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-develop
 . Test: List all users as administrator
 
 [NOTE]
-`sechub-api.sh` is a Bash helper script based on `curl` that eases the use of the https://daimler.github.io/sechub/latest/sechub-restapi.html[SecHub server's REST api]. We use it here to get a list of the users.
+`sechub-api.sh` is a helper Bash script based on `curl` that eases the use of the https://daimler.github.io/sechub/latest/sechub-restapi.html[SecHub server REST API]. We use it here to get a list of the users.
 
 [source,bash]
 ----
