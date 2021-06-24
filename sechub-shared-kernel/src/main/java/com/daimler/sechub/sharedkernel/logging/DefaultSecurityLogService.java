@@ -4,6 +4,7 @@ package com.daimler.sechub.sharedkernel.logging;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.daimler.sechub.adapter.SpringUtilFactory;
@@ -24,7 +24,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Default security log service. 
+ * Default security log service.
+ * 
  * @author Albert Tregnaghi
  *
  */
@@ -37,6 +38,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     LogSanitizer logSanititzer;
+
+    @Autowired
+    RequestAttributesProvider requestAttributesProvider;
 
     private int MAXIMUM_HEADER_AMOUNT_TO_SHOW = 300;
 
@@ -53,8 +57,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
     @Override
     public final void log(SecurityLogType type, String message, Object... objects) {
         HttpServletRequest httpServletRequest = null;
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         String sessionId = null;
+
+        RequestAttributes requestAttributes = requestAttributesProvider.getRequestAttributes();
         if (requestAttributes instanceof ServletRequestAttributes) {
             httpServletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
             HttpSession session = httpServletRequest.getSession();
@@ -62,22 +67,28 @@ public class DefaultSecurityLogService implements SecurityLogService {
                 sessionId = session.getId();
             }
         }
-        log(httpServletRequest, sessionId, type, message, objects);
+
+        doLogging(buildLogData(httpServletRequest, sessionId, type, message, objects));
     }
 
     /**
-     * Log security event - this method can be also used inside filters where session is already closed (response committed).
+     * Log security event - this method can be used inside filters where session is
+     * already closed (response committed). The normal
+     * {@link #log(SecurityLogType, String, Object...)} method would not work in
+     * this case, because we can only log in filters after filter chain has applied
+     * - but when a failure happens, the sesson will be closed.<br>
+     * <br>
+     * Because this a very special use case (only for filtering) it is not inside
+     * the {@link SecurityLogService} interface.
+     * 
      * @param request
      * @param httpSessionId
      * @param type
      * @param message
      * @param objects
      */
-    public final void log(HttpServletRequest request, String httpSessionId, SecurityLogType type, String message, Object... objects) {
-
-        SecurityLogData securityLogData = buildLogData(request, httpSessionId, type, message, objects);
-
-        doLogging(securityLogData);
+    public final void logAfterSessionClosed(HttpServletRequest request, String httpSessionId, SecurityLogType type, String message, Object... objects) {
+        doLogging(buildLogData(request, httpSessionId, type, message, objects));
     }
 
     void doLogging(SecurityLogData logData) {
@@ -98,7 +109,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
         try {
             paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
         } catch (JsonProcessingException e) {
-            LOG.error("Was not able to write security log data as json - will fallback to empty JSON", e);
+            getLogger().error("Was not able to write security log data as json - will fallback to empty JSON", e);
 
             paramList.add("{}");
         }
@@ -106,14 +117,19 @@ public class DefaultSecurityLogService implements SecurityLogService {
         // overwrite security log data
         paramList.addAll(logData.getMessageParameters());
 
-        LOG.warn(sb.toString(), paramList.toArray());
+        getLogger().warn(sb.toString(), paramList.toArray());
 
+    }
+
+    // package private so mockable in unit tests
+    Logger getLogger() {
+        return LOG;
     }
 
     private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, SecurityLogType type, String message, Object... objects) {
         SecurityLogData logData = new SecurityLogData();
         if (type == null) {
-            LOG.warn("Security log service was called with no log type, so call was wrong implemented! Use fallback:{}", logData.type);
+            getLogger().warn("Security log service was called with no log type, so call was wrong implemented! Use fallback:{}", logData.type);
         } else {
             logData.type = type;
         }
@@ -153,8 +169,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
             }
             String headerValue = null;
             if (headerName.equalsIgnoreCase("authorization")) {
-                headerValue="***REPLACED***";
-            }else {
+                headerValue = "***REPLACED***";
+            } else {
                 headerValue = request.getHeader(headerName);
                 if (headerValue == null) {
                     continue;
@@ -164,13 +180,16 @@ public class DefaultSecurityLogService implements SecurityLogService {
             if (amountOfHeadersFound > MAXIMUM_HEADER_AMOUNT_TO_SHOW) {
                 continue;
             }
-            logContext.getHttpHeaders().put(logSanititzer.sanitize(headerName, 40), logSanititzer.sanitize(headerValue, 1024, false)); // headerValue without
-                                                                                                                                       // log forgery handling,
-                                                                                                                                       // we want the origin
-                                                                                                                                       // output inside JSON
+            Map<String, String> headers = logContext.getHttpHeaders();
+            String sanitzedHeaderName = logSanititzer.sanitize(headerName, 40);
+            String sanitizedHeaderValue = logSanititzer.sanitize(headerValue, 1024, false); // headerValue without log forgery handling, we want the origin output
+                                                                                      // inside JSON
+            headers.put(sanitzedHeaderName, sanitizedHeaderValue);
+
         }
         if (amountOfHeadersFound > MAXIMUM_HEADER_AMOUNT_TO_SHOW) {
-            LOG.warn("Maximum header values ({}) reached in request from ip={} - header amoutn was {} at all! So truncate header values inside next log entry!",
+            getLogger().warn(
+                    "Maximum header values ({}) reached in request from ip={} - header amoutn was {} at all! So truncate header values inside next log entry!",
                     MAXIMUM_HEADER_AMOUNT_TO_SHOW, logContext.getClientIp(), amountOfHeadersFound);
         }
     }

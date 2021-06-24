@@ -88,7 +88,7 @@ public class SecurityLogFilter implements Filter {
 
         SecurityLogInfo logInfo = logInfoMap.get(Integer.valueOf(status));
         if (logInfo != null) {
-            securityLogService.log(httpServletRequest, sessionId, logInfo.type, logInfo.status.toString());
+            securityLogService.logAfterSessionClosed(httpServletRequest, sessionId, logInfo.type, logInfo.status.toString());
         }
     }
 
