@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.daimler.sechub.domain.administration.APITokenGenerator;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.logging.SecurityLogService;
+import com.daimler.sechub.sharedkernel.logging.DefaultSecurityLogService;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -40,7 +40,7 @@ public class AnonymousUserGetAPITokenByOneTimeTokenServiceTest {
         serviceToTest.sechubUserRepository=userRepository;
         serviceToTest.eventBusService=mock(DomainMessageService.class);
         serviceToTest.logSanitizer=mock(LogSanitizer.class);
-        serviceToTest.securityLogService=mock(SecurityLogService.class);
+        serviceToTest.securityLogService=mock(DefaultSecurityLogService.class);
         serviceToTest.passwordEncoder=mock(PasswordEncoder.class);
         serviceToTest.apiTokenGenerator=apiTokenGenerator;
         

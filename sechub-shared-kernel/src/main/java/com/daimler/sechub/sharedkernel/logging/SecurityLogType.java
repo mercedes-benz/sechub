@@ -22,7 +22,13 @@ public enum SecurityLogType {
 	 * Maybe some user data - e.g. an older change password request - has been leaked and used
 	 * by an attacker 
 	 */
-	POTENTIAL_USERDATA_LEAK("USER DATA LEAK"),
+	POTENTIAL_USERDATA_LEAK("USER DATA LEAK"), 
+	
+	
+	/**
+	 * Could be either really wrong usage of REST API or an attack
+	 */
+	WRONG_USAGE("WRONG USAGE"),
 	;
 
 	private String typeId;

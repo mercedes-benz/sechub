@@ -11,7 +11,7 @@ import com.daimler.sechub.sharedkernel.Profiles;
 
 @Service
 @Profile(Profiles.INTEGRATIONTEST)
-public class IntegrationTestSecurityLogService extends SecurityLogService{
+public class IntegrationTestSecurityLogService extends DefaultSecurityLogService{
     
     private List<SecurityLogData> logData = new ArrayList<>();
     

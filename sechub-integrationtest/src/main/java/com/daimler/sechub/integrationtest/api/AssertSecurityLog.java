@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
@@ -21,10 +22,23 @@ public class AssertSecurityLog {
         logs = TestAPI.getSecurityLogs();
     }
 
-    public AssertSecurityLog hasEntries(int amount) {
-        assertEquals(
-                "Security log does not contain expected amount of log entries. Did you clear the log at test start correctly by TestAPI.clearSecurityLogs() ?",
-                amount, logs.size());
+    public AssertSecurityLog hasEntries(int expectedAmount) {
+        int amount = logs.size();
+        if (expectedAmount!=amount) {
+            // we use equals to have IDE compare also available in outputs
+            
+            String json = null;
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(logs);
+            } catch (JsonProcessingException e) {
+                throw new IllegalStateException(e);
+            }
+            
+            assertEquals(
+                    "Security log does not contain expected amount of log entries:"+expectedAmount+" but:"+amount+". Did you clear the log at test start correctly by TestAPI.clearSecurityLogs() ?\n"+json,
+                    expectedAmount, amount);
+    }
         return this;
     }
 
@@ -98,7 +112,7 @@ public class AssertSecurityLog {
             if (parameters == null) {
                 throw new IllegalStateException("no parameters found");
             }
-            if (parameters.size()<pos) {
+            if (parameters.size()<=pos) {
                 throw new IllegalArgumentException("wrong pos:"+pos+", have only "+parameters.size()+" parameters");
             }
             

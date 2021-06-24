@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.logging;
 
 import java.util.ArrayList;

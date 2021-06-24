@@ -14,7 +14,7 @@ import com.daimler.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 
-class ServerBadRequestHandlingTest {
+class ServerSecurityLogHandlingTest {
 
     private static SecurityTestHelper securityTestHelper;
     private IntegrationTestContext context;
@@ -97,6 +97,30 @@ class ServerBadRequestHandlingTest {
                 hasRequestURI("/i-am-not-existing").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "bad_request").
+                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("content-type", "application/json");
+        
+        /* @formatter:on */
+    }
+    
+    
+    @Test
+    void sending_http_method_GET_to_non_existing_url_will_be_logged_by_security_log_service() throws Exception {
+        /* prepare */
+        TestAPI.clearSecurityLogs();
+        String nonExistingURL = context.getUrlBuilder().buildUrl("/i-am-not-existing");
+
+        /* execute */
+        securityTestHelper.sendCurlRequest(nonExistingURL, "GET");
+
+        /* test */
+        /* @formatter:off */
+        assertSecurityLog().
+            hasEntries(1).
+            entry(0).
+                hasClientIp("127.0.0.1").
+                hasRequestURI("/i-am-not-existing").
+                hasMessageContaining("401").
                 hasHTTPHeader("host","localhost:8443").
                 hasHTTPHeader("content-type", "application/json");
         
