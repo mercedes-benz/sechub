@@ -32,9 +32,9 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.logging.IntegrationTestSecurityLogEntry;
 import com.daimler.sechub.sharedkernel.logging.IntegrationTestSecurityLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.SecurityLogData;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService;
 import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
@@ -84,13 +84,13 @@ public class IntegrationTestServerRestController {
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/logs/security", method = RequestMethod.DELETE, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void clearSecurityLogs() {
-        securityLogService.getLogEntries().clear();
+        securityLogService.getLogData().clear();
     }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/logs/security", method = RequestMethod.GET, produces = {
             MediaType.APPLICATION_JSON_VALUE })
-    public List<IntegrationTestSecurityLogEntry> getSecurityLogs() {
-        return securityLogService.getLogEntries();
+    public List<SecurityLogData> getSecurityLogData() {
+        return securityLogService.getLogData();
     }
     
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {

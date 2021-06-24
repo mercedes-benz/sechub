@@ -29,7 +29,7 @@ import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
-import com.daimler.sechub.sharedkernel.logging.IntegrationTestSecurityLogEntry;
+import com.daimler.sechub.sharedkernel.logging.SecurityLogData;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
 import com.daimler.sechub.sharedkernel.mapping.MappingEntry;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
@@ -131,6 +131,10 @@ public class TestAPI {
 
     public static AssertJSON assertJSON(String json) {
         return AssertJSON.assertJson(json);
+    }
+    
+    public static AssertSecurityLog assertSecurityLog() {
+        return AssertSecurityLog.assertSecurityLog();
     }
 
     /**
@@ -531,13 +535,13 @@ public class TestAPI {
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).delete(url);
     }
     
-    public static List<IntegrationTestSecurityLogEntry> getSecurityLogs() {
+    public static List<SecurityLogData> getSecurityLogs() {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
         
         String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
         ObjectMapper mapper = TestJSONHelper.get().getMapper();
-        ObjectReader readerForListOf = mapper.readerForListOf(IntegrationTestSecurityLogEntry.class);
+        ObjectReader readerForListOf = mapper.readerForListOf(SecurityLogData.class);
         try {
             return readerForListOf.readValue(json);
         } catch (Exception e) {

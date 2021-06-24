@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.daimler.sechub.integrationtest.api.TestAPI.*;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +13,6 @@ import com.daimler.sechub.integrationtest.SecurityTestHelper;
 import com.daimler.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
-import com.daimler.sechub.sharedkernel.logging.IntegrationTestSecurityLogEntry;
 
 class ServerBadRequestHandlingTest {
 
@@ -43,26 +40,19 @@ class ServerBadRequestHandlingTest {
         securityTestHelper.sendCurlRequest(checkAliveURL, "UPDATE");
 
         /* test */
-        List<IntegrationTestSecurityLogEntry> list = TestAPI.getSecurityLogs();
-        assertEquals(1, list.size());
-
-        IntegrationTestSecurityLogEntry logEntry = list.iterator().next();
-        assertEquals("Rejected request, remote address={}, uri={}, reason={}", logEntry.message);
-        List<Object> objects = logEntry.objects;
-        assertEquals(3, objects.size());
-
-        // test log parameters
-        Iterator<Object> iterator = objects.iterator();
-        Object firstParam = iterator.next();
-        assertEquals("127.0.0.1", firstParam);
-
-        Object secondParam = iterator.next();
-        assertEquals(secondParam, "/api/anonymous/check/alive");
-
-        Object thirdParam = iterator.next();
-        assertTrue(thirdParam.toString().contains("rejected because"));
-        assertTrue(thirdParam.toString().contains("UPDATE"));
-
+        /* @formatter:off */
+        assertSecurityLog().
+            hasEntries(1).
+            entry(0).
+                hasClientIp("127.0.0.1").
+                hasRequestURI("/api/anonymous/check/alive").
+                hasMessageContaining("Rejected request, reason").
+                hasMessageParameterContainingStrings(0, "UPDATE").
+                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("content-type", "application/json");
+        
+        /* @formatter:on */
+        
     }
 
     @Test
@@ -75,26 +65,18 @@ class ServerBadRequestHandlingTest {
         securityTestHelper.sendCurlRequest(checkAliveURL, "bad_request");
 
         /* test */
-        List<IntegrationTestSecurityLogEntry> list = TestAPI.getSecurityLogs();
-        assertEquals(1, list.size());
-
-        IntegrationTestSecurityLogEntry logEntry = list.iterator().next();
-        assertEquals("Rejected request, remote address={}, uri={}, reason={}", logEntry.message);
-        List<Object> objects = logEntry.objects;
-        assertEquals(3, objects.size());
-
-        // test log parameters
-        Iterator<Object> iterator = objects.iterator();
-        Object firstParam = iterator.next();
-        assertEquals("127.0.0.1", firstParam);
-
-        Object secondParam = iterator.next();
-        assertEquals("/api/anonymous/check/alive", secondParam);
-
-        Object thirdParam = iterator.next();
-        assertTrue(thirdParam.toString().contains("rejected because"));
-        assertTrue(thirdParam.toString().contains("bad_request"));
-
+        /* @formatter:off */
+        assertSecurityLog().
+            hasEntries(1).
+            entry(0).
+                hasClientIp("127.0.0.1").
+                hasRequestURI("/api/anonymous/check/alive").
+                hasMessageContaining("Rejected request, reason").
+                hasMessageParameterContainingStrings(0, "bad_request").
+                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("content-type", "application/json");
+        
+        /* @formatter:on */
     }
 
     @Test
@@ -107,26 +89,19 @@ class ServerBadRequestHandlingTest {
         securityTestHelper.sendCurlRequest(nonExistingURL, "bad_request");
 
         /* test */
-        List<IntegrationTestSecurityLogEntry> list = TestAPI.getSecurityLogs();
-        assertEquals(1, list.size());
-
-        IntegrationTestSecurityLogEntry logEntry = list.iterator().next();
-        assertEquals("Rejected request, remote address={}, uri={}, reason={}", logEntry.message);
-        List<Object> objects = logEntry.objects;
-        assertEquals(3, objects.size());
-
-        // test log parameters
-        Iterator<Object> iterator = objects.iterator();
-        Object firstParam = iterator.next();
-        assertEquals("127.0.0.1", firstParam);
-
-        Object secondParam = iterator.next();
-        assertEquals("/i-am-not-existing", secondParam);
-
-        Object thirdParam = iterator.next();
-        assertTrue(thirdParam.toString().contains("rejected because"));
-        assertTrue(thirdParam.toString().contains("bad_request"));
-
+        /* @formatter:off */
+        assertSecurityLog().
+            hasEntries(1).
+            entry(0).
+                hasClientIp("127.0.0.1").
+                hasRequestURI("/i-am-not-existing").
+                hasMessageContaining("Rejected request, reason").
+                hasMessageParameterContainingStrings(0, "bad_request").
+                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("content-type", "application/json");
+        
+        /* @formatter:on */
     }
+    
 
 }

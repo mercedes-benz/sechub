@@ -40,10 +40,9 @@ public class SecHubHttpStatusRequestRejectedHandler extends HttpStatusRequestRej
              * org.apache.catalina.core.ApplicationHttpRequest which will lead to doubled
              * entries
              */
-            securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION, "Rejected request, remote address={}, uri={}, reason={}", clientIPAddress,request.getRequestURI(),
-                    requestRejectedException.getMessage());
+            securityLogService.log(SecurityLogType.POTENTIAL_INTRUSION, "Rejected request, reason:{}", requestRejectedException.getMessage());
         } else {
-            LOG.debug("Ignored request - treated as a duplicate, client IP adress was {}, request class was: {}", clientIPAddress, request.getClass());
+            LOG.trace("Ignored request - treated as a duplicate, client IP adress was {}, request class was: {}", clientIPAddress, request.getClass());
         }
 
         super.handle(request, response, requestRejectedException);
