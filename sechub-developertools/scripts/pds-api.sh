@@ -45,7 +45,7 @@ function check_parameter {
 }
 
 function check_alive {
-  curl $CURL_PARAMS -i -X HEAD "$PDS_SERVER/api/anonymous/check/alive"
+  curl $CURL_PARAMS --head "$PDS_SERVER/api/anonymous/check/alive"
 }
 
 function mark_job_ready_to_start {
