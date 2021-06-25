@@ -20,18 +20,18 @@ spec:
                 runAsUser: 2323 # uid of the gosec user. Set in the Dockerfile.
             containers:
                 - name: {{ .Chart.Name }}
-                  image: "{{ .Values.imageRegistry }}:{{ .Values.dockerTag }}"
+                  image: "{{ .Values.imageRegistry }}:{{ .Values.imageTag }}"
                   env:
                     - name: START_MODE
                       value: {{ .Values.startMode }}
                     - name: ADMIN_USERID
                       value: {{ .Values.adminUserId }}
                     - name: ADMIN_APITOKEN
-                      value: {{ .Values.adminApiToken }}
+                      value: "{{ .Values.adminApiToken }}"
                     - name: TECHUSER_USERID
                       value: {{ .Values.techUserId }}
                     - name: TECHUSER_APITOKEN
-                      value: {{ .Values.techUserApiToken }}
+                      value: "{{ .Values.techUserApiToken }}"
                   ports:
                     - containerPort: 8444
 

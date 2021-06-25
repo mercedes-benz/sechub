@@ -32,8 +32,6 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 
 ==== Manually
 
-docker-compose --file pds_gosec_ubuntu.yml up --build
-
 . Copy `env` file to `.env`
 
 . Set values in `.env` file. The values are described in the `env` file.
@@ -401,27 +399,43 @@ docker exec -it pds_gosec_alpine sh
 === Requierments:
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec` image pushed to registry
+* `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
 
 === Installation
 
 . Install helm package from file system
 +
 ----
-export REGISTRY="my.registry.example.org/sechub/pds_gosec"
-export TAG="v0.1"
-export ADMIN_APITOKEN=`openssl rand -base64 15`
-export TECHUSER_APITOKEN=`openssl rand -base64 15`
-helm install \
-	--set imageRegistry="$REGISTRY" \
-	--set dockerTag="$TAG" \
-	--set adminApiToken="$ADMIN_APITOKEN" \
-	--set techUserApiToken="$TECHUSER_APITOKEN" \
-	--generate-name pds-gosec/
+helm install --values myvalues.yaml pds-gosec pds-gosec/
+----
++
+configuration file content of `myvalues.yaml` could look like this
++
+[source,yaml]
+----
+imageRegistry: "my.registry.example.org/pds_gosec"
+imageTag: "latest"
+startMode: "localserver"
+replicaCount: 1
+adminUserId: "admin"
+adminApiToken: "{noop}<my-admin-password>"
+techUserId: "techuser"
+techUserApiToken: "{noop}<my-techuser-password>"
+
+networkPolicy:
+  enabled: true
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: sechub-server
+    - podSelector:
+        matchLabels:
+          name: sechub-adminserver
 ----
 +
 [TIP]
-Generate to generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''` or `openssl rand -base64 15`
+Generate to generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
 
 . List pods
 +
@@ -445,14 +459,14 @@ kubectl port-forward pds-gosec-749fcb8d7f-jjqwn 8444:8444
 +
 ----
 helm list
-NAME                	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-gosec-1623249963	sechub-dev	1       	2021-06-09 16:46:04.512814568 +0200 CEST	deployed	pds-gosec-0.1.0                	0.1  
+NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
 ----
 
 . Helm uninstall
 +
 ----
-helm uninstall pds-gosec-1623249963
+helm uninstall pds-gosec
 ----
 
 === Troubleshooting
