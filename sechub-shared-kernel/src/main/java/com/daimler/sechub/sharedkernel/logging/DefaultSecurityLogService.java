@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     RequestAttributesProvider requestAttributesProvider;
+    
+    @Autowired
+    AuthorizeValueObfuscator authorizedValueObfuscator;
 
     private int MAXIMUM_HEADER_AMOUNT_TO_SHOW = 300;
 
@@ -106,6 +110,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
          */
         List<Object> paramList = new ArrayList<>();
         paramList.add(logData.getType().getTypeId());
+        
         try {
             paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
         } catch (JsonProcessingException e) {
@@ -167,18 +172,16 @@ public class DefaultSecurityLogService implements SecurityLogService {
             if (headerName == null) {
                 continue;
             }
-            String headerValue = null;
-            if (headerName.equalsIgnoreCase("authorization")) {
-                headerValue = "***REPLACED***";
-            } else {
-                headerValue = request.getHeader(headerName);
-                if (headerValue == null) {
-                    continue;
-                }
+            String headerValue = request.getHeader(headerName);
+            if (headerValue==null) {
+                continue;
             }
             amountOfHeadersFound++;
             if (amountOfHeadersFound > MAXIMUM_HEADER_AMOUNT_TO_SHOW) {
                 continue;
+            }
+            if (headerName.equalsIgnoreCase(HttpHeaders.AUTHORIZATION)) {
+               headerValue=authorizedValueObfuscator.obfuscate(headerValue);
             }
             Map<String, String> headers = logContext.getHttpHeaders();
             String sanitzedHeaderName = logSanititzer.sanitize(headerName, 40);

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.daimler.sechub.sharedkernel.UserContextService;
@@ -25,12 +26,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class DefaultSecurityLogServiceTest {
 
-    private static final String VALUE2_S = "value2-s";
-    private static final String VALUE1_S = "value1-s";
-    private static final String KEY2_S = "key2-s";
-    private static final String KEY1_S = "key1-s";
+    private static final String OBFUSCATED = "obfuscated";
+    private static final String SANITIZED = "sanitized";
+    private static final String KEY_AUTHORIZE = HttpHeaders.AUTHORIZATION;
+    private static final String KEY_AUTHORIZE_mixcased = "auThorization";
     private static final String VALUE2 = "value2";
     private static final String VALUE1 = "value1";
+    private static final String VALUE_AUTHORIZE = "Basic aW350LXalc3RexampleXWzZXI6aW50LXRlc3Rfb23seXVzZXtHdk";
+
     private static final String KEY2 = "key2";
     private static final String KEY1 = "key1";
     private DefaultSecurityLogService serviceToTest;
@@ -40,54 +43,57 @@ class DefaultSecurityLogServiceTest {
     private RequestAttributesProvider requestAttributesProvider;
     private HttpSession httpSession;
     private HttpServletRequest request;
+    private AuthorizeValueObfuscator authorizedValueObfuscator;
 
     @BeforeEach
     void beforeEach() {
         logger = mock(Logger.class);
 
-        // fake logsanitizer
-        logsanitzer = mock(LogSanitizer.class);
-        when(logsanitzer.sanitize(eq(KEY1),any(Integer.class))).thenReturn(KEY1_S);
-        when(logsanitzer.sanitize(eq(KEY2),any(Integer.class))).thenReturn(KEY2_S);
-        
-        when(logsanitzer.sanitize(eq(VALUE1),any(Integer.class),eq(false))).thenReturn(VALUE1_S);
-        when(logsanitzer.sanitize(eq(VALUE2),any(Integer.class),eq(false))).thenReturn(VALUE2_S);
-        
-        // fake user context
         userContextService = mock(UserContextService.class);
-        
-        // fake http data providers
+
+        // mock logsanitizer
+        logsanitzer = mock(LogSanitizer.class);
+        when(logsanitzer.sanitize(anyString(), anyInt())).thenAnswer(i -> SANITIZED + i.getArguments()[0]);
+        when(logsanitzer.sanitize(anyString(), anyInt(), anyBoolean())).thenAnswer(i -> SANITIZED + i.getArguments()[0]);
+
+        // mock obfuscation
+        authorizedValueObfuscator = mock(AuthorizeValueObfuscator.class);
+        when(authorizedValueObfuscator.obfuscate(anyString())).thenAnswer(i -> "obfuscated" + i.getArguments()[0]);
+
+        // mock http data providers
         requestAttributesProvider = mock(RequestAttributesProvider.class);
-        request=mock(HttpServletRequest.class);
+        request = mock(HttpServletRequest.class);
         ServletRequestAttributes attributes = new ServletRequestAttributes(request); // final methods, so not by mockito
         httpSession = mock(HttpSession.class);
-        
+
         when(requestAttributesProvider.getRequestAttributes()).thenReturn(attributes);
         when(request.getSession()).thenReturn(httpSession);
-        
+
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(KEY1,VALUE1);
-        map.put(KEY2,VALUE2);
-        
+        map.put(KEY1, VALUE1);
+        map.put(KEY2, VALUE2);
+        map.put(KEY_AUTHORIZE, VALUE_AUTHORIZE);
+        map.put(KEY_AUTHORIZE_mixcased, VALUE_AUTHORIZE);
+
         Iterator<String> it = map.keySet().iterator();
         when(request.getHeaderNames()).thenReturn(new Enumeration<String>() {
-            
+
             @Override
             public String nextElement() {
                 return it.next();
             }
-            
+
             @Override
             public boolean hasMoreElements() {
                 return it.hasNext();
             }
         });
 
-        for (String key: map.keySet()) {
+        for (String key : map.keySet()) {
             when(request.getHeader(key)).thenReturn(map.get(key));
-            
+
         }
-        
+
         /* service to test uses a mocked logger */
         serviceToTest = new DefaultSecurityLogService() {
             Logger getLogger() {
@@ -96,7 +102,8 @@ class DefaultSecurityLogServiceTest {
         };
         serviceToTest.logSanititzer = logsanitzer;
         serviceToTest.userContextService = userContextService;
-        serviceToTest.requestAttributesProvider=requestAttributesProvider;
+        serviceToTest.requestAttributesProvider = requestAttributesProvider;
+        serviceToTest.authorizedValueObfuscator = authorizedValueObfuscator;
 
     }
 
@@ -149,15 +156,21 @@ class DefaultSecurityLogServiceTest {
         // type
         JsonNode typeNode = jsonNode.get("type");
         assertEquals(SecurityLogType.POTENTIAL_INTRUSION.name(), typeNode.textValue());
-        
+
         // http headers from session
         JsonNode httpHeaders = jsonNode.get("httpHeaders");
-        JsonNode key1 = httpHeaders.get(KEY1_S);
-        assertEquals(VALUE1_S, key1.textValue());
-        
-        JsonNode key2 = httpHeaders.get(KEY2_S);
-        assertEquals(VALUE2_S, key2.textValue());
-        
+        JsonNode key1 = httpHeaders.get(SANITIZED + KEY1);
+        assertEquals(SANITIZED + VALUE1, key1.textValue());
+
+        JsonNode key2 = httpHeaders.get(SANITIZED + KEY2);
+        assertEquals(SANITIZED + VALUE2, key2.textValue());
+
+        // test that authorize is not logged plain inside logs but obfuscated
+        JsonNode keyAuth = httpHeaders.get(SANITIZED + KEY_AUTHORIZE);
+        assertEquals(SANITIZED + OBFUSCATED + VALUE_AUTHORIZE, keyAuth.textValue());
+
+        JsonNode keyAuth2 = httpHeaders.get(SANITIZED + KEY_AUTHORIZE_mixcased);
+        assertEquals(SANITIZED + OBFUSCATED + VALUE_AUTHORIZE, keyAuth2.textValue());
 
         // test third parameter
         assertEquals("param1", messageParamCaptor.getValue());
