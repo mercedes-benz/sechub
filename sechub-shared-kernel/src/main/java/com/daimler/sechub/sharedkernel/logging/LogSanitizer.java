@@ -5,6 +5,14 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * This log sanitizer component handles -
+ * https://cwe.mitre.org/data/definitions/93.html -
+ * https://cwe.mitre.org/data/definitions/117.html
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 @Component
 public class LogSanitizer {
 
@@ -23,9 +31,10 @@ public class LogSanitizer {
      *
      * @param maybeContaminated
      * @param maxLength         when >0 the returned string has this maximum length.
-     *                          use <=0 when Length doesn't matter
+     *                          use <=0 when length doesn't matter
      * @return sanitized text . Every character not being allowed will be replaced
-     *         by <code>§</code> character. If string exceeds maximum length it will be truncated.
+     *         by <code>§</code> character. If string exceeds maximum length it will
+     *         be truncated.
      */
     public String sanitize(String maybeContaminated, int maxLength) {
         return sanitize(maybeContaminated, maxLength, true);
@@ -36,10 +45,11 @@ public class LogSanitizer {
      *
      * @param maybeContaminated
      * @param maxLength         when >0 the returned string has this maximum length.
-     *                          use <=0 when Length doesn't matter
+     *                          use <=0 when length doesn't matter
      * @param handleLogForgery  enables log forgery handling
-     * @return sanitized text . when log forgery handling is enabled, every character not being allowed will be replaced
-     *         by <code>§</code> character. If string exceeds maximum length it will be truncated. 
+     * @return sanitized text . when log forgery handling is enabled, every
+     *         character not being allowed will be replaced by <code>§</code>
+     *         character. If string exceeds maximum length it will be truncated.
      */
     public String sanitize(String maybeContaminated, int maxLength, boolean handleLogForgery) {
         if (maybeContaminated == null) {

@@ -107,8 +107,8 @@ public class DefaultSecurityLogService implements SecurityLogService {
         sb.append(logData.message);
 
         /*
-         * convert this to a new list, otherwise slf4j becomes problems with identifying
-         * this as list and having wrong output
+         * Convert this to a new list - otherwise slf4j has problems with identifying
+         * this as list and produces wrong output
          */
         List<Object> paramList = new ArrayList<>();
         paramList.add(logData.getType().getTypeId());
@@ -136,7 +136,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
     private SecurityLogData buildLogData(HttpServletRequest request, String sessionId, SecurityLogType type, String message, Object... objects) {
         SecurityLogData logData = new SecurityLogData();
         if (type == null) {
-            getLogger().warn("Security log service was called with no log type, so call was wrong implemented! Use fallback:{}", logData.type);
+            getLogger().warn("Security log service was called with no log type! Using fallback:{}", logData.type);
         } else {
             logData.type = type;
         }
@@ -195,7 +195,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
         }
         if (amountOfHeadersFound > MAXIMUM_HEADER_AMOUNT_TO_SHOW) {
             getLogger().warn(
-                    "Maximum header values ({}) reached in request from ip={} - header amoutn was {} at all! So truncate header values inside next log entry!",
+                    "Maximum header values ({}) reached in request from ip={} - header amount was {} at all! So truncate header values inside next log entry!",
                     MAXIMUM_HEADER_AMOUNT_TO_SHOW, logContext.getClientIp(), amountOfHeadersFound);
         }
     }
