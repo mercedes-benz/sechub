@@ -113,7 +113,7 @@ class DefaultSecurityLogServiceTest {
         serviceToTest.log((SecurityLogType) null, (String) null, (Object[]) null);
 
         /* test */
-        verify(logger).warn("Security log service was called with no log type, so call was wrong implemented! Use fallback:{}", SecurityLogType.UNKNOWN);
+        verify(logger).warn("Security log service was called with no log type! Using fallback:{}", SecurityLogType.UNKNOWN);
     }
 
     @Test

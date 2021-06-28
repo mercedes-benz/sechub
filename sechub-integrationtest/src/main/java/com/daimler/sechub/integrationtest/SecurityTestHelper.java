@@ -322,7 +322,7 @@ public class SecurityTestHelper {
         }
         int exitCode = process.exitValue();
         if (exitCode != 0) {
-            throw new IllegalStateException("Was not able to execut `"+SEND_CURL_REQUEST_SHELLSCRIPT+"`, exit code was:"+exitCode);
+            throw new IllegalStateException("Was not able to execute `"+SEND_CURL_REQUEST_SHELLSCRIPT+"`, exit code was:"+exitCode);
         }
 
     }

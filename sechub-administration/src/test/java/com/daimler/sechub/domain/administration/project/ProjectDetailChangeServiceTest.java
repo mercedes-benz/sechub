@@ -94,7 +94,7 @@ public class ProjectDetailChangeServiceTest {
 
         when(projectRepository.findOrFailProject("project2")).thenThrow(new NotFoundException());
 
-        /* execut + test */
+        /* execute + test */
         assertThrows(NotFoundException.class, () -> {
 
             ProjectJsonInput withNewDescription = new ProjectJsonInput();
