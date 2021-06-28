@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: MIT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Chart.Name }}
+    labels:
+        app: {{ .Chart.Name }}
+spec:
+    replicas: {{ .Values.replicaCount }}
+    selector:
+        matchLabels:
+            app: {{ .Chart.Name }}
+    template:
+        metadata:
+            labels:
+                app: {{ .Chart.Name }}
+        spec:
+            securityContext:
+                runAsUser: 2323 # uid of the gosec user. Set in the Dockerfile.
+            containers:
+                - name: {{ .Chart.Name }}
+                  image: "{{ .Values.imageRegistry }}:{{ .Values.imageTag }}"
+                  env:
+                    - name: START_MODE
+                      value: {{ .Values.startMode }}
+                    - name: ADMIN_USERID
+                      value: {{ .Values.adminUserId }}
+                    - name: ADMIN_APITOKEN
+                      value: "{{ .Values.adminApiToken }}"
+                    - name: TECHUSER_USERID
+                      value: {{ .Values.techUserId }}
+                    - name: TECHUSER_APITOKEN
+                      value: "{{ .Values.techUserApiToken }}"
+                  ports:
+                    - containerPort: 8444
+

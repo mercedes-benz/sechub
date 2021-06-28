@@ -25,6 +25,6 @@ fi
 #
 #
 
-# java.security.edg necessary for optimized random space -> otherwise start is slow becauase of entropy scanning etc. 
+# java.security.edg necessary for optimized random space -> otherwise start is slow because of entropy scanning etc. 
 # file encoding per default UTF-8
 java $JAVA_DBG_OPTS -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom $SECHUB_OPTS -jar $JAR_LOCATION
