@@ -1,22 +1,22 @@
 #!/bin/bash 
 
-# Usage: bad_request <url><verb>
+url=$url
+http_verb=$2
 
 function usage(){
-    echo "usage: send_curl_request <url> <request method>"
+    echo "usage: send_curl_request <url> <http_verb>"
 }
 
-if [ -z "$1" ] ; then
+if [ -z "$url" ] ; then
     echo "url is missing as first parameter!"
     usage
     exit 1
 fi
 
-if [ -z "$2" ] ; then
+if [ -z "$http_verb" ] ; then
     echo "request method is missing as second parameter"
     usage
     exit 1
 fi
 
-
-curl --insecure -X $2 -H "Content-Type: application/json" $1
+curl --insecure -X $http_verb -H "Content-Type: application/json" $url

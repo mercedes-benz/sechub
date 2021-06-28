@@ -24,9 +24,8 @@ public class AssertSecurityLog {
 
     public AssertSecurityLog hasEntries(int expectedAmount) {
         int amount = logs.size();
-        if (expectedAmount!=amount) {
-            // we use equals to have IDE compare also available in outputs
-            
+        if (expectedAmount != amount) {
+
             String json = null;
             ObjectMapper mapper = new ObjectMapper();
             try {
@@ -34,16 +33,16 @@ public class AssertSecurityLog {
             } catch (JsonProcessingException e) {
                 throw new IllegalStateException(e);
             }
-            
-            assertEquals(
-                    "Security log does not contain expected amount of log entries:"+expectedAmount+" but:"+amount+". Did you clear the log at test start correctly by TestAPI.clearSecurityLogs() ?\n"+json,
-                    expectedAmount, amount);
-    }
+
+            assertEquals("Security log does not contain expected amount of log entries:" + expectedAmount + " but:" + amount
+                    + ". Did you clear the log at test start correctly by TestAPI.clearSecurityLogs() ?\n" + json, expectedAmount, amount);
+        }
         return this;
     }
 
     /**
      * Assert given entry exists
+     * 
      * @param pos must be greater or equal zero
      * @return
      */
@@ -105,24 +104,24 @@ public class AssertSecurityLog {
 
         public AssertSecurityLogDataEntry hasMessageParameterContainingStrings(int pos, String... expectedParts) {
             Objects.nonNull(expectedParts);
-            if (pos <0) {
+            if (pos < 0) {
                 throw new IllegalArgumentException("pos must be >=0!");
             }
             List<Object> parameters = data.getMessageParameters();
             if (parameters == null) {
                 throw new IllegalStateException("no parameters found");
             }
-            if (parameters.size()<=pos) {
-                throw new IllegalArgumentException("wrong pos:"+pos+", have only "+parameters.size()+" parameters");
+            if (parameters.size() <= pos) {
+                throw new IllegalArgumentException("wrong pos:" + pos + ", have only " + parameters.size() + " parameters");
             }
-            
+
             Object parameter = parameters.get(pos);
-            assertNotNull("parameter at pos:"+pos+ " is null!");
+            assertNotNull("parameter at pos:" + pos + " is null!");
             String parameterString = parameter.toString();
-            
+
             for (String expectedPart : expectedParts) {
                 if (!parameterString.contains(expectedPart)) {
-                    fail("Expected part '" + expectedPart + "' was not found in parameter "+pos+" which is '" + parameterString + "'");
+                    fail("Expected part '" + expectedPart + "' was not found in parameter " + pos + " which is '" + parameterString + "'");
                 }
             }
             return this;
@@ -138,7 +137,7 @@ public class AssertSecurityLog {
                     throw new IllegalStateException(e);
                 }
             }
-            assertEquals("header value not as expected for " +headerName, headerValue, expectedValue);
+            assertEquals("header value not as expected for " + headerName, headerValue, expectedValue);
             return this;
         }
 
