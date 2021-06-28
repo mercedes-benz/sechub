@@ -58,7 +58,7 @@ class DefaultSecurityLogServiceTest {
 
         // mock obfuscation
         authorizedValueObfuscator = mock(AuthorizeValueObfuscator.class);
-        when(authorizedValueObfuscator.obfuscate(anyString())).thenAnswer(i -> "obfuscated" + i.getArguments()[0]);
+        when(authorizedValueObfuscator.obfuscate(anyString(), anyInt())).thenAnswer(i -> "obfuscated" + i.getArguments()[0]);
 
         // mock http data providers
         requestAttributesProvider = mock(RequestAttributesProvider.class);

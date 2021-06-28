@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Profile("!" + Profiles.INTEGRATIONTEST)
 public class DefaultSecurityLogService implements SecurityLogService {
 
+    private static final int MINIMUM_LENGTH_TO_SHOW_PWD_INT = 52;
+    
     @Autowired
     UserContextService userContextService;
 
@@ -42,7 +44,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
 
     @Autowired
     RequestAttributesProvider requestAttributesProvider;
-    
+
     @Autowired
     AuthorizeValueObfuscator authorizedValueObfuscator;
 
@@ -110,7 +112,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
          */
         List<Object> paramList = new ArrayList<>();
         paramList.add(logData.getType().getTypeId());
-        
+
         try {
             paramList.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logData));
         } catch (JsonProcessingException e) {
@@ -173,7 +175,7 @@ public class DefaultSecurityLogService implements SecurityLogService {
                 continue;
             }
             String headerValue = request.getHeader(headerName);
-            if (headerValue==null) {
+            if (headerValue == null) {
                 continue;
             }
             amountOfHeadersFound++;
@@ -181,12 +183,13 @@ public class DefaultSecurityLogService implements SecurityLogService {
                 continue;
             }
             if (headerName.equalsIgnoreCase(HttpHeaders.AUTHORIZATION)) {
-               headerValue=authorizedValueObfuscator.obfuscate(headerValue);
+                headerValue = authorizedValueObfuscator.obfuscate(headerValue, MINIMUM_LENGTH_TO_SHOW_PWD_INT);
             }
             Map<String, String> headers = logContext.getHttpHeaders();
             String sanitzedHeaderName = logSanititzer.sanitize(headerName, 40);
-            String sanitizedHeaderValue = logSanititzer.sanitize(headerValue, 1024, false); // headerValue without log forgery handling, we want the origin output
-                                                                                      // inside JSON
+            String sanitizedHeaderValue = logSanititzer.sanitize(headerValue, 1024, false); // headerValue without log forgery handling, we want the origin
+                                                                                            // output
+            // inside JSON
             headers.put(sanitzedHeaderName, sanitizedHeaderValue);
 
         }
