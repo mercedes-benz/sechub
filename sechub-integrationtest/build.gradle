@@ -163,6 +163,10 @@ task integrationtest(type: Test, dependsOn: startIntegrationTestInstances) {
    // integration tests seems to be very often  "up-to-date"
    // but we want them always to be executed, so next line...
    outputs.upToDateWhen { false }
+   
+   useJUnitPlatform() // we must enable this to execute Junit5 as well - even when already defined for task "test"
+   
+   
    /*
     *  We must set the system property here - gradle does fork
     * the jvm on testing and does not add system properties of calling automatically so we set
