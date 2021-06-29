@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-url=$url
+url=$1
 http_verb=$2
 
 function usage(){
