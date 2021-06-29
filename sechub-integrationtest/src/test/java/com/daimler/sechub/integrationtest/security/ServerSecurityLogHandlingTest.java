@@ -44,7 +44,7 @@ class ServerSecurityLogHandlingTest {
         assertSecurityLog().
             hasEntries(1).
             entry(0).
-                hasClientIp("127.0.0.1").
+                hasOneOfGivenClientIps("127.0.0.1","0:0:0:0:0:0:0:1").
                 hasRequestURI("/api/anonymous/check/alive").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "UPDATE").
@@ -69,7 +69,7 @@ class ServerSecurityLogHandlingTest {
         assertSecurityLog().
             hasEntries(1).
             entry(0).
-                hasClientIp("127.0.0.1").
+                hasOneOfGivenClientIps("127.0.0.1","0:0:0:0:0:0:0:1").
                 hasRequestURI("/api/anonymous/check/alive").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "bad_request").
@@ -93,7 +93,7 @@ class ServerSecurityLogHandlingTest {
         assertSecurityLog().
             hasEntries(1).
             entry(0).
-                hasClientIp("127.0.0.1").
+                hasOneOfGivenClientIps("127.0.0.1","0:0:0:0:0:0:0:1").
                 hasRequestURI("/i-am-not-existing").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "bad_request").
@@ -118,7 +118,7 @@ class ServerSecurityLogHandlingTest {
         assertSecurityLog().
             hasEntries(1).
             entry(0).
-                hasClientIp("127.0.0.1").
+                hasOneOfGivenClientIps("127.0.0.1","0:0:0:0:0:0:0:1").
                 hasRequestURI("/i-am-not-existing").
                 hasMessageContaining("401").
                 hasHTTPHeader("host","localhost:8443").

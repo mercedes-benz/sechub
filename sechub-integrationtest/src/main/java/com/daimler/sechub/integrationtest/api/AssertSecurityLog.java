@@ -3,6 +3,7 @@ package com.daimler.sechub.integrationtest.api;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,9 +66,13 @@ public class AssertSecurityLog {
             Objects.requireNonNull(securityLogData);
             data = securityLogData;
         }
-
-        public AssertSecurityLogDataEntry hasClientIp(String clientIP) {
-            assertEquals("Client IP not as expected", clientIP, data.getClientIp());
+        
+        public AssertSecurityLogDataEntry hasOneOfGivenClientIps(String ...expectedClientIps) {
+            List<String> clientIPs = Arrays.asList(expectedClientIps);
+            String clientIp = data.getClientIp();
+            if (! clientIPs.contains(clientIp)){
+                fail("Data did contain clientIp:"+clientIp+". It is not one of expected client IPs:"+clientIPs);
+            }
             return this;
         }
 
