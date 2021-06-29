@@ -52,7 +52,6 @@ public class SarifReportSupport {
         try (FileInputStream inputStream = new FileInputStream(file)) {
             Report report = mapper.readValue(inputStream, Report.class);
             return report;
-
         }
 
     }
@@ -129,9 +128,14 @@ public class SarifReportSupport {
         if (level != null) {
             return level;
         }
-        /* first fetch default from rule */
         Rule rule = fetchRuleForResult(result, run);
         if (rule != null) {
+            /* @formatter:off 
+               
+               first fetch default from rule
+               see https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317850
+               
+               @formatter:on */
             ReportingConfiguration defaultConfiguration = rule.getDefaultConfiguration();
             if (defaultConfiguration != null) {
                 level = defaultConfiguration.getLevel();

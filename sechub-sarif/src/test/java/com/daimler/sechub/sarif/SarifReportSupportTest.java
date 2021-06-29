@@ -115,7 +115,7 @@ class SarifReportSupportTest {
     }
 
     @Test
-    void specification_properties_snippet_properteis_contains_opensource_key_and_map_value_and_can_bew_written() throws IOException {
+    void specification_properties_snippet_properteis_contains_opensource_key_and_map_value_and_can_be_written() throws IOException {
         /* prepare */
         File folder = sarifSpecificationSnippetsFolder;
 

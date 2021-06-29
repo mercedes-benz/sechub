@@ -42,7 +42,7 @@ class PropertyBagTest {
         assertEquals(1, propertyBag.size());
         assertTrue(fetchedTags.contains("tag1"));
         assertTrue(fetchedTags.contains("tag2"));
-        assertTrue(fetchedTags.contains("tag1"));
+        assertTrue(fetchedTags.contains("tag3"));
 
     }
 
