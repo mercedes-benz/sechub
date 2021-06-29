@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.*;

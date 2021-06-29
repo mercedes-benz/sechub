@@ -169,7 +169,7 @@ public class TestURLBuilder {
     /* +............................ common ...................................+ */
     /* +-----------------------------------------------------------------------+ */
 
-    private String buildUrl(String custom, Object... parts) {
+    public String buildUrl(String custom, Object... parts) {
         StringBuilder sb = new StringBuilder();
         sb.append(createRootPath());
         sb.append(custom);
@@ -644,6 +644,13 @@ public class TestURLBuilder {
 
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
+    }
+    
+    public String buildIntegrationTestClearSecurityLogs() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/logs/security");
+    }
+    public String buildIntegrationTestGetSecurityLogs() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/logs/security");
     }
 
     public String buildBaseURL() {

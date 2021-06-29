@@ -32,6 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SecurityTestHelper {
 
+    private static final String SEND_CURL_REQUEST_SHELLSCRIPT = "send_curl_request.sh";
+    private static final String CIPHERTEST_SHELLSCRIPT = "ciphertest.sh";
+
     public enum TestTargetType {
         PDS_SERVER("pds"),
 
@@ -304,19 +307,38 @@ public class SecurityTestHelper {
         }
         return sb.toString();
     }
+    
+    public void sendCurlRequest(String url, String customRequestmethod) throws Exception {
+        List<String> commands = new ArrayList<>();
+        commands.add("./"+SEND_CURL_REQUEST_SHELLSCRIPT);
+        commands.add(url);
+        commands.add(customRequestmethod);
+
+        ProcessBuilder pb = new ProcessBuilder(commands);
+        Process process = pb.start();
+        boolean exited = process.waitFor(10, TimeUnit.SECONDS);
+        if (!exited) {
+            throw new IllegalStateException("Was not able to wait for "+SEND_CURL_REQUEST_SHELLSCRIPT+" result");
+        }
+        int exitCode = process.exitValue();
+        if (exitCode != 0) {
+            throw new IllegalStateException("Was not able to execute `"+SEND_CURL_REQUEST_SHELLSCRIPT+"`, exit code was:"+exitCode);
+        }
+
+    }
 
     private void ensureCipherTestDone() throws Exception {
         if (cipherTestData != null) {
-            assertServerToTestHasBeenStarted();
+            assertNoConnectionHasBeenRefused();
             return;
         }
         List<String> commands = new ArrayList<>();
-        commands.add("./ciphertest.sh");
+        commands.add("./"+CIPHERTEST_SHELLSCRIPT);
         commands.add("localhost:" + testURL.getPort());
         commands.add(targetType.id);
 
         /*
-         * now we call ciphertest.sh with parameters - will create
+         * now we call cipher test shell script with parameters - will create
          * /sechub-integrationtest/build/testresult/ciphertest/sechub-pds.json or
          * /sechub-integrationtest/build/testresult/ciphertest/sechub-server.json
          */
@@ -325,13 +347,13 @@ public class SecurityTestHelper {
         Process process = pb.start();
         boolean exited = process.waitFor(10, TimeUnit.SECONDS);
         if (!exited) {
-            throw new IllegalStateException("Was not able to wait for ciphertest.sh result");
+            throw new IllegalStateException("Was not able to wait for "+CIPHERTEST_SHELLSCRIPT+" result");
         }
         int exitCode = process.exitValue();
         if (exitCode == 3) {
             throw new IllegalStateException("No openssl installed at your machine - cannot test ciphers!");
         } else if (exitCode != 0) {
-            String message = "`ciphertest.sh` script call failed with unexpected exit code:" + exitCode;
+            String message = "`"+CIPHERTEST_SHELLSCRIPT+"` script call failed with unexpected exit code:" + exitCode;
             if (TestUtil.isWindows()) {
                 /* @formatter:off */
                 message += "\n"
@@ -351,12 +373,12 @@ public class SecurityTestHelper {
         ObjectMapper mapper = JSONTestSupport.DEFAULT.createObjectMapper();
         cipherTestData = mapper.readValue(text.getBytes(), CipherTestData.class);
 
-        assertServerToTestHasBeenStarted();
+        assertNoConnectionHasBeenRefused();
 
     }
 
     /* Sanity check - when no server is available we have only unknwon results */
-    private void assertServerToTestHasBeenStarted() {
+    private void assertNoConnectionHasBeenRefused() {
         boolean atLeastOneConnectionRefused = false;
         for (CipherCheck check : cipherTestData.cipherChecks) {
             if (check.error == null || check.error.isEmpty()) {
