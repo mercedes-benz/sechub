@@ -15,7 +15,6 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sarif.SarifReportSupport;
 import com.daimler.sechub.sarif.model.ArtifactLocation;
 import com.daimler.sechub.sarif.model.CodeFlow;
-import com.daimler.sechub.sarif.model.Driver;
 import com.daimler.sechub.sarif.model.Level;
 import com.daimler.sechub.sarif.model.Location;
 import com.daimler.sechub.sarif.model.Message;
@@ -28,7 +27,6 @@ import com.daimler.sechub.sarif.model.Result;
 import com.daimler.sechub.sarif.model.Rule;
 import com.daimler.sechub.sarif.model.Run;
 import com.daimler.sechub.sarif.model.ThreadFlow;
-import com.daimler.sechub.sarif.model.Tool;
 import com.daimler.sechub.sarif.model.ToolComponentReference;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
@@ -183,10 +181,6 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         }
 
         if (type == null) {
-            type = handleSpecialToolTypeResolving(rule, run);
-        }
-
-        if (type == null) {
             /*
              * no type identifier found, so do fallback to id, we do not use "name" becaus
              * this is for i18n!
@@ -194,61 +188,6 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             type = rule.getId();
         }
         return type;
-    }
-
-    private String handleSpecialToolTypeResolving(Rule rule, Run run) {
-        Tool tool = run.getTool();
-        if (tool == null) {
-            return null;
-        }
-        Driver driver = tool.getDriver();
-        if (driver == null) {
-            return null;
-        }
-        String toolName = driver.getName();
-        if (toolName == null) {
-            return null;
-        }
-        if (toolName.equalsIgnoreCase("Brakeman")) {
-            return handleSpecialBrakemanResolving(rule, run);
-        }
-        return null;
-    }
-
-    private String handleSpecialBrakemanResolving(Rule rule, Run run) {
-        /*
-         * At this point, we MUST have tried before to fetch the type by short
-         * description from SARIF JSON report file, which is normally set by many tools.
-         * 
-         * If this is not possible we normally do a fallback to the identifier.
-         * 
-         * In Brakeman 5.0.0 IDs starting with "BRAKE" - e.g. BRAKE0102, but we cannot
-         * use this id for our type information in Serec, because it's an internal ID.
-         * So not really human readable and you even cannot "just google it".
-         * 
-         * But it does provide a name represented by "ContentTag/$shortDescription" -
-         * for example for ID "BRAKE0102" the name is "ContentTag/Cross-Site Scripting".
-         * 
-         * Inside SARIF specification the name field is meant to be for i18n - but we
-         * handle this special for brakeman here as long as there is no shortDescription
-         * set or the brakeman IDs are only internal ones.
-         * 
-         */
-        String ruleID = rule.getId();
-        if (ruleID != null && ruleID.startsWith("BRAKE")) {
-            String name = rule.getName();
-            if (name != null) {
-                int index = name.lastIndexOf("/");
-                if (index != -1) {
-                    index++;
-                    if (index < name.length() - 1) {
-                        name = name.substring(index);
-                    }
-                }
-                return name;
-            }
-        }
-        return null;
     }
 
     private SerecoCodeCallStackElement resolveCodeInfoFromResult(Result result) {
