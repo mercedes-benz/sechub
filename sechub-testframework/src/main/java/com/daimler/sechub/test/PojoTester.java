@@ -7,6 +7,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,6 +16,13 @@ import java.util.Optional;
 
 import org.mockito.Mockito;
 
+/**
+ * A test utility class to test POJOs (plain old java objects) in a convenient
+ * way - e.g. automated setter and getter testing
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 public class PojoTester {
     private PojoTester() {
 
@@ -44,6 +52,12 @@ public class PojoTester {
         assertEquals("objectA has not same hashcode as objectB but must be -check implementation!", objectA.hashCode(), objectBequalToA.hashCode());
     }
 
+    /**
+     * Every field having a getter and a setter will be automatically tested, that
+     * the written value (setter) will be returned on read (getter)
+     * 
+     * @param objectToTest
+     */
     public static void testSetterAndGetter(Object objectToTest) {
         assertNotNull("Cannot test null objects!", objectToTest);
 
@@ -51,67 +65,7 @@ public class PojoTester {
             BeanInfo beanInfo = Introspector.getBeanInfo(objectToTest.getClass());
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor descriptor : propertyDescriptors) {
-                Method writeMethod = descriptor.getWriteMethod();
-                if (writeMethod == null) {
-                    continue;
-                }
-                Method readmethod = descriptor.getReadMethod();
-                if (readmethod == null) {
-                    continue;
-                }
-                Class<?> type = descriptor.getPropertyType();
-                boolean optional = type.equals(Optional.class);
-                if (optional) {
-                    /* ugly but necessary, to handle optinonal... */
-                    Type generic = readmethod.getGenericReturnType();
-                    ParameterizedType pm = (ParameterizedType) generic;
-                    Type[] args = pm.getActualTypeArguments();
-                    String typeName = args[0].getTypeName();
-                    type = Class.forName(typeName);
-                }
-                Object mockedArgument = null;
-                if (type.isPrimitive()) {
-                    if (type.equals(int.class)) {
-                        mockedArgument = 42;
-                    } else if (type.equals(double.class)) {
-                        mockedArgument = (float) 42;
-                    } else if (type.equals(byte.class)) {
-                        mockedArgument = (byte) 42;
-                    }
-                } else if (type.isEnum()) {
-                    Object[] enumObjects = type.getEnumConstants();
-                    mockedArgument = enumObjects[0];
-                } else {
-                    try {
-                        Constructor<?> constructor = type.getConstructor();
-                        mockedArgument = constructor.newInstance();
-                    } catch (Exception e) {
-                        /* no default constructor available - fall back to Mockito ... */
-                        try {
-                            mockedArgument = Mockito.mock(type);
-                        } catch (Exception e2) {
-                            throw new IllegalStateException("No default constructor available for:" + type + "\nat method:" + readmethod
-                                    + "\nDid try to creeate with mockito, but failed", e);
-                        }
-                    }
-                }
-                if (optional) {
-                    mockedArgument = Optional.of(mockedArgument);
-                }
-                try {
-                    writeMethod.invoke(objectToTest, mockedArgument);
-                } catch (Exception e) {
-                    throw new IllegalStateException(
-                            "Was not able to set mockedArgument:" + mockedArgument + "\ninto:" + objectToTest + "\nby writeMethod:" + writeMethod);
-                }
-
-                Object result = readmethod.invoke(objectToTest);
-
-                if (!Objects.equals(result, mockedArgument)) {
-                    fail("The getter/setter implementation of " + objectToTest.getClass() + " failed!\nProperty:" + descriptor.getName() + "\nExpected:"
-                            + mockedArgument + "\nGot:" + result);
-                }
-
+                testPropertyDescriptor(descriptor, objectToTest);
             }
 
         } catch (Exception e) {
@@ -120,15 +74,101 @@ public class PojoTester {
         }
     }
 
+    private static void testPropertyDescriptor(PropertyDescriptor descriptor, Object objectToTest)
+            throws ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        /* check preconditions: setter and getter found for property */
+        Method writeMethod = descriptor.getWriteMethod();
+        if (writeMethod == null) {
+            return;
+        }
+        Method readmethod = descriptor.getReadMethod();
+        if (readmethod == null) {
+            return;
+        }
+        /* fetch result type of getter */
+        Object mockedArgument = createMockArgumentForProperty(descriptor, readmethod);
+
+        /* write */
+        try {
+            writeMethod.invoke(objectToTest, mockedArgument);
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Was not able to set mockedArgument:" + mockedArgument + "\ninto:" + objectToTest + "\nby writeMethod:" + writeMethod);
+        }
+        /* read again */
+        Object result = readmethod.invoke(objectToTest);
+
+        /* test */
+        if (!Objects.equals(result, mockedArgument)) {
+            fail("The getter/setter implementation of " + objectToTest.getClass() + " failed!\nProperty:" + descriptor.getName() + "\nExpected:"
+                    + mockedArgument + "\nGot:" + result);
+        }
+
+    }
+
+    private static Object createMockArgumentForProperty(PropertyDescriptor descriptor, Method readmethod) throws ClassNotFoundException {
+        /* property has getter and setter, so inspect type... */
+        Class<?> propertyType = descriptor.getPropertyType();
+        boolean optional = propertyType.equals(Optional.class);
+        if (optional) {
+            /* ugly but necessary, to handle optional... */
+            Type generic = readmethod.getGenericReturnType();
+            ParameterizedType parameterizedType = (ParameterizedType) generic;
+            Type[] typeArgumentObjects = parameterizedType.getActualTypeArguments();
+            String typeName = typeArgumentObjects[0].getTypeName();
+            propertyType = Class.forName(typeName);
+        }
+        Object mockedArgument = null;
+        if (propertyType.isPrimitive()) {
+            if (propertyType.equals(int.class)) {
+                mockedArgument = 42;
+            } else if (propertyType.equals(double.class)) {
+                mockedArgument = (float) 42;
+            } else if (propertyType.equals(byte.class)) {
+                mockedArgument = (byte) 42;
+            }
+        } else if (propertyType.isEnum()) {
+            Object[] enumObjects = propertyType.getEnumConstants();
+            mockedArgument = enumObjects[0];
+        } else {
+            try {
+                Constructor<?> constructor = propertyType.getConstructor();
+                mockedArgument = constructor.newInstance();
+            } catch (Exception e) {
+                /* no default constructor available - fall back to Mockito ... */
+                try {
+                    mockedArgument = Mockito.mock(propertyType);
+                } catch (Exception e2) {
+                    throw new IllegalStateException("No default constructor available for:" + propertyType + "\nat method:" + readmethod
+                            + "\nDid try to create with mockito, but failed", e);
+                }
+            }
+        }
+        if (optional) {
+            mockedArgument = Optional.of(mockedArgument);
+        }
+        return mockedArgument;
+    }
+
+    /**
+     * A pojo changer is able to change a given POJO (plain java object)
+     * 
+     * @author Albert Tregnaghi
+     *
+     * @param <T>
+     */
     public interface PojoChanger<T> {
         void changePojo(T pojo);
     }
 
     /**
-     * Change a POJO. This is a handy method for POJOs having setters but no fluent
-     * API but a need in unit tests.<br>
-     * Example: <pre>
-     *  change(createExample(), (example) -> example.setName("changed...") ));
+     * Changes given POJO by given POJO changer. Use this method when you are
+     * writing tests and you need a fluent API but the POJO does not provide this.
+     * Look at the next example or look into call hierarchy for more details.<br>
+     * Example:
+     * 
+     * <pre>
+     *    testBothAreNOTEqual(createExample(), change(createExample(), (codeFlow) -> codeFlow.setMessage(new Message("other"))));
      * </pre>
      * 
      * @param <T>

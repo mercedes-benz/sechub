@@ -95,15 +95,17 @@ public class AssertVulnerabilities {
             List<SerecoVulnerability> matching = new ArrayList<>();
             SearchTracer trace = new SearchTracer();
             trace.traceEnabled = traceEnabled;
-            for (SerecoVulnerability v : AssertVulnerabilities.this.vulnerabilities) {
-                boolean contained = isEitherNullInSearchOrEqual(search.getSeverity(), v.getSeverity()) && trace.done(v, "severity");
-                contained = contained && isEitherNullInSearchOrEqual(search.getUrl(), v.getUrl()) && trace.done(v, "url");
-                contained = contained && isEitherNullInSearchOrEqual(search.getType(), v.getType()) && trace.done(v, "type");
-                contained = contained && isEitherNullInSearchOrContains(v.getDescription(), search.getDescription()) && trace.done(v, "description");
-                contained = contained && isEitherNullInSearchOrEqual(search.getClassification(), v.getClassification()) && trace.done(v, "classification");
-                contained = contained && isEitherNullInSearchOrEqual(search.getCode(), v.getCode()) && trace.done(v, "code");
+            for (SerecoVulnerability vulnerability : AssertVulnerabilities.this.vulnerabilities) {
+                boolean contained = isEitherNullInSearchOrEqual(search.getSeverity(), vulnerability.getSeverity()) && trace.done(vulnerability, "severity");
+                /* @formatter:off */
+                contained = contained && isEitherNullInSearchOrEqual(search.getUrl(), vulnerability.getUrl()) && trace.done(vulnerability, "url");
+                contained = contained && isEitherNullInSearchOrEqual(search.getType(), vulnerability.getType()) && trace.done(vulnerability, "type");
+                contained = contained && isEitherNullInSearchOrContains(vulnerability.getDescription(), search.getDescription()) && trace.done(vulnerability, "description");
+                contained = contained && isEitherNullInSearchOrEqual(search.getClassification(), vulnerability.getClassification()) && trace.done(vulnerability, "classification");
+                contained = contained && isEitherNullInSearchOrEqual(search.getCode(), vulnerability.getCode()) && trace.done(vulnerability, "code");
+                /* @formatter:on */
                 if (contained) {
-                    matching.add(v);
+                    matching.add(vulnerability);
                 }
             }
             if (findClosest) {
@@ -190,42 +192,40 @@ public class AssertVulnerabilities {
             search.setType(type);
             return this;
         }
-        
+
         public FindCodeCallStackBuilder withCodeLocation(String location, int line, int column) {
-            return new FindCodeCallStackBuilder(location,line,column);
+            return new FindCodeCallStackBuilder(location, line, column);
         }
-        
-        public class FindCodeCallStackBuilder{
-            
+
+        public class FindCodeCallStackBuilder {
+
             private SerecoCodeCallStackElement currentCallStackElement;
 
             public FindCodeCallStackBuilder(String location, int line, int column) {
                 currentCallStackElement = createCallStackElement(location, line, column);
-                
+
                 search.setCode(currentCallStackElement);
             }
-            
+
             public FindCodeCallStackBuilder calling(String location, int line, int column) {
-                SerecoCodeCallStackElement childCallstackElement =createCallStackElement(location, line, column);
+                SerecoCodeCallStackElement childCallstackElement = createCallStackElement(location, line, column);
 
                 currentCallStackElement.setCalls(childCallstackElement);
-                currentCallStackElement=childCallstackElement;
+                currentCallStackElement = childCallstackElement;
                 return this;
             }
-            
-            
+
             public VulnerabilityFinder done() {
                 return VulnerabilityFinder.this;
             }
 
-
             private SerecoCodeCallStackElement createCallStackElement(String location, int line, int column) {
                 SerecoCodeCallStackElement newCallStackElement = new SerecoCodeCallStackElement();
-                
+
                 newCallStackElement.setLocation(location);
                 newCallStackElement.setLine(line);
                 newCallStackElement.setColumn(column);
-                
+
                 return newCallStackElement;
             }
 
@@ -347,44 +347,43 @@ public class AssertVulnerabilities {
 
     private static void dumpOnSystemOutCWEBased(List<SerecoVulnerability> vulnerabilities) {
         StringBuilder sb = new StringBuilder();
-        
-        SortedMap<Integer,List<SerecoVulnerability>> map = new TreeMap<>();
+
+        SortedMap<Integer, List<SerecoVulnerability>> map = new TreeMap<>();
         for (SerecoVulnerability vulnerability : vulnerabilities) {
             String cwe = vulnerability.getClassification().getCwe();
-            if (cwe==null) {
-                cwe="0";
+            if (cwe == null) {
+                cwe = "0";
             }
             Integer cweNumber = Integer.valueOf(cwe);
             map.computeIfAbsent(cweNumber, (key) -> map.put(key, new ArrayList<SerecoVulnerability>()));
             map.get(cweNumber).add(vulnerability);
         }
-        
-        
+
         map.values().forEach((list) -> {
             SerecoVulnerability firstVulnerabilityInList = list.iterator().next();
-            sb.append("CWE "+firstVulnerabilityInList.getClassification().getCwe()+" \""+firstVulnerabilityInList.getType()+ "\" found " +list.size()).append(" times:\n");
-            list.forEach((vulnerability)->{
+            sb.append("CWE " + firstVulnerabilityInList.getClassification().getCwe() + " \"" + firstVulnerabilityInList.getType() + "\" found " + list.size())
+                    .append(" times:\n");
+            list.forEach((vulnerability) -> {
                 sb.append("- CWE=").append(vulnerability.getClassification().getCwe());
-                sb.append(',').append(SimpleStringUtils.truncateWhenTooLong(vulnerability.getType(),10));
+                sb.append(',').append(SimpleStringUtils.truncateWhenTooLong(vulnerability.getType(), 10));
                 sb.append("\n");
                 sb.append("    |->").append(vulnerability);
                 sb.append("\n");
                 SerecoCodeCallStackElement element = vulnerability.getCode();
-                int step=0;
-                while (element!=null) {
+                int step = 0;
+                while (element != null) {
                     step++;
                     sb.append(step).append(':');
                     sb.append("  |-- location=").append(element.getLocation());
                     sb.append(", line=").append(element.getLine()).append(", column=").append(element.getColumn());
                     sb.append("\n");
-                    element= element.getCalls();
+                    element = element.getCalls();
                 }
-                
 
                 sb.append("\n");
             });
         });
-        
+
         System.out.println(sb.toString());
     }
 

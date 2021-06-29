@@ -71,7 +71,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                finding(0).
                    hasSeverity(Severity.HIGH).
                    hasScanType(ScanType.CODE_SCAN).
-                   hasName("Cross-Site Scripting").
+                   hasName("BRAKE0102").
                    hasDescription("Checks for XSS in calls to content_tag.").
                    codeCall(0).
                       hasLocation("Gemfile.lock").
