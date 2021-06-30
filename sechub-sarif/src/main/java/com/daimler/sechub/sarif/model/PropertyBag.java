@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sarif.model;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 
@@ -28,45 +29,72 @@ public class PropertyBag extends HashMap<String, Object> {
     private static final String TAGS = "tags";
     private static final long serialVersionUID = 1L;
 
-    public void addTag(String tag) {
-        Object data = computeIfAbsent(TAGS, key -> new ArrayList<>());
-        if (!(data instanceof List)) {
-            throw new IllegalStateException("tags property does not contain a list but:" + data);
+    /**
+     * Adds given tag to tag set
+     * 
+     * @param tag
+     * @return <code>true</code> if this set did not already contain the specified
+     *         tag
+     */
+    public boolean addTag(String tag) {
+        return ensureAvailableTagSet().add(tag);
+    }
+
+    /**
+     * This adds a property. For key "tags" there is a special handling, this is
+     * always handled as a collection and internally added into a set. So tags are
+     * never duplicated.
+     * 
+     * @param key   when <code>null</code> nothing happens, because property bags
+     *              may not have key null
+     * @param value when <code>null</code> than a former will just be removed
+     * @return former value or <code>null</code>
+     */
+    @Override
+    public Object put(String key, Object value) {
+        if (key == null) {
+            return null;
         }
-        @SuppressWarnings("unchecked")
-        List<String> dataList = (List<String>) data;
-        dataList.add(tag);
+        if (value == null) {
+            return remove(key);
+        }
+        if (TAGS.equals(key)) {
+            if (value instanceof Collection) {
+                // depending on on content and deserialization behaviour this can differ- e.g.
+                // an ArrayList
+                @SuppressWarnings("unchecked")
+                Collection<Object> list = (Collection<Object>) value;
+                for (Object object : list) {
+                    if (object != null) {
+                        ensureAvailableTagSet().add(object.toString());
+                    }
+                }
+                return null;
+
+            }
+            if (!(value instanceof Set)) {
+                throw new IllegalArgumentException("key:" + key + " must contain an set/array, but was:" + (value == null ? null : value.getClass()));
+            }
+        }
+        return super.put(key, value);
     }
 
     /**
      * Fetch tags
      * 
-     * @return tags or empty list, when not defined
+     * @return tags or empty set, when not defined
      */
-    public List<String> fetchTags() {
-        String key = TAGS;
-        return fetchStringListByKey(key);
+    public Set<String> fetchTags() {
+        return ensureAvailableTagSet();
     }
 
-    /**
-     * Fetches string list by given key
-     * 
-     * @param key
-     * @return a list containing list entries or being empty when value for key is
-     *         not a list
-     */
-    public List<String> fetchStringListByKey(String key) {
-        Object tags = get(key);
-        List<String> result = new ArrayList<>();
-        if (tags instanceof List) {
-            List<?> dataList = (List<?>) tags;
-            for (Object data : dataList) {
-                if (data != null) {
-                    result.add(data.toString());
-                }
-            }
+    private Set<String> ensureAvailableTagSet() {
+        Object data = computeIfAbsent(TAGS, key -> new LinkedHashSet<>());
+        if (!(data instanceof Set)) {
+            throw new IllegalStateException("tags property does not contain a list but:" + data);
         }
-        return result;
+        @SuppressWarnings("unchecked")
+        Set<String> dataList = (Set<String>) data;
+        return dataList;
     }
-
 }

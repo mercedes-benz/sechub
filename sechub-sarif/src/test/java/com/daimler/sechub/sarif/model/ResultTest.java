@@ -78,10 +78,10 @@ class ResultTest {
         Result result = new Result();
 
         /* execute */
-        result.addAdditionalProperty(null, null);
-        result.addAdditionalProperty("key", null);
-        result.addAdditionalProperty(null, "value");
         PropertyBag properties = result.getProperties();
+        properties.put(null, null);
+        properties.put("key", null);
+        properties.put(null, "value");
 
         /* test */
         assertTrue(properties.isEmpty());
@@ -93,12 +93,12 @@ class ResultTest {
         Result result = new Result();
 
         /* execute */
-        result.addAdditionalProperty("first", "this");
-        result.addAdditionalProperty("second", "that");
         PropertyBag properties = result.getProperties();
+        properties.put("second", "that");
 
         /* test */
         assertEquals(properties.size(), 2);
+        properties.put("first", "this");
     }
 
     @Test

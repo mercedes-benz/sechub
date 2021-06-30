@@ -8,8 +8,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -34,9 +36,10 @@ class SarifReportSupportTest {
 
     private static FilenameFilter sarifFileEndingFilter;
     private static TextFileReader reader;
-    private static File sarifTutorialSamplesFolder;
 
+    private static File sarifTutorialSamplesFolder;
     private static File sarifSpecificationSnippetsFolder;
+    private static File sarifBrakemanFolder;
 
     private SarifReportSupport supportToTest;
 
@@ -52,8 +55,10 @@ class SarifReportSupportTest {
             }
         };
         reader = new TextFileReader();
+        
         sarifTutorialSamplesFolder = new File("./src/test/resources/examples/microsoft/sarif-tutorials/samples");
         sarifSpecificationSnippetsFolder = new File("./src/test/resources/examples/specification");
+        sarifBrakemanFolder = new File("./src/test/resources/examples/brakeman");
     }
 
     @BeforeEach
@@ -61,6 +66,15 @@ class SarifReportSupportTest {
         supportToTest = new SarifReportSupport();
     }
 
+    @Test
+    void brakeman_sarif_example_with_tags_can_be_loaded() throws IOException {
+        /* prepare */
+        File folder = sarifBrakemanFolder;
+        
+        /* execute +test */
+        testReports(folder, 1, "2.1.0");
+    }
+    
     @Test
     void specification_examples_can_all_be_loaded() throws IOException {
         /* prepare */
@@ -204,6 +218,33 @@ class SarifReportSupportTest {
         assertEquals(expectedCount, count, "Not amount of expected files were read as sarif report!");
     }
 
+    @Test
+    void brakeman_sarif_example_with_tags__tags_can_be_fetched() throws IOException {
+        /* prepare */
+        File codeFlowReportFile = new File(sarifBrakemanFolder, "sarif_2_1_0__brakeman_testfile_with_tags.sarif.json");
+        
+        /* execute */
+        Report report = supportToTest.loadReport(codeFlowReportFile);
+        
+        /* test */
+        List<Run> runs = report.getRuns();
+        assertEquals(1, runs.size(), "there must be ONE run!");
+        Run run = runs.iterator().next();
+        List<Result> results = run.getResults();
+        assertEquals(32, results.size(), "there must be 32 results!");
+        Result result = results.iterator().next();
+        
+        Rule rule = supportToTest.fetchRuleForResult(result, run);
+        Set<String> tags = rule.getProperties().fetchTags();
+        assertNotNull(tags);
+        
+        Set<String> expected = new LinkedHashSet<>();
+        expected.add("ContentTag");
+        expected.add("Tag2");
+        expected.add("Tag3");
+        assertEquals(expected, tags);
+    }
+    
     @Test
     void microsoft_sarif_tutorial_codeflow_example() throws IOException {
         /* prepare */

@@ -272,7 +272,7 @@ public class AssertVulnerabilities {
             if (check == expectedAmount) {
                 return AssertVulnerabilities.this;
             }
-            dumpOnSystemOutCWEBased(vulnerabilities);
+            dump(vulnerabilities);
 
             StringBuilder sb = new StringBuilder();
             for (SerecoVulnerability v : vulnerabilities) {
@@ -345,7 +345,7 @@ public class AssertVulnerabilities {
 
     }
 
-    private static void dumpOnSystemOutCWEBased(List<SerecoVulnerability> vulnerabilities) {
+    private static void dump(List<SerecoVulnerability> vulnerabilities) {
         StringBuilder sb = new StringBuilder();
 
         SortedMap<Integer, List<SerecoVulnerability>> map = new TreeMap<>();
@@ -384,7 +384,11 @@ public class AssertVulnerabilities {
             });
         });
 
-        System.out.println(sb.toString());
+        LOG.info("-----------------------------------------------------------");
+        LOG.info("----------------------------DUMP---------------------------");
+        LOG.info("-----------------------------------------------------------");
+        LOG.info(sb.toString());
+        LOG.info("-----------------------------------------------------------");
     }
 
     public AssertVulnerabilities hasVulnerabilities(int expectedAmount) {

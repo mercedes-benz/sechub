@@ -37,8 +37,11 @@ public class PDSCodeScanSarifJobScenario9IntTest {
 
     TestProject project = PROJECT_1;
 
+    /**
+     * Important: This test is only working when we have same storage for SECHUb and for PDS defined!
+     */
     @Test
-    public void a_user_can_start_a_pds_sarif_scan_and_get_the_sarif_results_transformed_to_sechub() {
+    public void pds_reuses_sechub_data__a_user_can_start_a_pds_sarif_scan_and_get_result() {
         /* @formatter:off */
 
         /* prepare */
@@ -66,7 +69,6 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         
         String report = as(USER_1).getJobReport(project, jobUUID);
         assertReport(report).
-            dump().
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
@@ -77,7 +79,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
                       hasLocation("Gemfile.lock").
                       hasLine(115).
                andFinding(1).
-                   hasName("Cross-Site Request Forgery").
+                   hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Checks for versions with CSRF token forgery vulnerability (CVE-2020-8166).");

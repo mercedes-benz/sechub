@@ -12,6 +12,11 @@
 # This "test product" does just return data.txt as the result so just doing a copy thats all
 #
 # PDS_JOB_WORKSPACE_LOCATION is a special variable and points always to job workspace location
-# 
+# PDS_JOB_RESULT_FILE is a special variable and points directly to result file
+#
+#cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/returned_sarif_result.json" ${PDS_JOB_RESULT_FILE}
+
+echo "...changed..."
+
 TARGET="$PDS_JOB_WORKSPACE_LOCATION/output/result.txt"
 cp "$PDS_JOB_WORKSPACE_LOCATION/upload/unzipped/sourcecode/returned_sarif_result.json" $TARGET

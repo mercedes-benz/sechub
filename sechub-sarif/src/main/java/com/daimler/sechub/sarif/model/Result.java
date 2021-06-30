@@ -57,16 +57,11 @@ public class Result {
         return codeflows;
     }
 
-    public void addLocation(Location location) {
-        if (location != null) {
-            this.locations.add(location);
+    public boolean addLocation(Location location) {
+        if (location == null) {
+            return false;
         }
-    }
-
-    public void addAdditionalProperty(String name, String value) {
-        if (name != null && value != null) {
-            this.properties.put(name, value);
-        }
+        return this.locations.add(location);
     }
 
     public Level getLevel() {
