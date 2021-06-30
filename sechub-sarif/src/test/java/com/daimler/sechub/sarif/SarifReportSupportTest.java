@@ -55,7 +55,7 @@ class SarifReportSupportTest {
             }
         };
         reader = new TextFileReader();
-        
+
         sarifTutorialSamplesFolder = new File("./src/test/resources/examples/microsoft/sarif-tutorials/samples");
         sarifSpecificationSnippetsFolder = new File("./src/test/resources/examples/specification");
         sarifBrakemanFolder = new File("./src/test/resources/examples/brakeman");
@@ -70,11 +70,11 @@ class SarifReportSupportTest {
     void brakeman_sarif_example_with_tags_can_be_loaded() throws IOException {
         /* prepare */
         File folder = sarifBrakemanFolder;
-        
+
         /* execute +test */
         testReports(folder, 1, "2.1.0");
     }
-    
+
     @Test
     void specification_examples_can_all_be_loaded() throws IOException {
         /* prepare */
@@ -99,7 +99,7 @@ class SarifReportSupportTest {
         PropertyBag properties = result.getProperties();
         assertNotNull(properties);
         Object tags = properties.get("tags");
-        assertEquals(Collections.singletonList("openSource"), tags);
+        assertEquals(Collections.singleton("openSource"), tags);
 
     }
 
@@ -222,10 +222,10 @@ class SarifReportSupportTest {
     void brakeman_sarif_example_with_tags__tags_can_be_fetched() throws IOException {
         /* prepare */
         File codeFlowReportFile = new File(sarifBrakemanFolder, "sarif_2_1_0__brakeman_testfile_with_tags.sarif.json");
-        
+
         /* execute */
         Report report = supportToTest.loadReport(codeFlowReportFile);
-        
+
         /* test */
         List<Run> runs = report.getRuns();
         assertEquals(1, runs.size(), "there must be ONE run!");
@@ -233,18 +233,18 @@ class SarifReportSupportTest {
         List<Result> results = run.getResults();
         assertEquals(32, results.size(), "there must be 32 results!");
         Result result = results.iterator().next();
-        
+
         Rule rule = supportToTest.fetchRuleForResult(result, run);
         Set<String> tags = rule.getProperties().fetchTags();
         assertNotNull(tags);
-        
+
         Set<String> expected = new LinkedHashSet<>();
         expected.add("ContentTag");
         expected.add("Tag2");
         expected.add("Tag3");
         assertEquals(expected, tags);
     }
-    
+
     @Test
     void microsoft_sarif_tutorial_codeflow_example() throws IOException {
         /* prepare */

@@ -25,10 +25,10 @@ public class Region {
      * Only values >= 0 make sense here, since it describes the line and column
      * numbers of a file where the finding was found at.
      * 
-     * @param startLine    is a positive integer, see
-     *                     https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317690
-     * @param startColumn  is a positive integer, see
-     *                     https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317691
+     * @param startLine   is a positive integer, see
+     *                    https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317690
+     * @param startColumn is a positive integer, see
+     *                    https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html#_Toc34317691
      * 
      * @throws IllegalArgumentException, if startLine < 0 or startColumn < 0.
      */

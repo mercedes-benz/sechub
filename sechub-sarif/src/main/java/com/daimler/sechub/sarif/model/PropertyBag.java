@@ -42,8 +42,8 @@ public class PropertyBag extends HashMap<String, Object> {
 
     /**
      * This adds a property. For key "tags" there is a special handling, this is
-     * always handled as a collection and internally added into a set. So tags are
-     * never duplicated.
+     * always handled as a collection and internally all current elements are added
+     * into a set. So tags are never duplicated.
      * 
      * @param key   when <code>null</code> nothing happens, because property bags
      *              may not have key null

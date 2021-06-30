@@ -40,7 +40,7 @@ class ResultTest {
     }
 
     @Test
-    void test_setters() {
+    void setters() {
         /* prepare */
         Result result = new Result();
 
@@ -49,12 +49,12 @@ class ResultTest {
     }
 
     @Test
-    void test_setter() {
+    void setter() {
         testSetterAndGetter(createExample());
     }
 
     @Test
-    void test_equals_and_hashcode() {
+    void equals_and_hashcode() {
 
         /* @formatter:off */
         testBothAreEqualAndHaveSameHashCode(createExample(), createExample());
@@ -73,7 +73,7 @@ class ResultTest {
     }
 
     @Test
-    void test_add_null_as_addtionalProperties() {
+    void add_null_as_addtionalProperties() {
         /* prepare */
         Result result = new Result();
 
@@ -88,21 +88,19 @@ class ResultTest {
     }
 
     @Test
-    void test_addAdditionalProperties_method() {
+    void property_bag_from_new_result_not_null() {
         /* prepare */
         Result result = new Result();
 
         /* execute */
         PropertyBag properties = result.getProperties();
-        properties.put("second", "that");
 
         /* test */
-        assertEquals(properties.size(), 2);
-        properties.put("first", "this");
+        assertNotNull(properties);
     }
 
     @Test
-    void test_add_null_as_location() {
+    void add_null_as_location() {
         /* prepare */
         Result result = new Result();
 
@@ -115,7 +113,7 @@ class ResultTest {
     }
 
     @Test
-    void test_addLocation_method() {
+    void addLocation_method() {
         /* prepare */
         Result result = new Result();
 

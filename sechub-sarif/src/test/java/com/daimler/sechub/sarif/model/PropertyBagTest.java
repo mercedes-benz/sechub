@@ -4,6 +4,7 @@ package com.daimler.sechub.sarif.model;
 import static com.daimler.sechub.test.PojoTester.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -45,35 +46,48 @@ class PropertyBagTest {
         assertTrue(fetchedTags.contains("tag3"));
 
     }
-    
+
     @Test
-    void adding_tags_by_add_tag_method_when_already_containing_tags() {
+    void adding_tags_by_add_tag_method_when_already_containing_other_tags() {
         /* prepare */
         PropertyBag propertyBag = new PropertyBag();
 
         // define some already existing tags
-        Set<String> set = new TreeSet<>();
-        propertyBag.put("tags", set);
-        set.add("value1");
-        set.add("value2");
-        
+        Set<String> tagSet = new TreeSet<>();
+        tagSet.add("value1");
+        tagSet.add("value2");
+        propertyBag.put("tags", tagSet);
+
         /* execute */
         propertyBag.addTag("tag1");
-        boolean former = propertyBag.addTag("value1"); // already added..
 
         /* test */
-        assertFalse(former,"Value1 was NOT contained formerly? Wrong!");
-        assertEquals(1,propertyBag.size());
+        assertEquals(1, propertyBag.size());
         Set<String> fetchedTags = propertyBag.fetchTags();
         assertTrue(fetchedTags.contains("value1"));
         assertTrue(fetchedTags.contains("value2"));
         assertTrue(fetchedTags.contains("tag1"));
-        assertEquals(3,fetchedTags.size(),"Fetched tags size differ!");
+        assertEquals(3, fetchedTags.size(), "Fetched tags size differ!");
 
     }
 
+    @Test
+    void adding_tags_by_add_tag_method_when_already_containing_same_tag() {
+        /* prepare */
+        PropertyBag propertyBag = new PropertyBag();
 
-    
+        // define some already existing tags
+        propertyBag.put("tags", Collections.singleton("value1"));
+
+        /* execute */
+        propertyBag.addTag("tag1");
+        boolean alreadyContainedTag = propertyBag.addTag("value1");
+
+        /* test */
+        assertFalse(alreadyContainedTag, "Value1 was NOT contained formerly? Wrong!");
+
+    }
+
     private PropertyBag createExample() {
         return new PropertyBag();
     }
