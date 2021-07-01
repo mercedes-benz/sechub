@@ -18,10 +18,16 @@ ext {
 
    library = [
         hsqldb: "org.hsqldb:hsqldb:2.4.0",
-      /* autark parts, with same versions like current used spring boot version (2.1.19*/
+       
+        /* autark JUnit parts, with same versions like current used spring boot version */
         // https://mvnrepository.com/artifact/junit/junit
         junit: "junit:junit:4.13.1",
-//      currently we are not using junit5 tests, but if we need refer to
+        junit5_impl: 'org.junit.jupiter:junit-jupiter-api:5.6.0',
+        junit5_runtime: 'org.junit.jupiter:junit-jupiter-engine:5.6.0',
+        
+//      Adopting existing Junit4 to Junit5 tests: 
+//      currently we keep our exting Junit4 tests and do NOT transform them. 
+//      If we start this, please refer: 
 //      https://github.com/junit-team/junit5-samples/tree/master/junit5-migration-gradle        
         
         // https://mvnrepository.com/artifact/org.mockito/mockito-core
@@ -108,8 +114,6 @@ ext {
          /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
          jsoup:									"org.jsoup:jsoup:1.13.1",
 
-		 /* contrastsecurity java-sarif - https://github.com/Contrast-Security-OSS/java-sarif */
-		 contrastsecurity_sarif:				"com.contrastsecurity:java-sarif:1.0"
    ]
 
 }

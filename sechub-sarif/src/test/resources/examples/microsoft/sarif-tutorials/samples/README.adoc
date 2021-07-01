@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: MIT
+== About
+
+This folder is a copy of
+https://github.com/microsoft/sarif-tutorials/tree/main/samples
+(commit 75c14c1c2121701b2a8600ece3db052063bd114f )
+
+Which is under creative commons license.
+
+NOTE: The copy was made to have valid examples for testing SARIF support and model structure.

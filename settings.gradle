@@ -3,6 +3,9 @@ include 'sechub-cli',
 /* documentation */
 'sechub-doc',
 
+/* sarif */
+'sechub-sarif',
+
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',

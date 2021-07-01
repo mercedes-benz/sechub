@@ -51,7 +51,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
             upload(project, jobUUID, PATH).
             approveJob(project, jobUUID);
         
-        waitForJobDone(project, jobUUID,30);
+        waitForJobDone(project, jobUUID,10);
         
         /* test */
         // test storage is a sechub storage and no PDS storage
@@ -68,13 +68,13 @@ public class PDSCodeScanSarifJobScenario10IntTest {
                finding(0).
                    hasSeverity(Severity.HIGH).
                    hasScanType(ScanType.CODE_SCAN).
-                   hasName("Cross-Site Scripting").
+                   hasName("BRAKE0102").
                    hasDescription("Checks for XSS in calls to content_tag.").
                    codeCall(0).
                       hasLocation("Gemfile.lock").
                       hasLine(115).
                andFinding(1).
-                   hasName("Cross-Site Request Forgery").
+                   hasName("BRAKE0116").
                    hasScanType(ScanType.CODE_SCAN).
                    hasSeverity(Severity.MEDIUM).
                    hasDescription("Checks for versions with CSRF token forgery vulnerability (CVE-2020-8166).");
