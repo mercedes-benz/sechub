@@ -1,0 +1,10 @@
+#!/bin/bash 
+cd `dirname $0`
+
+# This script builds SecHub server and client
+# 
+
+echo "********************************************************************"
+echo "* Build software " 
+echo "********************************************************************"
+./gradlew ensureLocalhostCertificate build buildGo -x :sechub-integrationtest:test

@@ -3,6 +3,9 @@ include 'sechub-cli',
 /* documentation */
 'sechub-doc',
 
+/* sarif */
+'sechub-sarif',
+
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',
@@ -53,7 +56,9 @@ include 'sechub-cli',
 
 'sechub-scan-testframework',
 'sechub-shared-kernel-testframework',
+
 'sechub-storage-core',
+'sechub-storage-sharedvolume-spring',
 'sechub-storage-s3-aws',
 'sechub-storage-s3-aws-test',
 

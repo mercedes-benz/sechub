@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.pds.execution.PDSExecutionService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
@@ -34,12 +35,15 @@ public class PDSBatchTriggerService {
     @Autowired
     PDSJobRepository repository;
 
+    @PDSMustBeDocumented(value="initial delay for next job trigger in milliseconds",scope="scheduler")
     @Value("${sechub.pds.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS + "}")
     private String infoInitialDelay; // here only for logging - used in scheduler annotation as well!
 
+    @PDSMustBeDocumented(value="delay for next job trigger in milliseconds",scope="scheduler")
     @Value("${sechub.pds.config.trigger.nextjob.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     private String infoFixedDelay; // here only for logging - used in scheduler annotation as well!
 
+    @PDSMustBeDocumented(value="Set scheduler enabled state",scope="scheduler")
     @Value("${sechub.pds.config.scheduling.enable:"+DEFAULT_SCHEDULING_ENABLED+"}")
     boolean schedulingEnabled=DEFAULT_SCHEDULING_ENABLED;
 

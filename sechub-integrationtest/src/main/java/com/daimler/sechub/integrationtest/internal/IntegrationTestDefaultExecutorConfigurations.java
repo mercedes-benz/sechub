@@ -35,11 +35,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_B="b";
     public static final String PDS_CODESCAN_VARIANT_C="b";
     public static final String PDS_CODESCAN_VARIANT_D="d";
+    public static final String PDS_CODESCAN_VARIANT_E="e";
     
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(PDS_CODESCAN_VARIANT_A,false,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(PDS_CODESCAN_VARIANT_B,true,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(PDS_CODESCAN_VARIANT_C,true,(String)null);// no identifier set, will not work...
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSScan(PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(PDS_CODESCAN_VARIANT_C,true,(String)null,true);// no identifier set, will not work...
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSScan(PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,true);
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_E = definePDSScan(PDS_CODESCAN_VARIANT_E,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,false);
     
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID="TEST_PDS_TECHUSER_ID";
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN="TEST_PDS_TECHUSER_APITOKEN";
@@ -52,11 +54,16 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
     
     private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
+        return definePDSScan(variant, credentialsAsEnvEntries, pdsProductIdentifier, true);
+    }
+    
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier, boolean useSecHubStorage) {
         String productIdentfieriId=pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing";
-        return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId);
+        return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId, useSecHubStorage);
         
     }
-    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId) {
+    
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId, boolean useSecHubStorage) {
         TestExecutorConfig config = createTestEditorConfig();
         
         config.enabled=true;
@@ -72,14 +79,17 @@ public class IntegrationTestDefaultExecutorConfigurations {
             config.setup.credentials.user=TestAPI.PDS_TECH_USER.getUserId();
             config.setup.credentials.password=TestAPI.PDS_TECH_USER.getApiToken();
         }
-        
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
         jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier",productIdentifierId));
+        jobParameters.add(new TestExecutorSetupJobParam("pds.config.use.sechub.storage", Boolean.valueOf(useSecHubStorage).toString()));
+        
         jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.trustall.certificates","true")); // accept for testing
         jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.minutes","0")); // speed up tests...
+        
         jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true")); // mandatory from PDS integration test server
         jobParameters.add(new TestExecutorSetupJobParam("product1.level",VALUE_PRODUCT_LEVEL)); // mandatory from PDS integration test server
         jobParameters.add(new TestExecutorSetupJobParam(JOBPARAM_PDS_KEY_FOR_VARIANTNAME,variant));
+        
         return config;
     }
     

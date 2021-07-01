@@ -6,6 +6,8 @@
 # ---------------------------------------------
 # This can be handy for batch operations (e.g. creation or modification of multiple objects)
 # or for using shell tools like grep to search the results
+#
+# SecHub Rest API documentation: https://daimler.github.io/sechub/latest/sechub-restapi.html
 
 # Tip: Set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
 
@@ -18,7 +20,7 @@ Shell front end to selected SecHub API calls.
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option.
 
-You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environmet variables
+You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
 so you can omit setting them via options which is better, because your secrets will not be revealed in the process list.
 
 List of actions and mandatory parameters:
@@ -35,6 +37,7 @@ profile_details <profile-id> - Show details of execution profile <profile-id> (e
 profile_list - List all existing execution profiles (json format)
 project_assign_profile <project-id> <profile-id> - Assign execution profile <profile-id> to project <project-id>
 project_assign_user <project-id> <user-id> - Assign user to project (allow scanning)
+project_create <project-id> <owner> ["<project short description>"] - Create a new project. The short description is optional.
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
 project_details_all <project-id> - project_details plus assigned execution profiles
 project_falsepositives_list <project-id> - Get defined false-positives for project <project-id> (json format)
@@ -143,6 +146,29 @@ function sechub_project_assign_profile {
 
 function sechub_project_assign_user {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/membership/$2" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function generate_sechub_project_create_data {
+  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  shift
+  local OWNER="${1,,}"
+  shift
+  local SHORT_DESCRIPTION="$*"
+  cat <<EOF
+{
+  "apiVersion":"$SECHUB_API_VERSION",
+  "name":"$PROJECT_ID",
+  "owner":"$OWNER",
+  "description":"$SHORT_DESCRIPTION"
+}
+EOF
+}
+
+function sechub_project_create {
+  JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
+  echo $JSON_DATA  # Show what is sent
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project"
 }
 
 
@@ -275,6 +301,7 @@ failed=0
 SECHUB_API_VERSION="1.0"
 NOFORMAT_PIPE="cat -"
 RESULT_FILTER="tail -1"
+TIMESTAMP=`date +"%Y-%m-%d %H:%M %Z"`
 if which jq >/dev/null 2>&1 ; then
   JSON_FORMATTER="jq ."   # . is needed or pipeing the result is not possible
   JSON_FORMAT_SORT="jq sort"
@@ -298,6 +325,10 @@ while [[ "${opt:0:1}" == "-" ]] ; do
     JSON_FORMATTER="$NOFORMAT_PIPE"
     JSON_FORMAT_SORT="$NOFORMAT_PIPE"
     shift
+    ;;
+  -h|-help)
+    usage
+    exit 0
     ;;
   -p|-plain)
     JSON_FORMATTER="$NOFORMAT_PIPE"
@@ -378,6 +409,18 @@ case "$action" in
     SECHUB_USER="$2" ; check_parameter SECHUB_USER
     [ $failed == 0 ] && sechub_project_assign_user "$PROJECT_ID" "$SECHUB_USER"
     ;;
+  project_create)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID
+    PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER
+    shift
+    shift
+    if [ $# -gt 0 ] ; then
+      PROJECT_SHORT_DESCRIPTION="$*"
+    else
+      PROJECT_SHORT_DESCRIPTION="Created by sechub-api.sh at $TIMESTAMP"
+    fi
+    [ $failed == 0 ] && sechub_project_create "$PROJECT_ID" "$PROJECT_OWNER" "$PROJECT_SHORT_DESCRIPTION"
+    ;;
   project_details)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID
     [ $failed == 0 ] && sechub_project_details "$PROJECT_ID"
@@ -452,7 +495,7 @@ case "$action" in
     SECHUB_USER="$1" ; check_parameter SECHUB_USER
     [ $failed == 0 ] && sechub_user_signup_accept "$SECHUB_USER"
     ;;
-  "")
+  ""|help)
     usage
     ;;
   *)

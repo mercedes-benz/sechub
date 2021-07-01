@@ -32,16 +32,18 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.logging.IntegrationTestSecurityLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
+import com.daimler.sechub.sharedkernel.logging.SecurityLogData;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventHistory;
 import com.daimler.sechub.sharedkernel.messaging.IntegrationTestEventInspectorService;
 import com.daimler.sechub.sharedkernel.metadata.IntegrationTestMetaDataInspector;
 import com.daimler.sechub.sharedkernel.metadata.MapStorageMetaDataInspection;
 import com.daimler.sechub.sharedkernel.metadata.MetaDataInspector;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 /**
  * Contains additional rest call functionality for integration test server
@@ -71,11 +73,26 @@ public class IntegrationTestServerRestController {
     private MetaDataInspector metaDataInspector;
 
     @Autowired
+    IntegrationTestSecurityLogService securityLogService;
+    
+    @Autowired
     IntegrationTestEventInspectorService eventInspectorService;
 
     @Autowired
     LogSanitizer logSanitizer;
 
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/logs/security", method = RequestMethod.DELETE, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public void clearSecurityLogs() {
+        securityLogService.getLogData().clear();
+    }
+    
+    @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/logs/security", method = RequestMethod.GET, produces = {
+            MediaType.APPLICATION_JSON_VALUE })
+    public List<SecurityLogData> getSecurityLogData() {
+        return securityLogService.getLogData();
+    }
+    
     @RequestMapping(path = APIConstants.API_ANONYMOUS + "integrationtest/event/inspection/reset-and-stop", method = RequestMethod.POST, produces = {
             MediaType.APPLICATION_JSON_VALUE })
     public void resetAndStopEventInspection() {

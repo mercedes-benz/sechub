@@ -1,0 +1,94 @@
+# SPDX-License-Identifier: MIT
+
+# The image argument needs to be placed on top
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+# The remaining arguments need to be placed after the `FROM`
+# See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
+ARG WORKSPACE="/workspace"
+ARG PDS_FOLDER="/pds"
+ARG PDS_CHECKSUM="f3101a6a2a96b39edf493249f2300c627fa01fcb7a6b96c5ae1edfbe70a31d46"
+ARG TOOL_FOLDER="/tool"
+ARG GOSEC_VERSION="2.8.1"
+ARG GO="go1.16.5.linux-amd64.tar.gz"
+ARG GO_CHECKSUM="b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061"
+
+ENV PDS_VERSION=0.21.0
+
+# non-root user
+# using fixed group and user ids
+# gosec needs a home directory for the cache
+RUN groupadd --gid 2323 gosec \
+     && useradd --uid 2323 --no-log-init --create-home --gid gosec gosec
+
+# Update image and install dependencies
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && \
+    apt-get upgrade --assume-yes && \
+    apt-get install --assume-yes wget openjdk-11-jre-headless && \
+    apt-get clean
+
+# Create tool folder
+COPY gosec.sh $TOOL_FOLDER/gosec.sh
+RUN chmod +x $TOOL_FOLDER/gosec.sh
+
+# Install Go
+RUN cd /tmp && \
+    # create checksum file
+    echo "$GO_CHECKSUM $GO" > $GO.sha256sum && \
+    # download Go
+    wget https://dl.google.com/go/${GO} && \
+    # verify that the checksum and the checksum of the file are same
+    sha256sum --check $GO.sha256sum && \
+    # extract Go
+    tar --extract --file $GO --directory "/usr/local/" && \
+    # remove go tar.gz
+    rm $GO && \
+    # add Go to path
+    echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
+
+# Install GoSec
+RUN cd /tmp && \
+    # download gosec
+    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
+    # download checksum
+    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
+    # verify checksum
+    sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
+    # create gosec folder
+    mkdir -p "$TOOL_FOLDER/gosec" && \
+    # unpack gosec
+    tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
+    # Remove gosec tar.gz
+    rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
+    
+
+# Install the Product Delegation Server (PDS)
+RUN mkdir -p "$PDS_FOLDER" && \
+    cd /pds && \
+    # create checksum file
+    echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
+    # download pds
+    wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    # verify that the checksum and the checksum of the file are same
+    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+
+# Copy PDS configfile
+COPY pds-config.json /$PDS_FOLDER/pds-config.json
+
+# Copy run script into container
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
+# Create the PDS workspace
+WORKDIR "$WORKSPACE"
+
+# Change owner of tool, workspace and pds folder as well as /run.sh
+RUN chown --recursive gosec:gosec $TOOL_FOLDER $WORKSPACE $PDS_FOLDER /run.sh
+
+# switch from root to non-root user
+USER gosec
+
+CMD ["/run.sh"]

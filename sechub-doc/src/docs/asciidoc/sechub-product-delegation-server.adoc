@@ -30,6 +30,9 @@ include::documents/shared/concepts/concept_pds.adoc[]
 == Runtime view
 include::documents/pds/pds_config.adoc[]
 
+==== Storage configuration
+include::documents/shared/pds_storage_configuration.adoc[]
+
 include::documents/pds/pds_usecases.adoc[]
 
 include::documents/pds/pds_restapi.adoc[]

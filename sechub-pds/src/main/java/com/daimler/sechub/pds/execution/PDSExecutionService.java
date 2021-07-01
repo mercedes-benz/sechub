@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.pds.PDSMustBeDocumented;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobStatusState;
@@ -63,9 +64,11 @@ public class PDSExecutionService {
     private final PDSExecutionWatcher watcher = new PDSExecutionWatcher();
     private final Map<UUID, Future<PDSExecutionResult>> jobsInQueue = new LinkedHashMap<>();
 
+    @PDSMustBeDocumented(value="Set amount of worker threads used for exeuctions", scope="execution")
     @Value("${sechub.pds.config.execute.worker.thread.count:" + DEFAULT_WORKER_THREAD_COUNT + "}")
     int workerThreadCount = DEFAULT_WORKER_THREAD_COUNT;
 
+    @PDSMustBeDocumented(value="Set amount of maximum executed parts in queue for same time", scope="execution")
     @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
 

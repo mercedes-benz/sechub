@@ -16,6 +16,7 @@ import com.daimler.sechub.sereco.importer.ProductImportAbility;
 import com.daimler.sechub.sereco.importer.ProductResultImporter;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,12 +33,19 @@ public class Workspace {
 
     private String id;
 
+    private ObjectMapper objectMapper;
+
     public List<SerecoVulnerability> getVulnerabilties() {
         return workspaceMetaData.getVulnerabilities();
     }
 
     public Workspace(String id) {
         this.id = id;
+        this.objectMapper = new ObjectMapper();
+        
+        // configure. we do NOT want empty or null values inside our JSON any more. So easier to read
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+        objectMapper.setSerializationInclusion(Include.NON_EMPTY);
     }
 
     public String getId() {
@@ -109,7 +117,7 @@ public class Workspace {
 
     public String createReport() {
         try {
-            return new ObjectMapper().writeValueAsString(workspaceMetaData);
+            return objectMapper.writeValueAsString(workspaceMetaData);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Was not able to write report as json", e);
         }

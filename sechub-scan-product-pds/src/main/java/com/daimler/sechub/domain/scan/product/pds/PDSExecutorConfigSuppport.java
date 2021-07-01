@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.daimler.sechub.adapter.DefaultExecutorConfigSupport;
+import com.daimler.sechub.adapter.pds.PDSAdapterConstants;
+import com.daimler.sechub.commons.core.util.SecHubStorageUtil;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
+import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.validation.Validation;
 
@@ -33,7 +36,7 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         super(config, systemEnvironment, validation);
     }
 
-    public Map<String, String> createJobParametersToSendToPDS() {
+    public Map<String, String> createJobParametersToSendToPDS(SecHubConfiguration secHubConfiguration) {
 
         Map<String, String> parametersToSend = new TreeMap<>();
         List<PDSSecHubConfigDataKeyProvider<?>> providers = new ArrayList<>();
@@ -54,6 +57,15 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
                 parametersToSend.put(originKey, configuredExecutorParameters.get(originKey));
             }
         }
+        /* provide SecHub storage when necessary */ 
+        String useSecHubStorage = parametersToSend.get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        if (Boolean.parseBoolean(useSecHubStorage)) {
+            String projectId = secHubConfiguration.getProjectId();
+            String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
+
+            parametersToSend.put(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH, sechubStoragePath);
+        }
+        
         return parametersToSend;
     }
 

@@ -1,0 +1,4 @@
+// SPDX-License-Identifier: MIT
+TIP: The system properties described here are *automatically*
+     by build server when developers are using spring annotation `@Value` in conjunction with the 
+     PDS annotation `@PDSMustBeDocumented` annotation inside code!

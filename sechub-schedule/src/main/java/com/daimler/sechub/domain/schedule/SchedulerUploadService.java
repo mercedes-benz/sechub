@@ -22,12 +22,12 @@ import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.storage.StorageService;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserUploadsSourceCode;
 import com.daimler.sechub.sharedkernel.util.FileChecksumSHA256Service;
 import com.daimler.sechub.sharedkernel.util.ZipSupport;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.storage.core.JobStorage;
+import com.daimler.sechub.storage.core.StorageService;
 
 @Service
 public class SchedulerUploadService {
@@ -111,14 +111,14 @@ public class SchedulerUploadService {
 
 	private void assertCheckSumCorrect(String checkSum, Path path) {
 		if (!checksumSHA256Service.hasCorrectChecksum(checkSum, path.toAbsolutePath().toString())) {
-			LOG.error("uploaded file is has not correct checksum! So something happend on upload!");
+			LOG.error("uploaded file has not correct checksum! Something must have happened during the upload!");
 			throw new NotAcceptableException("Sourcecode checksum check failed");
 		}
 	}
 
 	private void assertValidZipFile(Path path) {
 		if (!zipSupport.isZipFile(path)) {
-			LOG.error("uploaded file is NOT a valid ZIP file! Doing garbage control!");
+			LOG.error("uploaded file is NOT a valid ZIP file!");
 			throw new NotAcceptableException("Sourcecode is not wrapped inside a valid zip file");
 		}
 	}

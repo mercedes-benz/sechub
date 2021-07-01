@@ -26,7 +26,7 @@ subprojects{
     if (! projectType.javaProjects.contains(project)){
 		return;
     }
-
+    
     apply plugin: 'java'
 
 	/* Setup UTF-8 for compile AND test compilation*/
@@ -38,10 +38,19 @@ subprojects{
 
     def wireMockHttpPortValue = 8180;
     def wireMockHttpsPortValue = 8143;
-
-	/* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
+    
+    dependencies {
+        // https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+        testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.7.1'
+        testImplementation 'org.junit.platform:junit-platform-launcher' // fix eclipse 4.16 launching problems , see https://github.com/spring-projects/sts4/issues/431 
+    }
+    
     test {
+	    /* Per default GRADLE stops the build if one single test fails. We want to have all tests executed. */
         ignoreFailures = true
+        
+        /* enable junit5 support in gradle! some of our tests are now written in junit5*/
+        useJUnitPlatform()
 
         def wireMockHttpPortProperty="sechub.test.wiremock.http_port";
         if ( project.hasProperty(wireMockHttpPortProperty)){

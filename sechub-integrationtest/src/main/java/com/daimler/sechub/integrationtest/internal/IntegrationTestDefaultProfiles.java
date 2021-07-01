@@ -5,6 +5,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DoNotChangeTestExecutionProfile PROFILE_1 = defineProfile1();
     public static final DoNotChangeTestExecutionProfile PROFILE_2_PDS_CODESCAN = defineProfile2();
     public static final DoNotChangeTestExecutionProfile PROFILE_3_PDS_CODESCAN_SARIF = defineProfile3();
+    
+    public static final DoNotChangeTestExecutionProfile PROFILE_4_PDS_CODESCAN_SARIF_NO_SECHUB_STORAGE_USED = defineProfile4();
 
     private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] {
 
@@ -12,7 +14,9 @@ public class IntegrationTestDefaultProfiles {
 
             PROFILE_2_PDS_CODESCAN,
             
-            PROFILE_3_PDS_CODESCAN_SARIF
+            PROFILE_3_PDS_CODESCAN_SARIF,
+            
+            PROFILE_4_PDS_CODESCAN_SARIF_NO_SECHUB_STORAGE_USED
             
     };
 
@@ -48,5 +52,17 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
+    
+    
+    private static DoNotChangeTestExecutionProfile defineProfile4() {
+        
+        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_E);
+        profile.id = "inttest-default-profile4-sarif"; // not more than 30 chars per profile id, so we use this
+        profile.description="Same as profile 3, but executor config does not reuse sechub storage!";
+        profile.enabled = true;
+        return profile;
+    }
+    
 
 }

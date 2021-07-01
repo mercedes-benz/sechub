@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
+import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
@@ -61,18 +62,21 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
     public PDSExecutionResult call() throws Exception {
         LOG.info("Prepare execution of job {}", jobUUID);
         PDSExecutionResult result = new PDSExecutionResult();
+        PDSJobConfiguration config = null;
         try {
             updateWithRetriesOnOptimisticLocks(UpdateState.RUNNING);
 
             String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
 
-            PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
+            config = PDSJobConfiguration.fromJSON(configJSON);
+
             long minutesToWaitForResult = workspaceService.getMinutesToWaitForResult(config);
             if (minutesToWaitForResult < 1) {
                 throw new IllegalStateException("Minutes to wait for result configured too low:" + minutesToWaitForResult);
             }
 
             LOG.debug("Handle source upload for job with uuid:{}", jobUUID);
+            workspaceService.prepareWorkspace(jobUUID, config);
             workspaceService.unzipUploadsWhenConfigured(jobUUID, config);
             String path = workspaceService.getProductPathFor(config);
             if (path == null) {
@@ -92,7 +96,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         } finally {
 
-            cleanUpWorkspace(jobUUID);
+            cleanUpWorkspace(jobUUID, config);
         }
         LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
 
@@ -162,17 +166,36 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.result = "Result file not found at " + file.getAbsolutePath();
 
             File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
+            String shrinkedOutputStream = null;
+            String shrinkedErrorStream = null;
+
             if (systemOutFile.exists()) {
-                String error = FileUtils.readFileToString(systemOutFile, encoding);
-                result.result += "\nOutput:\n" + error;
+                String output = FileUtils.readFileToString(systemOutFile, encoding);
+                result.result += "\nOutput:\n" + output;
+                shrinkedOutputStream = maximum1024chars(output);
             }
 
             File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
             if (systemErrorFile.exists()) {
                 String error = FileUtils.readFileToString(systemErrorFile, encoding);
                 result.result += "\nErrors:\n" + error;
+                shrinkedErrorStream = maximum1024chars(error);
             }
+
+            LOG.error("job {} wrote no result file - here part of console log:\noutput stream:\n{}\nerror stream:\n{}", jobUUID, shrinkedOutputStream,
+                    shrinkedErrorStream);
+
         }
+    }
+
+    private String maximum1024chars(String content) {
+        if (content == null) {
+            return null;
+        }
+        if (content.length() < 1024) {
+            return content;
+        }
+        return content.substring(0, 1021) + "...";
     }
 
     private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {
@@ -230,18 +253,27 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.info("Cancelation of process: {} will destroy underlying process forcibly");
             process.destroyForcibly();
         } finally {
-            cleanUpWorkspace(jobUUID);
+
+            String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
+
+            try {
+                PDSJobConfiguration config = PDSJobConfiguration.fromJSON(configJSON);
+                cleanUpWorkspace(jobUUID, config);
+            } catch (PDSJSONConverterException e) {
+                LOG.error("Was not able fetch job config for {} - workspace clean only workspace files", jobUUID, e);
+            }
+
         }
 
     }
 
-    private void cleanUpWorkspace(UUID jobUUID) {
+    private void cleanUpWorkspace(UUID jobUUID, PDSJobConfiguration config) {
         if (workspaceService.isWorkspaceAutoCleanDisabled()) {
             LOG.info("Auto cleanup is disabled, so keep files at {}", workspaceService.getWorkspaceFolder(jobUUID));
             return;
         }
         try {
-            workspaceService.cleanup(jobUUID);
+            workspaceService.cleanup(jobUUID, config);
             LOG.debug("workspace cleanup done for job:{}", jobUUID);
         } catch (IOException e) {
             LOG.error("workspace cleanup failed for job:{}!", jobUUID);

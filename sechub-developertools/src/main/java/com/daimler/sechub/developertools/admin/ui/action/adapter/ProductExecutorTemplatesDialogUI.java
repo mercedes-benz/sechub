@@ -95,7 +95,11 @@ public class ProductExecutorTemplatesDialogUI {
         JMenuBar menuBar = createMainMenu();
 
         if (config.inputContent != null) {
+            /* we use the importer all time to initialize content */
             SwingUtilities.invokeLater(() -> importFromClipboardAction.importText(config.inputContent));
+        }else {
+            /* when new at all */
+            System.out.println("No input content found!");
         }
 
         if (config.provideExportAllButton) {
@@ -231,6 +235,8 @@ public class ProductExecutorTemplatesDialogUI {
             additional = ";color:red";
         } else if (data.necessarity.equals(Necessarity.UNKNOWN)) {
             additional = ";color:orange";
+        } else if (data.necessarity.equals(Necessarity.RECOMMENDED)) {
+            additional = ";color:blue";
         }
         return PRE_HTML + additional + "\">";
     }

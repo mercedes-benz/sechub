@@ -109,6 +109,7 @@ public class TestURLBuilder {
 
         private static final String API_PDS_JOB = "/api/job";
         private static final String API_PDS_ANONYMOUS = "/api/anonymous";
+        private static final String API_PDS_INTEGRATIONTEST = "/api/anonymous/integrationtest";
         private static final String API_PDS_ADMIN = "/api/admin";
 
         public String buildCreateJob() {
@@ -154,6 +155,10 @@ public class TestURLBuilder {
         public String buildBaseUrl() {
             return buildUrl("");
         }
+
+        public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
+            return buildUrl(API_PDS_INTEGRATIONTEST, "storage",jobUUID,"path");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -164,7 +169,7 @@ public class TestURLBuilder {
     /* +............................ common ...................................+ */
     /* +-----------------------------------------------------------------------+ */
 
-    private String buildUrl(String custom, Object... parts) {
+    public String buildUrl(String custom, Object... parts) {
         StringBuilder sb = new StringBuilder();
         sb.append(createRootPath());
         sb.append(custom);
@@ -639,6 +644,13 @@ public class TestURLBuilder {
 
     public String buildintegrationTestIsExecutionProfileExisting(String profileId) {
         return buildUrl(API_ANONYMOUS, "integrationtest/config/execution/profile/" + profileId + "/exists");
+    }
+    
+    public String buildIntegrationTestClearSecurityLogs() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/logs/security");
+    }
+    public String buildIntegrationTestGetSecurityLogs() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/logs/security");
     }
 
     public String buildBaseURL() {

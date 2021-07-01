@@ -1,0 +1,69 @@
+@startuml
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Storage/AmazonS3/bucket/bucket>
+!include <aws/Storage/volume/volume>
+
+title Storage example for same S3 bucket
+
+'skinparam linetype polyline
+'skinparam linetype ortho
+
+actor secHubUser as "SecHub user"
+
+rectangle SecHub {
+
+    rectangle secHubCluster as "SecHub cluster" {
+    
+        rectangle secHub3 as "SecHub member3" {
+             control scheduler3 as "Scheduler"
+             component scanJob3 as "Scan job"
+             storage localFS3 as "Local filesystem"
+        }
+        rectangle secHub2 as "SecHub member2"{
+             control scheduler2 as "Scheduler"
+             component scanJob2 as "Scan job"
+             storage localFS2 as "Local filesystem"
+        }
+        rectangle secHub1 as "SecHub member1" {
+            control scheduler1 as "Scheduler"
+            component scanJob1 as "Scan job"
+            storage localFS1 as "Local filesystem"
+        }
+        
+    }
+    database secHubDB as "SecHub database" {
+            
+            rectangle XYZConfig as "Product executor config XYZ"
+    }
+}
+
+cloud " S3 storage" as s3Storage{
+    rectangle "shared S3 bucket" <<$bucket>> as bucket1
+}
+
+rectangle pdsCluster as "PDS XYZ cluster " {
+    
+    rectangle pdsXyz1 as "PDS-XYZ member1" #ff99aa {
+        storage workspace1 as "Local filesystem"
+        rectangle launcher1 as "Launcher"
+    }
+    rectangle pdsXyz2 as "PDS-XYZ member2" {
+    }
+}
+
+secHubUser ..> scheduler3 #blue : "upload job data"
+
+secHubCluster -[hidden]- secHubDB 
+
+scheduler3 .[thickness=2].> bucket1 #blue : "store job data"
+
+scheduler2 --> scanJob2 
+scanJob2 ..> XYZConfig : "read executor configuration" 
+scanJob2 --> pdsXyz1 : "2. wait for PDS product result"
+
+pdsXyz1 .[thickness=2].> bucket1 : "read job data into PDS workspace" 
+
+s3Storage -[hidden]- pdsCluster
+s3Storage -[hidden]- secHubCluster
+@enduml
