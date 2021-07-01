@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.24.0</span>
+<span id="revnumber"> Server 0.25.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -449,10 +449,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#requirements">1.1. Requirements</a>
 <ul class="sectlevel3">
-<li><a href="#alpine-linux-3-10-3-11-3-12">1.1.1. Alpine Linux 3.10, 3.11 &amp; 3.12:</a></li>
-<li><a href="#debian-10">1.1.2. Debian 10:</a></li>
-<li><a href="#fedora-32-33-and-centos-8">1.1.3. Fedora 32 &amp; 33 and CentOS 8:</a></li>
-<li><a href="#ubuntu-18-04-20-04">1.1.4. Ubuntu 18.04 &amp; 20.04:</a></li>
+<li><a href="#alpine-linux">1.1.1. Alpine Linux:</a></li>
+<li><a href="#debian">1.1.2. Debian:</a></li>
+<li><a href="#fedora-and-centos">1.1.3. Fedora and CentOS:</a></li>
+<li><a href="#ubuntu">1.1.4. Ubuntu:</a></li>
 </ul>
 </li>
 <li><a href="#instructions">1.2. Instructions</a></li>
@@ -541,7 +541,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.24.0-20210520182527</code></p>
+<p>Documentation version: <code>Server 0.25.0-dirty-20210701143633</code></p>
 </div>
 </div>
 </div>
@@ -563,13 +563,19 @@ build pipeline / contionus integration (CI) and helps to provide
 <p><i class="fa fa-check-square-o"></i> Building SecHub</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Starting SecHub in Integration Test Server mode</p>
+<p><i class="fa fa-check-square-o"></i> Starting SecHub server in Integration Test mode</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Getting default passwords</p>
+<p><i class="fa fa-check-square-o"></i> Default passwords</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> Working with the REST API and <a href="https://curl.haxx.se/">cURL</a></p>
+<p><i class="fa fa-check-square-o"></i> Working with the REST API</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Creating a project on SecHub server</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Code scan with the SecHub client</p>
 </li>
 <li>
 <p><i class="fa fa-check-square-o"></i> Stopping the server</p>
@@ -581,7 +587,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="ulist">
 <ul>
 <li>
-<p>Java SDK</p>
+<p>Java SDK (We are still compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.)</p>
 </li>
 <li>
 <p>Git</p>
@@ -589,48 +595,40 @@ build pipeline / contionus integration (CI) and helps to provide
 <li>
 <p>cURL</p>
 </li>
+<li>
+<p>jq</p>
+</li>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="alpine-linux-3-10-3-11-3-12">1.1.1. Alpine Linux 3.10, 3.11 &amp; 3.12:</h4>
-<div class="paragraph">
-<p>Java 8:</p>
-</div>
+<h4 id="alpine-linux">1.1.1. Alpine Linux:</h4>
 <div class="listingblock">
 <div class="content">
-<pre>apk add openjdk8 curl git bash</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Java 11:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>apk add openjdk11 curl git bash</pre>
+<pre>apk add openjdk11 curl git bash jq</pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="debian-10">1.1.2. Debian 10:</h4>
+<h4 id="debian">1.1.2. Debian:</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-11-jdk curl</pre>
+<pre>sudo apt install git openjdk-11-jdk curl jq</pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="fedora-32-33-and-centos-8">1.1.3. Fedora 32 &amp; 33 and CentOS 8:</h4>
+<h4 id="fedora-and-centos">1.1.3. Fedora and CentOS:</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo dnf install git java-1.8.0-openjdk-devel curl</pre>
+<pre>sudo dnf install git java-11-openjdk-devel curl jq</pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="ubuntu-18-04-20-04">1.1.4. Ubuntu 18.04 &amp; 20.04:</h4>
+<h4 id="ubuntu">1.1.4. Ubuntu:</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-8-jdk curl</pre>
+<pre>sudo apt install git openjdk-11-jdk curl jq</pre>
 </div>
 </div>
 </div>
@@ -644,19 +642,14 @@ build pipeline / contionus integration (CI) and helps to provide
 <ol class="arabic">
 <li>
 <p>Cloning the repository</p>
-<div class="listingblock">
-<div class="content">
-<pre>$ cd ~
-$ git clone https://github.com/Daimler/sechub.git
-$ cd sechub</pre>
-</div>
-</div>
 </li>
-<li>
-<p>Generate a self-signed certificate</p>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>~/develop/sechub$ ./gradlew ensureLocalhostCertificate</pre>
+<pre>cd ~
+git clone https://github.com/Daimler/sechub.git
+cd sechub</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -666,36 +659,49 @@ $ cd sechub</pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<div class="title">Proxy</div>
 <div class="paragraph">
-<p>In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: <a href="https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy">Accessing the web through a HTTP proxy</a></p>
+<p><strong>Proxy</strong>:<br>
+In case you have to connect via proxy to the internet, please have a look on how to setup a proxy in the Gradle documentation: <a href="https://docs.gradle.org/current/userguide/build_environment.html#sec:accessing_the_web_via_a_proxy">Accessing the web through a HTTP proxy</a></p>
 </div>
 <div class="paragraph">
-<p>Example:</p>
+<p>Example:<br>
+Add these lines to your ~/.gradle/gradle.properties file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>./gradlew -Dhttp.proxyHost=locahost -Dhttp.proxyPort=3128 -Dhttps.proxyHost=localhost -Dhttps.proxyPort=3128 ensureLocalhostCertificate</pre>
+<pre>systemProp.http.proxyHost=yourproxy.youcompany.com
+systemProp.http.proxyPort=3128
+systemProp.http.proxyUser=userid
+systemProp.http.proxyPassword=password
+systemProp.http.nonProxyHosts=*.nonproxyrepos.com|localhost</pre>
 </div>
 </div>
 </td>
 </tr>
 </table>
 </div>
-</li>
+<div class="olist arabic">
+<ol class="arabic" start="2">
 <li>
 <p>Build SecHub</p>
-<div class="listingblock">
-<div class="content">
-<pre>~/develop/sechub$ ./gradlew build</pre>
-</div>
-</div>
 </li>
-<li>
-<p>Start integration test server</p>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>~/develop/sechub$ ./gradlew startIntegrationTestServer</pre>
+<pre>./build</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Start SecHub server in Integration Test mode</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew startIntegrationTestServer</pre>
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -710,64 +716,13 @@ Do not use the Integration Test Server mode in production.
 </tr>
 </table>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="title">Logs</div>
-In case of an error message or failure, you can find the server log under: <code>./sechub-integrationtest/integrationtest-server.log</code>.
-</td>
-</tr>
-</table>
-</div>
-</li>
+<div class="olist arabic">
+<ol class="arabic" start="4">
 <li>
-<p>Test if the server is up and running</p>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl --insecure --head https://localhost:8443/api/anonymous/check/alive</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>insecure</code> parameter is needed, because a self-signed certificate is used in this guide.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">HTTP/1.1 200 <i class="conum" data-value="1"></i><b>(1)</b>
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-Strict-Transport-Security: max-age=31536000 ; includeSubDomains
-X-Frame-Options: DENY
-Content-Length: 0
-Date: Thu, 12 Dec 2019 15:26:19 GMT</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>You should get a <code>HTTP 200</code> code back from the running integration server.</td>
-</tr>
-</table>
-</div>
+<p>Credentials</p>
 </li>
-<li>
-<p>Get the initial credentials</p>
+</ol>
+</div>
 <div class="paragraph">
 <p>Open the log file <code>./sechub-integrationtest/integrationtest-server.log</code> and search for:</p>
 </div>
@@ -781,53 +736,178 @@ Date: Thu, 12 Dec 2019 15:26:19 GMT</code></pre>
 #####################################################################################</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Superadmin username and password:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>username: int-test_superadmin
-password: int-test_superadmin-pwd</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>User account username and password:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>username: int-test_onlyuser
-password: int-test_onlyuser-pwd</pre>
-</div>
-</div>
-<div class="admonitionblock important">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The <code>{noop}</code> has to be excluded from the password string <code>{noop}int-test_superadmin-pwd</code>, therefor the password is: <code>int-test_superadmin-pwd</code>
+<div class="paragraph">
+<p>In case of an error message or failure, you can find the SecHub server log under: <code>./sechub-integrationtest/integrationtest-server.log</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>{noop}</code> has to be excluded from the password string, therefore the password is: <code>int-test_superadmin-pwd</code></p>
+</div>
 </td>
 </tr>
 </table>
 </div>
-</li>
-<li>
-<p>List all users as administrator</p>
 <div class="paragraph">
-<p>List all users on the SecHub server using the administrator credentials</p>
+<p>These are the initial credentials when starting SecHub server in integration-test mode:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>curl --insecure --user int-test_superadmin:int-test_superadmin-pwd 'https://localhost:8443/api/admin/users'; echo</pre>
+<div class="paragraph">
+<p>SecHub Superadmin:</p>
 </div>
+<div class="quoteblock">
+<blockquote>
+username: <code>int-test_superadmin</code>
+password: <code>int-test_superadmin-pwd</code>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>SecHub User account:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+username: <code>int-test_onlyuser</code>
+password: <code>int-test_onlyuser-pwd</code>
+</blockquote>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Environment variables</p>
+<div class="paragraph">
+<p>Set search path and some environment variables to ease handling later on (SecHub client and <code>sechub-api.sh</code> script):</p>
 </div>
 </li>
-<li>
-<p>Stop server</p>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>~/develop/sechub$ ./gradlew stopIntegrationTestServer</pre>
+<pre>export SECHUB_SERVER=https://localhost:8443
+export SECHUB_USERID=int-test_superadmin
+export SECHUB_APITOKEN=int-test_superadmin-pwd
+export SECHUB_TRUSTALL=true
+export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH"</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Test: List all users as administrator</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>sechub-api.sh</code> is a helper Bash script based on <code>curl</code> that eases the use of the <a href="https://daimler.github.io/sechub/latest/sechub-restapi.html">SecHub server REST API</a>. We use it here to get a list of the users.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub-api.sh user_list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected result:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">[
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">int-test_onlyuser</span><span class="delimiter">&quot;</span></span>,
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">int-test_superadmin</span><span class="delimiter">&quot;</span></span>
+]</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Create a project on SecHub server</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The output of the api calls are omitted here for better readability:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash"># Create &quot;testproject&quot;
+sechub-api.sh project_create testproject int-test_superadmin
+
+# Assign &quot;int-test_superadmin&quot; as scan user to our project
+sechub-api.sh project_assign_user testproject int-test_superadmin
+
+# List project details
+sechub-api.sh project_details testproject</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Scan with SecHub client</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s do a scan of our SecHub code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">sechub -project testproject -reportformat html scan
+
+WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
+ _____           _   _       _
+/  ___|         | | | |     | |
+\ `--.  ___  ___| |_| |_   _| |__
+ `--. \/ _ \/ __|  _  | | | | '_ \
+/\__/ /  __/ (__| | | | |_| | |_) |
+\____/ \___|\___\_| |_/\__,_|_.__/ Client Version 0.0.0-3e13084-dirty-20210622120507
+
+2021-06-22 13:26:24 (+02:00) Creating new sechub job
+2021-06-22 13:26:24 (+02:00) Zipping folder: . (/home/user/sechub)
+2021-06-22 13:26:25 (+02:00) Uploading source zip file
+2021-06-22 13:26:26 (+02:00) Approve sechub job
+2021-06-22 13:26:26 (+02:00) Waiting for job 7045e25f-592b-46bf-9713-c31995d37e99 to be done
+                             .
+2021-06-22 13:26:30 (+02:00) Fetching result (format=html) for job 7045e25f-592b-46bf-9713-c31995d37e99
+2021-06-22 13:26:30 (+02:00) SecHub report written to sechub_report_testproject_7045e25f-592b-46bf-9713-c31995d37e99.html
+  GREEN - no severe security vulnerabilities identified</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Congratulations! You have done your first SecHub code scan.</em><br>
+You can open the SecHub report file in your browser.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In order to scan, you need a <code>sechub.json</code> config file. In our case, it is already in the repository so we can use it right away.<br>
+<br>
+For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. See <a href="https://daimler.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors">SecHub documentation</a> for details.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>Stop SecHub integration test server</p>
+<div class="listingblock">
+<div class="content">
+<pre>./gradlew stopIntegrationTestServer</pre>
 </div>
 </div>
 </li>
@@ -839,7 +919,7 @@ The <code>{noop}</code> has to be excluded from the password string <code>{noop}
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.24.0<br>
+ Server 0.25.0<br>
 </div>
 </div>
 <style>

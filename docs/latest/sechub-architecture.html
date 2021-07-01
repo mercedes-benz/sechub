@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.24.0</span>
+<span id="revnumber"> Server 0.25.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -861,12 +861,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#general">9.4.1. General</a></li>
 <li><a href="#handling-of-resources">9.4.2. Handling of resources</a></li>
 <li><a href="#big-picture">9.4.3. Big picture</a></li>
-<li><a href="#sechub-integration">9.4.4. SecHub integration</a>
+<li><a href="#pds-storage-and-sharing">9.4.4. Storage and sharing</a>
 <ul class="sectlevel4">
-<li><a href="#executors-and-adapters">9.4.4.1. Executors and Adapters</a>
+<li><a href="#shared-s3-storage">9.4.4.1. Shared S3 storage</a></li>
+<li><a href="#pds-storage-different-s3">9.4.4.2. Different S3 storages</a></li>
+<li><a href="#same-shared-volume-nfs">9.4.4.3. Same shared volume (NFS)</a></li>
+<li><a href="#pds-storage-different-sharedvolume">9.4.4.4. Different shared volumes (NFS)</a></li>
+<li><a href="#pds-storage-mixing-sharedvolume-and-s3">9.4.4.5. Mixing S3 and shared volume (NFS)</a></li>
+</ul>
+</li>
+<li><a href="#sechub-integration">9.4.5. SecHub integration</a>
+<ul class="sectlevel4">
+<li><a href="#executors-and-adapters">9.4.5.1. Executors and Adapters</a>
 <ul class="sectlevel5">
-<li><a href="#executors">9.4.4.1.1. Executors</a></li>
-<li><a href="#adapters">9.4.4.1.2. Adapters</a></li>
+<li><a href="#executors">9.4.5.1.1. Executors</a></li>
+<li><a href="#adapters">9.4.5.1.2. Adapters</a></li>
 </ul>
 </li>
 </ul>
@@ -1054,7 +1063,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.24.0-20210520182527</code></p>
+<p>Documentation version: <code>Server 0.25.0-dirty-20210701143633</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -2982,13 +2991,6 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -2998,8 +3000,15 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign owner</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -3095,17 +3104,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -4856,13 +4865,6 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -4872,8 +4874,15 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -7594,7 +7603,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d8653de5-c6d2-4cf1-bd05-110b02a919d1/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d67dc50a-f81f-4769-a341-5cc97b03c778/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7640,7 +7649,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/851144fd-9e3b-42b3-ae48-36a81b32acd3/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b286a9a5-f70b-424e-9452-9979e06b1d40/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7740,7 +7749,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/941d95e3-ddef-469b-964e-74c0a7e204bc' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/21457587-1b4e-4da7-b0f4-3ceca601dbb5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -7757,7 +7766,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/11c91490-8e43-4797-a39b-8dd114d5dcbb' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/f6b58956-ac60-4451-a4fa-e1cf5121389d' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -7770,7 +7779,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e54b6d37-4b99-4087-b22c-6d6842f953ee' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/89bf6271-edb7-4a86-a5a0-f2b72f56c441' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -8325,7 +8334,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/6e1a817f-cc6b-4295-9cf8-b10a8a41c481' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/f5ca9fe1-f0d0-42c1-8d81-fa00318280b4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8340,7 +8349,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/fcdaf56b-9412-4cc4-931b-98759f500647' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/aab3f6ef-41ab-41d0-a9da-309bdd500b32' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8355,7 +8364,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/40e8e496-c0ee-4a6c-8d99-74ea3e212c60' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/9391a8e4-1c0d-4fe7-8db3-47d8ae929e9c' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8370,7 +8379,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/9a9551fd-b33f-4f85-b2dd-c30e14c055d7' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a52bdf8a-aaba-40fa-b734-4ef4fd91a685' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8641,7 +8650,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/41e8aaf1-e321-43e1-b4f8-c4c4cfdaa447' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/abaaba94-cc05-4245-88fc-3966ad9cbaa6' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8801,7 +8810,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/0d353d97-9fc9-47ce-bebe-2f7cbb90b234' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2b6a4168-387c-4278-8ba7-e39f83efa4c1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8902,7 +8911,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/11998dc0-fb7f-46c6-84b1-0ed719bbdb68' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ab01d2e9-65a9-4dad-90b9-5eb72674d036' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -9090,7 +9099,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;42a863f3-62d8-4e4c-915a-110011c31959&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;267e979b-9fb0-4e7d-845f-fef3d9d09517&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -10563,7 +10572,7 @@ For an example:
 <h6 id="overview-3">8.2.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="230">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="232">
 </div>
 <div class="title">Figure 6. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -10600,7 +10609,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">8.2.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1318" height="270">
+<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1274" height="270">
 </div>
 <div class="title">Figure 8. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -10613,7 +10622,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">8.2.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1376" height="268">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1439" height="268">
 </div>
 <div class="title">Figure 9. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -12028,7 +12037,7 @@ The mapping data is stored inside executor configurations, which is always avail
 <p>REST access</p>
 </li>
 <li>
-<p>queing</p>
+<p>queuing</p>
 </li>
 <li>
 <p>status requests</p>
@@ -12098,11 +12107,304 @@ available as environment variables at runtime</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="sechub-integration">9.4.4. SecHub integration</h4>
+<h4 id="pds-storage-and-sharing">9.4.4. Storage and sharing</h4>
+<div class="paragraph">
+<p>PDS needs - like SecHub - the possiblity to store job data in a central storage location when
+operating inside a cluster <em>(it&#8217;s not clear which cluster member uploads job data and which one does execute
+the job and need the data at exectuion time).</em></p>
+</div>
+<div class="paragraph">
+<p>PDS does use the already existing <code>sechub-storage-*</code> libraries which provide storage mechanism for S3 and
+for shared volumes.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The next examples explain the different situations appearing for a PDS cluster executing product "XYZ",
+but of course this applies to multiple clusters for different products as well</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For non clustered environment "shared volumes" can also be local file system paths like
+<code>/opt/storage/pds/XYZ</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When talking about a NFS or a shared volume here, this is always meant to be a file system path.
+It&#8217;s important to mount a NFS at a local file path for the PDS server when using a shared volume.
+URLs are NOT supported - only filepathes. So you must mount your network file storage to a local file location!</p>
+</div>
+<div class="paragraph">
+<p>For example: a base path for a shared volume could look like: <code>/media/mounted-storage/</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
-<h5 id="executors-and-adapters">9.4.4.1. Executors and Adapters</h5>
+<h5 id="shared-s3-storage">9.4.4.1. Shared S3 storage</h5>
+<div class="paragraph">
+<p>In the <a href="#section-pds-s3-storage-example-shared-s3-buckets">next example</a> PDS and SecHub are using the same S3 bucket to store files uploaded by the user.</p>
+</div>
+<div class="paragraph">
+<p>We have two different scenarios here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is <code>true</code><br>
+In this case the way is exactly as shown in next picture:<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The user uploads job data for a SecHub job and it is stored at shared S3 bucket <em>(blue lines)</em>.</p>
+</li>
+<li>
+<p>When SecHub job is starting it will create a PDS job but does not upload any additional data.</p>
+</li>
+<li>
+<p>When PDS job is starting the PDS server will fetch workspace files from existing SecHub job data <em>(red lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location is for PDS and SecHub  <code>${sharedS3Bucket}/jobstorage/${secHubJobUUID}/</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="section-pds-s3-storage-example-shared-s3-buckets" class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_pds_storage_example_shared_s3_bucket.png" alt="diagram concept pds storage example shared s3 bucket" width="1687" height="868">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is NOT <code>true</code><br>
+In this case the way is NOT like in picture before, but more like in <a href="#pds-storage-different-s3">Different S3 storages</a>.
+Read there for more details - it&#8217;s the same - except there are not 2 different S3 buckets but only one.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pds-storage-different-s3">9.4.4.2. Different S3 storages</h5>
+<div class="paragraph">
+<p>In the <a href="#section-pds-s3-storage-example-diff-s3-buckets">next example</a> PDS and SecHub are using different S3 buckets as storage.</p>
+</div>
+<div class="paragraph">
+<p>We have two different scenarios here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is NOT <code>true</code><br>
+In this case the way is exactly as shown in next picture:<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The user uploads job data for a SecHub job and it is stored at shared S3 bucket <em>(blue lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location for SecHub is <code>${sechubS3Bucket}/jobstorage/${secHubJobUUID}/</code></p>
+</li>
+<li>
+<p>When SecHub job is starting it will create and initialize a PDS job by uploading all existing job data by PDS rest API.
+This will store job data at PDS storage. <em>(green lines)</em>.</p>
+</li>
+<li>
+<p>When PDS job is starting, the  PDS server will fetch workspace files from its PDS job data <em>(red lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location for PDS is <code>${pdsS3Bucket}/pds/${pdsProductIdentifier}/${pdsJobUUID}/</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="section-pds-s3-storage-example-diff-s3-buckets" class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_pds_storage_example_different_s3_buckets.png" alt="diagram concept pds storage example different s3 buckets" width="1849" height="925">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is <code>true</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This will NOT WORK! The job storage will not be found and an error will be thrown at job execution time.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="same-shared-volume-nfs">9.4.4.3. Same shared volume (NFS)</h5>
+<div class="paragraph">
+<p>In the <a href="#section-pds-s3-storage-example-shared-nfs">next example</a> PDS server and SecHub are using same shared volume as storage.</p>
+</div>
+<div class="paragraph">
+<p>We have two different scenarios here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is <code>true</code><br>
+In this case the way is exactly as shown in next picture:<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The user uploads job data for a SecHub job and it is stored at shared volume <em>(blue lines)</em>.</p>
+</li>
+<li>
+<p>When SecHub job is starting it will create a PDS job but does not upload any additional data.</p>
+</li>
+<li>
+<p>When PDS job is starting the PDS server will fetch workspace files from existing SecHub job data <em>(red lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location is for PDS and SecHub  <code>${sharedVolumeBasePath}/jobstorage/${secHubJobUUID}/</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="section-pds-s3-storage-example-shared-nfs" class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_pds_storage_example_shared_nfs.png" alt="diagram concept pds storage example shared nfs" width="1687" height="836">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is NOT <code>true</code><br>
+In this case the way is NOT like in picture before, but more like in <a href="#pds-storage-different-sharedvolume">Different shared volumes</a>.
+Read there for more details - it&#8217;s the same - except there are not 2 different NFS but only one.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pds-storage-different-sharedvolume">9.4.4.4. Different shared volumes (NFS)</h5>
+<div class="paragraph">
+<p>In the <a href="#section-pds-s3-storage-example-diff-nfs">next example</a> PDS and SecHub are using different shared volumes as storage.</p>
+</div>
+<div class="paragraph">
+<p>We have two different scenarios here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is NOT <code>true</code><br>
+In this case the way is exactly as shown in next picture:<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The user uploads job data for a SecHub job and it is stored at sechub shared volume <em>(blue lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location for SecHub is <code>${sechubSharedVolumeBasePath}/jobstorage/${secHubJobUUID}/</code></p>
+</li>
+<li>
+<p>When SecHub job is starting it will create and initialize a PDS job by uploading all existing job data by PDS rest API.
+This will store job data at PDS storage. <em>(green lines)</em>.</p>
+</li>
+<li>
+<p>When PDS job is starting, the  PDS server will fetch workspace files from its PDS job data <em>(red lines)</em>.</p>
+</li>
+<li>
+<p>The storage path location for PDS is <code>${pdsSharedVolumeBasePath}/pds/${pdsProductIdentifier}/${pdsJobUUID}/</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="section-pds-s3-storage-example-diff-nfs" class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_pds_storage_example_different_nfs.png" alt="diagram concept pds storage example different nfs" width="1872" height="893">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Product executor configuration <code>pds.config.use.sechub.storage</code> is <code>true</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This will NOT WORK! The job storage will not be found and an error will be thrown at job execution time.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pds-storage-mixing-sharedvolume-and-s3">9.4.4.5. Mixing S3 and shared volume (NFS)</h5>
+<div class="paragraph">
+<p>This <a href="#section-pds-s3-storage-example-s3-nfs-mixed">example</a> is only mentioned for the sake of completeness: It is the same as before described for different S3 and different shared volumes:
+<code>pds.config.use.sechub.storage</code> cannot be used in this case.</p>
+</div>
+<div class="paragraph">
+<p>When not reusing SecHub storage, this scenario does work also well. In the next picture, SecHub itself would use a S3 storage and he
+PDS instances for product <code>XYZ</code> would use a NFS to store job data. But of course it could be also the other way.</p>
+</div>
+<div id="section-pds-s3-storage-example-s3-nfs-mixed" class="imageblock">
+<div class="content">
+<img src="images/diagram_concept_pds_storage_example_s3_and_nfs_mixed.png" alt="diagram concept pds storage example s3 and nfs mixed" width="1849" height="868">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="sechub-integration">9.4.5. SecHub integration</h4>
+<div class="sect4">
+<h5 id="executors-and-adapters">9.4.5.1. Executors and Adapters</h5>
 <div class="sect5">
-<h6 id="executors">9.4.4.1.1. Executors</h6>
+<h6 id="executors">9.4.5.1.1. Executors</h6>
 <div class="paragraph">
 <p>With <code>PDS</code> there is a default <code>REST</code> <code>API</code> available.</p>
 </div>
@@ -12112,7 +12414,7 @@ available as environment variables at runtime</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="adapters">9.4.4.1.2. Adapters</h6>
+<h6 id="adapters">9.4.5.1.2. Adapters</h6>
 <div class="paragraph">
 <p>The Adapter will always be the same, but filled with other necessary parameters.</p>
 </div>
@@ -12210,21 +12512,6 @@ implementatiion</p>
 <p>test via sechub client by start a new sechub job which shall use the product and verify results</p>
 </li>
 </ul>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>#148 and #283 are not implemented at the moment (07/2020)</strong>, so PDS is currently
-working autonomous, but not integrated into sechub execution / scan processes!</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -12950,7 +13237,7 @@ See <a href="https://github.com/Daimler/sechub/issues/12" class="bare">https://g
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.24.0<br>
+ Server 0.25.0<br>
 </div>
 </div>
 <style>

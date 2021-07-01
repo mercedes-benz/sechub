@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub TechDoc</h1>
 <div class="details">
-<span id="revnumber"> Server 0.24.0</span>
+<span id="revnumber"> Server 0.25.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -653,7 +653,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#unit-tests">7.7.4.1. Unit tests</a>
 <ul class="sectlevel5">
 <li><a href="#fields">7.7.4.1.1. Fields</a></li>
-<li><a href="#junit-4">7.7.4.1.2. Junit 4</a></li>
+<li><a href="#junit-versions">7.7.4.1.2. Junit versions</a></li>
 <li><a href="#maintainable-tests">7.7.4.1.3. Maintainable tests</a></li>
 <li><a href="#naming-of-mocks-and-test-targets">7.7.4.1.4. Naming of mocks and test targets</a></li>
 <li><a href="#naming-of-unit-tests">7.7.4.1.5. Naming of unit tests</a></li>
@@ -1195,7 +1195,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.24.0-20210520182527</code></p>
+<p>Documentation version: <code>Server 0.25.0-dirty-20210701143633</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Developers</strong> only!</p>
@@ -1755,7 +1755,7 @@ tests we got fix credentials - <strong>so never use in production!</strong></td>
 <h6 id="overview">3.1.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="230">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="232">
 </div>
 <div class="title">Figure 1. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -1792,7 +1792,7 @@ the profile on this machine. So you prevent illegal administrative access attemp
 <h6 id="dev">3.1.1.1.3. DEV</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1318" height="270">
+<img src="images/gen_springprofiles-dev.svg" alt="gen springprofiles dev" width="1274" height="270">
 </div>
 <div class="title">Figure 3. Spring profile dev and its explicit/implicit included parts</div>
 </div>
@@ -1805,7 +1805,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">3.1.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1376" height="268">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1439" height="268">
 </div>
 <div class="title">Figure 4. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -3824,9 +3824,26 @@ So it&#8217;s easier to find and also possible to use package private fields for
 </div>
 </div>
 <div class="sect5">
-<h6 id="junit-4">7.7.4.1.2. Junit 4</h6>
+<h6 id="junit-versions">7.7.4.1.2. Junit versions</h6>
 <div class="paragraph">
-<p>We use currently junit4 as testframework and not junit5.</p>
+<p>Our integration tests and most of the "normal" existing unit tests do currently use Junit4
+as testframework and not Junit5. Because having some special Junit4 Rules for integration
+testing, those tests will be still written in Junit 4, but for new "normal" unit tests you
+should prefer to use Junit5.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is planned to migrate existing tests to Junit5 in future, because of some benefits.
+      But unfortunately some method signatures have changed (e.g. "Assert.assertEquals(&#8230;&#8203;)
+      - especially for the message string) so this will take some time.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -7753,13 +7770,6 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -7770,9 +7780,16 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign owner</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it</p>
 <p class="tableblock"><em>This step is defined at method <code>assignOwnerToProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>grantUserAccessToProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleGrantUserAccessToProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -7879,18 +7896,18 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
+<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p>
-<p class="tableblock"><em>This step is defined at method <code>unassignUserFromProject</code> in class `com.daimler.sechub.domain.administration.project.ProjectUnassignUserService`</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>revokeUserAccessFromProject</code> in class `com.daimler.sechub.domain.schedule.access.ScheduleRevokeUserAccessFromProjectService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -9924,13 +9941,6 @@ results because such information was formerly deleted</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to restart job</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -9941,9 +9951,16 @@ results because such information was formerly deleted</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Try to rstart job (hard)</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">When job is found, a restart will be triggered. Existing batch jobs will be terminated</p>
 <p class="tableblock"><em>This step is defined at method <code>restartJobHard</code> in class `com.daimler.sechub.domain.schedule.SchedulerRestartJobService`</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inform sechub admins when job restart was canceled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>This step is defined at method <code>notify</code> in class `com.daimler.sechub.domain.notification.superadmin.InformAdminsThatJobRestartWasCanceledService`</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -12883,7 +12900,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d8653de5-c6d2-4cf1-bd05-110b02a919d1/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d67dc50a-f81f-4769-a341-5cc97b03c778/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -12929,7 +12946,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/851144fd-9e3b-42b3-ae48-36a81b32acd3/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b286a9a5-f70b-424e-9452-9979e06b1d40/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13029,7 +13046,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/941d95e3-ddef-469b-964e-74c0a7e204bc' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/21457587-1b4e-4da7-b0f4-3ceca601dbb5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13046,7 +13063,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/11c91490-8e43-4797-a39b-8dd114d5dcbb' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/f6b58956-ac60-4451-a4fa-e1cf5121389d' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
@@ -13059,7 +13076,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/e54b6d37-4b99-4087-b22c-6d6842f953ee' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/89bf6271-edb7-4a86-a5a0-f2b72f56c441' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -13614,7 +13631,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/6e1a817f-cc6b-4295-9cf8-b10a8a41c481' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/f5ca9fe1-f0d0-42c1-8d81-fa00318280b4' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13629,7 +13646,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/fcdaf56b-9412-4cc4-931b-98759f500647' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/aab3f6ef-41ab-41d0-a9da-309bdd500b32' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13644,7 +13661,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/40e8e496-c0ee-4a6c-8d99-74ea3e212c60' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/9391a8e4-1c0d-4fe7-8db3-47d8ae929e9c' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13659,7 +13676,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/9a9551fd-b33f-4f85-b2dd-c30e14c055d7' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a52bdf8a-aaba-40fa-b734-4ef4fd91a685' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -13930,7 +13947,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/41e8aaf1-e321-43e1-b4f8-c4c4cfdaa447' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/abaaba94-cc05-4245-88fc-3966ad9cbaa6' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14090,7 +14107,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/0d353d97-9fc9-47ce-bebe-2f7cbb90b234' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2b6a4168-387c-4278-8ba7-e39f83efa4c1' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -14191,7 +14208,7 @@ The complete documentation about REST API is generated. If you want to change co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/11998dc0-fb7f-46c6-84b1-0ed719bbdb68' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ab01d2e9-65a9-4dad-90b9-5eb72674d036' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -14379,7 +14396,7 @@ The complete documentation about REST API is generated. If you want to change co
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;42a863f3-62d8-4e4c-915a-110011c31959&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;267e979b-9fb0-4e7d-845f-fef3d9d09517&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -15471,7 +15488,7 @@ configure the client to do this also on color YELLOW. Only Green is always accep
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.24.0<br>
+ Server 0.25.0<br>
 </div>
 </div>
 <style>
