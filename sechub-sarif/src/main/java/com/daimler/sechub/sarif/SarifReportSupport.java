@@ -115,7 +115,7 @@ public class SarifReportSupport {
     }
 
     /**
-     * Tries first the result level. if not set, the level will be obtained by
+     * Tries first the result level. If not set, the level will be obtained by
      * default configuration if available. If not found {@link Level#NONE} is
      * returned
      * 

@@ -38,7 +38,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
     TestProject project = PROJECT_1;
 
     /**
-     * Important: This test is only working when we have same storage for SECHUb and for PDS defined!
+     * Important: This test is only working when we have same storage for SECHUB and for PDS defined!
      */
     @Test
     public void pds_reuses_sechub_data__a_user_can_start_a_pds_sarif_scan_and_get_result() {

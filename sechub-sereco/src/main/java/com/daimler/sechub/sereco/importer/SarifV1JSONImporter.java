@@ -182,7 +182,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
 
         if (type == null) {
             /*
-             * no type identifier found, so do fallback to id, we do not use "name" becaus
+             * no type identifier found, so do fallback to id, we do not use "name" because
              * this is for i18n!
              */
             type = rule.getId();

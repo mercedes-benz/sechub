@@ -172,14 +172,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             if (systemOutFile.exists()) {
                 String output = FileUtils.readFileToString(systemOutFile, encoding);
                 result.result += "\nOutput:\n" + output;
-                shrinkedOutputStream = maimum1024chars(output);
+                shrinkedOutputStream = maximum1024chars(output);
             }
 
             File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
             if (systemErrorFile.exists()) {
                 String error = FileUtils.readFileToString(systemErrorFile, encoding);
                 result.result += "\nErrors:\n" + error;
-                shrinkedErrorStream = maimum1024chars(error);
+                shrinkedErrorStream = maximum1024chars(error);
             }
 
             LOG.error("job {} wrote no result file - here part of console log:\noutput stream:\n{}\nerror stream:\n{}", jobUUID, shrinkedOutputStream,
@@ -188,7 +188,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         }
     }
 
-    private String maimum1024chars(String content) {
+    private String maximum1024chars(String content) {
         if (content == null) {
             return null;
         }
