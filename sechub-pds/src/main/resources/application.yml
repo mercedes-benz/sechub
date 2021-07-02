@@ -58,6 +58,8 @@ security:
 # - SSL setup  (default)
 # --------------------------------------
 server:
+  error:
+    path: "/error"
   port:
     8444
   ssl:
