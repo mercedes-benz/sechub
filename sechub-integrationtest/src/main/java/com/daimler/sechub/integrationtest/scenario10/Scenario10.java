@@ -8,7 +8,7 @@ import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario10 - the PDS integrationtest SARIF scenario</u></b><br>
+ * <b><u>Scenario10 - the PDS integrationtest SARIF scenario (NO reuse of sechub storage)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br> <br>

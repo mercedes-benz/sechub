@@ -166,17 +166,36 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.result = "Result file not found at " + file.getAbsolutePath();
 
             File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
+            String shrinkedOutputStream = null;
+            String shrinkedErrorStream = null;
+
             if (systemOutFile.exists()) {
-                String error = FileUtils.readFileToString(systemOutFile, encoding);
-                result.result += "\nOutput:\n" + error;
+                String output = FileUtils.readFileToString(systemOutFile, encoding);
+                result.result += "\nOutput:\n" + output;
+                shrinkedOutputStream = maximum1024chars(output);
             }
 
             File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
             if (systemErrorFile.exists()) {
                 String error = FileUtils.readFileToString(systemErrorFile, encoding);
                 result.result += "\nErrors:\n" + error;
+                shrinkedErrorStream = maximum1024chars(error);
             }
+
+            LOG.error("job {} wrote no result file - here part of console log:\noutput stream:\n{}\nerror stream:\n{}", jobUUID, shrinkedOutputStream,
+                    shrinkedErrorStream);
+
         }
+    }
+
+    private String maximum1024chars(String content) {
+        if (content == null) {
+            return null;
+        }
+        if (content.length() < 1024) {
+            return content;
+        }
+        return content.substring(0, 1021) + "...";
     }
 
     private void createProcess(UUID jobUUID, PDSJobConfiguration config, String path) throws IOException {

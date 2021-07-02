@@ -4,6 +4,7 @@ package com.daimler.sechub.integrationtest.api;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -119,7 +120,10 @@ public class AssertReport {
         }
 
         public AssertFinding hasSeverity(Severity severity) {
-            assertEquals(severity, finding.getSeverity());
+            if (!Objects.equals(severity, finding.getSeverity())){
+                dump();
+                assertEquals("Finding id:"+finding.getId()+" has not expected severity!", severity,finding.getSeverity());
+            }
             return this;
         }
         
