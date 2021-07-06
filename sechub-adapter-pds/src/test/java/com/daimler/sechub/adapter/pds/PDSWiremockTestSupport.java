@@ -138,7 +138,7 @@ public class PDSWiremockTestSupport {
         /* @formatter:off */
         String url = pdsURLBuilder.buildUpload(pdsJobUUID, uploadFileName);
         stubFor(post(urlEqualTo(history.rememberPOST(url)))
-                .withHeader("content-type", containing("multipart/form-data;charset=UTF-8")).withRequestBody(containing(uploadFileName))
+                .withHeader("content-type", containing("multipart/form-data;boundary=")).withRequestBody(containing(uploadFileName))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON)
                         .withBody("{\"jobUUID\" : \"" + pdsJobUUID.toString() + "\"}")));
         /* @formatter:on */

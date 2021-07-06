@@ -323,7 +323,7 @@ public class CheckmarxAdapterV1WireMockTest {
 
     private void simulateUploadZipFileWasSuccesful() {
         stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/projects/"+CHECKMARX_PROJECT_ID+"/sourceCode/attachments")))).
-                   withHeader("content-type", containing("multipart/form-data;charset=UTF-8")).
+                   withHeader("content-type", containing("multipart/form-data;boundary=")).
                    withMultipartRequestBody(
                            aMultipart().
                                withBody(equalTo("pseudo-zip-content")).

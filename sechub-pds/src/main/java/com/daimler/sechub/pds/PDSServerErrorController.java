@@ -23,8 +23,6 @@ public class PDSServerErrorController implements ErrorController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSServerErrorController.class);
 
-    private static final String PATH = "/error"; // NOSONAR
-
     @PDSMustBeDocumented(value="When enabled, additional debug information are returned in case of failures. Do NOT use this in production.",scope="development")
     @Value("${sechub.pds.server.debug:false}")
     private boolean debug;
@@ -32,16 +30,11 @@ public class PDSServerErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    @RequestMapping(value = PATH, produces = { "application/json" })
+    @RequestMapping(value = "${server.error.path}", produces = { "application/json" })
     ResponseEntity<PDSServerError> error(HttpServletRequest request, HttpServletResponse response) {
         LOG.info("handling error on rest side");
         
         return ResponseEntity.status(response.getStatus()).body(new PDSServerError(response.getStatus(), getErrorAttributes(request, debug)));
-    }
-
-    @Override
-    public String getErrorPath() {
-        return PATH;
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
