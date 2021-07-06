@@ -88,7 +88,7 @@ systemProp.http.nonProxyHosts=*.nonproxyrepos.com|localhost
 [start=2]
 . Build SecHub
 ----
-./build
+./buildExecutables
 ----
 
 [start=3]

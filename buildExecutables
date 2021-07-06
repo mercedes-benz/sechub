@@ -1,10 +1,10 @@
 #!/bin/bash 
 cd `dirname $0`
 
-# This script builds SecHub server and client
+# This script builds all executables: SecHub server, PDS and client
 # 
 
 echo "********************************************************************"
-echo "* Build software " 
+echo "* Build executables " 
 echo "********************************************************************"
-./gradlew ensureLocalhostCertificate build buildGo -x :sechub-integrationtest:test
+./gradlew ensureLocalhostCertificate bootJar buildGo -x :sechub-integrationtest:test
