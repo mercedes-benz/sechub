@@ -174,12 +174,17 @@ task assertReleaseable {
     description = '''Asserts calculated versions do not contain a dirty flag inside. 
                    (This should be called in releases after all artifact creations has nothing changed)'''
 
-    if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
-        throw new IllegalStateException("At least one version was dirty and marked as a release!")
+    doLast {
+        /* we only assert at execution phase - means when this task is really executed and not only configured...*/
+        if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
+            throw new IllegalStateException("At least one version was dirty and marked as a release!")
+        }
+        if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+        }
     }
-    if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
-        throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
-    }
+
+
 
 }
 
