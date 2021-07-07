@@ -5,6 +5,10 @@ sechub:
       intranet:
         hostname:
           endswith: intranet.example.org
+  security:
+    diffiehellman:
+      length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
+      
 spring:
   config:
     use-legacy-processing: true # see https://spring.io/blog/2020/08/14/config-file-processing-in-spring-boot-2-4 and  https://stackoverflow.com/questions/64907675/including-profiles-in-spring-boot-2-4-0-version
@@ -58,10 +62,12 @@ security:
 # - SSL setup  (default)
 # --------------------------------------
 server:
+  error:
+    path: "/error"
   port:
     8443
   ssl:
-    enabled: true # alwasy enabled
+    enabled: true # always enabled
     protocol: TLS
     enabled-protocols: TLSv1.2,TLSv1.3
     # keystore, alias etc. must be defined outside

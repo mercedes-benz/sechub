@@ -13,15 +13,18 @@ import com.daimler.sechub.integrationtest.SecurityTestHelper;
 import com.daimler.sechub.integrationtest.SecurityTestHelper.TestTargetType;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
+import com.daimler.sechub.test.TestPortProvider;
 
 class ServerSecurityLogHandlingTest {
 
     private static SecurityTestHelper securityTestHelper;
     private IntegrationTestContext context;
+    private int serverPort;
 
     @BeforeEach
     void beforeEach() {
         context = IntegrationTestContext.get();
+        serverPort = TestPortProvider.DEFAULT_INSTANCE.getIntegrationTestServerPort();
     }
 
     @BeforeAll
@@ -48,7 +51,7 @@ class ServerSecurityLogHandlingTest {
                 hasRequestURI("/api/anonymous/check/alive").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "UPDATE").
-                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
         
         /* @formatter:on */
@@ -73,7 +76,7 @@ class ServerSecurityLogHandlingTest {
                 hasRequestURI("/api/anonymous/check/alive").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "bad_request").
-                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
         
         /* @formatter:on */
@@ -97,7 +100,7 @@ class ServerSecurityLogHandlingTest {
                 hasRequestURI("/i-am-not-existing").
                 hasMessageContaining("Rejected request, reason").
                 hasMessageParameterContainingStrings(0, "bad_request").
-                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
         
         /* @formatter:on */
@@ -121,7 +124,7 @@ class ServerSecurityLogHandlingTest {
                 hasOneOfGivenClientIps("127.0.0.1","0:0:0:0:0:0:0:1").
                 hasRequestURI("/i-am-not-existing").
                 hasMessageContaining("401").
-                hasHTTPHeader("host","localhost:8443").
+                hasHTTPHeader("host","localhost:"+serverPort).
                 hasHTTPHeader("content-type", "application/json");
         
         /* @formatter:on */
