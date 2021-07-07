@@ -58,7 +58,7 @@ def buildVersionFiles(){
     
     def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
     
-    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getShortVersion())
+    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
     def clientVersionFile = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 

@@ -36,7 +36,7 @@ class VersionData{
         info.id=id;
         info.text=text;
         info.fullVersion="undefined-long-"+id+"version"
-        info.fullVersion="undefined-"+id+"version"
+        info.shortVersion="undefined-"+id+"version"
         map.put(id, info)
     }
     
@@ -95,7 +95,7 @@ class VersionData{
             /* not a correct release version so ignore */
             return
         }
-        containingAtLeastOneDirtyReleaseVersion=longVersionName.contains("dirty")
+        containingAtLeastOneDirtyReleaseVersion=containingAtLeastOneDirtyReleaseVersion || longVersionName.contains("dirty")
         containingAtLeastOneRealReleaseVersion=true
     }
     
