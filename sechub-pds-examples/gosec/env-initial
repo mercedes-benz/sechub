@@ -1,0 +1,5 @@
+START_MODE=localserver
+ADMIN_USERID=admin
+ADMIN_APITOKEN="{noop}pds-apitoken"
+TECHUSER_USERID=techuser
+TECHUSER_APITOKEN="{noop}pds-apitoken"

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 
+:toc:
+
 = GoSec + PDS
 
 https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
@@ -27,26 +29,30 @@ Docker and Docker-Compose need to be installed:
 The folder contains a start script which does the <<_manually, manual>> steps for you:
 
 ----
-./01-start-local.sh
+./01-start-docker-compose.sh
 ----
 
 ==== Manually
 
-. Copy `env` file to `.env`
+. Copy `env-example` file to `.env`
 
-. Set values in `.env` file. The values are described in the `env` file.
+. Set values in `.env` file. The values are described in the `env-example` file.
 
 . Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
-docker-compose --file pds_gosec_ubuntu.yaml up --build
+docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
 ----
 +
 or to start the Alpine Linux container:
 +
 ----
-docker-compose --file pds_gosec_alpine.yaml up --build
+docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
 ----
+
+==== Clustered
+
+
 
 === Scan
 
@@ -62,9 +68,12 @@ The folder contains a `pds-api.sh` script.
 +
 ----
 export PDS_SERVER=https://localhost:8444
-export PDS_USERID=pds-dev-admin
-export PDS_APITOKEN=pds-dev-apitoken
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
 ----
++
+[TIP]
+`docker ps` -> get ports
 
 . Check if server is alive and running
 +

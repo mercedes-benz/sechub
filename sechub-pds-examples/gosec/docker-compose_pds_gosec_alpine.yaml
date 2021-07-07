@@ -6,10 +6,14 @@ services:
         build:
             args:
                 - BASE_IMAGE=alpine:3.14
-            context: context/
+            context: docker/
             dockerfile: Dockerfile-Alpine
         env_file:
             - .env
-        container_name: pds_gosec_alpine
         ports:
-            - "8444:8444"
+            - "127.0.0.1:8444:8444"
+        networks:
+            - "internal"
+
+networks:
+    internal:

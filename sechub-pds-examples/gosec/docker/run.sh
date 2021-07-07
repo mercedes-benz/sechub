@@ -14,12 +14,13 @@ localserver () {
     check_setup
 
     java -Dspring.profiles.active=pds_localserver \
-         -DsecHub.pds.admin.userid="$ADMIN_USERID" \
-         -Dsechub.pds.admin.apitoken="$ADMIN_APITOKEN" \
-         -DsecHub.pds.techuser.userid="$TECHUSER_USERID" \
-         -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
+         -DsecHub.pds.admin.userid=$ADMIN_USERID \
+         -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
+         -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
+         -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
          -Dsechub.pds.workspace.rootfolder=/workspace \
          -Dsechub.pds.config.file=/pds/pds-config.json \
+         -Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR \
          -Dserver.port=8444 \
          -Dserver.address=0.0.0.0 \
          -jar /pds/sechub-pds-$PDS_VERSION.jar
@@ -30,6 +31,7 @@ check_setup () {
     check_variable "$ADMIN_APITOKEN" "ADMIN_APITOKEN"
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
+    check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
 }
 
 check_variable () {

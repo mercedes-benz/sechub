@@ -8,13 +8,16 @@ FROM ${BASE_IMAGE}
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 ARG WORKSPACE="/workspace"
 ARG PDS_FOLDER="/pds"
-ARG PDS_CHECKSUM="f3101a6a2a96b39edf493249f2300c627fa01fcb7a6b96c5ae1edfbe70a31d46"
-ARG TOOL_FOLDER="/tool"
+ARG PDS_CHECKSUM="8a62379797c490d4e92c97f001dda5406ac240c7fddf2a9828224660625db668"
+ARG SCRIPT_FOLDER="/scripts"
 ARG GOSEC_VERSION="2.8.1"
 ARG GO="go1.16.5.linux-amd64.tar.gz"
 ARG GO_CHECKSUM="b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061"
 
-ENV PDS_VERSION=0.21.0
+ENV PDS_VERSION=0.22.0
+ENV SHARED_VOLUMES="/shared_volumes"
+ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
+ENV TOOL_FOLDER="/tools"
 
 # non-root user
 # using fixed group and user ids
@@ -31,8 +34,8 @@ RUN apt-get update && \
     apt-get clean
 
 # Create tool folder
-COPY gosec.sh $TOOL_FOLDER/gosec.sh
-RUN chmod +x $TOOL_FOLDER/gosec.sh
+COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
+RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
 # Install Go
 RUN cd /tmp && \
@@ -58,7 +61,7 @@ RUN cd /tmp && \
     # verify checksum
     sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
     # create gosec folder
-    mkdir -p "$TOOL_FOLDER/gosec" && \
+    mkdir --parents "$TOOL_FOLDER/gosec" && \
     # unpack gosec
     tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
     # Remove gosec tar.gz
@@ -75,6 +78,9 @@ RUN mkdir -p "$PDS_FOLDER" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
+# Create shared volumes and upload dir
+RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
+
 # Copy PDS configfile
 COPY pds-config.json /$PDS_FOLDER/pds-config.json
 
@@ -86,7 +92,7 @@ RUN chmod +x /run.sh
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $TOOL_FOLDER $WORKSPACE $PDS_FOLDER /run.sh
+RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # switch from root to non-root user
 USER gosec

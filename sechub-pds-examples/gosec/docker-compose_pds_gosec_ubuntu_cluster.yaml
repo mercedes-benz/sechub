@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds_gosec_ubuntu:
+        build:
+            args:
+                - BASE_IMAGE=ubuntu:focal
+            context: docker/
+            dockerfile: Dockerfile-Ubuntu
+        env_file:
+            - .env
+        ports:
+            - "127.0.0.1:8444:8444"
+        networks:
+            - "internal"
+        volumes:
+            - "shared_volume:/shared_volumes/uploads"
+    #ngnix_loadbalancer:
+    #    build:
+    #        context: docker/
+    #        dockerfile: Dockerfile-Ubuntu
+
+networks:
+    internal:
+
+volumes:
+    shared_volume:

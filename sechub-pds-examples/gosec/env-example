@@ -12,4 +12,3 @@ ADMIN_APITOKEN="{noop}pds-apitoken"
 # The `{noop}` means no secure hashing
 TECHUSER_USERID=techuser
 TECHUSER_APITOKEN="{noop}pds-apitoken"
-

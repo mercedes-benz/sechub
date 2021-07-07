@@ -6,10 +6,14 @@ services:
         build:
             args:
                 - BASE_IMAGE=ubuntu:focal
-            context: context/
+            context: docker/
             dockerfile: Dockerfile-Ubuntu
+        container_name: pds_gosec_ubuntu
         env_file:
             - .env
-        container_name: pds_gosec_ubuntu
         ports:
-            - "8444:8444"
+            - "127.0.0.1:8444:8444"
+        networks:
+            - "internal"
+networks:
+    internal:
