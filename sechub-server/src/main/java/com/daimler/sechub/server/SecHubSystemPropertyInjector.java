@@ -10,7 +10,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
 /**
  * This component injects some special SecHub Spring Boot values into
- * corresponding system properties. So we can configure those parts in our
+ * corresponding JVM system properties. So we can configure those parts in our
  * `application.yaml` file.
  * 
  * @author Albert Tregnaghi
@@ -19,8 +19,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class SecHubSystemPropertyInjector {
 
-    // see https://github.com/Daimler/sechub/issues/68 for details
-    @MustBeDocumented(value="Define diffie hellman key length, see https://github.com/Daimler/sechub/issues/689 for details",scope="security")
+    @MustBeDocumented(value = "Define diffie hellman key length, see https://github.com/Daimler/sechub/issues/689 for details", scope = "security")
     @Value("${sechub.security.diffiehellman.length}")
     private String diffieHellmanLength;
 
