@@ -55,63 +55,42 @@ def buildVersionFiles(){
 
     // write version code for go client
     String clientGoVersionTemplate = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go.template').getText('UTF-8')
-    def clientVersion = buildVersionString(clientVersionCommitTag, hasChanged,buildNumber)
-    def reducedClientVersion = simplifiedVersion(clientVersion);
-    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersion)
+    
+    def clientVersionInfo = VersionData.defineVersion("Client",buildVersionString(clientVersionCommitTag, hasChanged,buildNumber))
+    
+    String clientGoVersionCode = clientGoVersionTemplate.replaceAll("__version__",clientVersionInfo.getFullVersion())
     def clientVersionFile = new File('./sechub-cli/src/daimler.com/sechub/cli/version.go')
     clientVersionFile.write(clientGoVersionCode)
 
     /* write version info also as asciidoc file*/
     def clientVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/client-version.adoc')
-    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+reducedClientVersion+"\n:longrevnumber: Client "+clientVersion+"\n")
+    clientVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Client "+clientVersionInfo.getShortVersion()+"\n:longrevnumber: Client "+clientVersionInfo.getFullVersion()+"\n")
 
     // ------------------------
     // - Server
     // ------------------------
-    def serverVersion = buildVersionString(serverVersionCommitTag, hasChanged,buildNumber)
-    def reducedServerVersion = simplifiedVersion(serverVersion);
+    def serverVersionInfo =  VersionData.defineVersion("Server",buildVersionString(serverVersionCommitTag, hasChanged,buildNumber))
+    
      /* write version info also as asciidoc file*/
     def serverVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/server-version.adoc')
-    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+reducedServerVersion+"\n:longrevnumber: Server "+serverVersion+"\n")
+    serverVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: Server "+serverVersionInfo.getShortVersion()+"\n:longrevnumber: Server "+serverVersionInfo.getFullVersion()+"\n")
 
     // ------------------------
     // - PDS
     // ------------------------
-    def pdsVersion = buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber)
-    def reducedPDSVersion = simplifiedVersion(pdsVersion);
+    def pdsVersionInfo = VersionData.defineVersion("PDS",buildVersionString(pdsVersionCommitTag, hasChanged,buildNumber))
+    
      /* write version info also as asciidoc file*/
     def pdsVersionAsciiDocFile = new File('./sechub-doc/src/docs/asciidoc/documents/gen/pds-version.adoc')
-    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+reducedPDSVersion+"\n:longrevnumber: PDS "+pdsVersion+"\n")
-
-    /* we use a simplified version for build artifacts-reason:
-     * there were multiple problems. E.g. a user downloading
-     * a client in version 1.0.0 does not want a folder called 1.0.0-b75..
-     */
-    VersionData.setServerVersion(reducedServerVersion);
-    VersionData.setClientVersion(reducedClientVersion);
-    VersionData.setPdsVersion(reducedPDSVersion);
+    pdsVersionAsciiDocFile.write("// SPDX-License-Identifier: MIT\n:revnumber: PDS "+pdsVersionInfo.getShortVersion()+"\n:longrevnumber: PDS "+pdsVersionInfo.getFullVersion()+"\n")
 
     def stop = new Date()
 
     TimeDuration td = TimeCategory.minus( stop, start )
-    println("- Server :"+VersionData.getServerVersion()+" ["+serverVersion+"]")
-    println("- Client :"+VersionData.getClientVersion()+" ["+clientVersion+"]")
-    println("- PDS    :"+VersionData.getClientVersion()+" ["+pdsVersion+"]")
+    println(serverVersionInfo.describe());
+    println(clientVersionInfo.describe());
+    println(pdsVersionInfo.describe())
     println("- Time elapsed for versioning:"+td)
-}
-
-/*
- * Simplifies given version string . e.g. 0.4.1-b74 will be reduced to 0.4.1
- */
-def simplifiedVersion(String fullVersion){
-    if (fullVersion==null){
-        return "0.0.0";
-    }
-    int index = fullVersion.indexOf('-');
-    if (index==-1){
-        return fullVersion;
-    }
-    return fullVersion.substring(0,index);
 }
 
 /**
@@ -183,4 +162,31 @@ def getServerBuildNr(){
 def getLocalBuildNr() {
     return new Date().format('yyyyMMddHHmmss')
 }
+
+
+/**
+ * Special task which just asserts situation is releaseable.
+ * Does check versions (pds, server, client ARE NOT containing "dirty" inside
+ */
+task assertReleaseable {
+    group = 'sechub'
+    
+    description = '''Asserts calculated versions do not contain a dirty flag inside. 
+                   (This should be called in releases after all artifact creations has nothing changed)'''
+
+    doLast {
+        /* we only assert at execution phase - means when this task is really executed and not only configured...*/
+        if (VersionData.isContainingAtLeastOneDirtyReleaseVersion()){
+            throw new IllegalStateException("At least one version was dirty and marked as a release!")
+        }
+        if (!VersionData.isContainingAtLeastOneRealReleaseVersion()){
+            throw new IllegalStateException("There is not at least one version defined which can be released! 0.0.0 is not an acceptable release version!")
+        }
+    }
+
+
+
+}
+
+
 
