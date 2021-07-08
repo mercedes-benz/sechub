@@ -52,7 +52,17 @@ docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
 
 ==== Clustered
 
+Starting several PDS + GoSec instances
 
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + GoSec instances
+
+----
+./50-start-multiple-docker-compose.sh 3
+----
 
 === Scan
 
@@ -348,13 +358,13 @@ NOTE: This is an example output. The output can be very different depending on t
 Access the Ubuntu container:
 
 ----
-docker exec -it pds_gosec_ubuntu bash
+docker exec -it pds-gosec-ubuntu bash
 ----
 
 or for Alpine Linux:
 
 ----
-docker exec -it pds_gosec_alpine sh
+docker exec -it pds-gosec-alpine sh
 ----
 
 == Build Image & Push to Registry

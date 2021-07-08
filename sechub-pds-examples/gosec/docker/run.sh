@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 # SPDX-License-Identifier: MIT
 
-debug () {
+JAVA_DEBUG_OPTIONS=""
+
+wait_loop() {
     while true
     do
 	    echo "Press [CTRL+C] to stop.."
@@ -9,21 +11,32 @@ debug () {
     done
 }
 
+debug () {
+    wait_loop()
+}
+
 # Start with localserver settings 
 localserver () {
     check_setup
 
-    java -Dspring.profiles.active=pds_localserver \
-         -DsecHub.pds.admin.userid=$ADMIN_USERID \
-         -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
-         -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
-         -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
-         -Dsechub.pds.workspace.rootfolder=/workspace \
-         -Dsechub.pds.config.file=/pds/pds-config.json \
-         -Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR \
-         -Dserver.port=8444 \
-         -Dserver.address=0.0.0.0 \
-         -jar /pds/sechub-pds-$PDS_VERSION.jar
+    # Regarding entropy collection:
+    #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
+    #   and file:/dev/./urandom is no longer required."
+    #   (source: https://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html)
+    java $JAVA_DEBUG_OPTIONS \
+        -Dfile.encoding=UTF-8 \
+        -Dspring.profiles.active=pds_localserver \
+        -DsecHub.pds.admin.userid=$ADMIN_USERID \
+        -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
+        -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
+        -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
+        -Dsechub.pds.workspace.rootfolder=/workspace \
+        -Dsechub.pds.config.file=/pds/pds-config.json \
+        -Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR \
+        -Dserver.port=8444 \
+        -Dserver.address=0.0.0.0 \
+        -jar /pds/sechub-pds-$PDS_VERSION.jar
+    
 }
 
 check_setup () {
@@ -45,7 +58,15 @@ check_variable () {
     fi
 }
 
-if [ "$START_MODE" = "localserver" ]
+if [ "$JAVA_ENABLE_DEBUG" = "true" ]
+then
+    # By using `address=*:15024` the server will bind 
+    # all available IP addresses to port 15024
+    # otherwise the container cannot be accessed from outside
+    JAVA_DEBUG_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:15024"
+fi
+
+if [ "$PDS_START_MODE" = "localserver" ]
 then
     localserver
 else

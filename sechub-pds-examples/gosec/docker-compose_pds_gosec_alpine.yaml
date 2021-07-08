@@ -2,7 +2,7 @@
 
 version: "3"
 services:
-    pds_gosec_alpine:
+    pds-gosec-alpine:
         build:
             args:
                 - BASE_IMAGE=alpine:3.14
@@ -12,6 +12,7 @@ services:
             - .env
         ports:
             - "127.0.0.1:8444:8444"
+            - "127.0.0.1:15024:15024"
         networks:
             - "internal"
 
