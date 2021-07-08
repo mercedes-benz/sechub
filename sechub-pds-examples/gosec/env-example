@@ -1,7 +1,10 @@
-# The start mode
-# debug - only starts the container
+# The PDS start mode
+# debug - starts only the container
 # localserver - starts the server locally
-START_MODE=debug, localserver
+PDS_START_MODE=debug, localserver
+
+# Enable Java Remote Debugging
+JAVA_ENABLE_DEBUG=true, false
 
 # Admin name and token
 # The `{noop}` means no secure hashing
@@ -12,3 +15,13 @@ ADMIN_APITOKEN="{noop}pds-apitoken"
 # The `{noop}` means no secure hashing
 TECHUSER_USERID=techuser
 TECHUSER_APITOKEN="{noop}pds-apitoken"
+
+# The loadbalancer start mode
+# debug - starts only the container
+# server - starts the loadbalancer
+LOADBALANCER_START_MODE=debug, server
+
+# The database start mode
+# debug - starts only the container
+# server - starts the database
+LOADBALANCER_START_MODE=debug, server

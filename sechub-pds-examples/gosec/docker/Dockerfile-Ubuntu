@@ -69,7 +69,7 @@ RUN cd /tmp && \
     
 
 # Install the Product Delegation Server (PDS)
-RUN mkdir -p "$PDS_FOLDER" && \
+RUN mkdir --parents "$PDS_FOLDER" && \
     cd /pds && \
     # create checksum file
     echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \

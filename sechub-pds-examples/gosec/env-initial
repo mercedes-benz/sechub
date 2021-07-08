@@ -1,5 +1,8 @@
-START_MODE=localserver
+PDS_START_MODE=localserver
+LOADBALANCER_START_MODE=server
+DATABASE_START_MODE=debug
 ADMIN_USERID=admin
-ADMIN_APITOKEN="{noop}pds-apitoken"
+ADMIN_APITOKEN={noop}pds-apitoken
 TECHUSER_USERID=techuser
-TECHUSER_APITOKEN="{noop}pds-apitoken"
+TECHUSER_APITOKEN={noop}pds-apitoken
+JAVA_ENABLE_DEBUG=false
