@@ -12,20 +12,30 @@ wait_loop() {
 }
 
 debug () {
-    wait_loop()
+    wait_loop
 }
 
 # Start with localserver settings 
 localserver () {
     check_setup
 
+    profiles="pds_localserver"
+    database_options=""
+
+    if [ -n "$POSTGRESQL_CONNECTION" ]
+    then
+        profiles="$profiles,pds_postgres"
+        database_options="-Dspring.datasource.url=$POSTGRESQL_CONNECTION"
+        echo "Database connection set: $database_options"
+    fi
+
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."
     #   (source: https://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html)
-    java $JAVA_DEBUG_OPTIONS \
+    java $JAVA_DEBUG_OPTIONS $database_options\
         -Dfile.encoding=UTF-8 \
-        -Dspring.profiles.active=pds_localserver \
+        -Dspring.profiles.active=$profiles \
         -DsecHub.pds.admin.userid=$ADMIN_USERID \
         -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
         -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
@@ -37,6 +47,15 @@ localserver () {
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-$PDS_VERSION.jar
     
+    keep_container_alive_or_exit
+}
+
+keep_container_alive_or_exit() {
+    if [ "$KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED" = "true" ]
+    then
+        echo "[ERROR] PDS crashed, but keeping the container alive."
+        wait_loop
+    fi
 }
 
 check_setup () {

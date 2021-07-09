@@ -353,21 +353,40 @@ Output
 +
 NOTE: This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
-==== Troubleshooting
+=== Troubleshooting
 
-Access the Ubuntu container:
+==== Access the Ubuntu container
 
 ----
 docker exec -it pds-gosec-ubuntu bash
 ----
 
-or for Alpine Linux:
+==== Access the Alpine Linux container
 
 ----
 docker exec -it pds-gosec-alpine sh
 ----
 
-== Build Image & Push to Registry
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
+(see: )
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
 
 === Build Image
 
