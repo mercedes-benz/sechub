@@ -170,20 +170,24 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 	dirname1 := dir + "/sub1"
 	dirname2 := dir + "/sub1/sub2"
+	dirname3 := dir + "/node_modules" // directory should be skipped by default
 
 	sechubUtil.CreateTestDirectory(dirname1, 0755, t)
 	sechubUtil.CreateTestDirectory(dirname2, 0755, t)
+	sechubUtil.CreateTestDirectory(dirname3, 0755, t)
 
-	filename0 := dirname1 + "/file0.txt" // should be ignored
-	filename1 := dirname1 + "/file1.c"   // should be added
-	filename2 := dirname2 + "/file2.jpg" // should be ignored
-	filename3 := dirname2 + "/file3.go"  // shoud be added
+	filename0 := dirname1 + "/file0.txt"         // should be ignored
+	filename1 := dirname1 + "/file1.c"           // should be added
+	filename2 := dirname2 + "/file2.jpg"         // should be ignored
+	filename3 := dirname2 + "/file3.go"          // shoud be added
+	filename4 := dirname3 + "/nodejs-libfile.js" // shoud be ignored
 
 	content := []byte("Hello world!\n")
 	sechubUtil.CreateTestFile(filename0, 0644, content, t)
 	sechubUtil.CreateTestFile(filename1, 0644, content, t)
 	sechubUtil.CreateTestFile(filename2, 0644, content, t)
 	sechubUtil.CreateTestFile(filename3, 0644, content, t)
+	sechubUtil.CreateTestFile(filename4, 0644, content, t)
 
 	path := dir + "/testoutput.zip"
 
@@ -199,11 +203,12 @@ func TestZipFileCanBeCreated_and_contains_only_sourcefiles(t *testing.T) {
 
 	list := readContentOfZipFile(path, t)
 
-	sechubUtil.AssertContainsNot(list, "file0.txt", t)      // file must not be in zip
-	sechubUtil.AssertContains(list, "file1.c", t)           // file must exist
-	sechubUtil.AssertContainsNot(list, "sub2/file2.jpg", t) // file must not be in zip
-	sechubUtil.AssertContains(list, "sub2/file3.go", t)     // file must exist
-	sechubUtil.AssertSize(list, 2, t)                       // we expect 2 files in the list
+	sechubUtil.AssertContainsNot(list, "file0.txt", t)         // file must not be in zip
+	sechubUtil.AssertContains(list, "file1.c", t)              // file must exist
+	sechubUtil.AssertContainsNot(list, "sub2/file2.jpg", t)    // file must not be in zip
+	sechubUtil.AssertContains(list, "sub2/file3.go", t)        // file must exist
+	sechubUtil.AssertSize(list, 2, t)                          // we expect 2 files in the list
+	sechubUtil.AssertContainsNot(list, "nodejs-libfile.js", t) // file must not be in zip
 }
 
 func TestZipFileNonExistingFolderIsRejected(t *testing.T) {
