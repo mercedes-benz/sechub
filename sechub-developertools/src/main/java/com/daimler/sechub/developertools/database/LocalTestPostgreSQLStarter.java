@@ -55,6 +55,7 @@ public class LocalTestPostgreSQLStarter {
         if (args.length > 2) {
             testPassword = args[2];
         }
+        
         int postgresContainerPort = Integer.parseInt(testPort);
         new LocalTestPostgreSQLStarter().start(postgresContainerPort, testUserName, testPassword);
     }
