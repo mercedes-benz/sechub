@@ -10,6 +10,10 @@ dependencies {
     compile project(':sechub-testframework')
     compile project(':sechub-integrationtest')
     compile project(':sechub-scan')
+    
+    // we use as "implementation" to have
+    // LocalTestPostgreSQLStarter.java working
+    implementation "org.testcontainers:postgresql:1.15.3"
 }
 
 task startIntegrationTestAdminUI(type: JavaExec){
