@@ -30,6 +30,7 @@ public class ReportServiceTest {
 	private ScanReportRepository reportRepository;
 	private UUID secHubJobUUID;
 	private SecHubConfiguration configuration;
+    private ScanReportTransactionService scanReportTransactionService;
 
 	@Before
 	public void before() throws Exception {
@@ -51,6 +52,7 @@ public class ReportServiceTest {
 				return (ScanReport) invocation.getArguments()[0];
 			}
 		});
+		scanReportTransactionService = mock(ScanReportTransactionService.class);
 		reportProductExecutionService = mock(ReportProductExecutionService.class);
 
 		secHubResult = mock(SecHubResult.class);
@@ -63,6 +65,7 @@ public class ReportServiceTest {
 		serviceToTest.secHubResultService = secHubResultService;
 		serviceToTest.trafficLightCalculator = trafficLightCalculator;
 		serviceToTest.reportRepository = reportRepository;
+        serviceToTest.scanReportTransactionService=scanReportTransactionService;
 
 	}
 
