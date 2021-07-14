@@ -28,40 +28,39 @@ class SynchronSecHubJobExecutor {
     private DomainMessageService messageService;
     private SecHubJobSafeUpdater secHubJobSafeUpdater;
 
-
     public SynchronSecHubJobExecutor(DomainMessageService messageService, SecHubJobSafeUpdater secHubJobSafeUpdater) {
-        this.secHubJobSafeUpdater=secHubJobSafeUpdater;
-        this.messageService=messageService;
+        this.secHubJobSafeUpdater = secHubJobSafeUpdater;
+        this.messageService = messageService;
     }
-    
+
     @IsSendingSyncMessage(MessageID.START_SCAN)
-    public void execute(final ScheduleSecHubJob sechubJob,final Long batchJobId) {
-        Thread t = new Thread(new Runnable() {
-            
+    public void execute(final ScheduleSecHubJob secHubJob, final Long batchJobId) {
+        Thread scanThread = new Thread(new Runnable() {
+
             @Override
             public void run() {
-                UUID secHubJobUUID = sechubJob.getUUID();
-                String secHubJobUUIDAsString= secHubJobUUID.toString();
-                
+                UUID secHubJobUUID = secHubJob.getUUID();
+                String secHubJobUUIDAsString = secHubJobUUID.toString();
+
                 try {
-                    String secHubConfiguration = sechubJob.getJsonConfiguration();
+                    String secHubConfiguration = secHubJob.getJsonConfiguration();
 
                     /* own thread so MDC.put necessary */
                     MDC.clear();
                     MDC.put(LogConstants.MDC_SECHUB_JOB_UUID, secHubJobUUIDAsString);
-                    MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, sechubJob.getProjectId());
+                    MDC.put(LogConstants.MDC_SECHUB_PROJECT_ID, secHubJob.getProjectId());
 
                     LOG.info("Executing sechub job: {}", secHubJobUUIDAsString);
 
                     /* we send no a synchronous SCAN event */
                     DomainMessage request = new DomainMessage(MessageID.START_SCAN);
-                    request.set(MessageDataKeys.EXECUTED_BY, sechubJob.getOwner());
+                    request.set(MessageDataKeys.EXECUTED_BY, secHubJob.getOwner());
                     request.set(MessageDataKeys.SECHUB_UUID, secHubJobUUID);
                     request.set(MessageDataKeys.SECHUB_CONFIG, MessageDataKeys.SECHUB_CONFIG.getProvider().get(secHubConfiguration));
 
                     BatchJobMessage batchJobIdMessage = new BatchJobMessage();
                     batchJobIdMessage.setBatchJobId(batchJobId);
-                    batchJobIdMessage.setSechubJobUUID(secHubJobUUID);
+                    batchJobIdMessage.setSecHubJobUUID(secHubJobUUID);
                     request.set(MessageDataKeys.BATCH_JOB_ID, batchJobIdMessage);
 
                     /* wait for scan event result - synchron */
@@ -81,17 +80,15 @@ class SynchronSecHubJobExecutor {
                     /* cleanup MDC */
                     MDC.clear();
                 }
-                
+
             }
-        },"scan_trigger_"+sechubJob.getUUID());
-        t.start();
+        }, "scan_" + secHubJob.getUUID());
+        scanThread.start();
     }
-    
-    
 
     private void sendJobDoneMessageWhenNotAbandonded(UUID secHubJobUUID, DomainMessageSynchronousResult response) {
         if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
-            LOG.info("Will not send sechub job done message, because scan was abandoned");
+            LOG.info("Will not send job done message, because scan was abandoned");
             return;
         }
         LOG.debug("Will send job done message for: {}", secHubJobUUID);
@@ -101,7 +98,7 @@ class SynchronSecHubJobExecutor {
     private void markSechHubJobFailed(UUID secHubJobUUID) {
         updateSecHubJob(secHubJobUUID, ExecutionResult.FAILED, null);
 
-        LOG.info("marked sechub as failed:{}", secHubJobUUID);
+        LOG.info("marked job as failed:{}", secHubJobUUID);
     }
 
     private void updateSecHubJob(UUID secHubUUID, DomainMessageSynchronousResult response) {
@@ -109,7 +106,7 @@ class SynchronSecHubJobExecutor {
         if (MessageID.SCAN_ABANDONDED.equals(response.getMessageId())) {
             /*
              * Abandon happens normally only, when doing a restart or an hard internal
-             * cancel. In both situations the sechub job execution result inside scheduler
+             * cancel. In both situations, the SecHub job execution result inside scheduler
              * is already set before, and state will also be changed to CANCELED, or on
              * restart to RUNNING
              */
