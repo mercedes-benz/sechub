@@ -5,6 +5,8 @@ spring.profiles.include:
 - mocked_notifications
 - admin_access
 
+server:
+  address: 127.0.0.1
 
 sechub:
   config:
