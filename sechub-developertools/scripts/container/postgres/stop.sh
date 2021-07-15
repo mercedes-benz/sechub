@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 
-imageName="sechub-test-postgres"
+source ./../common-containerscript.sh
 
-docker container stop $imageName
+function usage() {
+    echo "Usage: $script_name <port>" 
+}
+
+defineEexposedPort $1
+defineImage "sechub-test-postgres"
+
+killContainer

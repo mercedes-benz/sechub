@@ -5,7 +5,7 @@ debug () {
     while true
     do
 	    echo "Press [CTRL+C] to stop.."
-	    sleep 120
+	    sleep 5s
     done
 }
 
@@ -13,14 +13,14 @@ server () {
     # start PostgreSQL server
     pg_ctl start
 
-    psql --command="CREATE USER my_name PASSWORD 'abc';"
-    psql --command="CREATE DATABASE database_name OWNER my_name;"
+    psql --command="CREATE USER $POSTGRES_DB_USER PASSWORD '$POSTGRES_DB_PASSWORD';"
+    psql --command="CREATE DATABASE $POSTGRES_DB_NAME OWNER $POSTGRES_DB_USER;"
 
     # check PostgreSQL server status,
     # for the container to stay alive
     while pg_ctl status
     do
-        sleep 300
+        sleep 5m
     done
 }
 

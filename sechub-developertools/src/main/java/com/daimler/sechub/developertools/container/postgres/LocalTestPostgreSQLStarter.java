@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.developertools.database;
+package com.daimler.sechub.developertools.container.postgres;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,37 +10,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- * This is a special starter mechanism for a PostgreSQL test container.
- * <h2>Why not as a JUnit4 rule or Junit5 extension?</h2> Normally test
- * containers are used as a rule (Junit4) or an extension (Junit5). But here we
- * want only to startup the test container to have a running PostgreSQL database
- * without any installation effort. <br>
- * This can be used for <b>local development</b> but also to <b>run integration
- * test servers</b> with a PostgreSQL instance instead of h2.<br>
- * <br>
- * 
- * The default export port is {@value #DEFAULT_FIXED_PORT}. User and Password
- * are "test"
- * <h2>Howtos</h2>
- * <h3>Howto stop the running test container in integration tests starter
- * skripts when I have started in a separated process ?</h3> <br>
- * Just delete the created file "./build/tmp/postgres_container_${port}.info"-
- * This will be inspected and leads to automated shutdown. If the JVM does shut
- * down and the file still exists, it will be automatically removed.
- * 
- * 
- * @author Albert Tregnaghi
- *
- */
 public class LocalTestPostgreSQLStarter {
 
-    private static final String DEFAULt_POSTGRES_IMAGE = "postgres:11.12";
     private static final String DEFAULT_FIXED_PORT = "49152";
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalTestPostgreSQLStarter.class);
     private Path filePath;
+
+    private PostgreSQLTestContainer container;
 
     /**
      * Starts a local postgres test container. <b>`test`</b>
@@ -54,10 +31,11 @@ public class LocalTestPostgreSQLStarter {
      *             When port is -1, the test container will start with a random port
      *             number. When no parameter is defined port will be
      *             {@value #DEFAULT_FIXED_PORT}. When no user is set the user will
-     *             be auto generated. A defined user name must have at least 12
+     *             be auto generated. A defined user name must have at least 8
      *             characters. A password must be at last 12 characters long. If not
-     *             defined a strong password will be generated. The docker image
-     *             used for postgres container is per default
+     *             defined a strong password will be generated. The psql version is
+     *             the default postgres image from alpine linux base image defined inside
+     *             sechub-developertools/scripts/container/postgres/Dockerfile
      *             {@value #DEFAULt_POSTGRES_IMAGE}e
      * @throws Exception
      */
@@ -66,7 +44,6 @@ public class LocalTestPostgreSQLStarter {
         String testUserName = null;
         String testPassword = null;
         String testDatabaseName = null;
-        String imageVersion = DEFAULt_POSTGRES_IMAGE;
 
         if (args.length > 0) {
             testPort = args[0];
@@ -80,9 +57,6 @@ public class LocalTestPostgreSQLStarter {
         if (args.length > 3) {
             testDatabaseName = args[3];
         }
-        if (args.length > 4) {
-            imageVersion = args[4];
-        }
 
         if (testUserName == null) {
             testUserName = UUID.randomUUID().toString();
@@ -95,53 +69,34 @@ public class LocalTestPostgreSQLStarter {
             testDatabaseName = "test";
         }
 
-        assertLength(testUserName, "Username has not min length", 12);
+        assertLength(testUserName, "Username has not min length", 8);
         assertLength(testPassword, "Password has not min length", 20);
 
         int postgresContainerPort = Integer.parseInt(testPort);
-        
-        new LocalTestPostgreSQLStarter().start(postgresContainerPort, testUserName, testPassword,testDatabaseName, imageVersion);
+
+        new LocalTestPostgreSQLStarter().start(postgresContainerPort, testUserName, testPassword, testDatabaseName);
     }
 
     private static void assertLength(String toInspect, String hint, int minLength) {
-        if (toInspect.length() < 12) {
+        if (toInspect.length() < minLength) {
             throw new IllegalArgumentException(hint + ". Min length:" + minLength + ", found:" + toInspect.length());
         }
 
     }
 
-    private void start(int port, String testUserName, String testPassword, String testDatabaseName, String imageVersion) throws Exception {
+    private void start(int port, String testUserName, String testPassword, String testDatabaseName) throws Exception {
         Runtime.getRuntime().addShutdownHook(createShutdownHookThread());
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n*************************************************");
-        sb.append("\n******** IMPORTANT SECURITY NOTES ***************");
-        sb.append("\n*************************************************\n");
-        sb.append("\nBe aware that this starts a testcontainer with 0.0.0.0 as IP-Adress!");
-        sb.append("\nThis means that everybody inside your network can see this instance as well.");
-        sb.append("\nIf the testcontainer docker image has vulnerabilities you will have those exposed!");
-        sb.append("\nMitigations:");
-        sb.append("\n- define a dedicated firewall and deny external access");
-        sb.append("\n- define your docker defaults to apply 127.0.0.1 instead of 0.0.0.0 per default or");
-        sb.append("\n- at least use strong passwords!\n");
-        sb.append("\n*************************************************");
-        sb.append("\n******** END OF SECURITY NOTES ******************");
-        sb.append("\n*************************************************");
-        
-        LOG.warn("Warn user about potential security risks"+sb.toString());
-        
-        try (PostgreSQLTestContainer container = new PostgreSQLTestContainer(port, testUserName, testPassword,testDatabaseName, imageVersion)) {
-            initializeDirectoryAndFiles(port);
+        container = new PostgreSQLTestContainer(port, testUserName, testPassword, testDatabaseName);
+        initializeDirectoryAndFiles(port);
 
-            LOG.info("start postgres local on port:{}", port);
-            container.start();
+        LOG.info("start postgres local on port:{}", port);
+        container.start();
 
-            createInfoFile(container);
+        createInfoFile(container);
 
-            Thread inspectThread = new Thread(new InspectStillWantedToRun(), "Inspect still wanted to run");
-            inspectThread.start();
-        }
-        LOG.warn("Warn user about potential security risks"+sb.toString());
+        Thread inspectThread = new Thread(new InspectStillWantedToRun(), "Inspect still wanted to run");
+        inspectThread.start();
 
     }
 
@@ -195,6 +150,13 @@ public class LocalTestPostgreSQLStarter {
                     e.printStackTrace();
                 }
             } while (Files.exists(filePath));
+            
+            try {
+                container.stop();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
 
         }
 
