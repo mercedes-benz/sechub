@@ -120,35 +120,21 @@ WARNING: Do not use the Integration Test Server mode in production.
 
 . Credentials
 +
-Open the log file `./sechub-integrationtest/integrationtest-server.log` and search for:
-+
-----
-##################### ATTENTION #####################################################
-# Created initial admin:'int-test_superadmin' with password:'{noop}int-test_superadmin-pwd'
-#                 email:'int-test_superadmin@sechub.example.org'
-# In production: CHANGE this initial API token, when your server has been started.
-# Everybody able to read this log file has access to these admin credentials!
-#####################################################################################
-----
-+
-[NOTE]
---
-In case of an error message or failure, you can find the SecHub server log under: `./sechub-integrationtest/integrationtest-server.log`.
-
-The `{noop}` has to be excluded from the password string, therefore the password is: `int-test_superadmin-pwd`
---
-+
 These are the initial credentials when starting SecHub server in `integration-test` mode:
 +
 SecHub Superadmin:
 +
-* username: `int-test_superadmin`
-* password: `int-test_superadmin-pwd`
+----
+username: int-test_superadmin
+password: int-test_superadmin-pwd
+----
 +
-SecHub User account:
+SecHub User Account:
 +
-* username: `int-test_onlyuser`
-* password: `int-test_onlyuser-pwd`
+----
+username: int-test_onlyuser
+password: int-test_onlyuser-pwd
+----
 
 . Environment variables
 +
@@ -239,3 +225,9 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 ----
 ./gradlew stopIntegrationTestServer
 ----
+
+==== Troubleshooting
+
+===== Log files
+
+Open the log file `./sechub-integrationtest/integrationtest-server.log` to get more details about the problem.
