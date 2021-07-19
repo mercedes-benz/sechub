@@ -39,7 +39,7 @@ public class PDSCodeScanJobScenario5IntTest {
 
     @SuppressWarnings("deprecation") // we use assertSecHubReport here - old implementation okay here
     @Test
-    public void a_user_can_start_a_pds_scan_job_and_gets_result_containing_expected_findings_and_also_dynamic_parts() {
+    public void pds_reuse_sechub_data__a_user_can_start_a_pds_scan_job_and_gets_result_containing_expected_findings_and_also_dynamic_parts() {
         /* @formatter:off */
 
         /* prepare */

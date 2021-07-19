@@ -36,6 +36,6 @@ public class ExecutionConstants {
      * profiles. This profile contains executors of PDS integration test in version V1, using SARIF - but DOES NOT reuse SecHub storage
      * 
      */
-    public static final String DEFAULT_PROFILE_4_ID = IntegrationTestDefaultProfiles.PROFILE_4_PDS_CODESCAN_SARIF_NO_SECHUB_STORAGE_USED.id;  
+    public static final String DEFAULT_PROFILE_4_ID = IntegrationTestDefaultProfiles.PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF.id;  
     
 }
