@@ -53,7 +53,8 @@ then
 fi
 
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
-jobUUID=`$pds_api create_job PDS_GOSEC "288607bf-ac81-4088-842c-005d5702a9e9" | jq '.jobUUID' | tr -d \"`
+sechub_job_uuid=`uuidgen`
+jobUUID=`$pds_api create_job PDS_GOSEC "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
 
 "$pds_api" upload_zip "$jobUUID" "$file_to_upload"
 "$pds_api" mark_job_ready_to_start "$jobUUID"

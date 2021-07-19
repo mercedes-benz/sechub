@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 SCRIPT_DIR=`dirname $0`
-REPLICAS="$1"
+IMAGE_TYPE="$1"
 
 ENVIRONMENT_FILE=".env"
 
@@ -11,18 +11,16 @@ then
     echo "Environment file does not exist."
     echo "Creating default environment file $ENVIRONMENT_FILE for you."
 
-    cp "$SCRIPT_DIR/env-initial" "$SCRIPT_DIR/.env"
+    cp "$SCRIPT_DIR/env-initial" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
 else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
-if [[ -z "$REPLICAS" ]]
+if [[ "$IMAGE_TYPE" == "alpine" ]]
 then
-    
-    REPLICAS=1
+    echo "Starting single Alpine container."
+    docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
 else
-    echo "Starting cluster of $REPLICAS containers."
+    echo "Starting single Ubuntu container."
+    docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
 fi
-
-echo "Starting single container."
-docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build

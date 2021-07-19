@@ -8,12 +8,12 @@ FROM ${BASE_IMAGE}
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 ARG WORKSPACE="/workspace"
 ARG PDS_FOLDER="/pds"
-ARG PDS_CHECKSUM="8a62379797c490d4e92c97f001dda5406ac240c7fddf2a9828224660625db668"
+ARG PDS_CHECKSUM="ee39061c3033d4b627e87087f1119589becb133e0a28b041064af4ea2d7b77ec"
 ARG TOOL_FOLDER="/tool"
 ARG GOSEC_VERSION="2.8.1"
 ARG GOSEC_CHECKSUM="b9632585292c5ebc749b0afe064661bee7ea422fc7c54a5282a001e52c8ed30d"
 
-ENV PDS_VERSION=0.22.0
+ENV PDS_VERSION=0.22.1
 
 # non-root user
 # using fixed group and user ids
@@ -34,8 +34,6 @@ RUN cd /tmp && \
     echo "$GOSEC_CHECKSUM  gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" > gosec_${GOSEC_VERSION}_linux_amd64.tar.gz.sha256sum && \
     # download gosec
     wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
-    # download checksum
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
     # verify checksum
     sha256sum -c "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz.sha256sum" && \
     # create gosec folder

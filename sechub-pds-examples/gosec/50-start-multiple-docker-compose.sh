@@ -4,14 +4,14 @@
 SCRIPT_DIR=`dirname $0`
 REPLICAS="$1"
 
-ENVIRONMENT_FILE=".env"
+ENVIRONMENT_FILE=".env-cluster"
 
 if [[ ! -f  "$ENVIRONMENT_FILE" ]]
 then
     echo "Environment file does not exist."
     echo "Creating default environment file $ENVIRONMENT_FILE for you."
 
-    cp "$SCRIPT_DIR/env-initial" "$SCRIPT_DIR/.env"
+    cp "$SCRIPT_DIR/env-cluster-initial" "$SCRIPT_DIR/$ENVIRONMENT_FILE"
 else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi

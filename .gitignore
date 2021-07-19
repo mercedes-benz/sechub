@@ -40,4 +40,4 @@ sechub-false-positives*.json
 #!sechub.json
 
 # Docker container
-.env
+.env*

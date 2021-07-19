@@ -17,4 +17,4 @@ version: 0.2.0
 # It is recommended to use it with quotes.
 #
 # The appVersion corresponds to the deployed PDS version.
-appVersion: "0.22.0"
+appVersion: "0.22.1"

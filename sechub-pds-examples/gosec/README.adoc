@@ -24,7 +24,8 @@ Docker and Docker-Compose need to be installed:
 
 === Start
 
-==== Automatic
+==== Single Instance
+===== Automatic
 
 The folder contains a start script which does the <<_manually, manual>> steps for you:
 
@@ -32,9 +33,15 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 ./01-start-docker-compose.sh
 ----
 
-==== Manually
+or to start the Alpine Linux container:
 
-. Copy `env-example` file to `.env`
+----
+./01-start-docker-compose.sh alpine
+----
+
+===== Manually
+
+. Copy `env-initial` file to `.env`
 
 . Set values in `.env` file. The values are described in the `env-example` file.
 
@@ -52,6 +59,8 @@ docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
 
 ==== Clustered
 
+===== Automatic
+
 Starting several PDS + GoSec instances
 
 ----
@@ -62,6 +71,18 @@ Example of starting 3 PDS + GoSec instances
 
 ----
 ./50-start-multiple-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster`
+
+. Set values in `.env` file. The values are described in the `env-example` file.
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./50-start-multiple-docker-compose.sh <replicas>
 ----
 
 === Scan
@@ -473,7 +494,7 @@ networkPolicy:
 ----
 +
 [TIP]
-Generate to generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
+To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
 
 . List pods
 +
