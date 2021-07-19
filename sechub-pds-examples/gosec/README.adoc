@@ -10,7 +10,12 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
+[NOTE]
+We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux images are intended for experienced Linux users.
+
 == Run Locally
+
+This is the easiest way to get started.
 
 === Requirements
 
@@ -22,10 +27,11 @@ Docker and Docker-Compose need to be installed:
 
 . https://docs.docker.com/compose/install/[Install Docker-Compose]
 
-=== Start
+=== Single Instance
 
-==== Single Instance
-===== Automatic
+Start a single instance either by using a Bash wrapper script or follow the steps manually.
+
+==== Automatic
 
 The folder contains a start script which does the <<_manually, manual>> steps for you:
 
@@ -39,7 +45,7 @@ or to start the Alpine Linux container:
 ./01-start-docker-compose.sh alpine
 ----
 
-===== Manually
+==== Manually
 
 . Copy `env-initial` file to `.env`
 
@@ -57,35 +63,11 @@ or to start the Alpine Linux container:
 docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
 ----
 
-==== Clustered
-
-===== Automatic
-
-Starting several PDS + GoSec instances
-
-----
-./50-start-multiple-docker-compose.sh <replicas>
-----
-
-Example of starting 3 PDS + GoSec instances
-
-----
-./50-start-multiple-docker-compose.sh 3
-----
-
-===== Manually
-
-. Copy `env-cluster-initial` file to `.env-cluster`
-
-. Set values in `.env` file. The values are described in the `env-example` file.
-
-. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
-+
-----
-./50-start-multiple-docker-compose.sh <replicas>
-----
-
 === Scan
+
+The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
+
+==== Scan Manually
 
 . Go to PDS Bash command line (CLI) script
 +
@@ -374,6 +356,61 @@ Output
 +
 NOTE: This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
+==== Scan Script 
+
+Doing a manual <<_scan>> the first time using PDS is recommended. However, after some time typing in the commands, which  a scan becomes very tedious.
+To improve on the experience one can scan using a script.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+----
+
+. Scan by providing a `ZIP` folder with Go source code.
++
+----
+./70-test.sh <path-to-zip-file>
+----
++
+example:
++
+----
+./70-test.sh ~/myproject.zip
+----
+
+=== Cluster
+
+The cluster is created locally via `docker-compose`. The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server. 
+
+==== Automatic
+
+Starting several PDS + GoSec instances
+
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + GoSec instances
+
+----
+./50-start-multiple-docker-compose.sh 3
+----
+
+==== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster`
+
+. Set values in `.env` file. The values are described in the `env-example` file.
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
 === Troubleshooting
 
 ==== Access the Ubuntu container
@@ -407,11 +444,13 @@ or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
 +
 TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
 
-== Build Image and Push to Registry
+== Kubernetes
 
-=== Build Image
+=== Build Image and Push to Registry
 
-==== Ubuntu
+==== Build Image
+
+===== Ubuntu
 
 . Using the default image: 
 +
@@ -425,7 +464,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
 ----
 
-==== Alpine
+===== Alpine
 
 . Using the default image: 
 +
@@ -439,7 +478,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
 ----
 
-=== Push to Registry
+==== Push to Registry
 
 * Push the version tag only
 +
@@ -453,14 +492,14 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
 ----
 
-== Kubernetes
+=== Helm
 
-=== Requierments:
+==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
 * `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
 
-=== Installation
+==== Installation
 
 . Install helm package from file system
 +
@@ -512,7 +551,7 @@ kubectl port-forward pds-gosec-749fcb8d7f-jjqwn 8444:8444
 
 . Scan as explained in <<_scan>>.
 
-=== Uninstall 
+==== Uninstall 
 
 . Helm list
 +

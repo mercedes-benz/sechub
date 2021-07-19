@@ -6,18 +6,27 @@ FROM ${BASE_IMAGE}
 
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
-ARG WORKSPACE="/workspace"
+
+# Folders
 ARG PDS_FOLDER="/pds"
-ARG PDS_CHECKSUM="ee39061c3033d4b627e87087f1119589becb133e0a28b041064af4ea2d7b77ec"
 ARG SCRIPT_FOLDER="/scripts"
-ARG GOSEC_VERSION="2.8.1"
+ENV TOOL_FOLDER="/tools"
+ARG WORKSPACE="/workspace"
+
+# PDS
+ENV PDS_VERSION=0.22.1
+ARG PDS_CHECKSUM="ee39061c3033d4b627e87087f1119589becb133e0a28b041064af4ea2d7b77ec"
+
+# Go
 ARG GO="go1.16.6.linux-amd64.tar.gz"
 ARG GO_CHECKSUM="be333ef18b3016e9d7cb7b1ff1fdb0cac800ca0be4cf2290fe613b3d069dfe0d"
 
-ENV PDS_VERSION=0.22.1
+# GoSec
+ARG GOSEC_VERSION="2.8.1"
+
+# Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
-ENV TOOL_FOLDER="/tools"
 
 # non-root user
 # using fixed group and user ids
@@ -33,7 +42,7 @@ RUN apt-get update && \
     apt-get install --assume-yes wget openjdk-11-jre-headless && \
     apt-get clean
 
-# Create tool folder
+# Create script folder
 COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
 RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
@@ -94,7 +103,7 @@ WORKDIR "$WORKSPACE"
 # Change owner of tool, workspace and pds folder as well as /run.sh
 RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
-# switch from root to non-root user
+# Switch from root to non-root user
 USER gosec
 
 CMD ["/run.sh"]

@@ -27,6 +27,7 @@ LOADBALANCER_START_MODE=debug, server
 KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=true, false
 
 # Location of the shared volume upload dir
+# The default is set in the container via Docker
 SHARED_VOLUME_UPLOAD_DIR=/shared_volumes/uploads
 
 # The database start mode

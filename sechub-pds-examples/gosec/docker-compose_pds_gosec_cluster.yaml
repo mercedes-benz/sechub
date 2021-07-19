@@ -7,7 +7,7 @@ services:
             args:
                 - BASE_IMAGE=ubuntu:focal
             context: docker/
-            dockerfile: Dockerfile-Ubuntu
+            dockerfile: GoSec-Ubuntu.dockerfile
         env_file:
             - .env-cluster
         networks:

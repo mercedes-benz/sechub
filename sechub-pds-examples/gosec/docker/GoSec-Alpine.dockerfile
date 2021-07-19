@@ -6,14 +6,24 @@ FROM ${BASE_IMAGE}
 
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
-ARG WORKSPACE="/workspace"
+
+# Folders
 ARG PDS_FOLDER="/pds"
-ARG PDS_CHECKSUM="ee39061c3033d4b627e87087f1119589becb133e0a28b041064af4ea2d7b77ec"
+ARG SCRIPT_FOLDER="/scripts"
 ARG TOOL_FOLDER="/tool"
+ARG WORKSPACE="/workspace"
+
+# PDS
+ENV PDS_VERSION=0.22.1
+ARG PDS_CHECKSUM="ee39061c3033d4b627e87087f1119589becb133e0a28b041064af4ea2d7b77ec"
+
+# GoSec
 ARG GOSEC_VERSION="2.8.1"
 ARG GOSEC_CHECKSUM="b9632585292c5ebc749b0afe064661bee7ea422fc7c54a5282a001e52c8ed30d"
 
-ENV PDS_VERSION=0.22.1
+# Shared volumes
+ENV SHARED_VOLUMES="/shared_volumes"
+ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
 # non-root user
 # using fixed group and user ids
@@ -24,9 +34,9 @@ RUN addgroup --gid 2323 gosec \
 RUN apk update && \
     apk add go openjdk11-jre-headless wget unzip tar
 
-# Create tool folder
-COPY gosec.sh $TOOL_FOLDER/gosec.sh
-RUN chmod +x $TOOL_FOLDER/gosec.sh
+# Create script folder
+COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
+RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
 # Install GoSec
 RUN cd /tmp && \
@@ -61,11 +71,14 @@ COPY pds-config.json /$PDS_FOLDER/pds-config.json
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
+# Create shared volumes and upload dir
+RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
+
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $TOOL_FOLDER $WORKSPACE $PDS_FOLDER /run.sh
+RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # switch from root to non-root user
 USER gosec
