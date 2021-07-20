@@ -20,9 +20,10 @@ const DefaultWaitTime = 60
 const DefaultTimeoutInSeconds = 120
 
 // DefaultZipExcludeDirPatterns - Define directory patterns to exclude from zip file:
-// code in directories named "test" is not considered to end up in the binary
-// also ignore .git directory
-var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**"}
+// - code in directories named "test" is not considered to end up in the binary
+// - also ignore ".git" directory
+// - ignore "node_modules" directories which may contain millions of lines of library code
+var DefaultZipExcludeDirPatterns = []string{"**/test/**", "**/.git/**", "**/node_modules/**"}
 
 /* ---------------------------------- */
 /* -------- Exit codes -------------- */

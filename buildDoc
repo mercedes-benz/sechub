@@ -8,7 +8,7 @@ cd `dirname $0`
 # repository root folder. 
 # 
 
-./build
+./buildExecutables
 
 echo 
 echo "********************************************************************"

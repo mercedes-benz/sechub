@@ -18,6 +18,7 @@ dependencies {
     compile library.flyway
     compile library.logstashLogbackEncoder
     compile library.database_h2
+    compile library.database_postgres
     compile library.apache_commons_io
 
     compile project(':sechub-pds-core')    
