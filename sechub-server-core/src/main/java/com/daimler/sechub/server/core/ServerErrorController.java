@@ -20,9 +20,6 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 @RestController
 public class ServerErrorController implements ErrorController {
 
-
-    private static final String PATH = "/error";	// NOSONAR
-
     @MustBeDocumented("When debug flag is set, rest call reponse error messages do also contain stacktraces.")
     @Value("${sechub.server.debug:false}")
     private boolean debug;
@@ -30,19 +27,13 @@ public class ServerErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
-    @RequestMapping(value = PATH)
+    @RequestMapping(value = "${server.error.path}")
     ResponseEntity<ServerError> error(HttpServletRequest request, HttpServletResponse response){
          return ResponseEntity.status(response.getStatus())
              .body(
                  new ServerError(response.getStatus(), getErrorAttributes(request, debug)
              )
          );
-    }
-
-
-    @Override
-    public String getErrorPath() {
-        return PATH;
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {

@@ -24,6 +24,7 @@ import com.daimler.sechub.pds.PDSNotFoundException;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.storage.PDSMultiStorageService;
+import com.daimler.sechub.pds.storage.PDSStorageInfoCollector;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport;
 import com.daimler.sechub.pds.util.PDSFileUnzipSupport.UnzipResult;
 import com.daimler.sechub.storage.core.JobStorage;
@@ -53,6 +54,9 @@ public class PDSWorkspaceService {
 
     @Autowired
     PDSFileUnzipSupport fileUnzipSupport;
+    
+    @Autowired
+    PDSStorageInfoCollector storageInfoCollector;
 
     @PDSMustBeDocumented(value = "Defines if workspace is automatically cleaned when no longer necessary - means launcher script has been executed and finished (failed or done)", scope = "execution")
     @Value("${sechub.pds.workspace.autoclean.disabled:false}")
@@ -91,24 +95,28 @@ public class PDSWorkspaceService {
 
     }
 
-    private JobStorage fetchStorage(UUID jobUUID, PDSJobConfiguration config) {
-        String storagePath = findStoragePath(config);// undefined, so use new PDS location - we need to set this for #435...
+    private JobStorage fetchStorage(UUID pdsJobUUID, PDSJobConfiguration config) {
 
-        LOG.debug("Feching storage for storagePath = {} and jobUUID:{}", storagePath, jobUUID);
+        UUID jobUUID;
+        String storagePath;
+        PDSJobConfigurationSupport configurationSupport = new PDSJobConfigurationSupport(config);
 
+        boolean useSecHubStorage = configurationSupport.isSecHubStorageEnabled();
+
+        if (useSecHubStorage) {
+            storagePath = configurationSupport.getSecHubStoragePath();
+            jobUUID = config.getSechubJobUUID();
+        } else {
+            storagePath = null;// will force default storage path for the PDS product
+            jobUUID = pdsJobUUID;
+        }
+
+        LOG.debug("PDS job {}: feching storage for storagePath = {} and jobUUID:{}, useSecHubStorage={}", pdsJobUUID, storagePath, jobUUID, useSecHubStorage);
         JobStorage storage = storageService.getJobStorage(storagePath, jobUUID);
+        
+        storageInfoCollector.informFetchedStorage(storagePath, config.getSechubJobUUID(), pdsJobUUID, storage);
+        
         return storage;
-    }
-
-    private String findStoragePath(PDSJobConfiguration config) {
-        /*
-         * TODO Albert Tregnaghi, 2021-05-20: this is point where we could reuse
-         * existing sechub uploads. See https://github.com/Daimler/sechub/issues/435
-         * (reuse data) when have the storagePath inside the config (as a sent parameter
-         * "uploadStoragePath") and the sechub server does not the upload but only send
-         * this, we would save upoad time and memory
-         */
-        return config.getExternalStoragePath();
     }
 
     /**
@@ -191,20 +199,15 @@ public class PDSWorkspaceService {
         FileUtils.deleteDirectory(getWorkspaceFolder(jobUUID));
         LOG.info("Removed workspace folder for job {}", jobUUID);
 
-        String externalStoragePath = null;
-        if (config != null) {
-            externalStoragePath = config.getExternalStoragePath();
-        }
+        PDSJobConfigurationSupport support = new PDSJobConfigurationSupport(config);
 
-        boolean cleanupStorageAutomatically = externalStoragePath == null;
+        if (support.isSecHubStorageEnabled()) {
+            LOG.info("Removed NOT storage for PDS job {} because sechub storage and will be handled by sechub job {}", jobUUID, config.getSechubJobUUID());
 
-        if (cleanupStorageAutomatically) {
+        } else {
             JobStorage storage = fetchStorage(jobUUID, config);
             storage.deleteAll();
             LOG.info("Removed storage for job {}", jobUUID);
-
-        } else {
-            LOG.info("Removed NOT storage for job {} because external location {}", jobUUID, externalStoragePath);
         }
 
     }

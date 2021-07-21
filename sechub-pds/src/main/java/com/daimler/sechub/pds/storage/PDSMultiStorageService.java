@@ -59,7 +59,9 @@ public class PDSMultiStorageService implements StorageService {
             storagePath = serverConfigurationService.getStorageId();
             LOG.debug("storage path parameter was null - fallback to default:{}", storagePath);
         }
-        return jobStorageFactory.createJobStorage(storagePath, jobUUID);
+        JobStorage jobStorage = jobStorageFactory.createJobStorage(storagePath, jobUUID);
+        
+        return jobStorage;
     }
 
 }

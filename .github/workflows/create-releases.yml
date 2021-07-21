@@ -28,16 +28,18 @@ jobs:
         ref: master
     
     
-    # Create local tags, so we build documentation for this tag...
-    - name: "Tag server version: v${{ github.event.inputs.server-version }}-server - if defined" 
+    # Create temporary local tags, so we build documentation for this tag...
+    # The final tag on git server side will be done by the release when the draft is saved as "real" release
+    # automatically.
+    - name: "Temporary tag server version: v${{ github.event.inputs.server-version }}-server - if defined" 
       if: github.event.inputs.server-version != ''
       run: git tag v${{ github.event.inputs.server-version }}-server
     
-    - name: "Tag client version: v${{ github.event.inputs.client-version }}-client - if defined" 
+    - name: "Temporary tag client version: v${{ github.event.inputs.client-version }}-client - if defined" 
       if: github.event.inputs.client-version != ''
       run: git tag v${{ github.event.inputs.client-version }}-client
     
-    - name: "Tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined" 
+    - name: "Temporary tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined" 
       if: github.event.inputs.pds-version != ''
       run: git tag v${{ github.event.inputs.pds-version }}-pds
     
@@ -129,7 +131,7 @@ jobs:
     
     - name: Install graphviz (asciidoc diagrams)
       run: sudo apt-get install graphviz
-    
+      
     # -----------------------------------------
     # Build Documentation  
     # -----------------------------------------  
@@ -162,6 +164,12 @@ jobs:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/
           retention-days: 14
+    # -----------------------------------------
+    # Assert releaseable, so no dirty flags on releases
+    # even when all artifact creation parts are done!
+    # -----------------------------------------  
+    - name: Assert releasable
+      run: ./gradlew assertReleaseable
     # ******************************************     
     # Now let's create a new SERVER release
     # when server version is set

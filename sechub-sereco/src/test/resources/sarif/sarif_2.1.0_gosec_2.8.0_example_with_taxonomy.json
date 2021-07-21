@@ -1,0 +1,121 @@
+{
+	"runs": [
+		{
+			"results": [
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "go_code/vulnerable.go"
+								},
+								"region": {
+									"endColumn": 10,
+									"endLine": 12,
+									"snippet": {
+										"text": "11:     }\n12:     q := fmt.Sprintf(\"SELECT * FROM foo where name = '%s'\", os.Args[1])\n13:     rows, err := db.Query(q)\n"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 10,
+									"startLine": 12
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "SQL string formatting"
+					},
+					"ruleId": "G201"
+				}
+			],
+			"taxonomies": [
+				{
+					"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
+					"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+					"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
+					"isComprehensive": true,
+					"language": "en",
+					"minimumRequiredLocalizedDataSemanticVersion": "4.4",
+					"name": "CWE",
+					"organization": "MITRE",
+					"releaseDateUtc": "2021-03-15",
+					"shortDescription": {
+						"text": "The MITRE Common Weakness Enumeration"
+					},
+					"taxa": [
+						{
+							"fullDescription": {
+								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+							},
+							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+							"id": "89",
+							"shortDescription": {
+								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+							}
+						}
+					],
+					"version": "4.4"
+				}
+			],
+			"tool": {
+				"driver": {
+					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
+					"informationUri": "https://github.com/securego/gosec/",
+					"name": "gosec",
+					"rules": [
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
+								"text": "SQL string formatting"
+							},
+							"help": {
+								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
+							},
+							"id": "G201",
+							"name": "SQL string formatting",
+							"properties": {
+								"precision": "high",
+								"tags": [
+									"security",
+									"MEDIUM"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+										"id": "89",
+										"toolComponent": {
+											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+											"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "SQL string formatting"
+							}
+						}
+					],
+					"semanticVersion": "2.8.0",
+					"supportedTaxonomies": [
+						{
+							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+							"name": "CWE"
+						}
+					],
+					"version": "2.8.0"
+				}
+			}
+		}
+	],
+	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	"version": "2.1.0"
+}

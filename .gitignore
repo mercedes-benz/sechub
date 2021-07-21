@@ -42,3 +42,5 @@ sechub-false-positives*.json
 # OpenAPI
 java-gen/
 
+# Docker container
+.env

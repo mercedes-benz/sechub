@@ -10,8 +10,8 @@ dependencies {
 	compile library.jsoup
 	    
     compile project(':sechub-shared-kernel')
+    compile project(':sechub-sarif')
 
-	compile library.contrastsecurity_sarif
     compile project(':sechub-shared-kernel')
     
     testCompile project(':sechub-testframework')

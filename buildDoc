@@ -1,4 +1,5 @@
 #!/bin/bash 
+cd `dirname $0`
 
 # This script build full documentation and also creates all precondition parts
 # So users can checkout from github and call this.
@@ -7,16 +8,15 @@
 # repository root folder. 
 # 
 
-echo "********************************************************************"
-echo "* Build software artifacts - necessary as precondition" 
-echo "********************************************************************"
-./gradlew ensureLocalhostCertificate build buildGo -x :sechub-integrationtest:test
- 
+./buildExecutables
+
+echo 
 echo "********************************************************************"
 echo "* Collect runtime information about some started artefacts" 
 echo "********************************************************************"
 ./gradlew integrationtest
 
+echo
 echo "********************************************************************"
 echo "* Build documents + pages by using static and former collected info" 
 echo "********************************************************************"

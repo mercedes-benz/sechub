@@ -3,11 +3,11 @@ package com.daimler.sechub.adapter.pds;
 
 import java.util.UUID;
 
-class PDSUrlBuilder {
+public class PDSUrlBuilder {
 
     private String baseURL;
 
-    PDSUrlBuilder(String baseURL) {
+    public PDSUrlBuilder(String baseURL) {
         this.baseURL = baseURL;
     }
 
@@ -58,7 +58,7 @@ class PDSUrlBuilder {
     public String buildAdminGetServerConfiguration() {
         return buildUrl(API_PDS_ADMIN, "config/server");
     }
-
+    
     public String buildBaseUrl() {
         return baseURL;
     }
