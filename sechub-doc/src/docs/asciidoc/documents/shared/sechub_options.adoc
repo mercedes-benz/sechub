@@ -3,7 +3,7 @@
 [[section-db-configuration]]
 ==== Database configuration 
 ===== PostgreSQL
-First of all install a PostgreSQL database.
+First of all, install a PostgreSQL database.
 
 Then define following environment entries before you start the server with active postgres profile:
 

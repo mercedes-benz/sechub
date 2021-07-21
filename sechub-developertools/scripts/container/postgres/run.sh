@@ -5,7 +5,7 @@ debug () {
     while true
     do
 	    echo "Press [CTRL+C] to stop.."
-	    sleep 5s
+	    sleep 2m
     done
 }
 
@@ -20,7 +20,7 @@ server () {
     # for the container to stay alive
     while pg_ctl status
     do
-        sleep 5m
+        sleep 1m
     done
 }
 
