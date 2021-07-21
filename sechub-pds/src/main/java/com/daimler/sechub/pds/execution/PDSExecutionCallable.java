@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import com.daimler.sechub.pds.PDSJSONConverterException;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
@@ -35,7 +34,6 @@ import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
 class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSExecutionCallable.class);
-    private static final int MAXIMUM_RETRIES_ON_OPTIMISTIC_LOCKS = 2;
 
     private PDSJobTransactionService jobTransactionService;
     private Process process;
@@ -64,7 +62,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         PDSExecutionResult result = new PDSExecutionResult();
         PDSJobConfiguration config = null;
         try {
-            updateWithRetriesOnOptimisticLocks(UpdateState.RUNNING);
+            jobTransactionService.markJobAsRunningInOwnTransaction(jobUUID);
 
             String configJSON = jobTransactionService.getJobConfiguration(jobUUID);
 
@@ -101,32 +99,6 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
 
         return result;
-    }
-
-    private enum UpdateState {
-        RUNNING,
-    }
-
-    private void updateWithRetriesOnOptimisticLocks(UpdateState state) {
-
-        int retries = 0;
-        while (true) {
-            try {
-                if (state == UpdateState.RUNNING) {
-                    jobTransactionService.markJobAsRunningInOwnTransaction(jobUUID);
-                }
-                break;
-
-            } catch (ObjectOptimisticLockingFailureException e) {
-
-                /* we just retry - to avoid any optimistic locks */
-                if (retries > MAXIMUM_RETRIES_ON_OPTIMISTIC_LOCKS) {
-                    throw new IllegalStateException("Still having optimistic lock problems - event after " + retries + " retries", e);
-                }
-                retries++;
-                LOG.info("Had optimistic lock problem on update for job {} - do retry nr.{}", jobUUID, retries);
-            }
-        }
     }
 
     private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)

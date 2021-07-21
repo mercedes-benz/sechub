@@ -25,6 +25,16 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     private static final List<TestExecutorConfig> registeredConfigurations = new ArrayList<>();
     
+    private enum StorageType{
+        REUSE_SECHUB_DATA(),
+        
+        DO_NOT_REUSE_SECHUB_DATA,
+        
+        ;
+
+        
+    }
+    
     private static final String INTTEST_NAME_PREFIX = "INTTEST_";
     
     public static final TestExecutorConfig NETSPARKER_V1 = defineNetsparkerConfig();
@@ -37,11 +47,32 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_D="d";
     public static final String PDS_CODESCAN_VARIANT_E="e";
     
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(PDS_CODESCAN_VARIANT_A,false,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(PDS_CODESCAN_VARIANT_B,true,PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(PDS_CODESCAN_VARIANT_C,true,(String)null,true);// no identifier set, will not work...
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSScan(PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,true);
-    public static final TestExecutorConfig PDS_V1_CODE_SCAN_E = definePDSScan(PDS_CODESCAN_VARIANT_E,false,PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,false);
+    /* @formatter:off */
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_A,false,
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, 
+                                                StorageType.REUSE_SECHUB_DATA);
+    
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_B = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_B,true,
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN, 
+                                                StorageType.REUSE_SECHUB_DATA);
+    
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_C = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_C,true,
+                                                (String)null,
+                                                StorageType.REUSE_SECHUB_DATA);// no identifier set, will not work...
+    
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_D = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_D,false,PDSIntTestProductIdentifier.
+                                                PDS_INTTEST_PRODUCT_CS_SARIF,
+                                                StorageType.REUSE_SECHUB_DATA);
+    
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_E_DO_NOT_REUSE_SECHUBDATA = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_E,false,
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_PRODUCT_CS_SARIF,
+                                                StorageType.DO_NOT_REUSE_SECHUB_DATA);
+    /* @formatter:on */
     
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID="TEST_PDS_TECHUSER_ID";
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN="TEST_PDS_TECHUSER_APITOKEN";
@@ -53,17 +84,13 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return Collections.unmodifiableList(registeredConfigurations);
     }
     
-    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier) {
-        return definePDSScan(variant, credentialsAsEnvEntries, pdsProductIdentifier, true);
-    }
-    
-    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier, boolean useSecHubStorage) {
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries,PDSIntTestProductIdentifier pdsProductIdentifier, StorageType useSecHubStorage) {
         String productIdentfieriId=pdsProductIdentifier != null ? pdsProductIdentifier.getId():"not-existing";
         return definePDSScan(variant, credentialsAsEnvEntries, productIdentfieriId, useSecHubStorage);
         
     }
     
-    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId, boolean useSecHubStorage) {
+    private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId, StorageType storageType) {
         TestExecutorConfig config = createTestEditorConfig();
         
         config.enabled=true;
@@ -79,6 +106,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
             config.setup.credentials.user=TestAPI.PDS_TECH_USER.getUserId();
             config.setup.credentials.password=TestAPI.PDS_TECH_USER.getApiToken();
         }
+        boolean useSecHubStorage = storageType==StorageType.REUSE_SECHUB_DATA;
+        
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
         jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier",productIdentifierId));
         jobParameters.add(new TestExecutorSetupJobParam("pds.config.use.sechub.storage", Boolean.valueOf(useSecHubStorage).toString()));
