@@ -5,6 +5,7 @@ import static com.daimler.sechub.pds.job.PDSJobAssert.*;
 import static com.daimler.sechub.pds.util.PDSAssert.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
@@ -28,10 +29,13 @@ public class PDSJobTransactionService {
     PDSJobRepository repository;
 
     public PDSJobTransactionService() {
-        //
     }
 
-    /* mark as running - no matter of state before */
+    /**
+     * Mark job as ready to start - state before allowed: only CREATED
+     * 
+     * @param jobUUID
+     */
     @RolesAllowed({ PDSRoleConstants.ROLE_USER, PDSRoleConstants.ROLE_SUPERADMIN })
     public void markReadyToStartInOwnTransaction(UUID jobUUID) {
         LOG.info("Mark job {} as ready to start", jobUUID);
@@ -39,18 +43,18 @@ public class PDSJobTransactionService {
     }
 
     /**
-     * Marks job as running - no matter which state before
+     * Mark job as running - no matter which state before
      * 
-     * @param uuid
+     * @param jobUUID
      */
-    public void markJobAsRunningInOwnTransaction(UUID uuid) {
-        updateJobInOwnTransaction(uuid, null, LocalDateTime.now(), null, PDSJobStatusState.RUNNING, PDSJobStatusState.values());
+    public void markJobAsRunningInOwnTransaction(UUID jobUUID) {
+        updateJobInOwnTransaction(jobUUID, null, LocalDateTime.now(), null, PDSJobStatusState.RUNNING, PDSJobStatusState.values());
     }
 
     private void updateJobInOwnTransaction(UUID jobUUID, String result, LocalDateTime started, LocalDateTime ended, PDSJobStatusState newState,
             PDSJobStatusState... acceptedStatesBefore) {
         notNull(jobUUID, "job uuid may not be null!");
-        
+
         PDSJob job = assertJobFound(jobUUID, repository);
         if (started != null) {
             job.setStarted(started);
@@ -66,7 +70,29 @@ public class PDSJobTransactionService {
         LOG.debug("Updated job in own transaction - pds job uuid={}, state={}", job.getUUID(), job.getState());
     }
 
+    /**
+     * Read job configuration in own transaction
+     * 
+     * @param jobUUID
+     * @return job configuration, will fail when job is not found
+     */
     public String getJobConfiguration(UUID jobUUID) {
         return assertJobFound(jobUUID, repository).getJsonConfiguration();
+    }
+
+    /**
+     * Resolves next job to execute. If found the job will be marked as queued
+     * 
+     * @return uuid or <code>null</code> if no job found to put in queue.
+     */
+    public UUID findNextJobToExecuteAndMarkAsQueued() {
+        
+        Optional<PDSJob> nextJob = repository.findNextJobToExecute();
+        if (!nextJob.isPresent()) {
+            return null;
+        }
+        PDSJob pdsJob = nextJob.get();
+        pdsJob.setState(PDSJobStatusState.QUEUED);
+        return pdsJob.getUUID();
     }
 }

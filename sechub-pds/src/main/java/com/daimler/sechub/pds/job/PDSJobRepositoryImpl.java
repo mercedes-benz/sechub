@@ -46,7 +46,7 @@ public class PDSJobRepositoryImpl implements PDSJobRepositoryCustom {
         query.setParameter(PROPERTY_STATE, READY_TO_START);
         query.setMaxResults(1);
         // we use OPTIMISTIC_FORCE_INCREMENT write lock - so only one POD will be able
-        // to execute next job...
+        // to execute next job... (it's just a fuse, it should not happen)
         // see https://www.baeldung.com/jpa-pessimistic-locking
         query.setLockMode(LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 
