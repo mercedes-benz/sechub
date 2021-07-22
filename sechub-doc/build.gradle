@@ -258,6 +258,12 @@ task generateOpenapi() {
     doLast {
         def openApiFile = "$buildDir/api-spec/openapi3.json"
     	
+    	// Documenting an array of strings in RestDoc is currently not supported
+    	// - https://github.com/spring-projects/spring-restdocs/issues/505
+    	// - https://github.com/ePages-de/restdocs-api-spec/issues/147
+    	// 
+    	// to solve this issue, this task takes the OpenAPI file and adjust it
+    	
     	// Load JSON
     	def jsonSlurper = new JsonSlurper() 
     	File jsonFile = new File(openApiFile)
