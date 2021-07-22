@@ -19,37 +19,38 @@ function is_job_finished () {
     echo $job_finished
 }
 
-function paramater_missing() {
+function parameter_missing() {
     MESSAGE="$1"
 
     echo "[ERROR] $MESSAGE"
+    echo ""
     usage
     exit 1
 }
 
 if [[ -z "$PDS_SERVER" ]]
 then
-    paramater_missing "Environment variable PDS_SERVER missing"
+    parameter_missing "Environment variable PDS_SERVER missing."
 fi
 
 if [[ -z "$PDS_USERID" ]]
 then
-    paramater_missing "Environment variable PDS_USERID missing"
+    parameter_missing "Environment variable PDS_USERID missing."
 fi
 
 if [[ -z "$PDS_APITOKEN" ]]
 then
-    paramater_missing "Environment variable PDS_APITOKEN missing"
+    parameter_missing "Environment variable PDS_APITOKEN missing."
 fi
 
 if [[ -z "$file_to_upload" ]]
 then
-    paramater_missing "Please provide file to upload"
+    parameter_missing "Please provide a file to upload."
 fi
 
 if [[ ! -f "$file_to_upload" ]]
 then
-    paramater_missing "File $file_to_upload does not exist."
+    parameter_missing "File $file_to_upload does not exist."
 fi
 
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
