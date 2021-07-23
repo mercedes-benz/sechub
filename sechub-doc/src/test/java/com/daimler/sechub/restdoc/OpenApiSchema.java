@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
 import com.epages.restdocs.apispec.Schema;

@@ -1,8 +1,12 @@
 #!/bin/bash 
-
 # SPDX-License-Identifier: MIT
 
 genFolder="$1"
+
+if [[ -z "$genFolder" ]] ; then
+  echo "Please provide then generation folder as first parameter."
+  exit 1
+fi
 
 # Make gradlew executable
 chmod +x "$genFolder/gradlew"
