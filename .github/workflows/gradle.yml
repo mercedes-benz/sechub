@@ -39,6 +39,14 @@ jobs:
       with:
         go-version: 1.15.3
         stable: true
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     
     - name: Gradle clean
       run: ./gradlew clean
