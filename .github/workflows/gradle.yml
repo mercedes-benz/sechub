@@ -25,6 +25,14 @@ jobs:
       with:
         java-version: 8
         distribution: 'adopt'
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
         
     - name: Set up Go
       uses: actions/setup-go@v2
