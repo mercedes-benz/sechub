@@ -5,7 +5,7 @@ dependencies {
     compile(library.flyway)
     
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'io.micrometer:micrometer-registry-prometheus:1.1.0'
+    compile 'io.micrometer:micrometer-registry-prometheus:1.7.2'
     
     compile project(':sechub-shared-kernel')
     compile project(':sechub-schedule')
