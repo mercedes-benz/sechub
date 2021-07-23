@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -34,7 +34,7 @@ public class AuthUserCreationService {
 	@Autowired
 	UserInputAssertion assertion;
 
-	@UseCaseAdministratorAcceptsSignup(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Give user access", description="Authorization layer is informed about new user and gives access to sechub. But without any project information"))
+	@UseCaseAdminAcceptsSignup(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Give user access", description="Authorization layer is informed about new user and gives access to sechub. But without any project information"))
 	@IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
 	public void createUser(String userId, String hashedApiToken) {
 		assertion.isValidUserId(userId);

@@ -76,6 +76,9 @@ public class ProjectAdministrationRestControllerMockTest {
     ProjectDetailChangeService detailChangeService;
 
     @MockBean
+    ListProjectsService listProjectsService;
+    
+    @MockBean
     ProjectRepository mockedProjectRepository;
     
     @MockBean
@@ -92,14 +95,11 @@ public class ProjectAdministrationRestControllerMockTest {
     @Test
     public void when_admin_tries_to_list_all_projects_all_2_projects_from_repo_are_returned_in_string_array() throws Exception {
         /* prepare */
-        List<Project> list = new ArrayList<>();
-        Project project1 = new Project();
-        project1.id = "project1";
-        Project project2 = new Project();
-        project2.id = "project2";
-        list.add(project1);
-        list.add(project2);
-        when(mockedProjectRepository.findAll()).thenReturn(list);
+        List<String> projects = new ArrayList<>();
+        projects.add("project1");
+        projects.add("project2");
+        
+        when(listProjectsService.listProjects()).thenReturn(projects);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

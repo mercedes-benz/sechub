@@ -13,8 +13,8 @@ import com.daimler.sechub.domain.notification.NotificationConfiguration;
 import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 
 @Service
 public class InformAdminsThatJobResultsHaveBeenPurgedService {
@@ -28,8 +28,8 @@ public class InformAdminsThatJobResultsHaveBeenPurgedService {
 	@Autowired
 	EmailService emailService;
 	
-	@UseCaseAdministratorRestartsJobHard(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
-	@UseCaseAdministratorRestartsJob(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
+	@UseCaseAdminRestartsJobHard(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
+	@UseCaseAdminRestartsJob(@Step(number = 5, name = "Inform sechub admins when job results have been purged"))
 	public void notify(UUID sechubJobUUID, String baseUrl) {
 		requireNonNull(sechubJobUUID);
 

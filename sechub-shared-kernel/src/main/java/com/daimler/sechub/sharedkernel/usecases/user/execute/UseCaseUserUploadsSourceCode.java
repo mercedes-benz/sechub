@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_USER_UPLOADS_SOURCECODE,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userUploadsSourceCode",
 		title="User uploads source code", 
 		description="user/upload_sourcecode_description.adoc")
 public @interface UseCaseUserUploadsSourceCode {

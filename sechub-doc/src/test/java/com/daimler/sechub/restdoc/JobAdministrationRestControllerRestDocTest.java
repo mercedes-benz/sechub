@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.job.JobAdministrationRestController;
 import com.daimler.sechub.domain.administration.job.JobCancelService;
 import com.daimler.sechub.domain.administration.job.JobInformation;
@@ -39,12 +44,13 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorCancelsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorListsAllRunningJobs;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminCancelsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminListsAllRunningJobs;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(JobAdministrationRestController.class)
@@ -86,98 +92,137 @@ public class JobAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorListsAllRunningJobs.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminListsAllRunningJobs.class)
 	public void restdoc_list_all_running_jobs() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminFetchAllRunningJobsUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminListsAllRunningJobs.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminFetchAllRunningJobsUrl()).
+				get(apiEndpoint).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllRunningJobs.class),
-//				requestFields(
-//						fieldWithPath(ProjectJsonInput.PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
-//						fieldWithPath(ProjectJsonInput.PROPERTY_WHITELIST+"."+ProjectWhiteList.PROPERTY_URIS).description("All URIS used now for whitelisting. Former parts will be replaced completely!"),
-//						fieldWithPath(ProjectJsonInput.PROPERTY_NAME).description("Name of the project to create. Is also used as a unique ID!")
-//						)
-//				,
-				responseFields(
-						fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
-						fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
-						fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
-						fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
-						fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
-						fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
-					)
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.RUNNING_JOB_LIST.getSchema()).
+                            responseFields(
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_JOB_UUID)).description("The uuid of the running job"),
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_PROJECT_ID)).description("The name of the project the job is running for"),
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_OWNER)).description("Owner of the job - means user which triggered it"),
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_STATUS)).description("A status information "),
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_SINCE)).description("Timestamp since when job has been started"),
+                                    fieldWithPath(inArray(JobInformation.PROPERTY_CONFIGURATION)).description("Configuration used for this job")
+                            ).
+                            build()
+                         )
+				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorCancelsJob.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminCancelsJob.class)
 	public void restdoc_cancel_job() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminCancelsJob(JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminCancelsJob.class;
+        
 		/* execute + test @formatter:off */
 		UUID jobUUID = UUID.randomUUID();
 
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminCancelsJob(jobUUID)).
+				post(apiEndpoint, jobUUID).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				)./*
 		andDo(print()).
 				*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorCancelsJob.class))
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                                ).
+                            build()
+                         )
+		        ));
 
 		/* @formatter:on */
 	}
 	
 	@Test
-    @UseCaseRestDoc(useCase=UseCaseAdministratorRestartsJob.class)
+    @UseCaseRestDoc(useCase=UseCaseAdminRestartsJob.class)
     public void restdoc_restart_job() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminRestartsJob(JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminRestartsJob.class;
+        
         /* execute + test @formatter:off */
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminRestartsJob(jobUUID)).
+                post(apiEndpoint, jobUUID).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJob.class))
-
-                );
+        andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                            ).
+                            build()
+                         )
+                ));
 
         /* @formatter:on */
     }
 	
 	@Test
-    @UseCaseRestDoc(useCase=UseCaseAdministratorRestartsJobHard.class)
-    public void restdoc_restart_job_jard() throws Exception {
-
+    @UseCaseRestDoc(useCase=UseCaseAdminRestartsJobHard.class)
+    public void restdoc_restart_job_hard() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminRestartsJobHard(JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminRestartsJobHard.class;
+        
         /* execute + test @formatter:off */
         UUID jobUUID = UUID.randomUUID();
 
         this.mockMvc.perform(
-                post(https(PORT_USED).buildAdminRestartsJobHard(jobUUID)).
+                post(apiEndpoint,jobUUID).
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 )./*
         andDo(print()).
                 */
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRestartsJobHard.class))
-
-                );
+        andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                            ).
+                            build()
+                         )
+              ));
 
         /* @formatter:on */
     }

@@ -13,7 +13,7 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageFactory;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
@@ -23,7 +23,7 @@ public class TriggerSchedulerStatusRefreshService {
 	DomainMessageService eventBusService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler to send updates about current status."))
+	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=2,name="Service call",description="Sends request to scheduler to send updates about current status."))
 	public void triggerSchedulerStatusRefresh() {
 		/* @formatter:on */
 		sendUpdateSchedulerStatusEvent();

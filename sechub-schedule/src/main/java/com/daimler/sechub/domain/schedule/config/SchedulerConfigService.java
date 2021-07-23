@@ -15,8 +15,8 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
 
 @Service
 public class SchedulerConfigService {
@@ -32,13 +32,13 @@ public class SchedulerConfigService {
 	@Lazy
 	DomainMessageService domainMessageService;
 
-	@UseCaseAdministratorEnablesSchedulerJobProcessing(@Step(number = 3, name = "Enable processing", description = "Enables job processing inside scheduler database"))
+	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number = 3, name = "Enable processing", description = "Enables job processing inside scheduler database"))
 	@IsSendingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_ENABLED)
 	public boolean enableJobProcessing() {
 		return setJobProcessingEnabled(true);
 	}
 
-	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number = 3, name = "Disable processing", description = "Disables job processing inside scheduler database"))
+	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number = 3, name = "Disable processing", description = "Disables job processing inside scheduler database"))
 	@IsSendingAsyncMessage(MessageID.SCHEDULER_JOB_PROCESSING_DISABLED)
 	public boolean disableJobProcessing() {
 		return setJobProcessingEnabled(false);

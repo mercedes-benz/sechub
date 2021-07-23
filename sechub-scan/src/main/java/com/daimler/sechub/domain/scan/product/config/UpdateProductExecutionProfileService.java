@@ -21,9 +21,9 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsExecutionProfileToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsExecutionProfileFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 
@@ -53,7 +53,7 @@ public class UpdateProductExecutionProfileService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorUpdatesExecutorConfig(
+    @UseCaseAdminUpdatesExecutorConfig(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service updates existing executor configuration"))
@@ -105,7 +105,7 @@ public class UpdateProductExecutionProfileService {
     }
 
     @Transactional
-    @UseCaseAdministratorAssignsExecutionProfileToProject(
+    @UseCaseAdminAssignsExecutionProfileToProject(
             @Step(
                     number=2,
                     name = "Service call", 
@@ -126,7 +126,7 @@ public class UpdateProductExecutionProfileService {
     }
 
     @Transactional
-    @UseCaseAdministratorUnassignsExecutionProfileFromProject(
+    @UseCaseAdminUnassignsExecutionProfileFromProject(
             @Step(
                     number=2,
                     name = "Service call", 

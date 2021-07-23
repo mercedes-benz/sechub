@@ -17,9 +17,9 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorEnablesSchedulerJobProcessing;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorTriggersRefreshOfSchedulerStatus;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminEnablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminTriggersRefreshOfSchedulerStatus;
 
 /**
  * The rest api for user administration done by a super admin.
@@ -40,7 +40,7 @@ public class SchedulerAdministrationRestController {
 	TriggerSchedulerStatusRefreshService triggerRefreshService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorEnablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to start (unpause) scheduler job processing",needsRestDoc=true))
+	@UseCaseAdminEnablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to start (unpause) scheduler job processing",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_ENABLE_JOB_PROCESSING, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void enableJobProcessing() {
@@ -49,7 +49,7 @@ public class SchedulerAdministrationRestController {
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to stop (pause) scheduler job processing",needsRestDoc=true))
+	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number=1,name="Rest call",description="Administrator wants to stop (pause) scheduler job processing",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_DISABLE_JOB_PROCESSING, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void disableJobProcessing() {
@@ -58,7 +58,7 @@ public class SchedulerAdministrationRestController {
 	}
 
 	/* @formatter:off */
-	@UseCaseAdministratorTriggersRefreshOfSchedulerStatus(@Step(number=1,name="Rest call",description="Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.",needsRestDoc=true))
+	@UseCaseAdminTriggersRefreshOfSchedulerStatus(@Step(number=1,name="Rest call",description="Administrator wants to trigger a refresh of scheduler status. Will update information about running, waiting and all jobs in scheduler etc. etc.",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_STATUS_REFRESH, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public void triggerRefreshOfSchedulerStatus() {

@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface UseCaseRestDoc {
 
-	public static final String DEFAULT_VARIANT = "default";
+	public static final String DEFAULT_VARIANT = "";
 	
 	/**
 	 * Must be an annotation class which itself is annoted with

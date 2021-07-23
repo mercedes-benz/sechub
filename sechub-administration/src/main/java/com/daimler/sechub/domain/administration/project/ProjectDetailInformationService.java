@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -30,7 +30,7 @@ public class ProjectDetailInformationService {
     UserInputAssertion assertion;
 
     /* @formatter:off */
-	@UseCaseAdministratorShowsProjectDetails(
+	@UseCaseAdminShowsProjectDetails(
 			@Step(
 				number = 2,
 				name = "Service fetches project details.",

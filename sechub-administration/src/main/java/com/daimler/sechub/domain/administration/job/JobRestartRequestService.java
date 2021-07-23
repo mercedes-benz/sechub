@@ -23,8 +23,8 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJob;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJob;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -51,7 +51,7 @@ public class JobRestartRequestService {
     SecHubEnvironment sechubEnvironment;
 
     @Validated
-    @UseCaseAdministratorRestartsJob(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (soft) requested"))
+    @UseCaseAdminRestartsJob(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (soft) requested"))
     public void restartJob(UUID jobUUID) {
         assertion.isValidJobUUID(jobUUID);
 
@@ -64,7 +64,7 @@ public class JobRestartRequestService {
     }
 
     @Validated
-    @UseCaseAdministratorRestartsJobHard(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (hard) requested"))
+    @UseCaseAdminRestartsJobHard(@Step(number = 2, name = "Restart job", description = "Will trigger event that job restart (hard) requested"))
     public void restartJobHard(UUID jobUUID) {
         assertion.isValidJobUUID(jobUUID);
 

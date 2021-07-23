@@ -38,10 +38,10 @@ jobs:
       run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
       
     - name: Build Server
-      run: ./gradlew ensureLocalhostCertificate build openapi3 buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
+      run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
     - name: Generate OpenAPI Java client
-      run: ./gradlew :sechub-client-java:openApiGenerate
+      run: ./gradlew :sechub-client-java:buildJavaClient
 
     - name: Integration test
       run: ./gradlew integrationtest

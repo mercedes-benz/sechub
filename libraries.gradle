@@ -13,7 +13,7 @@ ext {
 
    libraryVersion= [
       // openapi3-generator, releases see https://github.com/ePages-de/restdocs-api-spec/releases
-      restDocsApiSpec: "0.11.2"
+      restDocsApiSpec: "0.11.4"
    ]
 
    library = [
@@ -70,9 +70,6 @@ ext {
          jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.11.0",
          jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.10.1",
          jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.10.1",
-
-         webjars_jquery:                        "org.webjars:jquery:2.2.4",
-         webjars_bootstrap:                     "org.webjars:bootstrap:3.3.7",
 
          /* apache commons */
          apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.9",

@@ -21,7 +21,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.AlreadyExistsException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -45,7 +45,7 @@ public class CreateProductExecutionProfileService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorCreatesExecutionProfile(
+    @UseCaseAdminCreatesExecutionProfile(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service creates a new product executor configuration"))

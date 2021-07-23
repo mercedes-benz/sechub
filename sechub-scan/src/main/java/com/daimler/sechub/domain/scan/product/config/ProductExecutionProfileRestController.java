@@ -21,13 +21,13 @@ import com.daimler.sechub.sharedkernel.APIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorAssignsExecutionProfileToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorCreatesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorDeletesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfile;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorFetchesExecutionProfileList;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUnassignsExecutionProfileFromProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminAssignsExecutionProfileToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminCreatesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminDeletesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfile;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminFetchesExecutionProfileList;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUnassignsExecutionProfileFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutionProfile;
 
 /**
  * The REST API for project executor config done by a super admin.
@@ -58,7 +58,7 @@ public class ProductExecutionProfileRestController {
     FetchProductExecutionProfileService fetchService;
 
     /* @formatter:off */
-	@UseCaseAdministratorCreatesExecutionProfile(
+	@UseCaseAdminCreatesExecutionProfile(
 			@Step(
 				number=1,
 				name="Rest call",
@@ -72,7 +72,7 @@ public class ProductExecutionProfileRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorDeletesExecutionProfile(
+	@UseCaseAdminDeletesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -85,7 +85,7 @@ public class ProductExecutionProfileRestController {
 	    /* @formatter:on */
     }
 	
-	@UseCaseAdministratorUpdatesExecutionProfile(
+	@UseCaseAdminUpdatesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -98,7 +98,7 @@ public class ProductExecutionProfileRestController {
 	    /* @formatter:on */
     }
 	
-	@UseCaseAdministratorAssignsExecutionProfileToProject(
+	@UseCaseAdminAssignsExecutionProfileToProject(
             @Step(
                     number=1,
                     name="Rest call",
@@ -111,7 +111,7 @@ public class ProductExecutionProfileRestController {
         /* @formatter:on */
     }
 	
-	@UseCaseAdministratorUnassignsExecutionProfileFromProject(
+	@UseCaseAdminUnassignsExecutionProfileFromProject(
             @Step(
                     number=1,
                     name="Rest call",
@@ -125,7 +125,7 @@ public class ProductExecutionProfileRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutionProfileList(
+	@UseCaseAdminFetchesExecutionProfileList(
 	        @Step(
 	                number=1,
 	                name="Rest call",
@@ -139,7 +139,7 @@ public class ProductExecutionProfileRestController {
     }
 
     /* @formatter:off */
-	@UseCaseAdministratorFetchesExecutionProfile(
+	@UseCaseAdminFetchesExecutionProfile(
 	        @Step(
 	                number=1,
 	                name="Rest call",

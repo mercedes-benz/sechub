@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_REQUESTS_NEW_APITOKEN,
 		group=UseCaseGroup.SIGN_UP,
+		apiName="userRequestsNewApiToken",
 		title="User requests new API token",
 		description="user/request_new_api_token_description.adoc")
 public @interface UseCaseUserRequestsNewApiToken {

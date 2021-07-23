@@ -22,7 +22,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -53,7 +53,7 @@ public class ProjectAssignOwnerService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdministratorAssignsUserToProject(
+	@UseCaseAdminAssignsUserToProject(
 			@Step(
 					number = 2,
 					name = "Assign owner",

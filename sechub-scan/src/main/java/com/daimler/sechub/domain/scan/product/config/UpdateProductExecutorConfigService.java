@@ -19,7 +19,7 @@ import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesExecutorConfig;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdminUpdatesExecutorConfig;
 
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
 @Profile(Profiles.ADMIN_ACCESS)
@@ -38,7 +38,7 @@ public class UpdateProductExecutorConfigService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-    @UseCaseAdministratorUpdatesExecutorConfig(
+    @UseCaseAdminUpdatesExecutorConfig(
             @Step(number = 2, 
             name = "Service call", 
             description = "Service updates existing executor configuration"))

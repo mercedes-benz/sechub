@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.JOB_UUID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -25,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.scan.admin.FullScanData;
 import com.daimler.sechub.domain.scan.admin.FullScanDataRestController;
@@ -38,9 +42,10 @@ import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecur
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownloadsFullScanDataForJob;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
 @ContextConfiguration(classes = { FullScanDataRestController.class,
@@ -61,11 +66,11 @@ public class DownloadsFullScanDataForJobRestDocTest {
 	@MockBean
 	AuditLogService auditLogService;
 
-	private UUID sechubJobUUID;
+	private UUID jobUUID;
 
 	@Before
 	public void before() {
-		sechubJobUUID = UUID.randomUUID();
+		jobUUID = UUID.randomUUID();
 		FullScanData data = new FullScanData();
 		ScanData d = new ScanData();
 		d.productId="productX";
@@ -74,24 +79,38 @@ public class DownloadsFullScanDataForJobRestDocTest {
 		data.allScanData.add(d);
 
 		String config="{}";
-		ProjectScanLog log =new ProjectScanLog("theProject", sechubJobUUID, "spartakus", config);
+		ProjectScanLog log =new ProjectScanLog("theProject", jobUUID, "spartakus", config);
 		data.allScanLogs.add(log);
 
-		when(fullScanDataService.getFullScanData(sechubJobUUID)).thenReturn(data);
+		when(fullScanDataService.getFullScanData(jobUUID)).thenReturn(data);
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase=UseCaseAdministratorDownloadsFullScanDataForJob.class)
+	@UseCaseRestDoc(useCase=UseCaseAdminDownloadsFullScanDataForJob.class)
 	public void restdoc_admin_downloads_fullscan_data_for_job() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(JOB_UUID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDownloadsFullScanDataForJob.class;
 
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminDownloadsZipFileContainingFullScanDataFor(sechubJobUUID)).
+				get(apiEndpoint,jobUUID).
 				contentType(MediaType.APPLICATION_JSON_VALUE)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDownloadsFullScanDataForJob.class)));
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.FULL_SCAN_DATA_ZIP.getSchema()).
+                            pathParameters(
+                                    parameterWithName(JOB_UUID.paramName()).description("The job UUID")
+                            ).
+                            build()
+                         )
+		       ));
 
 		/* @formatter:on */
 	}

@@ -53,11 +53,10 @@ public class ProjectAssignOwnerServiceTest {
 
     @Test
     public void assign_new_owner_to_project() {
-        
+        /* prepare */
         User oldOwner = mock(User.class);
         User newOwner = mock(User.class);
-                
-        /* prepare */
+
         Project project1 = new Project();
         project1.id = "project1";
         project1.owner = oldOwner;
@@ -67,10 +66,10 @@ public class ProjectAssignOwnerServiceTest {
         when(newOwner.getName()).thenReturn("new");
         when(userRepository.findOrFailUser("new")).thenReturn(newOwner);
         when(newOwner.getProjects()).thenReturn(new HashSet<Project>());
-        
+
         /* execute */
         serviceToTest.assignOwnerToProject(newOwner.getName(), project1.getId());
-        
+
         /* test */
         verify(transactionService).saveInOwnTransaction(project1, newOwner);
     }

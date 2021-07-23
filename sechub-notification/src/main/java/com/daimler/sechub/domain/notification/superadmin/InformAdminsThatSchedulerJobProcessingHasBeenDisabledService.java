@@ -9,7 +9,7 @@ import com.daimler.sechub.domain.notification.NotificationConfiguration;
 import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdministratorDisablesSchedulerJobProcessing;
+import com.daimler.sechub.sharedkernel.usecases.admin.schedule.UseCaseAdminDisablesSchedulerJobProcessing;
 
 @Service
 public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
@@ -23,7 +23,7 @@ public class InformAdminsThatSchedulerJobProcessingHasBeenDisabledService {
 	@Autowired
 	private EmailService emailService;
 
-	@UseCaseAdministratorDisablesSchedulerJobProcessing(@Step(number = 4, next = {
+	@UseCaseAdminDisablesSchedulerJobProcessing(@Step(number = 4, next = {
 			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that scheduler job processing has been disabled"))
 	public void notify(String baseUrl) {
 
