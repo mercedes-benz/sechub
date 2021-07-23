@@ -13,7 +13,7 @@ dependencies {
 
      // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
     testCompile group: 'com.adobe.testing', name: 's3mock', version: '2.1.36'
-    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.16'
+    testCompile group: 'com.adobe.testing', name: 's3mock-junit4', version: '2.1.36'
 
     testCompile library.junit
     testCompile library.mockito
