@@ -27,6 +27,7 @@ jobs:
       with:
         ref: master
     - uses: actions/cache@v2
+      id: gradle-cache
       with:
         path: |
           ~/.gradle/caches
@@ -34,6 +35,15 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+    - uses: actions/cache@v2
+      id: go-cache
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+         ${{ runner.os }}-go-
     # Create temporary local tags, so we build documentation for this tag...
     # The final tag on git server side will be done by the release when the draft is saved as "real" release
     # automatically.
