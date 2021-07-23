@@ -34,8 +34,6 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    
-    
     # Create temporary local tags, so we build documentation for this tag...
     # The final tag on git server side will be done by the release when the draft is saved as "real" release
     # automatically.
@@ -50,7 +48,6 @@ jobs:
     - name: "Temporary tag PDS version: v${{ github.event.inputs.pds-version }}-pds - if defined" 
       if: github.event.inputs.pds-version != ''
       run: git tag v${{ github.event.inputs.pds-version }}-pds
-    
     
     # Build
     - name: Set up JDK 1.8
