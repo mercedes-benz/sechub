@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.AsUser.ProjectFalsePositivesDefinition;
@@ -250,6 +251,34 @@ public class FalsePositivesScenario3IntTest {
         /* test */
         /********/
         assertTrue(configuration.isContaining(1, jobUUID));
+        
+        /* @formatter:on */
+    }
+    
+    
+    /**
+     * This test does check if the NotFoundException message is available inside JSON output. 
+     * The false positive marking is just an example. 
+     * @throws Exception
+     */
+    @Test
+    public void start_wrong_mark_false_positive_for_non_existing_job_returned_error_json_contains_exception_message() throws Exception {
+        /* @formatter:off */
+        /* prepare */
+        UUID jobUUID = UUID.randomUUID(); // a random job - not existing
+        String json = null;
+        
+        /* execute */
+        try {
+            as(USER_1).startFalsePositiveDefinition(project).add(1, jobUUID).markAsFalsePositive();
+            throw new IllegalStateException("should not be possible, former call must fail!");
+        }catch(HttpStatusCodeException e) {
+            json = e.getResponseBodyAsString();
+        }
+        
+        /* test */
+        assertTrue(json.contains(":404"));
+        assertTrue(json.contains("No report found for job "+jobUUID));
         
         /* @formatter:on */
     }
