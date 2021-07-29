@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 class PDSServerErrorControllerTest {
 
     private static final String TEST_ERROR_MESSAGE = "my PDS error message";
+    
     private HttpServletResponse response;
     private HttpServletRequest request;
     private PDSServerErrorController controllerToTest;
