@@ -32,23 +32,25 @@ public class HtmlCodeScanDescriptionSupport {
             return Collections.emptyList();
         }
 
+        int callNumber = 1;
         List<HTMLScanResultCodeScanEntry> descriptionList = new ArrayList<>();
-        descriptionList.add(createEntry(code));
+        descriptionList.add(createEntry(callNumber++, code));
 
         SecHubCodeCallStack lastCode = code;
         while (lastCode.getCalls() != null) {
             lastCode = lastCode.getCalls();
-            descriptionList.add(createEntry(lastCode));
+            descriptionList.add(createEntry(callNumber++, lastCode));
         }
 
         return descriptionList;
     }
 
-    private HTMLScanResultCodeScanEntry createEntry(SecHubCodeCallStack code) {
+    private HTMLScanResultCodeScanEntry createEntry(int callNumber, SecHubCodeCallStack code) {
         Objects.nonNull(code);
 
         HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
 
+        entry.callNumber = callNumber;
         entry.column = code.getColumn();
         entry.line = code.getLine();
         entry.location = code.getLocation();
