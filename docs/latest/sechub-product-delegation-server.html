@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 0.22.1</span>
+<span id="revnumber"> PDS 0.23.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -481,7 +481,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#section-pds-configuration">3.1. Configuration</a>
 <ul class="sectlevel3">
-<li><a href="#section-general-configuration">3.1.1. General configuration</a></li>
+<li><a href="#section-start-configuration">3.1.1. Minimum start configuration</a>
+<ul class="sectlevel4">
+<li><a href="#prod-profile">3.1.1.1. PROD profile</a></li>
+<li><a href="#integration-test-mode">3.1.1.2. Integration test mode</a></li>
+</ul>
+</li>
+<li><a href="#section-db-configuration">3.1.2. Database configuration</a>
+<ul class="sectlevel4">
+<li><a href="#section-postgresql-configuration">3.1.2.1. PostgreSQL</a></li>
+</ul>
+</li>
+<li><a href="#section-general-configuration">3.1.3. General configuration</a></li>
 </ul>
 </li>
 <li><a href="#tech-user-credentials">3.2. Tech user credentials</a></li>
@@ -621,7 +632,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 0.22.1-pds-20210713075207</code></p>
+<p>Documentation version: <code>PDS 0.23.0-pds-20210802184505</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -1144,7 +1155,89 @@ implementatiion</p>
 <div class="sect2">
 <h3 id="section-pds-configuration">3.1. Configuration</h3>
 <div class="sect3">
-<h4 id="section-general-configuration">3.1.1. General configuration</h4>
+<h4 id="section-start-configuration">3.1.1. Minimum start configuration</h4>
+<div class="sect4">
+<h5 id="prod-profile">3.1.1.1. PROD profile</h5>
+<div class="paragraph">
+<p>You can start a PDS in production profile which requires a running PostgreSQL
+database. Please refer also to <a href="#section-postgresql-configuration">PostgreSQL configuration</a> for
+database setup which must be done before.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java -jar Dspring.profiles.active=pds_prod sechub-pds-0.25.0.jar</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+There are some more mandatory parameters, please refer to <a href="#section-general-configuration">general configuration</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="integration-test-mode">3.1.1.2. Integration test mode</h5>
+<div class="paragraph">
+<p>You can start a PDS in integration test mode if you just want to
+test</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>java -jar -Dspring.profiles.active=pds_integrationtest,pds_h2 sechub-pds-0.25.0.jar</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-db-configuration">3.1.2. Database configuration</h4>
+<div class="sect4">
+<h5 id="section-postgresql-configuration">3.1.2.1. PostgreSQL</h5>
+<div class="paragraph">
+<p>First of all install a PostgreSQL database.</p>
+</div>
+<div class="paragraph">
+<p>Then define following environment entries before you start the server
+with active postgres profile:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>POSTGRES_DB_URL</p>
+</li>
+<li>
+<p>POSTGRES_DB_USERNAME</p>
+</li>
+<li>
+<p>POSTGRES_DB_PASSWORD</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>POSTGRES_DB_URL=jdbc:postgresql://127.0.0.1:49153/pds-gosec
+POSTGRES_DB_USERNAME=pds-gosec-pg-admin
+POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-general-configuration">3.1.3. General configuration</h4>
 <div class="paragraph">
 <p>PDS can be configured  by keys on server startup.
 Using the spring <code>@Value</code> annotation we are able to
@@ -2439,7 +2532,7 @@ This will the process hard!
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 0.22.1<br>
+ PDS 0.23.0<br>
 </div>
 </div>
 <style>

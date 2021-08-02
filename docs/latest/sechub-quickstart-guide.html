@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Quickstart Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 0.25.0</span>
+<span id="revnumber"> Server 0.26.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -449,13 +449,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#requirements">1.1. Requirements</a>
 <ul class="sectlevel3">
-<li><a href="#alpine-linux">1.1.1. Alpine Linux:</a></li>
-<li><a href="#debian">1.1.2. Debian:</a></li>
-<li><a href="#fedora-and-centos">1.1.3. Fedora and CentOS:</a></li>
-<li><a href="#ubuntu">1.1.4. Ubuntu:</a></li>
+<li><a href="#alpine-linux">1.1.1. Alpine Linux</a></li>
+<li><a href="#debian">1.1.2. Debian</a></li>
+<li><a href="#fedora-and-centos">1.1.3. Fedora and CentOS</a></li>
+<li><a href="#ubuntu">1.1.4. Ubuntu</a></li>
 </ul>
 </li>
-<li><a href="#instructions">1.2. Instructions</a></li>
+<li><a href="#instructions">1.2. Instructions</a>
+<ul class="sectlevel3">
+<li><a href="#troubleshooting">1.2.1. Troubleshooting</a>
+<ul class="sectlevel4">
+<li><a href="#log-files">1.2.1.1. Log files</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -541,7 +549,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.25.0-dirty-20210701143633</code></p>
+<p>Documentation version: <code>Server 0.26.0-20210802184505</code></p>
 </div>
 </div>
 </div>
@@ -587,7 +595,10 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="ulist">
 <ul>
 <li>
-<p>Java SDK (We are still compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.)</p>
+<p>Java SDK</p>
+</li>
+<li>
+<p>Go</p>
 </li>
 <li>
 <p>Git</p>
@@ -600,36 +611,113 @@ build pipeline / contionus integration (CI) and helps to provide
 </li>
 </ul>
 </div>
-<div class="sect3">
-<h4 id="alpine-linux">1.1.1. Alpine Linux:</h4>
-<div class="listingblock">
-<div class="content">
-<pre>apk add openjdk11 curl git bash jq</pre>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>SecHub is compatible with Java 8 and will continue to do so. We aim to support all long term support versions (LTS) of the JDK: Java 8, 11 and 17 when released.</p>
 </div>
+<div class="paragraph">
+<p>SecHub can be build and runs with <a href="https://openjdk.java.net/groups/hotspot/">OpenJDK Hotspot</a> and <a href="https://www.eclipse.org/openj9/">Eclipse OpenJ9</a>.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="debian">1.1.2. Debian:</h4>
-<div class="listingblock">
-<div class="content">
-<pre>sudo apt install git openjdk-11-jdk curl jq</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="fedora-and-centos">1.1.3. Fedora and CentOS:</h4>
-<div class="listingblock">
-<div class="content">
-<pre>sudo dnf install git java-11-openjdk-devel curl jq</pre>
-</div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
-<h4 id="ubuntu">1.1.4. Ubuntu:</h4>
+<h4 id="alpine-linux">1.1.1. Alpine Linux</h4>
 <div class="listingblock">
 <div class="content">
-<pre>sudo apt install git openjdk-11-jdk curl jq</pre>
+<pre>apk add openjdk11 go curl git bash jq</pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Tested with Alpine Linux 3.12, 3.13 and 3.14.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Cross-compiling the SecHub client on Alpine Linux 3.11 does not work (Go version go1.13.13 linux/amd64).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="debian">1.1.2. Debian</h4>
+<div class="listingblock">
+<div class="content">
+<pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Tested with Debian 10 "Buster".
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fedora-and-centos">1.1.3. Fedora and CentOS</h4>
+<div class="listingblock">
+<div class="content">
+<pre>sudo dnf install java-11-openjdk-devel golang git curl jq</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Tested with Fedora 34 and CentOS 8.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ubuntu">1.1.4. Ubuntu</h4>
+<div class="listingblock">
+<div class="content">
+<pre>sudo apt install openjdk-11-jdk-headless golang git curl jq</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Tested with Ubuntu 18.04 "Bionic" and 20.04 "Focal" LTS.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -642,9 +730,6 @@ build pipeline / contionus integration (CI) and helps to provide
 <ol class="arabic">
 <li>
 <p>Cloning the repository</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>cd ~
@@ -680,25 +765,17 @@ systemProp.http.nonProxyHosts=*.nonproxyrepos.com|localhost</pre>
 </tr>
 </table>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="2">
+</li>
 <li>
 <p>Build SecHub</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre>./build</pre>
+<pre>./buildExecutables</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="3">
+</li>
 <li>
 <p>Start SecHub server in Integration Test mode</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre>./gradlew startIntegrationTestServer</pre>
@@ -716,90 +793,48 @@ Do not use the Integration Test Server mode in production.
 </tr>
 </table>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
+</li>
 <li>
 <p>Credentials</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
-<p>Open the log file <code>./sechub-integrationtest/integrationtest-server.log</code> and search for:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>##################### ATTENTION #####################################################
-# Created initial admin:'int-test_superadmin' with password:'{noop}int-test_superadmin-pwd'
-#                 email:'int-test_superadmin@sechub.example.org'
-# In production: CHANGE this initial API token, when your server has been started.
-# Everybody able to read this log file has access to these admin credentials!
-#####################################################################################</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>In case of an error message or failure, you can find the SecHub server log under: <code>./sechub-integrationtest/integrationtest-server.log</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>{noop}</code> has to be excluded from the password string, therefore the password is: <code>int-test_superadmin-pwd</code></p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>These are the initial credentials when starting SecHub server in integration-test mode:</p>
+<p>These are the initial credentials when starting SecHub server in <code>integration-test</code> mode:</p>
 </div>
 <div class="paragraph">
 <p>SecHub Superadmin:</p>
 </div>
-<div class="quoteblock">
-<blockquote>
-username: <code>int-test_superadmin</code>
-password: <code>int-test_superadmin-pwd</code>
-</blockquote>
+<div class="listingblock">
+<div class="content">
+<pre>username: int-test_superadmin
+password: int-test_superadmin-pwd</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>SecHub User account:</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-username: <code>int-test_onlyuser</code>
-password: <code>int-test_onlyuser-pwd</code>
-</blockquote>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
-<p>Environment variables</p>
-<div class="paragraph">
-<p>Set search path and some environment variables to ease handling later on (SecHub client and <code>sechub-api.sh</code> script):</p>
-</div>
-</li>
-</ol>
+<p>SecHub User Account:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>export SECHUB_SERVER=https://localhost:8443
+<pre>username: int-test_onlyuser
+password: int-test_onlyuser-pwd</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Environment variables</p>
+<div class="paragraph">
+<p>Set search path and environment variables for the SecHub client and <code>sechub-api.sh</code> script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">export SECHUB_SERVER=https://localhost:8443
 export SECHUB_USERID=int-test_superadmin
 export SECHUB_APITOKEN=int-test_superadmin-pwd
 export SECHUB_TRUSTALL=true
-export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH"</pre>
+export PATH=&quot;`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-developertools/scripts:$PATH&quot;</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
+</li>
 <li>
 <p>Test: List all users as administrator</p>
-</li>
-</ol>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -828,15 +863,11 @@ export PATH="`pwd`/sechub-cli/build/go/platform/linux-amd64:`pwd`/sechub-develop
 ]</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
+</li>
 <li>
 <p>Create a project on SecHub server</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
-<p>The output of the api calls are omitted here for better readability:</p>
+<p>The output of the API calls are omitted here for better readability:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -850,13 +881,9 @@ sechub-api.sh project_assign_user testproject int-test_superadmin
 sechub-api.sh project_details testproject</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
+</li>
 <li>
 <p>Scan with SecHub client</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
 <p>Let&#8217;s do a scan of our SecHub code:</p>
 </div>
@@ -896,13 +923,12 @@ You can open the SecHub report file in your browser.</p>
 <td class="content">
 In order to scan, you need a <code>sechub.json</code> config file. In our case, it is already in the repository so we can use it right away.<br>
 <br>
-For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. See <a href="https://daimler.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors">SecHub documentation</a> for details.
+For real results, you have to define an 'execution profile' with a scanner (via a product adapter) attached. Assign it to your project and you get real results. Have a look at the <a href="https://daimler.github.io/sechub/latest/sechub-operations.html#section-initial-profile-and-executors">SecHub operations documentation</a> for details.
 </td>
 </tr>
 </table>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
+</li>
 <li>
 <p>Stop SecHub integration test server</p>
 <div class="listingblock">
@@ -913,13 +939,22 @@ For real results, you have to define an 'execution profile' with a scanner (via 
 </li>
 </ol>
 </div>
+<div class="sect3">
+<h4 id="troubleshooting">1.2.1. Troubleshooting</h4>
+<div class="sect4">
+<h5 id="log-files">1.2.1.1. Log files</h5>
+<div class="paragraph">
+<p>Open the log file <code>./sechub-integrationtest/integrationtest-server.log</code> to get more details about the problem.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.25.0<br>
+ Server 0.26.0<br>
 </div>
 </div>
 <style>

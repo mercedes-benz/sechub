@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Architecture</h1>
 <div class="details">
-<span id="revnumber"> Server 0.25.0</span>
+<span id="revnumber"> Server 0.26.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -642,48 +642,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#admin-unassigns-user-from-project">7.6.5. Admin unassigns user from project</a></li>
 <li><a href="#admin-shows-user-details">7.6.6. Admin shows user details</a></li>
 <li><a href="#admin-deletes-a-user">7.6.7. Admin deletes a user</a></li>
-<li><a href="#admin-grants-admin-rights-to-user">7.6.8. Admin grants admin rights to user</a></li>
-<li><a href="#admin-revokes-admin-rights-from-an-admin">7.6.9. Admin revokes admin rights from an admin</a></li>
-<li><a href="#admin-lists-all-admins">7.6.10. Admin lists all admins</a></li>
-<li><a href="#admin-changes-owner-of-a-project">7.6.11. Admin changes owner of a project</a></li>
-<li><a href="#admin-creates-a-project">7.6.12. Admin creates a project</a></li>
-<li><a href="#admin-lists-all-projects">7.6.13. Admin lists all projects</a></li>
-<li><a href="#admin-deletes-a-project">7.6.14. Admin deletes a project</a></li>
-<li><a href="#admin-shows-project-details">7.6.15. Admin shows project details</a></li>
-<li><a href="#update-project-whitelist">7.6.16. Update project whitelist</a></li>
-<li><a href="#admin-shows-scan-logs-for-project">7.6.17. Admin shows scan logs for project</a></li>
-<li><a href="#update-project-metadata">7.6.18. Update project metadata</a></li>
-<li><a href="#admin-changes-project-description">7.6.19. Admin changes project description</a></li>
-<li><a href="#user-clicks-link-to-get-new-api-token">7.6.20. User clicks link to get new api token</a></li>
-<li><a href="#user-creates-a-new-sechub-job">7.6.21. User creates a new sechub job</a>
+<li><a href="#admin-shows-project-details">7.6.8. Admin shows project details</a></li>
+<li><a href="#admin-downloads-all-details-about-a-scan-job">7.6.9. Admin downloads all details about a scan job</a></li>
+<li><a href="#admin-grants-admin-rights-to-user">7.6.10. Admin grants admin rights to user</a></li>
+<li><a href="#admin-revokes-admin-rights-from-an-admin">7.6.11. Admin revokes admin rights from an admin</a></li>
+<li><a href="#admin-lists-all-admins">7.6.12. Admin lists all admins</a></li>
+<li><a href="#admin-changes-owner-of-a-project">7.6.13. Admin changes owner of a project</a></li>
+<li><a href="#admin-creates-a-project">7.6.14. Admin creates a project</a></li>
+<li><a href="#admin-lists-all-projects">7.6.15. Admin lists all projects</a></li>
+<li><a href="#admin-deletes-a-project">7.6.16. Admin deletes a project</a></li>
+<li><a href="#update-project-whitelist">7.6.17. Update project whitelist</a></li>
+<li><a href="#admin-shows-scan-logs-for-project">7.6.18. Admin shows scan logs for project</a></li>
+<li><a href="#update-project-metadata">7.6.19. Update project metadata</a></li>
+<li><a href="#admin-changes-project-description">7.6.20. Admin changes project description</a></li>
+<li><a href="#user-clicks-link-to-get-new-api-token">7.6.21. User clicks link to get new api token</a></li>
+<li><a href="#user-creates-a-new-sechub-job">7.6.22. User creates a new sechub job</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.21.1. Code Scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.21.2. Infrastructure scan</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.21.3. Web Scan anonymous</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.21.4. Web Scan login basic</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.21.5. Web Scan login form auto dection</a></li>
-<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.21.6. Web Scan login form scripted</a></li>
+<li><a href="#section-ucrestdoc-UC_005-code-scan">7.6.22.1. Code Scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-infrastructure-scan">7.6.22.2. Infrastructure scan</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-anonymous">7.6.22.3. Web Scan anonymous</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-basic">7.6.22.4. Web Scan login basic</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.22.5. Web Scan login form auto dection</a></li>
+<li><a href="#section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.22.6. Web Scan login form scripted</a></li>
 </ul>
 </li>
-<li><a href="#user-uploads-source-code">7.6.22. User uploads source code</a></li>
-<li><a href="#user-approves-sechub-job">7.6.23. User approves sechub job</a></li>
-<li><a href="#user-checks-sechub-job-state">7.6.24. User checks sechub job state</a></li>
-<li><a href="#user-downloads-sechub-job-report">7.6.25. User downloads sechub job report</a>
+<li><a href="#user-uploads-source-code">7.6.23. User uploads source code</a></li>
+<li><a href="#user-approves-sechub-job">7.6.24. User approves sechub job</a></li>
+<li><a href="#user-checks-sechub-job-state">7.6.25. User checks sechub job state</a></li>
+<li><a href="#user-downloads-sechub-job-report">7.6.26. User downloads sechub job report</a>
 <ul class="sectlevel4">
-<li><a href="#section-ucrestdoc-UC_010-json">7.6.25.1. JSON</a></li>
-<li><a href="#section-ucrestdoc-UC_010-html">7.6.25.2. HTML</a></li>
+<li><a href="#section-ucrestdoc-UC_010-json">7.6.26.1. JSON</a></li>
+<li><a href="#section-ucrestdoc-UC_010-html">7.6.26.2. HTML</a></li>
 </ul>
 </li>
-<li><a href="#user-marks-false-positives-for-finished-sechub-job">7.6.26. User marks false positives for finished sechub job</a></li>
-<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.27. User unmarks existing false positive definitons</a></li>
-<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.28. User fetches false positive configuration of project</a></li>
-<li><a href="#user-self-registration">7.6.29. User self registration</a></li>
-<li><a href="#admin-lists-open-user-signups">7.6.30. Admin lists open user signups</a></li>
-<li><a href="#admin-applies-self-registration">7.6.31. Admin applies self registration</a></li>
-<li><a href="#admin-deletes-user-signup">7.6.32. Admin deletes user signup</a></li>
-<li><a href="#user-requests-new-api-token">7.6.33. User requests new API token</a></li>
-<li><a href="#admin-lists-all-running-jobs">7.6.34. Admin lists all running jobs</a></li>
-<li><a href="#admin-downloads-all-details-about-a-scan-job">7.6.35. Admin downloads all details about a scan job</a></li>
+<li><a href="#user-marks-false-positives-for-finished-sechub-job">7.6.27. User marks false positives for finished sechub job</a></li>
+<li><a href="#user-unmarks-existing-false-positive-definitons">7.6.28. User unmarks existing false positive definitons</a></li>
+<li><a href="#user-fetches-false-positive-configuration-of-project">7.6.29. User fetches false positive configuration of project</a></li>
+<li><a href="#user-self-registration">7.6.30. User self registration</a></li>
+<li><a href="#admin-lists-open-user-signups">7.6.31. Admin lists open user signups</a></li>
+<li><a href="#admin-applies-self-registration">7.6.32. Admin applies self registration</a></li>
+<li><a href="#admin-deletes-user-signup">7.6.33. Admin deletes user signup</a></li>
+<li><a href="#user-requests-new-api-token">7.6.34. User requests new API token</a></li>
+<li><a href="#admin-lists-all-running-jobs">7.6.35. Admin lists all running jobs</a></li>
 <li><a href="#admin-cancels-a-job">7.6.36. Admin cancels a job</a></li>
 <li><a href="#admin-restarts-a-job">7.6.37. Admin restarts a job</a></li>
 <li><a href="#admin-restarts-a-job-hard">7.6.38. Admin restarts a job (hard)</a></li>
@@ -804,9 +804,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#section-general-configuration">8.2.2. General configuration</a></li>
-<li><a href="#scheduling-definitions">8.2.3. Scheduling definitions</a></li>
-<li><a href="#sechub-mock-options">8.2.4. Configuration properties for mocked adapters</a></li>
+<li><a href="#section-db-configuration">8.2.2. Database configuration</a>
+<ul class="sectlevel4">
+<li><a href="#postgresql">8.2.2.1. PostgreSQL</a></li>
+</ul>
+</li>
+<li><a href="#section-general-configuration">8.2.3. General configuration</a></li>
+<li><a href="#scheduling-definitions">8.2.4. Scheduling definitions</a></li>
+<li><a href="#sechub-mock-options">8.2.5. Configuration properties for mocked adapters</a></li>
 </ul>
 </li>
 <li><a href="#section-infrastructure-setup-localdevelopment">8.3. Local development</a>
@@ -1063,7 +1068,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 0.25.0-dirty-20210701143633</code></p>
+<p>Documentation version: <code>Server 0.26.0-20210802184505</code></p>
 </div>
 <div class="paragraph">
 <p>This architecture documentation is based on arc42 template.</p>
@@ -1832,6 +1837,12 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 <p><a href="#section-usecase-UC_018">UC_018-Admin deletes a user</a></p>
 </li>
 <li>
+<p><a href="#section-usecase-UC_021">UC_021-Admin shows project details</a></p>
+</li>
+<li>
+<p><a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job</a></p>
+</li>
+<li>
 <p><a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user</a></p>
 </li>
 <li>
@@ -1864,9 +1875,6 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 </li>
 <li>
 <p><a href="#section-usecase-UC_020">UC_020-Admin deletes a project</a></p>
-</li>
-<li>
-<p><a href="#section-usecase-UC_021">UC_021-Admin shows project details</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_022">UC_022-Update project whitelist</a></p>
@@ -1967,9 +1975,6 @@ The main criterion for the choice of possible scenarios (sequences, workflows) i
 <ul>
 <li>
 <p><a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs</a></p>
-</li>
-<li>
-<p><a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job</a></p>
 </li>
 <li>
 <p><a href="#section-usecase-UC_034">UC_034-Admin cancels a job</a></p>
@@ -2761,14 +2766,14 @@ build will break.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">get job status</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">download job report and traffic light</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN, ROLE_USER</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -2991,6 +2996,13 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
@@ -3000,15 +3012,8 @@ For example a user must have a project assigned to be able to scan on it!</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Assign owner</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update schedule authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -3104,17 +3109,17 @@ For example a user must have a project assigned to be able to scan on it!</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Update authorization parts</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unassign user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
@@ -3660,7 +3665,7 @@ user signup is accepted by admin.</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_026">7.5.27. UC_026-Admin downloads all details about a scan job</h4>
 <div class="paragraph">
-<p>An administrator downloads a zip file containing full details of a scan. Main reason for this use case is for debugging when there are problems with security products.Another reason is for developers to adopt new security products easier.</p>
+<p>An administrator downloads a ZIP file containing full details of a scan. Main reason for this use case is for debugging when there are problems with security products. Another reason is for developers to adopt new security products easier.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -3927,14 +3932,14 @@ user signup is accepted by admin.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service call</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ROLE_SUPERADMIN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler to send updates about current status.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends request to scheduler domain to disable scheduler job processing</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
@@ -4346,7 +4351,7 @@ projects by REST API.</p>
 <div class="sect3">
 <h4 id="section-usecase-UC_037">7.5.38. UC_037-Admin updates mapping configuration</h4>
 <div class="paragraph">
-<p>An administrator changes mapping configuration. Mappings represents a generic mechanism to replace a given string, matched by configured regular expression pattern with a replacement string. Some of the mappings are used for adapter behaviour</p>
+<p>An administrator changes mapping configuration. Mappings represents a generic mechanism to replace a given string, matched by configured regular expression pattern with a replacement string. Some of the mappings are used for adapter behaviour.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -5681,7 +5686,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div class="sect3">
 <h4 id="section-usecase-UC_061">7.5.62. UC_061-Admin changes project description</h4>
 <div class="paragraph">
-<p>An administrator changes project description</p>
+<p>An administrator changes the project description</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -5762,6 +5767,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <p><a href="#section-ucrestdoc-uc-UC_018">REST API for UC_018-Admin deletes a user </a></p>
 </li>
 <li>
+<p><a href="#section-ucrestdoc-uc-UC_021">REST API for UC_021-Admin shows project details </a></p>
+</li>
+<li>
+<p><a href="#section-ucrestdoc-uc-UC_026">REST API for UC_026-Admin downloads all details about a scan job </a></p>
+</li>
+<li>
 <p><a href="#section-ucrestdoc-uc-UC_027">REST API for UC_027-Admin grants admin rights to user </a></p>
 </li>
 <li>
@@ -5794,9 +5805,6 @@ This will NOT change any former job report where the false positive to unmark ha
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_020">REST API for UC_020-Admin deletes a project </a></p>
-</li>
-<li>
-<p><a href="#section-ucrestdoc-uc-UC_021">REST API for UC_021-Admin shows project details </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_022">REST API for UC_022-Update project whitelist </a></p>
@@ -5894,9 +5902,6 @@ This will NOT change any former job report where the false positive to unmark ha
 <ul>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_023">REST API for UC_023-Admin lists all running jobs </a></p>
-</li>
-<li>
-<p><a href="#section-ucrestdoc-uc-UC_026">REST API for UC_026-Admin downloads all details about a scan job </a></p>
 </li>
 <li>
 <p><a href="#section-ucrestdoc-uc-UC_034">REST API for UC_034-Admin cancels a job </a></p>
@@ -6037,7 +6042,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_004" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_004">UC_004-Admin lists all users </a></p>
 </div>
-<div id="section-ucrestdoc-UC_004-default" class="paragraph">
+<div id="section-ucrestdoc-UC_004-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6051,33 +6056,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_015" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_015">UC_015-Admin assigns user to project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_015-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user id of the user to assign to project</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_015-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6092,38 +6071,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_016" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_016">UC_016-Admin unassigns user from project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_016-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. https://localhost:8081/api/admin/project/{projectId}/membership/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user id of the user to unassign from project</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_016-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/membership/userId1' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/userId1/membership/projectId1' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -6133,73 +6086,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_017" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_017">UC_017-Admin shows user details </a></p>
 </div>
-<div id="section-ucrestdoc-UC_017-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. https://localhost:8081/api/admin/user/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user id of user to show details for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the user</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mail adress of the user</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>superAdmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">True, when this user is a super administrator</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projects</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The projects the user has access to</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ownedProjects</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The projects the user is owner of</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_017-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6213,29 +6100,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_018" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_018">UC_018-Admin deletes a user </a></p>
 </div>
-<div id="section-ucrestdoc-UC_018-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. https://localhost:8081/api/admin/user/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who shall be deleted</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_018-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6245,316 +6110,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-grants-admin-rights-to-user">7.6.8. Admin grants admin rights to user</h4>
-<div id="section-ucrestdoc-uc-UC_027" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
-</div>
-<div id="section-ucrestdoc-UC_027-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who becomes admin</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/grant/superadmin' -i -X POST</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-revokes-admin-rights-from-an-admin">7.6.9. Admin revokes admin rights from an admin</h4>
-<div id="section-ucrestdoc-uc-UC_028" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
-</div>
-<div id="section-ucrestdoc-UC_028-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. https://localhost:8081/api/admin/user/{userId}/grant/superadmin</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the user who becomes admin</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/grant/superadmin' -i -X POST</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-lists-all-admins">7.6.10. Admin lists all admins</h4>
-<div id="section-ucrestdoc-uc-UC_029" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
-</div>
-<div id="section-ucrestdoc-UC_029-default" class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/admins' -i -X GET</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-changes-owner-of-a-project">7.6.11. Admin changes owner of a project</h4>
-<div id="section-ucrestdoc-uc-UC_060" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project </a></p>
-</div>
-<div id="section-ucrestdoc-UC_060-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. https://localhost:8081/api/admin/project/{projectId}/owner/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user id of the user to assign to project as the owner</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/owner/userId1' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-creates-a-project">7.6.12. Admin creates a project</h4>
-<div id="section-ucrestdoc-uc-UC_013" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
-</div>
-<div id="section-ucrestdoc-UC_013-default" class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All URIS used now for whitelisting. Former parts will be replaced completely!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the project to create. Is also used as a unique ID!</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project' -i -X POST \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;, &quot;name&quot;:&quot;projectId&quot;, &quot;whiteList&quot;:{&quot;uris&quot;:[&quot;192.168.1.1&quot;,&quot;https://my.special.server.com/myapp1/&quot;]}}'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-lists-all-projects">7.6.13. Admin lists all projects</h4>
-<div id="section-ucrestdoc-uc-UC_014" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
-</div>
-<div id="section-ucrestdoc-UC_014-default" class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/projects' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-deletes-a-project">7.6.14. Admin deletes a project</h4>
-<div id="section-ucrestdoc-uc-UC_020" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
-</div>
-<div id="section-ucrestdoc-UC_020-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. https://localhost:8081/api/admin/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to delete</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X DELETE \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="admin-shows-project-details">7.6.15. Admin shows project details</h4>
+<h4 id="admin-shows-project-details">7.6.8. Admin shows project details</h4>
 <div id="section-ucrestdoc-uc-UC_021" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_021">UC_021-Admin shows project details </a></p>
 </div>
-<div id="section-ucrestdoc-UC_021-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. https://localhost:8081/api/admin/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to show details for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all users having access to the project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username of the owner ofthis project. An owner is the person in charge.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all whitelisted URIs. Only these ones can be scanned for the project!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An JSON object containing metadata key-value pairs defined for this project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project description.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_021-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6565,62 +6125,129 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-whitelist">7.6.16. Update project whitelist</h4>
+<h4 id="admin-downloads-all-details-about-a-scan-job">7.6.9. Admin downloads all details about a scan job</h4>
+<div id="section-ucrestdoc-uc-UC_026" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
+</div>
+<div id="section-ucrestdoc-UC_026-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/aa813fb0-e482-4491-b2dc-e5917474cac3' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-grants-admin-rights-to-user">7.6.10. Admin grants admin rights to user</h4>
+<div id="section-ucrestdoc-uc-UC_027" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_027">UC_027-Admin grants admin rights to user </a></p>
+</div>
+<div id="section-ucrestdoc-UC_027-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/grant/superadmin' -i -X POST</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-revokes-admin-rights-from-an-admin">7.6.11. Admin revokes admin rights from an admin</h4>
+<div id="section-ucrestdoc-uc-UC_028" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_028">UC_028-Admin revokes admin rights from an admin </a></p>
+</div>
+<div id="section-ucrestdoc-UC_028-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/user/USER_ID/revoke/superadmin' -i -X POST</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-all-admins">7.6.12. Admin lists all admins</h4>
+<div id="section-ucrestdoc-uc-UC_029" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_029">UC_029-Admin lists all admins </a></p>
+</div>
+<div id="section-ucrestdoc-UC_029-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/admins' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-changes-owner-of-a-project">7.6.13. Admin changes owner of a project</h4>
+<div id="section-ucrestdoc-uc-UC_060" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_060">UC_060-Admin changes owner of a project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_060-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1/owner/userId1' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-creates-a-project">7.6.14. Admin creates a project</h4>
+<div id="section-ucrestdoc-uc-UC_013" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_013">UC_013-Admin creates a project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_013-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{&quot;apiVersion&quot;:&quot;1.0&quot;, &quot;name&quot;:&quot;projectId&quot;, &quot;description&quot;:&quot;A description of the project.&quot;, &quot;owner&quot;:&quot;ownerName1&quot;, &quot;whiteList&quot;:{&quot;uris&quot;:[&quot;192.168.1.1&quot;,&quot;https://my.special.server.com/myapp1/&quot;]}, &quot;metaData&quot;:{&quot;key1&quot;:&quot;value1&quot;, &quot;key2&quot;:&quot;value2&quot;}}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-lists-all-projects">7.6.15. Admin lists all projects</h4>
+<div id="section-ucrestdoc-uc-UC_014" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_014">UC_014-Admin lists all projects </a></p>
+</div>
+<div id="section-ucrestdoc-UC_014-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/projects' -i -X GET \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="admin-deletes-a-project">7.6.16. Admin deletes a project</h4>
+<div id="section-ucrestdoc-uc-UC_020" class="paragraph">
+<p>REST API for usecase <a href="#section-usecase-UC_020">UC_020-Admin deletes a project </a></p>
+</div>
+<div id="section-ucrestdoc-UC_020-" class="paragraph">
+<p><strong>Curl request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/project/projectId1' -i -X DELETE \
+    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="update-project-whitelist">7.6.17. Update project whitelist</h4>
 <div id="section-ucrestdoc-uc-UC_022" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_022">UC_022-Update project whitelist </a></p>
 </div>
-<div id="section-ucrestdoc-UC_022-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. https://localhost:8081/api/admin/project/{projectId}/whitelist</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project for which whitelist shall be updated</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All URIS used now for whitelisting. Former parts will be replaced completely!</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_022-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6632,60 +6259,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-shows-scan-logs-for-project">7.6.17. Admin shows scan logs for project</h4>
+<h4 id="admin-shows-scan-logs-for-project">7.6.18. Admin shows scan logs for project</h4>
 <div id="section-ucrestdoc-uc-UC_025" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_025">UC_025-Admin shows scan logs for project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_025-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An array of scan log summary entries</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].executedBy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user id of the user which executed the scan</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].started</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The timestamp when the scan was started</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].ended</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The timestamp when the scan was ended</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A status field about scan situation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].sechubJobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of corresponding sechub Job.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_025-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6696,67 +6274,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-project-metadata">7.6.18. Update project metadata</h4>
+<h4 id="update-project-metadata">7.6.19. Update project metadata</h4>
 <div id="section-ucrestdoc-uc-UC_059" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_059">UC_059-Update project metadata </a></p>
 </div>
-<div id="section-ucrestdoc-UC_059-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. https://localhost:8081/api/admin/project/{projectId}/metadata</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project for which metadata shall be updated</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Metadata object. Contains key-value pairs.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_059-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6768,87 +6290,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-changes-project-description">7.6.19. Admin changes project description</h4>
+<h4 id="admin-changes-project-description">7.6.20. Admin changes project description</h4>
 <div id="section-ucrestdoc-uc-UC_061" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_061">UC_061-Admin changes project description </a></p>
 </div>
-<div id="section-ucrestdoc-UC_061-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. https://localhost:8081/api/admin/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id for project to change details for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all users having access to the project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username of the owner ofthis project. An owner is the person in charge.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>whiteList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all whitelisted URIs. Only these ones can be scanned for the project!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An JSON object containing metadata key-value pairs defined for this project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>metaData.key1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An arbitrary metadata key.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project description.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_061-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6862,33 +6308,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-clicks-link-to-get-new-api-token">7.6.20. User clicks link to get new api token</h4>
+<h4 id="user-clicks-link-to-get-new-api-token">7.6.21. User clicks link to get new api token</h4>
 <div id="section-ucrestdoc-uc-UC_012" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_012">UC_012-User clicks link to get new api token </a></p>
 </div>
-<div id="section-ucrestdoc-UC_012-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. https://localhost:8081/api/anonymous/apitoken/{oneTimeToken}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oneTimeToken</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A one time token the user has got by a previous mail from sechub server</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_012-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -6899,92 +6323,12 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-creates-a-new-sechub-job">7.6.21. User creates a new sechub job</h4>
+<h4 id="user-creates-a-new-sechub-job">7.6.22. User creates a new sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_005" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_005">UC_005-User creates a new sechub job </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.21.1. Code Scan</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>codeScan.fileSystem.folders</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code scan sources from given file system folders</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-code-scan">7.6.22.1. Code Scan</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -6997,92 +6341,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.21.2. Infrastructure scan</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infraScan.ips</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure IPs to scan for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-infrastructure-scan">7.6.22.2. Infrastructure scan</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -7095,87 +6354,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.21.3. Web Scan anonymous</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-web-scan-anonymous">7.6.22.3. Web Scan anonymous</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -7188,112 +6367,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.21.4. Web Scan login basic</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">basic login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.basic.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-basic">7.6.22.4. Web Scan login basic</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -7306,117 +6380,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.21.5. Web Scan login form auto dection</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">login field auto detection</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.autodetect.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-auto-dection">7.6.22.5. Web Scan login form auto dection</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -7429,132 +6393,7 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.21.6. Web Scan login form scripted</h5>
-<div class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. https://localhost:8081/api/project/{projectId}/job</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The unique id of the project id where a new sechub job shall be created</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan configuration block</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.uris</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan URIs to scan for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Webscan login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Login URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">form login definition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">script</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script.pages[].actions[].type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">action type: username, password, input, click, wait</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script.pages[].actions[].selector</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">css selector</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script.pages[].actions[].value</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script.pages[].actions[].description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>webScan.login.form.script.pages[].actions[].unit</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the time unit to wait: millisecond, second, minute, hour, day.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique job id</p></td>
-</tr>
-</tbody>
-</table>
+<h5 id="section-ucrestdoc-UC_005-web-scan-login-form-scripted">7.6.22.6. Web Scan login form scripted</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
@@ -7568,42 +6407,16 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-uploads-source-code">7.6.22. User uploads source code</h4>
+<h4 id="user-uploads-source-code">7.6.23. User uploads source code</h4>
 <div id="section-ucrestdoc-uc-UC_006" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_006">UC_006-User uploads source code </a></p>
 </div>
-<div id="section-ucrestdoc-UC_006-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/sourcecode</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project where sourcecode shall be uploaded for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The jobUUID for sechub job</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_006-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/d67dc50a-f81f-4769-a341-5cc97b03c778/sourcecode' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/db97cb3c-04a7-48a4-ab36-a68b852504e7/sourcecode' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
     -F 'file=PK  
       �&lt;M                       test1.txtPK  ?
@@ -7614,172 +6427,61 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-approves-sechub-job">7.6.23. User approves sechub job</h4>
+<h4 id="user-approves-sechub-job">7.6.24. User approves sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_007" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_007">UC_007-User approves sechub job </a></p>
 </div>
-<div id="section-ucrestdoc-UC_007-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. https://localhost:8081/api/project/{projectId}/job/{jobUUID}/approve</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project where sechub job shall be approved</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The jobUUID for sechub job</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_007-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/b286a9a5-f70b-424e-9452-9979e06b1d40/approve' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/87948fe5-331a-4952-ab2d-f625307c8538/approve' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-checks-sechub-job-state">7.6.24. User checks sechub job state</h4>
+<h4 id="user-checks-sechub-job-state">7.6.25. User checks sechub job state</h4>
 <div id="section-ucrestdoc-uc-UC_009" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_009">UC_009-User checks sechub job state </a></p>
 </div>
-<div id="section-ucrestdoc-UC_009-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. https://localhost:8081/api/project/{projectId}/job/{jobUUID}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The id of the project where sechub job was started for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The jobUUID for sechub job</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job uuid</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>created</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Creation timestamp of job</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>started</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Start timestamp of job execution</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ended</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">End timestamp of job execution</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>owner</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Owner / initiator of job</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>state</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">State of job</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Result of job</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>trafficLight</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Trafficlight of job - but only available when job has been done. Possible states are GREEN, YELLOW, RED</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_009-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/21457587-1b4e-4da7-b0f4-3ceca601dbb5' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/job/aaf83229-1cf9-4058-8000-73240bff74fe' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-downloads-sechub-job-report">7.6.25. User downloads sechub job report</h4>
+<h4 id="user-downloads-sechub-job-report">7.6.26. User downloads sechub job report</h4>
 <div id="section-ucrestdoc-uc-UC_010" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_010">UC_010-User downloads sechub job report </a></p>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-json">7.6.25.1. JSON</h5>
+<h5 id="section-ucrestdoc-UC_010-json">7.6.26.1. JSON</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/f6b58956-ac60-4451-a4fa-e1cf5121389d' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/657cd979-17c5-402c-8d93-e953f2d2ae8a' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="section-ucrestdoc-UC_010-html">7.6.25.2. HTML</h5>
+<h5 id="section-ucrestdoc-UC_010-html">7.6.26.2. HTML</h5>
 <div class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/89bf6271-edb7-4a86-a5a0-f2b72f56c441' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/project/project1/report/476aa6de-fda1-463e-9ad3-750bd9574621' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/xhtml+xml'</code></pre>
 </div>
@@ -7787,82 +6489,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-marks-false-positives-for-finished-sechub-job">7.6.26. User marks false positives for finished sechub job</h4>
+<h4 id="user-marks-false-positives-for-finished-sechub-job">7.6.27. User marks false positives for finished sechub job</h4>
 <div id="section-ucrestdoc-uc-UC_044" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_044">UC_044-User marks false positives for finished sechub job </a></p>
 </div>
-<div id="section-ucrestdoc-UC_044-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. https://localhost:8081/api/project/{projectId}/false-positives</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The projectId of the project where users adds false positives for</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the json content. Currently only accepted value is 'falsePositiveJobDataList'.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job data list containing false positive setup based on former jobs</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub job uuid where finding was</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].findingId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. <strong>ATTENTION</strong>: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobData[].comment</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comment describing why this is a false positive</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_044-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -7874,41 +6505,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-unmarks-existing-false-positive-definitons">7.6.27. User unmarks existing false positive definitons</h4>
+<h4 id="user-unmarks-existing-false-positive-definitons">7.6.28. User unmarks existing false positive definitons</h4>
 <div id="section-ucrestdoc-uc-UC_045" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_045">UC_045-User unmarks existing false positive definitons </a></p>
 </div>
-<div id="section-ucrestdoc-UC_045-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. https://localhost:8081/api/project/{projectId}/false-positive/{jobUUID}/{findingId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job uuid</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>findingId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Finding id - in combination with job UUID this defines the false positive to remove</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_045-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -7918,167 +6519,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-fetches-false-positive-configuration-of-project">7.6.28. User fetches false positive configuration of project</h4>
+<h4 id="user-fetches-false-positive-configuration-of-project">7.6.29. User fetches false positive configuration of project</h4>
 <div id="section-ucrestdoc-uc-UC_046" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_046">UC_046-User fetches false positive configuration of project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_046-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. https://localhost:8081/api/project/{projectId}/false-positives</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job data list containing false positive setup based on former jobs</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].author</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User id of author who created false positive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].created</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Creation timestamp</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Meta data for this false positive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.scanType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Scan type - e.g. codeScan</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of origin finding marked as false positive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.cweId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CWE (common weakness enumeration). For code scans this is always set.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.cveId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CVE (common vulnerability and exposures). For infra scans this is always set.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.owasp</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">OWASP At least this field must be set for web scans when no cwe identifier is defined.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.severity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Severity of origin report entry marked as false positive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Code part. Only available for scan type 'codeScan'</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">entry point</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">location of code</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.relevantPart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">relevant part of source vulnerability</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.start.sourceCode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">source code</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">end point (sink)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.location</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">location of code</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.relevantPart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">relevant part of source vulnerability</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].metaData.code.end.sourceCode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">source code</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job data parts, can be used as key to identify false positives</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub job uuid where finding was</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.findingId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SecHub finding identifier - identifies problem inside the job which shall be markeda as a false positive. <strong>ATTENTION</strong>: at the moment only code scan false positive handling is supported. Infra and web scan findings will lead to a non accepted error!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>falsePositives[].jobData.comment</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A comment from author describing why this was marked as a false positive</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_046-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8088,45 +6533,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-self-registration">7.6.29. User self registration</h4>
+<h4 id="user-self-registration">7.6.30. User self registration</h4>
 <div id="section-ucrestdoc-uc-UC_001" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_001">UC_001-User self registration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_001-default" class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The api version, currently only 1.0 is supported</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wanted userid, the userid must be lowercase only!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAdress</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email adress</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_001-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8138,11 +6549,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-open-user-signups">7.6.30. Admin lists open user signups</h4>
+<h4 id="admin-lists-open-user-signups">7.6.31. Admin lists open user signups</h4>
 <div id="section-ucrestdoc-uc-UC_002" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_002">UC_002-Admin lists open user signups </a></p>
 </div>
-<div id="section-ucrestdoc-UC_002-default" class="paragraph">
+<div id="section-ucrestdoc-UC_002-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8152,33 +6563,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-applies-self-registration">7.6.31. Admin applies self registration</h4>
+<h4 id="admin-applies-self-registration">7.6.32. Admin applies self registration</h4>
 <div id="section-ucrestdoc-uc-UC_003" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_003">UC_003-Admin applies self registration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_003-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. https://localhost:8081/api/admin/signup/accept/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the signup which shall be accepted</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_003-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8188,33 +6577,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-deletes-user-signup">7.6.32. Admin deletes user signup</h4>
+<h4 id="admin-deletes-user-signup">7.6.33. Admin deletes user signup</h4>
 <div id="section-ucrestdoc-uc-UC_019" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_019">UC_019-Admin deletes user signup </a></p>
 </div>
-<div id="section-ucrestdoc-UC_019-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. https://localhost:8081/api/admin/signup/{userId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The userId of the signup which shall be deleted</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_019-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8224,33 +6591,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="user-requests-new-api-token">7.6.33. User requests new API token</h4>
+<h4 id="user-requests-new-api-token">7.6.34. User requests new API token</h4>
 <div id="section-ucrestdoc-uc-UC_024" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_024">UC_024-User requests new API token </a></p>
 </div>
-<div id="section-ucrestdoc-UC_024-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. https://localhost:8081/api/anonymous/refresh/apitoken/{emailAddress}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>emailAddress</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email address for user where api token shall be refreshed.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_024-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8261,60 +6606,11 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-lists-all-running-jobs">7.6.34. Admin lists all running jobs</h4>
+<h4 id="admin-lists-all-running-jobs">7.6.35. Admin lists all running jobs</h4>
 <div id="section-ucrestdoc-uc-UC_023" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_023">UC_023-Admin lists all running jobs </a></p>
 </div>
-<div id="section-ucrestdoc-UC_023-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].jobUUID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of the running job</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the project the job is running for</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].owner</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Owner of the job - means user which triggered it</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A status information</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].since</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Timestamp since when job has been started</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration used for this job</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_023-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8325,31 +6621,16 @@ This will NOT change any former job report where the false positive to unmark ha
 </div>
 </div>
 <div class="sect3">
-<h4 id="admin-downloads-all-details-about-a-scan-job">7.6.35. Admin downloads all details about a scan job</h4>
-<div id="section-ucrestdoc-uc-UC_026" class="paragraph">
-<p>REST API for usecase <a href="#section-usecase-UC_026">UC_026-Admin downloads all details about a scan job </a></p>
-</div>
-<div id="section-ucrestdoc-UC_026-default" class="paragraph">
-<p><strong>Curl request</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/scan/download/f5ca9fe1-f0d0-42c1-8d81-fa00318280b4' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="admin-cancels-a-job">7.6.36. Admin cancels a job</h4>
 <div id="section-ucrestdoc-uc-UC_034" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_034">UC_034-Admin cancels a job </a></p>
 </div>
-<div id="section-ucrestdoc-UC_034-default" class="paragraph">
+<div id="section-ucrestdoc-UC_034-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/aab3f6ef-41ab-41d0-a9da-309bdd500b32' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/cancel/51ef5ba6-b535-4f64-931e-a89de101db00' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8359,12 +6640,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_041" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_041">UC_041-Admin restarts a job </a></p>
 </div>
-<div id="section-ucrestdoc-UC_041-default" class="paragraph">
+<div id="section-ucrestdoc-UC_041-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/9391a8e4-1c0d-4fe7-8db3-47d8ae929e9c' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart/584b2683-d720-48b9-a69e-71de9bbc9058' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8374,12 +6655,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_042" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_042">UC_042-Admin restarts a job (hard) </a></p>
 </div>
-<div id="section-ucrestdoc-UC_042-default" class="paragraph">
+<div id="section-ucrestdoc-UC_042-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/a52bdf8a-aaba-40fa-b734-4ef4fd91a685' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/jobs/restart-hard/9afd876f-8ffd-4295-98d0-57962d3b45c1' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8389,7 +6670,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_035" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_035">UC_035-User defines mock data configuration for project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_035-default" class="paragraph">
+<div id="section-ucrestdoc-UC_035-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8406,7 +6687,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_036" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_036">UC_036-User retrieves mock data configuration for project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_036-default" class="paragraph">
+<div id="section-ucrestdoc-UC_036-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8422,63 +6703,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_037" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_037">UC_037-Admin updates mapping configuration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_037-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. https://localhost:8081/api/admin/config/mapping/{mappingId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mappingId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The mappingID , identifiying which mapping shall be updated</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].pattern</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pattern</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].replacement</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replacement</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].comment</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comment</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_037-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8494,41 +6719,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_038" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_038">UC_038-Admin fetches mapping configuration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_038-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].pattern</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pattern</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].replacement</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replacement</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entries.[].comment</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comment</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_038-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8543,71 +6734,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_047" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_047">UC_047-Admin creates an executor configuration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_047-default" class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A name for this configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor, per default false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_047-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8623,34 +6750,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_048" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_048">UC_048-Admin deletes executor configuration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_048-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_048-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/abaaba94-cc05-4245-88fc-3966ad9cbaa6' -i -X DELETE \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/eed3184e-7f36-4f93-a3e5-53d2c73814b9' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8660,46 +6765,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_049" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_049">UC_049-Admin fetches executor configuration list </a></p>
 </div>
-<div id="section-ucrestdoc-UC_049-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>executorConfigurationList</code> as an identifier for the list</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of the configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration name</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorConfigurations[].enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of configuration</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_049-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8714,103 +6780,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_050" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_050">UC_050-Admin fetches executor configuration </a></p>
 </div>
-<div id="section-ucrestdoc-UC_050-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The uuid of this configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_050-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/2b6a4168-387c-4278-8ba7-e39f83efa4c1' -i -X GET \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/41e3d06a-7d44-4200-9e96-ecd20d3277a5' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -8820,98 +6795,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_051" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_051">UC_051-Admin updates executor configuration setup </a></p>
 </div>
-<div id="section-ucrestdoc-UC_051-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. https://localhost:8081/api/admin/config/executor/{uuid}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration uuid</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of this configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productIdentifier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor product identifier</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executorVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Executor version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of executor, per default false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.baseURL</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base URL to the product</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.user</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User name, either plain (not recommended) or with env:VARIABLENAME, in last case the user name will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.credentials.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password, either plain (not recommended) or with env:VARIABLENAME, in last case the password will be from environment variable</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter key</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup.jobParameters[].value</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job parameter value</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_051-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/ab01d2e9-65a9-4dad-90b9-5eb72674d036' -i -X PUT \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/executor/7e5ea9e1-ef83-41ef-8509-e946fb3fb6a8' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{&quot;name&quot;:&quot;New name&quot;,&quot;productIdentifier&quot;:&quot;PDS_CODESCAN&quot;,&quot;executorVersion&quot;:1,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;baseURL&quot;:&quot;https://productNew.example.com&quot;,&quot;credentials&quot;:{&quot;user&quot;:&quot;env:EXAMPLE_NEW_USENAME&quot;,&quot;password&quot;:&quot;env:EXAMPLE_NEW_PASSWORD&quot;},&quot;jobParameters&quot;:[{&quot;key&quot;:&quot;example.key1&quot;,&quot;value&quot;:&quot;A value but changed. Remark: the other parameter (example.key2) has been removed by this call&quot;}]}}'</code></pre>
 </div>
@@ -8922,68 +6811,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_052" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_052">UC_052-Admin creates an execution profile </a></p>
 </div>
-<div id="section-ucrestdoc-UC_052-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configurations can be linked at creation time as well - see update description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectIds[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Projects can be linked by their ids at creation time as well - see update description</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_052-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -8999,29 +6827,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_053" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_053">UC_053-Admin deletes execution profile </a></p>
 </div>
-<div id="section-ucrestdoc-UC_053-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_053-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9036,70 +6842,14 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_054" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_054">UC_054-Admin updates execution profile </a></p>
 </div>
-<div id="section-ucrestdoc-UC_054-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Request fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add uuid for configuration to use here</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_054-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/existing-profile-1' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;267e979b-9fb0-4e7d-845f-fef3d9d09517&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
+    -d '{&quot;description&quot;:&quot;changed description&quot;,&quot;configurations&quot;:[{&quot;uuid&quot;:&quot;770301e3-c51d-40d6-a37d-73e23a736ce9&quot;,&quot;executorVersion&quot;:0,&quot;enabled&quot;:false,&quot;setup&quot;:{&quot;credentials&quot;:{},&quot;jobParameters&quot;:[]}}],&quot;enabled&quot;:true}'</code></pre>
 </div>
 </div>
 </div>
@@ -9108,88 +6858,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_055" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_055">UC_055-Admin fetches execution profile </a></p>
 </div>
-<div id="section-ucrestdoc-UC_055-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. https://localhost:8081/api/admin/config/execution/profile/{profileId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A short description for the profile</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile, default is false</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].uuid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid of configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name of configuration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enabled state of this config</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].productIdentifier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">executed product</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>configurations[].executorVersion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">executor version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectIds[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Projects can be linked by their ids here</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_055-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9204,46 +6873,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_056" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_056">UC_056-Admin fetches execution profile list </a></p>
 </div>
-<div id="section-ucrestdoc-UC_056-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Always <code>executorProfileList</code> as an identifier for the list</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].description</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A profile description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>executionProfiles[].enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enabled state of profile</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_056-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9258,33 +6888,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_057" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_057">UC_057-Admin assigns execution profile to project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_057-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_057-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9299,38 +6903,12 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_058" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_058">UC_058-Admin unassigns execution profile from project </a></p>
 </div>
-<div id="section-ucrestdoc-UC_058-default" class="paragraph">
-<p><strong>Path parameters</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. https://localhost:8081/api/admin/config/execution/profile/{profileId}/project/{projectId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile id</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_058-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X POST \
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://sechub.example.com/api/admin/config/execution/profile/profile-1/project/project-1' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8'</code></pre>
 </div>
 </div>
@@ -9340,7 +6918,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_030" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_030">UC_030-Admin disables job processing in scheduler </a></p>
 </div>
-<div id="section-ucrestdoc-UC_030-default" class="paragraph">
+<div id="section-ucrestdoc-UC_030-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9355,7 +6933,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_031" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_031">UC_031-Admin enables scheduler job processing </a></p>
 </div>
-<div id="section-ucrestdoc-UC_031-default" class="paragraph">
+<div id="section-ucrestdoc-UC_031-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9370,7 +6948,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_032" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_032">UC_032-Admin get scheduler status </a></p>
 </div>
-<div id="section-ucrestdoc-UC_032-default" class="paragraph">
+<div id="section-ucrestdoc-UC_032-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9385,36 +6963,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_033" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_033">UC_033-Admin lists status information </a></p>
 </div>
-<div id="section-ucrestdoc-UC_033-default" class="paragraph">
-<p><strong>Response fields</strong></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].key</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status key identifier</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].value</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status value</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
+<div id="section-ucrestdoc-UC_033-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9429,7 +6978,7 @@ This will NOT change any former job report where the false positive to unmark ha
 <div id="section-ucrestdoc-uc-UC_040" class="paragraph">
 <p>REST API for usecase <a href="#section-usecase-UC_040">UC_040-Admin checks server version </a></p>
 </div>
-<div id="section-ucrestdoc-UC_040-default" class="paragraph">
+<div id="section-ucrestdoc-UC_040-" class="paragraph">
 <p><strong>Curl request</strong></p>
 </div>
 <div class="listingblock">
@@ -9474,7 +7023,7 @@ one domain calls another one.</p>
 <h6 id="diagram">7.7.2.1.1. Diagram</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="812" height="3151">
+<img src="images/gen_domain_messaging_overview.svg" alt="Sequence diagram of messaging overview" width="869" height="3180">
 </div>
 </div>
 </div>
@@ -9635,7 +7184,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_done">7.7.2.4. Message JOB_DONE</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="530" height="174">
+<img src="images/gen_domain_messaging_job_done.svg" alt="Sequence diagram of messaging JOB_DONE" width="579" height="174">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9667,7 +7216,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-job_failed">7.7.2.5. Message JOB_FAILED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="530" height="174">
+<img src="images/gen_domain_messaging_job_failed.svg" alt="Sequence diagram of messaging JOB_FAILED" width="755" height="204">
 </div>
 </div>
 </div>
@@ -9811,7 +7360,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-project_deleted">7.7.2.14. Message PROJECT_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="885" height="233">
+<img src="images/gen_domain_messaging_project_deleted.svg" alt="Sequence diagram of messaging PROJECT_DELETED" width="869" height="233">
 </div>
 </div>
 </div>
@@ -9835,7 +7384,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_batch_job_status">7.7.2.17. Message REQUEST_BATCH_JOB_STATUS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="686" height="233">
+<img src="images/gen_domain_messaging_request_batch_job_status.svg" alt="Sequence diagram of messaging REQUEST_BATCH_JOB_STATUS" width="616" height="233">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -9933,7 +7482,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_purge_job_results">7.7.2.21. Message REQUEST_PURGE_JOB_RESULTS</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="613" height="308">
+<img src="images/gen_domain_messaging_request_purge_job_results.svg" alt="Sequence diagram of messaging REQUEST_PURGE_JOB_RESULTS" width="599" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10028,7 +7577,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-request_user_role_recalculation">7.7.2.25. Message REQUEST_USER_ROLE_RECALCULATION</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2282" height="378">
+<img src="images/gen_domain_messaging_request_user_role_recalculation.svg" alt="Sequence diagram of messaging REQUEST_USER_ROLE_RECALCULATION" width="2229" height="378">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10161,7 +7710,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-start_scan">7.7.2.33. Message START_SCAN</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="424" height="308">
+<img src="images/gen_domain_messaging_start_scan.svg" alt="Sequence diagram of messaging START_SCAN" width="450" height="308">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10201,7 +7750,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_added_to_project">7.7.2.35. Message USER_ADDED_TO_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="756" height="204">
+<img src="images/gen_domain_messaging_user_added_to_project.svg" alt="Sequence diagram of messaging USER_ADDED_TO_PROJECT" width="740" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10230,7 +7779,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_api_token_changed">7.7.2.36. Message USER_API_TOKEN_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1171" height="233">
+<img src="images/gen_domain_messaging_user_api_token_changed.svg" alt="Sequence diagram of messaging USER_API_TOKEN_CHANGED" width="1076" height="233">
 </div>
 </div>
 </div>
@@ -10246,7 +7795,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_created">7.7.2.38. Message USER_CREATED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="633" height="204">
+<img src="images/gen_domain_messaging_user_created.svg" alt="Sequence diagram of messaging USER_CREATED" width="637" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10275,7 +7824,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_deleted">7.7.2.39. Message USER_DELETED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1023" height="262">
+<img src="images/gen_domain_messaging_user_deleted.svg" alt="Sequence diagram of messaging USER_DELETED" width="1014" height="262">
 </div>
 </div>
 </div>
@@ -10320,7 +7869,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_removed_from_project">7.7.2.42. Message USER_REMOVED_FROM_PROJECT</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="810" height="204">
+<img src="images/gen_domain_messaging_user_removed_from_project.svg" alt="Sequence diagram of messaging USER_REMOVED_FROM_PROJECT" width="794" height="204">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10349,7 +7898,7 @@ one domain calls another one.</p>
 <h5 id="section-gen-messaging-user_roles_changed">7.7.2.43. Message USER_ROLES_CHANGED</h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="546" height="174">
+<img src="images/gen_domain_messaging_user_roles_changed.svg" alt="Sequence diagram of messaging USER_ROLES_CHANGED" width="526" height="174">
 </div>
 </div>
 <div class="admonitionblock note">
@@ -10572,7 +8121,7 @@ For an example:
 <h6 id="overview-3">8.2.1.1.1. Overview</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2448" height="232">
+<img src="images/gen_springprofiles.svg" alt="gen springprofiles" width="2419" height="230">
 </div>
 <div class="title">Figure 6. Spring profiles and their explicit/implicit included parts</div>
 </div>
@@ -10622,7 +8171,7 @@ starting - but its extreme flexible and has only a dependency to localserver</p>
 <h6 id="integration-test">8.2.1.1.4. Integration-Test</h6>
 <div class="imageblock">
 <div class="content">
-<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1439" height="268">
+<img src="images/gen_springprofiles-integrationtest.svg" alt="gen springprofiles integrationtest" width="1354" height="268">
 </div>
 <div class="title">Figure 9. Spring profile integrationtest and its explicit/implicit included parts</div>
 </div>
@@ -10682,7 +8231,42 @@ write some junit tests using TestAPI.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="section-general-configuration">8.2.2. General configuration</h4>
+<h4 id="section-db-configuration">8.2.2. Database configuration</h4>
+<div class="sect4">
+<h5 id="postgresql">8.2.2.1. PostgreSQL</h5>
+<div class="paragraph">
+<p>First of all, install a PostgreSQL database.</p>
+</div>
+<div class="paragraph">
+<p>Then define following environment entries before you start the server with active postgres profile:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>POSTGRES_DB_URL</p>
+</li>
+<li>
+<p>POSTGRES_DB_USERNAME</p>
+</li>
+<li>
+<p>POSTGRES_DB_PASSWORD</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>POSTGRES_DB_URL=jdbc:postgresql://127.0.0.1:49152/sechub
+POSTGRES_DB_USERNAME=sechub-pg-admin
+POSTGRES_DB_PASSWORD=a-very-strong-password...</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-general-configuration">8.2.3. General configuration</h4>
 <div class="paragraph">
 <p>SecHub can be configured  by keys on server startup.
 Using the spring <code>@Value</code> annotation we are able to
@@ -10704,7 +8288,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <p>The next text blocks describe the keys available on SecHub:</p>
 </div>
 <table id="section-gen-config-scope-administration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Scope 'administration'</caption>
+<caption class="title">Table 1. Scope 'administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10732,7 +8316,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-anonymous" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Scope 'anonymous'</caption>
+<caption class="title">Table 2. Scope 'anonymous'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10754,7 +8338,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Scope 'checkmarx'</caption>
+<caption class="title">Table 3. Scope 'checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10806,7 +8390,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Scope 'development'</caption>
+<caption class="title">Table 4. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10828,7 +8412,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. Scope 'initial'</caption>
+<caption class="title">Table 5. Scope 'initial'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10860,7 +8444,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 44. Scope 'mock'</caption>
+<caption class="title">Table 6. Scope 'mock'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10882,7 +8466,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. Scope 'nessus'</caption>
+<caption class="title">Table 7. Scope 'nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -10959,7 +8543,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 46. Scope 'netsparker'</caption>
+<caption class="title">Table 8. Scope 'netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11031,7 +8615,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 47. Scope 'notification'</caption>
+<caption class="title">Table 9. Scope 'notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11063,7 +8647,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-p" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 48. Scope 'p'</caption>
+<caption class="title">Table 10. Scope 'p'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11110,7 +8694,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-s" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 49. Scope 's'</caption>
+<caption class="title">Table 11. Scope 's'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11152,7 +8736,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 50. Scope 'scan'</caption>
+<caption class="title">Table 12. Scope 'scan'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11184,7 +8768,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 51. Scope 'scheduler'</caption>
+<caption class="title">Table 13. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11226,7 +8810,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 52. Scope 'sec'</caption>
+<caption class="title">Table 14. Scope 'sec'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11247,8 +8831,30 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-config-scope-security" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Scope 'security'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.diffiehellman.length</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define diffie hellman key length, see <a href="https://github.com/Daimler/sechub/issues/689" class="bare">https://github.com/Daimler/sechub/issues/689</a> for details</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-config-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 53. Scope 'server'</caption>
+<caption class="title">Table 16. Scope 'server'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11270,7 +8876,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 54. Scope 'storage'</caption>
+<caption class="title">Table 17. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11312,7 +8918,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 55. Scope 'system'</caption>
+<caption class="title">Table 18. Scope 'system'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11344,7 +8950,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-config-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 56. Scope 'target'</caption>
+<caption class="title">Table 19. Scope 'target'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11374,9 +8980,9 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </table>
 </div>
 <div class="sect3">
-<h4 id="scheduling-definitions">8.2.3. Scheduling definitions</h4>
+<h4 id="scheduling-definitions">8.2.4. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 57. Scope 'scheduler'</caption>
+<caption class="title">Table 20. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -11394,9 +9000,9 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </table>
 </div>
 <div class="sect3">
-<h4 id="sechub-mock-options">8.2.4. Configuration properties for mocked adapters</h4>
+<h4 id="sechub-mock-options">8.2.5. Configuration properties for mocked adapters</h4>
 <table id="section-gen-config-scope-abstract" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 58. Scope 'abstract'</caption>
+<caption class="title">Table 21. Scope 'abstract'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -11418,7 +9024,7 @@ Starts always with strategy-identifer, colon and value(s). Currently only 'intra
 </tbody>
 </table>
 <table id="section-gen-config-scope-mocked" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 59. Scope 'mocked'</caption>
+<caption class="title">Table 22. Scope 'mocked'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -13237,7 +10843,7 @@ See <a href="https://github.com/Daimler/sechub/issues/12" class="bare">https://g
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 0.25.0<br>
+ Server 0.26.0<br>
 </div>
 </div>
 <style>
