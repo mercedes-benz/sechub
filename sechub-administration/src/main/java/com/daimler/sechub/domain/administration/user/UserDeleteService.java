@@ -20,7 +20,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -47,7 +47,7 @@ public class UserDeleteService {
 
 	/* @formatter:off */
 	@Validated
-	@UseCaseAdministratorDeletesUser(
+	@UseCaseAdminDeletesUser(
 			@Step(
 					number = 2,
 					name = "Service deletes user.",

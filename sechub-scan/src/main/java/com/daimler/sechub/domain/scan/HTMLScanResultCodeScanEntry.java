@@ -13,6 +13,15 @@ public class HTMLScanResultCodeScanEntry {
 
 	String relevantPart;
 
+	Integer callNumber;
+
+    /**
+     * Return the call number (means position inside call stack...)
+     * @return integer value or <code>null</code>
+     */
+    public Integer getCallNumber() {
+        return callNumber;
+    }
 
 	public Integer getLine() {
 		return line;

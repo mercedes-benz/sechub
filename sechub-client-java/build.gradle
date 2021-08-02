@@ -5,68 +5,70 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
- 
+
 dependencies {
     // The production code uses the SLF4J logging API at compile time
-    compile library.slf4j
-    compile library.jackson_core
-    compile library.jackson_databind
+    implementation library.slf4j
+    implementation library.jackson_core
+    implementation library.jackson_databind
     
-    compile project(':sechub-commons-model')
+    implementation project(':sechub-commons-model')
     
-    compile library.apache_httpcomponents_client
+    implementation library.apache_httpcomponents_client
 
-    testCompile library.junit
-    testCompile library.mockito
-    testCompile library.hamcrest
+    testImplementation library.junit
+    testImplementation library.mockito
+    testImplementation library.hamcrest
 }
 
 // see https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
 apply plugin: 'org.openapi.generator'
 
-def specFilePath =  "$rootDir/sechub-doc/build/api-spec/openapi3.yaml"
-def generatedSourcesDir = "$buildDir/generated/openapi"
+def specFilePath = "$rootDir/sechub-doc/build/api-spec/openapi3.json"
 
 openApiValidate {
-    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
+    inputSpec = "$specFilePath"
 }
 
-openApiGenerate {
+// see: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+task generateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName = "java"
     
-    inputSpec = "$rootDir/sechub-doc/build/api-spec/openapi3.yaml".toString()
-    outputDir = "$buildDir/generated".toString()
-    apiPackage = "org.openapi.example.api"
-    invokerPackage = "org.openapi.example.invoker"
-    modelPackage = "org.openapi.example.model"
-    modelFilesConstrainedTo = [
-            "Error"
-    ]
-    systemProperties = [
+    inputSpec = "$specFilePath"
+    outputDir = "$rootDir/sechub-client-java/gen"
+    apiPackage = "com.daimler.sechub.client.java.api"
+    invokerPackage = "com.daimler.sechub.client.java.api"
+    modelPackage = "com.daimler.sechub.client.java.api.model"
+    
+    globalProperties = [
             validateSpec   : "true",
             modelDocs      : "false",
-            models         : "",
-            apis           : "",
-            supportingFiles: "false"
+            models         : "",  // generate all
+            apis           : "", // generate all
+            supportingFiles: ""  // generate all
     ]
     configOptions = [
-            useOptional          : "true",
-            swaggerDocketConfig  : "false",
-            performBeanValidation: "false",
-            useBeanValidation    : "false",
-            useTags              : "true",
-            singleContentTypes   : "true",
-            basePackage          : "com.daimler.sechub.client.java.api",
-            configPackage        : "com.daimler.sechub.client.java.api",
-            title                : rootProject.name,
-            java8                : "true",
-            dateLibrary          : "java8",
-            serializableModel    : "true",
-            artifactId           : rootProject.name,
-            apiPackage           : "com.daimler.sechub.client.java.api",
-            modelPackage         : "com.daimler.sechub.client.java.api.model",
-            invokerPackage       : "com.daimler.sechub.client.java.api",
-            interfaceOnly        : "true"
+    		groupId 					: "com.daimler.sechub", 
+            performBeanValidation		: "false",
+            useBeanValidation    		: "false",
+            java8                		: "true",
+            dateLibrary          		: "java8",
+            serializableModel    		: "true",
+            serializationLibrary 		: "jackson",
+            artifactId           		: "sechub-client-java-api",
+            artifactDescription			: "The SecHub API client library for Java",
+            artifactUrl					: "https://github.com/Daimler/sechub",
+            legacyDiscriminatorBehavior : "false",
+            library 					: "jersey2",
+            licenseName 				: "MIT",
+            licenseUrl					: "https://github.com/Daimler/sechub/blob/develop/LICENSE",
+            developerEmail				: "",
+            developerName				: "",
+            developerOrganization 		: "Daimler TSS",
+            developerOrganizationUrl	: "https://www.daimler-tss.com/",
+            scmConnection				: "",
+            scmDeveloperConnection		: "",
+            scmUrl						: "https://github.com/daimler/sechub"
     ]
 }
 
@@ -89,6 +91,26 @@ task buildJavaClientAll(type: Jar) {
     with jar
 }
 
+sourceSets {
+    main{
+        java {
+           srcDirs 'src/main/java/'
+        }
+
+    }
+
+}
+
+//TODO: This task should create the FatJar.
+task buildJavaClient(type:Exec) {
+  group 'sechub'
+  description 'This builds only the generated SecHub Java Client'
+  dependsOn 'generateJavaClient'
+  
+  workingDir = "${project.projectDir}"
+
+  commandLine './generateClient.sh', "${project.projectDir}/gen"
+}
 
 
 

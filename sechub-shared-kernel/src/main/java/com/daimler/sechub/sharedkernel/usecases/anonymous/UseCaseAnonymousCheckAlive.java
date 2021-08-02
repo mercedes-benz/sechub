@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_ANONYMOUS_CHECK_ALIVE,
 		group=UseCaseGroup.ANONYMOUS,
+		apiName="anonymousCheckAlive",
 		title="Check if the server is alive and running.",
 		description="An anonymous user or system wants to know if the server is alive and running.")
 public @interface UseCaseAnonymousCheckAlive {

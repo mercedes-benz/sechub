@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -24,7 +24,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ScheduleGrantUserAcces
 	@Autowired
 	UserInputAssertion assertion;
 
-	@UseCaseAdministratorAssignsUserToProject(@Step(number=2,name="Update schedule authorization parts"))
+	@UseCaseAdminAssignsUserToProject(@Step(number=2,name="Update schedule authorization parts"))
 	public void grantUserAccessToProject(String userId, String projectId) {
 		assertion.isValidUserId(userId);
 		assertion.isValidProjectId(projectId);

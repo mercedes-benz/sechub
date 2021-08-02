@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_SIGNUP,
 		group=UseCaseGroup.SIGN_UP,
+		apiName="userSignup",
 		title="User self registration", 
 		description="user/selfregistration_description.adoc")
 public @interface UseCaseUserSignup {

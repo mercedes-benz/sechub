@@ -15,7 +15,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 
 @Service
 public class InformUsersThatProjectHasBeenDeletedNotificationService {
@@ -28,7 +28,7 @@ public class InformUsersThatProjectHasBeenDeletedNotificationService {
 	@Autowired
 	EmailService emailService;
 
-	@UseCaseAdministratorDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
+	@UseCaseAdminDeleteProject(@Step(number = 5, name = "Inform users that the project has been deleted"))
 	public void notify(ProjectMessage projectMessage, String baseUrl) {
 		requireNonNull(projectMessage);
 

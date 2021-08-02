@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -25,7 +25,7 @@ public class ScheduleRevokeUserAccessAtAllService {
 	UserInputAssertion assertion;
 
 	@Transactional
-	@UseCaseAdministratorDeletesUser(@Step(number=3,name="revoke user from schedule access"))
+	@UseCaseAdminDeletesUser(@Step(number=3,name="revoke user from schedule access"))
 	public void revokeUserAccess(String userId) {
 		assertion.isValidUserId(userId);
 

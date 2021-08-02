@@ -67,7 +67,7 @@ publishing {
 
             pom {
                 name = 'SecHub Server'
-                description = 'SecHub Server as a sprint boot jar. Ready to use.'
+                description = 'SecHub Server as a Spring Boot JAR. Ready to use.'
 
                 scm {
                     url = 'https://github.com/daimler/sechub'

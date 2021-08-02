@@ -279,9 +279,4 @@ public class PDSExecutionService {
 
     }
 
-    void destroy() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

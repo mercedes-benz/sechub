@@ -3,7 +3,7 @@ package com.daimler.sechub.docgen.usecase;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class UsecaseIdentifierUniqueUsageTest {
 	public void usecases_are_using_identifiers_only_one_time_means_unique() {
 		Reflections reflections = ReflectionsFactory.create();
 		
-		Map<String, String> map = new TreeMap<>();
+		Map<String, String> map = new HashMap<>();
 		Set<Class<?>> usesCaseAnnotations = reflections.getTypesAnnotatedWith(UseCaseDefinition.class);
 		for (Class<?> clazz : usesCaseAnnotations) {
 			UseCaseDefinition def = clazz.getAnnotation(UseCaseDefinition.class);
@@ -39,5 +39,33 @@ public class UsecaseIdentifierUniqueUsageTest {
 			map.put(enumName, annotationName);
 		}
 	}
+	
+	
+	/**
+     * This test is very important: if two annotations are using the same
+     * apiName, the OpenAPI file will be messed up.
+     * It is really important that an automated test checks for the apiName uniqueness.
+     */
+    @Test
+    public void usecases_are_using_apinames_only_one_time_means_unique() {
+        Reflections reflections = ReflectionsFactory.create();
+        
+        Map<String, String> map = new HashMap<>();
+        Set<Class<?>> usesCaseAnnotations = reflections.getTypesAnnotatedWith(UseCaseDefinition.class);
+        for (Class<?> clazz : usesCaseAnnotations) {
+            UseCaseDefinition useCaseDefinition = clazz.getAnnotation(UseCaseDefinition.class);
+                        
+            String apiName = useCaseDefinition.apiName();
+            String annotationName = clazz.getSimpleName();
+
+            String foundAnnotationName = map.get(apiName);
+            if (foundAnnotationName != null) {
+                throw new IllegalStateException("Duplicate usage of apiName() found!\n"
+                        + annotationName + " uses API name: " + apiName 
+                        + ", \n but this API name is already used by: " + foundAnnotationName);
+            }
+            map.put(apiName, annotationName);
+        }
+    }
 
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -29,7 +29,7 @@ public class ScanDeleteAnyAccessToProjectAtAllService {
 	LogSanitizer logSanitizer;
 
 	@Transactional
-	@UseCaseAdministratorDeleteProject(@Step(number=7,name="revoke any scan access from project"))
+	@UseCaseAdminDeleteProject(@Step(number=7,name="revoke any scan access from project"))
 	public void deleteAnyAccessDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);
 

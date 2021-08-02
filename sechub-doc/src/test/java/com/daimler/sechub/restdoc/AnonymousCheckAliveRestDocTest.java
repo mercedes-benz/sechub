@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.head;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.server.core.AnonymousCheckAliveRestController;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
@@ -28,6 +32,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.anonymous.UseCaseAnonymousCheckAlive;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousCheckAliveRestController.class)
@@ -44,14 +49,25 @@ public class AnonymousCheckAliveRestDocTest {
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "HEAD")
 	public void calling_check_alive_head_returns_HTTP_200() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildCheckIsAliveUrl();
+        Class<? extends Annotation> useCase = UseCaseAnonymousCheckAlive.class;
+        
 		/* execute */
 		/* @formatter:off */
         this.mockMvc.perform(
-        			head(https(PORT_USED).buildCheckIsAliveUrl())
+        			head(apiEndpoint)
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "HEAD")));
+        andDo(document(RestDocFactory.createPath(useCase, "HEAD"),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            build()
+                         )
+                ));
 
         /* @formatter:on */
 	}
@@ -59,14 +75,25 @@ public class AnonymousCheckAliveRestDocTest {
 	@Test
 	@UseCaseRestDoc(useCase=UseCaseAnonymousCheckAlive.class, variant = "GET")
 	public void calling_check_alive_get_returns_HTTP_200() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildCheckIsAliveUrl();
+        Class<? extends Annotation> useCase = UseCaseAnonymousCheckAlive.class;
+        
 		/* execute */
 		/* @formatter:off */
         this.mockMvc.perform(
-        			get(https(PORT_USED).buildCheckIsAliveUrl())
+        			get(apiEndpoint)
         		).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAnonymousCheckAlive.class, "GET")));
+        andDo(document(RestDocFactory.createPath(useCase, "GET"),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            build()
+                         )
+                ));
 
         /* @formatter:on */
 	}

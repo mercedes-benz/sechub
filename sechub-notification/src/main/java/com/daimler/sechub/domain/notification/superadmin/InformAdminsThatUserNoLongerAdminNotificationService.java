@@ -10,7 +10,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorRevokesAdminRightsFromAdmin;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
 
 @Service
 public class InformAdminsThatUserNoLongerAdminNotificationService {
@@ -24,7 +24,7 @@ public class InformAdminsThatUserNoLongerAdminNotificationService {
 	@Autowired
 	private EmailService emailService;
 
-	@UseCaseAdministratorRevokesAdminRightsFromAdmin(@Step(number = 4, next = {
+	@UseCaseAdminRevokesAdminRightsFromAdmin(@Step(number = 4, next = {
 			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that another admin is no longer admin"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 

@@ -19,7 +19,7 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorListsStatusInformation;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminListsStatusInformation;
 
 /**
  * The rest API for status administration done by a super admin.
@@ -37,7 +37,7 @@ public class StatusAdministrationRestController {
 	ListStatusService listStatusService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorListsStatusInformation(@Step(number=1,name="Rest call",description="Administrator wants to list status information about sechub",needsRestDoc=true))
+	@UseCaseAdminListsStatusInformation(@Step(number=1,name="Rest call",description="Administrator wants to list status information about sechub",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_SCHEDULER_GET_STATUS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public List<StatusEntry> listStatusInformation() {

@@ -64,7 +64,7 @@ public class ScenarioInitializer {
     }
 	
 	public  ScenarioInitializer ensureDefaultExecutionProfile_4_PDS_codescan_sarif_no_sechub_storage_used() {
-        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_4_PDS_CODESCAN_SARIF_NO_SECHUB_STORAGE_USED);
+        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF);
     }
 	
 	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {

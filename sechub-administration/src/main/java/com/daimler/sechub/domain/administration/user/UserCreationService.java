@@ -26,7 +26,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -59,7 +59,7 @@ public class UserCreationService {
 	@Autowired
 	AuditLogService auditLog;
 
-	@UseCaseAdministratorAcceptsSignup(@Step(number = 2, name = "Create user and send events", next = { 3,
+	@UseCaseAdminAcceptsSignup(@Step(number = 2, name = "Create user and send events", next = { 3,
 			4 }, description = "The service will create the user a one time token for api token generation and triggers asynchronous events.\n"
 					+ "It will also remove the existing user signup because no longer necessary."))
 	public void createUserFromSelfRegistration(String userId) {

@@ -10,7 +10,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorGrantsAdminRightsToUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
 
 @Service
 public class InformAdminsThatUserBecomesAdminNotificationService {
@@ -24,7 +24,7 @@ public class InformAdminsThatUserBecomesAdminNotificationService {
 	@Autowired
 	private EmailService emailService;
 
-	@UseCaseAdministratorGrantsAdminRightsToUser(@Step(number = 4, next = {
+	@UseCaseAdminGrantsAdminRightsToUser(@Step(number = 4, next = {
 			Step.NO_NEXT_STEP }, name = "Inform SecHub admins that another user became administrator"))
 	public void notify(UserMessage userMessage, String baseUrl) {
 
