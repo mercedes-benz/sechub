@@ -126,6 +126,11 @@ public class MessageDataKeys {
 
 	public static final MessageDataKey<ProjectMessage> PROJECT_OWNER_CHANGE_DATA = createProjectMessageKey("project.owner.change.data");
 	
+	/**
+	 * Does contain former access level and new one
+	 */
+	public static final MessageDataKey<ProjectMessage> PROJECT_ACCESS_LEVEL_CHANGE_DATA = createProjectMessageKey("project.accesslevel.change.data");
+	
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Helpers ..................................+ */
 	/* +-----------------------------------------------------------------------+ */

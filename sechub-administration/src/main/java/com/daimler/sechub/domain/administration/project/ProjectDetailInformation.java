@@ -15,6 +15,7 @@ public class ProjectDetailInformation {
     public static final String PROPERTY_WHITELIST = "whiteList";
     public static final String PROPERTY_METADATA = "metaData";
     public static final String PROPERTY_OWNER = "owner";
+    public static final String PROPERTY_ACCESSLEVEL = "acessLevel";
     public static final String PROPERTY_DESCRIPTION = "description";
 
     private String projectId;
@@ -24,6 +25,7 @@ public class ProjectDetailInformation {
     private Map<String, String> metaData = new HashMap<>();
     private String owner;
     private String description;
+    private String accessLevel;
 
     public ProjectDetailInformation(Project project) {
         this.projectId = project.getId();
@@ -39,6 +41,8 @@ public class ProjectDetailInformation {
         this.owner = project.getOwner().getName();
 
         this.description = project.getDescription();
+        
+        this.accessLevel= project.getAccessLevel().getId();
     }
 
     public String getOwner() {
@@ -63,5 +67,9 @@ public class ProjectDetailInformation {
 
     public String getDescription() {
         return description;
+    }
+    
+    public String getAccessLevel() {
+        return accessLevel;
     }
 }

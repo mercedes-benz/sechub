@@ -14,6 +14,7 @@ import com.daimler.sechub.domain.scan.access.ScanDeleteAnyAccessToProjectAtAllSe
 import com.daimler.sechub.domain.scan.access.ScanGrantUserAccessToProjectService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.daimler.sechub.sharedkernel.messaging.AsynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessage;
 import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
@@ -22,6 +23,7 @@ import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 
 /**
  * The test does not only test the message handler but also the domain message service recognition
@@ -43,7 +45,7 @@ public class ScanMessageHandlerTest {
 		scheduleHandlerToTest.revokeUserService=mock(ScanRevokeUserAccessAtAllService.class);
 		scheduleHandlerToTest.deleteAllProjectAccessService=mock(ScanDeleteAnyAccessToProjectAtAllService.class);
 		scheduleHandlerToTest.projectDataDeleteService=mock(ProjectDataDeleteService.class);
-
+		scheduleHandlerToTest.projectAccessLevelService=mock(ScanProjectConfigAccessLevelService.class);
 
 		List<AsynchronMessageHandler> injectedAsynchronousHandlers = new ArrayList<>();
 		injectedAsynchronousHandlers.add(scheduleHandlerToTest);
@@ -53,6 +55,28 @@ public class ScanMessageHandlerTest {
 
 	}
 
+	
+	@Test
+    public void when_sending_message_id_PROJECT_ACCESS_LEVEL_CHANGED_changeProjectAccessLevel_is_called() {
+        /* prepare */
+	    ProjectAccessLevel newAccessLevel=ProjectAccessLevel.NONE;
+	    ProjectAccessLevel formerAccessLevel=ProjectAccessLevel.READ_ONLY;
+
+	    DomainMessage request = new DomainMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED);
+        ProjectMessage content = new ProjectMessage();
+        content.setProjectId("projectId1");
+        content.setFormerAccessLevel(formerAccessLevel);
+        content.setNewAccessLevel(newAccessLevel);
+        
+        request.set(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA, content);
+
+        /* execute */
+        simulateEventSend(request, scheduleHandlerToTest);
+
+        /* test */
+        verify(scheduleHandlerToTest.projectAccessLevelService).changeProjectAccessLevel("projectId1",newAccessLevel,formerAccessLevel);
+
+    }
 
 
 	@Test

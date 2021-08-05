@@ -36,6 +36,7 @@ import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.sharedkernel.mapping.MappingData;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.test.TestURLBuilder;
 import com.daimler.sechub.test.TestUtil;
 import com.daimler.sechub.test.executionprofile.TestExecutionProfile;
@@ -777,7 +778,7 @@ public class AsUser {
 
     public UUID triggerAsyncCodeScanGreenSuperFastWithPseudoZipUpload(TestProject project) {
         return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, IntegrationTestMockMode.CODE_SCAN__CHECKMARX__GREEN__SUPERFAST,
-                "zipfile_contains_only_test1.txt.zip");
+                TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncWebScanGreenLongRunningAndGetJobUUID(TestProject project) {
@@ -787,7 +788,7 @@ public class AsUser {
     }
 
     public UUID triggerAsyncCodeScanWithPseudoZipUpload(TestProject project, IntegrationTestMockMode mode) {
-        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, "zipfile_contains_only_test1.txt.zip");
+        return triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(project, mode, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
     }
 
     public UUID triggerAsyncCodeScanApproveWithoutSourceUploadAndGetJobUUID(TestProject project, IntegrationTestMockMode mode, String pathInsideResources) {
@@ -1029,6 +1030,12 @@ public class AsUser {
             jobData.add(data);
             return this;
         }
+    }
+
+    public void changeProjectAccessLevel(TestProject project, ProjectAccessLevel accessLevel) {
+        String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel.getId());
+        
+        getRestHelper().post(url);
     }
 
 }

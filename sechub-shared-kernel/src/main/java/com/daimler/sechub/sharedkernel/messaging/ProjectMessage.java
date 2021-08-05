@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -33,6 +34,10 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 	private Set<String> userEmailAdresses = new LinkedHashSet<>(2);
 
 	private String projectActionTriggeredBy;
+
+    private ProjectAccessLevel formerAccessLevel;
+
+    private ProjectAccessLevel newAccessLevel;
 
 	@Override
 	public Class<ProjectMessage> getJSONTargetClass() {
@@ -97,5 +102,21 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
 	public String getProjectActionTriggeredBy() {
 		return projectActionTriggeredBy;
 	}
+
+    public void setFormerAccessLevel(ProjectAccessLevel formerAccessLevel) {
+        this.formerAccessLevel=formerAccessLevel;
+    }
+    
+    public ProjectAccessLevel getFormerAccessLevel() {
+        return formerAccessLevel;
+    }
+
+    public void setNewAccessLevel(ProjectAccessLevel newAccessLevel) {
+        this.newAccessLevel=newAccessLevel;
+    }
+    
+    public ProjectAccessLevel getNewAccessLevel() {
+        return newAccessLevel;
+    }
 
 }

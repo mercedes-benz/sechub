@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -208,6 +209,18 @@ public class AssertProject extends AbstractAssert {
         
         assertEquals(expectedMap, found);
         
+        return this;
+    }
+
+    public AssertProject hasAccessLevel(ProjectAccessLevel none) {
+        String content = fetchProjectDetails();
+        try {
+            String id = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fetch("accessLevel", content).asText();
+            assertEquals("Id: "+id+" was not as " + none.getId(), none, ProjectAccessLevel.fromId(id));
+        } catch (AdapterException e) {
+            e.printStackTrace();
+            fail("adapter json failure:" + e.getMessage());
+        }
         return this;
     }
 

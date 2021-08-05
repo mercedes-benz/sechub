@@ -15,49 +15,69 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListSecHubConfigurationValidationService;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
+
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 @Service
 public class ScheduleAssertService {
 
-	@Autowired
-	private SecHubJobRepository jobRepository;
+    @Autowired
+    private SecHubJobRepository jobRepository;
 
-	@Autowired
-	ScheduleUserAccessToProjectValidationService userAccessValidation;
+    @Autowired
+    ScheduleUserAccessToProjectValidationService userAccessValidation;
 
-	@Autowired
-	ProjectWhiteListSecHubConfigurationValidationService executionIsInWhiteListValidation;
+    @Autowired
+    ProjectWhiteListSecHubConfigurationValidationService executionIsInWhiteListValidation;
 
-	/**
-	 * Assert current logged in user has access to project
-	 * @param projectId
-	 */
-	public void assertUserHasAccessToProject(String projectId) {
-		userAccessValidation.assertUserHasAccessToProject(projectId);
-	}
+    /**
+     * Assert current logged in user has access to project
+     * 
+     * @param projectId
+     */
+    public void assertUserHasAccessToProject(String projectId) {
+        userAccessValidation.assertUserHasAccessToProject(projectId);
+    }
 
-	/**
-	 * Asserts execution is allowed for given configuration
-	 * @param configuration
-	 */
-	public void assertExecutionAllowed(@Valid SecHubConfiguration configuration) {
-		executionIsInWhiteListValidation.assertAllowedForProject(configuration);
-	}
+    /**
+     * Asserts execution is allowed for given configuration
+     * 
+     * @param configuration
+     */
+    public void assertExecutionAllowed(@Valid SecHubConfiguration configuration) {
+        executionIsInWhiteListValidation.assertAllowedForProject(configuration);
+    }
 
-	/**
-	 * Asserts a job is existing and returns the job
-	 * @param projectId
-	 * @param jobUUID
-	 * @return job, never <code>null</code>
-	 */
-	public ScheduleSecHubJob assertJob(String projectId, UUID jobUUID) {
-		Optional<ScheduleSecHubJob> secHubJob = jobRepository.findForProject(projectId, jobUUID);
-		if (!secHubJob.isPresent()) {
-			// we say "... or you have no access - just to obfuscate... so it's not clear to
-			// malicious actors they got a target...
-			throw new NotFoundException("Job does not exist, or you have no access.");
-		}
-		return secHubJob.get();
-	}
+    /**
+     * Asserts a job is existing and returns the job
+     * 
+     * @param projectId
+     * @param jobUUID
+     * @return job, never <code>null</code>
+     */
+    public ScheduleSecHubJob assertJob(String projectId, UUID jobUUID) {
+        Optional<ScheduleSecHubJob> secHubJob = jobRepository.findForProject(projectId, jobUUID);
+        if (!secHubJob.isPresent()) {
+            // we say "... or you have no access - just to obfuscate... so it's not clear to
+            // malicious actors they got a target...
+            throw new NotFoundException("Job does not exist, or you have no access.");
+        }
+        return secHubJob.get();
+    }
+
+    /**
+     * Assert given project has wanted access level. If no access level is defined
+     * the project will be always accessible.
+     * 
+     * @param projectId
+     * @param minimumAccessibilty
+     */
+    public void assertProjectHasAccessLevel(String projectId, ProjectAccessLevel minimumAccessibilty) {
+       notNull(projectId, "projectId must be defined");
+       notNull(minimumAccessibilty, "minimum accessiblity must be defined");
+       
+       
+    }
 
 }

@@ -41,8 +41,10 @@ public class ScanProjectConfigService {
      * @param projectId
      * @param configId
      * @param checkAccess when <code>true</code> access is checked, otherwise not
+     * @param defaultData initial data to set when configuration did not exist and
+     *                    is created. Can be also <code>null</code>
      * @return persisted project scan configuration or a <code>new</code> scan
-     *         configuaration with default value
+     *         configuration with default value
      */
     public ScanProjectConfig getOrCreate(String projectId, ScanProjectConfigID configId, boolean checkAccess, String defaultData) {
         ScanProjectConfig config = get(projectId, configId, checkAccess);
@@ -72,7 +74,7 @@ public class ScanProjectConfigService {
     }
 
     /**
-     * Set configuration for project
+     * Set configuration for project (means will persist given change to config)
      * 
      * @param projectId
      * @param configId

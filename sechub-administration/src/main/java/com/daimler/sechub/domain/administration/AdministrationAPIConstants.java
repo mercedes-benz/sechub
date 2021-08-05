@@ -96,6 +96,8 @@ public class AdministrationAPIConstants{
 	public static final String API_LIST_JOBS_RUNNING = API_ADMINISTRATION+"jobs/running";
 	
 	public static final String API_CONFIG_MAPPING = API_ADMINISTRATION+"config/mapping/{mappingId}";
+	
+	public static final String API_CHANGE_PROJECT_ACCESSLEVEL = API_ADMINISTRATION+"project/{projectId}/accesslevel/{projectAccessLevel}";
 
 	/* +-----------------------------------------------------------------------+ */
 	/* +............................ Anonymous ................................+ */

@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+An administrator is able to changes project access level.
+
+===== Levels
+- `full_access` +
+   no restrictions
+- `read_only` +
+  users can download their reports, get job status, but cannot trigger any project jobs
+- `no_access` +
+  users have no access to reports, jobs and cannot trigger any jobs for the project 
+
+===== Conststraints
+
+When a project has access level `READ_ONLY`
+
+- a new scan is not possible, HTTP 403: Forbidden will be sent
+- running jobs are still running
+- already scheduled jobs will be scheduled
+- user are still able to check status for a job in their project
+- user can still download their former reports
+
+When a project has access level `NO_ACCESS`
+
+- a new scan is not possible, HTTP 403: Forbidden will be sent
+- running jobs are still running
+- already scheduled jobs will be scheduled
+- user are NOT able to check status for a job in their project,  HTTP 403: Forbidden will be sent
+- user can NOT download their former reports,  HTTP 403: Forbidden will be sent
+

@@ -5,35 +5,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.access.ScanUserAccessToProjectValidationService;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.sharedkernel.UserContextService;
+import com.daimler.sechub.sharedkernel.error.ForbiddenException;
 
 @Service
 public class ScanAssertService {
 
-	@Autowired
-	UserContextService userContextService;
+    @Autowired
+    UserContextService userContextService;
 
-	@Autowired
-	ScanUserAccessToProjectValidationService userAccessValidation;
+    @Autowired
+    ScanUserAccessToProjectValidationService userAccessValidation;
 
-	public void assertUserHasAccessToReport(ScanReport report) {
-		if (report==null) {
-			throw new IllegalArgumentException("report may not be null");
-		}
-		assertUserHasAccessToProject(report.getProjectId());
+    @Autowired
+    ScanProjectConfigAccessLevelService accessLevelService;
 
-	}
+    public void assertUserHasAccessToReport(ScanReport report) {
+        if (report == null) {
+            throw new IllegalArgumentException("report may not be null");
+        }
+        assertUserHasAccessToProject(report.getProjectId());
 
-	public void assertUserHasAccessToProject(String projectId) {
-		if (projectId==null) {
-			throw new IllegalArgumentException("projectId may not be null");
-		}
-		if (userContextService.isSuperAdmin()) {
-			/* always access */
-			return;
-		}
-		userAccessValidation.assertUserHasAccessToProject(projectId);
+    }
 
-	}
+    public void assertUserHasAccessToProject(String projectId) {
+        if (projectId == null) {
+            throw new IllegalArgumentException("projectId may not be null");
+        }
+        if (userContextService.isSuperAdmin()) {
+            /* always access */
+            return;
+        }
+        userAccessValidation.assertUserHasAccessToProject(projectId);
+
+    }
+
+    public void assertProjectCanBeRead(String projectId) {
+        if (!accessLevelService.isReadAllowed(projectId)) {
+            throw new ForbiddenException("Project " + projectId + " does currently not allow read access.");
+        }
+    }
+
+    public void assertProjectCanBeWritten(String projectId) {
+        if (!accessLevelService.isWriteAllowed(projectId)) {
+            throw new ForbiddenException("Project " + projectId + " does currently not allow write access.");
+        }
+    }
+
 }

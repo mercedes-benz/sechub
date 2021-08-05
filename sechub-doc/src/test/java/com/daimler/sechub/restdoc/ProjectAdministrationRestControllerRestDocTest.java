@@ -4,6 +4,7 @@ package com.daimler.sechub.restdoc;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -12,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -37,6 +40,7 @@ import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
+import com.daimler.sechub.domain.administration.project.ProjectChangeAccessLevelService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
 import com.daimler.sechub.domain.administration.project.ProjectDetailChangeService;
@@ -49,24 +53,27 @@ import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
 import com.daimler.sechub.domain.administration.user.User;
+import com.daimler.sechub.server.SecHubWebMvcConfigurer;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorShowsProjectDetails;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class , SecHubWebMvcConfigurer.class})
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -97,7 +104,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @MockBean
     ProjectDetailInformationService detailInformationService;
-    
+
     @MockBean
     ProjectDetailChangeService detailsChangeService;
 
@@ -106,6 +113,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
+    
+    @MockBean
+    ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
     @Before
     public void before() {
@@ -193,6 +203,43 @@ public class ProjectAdministrationRestControllerRestDocTest {
     }
 
     @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectAccessLevel.class)
+    public void restdoc_change_project_access_level() throws Exception {
+
+        /* prepare */
+        StringBuilder acceptedValues = new StringBuilder();
+        acceptedValues.append("Accepted values: ");
+        for (Iterator<ProjectAccessLevel> it = Arrays.asList(ProjectAccessLevel.values()).iterator(); it.hasNext();) {
+            ProjectAccessLevel level = it.next();
+            acceptedValues.append(level.getId());
+            String description = level.getDescription();
+            if (description != null) {
+                acceptedValues.append("(");
+                acceptedValues.append(description);
+                acceptedValues.append(")");
+            }
+            if (it.hasNext()) {
+                acceptedValues.append(", ");
+            }
+        }
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminChangesProjectAccessLevelUrl(PROJECT_ID.pathElement(), PROJECT_ACCESS_LEVEL.pathElement()), "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectOwner.class),
+                pathParameters(
+                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
+                        )
+                ));
+
+        /* @formatter:on */
+    }
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdministratorAssignsUserToProject.class)
     public void restdoc_assign_user2project() throws Exception {
 
@@ -260,7 +307,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
-        
+
         when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
@@ -322,11 +369,11 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
-        
+
         when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
-        
+
         when(detailsChangeService.changeProjectDescription(any(), any())).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
@@ -358,7 +405,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         /* @formatter:on */
     }
-    
+
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
     public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {
