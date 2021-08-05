@@ -28,6 +28,7 @@ public class SchedulerGetJobStatusService {
         assertion.isValidJobUUID(jobUUID);
 
         scheduleAssert.assertUserHasAccessToProject(projectId);
+        scheduleAssert.assertProjectAllowsReadAccess(projectId);
 
         ScheduleSecHubJob secHubJob = scheduleAssert.assertJob(projectId, jobUUID);
 

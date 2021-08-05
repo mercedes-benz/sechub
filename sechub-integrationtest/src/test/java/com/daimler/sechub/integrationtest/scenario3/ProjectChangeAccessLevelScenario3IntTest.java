@@ -14,6 +14,7 @@ import org.junit.rules.Timeout;
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
@@ -33,6 +34,35 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
     @Rule
     public ExpectedException expected = ExpectedExceptionFactory.none();
+
+    /* @formatter:off */
+    @Test
+    public void a_delete_removes_former_access_level_settings() throws Exception {
+        /* prepare + test preconditions */
+        TestProject project = PROJECT_1;
+        as(SUPER_ADMIN).changeProjectAccessLevel(project,ProjectAccessLevel.NONE);
+        assertProject(project).hasAccessLevel(ProjectAccessLevel.NONE);
+        
+        /* execute */
+        as(SUPER_ADMIN).deleteProject(PROJECT_1);
+        // now we create a new project with same name etc.
+        as(SUPER_ADMIN).
+            createProject(PROJECT_1, USER_1.getUserId()).
+            addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID, PROJECT_1).
+            assignUserToProject(USER_1, PROJECT_1);
+        
+        /* test*/
+        // now we test that the acces level is full... and not NONE as before the delete...
+        
+        assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
+        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new projectis "FULL"
+        IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
+        ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
+        assertSecHubReport(result).
+            hasTrafficLight(TrafficLight.YELLOW);
+        
+    }
+    /* @formatter:on */
 
     /* @formatter:off */
     @Test
@@ -79,8 +109,8 @@ public class ProjectChangeAccessLevelScenario3IntTest {
 
 	}
 	/* @formatter:on */
-	
-	 /* @formatter:off */
+
+    /* @formatter:off */
     @Test
     public void get_job_report__existing_job_read_access_level_changing_test_different_access_levels() throws Exception {
         /* prepare + test preconditions */
@@ -193,7 +223,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
     
     }
     /* @formatter:on */
-    
+
     /* @formatter:off */
     @Test
     public void none___user_1_cannot_approve_existing_job() throws Exception {
@@ -211,7 +241,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
     
     }
     /* @formatter:on */
-    
+
     /* @formatter:off */
     @Test
     public void none___user_1_cannot_upload_sourcecode_to_existing_job() throws Exception {

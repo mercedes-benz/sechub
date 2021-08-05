@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.config;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,5 +17,6 @@ class SchedulerProjectConfigTest {
         /* test */
         assertEquals(ProjectAccessLevel.FULL,config.getProjectAccessLevel());
     }
+    
 
 }

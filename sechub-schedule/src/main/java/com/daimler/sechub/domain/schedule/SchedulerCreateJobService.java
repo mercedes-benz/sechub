@@ -17,7 +17,6 @@ import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.domain.schedule.job.SecHubJobTraceLogID;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserCreatesNewJob;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
@@ -47,7 +46,7 @@ public class SchedulerCreateJobService {
         configuration.setProjectId(projectId);
 
         assertService.assertUserHasAccessToProject(projectId);
-        assertService.assertProjectHasAccessLevel(projectId, ProjectAccessLevel.FULL);
+        assertService.assertProjectAllowsWriteAccess(projectId);
         assertService.assertExecutionAllowed(configuration);
 
         ScheduleSecHubJob secHubJob = secHubJobFactory.createJob(configuration);

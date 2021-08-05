@@ -46,7 +46,7 @@ public class DownloadScanReportService {
         assertion.isValidJobUUID(jobUUID);
 
         scanAssertService.assertUserHasAccessToProject(projectId);
-        scanAssertService.assertProjectCanBeRead(projectId);
+        scanAssertService.assertProjectAllowsReadAccess(projectId);
 
         /* audit */
         auditLogService.log("starts download of report for job: {}", jobUUID);

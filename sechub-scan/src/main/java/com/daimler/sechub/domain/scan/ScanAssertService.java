@@ -9,6 +9,8 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigAccessLevelServic
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.ForbiddenException;
+import com.daimler.sechub.sharedkernel.validation.AssertValidation;
+import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 
 @Service
 public class ScanAssertService {
@@ -21,6 +23,9 @@ public class ScanAssertService {
 
     @Autowired
     ScanProjectConfigAccessLevelService accessLevelService;
+    
+    @Autowired
+    ProjectIdValidation projectIdValidation;
 
     public void assertUserHasAccessToReport(ScanReport report) {
         if (report == null) {
@@ -29,6 +34,7 @@ public class ScanAssertService {
         assertUserHasAccessToProject(report.getProjectId());
 
     }
+    
 
     public void assertUserHasAccessToProject(String projectId) {
         if (projectId == null) {
@@ -41,14 +47,22 @@ public class ScanAssertService {
         userAccessValidation.assertUserHasAccessToProject(projectId);
 
     }
+    
+    public void assertProjectIdValid(String projectId) {
+        AssertValidation.assertValid(projectId,projectIdValidation);
+    }
 
-    public void assertProjectCanBeRead(String projectId) {
+    public void assertProjectAllowsReadAccess(String projectId) {
+        assertProjectIdValid(projectId);
+        
         if (!accessLevelService.isReadAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow read access.");
         }
     }
 
-    public void assertProjectCanBeWritten(String projectId) {
+    public void assertProjectAllowsWriteAccess(String projectId) {
+        assertProjectIdValid(projectId);
+        
         if (!accessLevelService.isWriteAllowed(projectId)) {
             throw new ForbiddenException("Project " + projectId + " does currently not allow write access.");
         }

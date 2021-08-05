@@ -13,6 +13,7 @@ import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 
 /**
  * Configuration entry for scheduler project configuration data inside database.
+ * Here we store some project specific data.
  * 
  * @author Albert Tregnaghi
  *

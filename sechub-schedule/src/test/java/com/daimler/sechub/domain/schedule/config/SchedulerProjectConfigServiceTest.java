@@ -1,34 +1,35 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.domain.scan.project;
+package com.daimler.sechub.domain.schedule.config;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.domain.schedule.ScheduleAssertService;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ScanProjectConfigAccessLevelServiceTest {
-
+class SchedulerProjectConfigServiceTest {
+    
     private static final String PROJECT1 = "project1";
-    private ScanProjectConfigAccessLevelService serviceToTest;
-    private ProjectIdValidation projectIdValidation;
-    private ScanProjectConfigService scanprojectConfigService;
+    private SchedulerProjectConfigService serviceToTest;
+    private SchedulerProjectConfigRepository repository;
+    private ScheduleAssertService assertService;
 
     @BeforeEach
     void beforeEach() {
-
-        projectIdValidation = mock(ProjectIdValidation.class);
-        scanprojectConfigService = mock(ScanProjectConfigService.class);
-
-        serviceToTest = new ScanProjectConfigAccessLevelService();
-        serviceToTest.projectIdValidation = projectIdValidation;
-        serviceToTest.scanprojectConfigService = scanprojectConfigService;
-
+        repository=mock(SchedulerProjectConfigRepository.class);
+        assertService=mock(ScheduleAssertService.class);
+        
+        serviceToTest = new SchedulerProjectConfigService();
+        serviceToTest.assertService=assertService;
+        serviceToTest.repository=repository;
+        
     }
+    
 
     @Test
     void change_to_null_former_full_access_throws_illegal_argument() {
@@ -38,46 +39,50 @@ class ScanProjectConfigAccessLevelServiceTest {
     @Test
     void change_to_read_only_with_former_null__project_id_is_validated_and_set_to_wanted_access_level_id() {
         /* prepare */
-        ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
+        SchedulerProjectConfig config = new SchedulerProjectConfig();
+        config.projectId=PROJECT1;
+        config.projectAccessLevel=ProjectAccessLevel.FULL;
 
-        when(scanprojectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(repository.findById(PROJECT1)).thenReturn(Optional.of(config));
 
         /* execute */
         serviceToTest.changeProjectAccessLevel(PROJECT1, ProjectAccessLevel.READ_ONLY, null);
 
         /* test */
-        verify(projectIdValidation).validate(PROJECT1);
-        verify(scanprojectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
+        verify(repository).save(config);
+        verify(assertService).asserProjectIdValid(PROJECT1);
+        assertEquals(ProjectAccessLevel.READ_ONLY,config.getProjectAccessLevel());
     }
 
     @Test
     void change_to_read_only_with_former_full_access__project_id_is_validated_and_set_to_wanted_access_level_id() {
         /* prepare */
-        ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
-        config.setData(ProjectAccessLevel.FULL.getId());
+        SchedulerProjectConfig config = new SchedulerProjectConfig();
+        config.projectId=PROJECT1;
+        config.projectAccessLevel=ProjectAccessLevel.FULL;
 
-        when(scanprojectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(repository.findById(PROJECT1)).thenReturn(Optional.of(config));
 
         /* execute */
-        serviceToTest.changeProjectAccessLevel(PROJECT1, ProjectAccessLevel.READ_ONLY, ProjectAccessLevel.FULL);
+        serviceToTest.changeProjectAccessLevel(PROJECT1, ProjectAccessLevel.READ_ONLY, null);
 
         /* test */
-        verify(projectIdValidation).validate(PROJECT1);
-        verify(scanprojectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
+        verify(repository).save(config);
+        verify(assertService).asserProjectIdValid(PROJECT1);
+        assertEquals(ProjectAccessLevel.READ_ONLY,config.getProjectAccessLevel());
     }
 
     @Test
     void fetchProjectAccessLevel_returns_result_from_scanprojectConfigService_by_getOrCreate() {
         /* prepare */
-        ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
-        config.setData(null);
+        SchedulerProjectConfig config = new SchedulerProjectConfig();
+        config.projectId=PROJECT1;
+        config.projectAccessLevel=null;
 
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(repository.findById(PROJECT1)).thenReturn(Optional.of(config));
 
         /* part 1: test */
-        ProjectAccessLevel result = serviceToTest.fetchProjectAccessLevel(PROJECT1);
+        ProjectAccessLevel result = serviceToTest.getProjectAccessLevel(PROJECT1);
 
         /* test */
         assertNull(result);
@@ -85,8 +90,8 @@ class ScanProjectConfigAccessLevelServiceTest {
         /* part 2: for each level we try out as well */
         for (ProjectAccessLevel level : ProjectAccessLevel.values()) {
             /* execute */
-            config.setData(level.getId());
-            result = serviceToTest.fetchProjectAccessLevel(PROJECT1);
+            config.projectAccessLevel=level;
+            result = serviceToTest.getProjectAccessLevel(PROJECT1);
 
             /* test */
             assertEquals(level, result);
@@ -144,9 +149,10 @@ class ScanProjectConfigAccessLevelServiceTest {
     }
 
     private void prepareScanConfigProject1(ProjectAccessLevel level) {
-        ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
-        config.setData(level.getId());
+        SchedulerProjectConfig config = new SchedulerProjectConfig();
+        config.projectId=PROJECT1;
+        config.projectAccessLevel=level;
 
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(repository.findById(PROJECT1)).thenReturn(Optional.of(config));
     }
 }

@@ -69,6 +69,7 @@ public class SchedulerUploadService {
 		auditLogService.log("Wants to upload source code to project {}, {}", logSanitizer.sanitize(projectId, 30) ,traceLogID);
 
 		assertService.assertUserHasAccessToProject(projectId);
+		assertService.assertProjectAllowsWriteAccess(projectId);
 
 		assertJobFoundAndStillInitializing(projectId, jobUUID);
 

@@ -10,14 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.schedule.access.ScheduleUserAccessToProjectValidationService;
+import com.daimler.sechub.domain.schedule.config.SchedulerProjectConfigService;
 import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhiteListSecHubConfigurationValidationService;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
+import com.daimler.sechub.sharedkernel.error.ForbiddenException;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
-import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
-
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
+import com.daimler.sechub.sharedkernel.validation.AssertValidation;
+import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 
 @Service
 public class ScheduleAssertService {
@@ -31,6 +32,12 @@ public class ScheduleAssertService {
     @Autowired
     ProjectWhiteListSecHubConfigurationValidationService executionIsInWhiteListValidation;
 
+    @Autowired
+    SchedulerProjectConfigService projectConfigService;
+
+    @Autowired
+    ProjectIdValidation projectIdValidation;
+    
     /**
      * Assert current logged in user has access to project
      * 
@@ -66,18 +73,20 @@ public class ScheduleAssertService {
         return secHubJob.get();
     }
 
-    /**
-     * Assert given project has wanted access level. If no access level is defined
-     * the project will be always accessible.
-     * 
-     * @param projectId
-     * @param minimumAccessibilty
-     */
-    public void assertProjectHasAccessLevel(String projectId, ProjectAccessLevel minimumAccessibilty) {
-       notNull(projectId, "projectId must be defined");
-       notNull(minimumAccessibilty, "minimum accessiblity must be defined");
-       
-       
+    public void asserProjectIdValid(String projectId) {
+        AssertValidation.assertValid(projectId,projectIdValidation);
+    }
+    
+    public void assertProjectAllowsReadAccess(String projectId) {
+        if (!projectConfigService.isReadAllowed(projectId)) {
+            throw new ForbiddenException("Project " + projectId + " does currently not allow read access.");
+        }
+    }
+
+    public void assertProjectAllowsWriteAccess(String projectId) {
+        if (!projectConfigService.isWriteAllowed(projectId)) {
+            throw new ForbiddenException("Project " + projectId + " does currently not allow write access.");
+        }
     }
 
 }
