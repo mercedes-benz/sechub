@@ -17,7 +17,7 @@ class ProjectAccessLevelConverterTest {
     }
 
     @ParameterizedTest
-    @CsvSource({ "FULL,full", "READ_ONLY,read_only", "NO_ACCESS,no_access" })
+    @CsvSource({ "FULL,full", "READ_ONLY,read_only", "NONE,none" })
     void ids_results_in_expected_access_levels_by_name(String value, String id) {
         /* prepare */
         ProjectAccessLevel expectedLevel = ProjectAccessLevel.valueOf(value);

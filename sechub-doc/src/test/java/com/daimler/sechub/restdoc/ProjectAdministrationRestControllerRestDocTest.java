@@ -229,7 +229,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
                 contentType(MediaType.APPLICATION_JSON_VALUE)
                 ).
         andExpect(status().isOk()).
-        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectOwner.class),
+        andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorChangesProjectAccessLevel.class),
                 pathParameters(
                         parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
                         parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
@@ -285,6 +285,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* prepare */
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
+        when(project.getAccessLevel()).thenReturn(ProjectAccessLevel.FULL);
 
         Set<User> users = new LinkedHashSet<>();
         User user1 = mock(User.class);
@@ -333,6 +334,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
 							fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
 						)
 					)
@@ -347,6 +349,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         /* prepare */
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
+        when(project.getAccessLevel()).thenReturn(ProjectAccessLevel.FULL);
 
         Set<User> users = new LinkedHashSet<>();
         User user1 = mock(User.class);
@@ -398,6 +401,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
                             fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
                         )
                     )

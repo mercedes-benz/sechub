@@ -83,6 +83,9 @@ public class ProjectAdministrationRestControllerMockTest {
 
     @MockBean
     CreateProjectInputValidator createProjectInputvalidator;
+    
+    @MockBean
+    ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
     @Before
     public void before() {

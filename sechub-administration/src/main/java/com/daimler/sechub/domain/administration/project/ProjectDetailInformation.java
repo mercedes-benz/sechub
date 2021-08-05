@@ -15,7 +15,7 @@ public class ProjectDetailInformation {
     public static final String PROPERTY_WHITELIST = "whiteList";
     public static final String PROPERTY_METADATA = "metaData";
     public static final String PROPERTY_OWNER = "owner";
-    public static final String PROPERTY_ACCESSLEVEL = "acessLevel";
+    public static final String PROPERTY_ACCESSLEVEL = "accessLevel";
     public static final String PROPERTY_DESCRIPTION = "description";
 
     private String projectId;
