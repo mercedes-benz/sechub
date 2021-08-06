@@ -50,6 +50,14 @@ public @interface UseCaseDefinition{
 	 * @return
 	 */
 	String title();
+	
+	/**
+	 * API Name
+	 * 
+	 * 
+	 * @return
+	 */
+	String apiName();
 
 	/**
 	 * A group of this use case is related to

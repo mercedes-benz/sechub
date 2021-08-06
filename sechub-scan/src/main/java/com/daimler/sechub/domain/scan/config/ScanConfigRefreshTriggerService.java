@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 
 @Service
 public class ScanConfigRefreshTriggerService {
@@ -27,7 +27,7 @@ public class ScanConfigRefreshTriggerService {
     @Autowired
     ScanConfigService scanConfigService;
     
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number=5,name="Trigger service",description="Checks periodically for updates in scan configuration"))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number=5,name="Trigger service",description="Checks periodically for updates in scan configuration"))
     @Scheduled(initialDelayString = "${sechub.config.trigger.nextjob.initialdelay:" + DEFAULT_INITIAL_DELAY_MILLIS
             + "}", fixedDelayString = "${sechub.config.scan.scanconfig.refresh.delay:" + DEFAULT_FIXED_DELAY_MILLIS + "}")
     public void triggerRefreshCheck() {

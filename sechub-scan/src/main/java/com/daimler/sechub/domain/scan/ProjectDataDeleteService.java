@@ -15,7 +15,7 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDeleteProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 /**
@@ -51,7 +51,7 @@ public class ProjectDataDeleteService {
 	LogSanitizer logSanitizer;
 
 	@Transactional
-	@UseCaseAdministratorDeleteProject(@Step(number=8,name="delete all project scan data"))
+	@UseCaseAdminDeleteProject(@Step(number=8,name="delete all project scan data"))
 	public void deleteAllDataForProject(String projectId) {
 		assertion.isValidProjectId(projectId);
 

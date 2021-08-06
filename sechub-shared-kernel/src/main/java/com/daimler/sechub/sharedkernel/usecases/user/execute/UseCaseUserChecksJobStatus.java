@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_GET_JOB_STATUS,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userChecksJobStatus",
 		title="User checks sechub job state", 
 		description="user/check_sechub_job_state_description.adoc")
 public @interface UseCaseUserChecksJobStatus {

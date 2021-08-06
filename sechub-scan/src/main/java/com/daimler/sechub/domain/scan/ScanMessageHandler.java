@@ -31,7 +31,7 @@ import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
-import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdministratorUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 
 @Component
@@ -134,7 +134,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     }
 
     @IsReceivingAsyncMessage(MessageID.MAPPING_CONFIGURATION_CHANGED)
-    @UseCaseAdministratorUpdatesMappingConfiguration(@Step(number = 3, name = "Event handler", description = "Receives mapping configuration change event"))
+    @UseCaseAdmiUpdatesMappingConfiguration(@Step(number = 3, name = "Event handler", description = "Receives mapping configuration change event"))
     private void handleMappingConfigurationChanged(DomainMessage request) {
         MappingMessage data = request.get(MessageDataKeys.CONFIG_MAPPING_DATA);
 

@@ -29,7 +29,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.JobMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
-import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdministratorRestartsJobHard;
+import com.daimler.sechub.sharedkernel.usecases.job.UseCaseAdminRestartsJobHard;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -72,7 +72,7 @@ public class SchedulerRestartJobService {
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Try to rstart job (hard)", 
+    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to rstart job (hard)", 
             description = "When job is found, a restart will be triggered. Existing batch jobs will be terminated"))
     public void restartJobHard(UUID jobUUID, String ownerEmailAddress) {
         restartJob(jobUUID, ownerEmailAddress, true);
@@ -85,7 +85,7 @@ public class SchedulerRestartJobService {
      * @param jobUUID
      * @param ownerEmailAddress
      */
-    @UseCaseAdministratorRestartsJobHard(@Step(number = 3, name = "Try to restart job", 
+    @UseCaseAdminRestartsJobHard(@Step(number = 3, name = "Try to restart job", 
             description = "When job is found and job is not already finsihed, a restart will be triggered. Existing batch jobs will be terminated"))
     public void restartJob(UUID jobUUID, String ownerEmailAddress) {
         restartJob(jobUUID, ownerEmailAddress, false);

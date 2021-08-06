@@ -22,7 +22,7 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorUnassignsUserFromProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 
@@ -52,7 +52,7 @@ public class ProjectUnassignUserService {
 	ProjectTransactionService transactionService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorUnassignsUserFromProject(@Step(number = 2, name = "Unassign user", description = "The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed"))
+	@UseCaseAdminUnassignsUserFromProject(@Step(number = 2, name = "Unassign user", description = "The service will remove the user to the project. If users has no longer access to projects ROLE_USER will be removed"))
 	/* @formatter:on */
 	public void unassignUserFromProject(String userId, String projectId) {
 		auditLogService.log("triggers unassignment of user:{} to project:{}", logSanitizer.sanitize(userId,30), logSanitizer.sanitize(projectId,30));

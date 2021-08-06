@@ -2,11 +2,14 @@
 package com.daimler.sechub.restdoc;
 
 
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.annotation.Annotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.signup.AnonymousSignupCreateService;
 import com.daimler.sechub.domain.administration.signup.AnonymousSignupRestController;
 import com.daimler.sechub.domain.administration.signup.SignupJsonInputValidator;
@@ -37,6 +40,7 @@ import com.daimler.sechub.sharedkernel.validation.EmailValidationImpl;
 import com.daimler.sechub.sharedkernel.validation.UserIdValidationImpl;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 @RunWith(SpringRunner.class)
 @WebMvcTest(AnonymousSignupRestController.class)
 @ContextConfiguration(classes= {AnonymousSignupRestController.class,
@@ -62,23 +66,34 @@ public class AnonymousSignupRestControllerRestDocTest {
 	@UseCaseRestDoc(useCase=UseCaseUserSignup.class)
 	public void calling_with_api_1_0_and_valid_userid_and_email_returns_HTTP_200()
 			throws Exception {
-		/* prepare */
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildUserSignUpUrl();
+        Class<? extends Annotation> useCase = UseCaseUserSignup.class;
 
 		/* execute */
 		/* @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildUserSignUpUrl()).
+        		post(apiEndpoint).
         			contentType(MediaType.APPLICATION_JSON_VALUE).
         			content("{\"apiVersion\":\"1.0\",\"userId\":\"valid_userid\",\"emailAdress\":\"valid_mailadress@test.com\"}")
-        		).
-        			andExpect(status().isOk()).andDo(
-        					document(RestDocPathFactory.createPath(UseCaseUserSignup.class),
-        							requestFields(
-        									fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
-        									fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),
-        									fieldWithPath("emailAdress").description("Email adress")
-        									))
-        		);
+        		)./*andDo(print()).*/
+        			andExpect(status().isOk()).
+        			andDo(document(RestDocFactory.createPath(useCase),
+        			                resource(
+        			                        ResourceSnippetParameters.builder().
+        			                            summary(RestDocFactory.createSummary(useCase)).
+        			                            description(RestDocFactory.createDescription(useCase)).
+        			                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        			                            requestSchema(OpenApiSchema.USER_SIGNUP.getSchema()).
+        	                                    requestFields(
+        	                                            fieldWithPath("apiVersion").description("The api version, currently only 1.0 is supported"),
+        	                                            fieldWithPath("userId").description("Wanted userid, the userid must be lowercase only!"),
+        	                                            fieldWithPath("emailAdress").description("Email adress")
+        	                                    ).
+        			                            build()
+        			                         )
+
+        							));
 
         /* @formatter:on */
 	}

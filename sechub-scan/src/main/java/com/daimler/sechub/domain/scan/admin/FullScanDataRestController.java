@@ -24,7 +24,7 @@ import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
-import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorDownloadsFullScanDataForJob;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDownloadsFullScanDataForJob;
 
 @RestController
 @EnableAutoConfiguration
@@ -44,7 +44,7 @@ public class FullScanDataRestController {
 	LogSanitizer logSanitizer;
 
 	/* @formatter:off */
-	@UseCaseAdministratorDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
+	@UseCaseAdminDownloadsFullScanDataForJob(@Step(number=1,next=2,name="REST API call to zip file containing full scan data",needsRestDoc=true))
 	@RequestMapping(path = "/scan/download/{sechubJobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void getFullScanZipFileForJob(
 			@PathVariable("sechubJobUUID") UUID sechubJobUUID, HttpServletResponse response

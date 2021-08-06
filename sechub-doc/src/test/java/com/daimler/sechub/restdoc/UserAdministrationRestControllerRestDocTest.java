@@ -1,15 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
-import static com.daimler.sechub.test.TestURLBuilder.*;
-import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.daimler.sechub.test.TestURLBuilder.https;
+import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.USER_ID;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.lang.annotation.Annotation;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -27,7 +34,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.daimler.sechub.docgen.util.RestDocPathFactory;
+import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.signup.SignupRepository;
 import com.daimler.sechub.domain.administration.user.User;
@@ -43,16 +50,17 @@ import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorAcceptsSignup;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorGrantsAdminRightsToUser;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorListsAllAdmins;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorListsAllUsers;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorRevokesAdminRightsFromAdmin;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorShowsUserDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminAcceptsSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminGrantsAdminRightsToUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllAdmins;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminListsAllUsers;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminRevokesAdminRightsFromAdmin;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminShowsUserDetails;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.daimler.sechub.test.TestURLBuilder;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserAdministrationRestController.class)
@@ -94,116 +102,194 @@ public class UserAdministrationRestControllerRestDocTest {
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorGrantsAdminRightsToUser.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminGrantsAdminRightsToUser.class)
 	public void restdoc_grant_admin_rights_to_user() throws Exception {
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminGrantsAdminRightsToUser.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
-				).
+				post(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
+				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorGrantsAdminRightsToUser.class),
-				pathParameters(
-					parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-					)
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
+                            ).
+                            build()
+                        )
+				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorRevokesAdminRightsFromAdmin.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminRevokesAdminRightsFromAdmin.class)
 	public void restdoc_revoke_admin_rights_from_user() throws Exception {
+	    /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminRevokesSuperAdminRightsFrom(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminRevokesAdminRightsFromAdmin.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				post(https(PORT_USED).buildAdminGrantsSuperAdminRightsTo(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
+				post(apiEndpoint,TestURLBuilder.RestDocPathParameter.USER_ID)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorRevokesAdminRightsFromAdmin.class),
-				pathParameters(
-					parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
-					)
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user who becomes admin")
+                            ).
+                            build()
+                        )
+				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorDeletesUser.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminDeletesUser.class)
 	public void restdoc_delete_user() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminDeletesUserUrl(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminDeletesUser.class;
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				delete(https(PORT_USED).buildAdminDeletesUserUrl(USER_ID.pathElement()),TestURLBuilder.RestDocPathParameter.USER_ID)
+				delete(apiEndpoint, TestURLBuilder.RestDocPathParameter.USER_ID)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorDeletesUser.class),
-				pathParameters(
-					parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
-					)
-				)
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            pathParameters(
+                                    parameterWithName(USER_ID.paramName()).description("The userId of the user who shall be deleted")
+                            ).
+                            build()
+                        )
+				));
 
 		/* @formatter:on */
 	}
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorAcceptsSignup.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminAcceptsSignup.class)
 	public void restdoc_accept_user_signup() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminAcceptsUserSignUpUrl(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminAcceptsSignup.class;
+        
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		post(https(PORT_USED).buildAdminAcceptsUserSignUpUrl(USER_ID.pathElement()),"user1")
+        		post(apiEndpoint, "user1")
         		).
         			andExpect(status().isCreated()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorAcceptsSignup.class),
-        					pathParameters(
-									parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
-								)
-        					)
-
-        		);
+        			andDo(document(RestDocFactory.createPath(useCase),
+        	                resource(
+        	                        ResourceSnippetParameters.builder().
+        	                            summary(RestDocFactory.createSummary(useCase)).
+        	                            description(RestDocFactory.createDescription(useCase)).
+        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        	                            pathParameters(
+        	                                    parameterWithName(USER_ID.paramName()).description("The userId of the signup which shall be accepted")
+        	                            ).
+        	                            build()
+        	                        )
+        		));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorListsAllUsers.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminListsAllUsers.class)
 	public void restdoc_list_all_users() throws Exception {
-
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminListsUsersUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminListsAllUsers.class;
+        
+        List<String> users = new LinkedList<>();
+        users.add("user1");
+        users.add("user2");
+        users.add("admin1");
+        
+        when(userListService.listUsers()).thenReturn(users);
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminListsUsersUrl())
+				get(apiEndpoint)
 				).
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllUsers.class))
-
-				);
+		andDo(document(RestDocFactory.createPath(UseCaseAdminListsAllUsers.class),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                            responseFields(
+                                    fieldWithPath("[]").description("List of user Ids").optional()
+                            ).
+                            build()
+                        )
+		        ));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorListsAllAdmins.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminListsAllAdmins.class)
 	public void restdoc_list_all_admins() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminListsAdminsUrl();
+        Class<? extends Annotation> useCase = UseCaseAdminListsAllAdmins.class;
 
+        List<String> admins = new LinkedList<>();
+        admins.add("admin1");
+        admins.add("admin2");
+        
+        when(userListService.listAdministrators()).thenReturn(admins);
+        
 		/* execute + test @formatter:off */
 		this.mockMvc.perform(
-				get(https(PORT_USED).buildAdminListsAdminsUrl())
-				).
+				get(apiEndpoint)
+				)./*andDo(print()).*/
 		andExpect(status().isOk()).
-		andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorListsAllAdmins.class))
-
-				);
+		andDo(document(RestDocFactory.createPath(useCase),
+                resource(
+                        ResourceSnippetParameters.builder().
+                            summary(RestDocFactory.createSummary(useCase)).
+                            description(RestDocFactory.createDescription(useCase)).
+                            tag(RestDocFactory.extractTag(apiEndpoint)).
+                            responseSchema(OpenApiSchema.USER_LIST.getSchema()).
+                            responseFields(
+                                    fieldWithPath("[]").description("List of admin Ids").optional()
+                            ).
+                            build()
+                        )
+				));
 
 		/* @formatter:on */
 	}
 
 	@Test
-	@UseCaseRestDoc(useCase = UseCaseAdministratorShowsUserDetails.class)
+	@UseCaseRestDoc(useCase = UseCaseAdminShowsUserDetails.class)
 	public void restdoc_show_user_details() throws Exception{
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAdminShowsUserDetailsUrl(USER_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseAdminShowsUserDetails.class;
+        
 		User user = mock(User.class);
 		when(user.getName()).thenReturn("user1");
 		when(user.getEmailAdress()).thenReturn("user1@example.org");
@@ -219,19 +305,29 @@ public class UserAdministrationRestControllerRestDocTest {
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(
-        		get(https(PORT_USED).buildAdminShowsUserDetailsUrl(USER_ID.pathElement()),"user1")
+        		get(apiEndpoint, "user1")
         		).
         			andExpect(status().isOk()).
-        			andDo(document(RestDocPathFactory.createPath(UseCaseAdministratorShowsUserDetails.class),
-        					pathParameters(
-        							parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")),
-        					responseFields(
-        							fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
-        							fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
-        							fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
-        							fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
-        							fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
-        						)
+        			andDo(document(RestDocFactory.createPath(useCase),
+        	                resource(
+        	                        ResourceSnippetParameters.builder().
+        	                            summary(RestDocFactory.createSummary(useCase)).
+        	                            description(RestDocFactory.createDescription(useCase)).
+        	                            tag(RestDocFactory.extractTag(apiEndpoint)).
+        	                            responseSchema(OpenApiSchema.USER_DETAILS.getSchema()).
+        	                            pathParameters(
+        	                                    parameterWithName(USER_ID.paramName()).description("The user id of user to show details for")
+        	                            ).
+        	                            responseFields(
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_USERNAME).description("The name of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_EMAIL).description("The mail adress of the user"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_SUPERADMIN).description("True, when this user is a super administrator"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_PROJECTS).description("The projects the user has access to"),
+        	                                    fieldWithPath(UserDetailInformation.PROPERTY_OWNED_PROJECTS).description("The projects the user is owner of")
+        	                            ).
+        	                            build()
+        	                        )
+
         					)
         		);
 

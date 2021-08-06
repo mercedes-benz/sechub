@@ -9,7 +9,7 @@ import com.daimler.sechub.domain.notification.email.EmailService;
 import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdministratorDeletesUser;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminDeletesUser;
 
 @Service
 public class UserDeletedNotificationService {
@@ -22,7 +22,7 @@ public class UserDeletedNotificationService {
 	@Autowired
 	private EmailService emailService;
 
-	@UseCaseAdministratorDeletesUser(@Step(number = 5, next = {
+	@UseCaseAdminDeletesUser(@Step(number = 5, next = {
 			Step.NO_NEXT_STEP }, name = "Inform user that the account has been deleted by administrator"))
 	
 	public void notify(UserMessage userMessage) {

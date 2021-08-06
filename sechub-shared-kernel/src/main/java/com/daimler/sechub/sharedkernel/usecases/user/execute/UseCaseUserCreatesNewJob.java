@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_CREATES_JOB,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userCreatesNewJob",
 		title="User creates a new sechub job",
 		description="user/create_sechub_job_description.adoc")
 public @interface UseCaseUserCreatesNewJob {

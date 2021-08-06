@@ -14,7 +14,7 @@ import com.daimler.sechub.domain.notification.email.MailMessageFactory;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.messaging.ClusterMemberMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart;
+import com.daimler.sechub.sharedkernel.usecases.admin.status.UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart;
 
 @Service
 public class InformAdminsThatNewSchedulerInstanceHasBeenStarted {
@@ -36,7 +36,7 @@ public class InformAdminsThatNewSchedulerInstanceHasBeenStarted {
     @Autowired
     private EmailService emailService;
 
-    @UseCaseAdministratorReceivesNotificationAboutNewchedulerInstanceStart(@Step(number = 2, next = {
+    @UseCaseAdminReceivesNotificationAboutNewchedulerInstanceStart(@Step(number = 2, next = {
             Step.NO_NEXT_STEP }, name = "Inform sechub admins that new scheduler job has been started"))
     public void notify(String baseUrl, ClusterMemberMessage memberMessage) {
         if (!notificationEnabled) {

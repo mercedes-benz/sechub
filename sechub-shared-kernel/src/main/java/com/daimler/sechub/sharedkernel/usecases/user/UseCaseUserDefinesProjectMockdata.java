@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseGroup;
 @UseCaseDefinition(
 		id=UC_USER_DEFINES_PROJECT_MOCKDATA_CONFIGURATION,
 		group=UseCaseGroup.TESTING,
+		apiName="userDefinesProjectMockdata",
 		title="User defines mock data configuration for project", 
 		description="user/defines_mockdata_for_project.adoc")
 public @interface UseCaseUserDefinesProjectMockdata {

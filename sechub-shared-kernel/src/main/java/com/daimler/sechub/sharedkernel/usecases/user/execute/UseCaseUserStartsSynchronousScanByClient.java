@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_USER_USES_CLIENT_TO_SCAN,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userStartsSynchronousScanByClient",
 		title="User starts scan by client", 
 		description="user/start_scan_by_client_description.adoc")
 public @interface UseCaseUserStartsSynchronousScanByClient {

@@ -16,6 +16,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id = UseCaseIdentifier.UC_ADMIN_UPDATES_PROJECT_METADATA, 
 		group = UseCaseGroup.PROJECT_ADMINISTRATION,
+		apiName="updateProjectMetaData",
 		title = "Update project metadata", 
 		description = "project/update_project_metadata.adoc")
 public @interface UseCaseUpdateProjectMetaData {

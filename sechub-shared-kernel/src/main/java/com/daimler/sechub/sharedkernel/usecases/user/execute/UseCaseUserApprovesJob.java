@@ -17,6 +17,7 @@ import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 		id=UseCaseIdentifier.UC_USER_APPROVES_JOB,
 		group=UseCaseGroup.SECHUB_EXECUTION,
+		apiName="userApprovesJob",
 		title="User approves sechub job", 
 		description="user/approve_sechub_job_description.adoc")
 public @interface UseCaseUserApprovesJob {

@@ -18,8 +18,8 @@ import com.daimler.sechub.domain.administration.AdministrationAPIConstants;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorDeletesSignup;
-import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdministratorListsOpenUserSignups;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminDeletesSignup;
+import com.daimler.sechub.sharedkernel.usecases.admin.signup.UseCaseAdminListsOpenUserSignups;
 
 
 
@@ -41,7 +41,7 @@ public class SignupAdministrationRestController {
 	private SignupDeleteService deleteService;
 
 	/* @formatter:off */
-	@UseCaseAdministratorDeletesSignup(@Step(number=1, name="Rest API call",description="Rest api called to remove user signup",needsRestDoc=true))
+	@UseCaseAdminDeletesSignup(@Step(number=1, name="Rest API call",description="Rest api called to remove user signup",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_DELETE_SIGNUP, method = RequestMethod.DELETE, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public void deleteSignup(@PathVariable(name="userId") String userId) {
 		deleteService.delete(userId);
@@ -49,7 +49,7 @@ public class SignupAdministrationRestController {
 	}
 	
 	/* @formatter:off */
-	@UseCaseAdministratorListsOpenUserSignups(@Step(number=1,name="Rest call",description="All self registrations are returned as json",needsRestDoc=true))
+	@UseCaseAdminListsOpenUserSignups(@Step(number=1,name="Rest call",description="All self registrations are returned as json",needsRestDoc=true))
 	@RequestMapping(path = AdministrationAPIConstants.API_LIST_USER_SIGNUPS, method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
 	public List<Signup> listUserSignups() {
 		/* @formatter:on */

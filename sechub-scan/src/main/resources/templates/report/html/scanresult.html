@@ -67,6 +67,7 @@
 				<table class='findingsTable redFindingsTable'>
 					<thead>
 						<tr>
+							<th>Id</th>
 							<th>Severity</th>
 						    <th>Type</th>
 						    <th>Description</th>
@@ -80,17 +81,20 @@
 						    
 						</tr>
 						<tr th:remove="all">
-							<td>Severity 2</td>
+							<td>1</td>
+							<td>UNCLASSIFIED</td>
 							<td>Name 2</td>
 							<td>Description 2</td>
 						</tr>
 						<tr th:remove="all">
-	                        <td>Severity 3</td>
+						    <td>2</td> 
+	                        <td>HIGH</td>
 	                        <td>Name 3</td>
 	                        <td>Description 3</td>
 	                    </tr>
 	                    <tr th:remove="all">
-	                        <td>Severity 4</td>
+	                        <td>3</td>
+	                        <td>CRITICAL</td>
 	                        <td>Name 4</td>
 	                        <td>Description 5</td>
 	                    </tr>
@@ -102,6 +106,7 @@
 				<table class='findingsTable yellowFindingsTable'>
 					<thead>
 						<tr>
+						    <th>Id</th>
 							<th>Severity</th>
 	                    	<th>Type</th>
 	                    	<th>Description</th>
@@ -115,7 +120,8 @@
 						    
 						</tr>
 						<tr th:remove="all">
-							<td>Severity 2</td>
+						    <td>4</td>
+							<td>MEDIUM</td>
 							<td>Name 2</td>
 							<td>Description 2</td>
 						</tr>
@@ -127,6 +133,7 @@
 				<table class='findingsTable greenFindingsTable'>
 					<thead>
 						<tr>
+							<th>Id</th>
 							<th>Severity</th>
 	                    	<th>Type</th>
 	                    	<th>Description</th>
@@ -139,7 +146,8 @@
 						    
 						</tr>
 						<tr th:remove="all">
-							<td>Severity 2</td>
+						    <td>5</td>
+							<td>INFO</td>
 							<td>Name 2</td>
 							<td>Description 2</td>
 						</tr>
