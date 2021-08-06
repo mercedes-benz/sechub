@@ -1,27 +1,57 @@
 // SPDX-License-Identifier: MIT
-An administrator is able to changes project access level.
+An administrator is able to changes project access level. 
+Project access levels do some constraints to possible user operations for 
+a project.
+
+TIP: A project access level `none` will make it also for administrators 
+     impossible to fetch reports from the project. Only  
+     special administrator REST API calls are not restricted. 
+
+
 
 ===== Levels
-- `full_access` +
+- `full` +
    no restrictions
 - `read_only` +
   users can download their reports, get job status, but cannot trigger any project jobs
-- `no_access` +
+- `none` +
   users have no access to reports, jobs and cannot trigger any jobs for the project 
 
 ===== Conststraints
 
-When a project has access level `READ_ONLY`
+====== Full
+When a project has access level `full` any read or write user operation 
+is possible:
 
-- a new scan is not possible, HTTP 403: Forbidden will be sent
+- a new scan can be triggered, so user can
+  * create job
+  * approve job
+  * upload job data
+- scheduling is active for the project new jobs are processed
+- user can check status for a job in their project
+- user can download their former reports
+
+====== Read only
+
+When a project has access level `read_only` only read user operations
+are possible:
+
+- a new scan is not possible, HTTP 403: Forbidden will be sent for
+  * create job
+  * approve job
+  * upload job data
 - running jobs are still running
 - already scheduled jobs will be scheduled
 - user are still able to check status for a job in their project
 - user can still download their former reports
 
-When a project has access level `NO_ACCESS`
+====== None
+When a project has access level `none` no user operation is possible:
 
-- a new scan is not possible, HTTP 403: Forbidden will be sent
+- a new scan is not possible, HTTP 403: Forbidden will be sent for
+  * create job
+  * approve job
+  * upload job data
 - running jobs are still running
 - already scheduled jobs will be scheduled
 - user are NOT able to check status for a job in their project,  HTTP 403: Forbidden will be sent

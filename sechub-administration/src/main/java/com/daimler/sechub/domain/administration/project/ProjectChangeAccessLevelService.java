@@ -49,17 +49,17 @@ public class ProjectChangeAccessLevelService {
     AuditLogService auditLogService;
 
     /* @formatter:off */
-	@UseCaseAdministratorChangesProjectAccessLevel(
+    @UseCaseAdministratorChangesProjectAccessLevel(
 			@Step(
 					number = 2,
 					name = "Change access level",
 					description = "The service will change the access level and trigger event"))
 	/* @formatter:on */
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel wantedLevel) {
-	    /* audit */
+        /* audit */
         auditLogService.log("triggers for project:{} an access level change to '{}'", logSanitizer.sanitize(projectId, 30), wantedLevel);
 
-        /* validate*/
+        /* validate */
         notNull(wantedLevel, "project access level may not be null!");
         assertion.isValidProjectId(projectId);
 
