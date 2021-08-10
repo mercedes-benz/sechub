@@ -1,0 +1,100 @@
+/* SPDX-License-Identifier: MIT */
+
+:root {
+    --dark-bg-color: #212121;
+    --dark-text-color: #f2f2f2;
+    --max-width: 40rem;
+    --space: 1rem;
+
+    font-family: 'Myriad Pro', Calibri, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+* {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+html, body {
+    background-color: var(--dark-bg-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#header-wrap {
+    background: linear-gradient(to top, #373737, var(--dark-bg-color));
+    color: var(--dark-text-color);
+}
+
+header {
+    margin: 0 auto;
+    max-width: var(--max-width);
+    padding: 2rem var(--space);
+    position: relative;
+}
+
+header a {
+    color: var(--dark-text-color);
+    text-decoration: unset;
+}
+
+header a:focus, header a:hover {
+    text-decoration: underline;
+}
+
+main {
+    margin: 0 auto;
+    max-width: var(--max-width);
+    padding: var(--space);
+}
+
+ul {
+    padding-left: var(--space);
+    margin-bottom: var(--space);
+}
+
+#footer-wrap {
+    background-color: var(--dark-bg-color);
+    color: var(--dark-text-color);
+    width: 100%;
+}
+
+footer {
+    margin: 0 auto;
+    max-width: var(--max-width);
+    padding: 2rem var(--space);
+}
+
+footer a {
+    color: var(--dark-text-color);
+}
+
+.github-banner {
+    display: block;
+    background-color: #0090ff;
+    position: absolute;
+    font-weight: 700;
+    padding: 0.5rem;
+    border-bottom-left-radius: 0.2rem;
+    border-bottom-right-radius: 0.2rem;
+    top: 0;
+    right: var(--space);
+    box-shadow: 0 0 0.5rem rgba(0,0,0,0.5);
+}
+
+#content-wrap {
+    background-color: var(--dark-text-color);
+}
+
+#project-title {
+    font-size: 3em;
+    font-weight: 700;
+}
+
+#project-subtitle {
+    font-weight: 300;
+}
