@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: MIT */
 
 :root {
-    --dark-bg-color: #212121;
-    --dark-text-color: #f2f2f2;
+    --dark-color: #212121;
+    --light-color: #f2f2f2;
     --max-width: 40rem;
     --space: 1rem;
 
@@ -16,29 +16,17 @@
     padding: 0;
 }
 
-html, body {
-    background-color: var(--dark-bg-color);
-}
-
 body {
     display: flex;
     flex-direction: column;
 }
 
-#header-wrap {
-    background: linear-gradient(to top, #373737, var(--dark-bg-color));
-    color: var(--dark-text-color);
-}
-
 header {
-    margin: 0 auto;
-    max-width: var(--max-width);
     padding: 2rem var(--space);
     position: relative;
 }
 
 header a {
-    color: var(--dark-text-color);
     text-decoration: unset;
 }
 
@@ -47,8 +35,6 @@ header a:focus, header a:hover {
 }
 
 main {
-    margin: 0 auto;
-    max-width: var(--max-width);
     padding: var(--space);
 }
 
@@ -57,25 +43,13 @@ ul {
     margin-bottom: var(--space);
 }
 
-#footer-wrap {
-    background-color: var(--dark-bg-color);
-    color: var(--dark-text-color);
-    width: 100%;
-}
-
 footer {
-    margin: 0 auto;
-    max-width: var(--max-width);
     padding: 2rem var(--space);
 }
 
-footer a {
-    color: var(--dark-text-color);
-}
-
-.github-banner {
+#github-banner {
     display: block;
-    background-color: #0090ff;
+    background-color: #0063ae;
     position: absolute;
     font-weight: 700;
     padding: 0.5rem;
@@ -86,15 +60,32 @@ footer a {
     box-shadow: 0 0 0.5rem rgba(0,0,0,0.5);
 }
 
-#content-wrap {
-    background-color: var(--dark-text-color);
+.centered {
+    margin: 0 auto;
+    max-width: var(--max-width);
 }
 
-#project-title {
+.light-text {
+    color: var(--light-color);
+}
+
+.dark-bg {
+    background-color: var(--dark-color);
+}
+
+.light-bg {
+    background-color: var(--light-color);
+}
+
+.dark-gradient-bg {
+    background: linear-gradient(to top, #373737, var(--dark-color));
+}
+
+.title {
     font-size: 3em;
     font-weight: 700;
 }
 
-#project-subtitle {
+.subtitle {
     font-weight: 300;
 }
