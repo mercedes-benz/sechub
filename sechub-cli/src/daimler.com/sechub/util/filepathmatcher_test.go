@@ -4,8 +4,8 @@ package util
 
 import (
 	"testing"
-	
-	. "daimler.com/sechub/testutil"	
+
+	. "daimler.com/sechub/testutil"
 )
 
 func Test_Simple_filename_and_pattern_with_asterisk_at_start_and_prefix_matches(t *testing.T) {
@@ -39,6 +39,7 @@ func Test_When_double_asterisk_on_start_any_path_is_accepted_when_filename_witho
 	AssertTrue(Filepathmatch("/home/gargamel/schlumpfine/testfolder/a.txt", "**/a.txt"), t)
 	AssertTrue(Filepathmatch("/home/gargamel/testfolder/a.txt", "**/a.txt"), t)
 	AssertTrue(Filepathmatch("/x/y/z/V/a.txt", "**/a.txt"), t)
+	AssertTrue(Filepathmatch("a.txt", "**/a.txt"), t)
 
 	/* but not when filename does not match*/
 	AssertFalse(Filepathmatch("/x/y/z/V/b.txt", "**/a.txt"), t)
