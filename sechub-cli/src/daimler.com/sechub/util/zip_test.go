@@ -264,6 +264,31 @@ func TestZipFileContainsRelativeSourceFolders(t *testing.T) {
 	sechubUtil.AssertContains(list, filepath2, t)
 }
 
+func TestZipFileContainsRelativeFoldersOutsideCurrent(t *testing.T) {
+	/* prepare */
+	RelativeTmpTestDir := "./../sechub-cli-tmptest"
+	sechubUtil.CreateTestDirectory(RelativeTmpTestDir, 0755, t)
+	defer os.RemoveAll(RelativeTmpTestDir)
+
+	filepath1 := RelativeTmpTestDir + "/file1.txt"
+
+	// create files
+	content := []byte("Hello world!\n")
+	sechubUtil.CreateTestFile(filepath1, 0644, content, t)
+
+	zipfilepath := RelativeTmpTestDir + "/testoutput.zip"
+
+	/* execute */
+	err := ZipFolders(zipfilepath, &ZipConfig{Folders: []string{RelativeTmpTestDir}, SourceCodePatterns: []string{".txt"}}, false)
+
+	/* test */
+	sechubUtil.Check(err, t)
+
+	list := readContentOfZipFile(zipfilepath, t)
+	// "./../sechub-cli-tmptest/file1.txt" becomes "sechub-cli-tmptest/file1.txt" in zip file
+	sechubUtil.AssertContains(list, "sechub-cli-tmptest/file1.txt", t)
+}
+
 /* -------------------------------------*/
 /* --------- Helpers -------------------*/
 /* -------------------------------------*/

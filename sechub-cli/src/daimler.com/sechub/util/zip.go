@@ -112,8 +112,8 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		// If we still have a / in front: use path from folder var stripped from "./" and "../"
 		if strings.HasPrefix(zipPath, "/") {
 			zipPath = filePath
-			zipPath = strings.ReplaceAll(zipPath, "./", "")
 			zipPath = strings.ReplaceAll(zipPath, "../", "")
+			zipPath = strings.ReplaceAll(zipPath, "./", "")
 			// Remove leading / from zip path
 			zipPath = strings.TrimPrefix(zipPath, "/")
 		}
