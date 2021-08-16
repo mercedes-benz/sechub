@@ -444,10 +444,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			// be automated removed by cleanup actions on server!
 			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_EXLUDE_SOME_FILES).
 				assertFileUploadedAsZip(PROJECT_1).
-					zipContains("not-excluded.txt").
-					zipContains("subfolder/not-excluded-2.txt").
-					zipNotContains("exclude-me.txt").
-					zipNotContains("subfolder/exclude-me.txt");
+					zipContains("sechub-integrationtest/src/test/resources/checksum-testfiles/not-excluded.txt").
+					zipContains("sechub-integrationtest/src/test/resources/checksum-testfiles/subfolder/not-excluded-2.txt").
+					zipNotContains("sechub-integrationtest/src/test/resources/checksum-testfiles/exclude-me.txt").
+					zipNotContains("sechub-integrationtest/src/test/resources/checksum-testfiles/subfolder/exclude-me.txt");
 
 		/* @formatter:on */
 
