@@ -17,21 +17,38 @@ spec:
                 app: {{ .Chart.Name }}
         spec:
             securityContext:
-                runAsUser: 2323 # uid of the gosec user. Set in the Dockerfile.
+                runAsUser: 2323 # user id of the gosec user. Set in the Dockerfile.
             containers:
                 - name: {{ .Chart.Name }}
-                  image: "{{ .Values.imageRegistry }}:{{ .Values.imageTag }}"
+                  image: "{{ .Values.image.registry }}:{{ .Values.image.tag }}"
                   env:
-                    - name: START_MODE
-                      value: {{ .Values.startMode }}
+                    - name: PDS_START_MODE
+                      value: "{{ .Values.pds.startMode }}"
                     - name: ADMIN_USERID
-                      value: {{ .Values.adminUserId }}
+                      value: "{{ .Values.users.admin.id }}"
                     - name: ADMIN_APITOKEN
-                      value: "{{ .Values.adminApiToken }}"
+                      value: "{{ .Values.users.admin.apiToken }}"
                     - name: TECHUSER_USERID
-                      value: {{ .Values.techUserId }}
+                      value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
-                      value: "{{ .Values.techUserApiToken }}"
+                      value: "{{ .Values.users.technical.apiToken }}"
+                    {{- if .Values.pds.javaDebug.enabled }}
+                    - name: JAVA_ENABLE_DEBUG
+                      value: true
+                    {{- end }}
+                    {{- if .Values.pds.keepContainerAliveAfterPDSCrashed }}
+                    - name: KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED
+                      value: true
+                    {{- end }}
+                    {{- if .Values.database.enabled }}
+                    - name: 
+                    {{- end }}
+                    {{- if eq .Values.storage.type "sharedVolume" }}
+                    - name: SHARED_VOLUME_UPLOAD_DIR
+                      value: "{{ .Values.storage.sharedVolume.upload.dir }}"
+                    {{- else if eq .Values.storage.type "s3" }}
+                    - name: ABC
+                      value: "abc"
+                    {{- end}}
                   ports:
                     - containerPort: 8444
-

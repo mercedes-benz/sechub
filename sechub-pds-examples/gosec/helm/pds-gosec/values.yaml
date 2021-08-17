@@ -1,11 +1,28 @@
 # SPDX-License-Identifier: MIT
 
-imageRegistry: "my.registry.example.org/pds_gosec"
-imageTag: "latest"
-startMode: "localserver"
 replicaCount: 1
-adminUserId: "admin"
-techUserId: "techuser"
+
+image:
+    registry: "my.registry.example.org/pds_gosec"
+    tag: "latest"
+
+pds:
+    startMode: localserver
+    javaDebug:
+        enabled: false
+    keepContainerAliveAfterPDSCrashed: false
+
+users:
+    technical:
+        id: "techuser"
+    admin:
+        id: "admin"
+
+storage:
+    type: "local"
+
+database:
+    enabled: false
 
 networkPolicy:
     enabled: false
