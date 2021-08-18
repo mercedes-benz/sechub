@@ -434,6 +434,10 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			doesExist().
 			isAssignedToProject(PROJECT_1);
 
+		/* Need to ignore default excludes, because "test" is in the directory tree. See Issue #754 */
+        Map<String, String> environmentVariables = new HashMap<>();
+        environmentVariables.put("SECHUB_IGNORE_DEFAULT_EXCLUDES", "true");
+
 		/* execute */
 
 		as(USER_1).
@@ -442,7 +446,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			// uses a mock with 5 seconds running job - enough to get access to
 			// the uploaded content, download it full. Otherwise file could
 			// be automated removed by cleanup actions on server!
-			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_EXLUDE_SOME_FILES).
+			startAsynchronScanFor(PROJECT_1, CLIENT_JSON_SOURCESCAN_EXLUDE_SOME_FILES, environmentVariables).
 				assertFileUploadedAsZip(PROJECT_1).
 					zipContains("sechub-integrationtest/src/test/resources/checksum-testfiles/not-excluded.txt").
 					zipContains("sechub-integrationtest/src/test/resources/checksum-testfiles/subfolder/not-excluded-2.txt").
