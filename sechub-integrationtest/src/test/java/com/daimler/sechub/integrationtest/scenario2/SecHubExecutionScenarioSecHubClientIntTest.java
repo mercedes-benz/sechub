@@ -435,8 +435,8 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 			isAssignedToProject(PROJECT_1);
 
 		/* Need to ignore default excludes, because "test" is in the directory tree. See Issue #754 */
-        Map<String, String> environmentVariables = new HashMap<>();
-        environmentVariables.put("SECHUB_IGNORE_DEFAULT_EXCLUDES", "true");
+		Map<String, String> environmentVariables = new HashMap<>();
+		environmentVariables.put("SECHUB_IGNORE_DEFAULT_EXCLUDES", "true");
 
 		/* execute */
 
