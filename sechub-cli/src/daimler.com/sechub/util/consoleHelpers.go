@@ -52,7 +52,9 @@ func ReadFromConsole() (result string, err error) {
 	reader := bufio.NewReaderSize(io.LimitReader(os.Stdin, 255), 256) // we always limit to 255 characters
 
 	result, err = reader.ReadString('\n')
-	return strings.TrimSuffix(result, "\n"), err
+
+	// Return input without control characters
+	return strings.Trim(result, "\r\n"), err
 }
 
 // PrintDashedLine - used for separation of sections in console output
