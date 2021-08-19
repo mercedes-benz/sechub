@@ -8,7 +8,7 @@ metadata:
 spec:
     podSelector:
         matchLabels:
-            app: {{ .Chart.Name }}
+            name: {{ .Chart.Name }}
 
 {{- if .Values.networkPolicy.ingress }}
     ingress:

@@ -5,16 +5,16 @@ kind: Deployment
 metadata:
     name: {{ .Chart.Name }}
     labels:
-        app: {{ .Chart.Name }}
+        name: {{ .Chart.Name }}
 spec:
     replicas: {{ .Values.replicaCount }}
     selector:
         matchLabels:
-            app: {{ .Chart.Name }}
+            name: {{ .Chart.Name }}
     template:
         metadata:
             labels:
-                app: {{ .Chart.Name }}
+                name: {{ .Chart.Name }}
         spec:
             securityContext:
                 runAsUser: 2323 # user id of the gosec user. Set in the Dockerfile.
@@ -34,21 +34,39 @@ spec:
                       value: "{{ .Values.users.technical.apiToken }}"
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
-                      value: true
+                      value: "true"
                     {{- end }}
                     {{- if .Values.pds.keepContainerAliveAfterPDSCrashed }}
                     - name: KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED
-                      value: true
+                      value: "true"
                     {{- end }}
-                    {{- if .Values.database.enabled }}
-                    - name: 
+                    {{- if .Values.database.postgres.enabled }}
+                    - name: POSTGRES_ENABLED
+                      value: "true"
+                    - name: DATABASE_CONNECTION
+                      value: "{{ .Values.database.postgres.connection }}"
+                    - name: DATABASE_USERNAME
+                      value: "{{ .Values.database.postgres.username }}"
+                    - name: DATABASE_PASSWORD
+                      value: "{{ .Values.database.postgres.password }}"
                     {{- end }}
-                    {{- if eq .Values.storage.type "sharedVolume" }}
+                    {{- if .Values.storage.local.enabled }}
+                    - name: SHARED_VOLUME_UPLOAD_DIR
+                      value: "/shared_volumes/uploads"
+                    {{- else if .Values.storage.s3.enabled }}
+                    - name:  S3_ENDPOINT
+                      value: {{ .Values.storage.s3.endpoint }}
+                    - name: S3_BUCKET
+                      value: {{ .Values.storage.s3.bucket }}
+                    - name: S3_KEY
+                      value: {{ .Values.storage.s3.key }}
+                    - name: S3_SECRET
+                      value: {{ .Values.storage.s3.secret }}
+                    - name: S3_REGION
+                      value: {{ .Values.storage.s3.region }}
+                    {{- else if .Values.storage.sharedVolume.enabled }}
                     - name: SHARED_VOLUME_UPLOAD_DIR
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
-                    {{- else if eq .Values.storage.type "s3" }}
-                    - name: ABC
-                      value: "abc"
                     {{- end}}
                   ports:
                     - containerPort: 8444

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: MIT
 
+# This is just a sample values file.
+
 replicaCount: 1
 
 image:
@@ -19,11 +21,35 @@ users:
         id: "admin"
 
 storage:
-    type: "local"
+    local:
+        enabled: true
+    s3:
+        enabled: false
+        endpoint: "https://<minio-or-s3-server>:<port>"
+        bucket: "<my-bucket>"
+        key: "<my-key>"
+        secret: "<my-secret>"
+        region: "<my-region-in-s3>"
+    sharedVolume:
+        enabled: false
+        upload:
+            dir: "/mount/nfs/shares/<sharename>"
 
 database:
-    enabled: false
+    postgres:
+        enabled: false
+        connection: "jdbc:postgresql://database:5432/pds"
+        username: "gosec"
+        password: "<password-of-db-user>"
 
 networkPolicy:
     enabled: false
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
 

@@ -25,7 +25,7 @@ localserver () {
     if [ "$POSTGRES_ENABLED" = true ]
     then
         profiles="$profiles,pds_postgres"
-        database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.user=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
+        database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
 
         echo "Database connection set: $database_options"
     fi

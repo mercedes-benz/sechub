@@ -4,7 +4,23 @@ file_to_upload="$1"
 retries=20
 
 function usage() {
-    echo "Usage: `basename $0` <file-path-to-upload>"
+    local script_name=
+    echo "`basename $0` <file-path-to-upload>"
+    echo ""
+    
+    cat <<'USAGE'
+Please set the environment variables:
+
+export PDS_SERVER=https://<server>:<port>
+export PDS_USERID=<username>
+export PDS_APITOKEN=<password>
+
+Example:
+
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+USAGE
 }
 
 function is_job_finished () {
@@ -73,4 +89,3 @@ done
 
 # echo return the actual result
 "$pds_api" job_result "$jobUUID"
-
