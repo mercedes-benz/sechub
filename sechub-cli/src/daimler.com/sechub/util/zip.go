@@ -36,9 +36,8 @@ const ZipFileHasNoContent = "Zipfile has no content!"
 const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
 
 // ZipFolders - Will zip given content of given folders into given filePath.
-// E.g. when filePath contains subfolder sub1/text1.txt, sub2/text2.txt, sub2/sub3/text3.txt the
-// zip of sub1 and sub2 will result in "text1.txt,text2.txt,sub3/text3.txt" !
-// This is optimized for sourcecode zipping when having multiple source folders
+// E.g. when filePath contains subfolder sub1/text1.txt, sub2/text1.txt, sub2/sub3/text1.txt the
+// zip of sub1 and sub2 will result in "sub1/text1.txt, sub2/text1.txt, sub2/sub3/text1.txt"
 //
 func ZipFolders(filePath string, config *ZipConfig, silent bool) (err error) {
 	filename, _ := filepath.Abs(filePath)
@@ -82,13 +81,13 @@ func ZipFolders(filePath string, config *ZipConfig, silent bool) (err error) {
 }
 
 func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zipcontext, silent bool) error {
-	folderPathAbs, err := filepath.Abs(folder)
+	folderPathAbs, _ := filepath.Abs(folder)
 	if _, err := os.Stat(folderPathAbs); os.IsNotExist(err) {
 		return errors.New("Folder not found: " + folder + " (" + folderPathAbs + ")")
 	}
 	Log(fmt.Sprintf("Zipping folder: %s (%s)", folder, folderPathAbs), silent)
 
-	err = filepath.Walk(folder, func(filePath string, info os.FileInfo, err error) error {
+	err := filepath.Walk(folder, func(file string, info os.FileInfo, err error) error {
 		if info == nil {
 			return errors.New("Did not find folder file info " + folder)
 		}
@@ -98,20 +97,30 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		if err != nil {
 			return err
 		}
-		if zContext.filename == filePath {
+		if zContext.filename == file {
 			return errors.New(TargetZipFileLoop)
 		}
 
-		fileAbs, err := filepath.Abs(filePath)
+		fileAbs, err := filepath.Abs(file)
 		if err != nil {
 			return err
 		}
 		pwdAbs, _ := filepath.Abs(".")
 		// Make zip path relative to current working directory (the usual case)
-		zipPath := strings.TrimPrefix(fileAbs, pwdAbs+"/")
-		// If we still have a / in front: use path from folder var stripped from "./" and "../"
+		zipPath := strings.TrimPrefix(fileAbs, pwdAbs)
+
+		// tribute to Windows...
+		zipPath = strings.TrimPrefix(zipPath, filepath.VolumeName(zipPath)) // eliminate e.g. "C:"
+		zipPath = ConvertBackslashPath(zipPath)                             // '\' -> '/'
+
+		// If we still have an absolute path: use non-absolute file path stripped from "./" and "../"
 		if strings.HasPrefix(zipPath, "/") {
-			zipPath = filePath
+			zipPath = file
+
+			// Windows...
+			zipPath = strings.TrimPrefix(zipPath, filepath.VolumeName(zipPath)) // eliminate e.g. "C:"
+			zipPath = ConvertBackslashPath(zipPath)                             // '\' -> '/'
+
 			zipPath = strings.ReplaceAll(zipPath, "../", "")
 			zipPath = strings.ReplaceAll(zipPath, "./", "")
 			// Remove leading / from zip path
@@ -121,8 +130,8 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		// Only accept source code files
 		isSourceCode := false
 		for _, srcPattern := range zContext.config.SourceCodePatterns {
-			if strings.HasSuffix(filePath, srcPattern) {
-				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches %q -> is source code", fileAbs, srcPattern))
+			if strings.HasSuffix(zipPath, srcPattern) {
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches %q -> is source code", file, srcPattern))
 				isSourceCode = true
 				break
 			}
@@ -130,14 +139,14 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 
 		// no matches above -> ignore file
 		if !isSourceCode {
-			LogDebug(zContext.config.Debug, fmt.Sprintf("%q no match with source code patterns -> skip", fileAbs))
+			LogDebug(zContext.config.Debug, fmt.Sprintf("%q no match with source code patterns -> skip", zipPath))
 			return nil
 		}
 
 		// Filter excludes
 		for _, excludePattern := range zContext.config.Excludes {
-			if Filepathmatch(filePath, excludePattern) {
-				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", filePath, excludePattern))
+			if Filepathmatch(zipPath, excludePattern) {
+				LogDebug(zContext.config.Debug, fmt.Sprintf("%q matches exclude pattern %q -> skip", file, excludePattern))
 				return nil
 			}
 		}
@@ -145,7 +154,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zContext *zip
 		LogDebug(zContext.config.Debug, "Adding "+zipPath+" <- "+fileAbs)
 
 		/* handle */
-		fileToAdd, err := os.Open(filePath)
+		fileToAdd, err := os.Open(file)
 		if err != nil {
 			return err
 		}
