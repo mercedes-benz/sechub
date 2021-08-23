@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # This script creates a json file containing openssl verification meta data
 # which is used inside java unit tests via SecurityTesthelper.java

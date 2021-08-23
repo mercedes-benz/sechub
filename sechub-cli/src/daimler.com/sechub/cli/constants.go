@@ -155,7 +155,7 @@ const SechubWaittimeDefaultEnvVar = "SECHUB_WAITTIME_DEFAULT"
 const ExecutionStateEnded = "ENDED"
 
 /* ---------------------------------- */
-/* -------- Validation--------------- */
+/* -------- Validation -------------- */
 /* ---------------------------------- */
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
