@@ -30,10 +30,10 @@ type ZipConfig struct {
 }
 
 // ZipFileHasNoContent error message saying zip file has no content
-const ZipFileHasNoContent = "Zipfile has no content!"
+const ZipFileHasNoContent = "zipfile has no content"
 
 // TargetZipFileLoop error message when it comes to an infinite lopp because target inside zipped content
-const TargetZipFileLoop = "Target zipfile would be part of zipped content, leading to infinite loop. Please change target path!"
+const TargetZipFileLoop = "target zipfile would be part of zipped content, leading to infinite loop. please change target path"
 
 // ZipFolders - Will zip given content of given folders into given filePath.
 // E.g. when filePath contains subfolder sub1/text1.txt, sub2/text1.txt, sub2/sub3/text1.txt the
