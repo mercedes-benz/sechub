@@ -135,7 +135,7 @@ func zipOneFolderRecursively(zipWriter *zip.Writer, folder string, zipContext *z
 
 		// no matches above -> ignore file
 		if !isSourceCode {
-			LogDebug(zipContext.config.Debug, fmt.Sprintf("%q no match with source code patterns -> skip", zipPath))
+			LogDebug(zipContext.config.Debug, fmt.Sprintf("%q has no match with supported file extensions -> skip", zipPath))
 			return nil
 		}
 
