@@ -106,7 +106,7 @@ function check_parameter {
   parameter_name="$2"
   if [ -z "${!param}" ] ; then
     echo "Required parameter $parameter_name not set"
-    failed=1
+    failed=true
   fi
 }
 
@@ -117,10 +117,10 @@ function check_trafficlight {
   case "${!param}" in
     RED|YELLOW|GREEN) ;;
     "") echo "Trafficlight value for $parameter_name not set"
-      failed=1
+      failed=true
       ;;
     *) echo "$parameter_name = \"${!param}\" is no trafficlight value (RED|YELLOW|GREEN)"
-      failed=1
+      failed=true
       ;;
   esac
 }
@@ -440,7 +440,7 @@ function sechub_user_signup_decline {
 
 # -----------------------------
 # main
-failed=0
+failed=false
 YES=false
 SECHUB_API_VERSION="1.0"
 NOFORMAT_PIPE="cat -"
@@ -506,7 +506,7 @@ done
 
 # Check if mandatory parameters are defined
 for i in SECHUB_SERVER SECHUB_USERID SECHUB_APITOKEN ; do
-  check_parameter "$i"
+  check_parameter "$i" "\$$i"
 done
 AUTH="$SECHUB_USERID:$SECHUB_APITOKEN"
 CURL_PARAMS="-u $AUTH --silent --insecure --show-error"
@@ -515,51 +515,51 @@ CURL_FILTER="grep -i http/\|error"
 action="$1" && shift
 case "$action" in
   alive_check)
-    [ $failed == 0 ] && sechub_alive_check
+    $failed || sechub_alive_check
     ;;
   executor_details)
     EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
-    [ $failed == 0 ] && sechub_executor_details "$EXECUTOR_UUID"
+    $failed || sechub_executor_details "$EXECUTOR_UUID"
     ;;
   executor_list)
-    [ $failed == 0 ] && sechub_executor_list
+    $failed || sechub_executor_list
     ;;
   job_cancel)
     JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
-    [ $failed == 0 ] && sechub_job_cancel "$JOB_UUID"
+    $failed || sechub_job_cancel "$JOB_UUID"
     ;;
   job_list_running)
-    [ $failed == 0 ] && sechub_job_list_running
+    $failed || sechub_job_list_running
     ;;
   job_restart)
     JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
-    [ $failed == 0 ] && sechub_job_restart "$JOB_UUID"
+    $failed || sechub_job_restart "$JOB_UUID"
     ;;
   job_restart_hard)
     JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
-    [ $failed == 0 ] && sechub_job_restart_hard "$JOB_UUID"
+    $failed || sechub_job_restart_hard "$JOB_UUID"
     ;;
   job_status)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
-    [ $failed == 0 ] && sechub_job_status "$PROJECT_ID" "$JOB_UUID"
+    $failed || sechub_job_status "$PROJECT_ID" "$JOB_UUID"
     ;;
   profile_details)
     PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
-    [ $failed == 0 ] && sechub_profile_details "$PROFILE_ID"
+    $failed || sechub_profile_details "$PROFILE_ID"
     ;;
   profile_list)
-    [ $failed == 0 ] && sechub_profile_list
+    $failed || sechub_profile_list
     ;;
   project_assign_profile)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
-    [ $failed == 0 ] && sechub_project_assign_profile "$PROJECT_ID" "$PROFILE_ID"
+    $failed || sechub_project_assign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
   project_assign_user)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_project_assign_user "$PROJECT_ID" "$SECHUB_USER"
+    $failed || sechub_project_assign_user "$PROJECT_ID" "$SECHUB_USER"
     ;;
   project_create)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
@@ -571,26 +571,26 @@ case "$action" in
     else
       PROJECT_SHORT_DESCRIPTION="Created by sechub-api.sh at $TIMESTAMP"
     fi
-    [ $failed == 0 ] && sechub_project_create "$PROJECT_ID" "$PROJECT_OWNER" "$PROJECT_SHORT_DESCRIPTION"
+    $failed || sechub_project_create "$PROJECT_ID" "$PROJECT_OWNER" "$PROJECT_SHORT_DESCRIPTION"
     ;;
   project_delete)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_delete "$PROJECT_ID"
+    $failed || sechub_project_delete "$PROJECT_ID"
     ;;
   project_details)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_details "$PROJECT_ID"
+    $failed || sechub_project_details "$PROJECT_ID"
     ;;
   project_details_all)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_details_all "$PROJECT_ID"
+    $failed || sechub_project_details_all "$PROJECT_ID"
     ;;
   project_falsepositives_list)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_falsepositives_list "$PROJECT_ID"
+    $failed || sechub_project_falsepositives_list "$PROJECT_ID"
     ;;
   project_list)
-    [ $failed == 0 ] && sechub_project_list
+    $failed || sechub_project_list
     ;;
   project_metadata_set)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
@@ -603,94 +603,94 @@ case "$action" in
     # for i in "${METADATA_LIST[@]}"; do
     #     echo "main: \"${i}\""
     # done
-    [ $failed == 0 ] && sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
+    $failed || sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
     ;;
   project_mockdata_list)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_mockdata_list "$PROJECT_ID"
+    $failed || sechub_project_mockdata_list "$PROJECT_ID"
     ;;
   project_mockdata_set)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     TRAFFICLIGHT_CODESCAN="$2" ; check_trafficlight TRAFFICLIGHT_CODESCAN '<code>'
     TRAFFICLIGHT_WEBSCAN="$3" ; check_trafficlight TRAFFICLIGHT_WEBSCAN '<web>'
     TRAFFICLIGHT_INFRASCAN="$4" ; check_trafficlight TRAFFICLIGHT_INFRASCAN '<infra>'
-    [ $failed == 0 ] && sechub_project_mockdata_set "$PROJECT_ID" "$TRAFFICLIGHT_CODESCAN" "$TRAFFICLIGHT_WEBSCAN" "$TRAFFICLIGHT_INFRASCAN"
+    $failed || sechub_project_mockdata_set "$PROJECT_ID" "$TRAFFICLIGHT_CODESCAN" "$TRAFFICLIGHT_WEBSCAN" "$TRAFFICLIGHT_INFRASCAN"
     ;;
   project_scan_list)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
-    [ $failed == 0 ] && sechub_project_scan_list "$PROJECT_ID"
+    $failed || sechub_project_scan_list "$PROJECT_ID"
     ;;
   project_set_owner)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
-    [ $failed == 0 ] && sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
+    $failed || sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
     ;;
   project_unassign_profile)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
-    [ $failed == 0 ] && sechub_project_unassign_profile "$PROJECT_ID" "$PROFILE_ID"
+    $failed || sechub_project_unassign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
   project_unassign_user)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_project_unassign_user "$PROJECT_ID" "$SECHUB_USER"
+    $failed || sechub_project_unassign_user "$PROJECT_ID" "$SECHUB_USER"
     ;;
   scheduler_disable)
-    [ $failed == 0 ] && sechub_scheduler_disable
+    $failed || sechub_scheduler_disable
     ;;
   scheduler_enable)
-    [ $failed == 0 ] && sechub_scheduler_enable
+    $failed || sechub_scheduler_enable
     ;;
   scheduler_status)
-    [ $failed == 0 ] && sechub_scheduler_status
+    $failed || sechub_scheduler_status
     ;;
   server_status)
-    [ $failed == 0 ] && sechub_server_status
+    $failed || sechub_server_status
     ;;
   server_version)
-    [ $failed == 0 ] && sechub_server_version
+    $failed || sechub_server_version
     ;;
   superadmin_grant)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_superadmin_grant "$SECHUB_USER"
+    $failed || sechub_superadmin_grant "$SECHUB_USER"
     ;;
   superadmin_list)
-    [ $failed == 0 ] && sechub_superadmin_list
+    $failed || sechub_superadmin_list
     ;;
   superadmin_revoke)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_superadmin_revoke "$SECHUB_USER"
+    $failed || sechub_superadmin_revoke "$SECHUB_USER"
     ;;
   user_delete)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_user_delete "$SECHUB_USER"
+    $failed || sechub_user_delete "$SECHUB_USER"
     ;;
   user_details)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
-    [ $failed == 0 ] && sechub_user_details "$SECHUB_USER"
+    $failed || sechub_user_details "$SECHUB_USER"
     ;;
   user_list)
-    [ $failed == 0 ] && sechub_user_list
+    $failed || sechub_user_list
     ;;
   user_list_open_signups)
-    [ $failed == 0 ] && sechub_user_list_open_signups
+    $failed || sechub_user_list_open_signups
     ;;
   user_reset_apitoken)
     SECHUB_EMAIL="$1" ; check_parameter SECHUB_EMAIL '<email address>'
-    [ $failed == 0 ] && sechub_user_reset_apitoken "$SECHUB_EMAIL"
+    $failed || sechub_user_reset_apitoken "$SECHUB_EMAIL"
     ;;
   user_signup)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
     SECHUB_EMAIL="$2" ; check_parameter SECHUB_EMAIL '<email address>'
-    [ $failed == 0 ] && sechub_user_signup "$SECHUB_USER" "$SECHUB_EMAIL"
+    $failed || sechub_user_signup "$SECHUB_USER" "$SECHUB_EMAIL"
     ;;
   user_signup_decline)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
-    [ $failed == 0 ] && sechub_user_signup_decline "$SECHUB_USER"
+    $failed || sechub_user_signup_decline "$SECHUB_USER"
     ;;
   user_signup_accept)
     SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
-    [ $failed == 0 ] && sechub_user_signup_accept "$SECHUB_USER"
+    $failed || sechub_user_signup_accept "$SECHUB_USER"
     ;;
   ""|help)
     usage
@@ -705,6 +705,6 @@ esac
 [ "$JSON_FORMATTER" == "$NOFORMAT_PIPE" ] && echo ""
 
 # failed?
-if [ $failed != 0 ] ; then
+if $failed ; then
   exit 1
 fi
