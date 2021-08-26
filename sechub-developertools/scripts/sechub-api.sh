@@ -15,7 +15,7 @@ function usage {
   cat - <<EOF
 Usage: `basename $0` [-p] [-y] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
 
-Shell front end to selected SecHub API calls.
+Shell front end to selected SecHub API calls (https://daimler.github.io/sechub/latest/sechub-restapi.html).
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
 unless you specify -p or -plain option. Option -y or -yes skips confirmation dialog when deleting items.
 
