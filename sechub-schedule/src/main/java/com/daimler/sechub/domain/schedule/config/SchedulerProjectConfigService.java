@@ -13,7 +13,6 @@ import com.daimler.sechub.domain.schedule.ScheduleAssertService;
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
-
 @Service
 public class SchedulerProjectConfigService {
 
@@ -29,21 +28,23 @@ public class SchedulerProjectConfigService {
 
     /**
      * Change the project access level for given project
+     * 
      * @param projectId
      * @param newAccessLevel
      * @param expectedFormerAccessLevel
      */
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel newAccessLevel, ProjectAccessLevel expectedFormerAccessLevel) {
-        /* validate*/
+        /* validate */
         notNull(newAccessLevel, "new project access level may not be null!");
-        assertService.asserProjectIdValid(projectId);
-        
+        assertService.assertProjectIdValid(projectId);
+
         /* change config */
         SchedulerProjectConfig config = getOrCreateConfig(projectId);
 
         ProjectAccessLevel configuredAccessLevel = config.getProjectAccessLevel();
         if (!Objects.equals(configuredAccessLevel, expectedFormerAccessLevel)) {
-            LOG.warn("Project {} has configured access level: {} but expected former access level was:{}", projectId, configuredAccessLevel, expectedFormerAccessLevel);
+            LOG.warn("Project {} has configured access level: {} but expected former access level was:{}", projectId, configuredAccessLevel,
+                    expectedFormerAccessLevel);
         }
 
         config.setProjectAccessLevel(newAccessLevel);
@@ -52,15 +53,17 @@ public class SchedulerProjectConfigService {
     }
 
     /**
-     * Resolve the access level for the given project. If no project configuration exists, it will be
-     * automatically created. Created project configuration do always have full access level enabled.
+     * Resolve the access level for the given project. If no project configuration
+     * exists, it will be automatically created. Created project configurations
+     * always have the full access level activated.
+     * 
      * @param projectId
      * @return project access level
      */
     public ProjectAccessLevel getProjectAccessLevel(String projectId) {
         /* validate */
-        assertService.asserProjectIdValid(projectId);
-        
+        assertService.assertProjectIdValid(projectId);
+
         /* fetch or create config */
         return getOrCreateConfig(projectId).getProjectAccessLevel();
     }
@@ -71,30 +74,30 @@ public class SchedulerProjectConfigService {
             return config.get();
         }
         SchedulerProjectConfig newConfig = new SchedulerProjectConfig();
-        newConfig.projectId=projectId;
+        newConfig.projectId = projectId;
         return repository.save(newConfig);
     }
-    
+
     public void deleteProjectConfiguration(String projectId) {
-        assertService.asserProjectIdValid(projectId);
+        assertService.assertProjectIdValid(projectId);
 
         repository.deleteById(projectId);
-        
-        LOG.info("Deleted project configuration for project {}",projectId);
+
+        LOG.info("Deleted project configuration for project {}", projectId);
     }
 
     /**
-    * Checks if project can be read by normal user operations
-    * 
-    * @param projectId
-    * @return <code>true</code> when read is possible, otherwise <code>false</code>
-    */
-   public boolean isReadAllowed(String projectId) {
-       assertService.asserProjectIdValid(projectId);
-       
-       ProjectAccessLevel accessLevel = getProjectAccessLevelOrFallback(projectId);
-       return accessLevel.isEqualOrHigherThan(ProjectAccessLevel.READ_ONLY);
-   }
+     * Checks if project can be read by normal user operations
+     * 
+     * @param projectId
+     * @return <code>true</code> when read is possible, otherwise <code>false</code>
+     */
+    public boolean isReadAllowed(String projectId) {
+        assertService.assertProjectIdValid(projectId);
+
+        ProjectAccessLevel accessLevel = getProjectAccessLevelOrFallback(projectId);
+        return accessLevel.isEqualOrHigherThan(ProjectAccessLevel.READ_ONLY);
+    }
 
     /**
      * Checks if project can be written by normal user operations
@@ -104,8 +107,8 @@ public class SchedulerProjectConfigService {
      *         <code>false</code>
      */
     public boolean isWriteAllowed(String projectId) {
-        assertService.asserProjectIdValid(projectId);
-        
+        assertService.assertProjectIdValid(projectId);
+
         ProjectAccessLevel accessLevel = getProjectAccessLevelOrFallback(projectId);
         return accessLevel.isEqualOrHigherThan(ProjectAccessLevel.FULL);
     }
@@ -121,7 +124,7 @@ public class SchedulerProjectConfigService {
             LOG.warn("Given project access level fallback was null - should not happen. Used instead now default :{}", defaultValue.getId());
         }
 
-        ProjectAccessLevel configuredAccessLevel =  getOrCreateConfig(projectId).getProjectAccessLevel();
+        ProjectAccessLevel configuredAccessLevel = getOrCreateConfig(projectId).getProjectAccessLevel();
         return configuredAccessLevel;
     }
 

@@ -73,7 +73,7 @@ public class ScheduleAssertService {
         return secHubJob.get();
     }
 
-    public void asserProjectIdValid(String projectId) {
+    public void assertProjectIdValid(String projectId) {
         AssertValidation.assertValid(projectId,projectIdValidation);
     }
     

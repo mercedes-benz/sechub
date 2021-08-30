@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -212,11 +215,13 @@ public class AssertProject extends AbstractAssert {
         return this;
     }
 
-    public AssertProject hasAccessLevel(ProjectAccessLevel none) {
+    public AssertProject hasAccessLevel(ProjectAccessLevel level) {
+        Objects.requireNonNull(level,"Your test is wrong implemented! Given project access level may not be null!");
+        
         String content = fetchProjectDetails();
         try {
             String id = JSONAdapterSupport.FOR_UNKNOWN_ADAPTER.fetch("accessLevel", content).asText();
-            assertEquals("Id: "+id+" was not as " + none.getId(), none, ProjectAccessLevel.fromId(id));
+            assertEquals("Id: "+id+" was not as " + level.getId(), level, ProjectAccessLevel.fromId(id));
         } catch (AdapterException e) {
             e.printStackTrace();
             fail("adapter json failure:" + e.getMessage());

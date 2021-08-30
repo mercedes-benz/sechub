@@ -65,7 +65,7 @@ class ProjectChangeAccessLevelServiceTest {
     
     
     @Test
-    void an_change_from_full_access_to_read_only_does_trigger_one_async_event_containing_old_and_new_access_level() {
+    void a_change_from_full_access_to_read_only_does_trigger_one_async_event_containing_old_and_new_access_level() {
         /* prepare */
         Project project = new Project();
         when(repository.findOrFailProject(PROJECT1_ID)).thenReturn(project);

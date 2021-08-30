@@ -30,7 +30,7 @@ public class ScanProjectConfigAccessLevelService {
 
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel newAccessLevel, ProjectAccessLevel formerAccessLevel) {
         /* validate */
-        notNull(newAccessLevel, "New accesslevel may not be null!");
+        notNull(newAccessLevel, "New access level may not be null!");
         projectIdValidation.validate(projectId);
 
         /* change configuration */
@@ -53,7 +53,7 @@ public class ScanProjectConfigAccessLevelService {
 
     /**
      * Fetches project access level for given project - if no project access level
-     * is defined, default will be used, which is
+     * is defined, default will be used, which is {@value #DEFAULT_ACCESS_LEVEL}
      * 
      * @param projectId
      * @return

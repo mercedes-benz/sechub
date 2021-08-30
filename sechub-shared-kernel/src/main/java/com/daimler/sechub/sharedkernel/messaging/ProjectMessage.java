@@ -22,56 +22,57 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @MustBeKeptStable("This configuration is used by communication between (api) schedule domain and administration - and maybe others")
 public class ProjectMessage implements JSONable<ProjectMessage> {
 
-	private Set<URI> whitelist = new LinkedHashSet<>();
+    private Set<URI> whitelist = new LinkedHashSet<>();
 
-	private String projectId;
+    private String projectId;
 
-	private String projectOwnerEmailAddress;
-	
-	// applicable if owner was changed
-	private String previousOwnerEmailAddress;
+    private String projectOwnerEmailAddress;
 
-	private Set<String> userEmailAdresses = new LinkedHashSet<>(2);
+    // applicable if owner was changed
+    private String previousOwnerEmailAddress;
 
-	private String projectActionTriggeredBy;
+    private Set<String> userEmailAdresses = new LinkedHashSet<>(2);
+
+    private String projectActionTriggeredBy;
 
     private ProjectAccessLevel formerAccessLevel;
 
     private ProjectAccessLevel newAccessLevel;
 
-	@Override
-	public Class<ProjectMessage> getJSONTargetClass() {
-		return ProjectMessage.class;
-	}
+    @Override
+    public Class<ProjectMessage> getJSONTargetClass() {
+        return ProjectMessage.class;
+    }
 
-	/**
-	 * Add user email address suitable
-	 * @param emailAddress
-	 */
-	public void addUserEmailAddress(String emailAddress) {
-		userEmailAdresses.add(emailAddress);
-	}
+    /**
+     * Add user email address suitable
+     * 
+     * @param emailAddress
+     */
+    public void addUserEmailAddress(String emailAddress) {
+        userEmailAdresses.add(emailAddress);
+    }
 
-	/**
-	 * Mail addresses for people being involved inside this message.
-	 * Will be only filled where necessary - e.g. when a project was deleted and
-	 * some persons (additional to super admins) have to be informed
-	 *
-	 * @return email addresses for this project message. never <code>null</code>
-	 */
-	public Set<String> getUserEmailAdresses() {
-		return userEmailAdresses;
-	}
+    /**
+     * Mail addresses for people being involved inside this message. Will be only
+     * filled where necessary - e.g. when a project was deleted and some persons
+     * (additional to super admins) have to be informed
+     *
+     * @return email addresses for this project message. never <code>null</code>
+     */
+    public Set<String> getUserEmailAdresses() {
+        return userEmailAdresses;
+    }
 
-	public void setProjectOwnerEmailAddress(String emailAddress) {
-		this.projectOwnerEmailAddress = emailAddress;
-	}
+    public void setProjectOwnerEmailAddress(String emailAddress) {
+        this.projectOwnerEmailAddress = emailAddress;
+    }
 
-	public String getProjectOwnerEmailAddress() {
-		return projectOwnerEmailAddress;
-	}
-	
-	public void setPreviousProjectOwnerEmailAddress(String emailAddress) {
+    public String getProjectOwnerEmailAddress() {
+        return projectOwnerEmailAddress;
+    }
+
+    public void setPreviousProjectOwnerEmailAddress(String emailAddress) {
         this.previousOwnerEmailAddress = emailAddress;
     }
 
@@ -79,42 +80,42 @@ public class ProjectMessage implements JSONable<ProjectMessage> {
         return previousOwnerEmailAddress;
     }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
-	public String getProjectId() {
-		return projectId;
-	}
+    public String getProjectId() {
+        return projectId;
+    }
 
-	public void setWhitelist(Set<URI> whitelist) {
-		this.whitelist = whitelist;
-	}
+    public void setWhitelist(Set<URI> whitelist) {
+        this.whitelist = whitelist;
+    }
 
-	public Set<URI> getWhitelist() {
-		return whitelist;
-	}
-	
-	public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
-		this.projectActionTriggeredBy = projectActionTriggeredBy;
-	}
+    public Set<URI> getWhitelist() {
+        return whitelist;
+    }
 
-	public String getProjectActionTriggeredBy() {
-		return projectActionTriggeredBy;
-	}
+    public void setProjectActionTriggeredBy(String projectActionTriggeredBy) {
+        this.projectActionTriggeredBy = projectActionTriggeredBy;
+    }
+
+    public String getProjectActionTriggeredBy() {
+        return projectActionTriggeredBy;
+    }
 
     public void setFormerAccessLevel(ProjectAccessLevel formerAccessLevel) {
-        this.formerAccessLevel=formerAccessLevel;
+        this.formerAccessLevel = formerAccessLevel;
     }
-    
+
     public ProjectAccessLevel getFormerAccessLevel() {
         return formerAccessLevel;
     }
 
     public void setNewAccessLevel(ProjectAccessLevel newAccessLevel) {
-        this.newAccessLevel=newAccessLevel;
+        this.newAccessLevel = newAccessLevel;
     }
-    
+
     public ProjectAccessLevel getNewAccessLevel() {
         return newAccessLevel;
     }

@@ -53,7 +53,7 @@ public class ProjectChangeAccessLevelService {
 			@Step(
 					number = 2,
 					name = "Change access level",
-					description = "The service will change the access level and trigger event"))
+					description = "The service will change the project access level inside administration domain and trigger a change event to inform recipients about the new situation."))
 	/* @formatter:on */
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel wantedLevel) {
         /* audit */

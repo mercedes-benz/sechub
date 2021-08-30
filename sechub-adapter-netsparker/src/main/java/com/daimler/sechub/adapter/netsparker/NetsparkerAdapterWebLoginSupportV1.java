@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.netsparker;
 
+import static java.util.Objects.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -20,7 +21,7 @@ import com.daimler.sechub.adapter.WebScanAdapterConfig;
 public class NetsparkerAdapterWebLoginSupportV1 {
 
 	public void addAuthorizationInfo(WebScanAdapterConfig config, Map<String,Object> rootMap) {
-		Objects.nonNull(config);
+		requireNonNull(config,"Web scan adapter config may not be null!");
 
 		LoginConfig loginConfig = config.getLoginConfig();
 		if (loginConfig==null) {

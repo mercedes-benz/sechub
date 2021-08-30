@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
-An administrator is able to changes project access level. 
-Project access levels do some constraints to possible user operations for 
-a project.
+An administrator is able to change the access level of a project. 
+
+Project access levels do constraint possible user operations for 
+a project - e.g. restrict to read only operations. The details of different 
+restrictions are described below.
 
 TIP: A project access level `none` will make it also for administrators 
      impossible to fetch reports from the project. Only  

@@ -41,7 +41,7 @@ public class ProjectTransactionService {
 	}
 
 	/**
-	 * Persists a project and a user entity in same transaction
+	 * Persists a project and an user entity in same transaction
 	 * @param project
 	 * @param user
 	 * @return persisted project

@@ -16,17 +16,17 @@ class ScanProjectConfigAccessLevelServiceTest {
     private static final String PROJECT1 = "project1";
     private ScanProjectConfigAccessLevelService serviceToTest;
     private ProjectIdValidation projectIdValidation;
-    private ScanProjectConfigService scanprojectConfigService;
+    private ScanProjectConfigService scanProjectConfigService;
 
     @BeforeEach
     void beforeEach() {
 
         projectIdValidation = mock(ProjectIdValidation.class);
-        scanprojectConfigService = mock(ScanProjectConfigService.class);
+        scanProjectConfigService = mock(ScanProjectConfigService.class);
 
         serviceToTest = new ScanProjectConfigAccessLevelService();
         serviceToTest.projectIdValidation = projectIdValidation;
-        serviceToTest.scanprojectConfigService = scanprojectConfigService;
+        serviceToTest.scanprojectConfigService = scanProjectConfigService;
 
     }
 
@@ -40,15 +40,15 @@ class ScanProjectConfigAccessLevelServiceTest {
         /* prepare */
         ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
 
-        when(scanprojectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(scanProjectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
+        when(scanProjectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
 
         /* execute */
         serviceToTest.changeProjectAccessLevel(PROJECT1, ProjectAccessLevel.READ_ONLY, null);
 
         /* test */
         verify(projectIdValidation).validate(PROJECT1);
-        verify(scanprojectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
+        verify(scanProjectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
     }
 
     @Test
@@ -57,15 +57,15 @@ class ScanProjectConfigAccessLevelServiceTest {
         ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
         config.setData(ProjectAccessLevel.FULL.getId());
 
-        when(scanprojectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(scanProjectConfigService.get(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false))).thenReturn(config);
+        when(scanProjectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
 
         /* execute */
         serviceToTest.changeProjectAccessLevel(PROJECT1, ProjectAccessLevel.READ_ONLY, ProjectAccessLevel.FULL);
 
         /* test */
         verify(projectIdValidation).validate(PROJECT1);
-        verify(scanprojectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
+        verify(scanProjectConfigService).set(PROJECT1, ScanProjectConfigID.PROJECT_ACCESS_LEVEL, ProjectAccessLevel.READ_ONLY.getId());
     }
 
     @Test
@@ -74,7 +74,7 @@ class ScanProjectConfigAccessLevelServiceTest {
         ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
         config.setData(null);
 
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(scanProjectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
 
         /* part 1: test */
         ProjectAccessLevel result = serviceToTest.fetchProjectAccessLevel(PROJECT1);
@@ -147,6 +147,6 @@ class ScanProjectConfigAccessLevelServiceTest {
         ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
         config.setData(level.getId());
 
-        when(scanprojectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
+        when(scanProjectConfigService.getOrCreate(eq(PROJECT1), eq(ScanProjectConfigID.PROJECT_ACCESS_LEVEL), eq(false), any())).thenReturn(config);
     }
 }
