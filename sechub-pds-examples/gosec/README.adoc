@@ -143,7 +143,7 @@ TIP: GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201
 }
 ----
 +
-<1> Job is `DONE`
+<1> Job is `DONE`.
 
 . Download the job result
 +
@@ -358,8 +358,8 @@ NOTE: This is an example output. The output can be very different depending on t
 
 ==== Scan Script 
 
-Doing a manual <<_scan>> the first time using PDS is recommended. However, after some time typing in the commands, which  a scan becomes very tedious.
-To improve on the experience one can scan using a script.
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious.
+To improve on the experience you can scan using a script.
 
 . Set the environment variables
 +
@@ -383,9 +383,15 @@ example:
 
 === Cluster
 
-The cluster is created locally via `docker-compose`. The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server. 
+The cluster is created locally via `docker-compose`.
 
-==== Automatic
+==== Shared Volume
+
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done on the PDS.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
+
+===== Automatic
 
 Starting several PDS + GoSec instances
 
@@ -399,17 +405,55 @@ Example of starting 3 PDS + GoSec instances
 ./50-start-multiple-docker-compose.sh 3
 ----
 
-==== Manually
+===== Manually
 
 . Copy `env-cluster-initial` file to `.env-cluster`
-
-. Set values in `.env` file. The values are described in the `env-example` file.
 
 . Start cluster using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
+
+==== Object Storage
+
+The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done on the PDS.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
+
+===== Automatic
+
+Starting several PDS + GoSec instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + GoSec instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster-object-storage`
+
+. Set `S3_ENABLED` to `true`.
++
+----
+S3_ENABLED=true
+----
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+=== Change the Configuration
+
+There are several configuration options available. Have a look at `env-example` for more details.
 
 === Troubleshooting
 

@@ -31,8 +31,8 @@ ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 RUN addgroup --gid 2323 gosec \
      && adduser --uid 2323 --disabled-password --ingroup gosec gosec
 
-RUN apk update && \
-    apk add go openjdk11-jre-headless wget unzip tar
+RUN apk update --no-cache && \
+    apk add --no-cache go openjdk11-jre-headless wget unzip tar
 
 # Create script folder
 COPY gosec.sh $SCRIPT_FOLDER/gosec.sh

@@ -32,9 +32,30 @@ SHARED_VOLUME_UPLOAD_DIR=/shared_volumes/uploads
 
 # The database start mode
 #   debug - starts only the container
-#   server - starts the database
+#   server - initializes and starts the database
 DATABASE_START_MODE=debug, server
 POSTGRES_ENABLED=true, false
 DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=gosec
 DATABASE_PASSWORD=top$ecret
 DATABASE_USERNAME=gosec
+
+# The object storage start mode
+#   debug - starts only the container
+#   server - initializes and starts the object storage
+OBJECT_STORAGE_START_MODE=debug, server
+
+# The MinIO root user
+MINIO_ROOT_USER=admin
+# The MinIO root password
+MINIO_ROOT_PASSWORD=2apples$4
+
+# Enable s3 (MinIO) as object storage
+S3_ENABLED=true, false
+
+# The s3 endpoint
+S3_ENDPOINT=http://10.42.43.7:9000
+
+# The s3 bucket name (MinIO or S3)
+S3_BUCKETNAME=pds
+S3_ACCESSKEY=user
+S3_SECRETKEY=Why$5forThat?

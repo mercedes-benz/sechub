@@ -21,20 +21,41 @@ localserver () {
 
     profiles="pds_localserver"
     database_options=""
+    storage_options="-Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR"
 
     if [ "$POSTGRES_ENABLED" = true ]
     then
+        echo "Using database: Postgres"
+
         profiles="$profiles,pds_postgres"
         database_options="-Dspring.datasource.url=$DATABASE_CONNECTION -Dspring.datasource.username=$DATABASE_USERNAME  -Dspring.datasource.password=$DATABASE_PASSWORD"
 
-        echo "Database connection set: $database_options"
+        echo "Database connection:"
+        echo " * URL: $DATABASE_CONNECTION"
+        echo " * Username: $DATABASE_USERNAME"
+    fi
+
+    if [ "$S3_ENABLED" = true ]
+    then
+        echo "Using object storage"
+
+        storage_options="-Dsechub.pds.storage.s3.endpoint=$S3_ENDPOINT"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.bucketname=$S3_BUCKETNAME"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.accesskey=$S3_ACCESSKEY"
+        storage_options="$storage_options -Dsechub.pds.storage.s3.secretkey=$S3_SECRETKEY"
+
+        echo "Object storage:"
+        echo " * Endpoint: $S3_ENDPOINT"
+        echo " * Bucketname: $S3_BUCKETNAME"
+        echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
     #   and file:/dev/./urandom is no longer required."
     #   (source: https://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html)
-    java $JAVA_DEBUG_OPTIONS $database_options\
+    java $JAVA_DEBUG_OPTIONS $database_options \
+        $storage_options \
         -Dfile.encoding=UTF-8 \
         -Dspring.profiles.active=$profiles \
         -DsecHub.pds.admin.userid=$ADMIN_USERID \
@@ -43,7 +64,6 @@ localserver () {
         -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
-        -Dsechub.pds.storage.sharedvolume.upload.dir=$SHARED_VOLUME_UPLOAD_DIR \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-$PDS_VERSION.jar

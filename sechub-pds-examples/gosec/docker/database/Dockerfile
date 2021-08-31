@@ -6,8 +6,8 @@ ARG DATABASE_FOLDER=/database
 ENV PGDATA="$DATABASE_FOLDER/data"
 
 # install PostgreSQL
-RUN apk update && \
-    apk add postgresql
+RUN apk update --no-cache && \
+    apk add --no-cache postgresql
 
 # setup PostgreSQL directories
 RUN mkdir --parents "$PGDATA" && \

@@ -73,8 +73,13 @@ pds_api="../../sechub-developertools/scripts/pds-api.sh"
 sechub_job_uuid=`uuidgen`
 jobUUID=`$pds_api create_job PDS_GOSEC "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
 
+echo "Job created. Job UUID: $jobUUID."
+
 "$pds_api" upload_zip "$jobUUID" "$file_to_upload"
+
 "$pds_api" mark_job_ready_to_start "$jobUUID"
+
+echo "Job $jobUUID marked as ready to start."
 
 # Check the status of the job
 status=""
