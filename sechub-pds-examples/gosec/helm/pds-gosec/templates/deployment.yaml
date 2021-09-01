@@ -50,20 +50,24 @@ spec:
                     - name: DATABASE_PASSWORD
                       value: "{{ .Values.database.postgres.password }}"
                     {{- end }}
+
+                    # Storage priority in order: local, s3, shared volume
+                    # Meaning if local is enabled local will be used,
+                    # regardless of other storage configurations.
                     {{- if .Values.storage.local.enabled }}
                     - name: SHARED_VOLUME_UPLOAD_DIR
                       value: "/shared_volumes/uploads"
                     {{- else if .Values.storage.s3.enabled }}
+                    - name: S3_ENABLED
+                      value: "true"
                     - name:  S3_ENDPOINT
                       value: {{ .Values.storage.s3.endpoint }}
-                    - name: S3_BUCKET
-                      value: {{ .Values.storage.s3.bucket }}
-                    - name: S3_KEY
-                      value: {{ .Values.storage.s3.key }}
-                    - name: S3_SECRET
-                      value: {{ .Values.storage.s3.secret }}
-                    - name: S3_REGION
-                      value: {{ .Values.storage.s3.region }}
+                    - name: S3_BUCKETNAME
+                      value: {{ .Values.storage.s3.bucketname }}
+                    - name: S3_ACCESSKEY
+                      value: {{ .Values.storage.s3.accesskey }}
+                    - name: S3_SECRETKEY
+                      value: {{ .Values.storage.s3.secretkey }}
                     {{- else if .Values.storage.sharedVolume.enabled }}
                     - name: SHARED_VOLUME_UPLOAD_DIR
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"

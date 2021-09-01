@@ -545,55 +545,135 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 ==== Installation
 
-. Install helm package from file system
+. Create a `myvalues.yaml` configuration file
 +
-----
-helm install --values myvalues.yaml pds-gosec pds-gosec/
-----
-+
-configuration file content of `myvalues.yaml` could look like this
+A minimal example configuration file with one instance:
 +
 [source,yaml]
 ----
-imageRegistry: "my.registry.example.org/pds_gosec"
-imageTag: "latest"
-startMode: "localserver"
 replicaCount: 1
-adminUserId: "admin"
-adminApiToken: "{noop}<my-admin-password>"
-techUserId: "techuser"
-techUserApiToken: "{noop}<my-techuser-password>"
+
+image:
+   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   tag: latest
+
+pds:
+   startMode: localserver
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+
+storage:
+    local:
+        enabled: true
 
 networkPolicy:
-  enabled: true
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          name: sechub-server
-    - podSelector:
-        matchLabels:
-          name: sechub-adminserver
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage:
++
+[source,yaml]
+----
+replicaCount: 3
+
+image:
+   registry: my.registry.example.org/pds_gosec
+   tag: latest
+
+pds:
+   startMode: localserver
+   keepContainerAliveAfterPDSCrashed: true
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+      
+
+database:
+    postgres:
+        enabled: true
+        connection: "jdbc:postgresql://<my-database-host>:<port>/<my-database>"
+        username: "<username-for-my-database>"
+        password: "<password-for-my-database>"
+
+storage:
+    local:
+        enabled: false
+    s3:
+        enabled: true
+        endpoint: "https://<my-s3-object-storage>:443"
+        bucketname: "<my-bucket>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
 ----
 +
 [TIP]
 To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
 
+. Install helm package from file system
++
+----
+helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+----
++
+[TIP]
+Use `helm --namespace <my-namespace> install…` to install the helm chart into another namespace in the Kubernetes cluster.
+
 . List pods
 +
 ----
 kubectl get pods
-NAME                                                READY   STATUS      RESTARTS   AGE
-pds-gosec-749fcb8d7f-jjqwn                          1/1     Running     0          1m
+NAME                             READY   STATUS    RESTARTS   AGE
+pds-gosec-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-gosec-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
+
 ----
 
 . Forward port to own machine
 +
 ----
-kubectl port-forward pds-gosec-749fcb8d7f-jjqwn 8444:8444
+kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
 ----
 
 . Scan as explained in <<_scan>>.
+
+==== Upgrade
+
+In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
+
+----
+helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
+----
 
 ==== Uninstall 
 
@@ -616,7 +696,7 @@ helm uninstall pds-gosec
 * Access deployment events
 +
 ----
-kubectl describe pod pds-gosec-749fcb8d7f-jjqwn
+kubectl describe pod pds-gosec-545f5bc8-7s6rh
 …
 Events:
   Type    Reason     Age   From               Message
@@ -631,7 +711,7 @@ Events:
 * Access container logs
 +
 ----
-kubectl logs pds-gosec-749fcb8d7f-jjqwn
+kubectl logs pds-gosec-545f5bc8-7s6rh
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
