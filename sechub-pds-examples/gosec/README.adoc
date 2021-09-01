@@ -391,6 +391,8 @@ The cluster uses a shared volume defined in `docker-compose`. Docker allows to c
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
+image::cluster_shared_volume.svg[Components of cluster with shared volume]
+
 ===== Automatic
 
 Starting several PDS + GoSec instances
@@ -420,6 +422,8 @@ Example of starting 3 PDS + GoSec instances
 The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done on the PDS.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
+
+image::cluster_object_storage.svg[Components of cluster with object storage]
 
 ===== Automatic
 
