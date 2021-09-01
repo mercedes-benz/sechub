@@ -16,6 +16,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -37,12 +38,15 @@ public abstract class AbstractListDialogUI<T> {
     private JDialog dialog;
     private UserApprovesSelectionAction approveAction;
     private String okButtonText;
+    private JLabel descriptionLabel;
 
     public AbstractListDialogUI(UIContext context, String title) {
         this.context = context;
         this.title = title;
         this.okButtonText="Ok";
         this.approveAction= new UserApprovesSelectionAction();
+        this.descriptionLabel=new JLabel();
+        this.descriptionLabel.setVisible(false);
     }
 
     protected UIContext getContext() {
@@ -63,7 +67,7 @@ public abstract class AbstractListDialogUI<T> {
 
         createMainPanel();
         createButtonPanel(dialog);
-
+        dialog.add(descriptionLabel, BorderLayout.NORTH);
         dialog.add(mainPanel, BorderLayout.CENTER);
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -74,6 +78,11 @@ public abstract class AbstractListDialogUI<T> {
         dialog.setLocationRelativeTo(context.getFrame());
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+    }
+    
+    public void setDescription(String description) {
+        this.descriptionLabel.setText(description);
+        this.descriptionLabel.setVisible(description!=null && !description.isEmpty());
     }
 
     private void createButtonPanel(JDialog dialog) {
