@@ -26,7 +26,7 @@ class ScanProjectConfigAccessLevelServiceTest {
 
         serviceToTest = new ScanProjectConfigAccessLevelService();
         serviceToTest.projectIdValidation = projectIdValidation;
-        serviceToTest.scanprojectConfigService = scanProjectConfigService;
+        serviceToTest.scanProjectConfigService = scanProjectConfigService;
 
     }
 
@@ -69,7 +69,7 @@ class ScanProjectConfigAccessLevelServiceTest {
     }
 
     @Test
-    void fetchProjectAccessLevel_returns_result_from_scanprojectConfigService_by_getOrCreate() {
+    void fetchProjectAccessLevel_returns_result_from_scanProjectConfigService_by_getOrCreate() {
         /* prepare */
         ScanProjectConfig config = new ScanProjectConfig(ScanProjectConfigID.PROJECT_ACCESS_LEVEL, PROJECT1);
         config.setData(null);

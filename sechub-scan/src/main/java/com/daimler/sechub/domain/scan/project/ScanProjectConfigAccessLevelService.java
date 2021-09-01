@@ -26,7 +26,7 @@ public class ScanProjectConfigAccessLevelService {
     ProjectIdValidation projectIdValidation;
 
     @Autowired
-    ScanProjectConfigService scanprojectConfigService;
+    ScanProjectConfigService scanProjectConfigService;
 
     public void changeProjectAccessLevel(String projectId, ProjectAccessLevel newAccessLevel, ProjectAccessLevel formerAccessLevel) {
         /* validate */
@@ -45,7 +45,7 @@ public class ScanProjectConfigAccessLevelService {
                     formerAccessLevel);
         }
 
-        scanprojectConfigService.set(projectId, CONFIG_ID_PROJECT_ACCESS_LEVEL, newAccessLevel.getId());
+        scanProjectConfigService.set(projectId, CONFIG_ID_PROJECT_ACCESS_LEVEL, newAccessLevel.getId());
 
         LOG.info("Changed access level for project:{} to level:{}", projectId, newAccessLevel.getId());
 
@@ -96,7 +96,7 @@ public class ScanProjectConfigAccessLevelService {
             LOG.warn("Given project access level fallback was null - should not happen. Used instead now default :{}", defaultValue.getId());
         }
 
-        ScanProjectConfig config = scanprojectConfigService.getOrCreate(projectId, CONFIG_ID_PROJECT_ACCESS_LEVEL, false, defaultValue.getId());
+        ScanProjectConfig config = scanProjectConfigService.getOrCreate(projectId, CONFIG_ID_PROJECT_ACCESS_LEVEL, false, defaultValue.getId());
         ProjectAccessLevel configuredAccessLevel = ProjectAccessLevel.fromId(config.getData());
         return configuredAccessLevel;
     }
