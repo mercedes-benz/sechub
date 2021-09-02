@@ -43,9 +43,9 @@ public abstract class AbstractListDialogUI<T> {
     public AbstractListDialogUI(UIContext context, String title) {
         this.context = context;
         this.title = title;
-        this.okButtonText="Ok";
-        this.approveAction= new UserApprovesSelectionAction();
-        this.descriptionLabel=new JLabel();
+        this.okButtonText = "Ok";
+        this.approveAction = new UserApprovesSelectionAction();
+        this.descriptionLabel = new JLabel();
         this.descriptionLabel.setVisible(false);
     }
 
@@ -79,10 +79,10 @@ public abstract class AbstractListDialogUI<T> {
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     }
-    
+
     public void setDescription(String description) {
         this.descriptionLabel.setText(description);
-        this.descriptionLabel.setVisible(description!=null && !description.isEmpty());
+        this.descriptionLabel.setVisible(description != null && !description.isEmpty());
     }
 
     private void createButtonPanel(JDialog dialog) {
@@ -92,10 +92,10 @@ public abstract class AbstractListDialogUI<T> {
         buttonPanel.add(buttonOk, createLabelConstraint(0));
     }
 
-    private class UserApprovesSelectionAction extends AbstractAction{
+    private class UserApprovesSelectionAction extends AbstractAction {
 
         private static final long serialVersionUID = -1550027561125909572L;
-        
+
         private UserApprovesSelectionAction() {
             putValue(Action.NAME, okButtonText);
         }
@@ -108,11 +108,11 @@ public abstract class AbstractListDialogUI<T> {
 
             dialog.setVisible(false);
             dialog.dispose();
-            
+
         }
-        
+
     }
-    
+
     protected abstract int getSelectionColumn();
 
     protected void initializeMainPanel(JPanel mainPanel) {
@@ -139,7 +139,7 @@ public abstract class AbstractListDialogUI<T> {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()>1) {
+                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() > 1) {
                     approveAction.actionPerformed(null);
                 }
             }
@@ -163,9 +163,9 @@ public abstract class AbstractListDialogUI<T> {
     public T getSelectedValue() {
         return (T) selectedValue;
     }
-    
+
     public void setOkButtonText(String okButtonText) {
-        this.okButtonText=okButtonText;
+        this.okButtonText = okButtonText;
         approveAction.putValue(Action.NAME, okButtonText);
     }
 
@@ -187,6 +187,5 @@ public abstract class AbstractListDialogUI<T> {
             model.addRow(rowData);
         }
     }
-    
-   
+
 }

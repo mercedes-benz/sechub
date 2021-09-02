@@ -3,6 +3,15 @@ package com.daimler.sechub.integrationtest.api;
 
 import com.daimler.sechub.integrationtest.internal.TestScenario;
 
+/**
+ * A special test user variant - the user id and the API token will not be
+ * changed by scenarios. It is even possible to setup a fixed email address.
+ * Only necessary for some special purposes - e.g. inside DAUI where test
+ * framework methods are used having TestUser arguments.
+ * 
+ * @author Albert Tregnaghi
+ *
+ */
 public class FixedTestUser extends TestUser {
 
     private String fixedUserId;

@@ -28,24 +28,28 @@ public class ChangeProjectAccessLevelAction extends AbstractUIAction {
         String projectId = optProjectId.get().toLowerCase().trim();
         DeveloperAdministration administration = getContext().getAdministration();
 
-        DeveloperProjectDetailInformation details = administration.fetchProjectDetailInformation(projectId);
-        ProjectAccessLevel accesslevel = ProjectAccessLevel.fromId(details.getAccessLevel());
+        ProjectAccessLevel currentAccessLevel = fetchCurrentProjectAccessLevel(projectId, administration);
 
-        ChangeProjectAccessLevelDialogUI dialogUI = new ChangeProjectAccessLevelDialogUI(getContext(), "Change access level for project:" + projectId,
-                accesslevel);
-        dialogUI.setDescription("Current access level for project:" + accesslevel);
+        ChangeProjectAccessLevelDialogUI dialogUI = new ChangeProjectAccessLevelDialogUI(getContext(), projectId, currentAccessLevel);
         dialogUI.showDialog();
 
         if (!dialogUI.isOkPressed()) {
             return;
         }
-        ProjectAccessLevel accessLevel = dialogUI.getSelectedValue();
 
-        if (!confirm("Do you really want to change the project access level for project:" + projectId + " to " + accessLevel + " ?")) {
+        ProjectAccessLevel wantedAccessLevel = dialogUI.getSelectedValue();
+
+        if (!confirm("Do you really want to change the project access level for project:" + projectId + " to " + wantedAccessLevel + " ?")) {
             return;
         }
-        administration.changeProjectAccessLevel(projectId, accessLevel);
+        administration.changeProjectAccessLevel(projectId, wantedAccessLevel);
 
+    }
+
+    private ProjectAccessLevel fetchCurrentProjectAccessLevel(String projectId, DeveloperAdministration administration) {
+        DeveloperProjectDetailInformation details = administration.fetchProjectDetailInformation(projectId);
+        ProjectAccessLevel currentAccesslevel = ProjectAccessLevel.fromId(details.getAccessLevel());
+        return currentAccesslevel;
     }
 
 }

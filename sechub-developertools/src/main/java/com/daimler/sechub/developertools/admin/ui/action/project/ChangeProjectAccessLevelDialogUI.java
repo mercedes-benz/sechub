@@ -10,11 +10,12 @@ import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 
 public class ChangeProjectAccessLevelDialogUI extends AbstractListDialogUI<ProjectAccessLevel> {
 
-    private ProjectAccessLevel accessLevelBefore;
+    private ProjectAccessLevel currentAccessLevel;
 
-    public ChangeProjectAccessLevelDialogUI(UIContext context, String title, ProjectAccessLevel accessLevelBefore) {
-        super(context, title);
-        this.accessLevelBefore = accessLevelBefore;
+    public ChangeProjectAccessLevelDialogUI(UIContext context, String projectId, ProjectAccessLevel currentAccessLevel) {
+        super(context, "Change access level for project:" + projectId);
+        this.currentAccessLevel = currentAccessLevel;
+        setDescription("Current project access level:" + currentAccessLevel);
     }
 
     @Override
@@ -26,24 +27,24 @@ public class ChangeProjectAccessLevelDialogUI extends AbstractListDialogUI<Proje
 
     @Override
     protected void initializeDataForShowDialog() {
-
+        // not necessary
     }
 
     @Override
     protected int getSelectionColumn() {
-        return 0; // we use 0 for access level name
+        return 0; // we element form index 0
     }
 
     @Override
     protected List<Object[]> createTableContent() {
         List<Object[]> list = new ArrayList<>();
 
-        for (ProjectAccessLevel level : ProjectAccessLevel.values()) {
-            if (level == accessLevelBefore) {
-                // we do not show current value...
+        for (ProjectAccessLevel accessLevel : ProjectAccessLevel.values()) {
+            if (accessLevel == currentAccessLevel) {
+                // we do not show current access level but only possible other values.
                 continue;
             }
-            list.add(new Object[] { level });
+            list.add(new Object[] { accessLevel });
         }
 
         return list;
