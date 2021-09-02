@@ -40,6 +40,12 @@ public class ProjectTransactionService {
 		return result;
 	}
 
+	/**
+	 * Persists a project and an user entity in same transaction
+	 * @param project
+	 * @param user
+	 * @return persisted project
+	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public Project saveInOwnTransaction(Project project, User user) {
 		requireNonNull(project, "Project may not be null!");

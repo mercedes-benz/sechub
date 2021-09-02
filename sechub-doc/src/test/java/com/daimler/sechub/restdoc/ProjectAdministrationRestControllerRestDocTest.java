@@ -3,17 +3,21 @@ package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +46,7 @@ import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
 import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
+import com.daimler.sechub.domain.administration.project.ProjectChangeAccessLevelService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
 import com.daimler.sechub.domain.administration.project.ProjectDeleteService;
 import com.daimler.sechub.domain.administration.project.ProjectDetailChangeService;
@@ -54,25 +59,28 @@ import com.daimler.sechub.domain.administration.project.ProjectRepository;
 import com.daimler.sechub.domain.administration.project.ProjectUnassignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectUpdateWhitelistService;
 import com.daimler.sechub.domain.administration.user.User;
+import com.daimler.sechub.server.SecHubWebMvcConfigurer;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.daimler.sechub.test.ExampleConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProjectAdministrationRestController.class)
-@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class })
+@ContextConfiguration(classes = { ProjectAdministrationRestController.class, ProjectAdministrationRestControllerRestDocTest.SimpleTestConfiguration.class , SecHubWebMvcConfigurer.class})
 @WithMockUser(authorities = RoleConstants.ROLE_SUPERADMIN)
 @ActiveProfiles({ Profiles.TEST, Profiles.ADMIN_ACCESS })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
@@ -103,7 +111,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @MockBean
     ProjectDetailInformationService detailInformationService;
-    
+
     @MockBean
     ProjectDetailChangeService detailsChangeService;
 
@@ -115,6 +123,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
     
     @MockBean
     ListProjectsService listProjectsService;
+    
+    @MockBean
+    ProjectChangeAccessLevelService projectChangeAccessLevelService;
 
     @Before
     public void before() {
@@ -175,6 +186,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         ids.add("project2");
 
         when(listProjectsService.listProjects()).thenReturn(ids);
+
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -256,6 +268,43 @@ public class ProjectAdministrationRestControllerRestDocTest {
     }
 
     @Test
+    @UseCaseRestDoc(useCase = UseCaseAdministratorChangesProjectAccessLevel.class)
+    public void restdoc_change_project_access_level() throws Exception {
+
+        /* prepare */
+        StringBuilder acceptedValues = new StringBuilder();
+        acceptedValues.append("Accepted values: ");
+        for (Iterator<ProjectAccessLevel> it = Arrays.asList(ProjectAccessLevel.values()).iterator(); it.hasNext();) {
+            ProjectAccessLevel level = it.next();
+            acceptedValues.append(level.getId());
+            String description = level.getDescription();
+            if (description != null) {
+                acceptedValues.append("(");
+                acceptedValues.append(description);
+                acceptedValues.append(")");
+            }
+            if (it.hasNext()) {
+                acceptedValues.append(", ");
+            }
+        }
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                post(https(PORT_USED).buildAdminChangesProjectAccessLevelUrl(PROJECT_ID.pathElement(), PROJECT_ACCESS_LEVEL.pathElement()), "projectId1", ProjectAccessLevel.READ_ONLY.getId()).
+                contentType(MediaType.APPLICATION_JSON_VALUE)
+                ).
+        andExpect(status().isOk()).
+        andDo(document(RestDocFactory.createPath(UseCaseAdministratorChangesProjectAccessLevel.class),
+                pathParameters(
+                        parameterWithName(PROJECT_ID.paramName()).description("The id for project"),
+                        parameterWithName(PROJECT_ACCESS_LEVEL.paramName()).description("The new project access level. "+acceptedValues.toString())
+                        )
+                ));
+
+        /* @formatter:on */
+    }
+
+    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminAssignsUserToProject.class)
     public void restdoc_assign_user2project() throws Exception {
         /* prepare */
@@ -324,6 +373,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
+        when(project.getAccessLevel()).thenReturn(ProjectAccessLevel.FULL);
 
         Set<User> users = new LinkedHashSet<>();
         User user1 = mock(User.class);
@@ -348,7 +398,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
-        
+
         when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
@@ -369,20 +419,21 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             description(RestDocFactory.createDescription(useCase)).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
                             responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
+				pathParameters(
+							parameterWithName(PROJECT_ID.paramName()).description("The id for project to show details for")
                             ).
-                            responseFields(
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
+				responseFields(
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
+							fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
                             ).
                             build()
-                         )
+						)
 				));
 
 		/* @formatter:on */
@@ -397,6 +448,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
         
         Project project = mock(Project.class);
         when(project.getId()).thenReturn("projectId1");
+        when(project.getAccessLevel()).thenReturn(ProjectAccessLevel.FULL);
 
         Set<User> users = new LinkedHashSet<>();
         User user1 = mock(User.class);
@@ -419,11 +471,11 @@ public class ProjectAdministrationRestControllerRestDocTest {
         metaData.add(entry);
 
         when(project.getMetaData()).thenReturn(metaData);
-        
+
         when(project.getDescription()).thenReturn("description");
 
         ProjectDetailInformation detailInformation = new ProjectDetailInformation(project);
-        
+
         when(detailsChangeService.changeProjectDescription(any(), any())).thenReturn(detailInformation);
 
         /* execute + test @formatter:off */
@@ -444,25 +496,26 @@ public class ProjectAdministrationRestControllerRestDocTest {
                             description(RestDocFactory.createDescription(useCase)).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
                             responseSchema(OpenApiSchema.PROJECT_DETAILS.getSchema()).
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
+                pathParameters(
+                            parameterWithName(PROJECT_ID.paramName()).description("The id for project to change details for")
                             ).
-                            responseFields(
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner ofthis project. An owner is the person in charge."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
-                                    fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
+                responseFields(
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_PROJECT_ID).description("The name of the project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_USERS).description("A list of all users having access to the project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_OWNER).description("Username of the owner of this project. An owner is the person in charge."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_WHITELIST).description("A list of all whitelisted URIs. Only these ones can be scanned for the project!"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA).description("An JSON object containing metadata key-value pairs defined for this project."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_METADATA + ".key1").description("An arbitrary metadata key."),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_ACCESSLEVEL).description("The project access level"),
+                            fieldWithPath(ProjectDetailInformation.PROPERTY_DESCRIPTION).description("The project description.")
                             ).
                             build()
-                         )
+                        )
                 ));
 
         /* @formatter:on */
     }
-    
+
     @Profile(Profiles.TEST)
     @EnableAutoConfiguration
     public static class SimpleTestConfiguration extends AbstractAllowSecHubAPISecurityConfiguration {

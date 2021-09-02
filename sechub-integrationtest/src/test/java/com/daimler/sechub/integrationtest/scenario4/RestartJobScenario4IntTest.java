@@ -18,6 +18,7 @@ import com.daimler.sechub.adapter.mock.AbstractMockedAdapter;
 import com.daimler.sechub.integrationtest.api.AssertFullScanData;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestDataConstants;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 
@@ -240,7 +241,7 @@ public class RestartJobScenario4IntTest {
          * so we must upload again...
          */
         revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
-        as(USER_1).upload(project, sechubJobUUD, "zipfile_contains_only_test1.txt.zip");
+        as(USER_1).upload(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         revertJobToStillRunning(sechubJobUUD); // fake it's running
         assertJobIsRunning(project, sechubJobUUD);
     }

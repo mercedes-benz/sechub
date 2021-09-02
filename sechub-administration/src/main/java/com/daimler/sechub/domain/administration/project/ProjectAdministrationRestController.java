@@ -29,6 +29,8 @@ import com.daimler.sechub.domain.administration.project.ProjectJsonInput.Project
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.RoleConstants;
 import com.daimler.sechub.sharedkernel.Step;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminChangesProjectDescription;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminCreatesProject;
 import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
@@ -67,9 +69,12 @@ public class ProjectAdministrationRestController {
 
     @Autowired
     ProjectDetailInformationService detailsInformationService;
-    
+
     @Autowired
     ProjectDetailChangeService detailsChangeService;
+
+    @Autowired
+    ProjectChangeAccessLevelService projectAccessLevelChangeService;
 
     @Autowired
     ProjectRepository repository;
@@ -114,8 +119,8 @@ public class ProjectAdministrationRestController {
 		/* @formatter:on */
         return detailsInformationService.fetchDetails(projectId);
     }
-	
-	/* @formatter:off */
+
+    /* @formatter:off */
     @UseCaseAdminChangesProjectDescription(@Step(number = 1, name="Rest call", description = "Changes project description. Json returned containing details about changed project", needsRestDoc = true))
     @RequestMapping(path = AdministrationAPIConstants.API_CHANGE_PROJECT_DETAILS, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ProjectDetailInformation changeProjectDescription(@PathVariable(name = "projectId") String projectId, @RequestBody ProjectJsonInput project) {
@@ -164,6 +169,14 @@ public class ProjectAdministrationRestController {
 	public void deleteProject(@PathVariable(name = "projectId") String projectId) {
 		/* @formatter:on */
         deleteService.deleteProject(projectId);
+    }
+
+    /* @formatter:off */
+    @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 1, name = "Rest call", description = "Admin does call REST API to change project access level", needsRestDoc = true))
+    @RequestMapping(path = AdministrationAPIConstants.API_CHANGE_PROJECT_ACCESSLEVEL, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public void changeProjectAccessLevel(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "projectAccessLevel") ProjectAccessLevel projectAccessLevel) {
+        /* @formatter:on */
+        projectAccessLevelChangeService.changeProjectAccessLevel(projectId, projectAccessLevel);
     }
 
     @InitBinder

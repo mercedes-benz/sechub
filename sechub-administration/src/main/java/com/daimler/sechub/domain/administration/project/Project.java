@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import com.daimler.sechub.domain.administration.user.User;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 
 @Entity
 @Table(name = Project.TABLE_NAME)
@@ -40,6 +41,8 @@ public class Project {
 	public static final String COLUMN_PROJECT_DESCRIPTION = "PROJECT_DESCRIPTION";
 	public static final String COLUMN_WHITELIST_URIS = "PROJECT_WHITELIST_URIS";
 	public static final String COLUMN_METADATA = "METADATA_KEY";
+	
+	public static final String COLUMN_PROJECT_ACCESS_LEVEL = "PROJECT_ACCESS_LEVEL";
 
 	public static final String ASSOCIATE_PROJECT_TO_USER_COLUMN_PROJECT_ID = "PROJECTS_PROJECT_ID";
 	public static final String ASSOCIATE_PROJECT_TO_URI_COLUMN_PROJECT_ID = "PROJECT_PROJECT_ID";
@@ -60,6 +63,9 @@ public class Project {
 
 	@Column(name = COLUMN_PROJECT_DESCRIPTION)
 	String description;
+	
+	@Column(name = COLUMN_PROJECT_ACCESS_LEVEL, nullable = false)
+	ProjectAccessLevel accessLevel = ProjectAccessLevel.FULL;
 
 	// no merge cascade or persist, because owner and user in set
 	// otherwise leading to "java.lang.IllegalStateException: Multiple
@@ -116,6 +122,10 @@ public class Project {
 	public String getDescription() {
 	    return description;
 	}
+	
+	public ProjectAccessLevel getAccessLevel() {
+        return accessLevel;
+    }
 
 	@Override
 	public int hashCode() {

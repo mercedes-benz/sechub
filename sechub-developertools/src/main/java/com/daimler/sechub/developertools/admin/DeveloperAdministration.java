@@ -23,6 +23,7 @@ import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.AsUser;
+import com.daimler.sechub.integrationtest.api.FixedTestProject;
 import com.daimler.sechub.integrationtest.api.FixedTestUser;
 import com.daimler.sechub.integrationtest.api.InternalAccess;
 import com.daimler.sechub.integrationtest.api.TestAPI;
@@ -34,6 +35,7 @@ import com.daimler.sechub.integrationtest.internal.SimpleTestStringList;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper;
 import com.daimler.sechub.integrationtest.internal.TestRestHelper.RestHelperTarget;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.test.TestPDSServerConfgiuration;
 import com.daimler.sechub.test.TestPDSServerProductConfig;
 import com.daimler.sechub.test.TestPDSServerProductParameter;
@@ -53,6 +55,8 @@ public class DeveloperAdministration {
     private TestURLBuilder urlBuilder;
     private ErrorHandler errorHandler;
     private UIContext uiContext;
+    
+    private static final DeveloperProjectDetailInformation PROJECT_DETAIL_IMPORTER = new DeveloperProjectDetailInformation();
 
     public DeveloperAdministration(ConfigProvider provider, ErrorHandler errorHandler, UIContext uiContext) {
         this.provider = provider;
@@ -416,6 +420,12 @@ public class DeveloperAdministration {
         JsonNode jsonNode = jsonHelper.readTree(json);
         return jsonNode.get("description").textValue();
     }
+    
+    public DeveloperProjectDetailInformation fetchProjectDetailInformation(String projectId) {
+        String json = fetchProjectInfo(projectId);
+        
+        return PROJECT_DETAIL_IMPORTER.fromJSON(json);
+    }
 
     public String fetchUserInfo(String userId) {
         return getRestHelper().getStringFromURL(getUrlBuilder().buildAdminShowsUserDetailsUrl(userId));
@@ -727,6 +737,10 @@ public class DeveloperAdministration {
 
     public void removeProjectIdsFromProfile(String profileId, List<String> list) {
         removeProjectIdsFromProfile(profileId, list.toArray(new String[list.size()]));
+    }
+
+    public void changeProjectAccessLevel(String projectId, ProjectAccessLevel accessLevel) {
+        asTestUser().changeProjectAccessLevel(new FixedTestProject(projectId), accessLevel);
     }
 
 }

@@ -142,7 +142,12 @@ public enum MessageID {
      */
     SCHEDULER_STARTED(MessageDataKeys.ENVIRONMENT_BASE_URL, MessageDataKeys.ENVIRONMENT_CLUSTER_MEMBER_STATUS),
     
-    PROJECT_OWNER_CHANGED(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL),
+    PROJECT_OWNER_CHANGED(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, MessageDataKeys.ENVIRONMENT_BASE_URL), 
+    
+    /**
+     * Inform the the access level for a project has been changed
+     */
+    PROJECT_ACCESS_LEVEL_CHANGED(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA),
     ;
 
 	private Set<MessageDataKey<?>> unmodifiableKeys;

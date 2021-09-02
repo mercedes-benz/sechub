@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: MIT
+An administrator is able to change the access level of a project. 
+
+Project access levels do constraint possible user operations for 
+a project - e.g. restrict to read only operations. The details of different 
+restrictions are described below.
+
+TIP: A project access level `none` will make it also for administrators 
+     impossible to fetch reports from the project. Only  
+     special administrator REST API calls are not restricted. 
+
+
+
+===== Levels
+- `full` +
+   no restrictions
+- `read_only` +
+  users can download their reports, get job status, but cannot trigger any project jobs
+- `none` +
+  users have no access to reports, jobs and cannot trigger any jobs for the project 
+
+===== Conststraints
+
+====== Full
+When a project has access level `full` any read or write user operation 
+is possible:
+
+- a new scan can be triggered, so user can
+  * create job
+  * approve job
+  * upload job data
+- scheduling is active for the project new jobs are processed
+- user can check status for a job in their project
+- user can download their former reports
+
+====== Read only
+
+When a project has access level `read_only` only read user operations
+are possible:
+
+- a new scan is not possible, HTTP 403: Forbidden will be sent for
+  * create job
+  * approve job
+  * upload job data
+- running jobs are still running
+- already scheduled jobs will be scheduled
+- user are still able to check status for a job in their project
+- user can still download their former reports
+
+====== None
+When a project has access level `none` no user operation is possible:
+
+- a new scan is not possible, HTTP 403: Forbidden will be sent for
+  * create job
+  * approve job
+  * upload job data
+- running jobs are still running
+- already scheduled jobs will be scheduled
+- user are NOT able to check status for a job in their project,  HTTP 403: Forbidden will be sent
+- user can NOT download their former reports,  HTTP 403: Forbidden will be sent
+

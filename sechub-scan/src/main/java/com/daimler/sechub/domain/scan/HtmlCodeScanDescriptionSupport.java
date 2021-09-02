@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan;
 
+import static java.util.Objects.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
@@ -46,7 +47,7 @@ public class HtmlCodeScanDescriptionSupport {
     }
 
     private HTMLScanResultCodeScanEntry createEntry(int callNumber, SecHubCodeCallStack code) {
-        Objects.nonNull(code);
+        requireNonNull(code, "Code call stack may not be null!");
 
         HTMLScanResultCodeScanEntry entry = new HTMLScanResultCodeScanEntry();
 

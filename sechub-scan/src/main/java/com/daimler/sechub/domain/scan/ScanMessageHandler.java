@@ -14,6 +14,7 @@ import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessAtAllService;
 import com.daimler.sechub.domain.scan.access.ScanRevokeUserAccessFromProjectService;
 import com.daimler.sechub.domain.scan.config.UpdateScanConfigService;
 import com.daimler.sechub.domain.scan.product.ProductResultService;
+import com.daimler.sechub.domain.scan.project.ScanProjectConfigAccessLevelService;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier;
 import com.daimler.sechub.sharedkernel.mapping.MappingIdentifier.MappingType;
@@ -29,7 +30,9 @@ import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
 import com.daimler.sechub.sharedkernel.messaging.SynchronMessageHandler;
 import com.daimler.sechub.sharedkernel.messaging.UserMessage;
+import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.usecases.admin.config.UseCaseAdmiUpdatesMappingConfiguration;
+import com.daimler.sechub.sharedkernel.usecases.admin.project.UseCaseAdministratorChangesProjectAccessLevel;
 
 @Component
 public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMessageHandler {
@@ -56,6 +59,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
     @Autowired
     ProductResultService productResultService;
+    
+    @Autowired
+    ScanProjectConfigAccessLevelService projectAccessLevelService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -77,6 +83,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             break;
         case MAPPING_CONFIGURATION_CHANGED:
             handleMappingConfigurationChanged(request);
+            break;
+        case PROJECT_ACCESS_LEVEL_CHANGED:
+            handleProcessAccessLevelChanged(request);
             break;
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
@@ -142,6 +151,17 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
         }
 
         updateScanMappingService.updateScanMapping(mappingId, data.getMappingData());
+    }
+    @IsReceivingAsyncMessage(MessageID.PROJECT_ACCESS_LEVEL_CHANGED)
+    @UseCaseAdministratorChangesProjectAccessLevel(@Step(number = 3, name = "Event handler", description = "Receives change project access level event"))
+    private void handleProcessAccessLevelChanged(DomainMessage request) {
+        ProjectMessage data = request.get(MessageDataKeys.PROJECT_ACCESS_LEVEL_CHANGE_DATA);
+        
+        String projectId = data.getProjectId();
+        ProjectAccessLevel formerAccessLevel = data.getFormerAccessLevel();
+        ProjectAccessLevel newAccessLevel = data.getNewAccessLevel();
+        
+        projectAccessLevelService.changeProjectAccessLevel(projectId,newAccessLevel,formerAccessLevel);
     }
 
     @IsReceivingAsyncMessage(MessageID.USER_ADDED_TO_PROJECT)

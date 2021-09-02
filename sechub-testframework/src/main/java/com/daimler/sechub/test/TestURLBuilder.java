@@ -7,7 +7,7 @@ public class TestURLBuilder {
 
     /**
      * This enum represents common used identifiers inside rest documentation. Use
-     * this enumeration for building urls inside your RestDoc tests and use
+     * this enumeration for building URLs inside your RestDoc tests and use
      * parameters for data, so documentation is using these parameters - see
      * references for examples.
      * 
@@ -31,7 +31,11 @@ public class TestURLBuilder {
 
         PROFILE_ID("profileId"),
 
-        UUID_PARAMETER("uuid"),;
+        UUID_PARAMETER("uuid"),
+        
+        PROJECT_ACCESS_LEVEL("projectAccessLevel"),
+        
+        ;
 
         private String restDocName;
         private String urlPart;
@@ -307,45 +311,6 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN, "projects");
     }
 
-    public String buildAdminShowsProjectDetailsUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-    
-    public String buildAdminChangesProjectDescriptionUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
-    }
-    
-    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
-    }
-
-    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
-    }
-
-    public String buildAdminFetchProjectInfoUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildUpdateProjectWhiteListUrl(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
-    }
-    
-    public String buildUpdateProjectMetaData(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
-    }
-
-    public String buildAdminDeletesProject(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId);
-    }
-
-    public String buildAdminFetchesScanLogsForProject(String projectId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "scan", "logs");
-    }
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ project ..................................+ */
@@ -359,6 +324,53 @@ public class TestURLBuilder {
         return buildUrl(API_PROJECT, projectId, "false-positives");
     }
 
+    /* +-----------------------------------------------------------------------+ */
+    /* +............................ admin/projects ...........................+ */
+    /* +-----------------------------------------------------------------------+ */
+    public String buildAdminShowsProjectDetailsUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminChangesProjectDescriptionUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+    }
+    
+    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    }
+    
+    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    }
+    
+    public String buildAdminFetchProjectInfoUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildUpdateProjectWhiteListUrl(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "whitelist");
+    }
+    
+    public String buildUpdateProjectMetaData(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "metadata");
+    }
+    
+    public String buildAdminDeletesProject(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId);
+    }
+    
+    public String buildAdminFetchesScanLogsForProject(String projectId) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "scan", "logs");
+    }
+    
+    public String buildAdminChangesProjectAccessLevelUrl(String projectId, String projectAccessLevel) {
+        return buildUrl(API_ADMIN_PROJECT, projectId, "accesslevel", projectAccessLevel);
+    }
+    
     /* +-----------------------------------------------------------------------+ */
     /* +............................ admin/jobs ...............................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -676,5 +688,7 @@ public class TestURLBuilder {
     public String buildBaseURL() {
         return buildUrl("");
     }
+
+   
 
 }

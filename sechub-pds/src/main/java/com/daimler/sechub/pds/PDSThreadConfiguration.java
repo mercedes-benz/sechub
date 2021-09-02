@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
 
 @Configuration
 public class PDSThreadConfiguration {
@@ -17,6 +18,7 @@ public class PDSThreadConfiguration {
 		executor.setCorePoolSize(4);
 		executor.setMaxPoolSize(4);
 		executor.setThreadNamePrefix("default_task_executor_thread");
+		executor.setTaskDecorator(runnable -> new DelegatingSecurityContextRunnable(runnable));
 		executor.initialize();
 		return executor;
 	}

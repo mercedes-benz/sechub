@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import com.daimler.sechub.integrationtest.api.AnonymousTestUser;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestAPI;
+import com.daimler.sechub.integrationtest.api.TestDataConstants;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 
@@ -294,7 +295,7 @@ public class SecHubExecutionScenario2IntTest {
 			canCreateWebScan(PROJECT_1);
 
 		assertUser(USER_1).
-			canUploadSourceZipFile(PROJECT_1,jobUUID,"zipfile_contains_only_test1.txt.zip").
+			canUploadSourceZipFile(PROJECT_1,jobUUID,TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT).
 			canApproveJob(PROJECT_1, jobUUID).
 			canGetReportForJob(PROJECT_1, jobUUID);
 		/* @formatter:on */
