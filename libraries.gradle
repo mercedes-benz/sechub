@@ -109,7 +109,7 @@ ext {
          epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}",
          
          /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
-         jsoup:									"org.jsoup:jsoup:1.13.1",
+         jsoup:									"org.jsoup:jsoup:1.14.2",
 
    ]
 
