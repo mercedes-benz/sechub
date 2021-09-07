@@ -5,7 +5,7 @@ retries=20
 
 function usage() {
     local script_name=
-    echo "`basename $0` <file-path-to-upload>"
+    echo "`basename $0` <file-to-upload>"
     echo ""
     
     cat <<'USAGE'
@@ -38,8 +38,7 @@ function is_job_finished () {
 function parameter_missing() {
     MESSAGE="$1"
 
-    echo "[ERROR] $MESSAGE"
-    echo ""
+    printf "[ERROR] $MESSAGE\n"
     usage
     exit 1
 }
@@ -70,6 +69,16 @@ then
 fi
 
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
+
+check_alive=`$pds_api check_alive`
+
+if [[ -z $check_alive ]]
+then
+    printf "\n[ERROR] The PDS server $PDS_SERVER is not to running.\n"
+    printf "[ERROR] Check if the PDS is running.\n"
+    exit 3
+fi
+
 sechub_job_uuid=`uuidgen`
 jobUUID=`$pds_api create_job PDS_GOSEC "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
 
