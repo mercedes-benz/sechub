@@ -11,7 +11,7 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
 [NOTE]
-We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux images are intended for experienced Linux users.
+We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux image is intended for experienced Linux users.
 
 == Run Locally
 
@@ -29,7 +29,7 @@ Docker and Docker-Compose need to be installed:
 
 === Single Instance
 
-Start a single instance either by using a Bash wrapper script or follow the steps manually.
+Start a single instance either by using the Bash wrapper script which does setup everything <<_automatic,automatically>> or follow the steps <<_manually, manual>>.
 
 ==== Automatic
 
@@ -50,6 +50,9 @@ or to start the Alpine Linux container:
 . Copy `env-initial` file to `.env`
 
 . Set values in `.env` file. The values are described in the `env-example` file.
++
+[NOTE]
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+GoSec container.
 
 . Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
 +
@@ -77,7 +80,15 @@ cd ../../sechub-developertools/scripts
 +
 The folder contains a `pds-api.sh` script.
 
-. Set variables
+. Set variables of your PDS instance.
++
+----
+export PDS_SERVER=https://<pds-host>:<pds-port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+----
++
+The default values for the PDS-GoSec `docker-compose` examples are:
 +
 ----
 export PDS_SERVER=https://localhost:8444
@@ -86,7 +97,7 @@ export PDS_APITOKEN="pds-apitoken"
 ----
 +
 [TIP]
-`docker ps` -> get ports
+Those values are the default values from `env-initial` and `env-cluster-initial` files. 
 
 . Check if server is alive and running
 +
@@ -121,7 +132,8 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 ./pds-api.sh upload_zip "8d4236cf-b512-40bc-bb70-c247fa4c9c37" /home/<myuser>/go_code.zip
 ----
 +
-TIP: GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
+[TIP]
+GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
 
 . Mark the job ready to start
 +
@@ -354,20 +366,31 @@ Output
 }
 ----
 +
-NOTE: This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
+[NOTE]
+This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
 ==== Scan Script 
 
-It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious.
-To improve on the experience you can scan using a script.
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
 
 . Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+----
++
+For example:
 +
 ----
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
 ----
++
+[NOTE]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+GoSec in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with Go source code.
 +
@@ -375,7 +398,7 @@ export PDS_APITOKEN="pds-apitoken"
 ./70-test.sh <path-to-zip-file>
 ----
 +
-example:
+For example:
 +
 ----
 ./70-test.sh ~/myproject.zip
@@ -387,7 +410,7 @@ The cluster is created locally via `docker-compose`.
 
 ==== Shared Volume
 
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done on the PDS.
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
@@ -395,13 +418,13 @@ image::cluster_shared_volume.svg[Components of cluster with shared volume]
 
 ===== Automatic
 
-Starting several PDS + GoSec instances
+Starting several PDS + GoSec instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + GoSec instances
+Example of starting 3 PDS + GoSec instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -410,6 +433,8 @@ Example of starting 3 PDS + GoSec instances
 ===== Manually
 
 . Copy `env-cluster-initial` file to `.env-cluster`
++
+NOTE: It is recommended to change the passwords in `.env-cluster`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
 
 . Start cluster using https://docs.docker.com/compose/[Docker Compose]:
 +
@@ -419,7 +444,7 @@ Example of starting 3 PDS + GoSec instances
 
 ==== Object Storage
 
-The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done on the PDS.
+The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
 
@@ -442,6 +467,8 @@ Example of starting 3 PDS + GoSec instances
 ===== Manually
 
 . Copy `env-cluster-initial` file to `.env-cluster-object-storage`
++
+NOTE: It is recommended to change the passwords in `.env-cluster-object-storage`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
 
 . Set `S3_ENABLED` to `true`.
 +
@@ -457,9 +484,11 @@ S3_ENABLED=true
 
 === Change the Configuration
 
-There are several configuration options available. Have a look at `env-example` for more details.
+There are several configuration options available for the PDS+GoSec `docker-compose` files. Have a look at `env-example` for more details.
 
 === Troubleshooting
+
+This section contains information about how to troubleshoot PDS+GoSec if something goes wrong.
 
 ==== Access the Ubuntu container
 
@@ -492,13 +521,15 @@ or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
 +
 TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
 
-== Kubernetes
+== Build Image and Push to Registry
 
-=== Build Image and Push to Registry
+Build container images and push them to registry to run PDS+GoSec on virtual machines, Kubernetes or any other distributed system.
 
-==== Build Image
+=== Build Image
 
-===== Ubuntu
+Build the container image.
+
+==== Ubuntu
 
 . Using the default image: 
 +
@@ -512,7 +543,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
 ----
 
-===== Alpine
+==== Alpine
 
 . Using the default image: 
 +
@@ -526,7 +557,9 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
 ----
 
-==== Push to Registry
+=== Push Image to Registry
+
+Push the container image to a registry.
 
 * Push the version tag only
 +
@@ -540,7 +573,13 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 ./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
 ----
 
+== Kubernetes
+
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+GoSec in Kubernetes.
+
 === Helm
+
+https://helm.sh/[Helm] is a package manager for Kubernetes.
 
 ==== Requierments
 
@@ -663,7 +702,7 @@ pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
 
 ----
 
-. Forward port to own machine
+. Forward port of one of the pods to own machine
 +
 ----
 kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
@@ -697,7 +736,7 @@ helm uninstall pds-gosec
 
 === Troubleshooting
 
-* Access deployment events
+* Access deployment events.
 +
 ----
 kubectl describe pod pds-gosec-545f5bc8-7s6rh
@@ -712,7 +751,7 @@ Events:
   Normal  Started    10s   kubelet            Started container pds-gosec
 ----
 
-* Access container logs
+* Access container logs.
 +
 ----
 kubectl logs pds-gosec-545f5bc8-7s6rh
