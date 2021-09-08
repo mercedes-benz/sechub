@@ -10,6 +10,9 @@ debug () {
 }
 
 server () {
+    echo "Check configuration file"
+    nginx -t
+    
     echo "Start Nginx"
     nginx -g 'daemon off;'
 }

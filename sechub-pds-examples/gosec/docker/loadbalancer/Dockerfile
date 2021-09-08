@@ -9,7 +9,7 @@ RUN apk update --no-cache && \
 RUN cd /tmp && \
     openssl req \
         -new \
-        -newkey rsa:4096 \
+        -newkey rsa:2048 \
         -days 365 \
         -nodes \
         -x509 \
@@ -21,6 +21,10 @@ RUN cd /tmp && \
 RUN mkdir -p /certificates && \
     mv /tmp/localhost.cert /certificates/localhost.cert && \
     mv /tmp/localhost.key /certificates/localhost.key
+
+# Generate ephemeral Diffie-Hellman paramaters for perfect forward secrecy
+# see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
+RUN openssl dhparam -out /certificates/certsdhparam.pem 2048
 
 RUN chown -R nginx:nginx /certificates
 
