@@ -66,13 +66,16 @@ func TestReadAllowedItemFromConsole(t *testing.T) {
 
 	// EXECUTE
 	fmt.Fprintln(w, "a")
-	r1, err := ReadAllowedItemFromConsole("Prompt1", itemlist)
+	r1, _ := ReadAllowedItemFromConsole("Prompt1", itemlist)
 
 	fmt.Fprintln(w, "b")
-	r2, err := ReadAllowedItemFromConsole("Prompt2", itemlist)
+	r2, _ := ReadAllowedItemFromConsole("Prompt2", itemlist)
 
 	fmt.Fprintln(w, "C")
-	r3, err := ReadAllowedItemFromConsole("Prompt3", itemlist)
+	r3, _ := ReadAllowedItemFromConsole("Prompt3", itemlist)
+
+	fmt.Fprint(w, "a\r\n") // Simulate Windows client
+	r4, _ := ReadAllowedItemFromConsole("Prompt4", itemlist)
 
 	// Restore Stdin
 	os.Stdin = originalStdin
@@ -81,4 +84,5 @@ func TestReadAllowedItemFromConsole(t *testing.T) {
 	sechubTestUtil.AssertEquals("a", r1, t)
 	sechubTestUtil.AssertEquals("b", r2, t)
 	sechubTestUtil.AssertEquals("c", r3, t)
+	sechubTestUtil.AssertEquals("a", r4, t)
 }

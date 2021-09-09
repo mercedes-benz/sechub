@@ -14,6 +14,7 @@ import org.junit.rules.Timeout;
 
 import com.daimler.sechub.integrationtest.api.AssertEventInspection;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestDataConstants;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseIdentifier;
@@ -28,14 +29,13 @@ public class JobUsecasesEventTraceScenario4IntTest {
 
     TestProject project = PROJECT_1;
 
-    
     /* ------------------------------------------------------------------------ */
     /* --------------------------- HARD RESTART ------------------------------- */
     /* ------------------------------------------------------------------------ */
     @Test
     /**
      * We simulate a JVM crash where a product result was already written to
-     * database. 
+     * database.
      */
     public void UC_ADMIN_RESTARTS_JOB_HARD__simulate_accidently_job_restarted_where_already_done() {
         /* @formatter:off */
@@ -125,7 +125,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB_HARD.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
     }
-    
+
     @Test
     /**
      * We simulate a JVM crash where NO product result was written to database.
@@ -273,9 +273,9 @@ public class JobUsecasesEventTraceScenario4IntTest {
         /* assert + write */
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
-        
+
     }
-    
+
     @Test
     /**
      * We simulate a JVM crash where NO product result was written to database.
@@ -328,8 +328,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
         assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_RESTARTS_JOB.name(),"crashed_jvm_with_product_result");
         /* @formatter:on */
     }
-    
-    
+
     private void simulateJobIsStillRunningAndUploadAvailable(UUID sechubJobUUD) {
         assertNotNull(sechubJobUUD);
         assertJobHasEnded(project, sechubJobUUD);
@@ -338,7 +337,7 @@ public class JobUsecasesEventTraceScenario4IntTest {
          * so we must upload again...
          */
         revertJobToStillNotApproved(sechubJobUUD); // make upload possible again...
-        as(USER_1).upload(project, sechubJobUUD, "zipfile_contains_only_test1.txt.zip");
+        as(USER_1).upload(project, sechubJobUUD, TestDataConstants.RESOURCE_PATH_ZIPFILE_ONLY_TEST1_TXT);
         revertJobToStillRunning(sechubJobUUD); // fake it's running
         assertJobIsRunning(project, sechubJobUUD);
     }

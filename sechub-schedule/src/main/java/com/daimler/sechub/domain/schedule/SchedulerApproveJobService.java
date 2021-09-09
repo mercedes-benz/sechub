@@ -35,6 +35,7 @@ public class SchedulerApproveJobService {
 		assertion.isValidJobUUID(jobUUID);
 
 		assertService.assertUserHasAccessToProject(projectId);
+		assertService.assertProjectAllowsWriteAccess(projectId);
 
 		ScheduleSecHubJob secHubJob = assertService.assertJob(projectId, jobUUID);
 		ExecutionState state = secHubJob.getExecutionState();

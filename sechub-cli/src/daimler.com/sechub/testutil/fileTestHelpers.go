@@ -24,15 +24,15 @@ func InitializeTestTempDir(t *testing.T) (name string) {
 func CreateTestDirectory(dir string, mode os.FileMode, t *testing.T) {
 	_, err := os.Stat(dir)
 	if os.IsExist(err) {
-		log.Printf("Folder already exists: %q", dir)
+		log.Printf("Folder already exists: %q\n", dir)
 		return
 	}
 
 	err = os.MkdirAll(dir, mode)
 	if err != nil {
-		t.Fatalf("Cannot create folder. Error: %q", err)
+		t.Fatalf("Cannot create folder. Error: %q\n", err)
 	}
-	fmt.Printf("Folder created: %q", dir)
+	fmt.Printf("Folder created: %q\n", dir)
 }
 
 // CreateTestFile - create a regular file with text content in testing context
@@ -48,7 +48,7 @@ func CreateTestFile(file string, mode os.FileMode, content []byte, t *testing.T)
 
 	_, err = os.Stat(file)
 	if os.IsNotExist(err) {
-		t.Fatalf("Creating file %q failed. Error: %q", file, err)
+		t.Fatalf("Creating file %q failed. Error: %q\n", file, err)
 	} else {
 		fmt.Printf("File created: %q\n", file)
 	}

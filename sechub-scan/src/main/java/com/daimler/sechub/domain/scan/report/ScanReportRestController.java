@@ -42,7 +42,6 @@ public class ScanReportRestController {
 	@Autowired
 	private DownloadScanReportService downloadReportService;
 
-
 	/* @formatter:off */
 	@UseCaseUserDownloadsJobReport(@Step(number=1,next= {3},name="REST API call to get JSON report",needsRestDoc=true))
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))

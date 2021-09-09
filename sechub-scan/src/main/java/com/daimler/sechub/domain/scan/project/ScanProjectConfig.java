@@ -74,10 +74,18 @@ public class ScanProjectConfig {
 		return key;
 	}
 	
+	/**
+	 * Set data as a string. Either use simple values or a JSON for structured data 
+	 * @param data
+	 */
 	public void setData(String data) {
 		this.data = data;
 	}
-	
+
+	/**
+	 * 
+	 * @return data as string. Either simple values or a JSON for structured data
+	 */
 	public String getData() {
 		return data;
 	}

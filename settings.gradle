@@ -17,6 +17,8 @@ include 'sechub-cli',
 /* PDS */
 'sechub-pds', // pds=product delegation server, executable spring boot jar
 'sechub-pds-core', // core project for test compile dependencies and more
+'sechub-pds-examples', // our pds examples / blue prints
+
 
 /* integration test*/
 'sechub-integrationtest',

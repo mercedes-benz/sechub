@@ -37,14 +37,14 @@ func AssertError(err error, t *testing.T) {
 // AssertContains checks wanted string is inside given list
 func AssertContains(list []string, wanted string, t *testing.T) {
 	if !Contains(list, wanted) {
-		t.Fatalf("Did not found %s inside %s", wanted, list)
+		t.Fatalf("Did not find %s inside %s", wanted, list)
 	}
 }
 
 // AssertContainsNot checks unwanted string is NOT inside given list
 func AssertContainsNot(list []string, unwanted string, t *testing.T) {
 	if Contains(list, unwanted) {
-		t.Fatalf("Did found %s inside %s", unwanted, list)
+		t.Fatalf("Found %s inside %s which was not expected.", unwanted, list)
 	}
 }
 

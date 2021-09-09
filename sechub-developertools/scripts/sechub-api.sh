@@ -13,12 +13,11 @@
 
 function usage {
   cat - <<EOF
----
-Usage: `basename $0` [-p] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
+Usage: `basename $0` [-p] [-y] [-s <sechub server url> [-u <sechub user>] [-a <sechub api token>] action [<action's parameters>]
 
-Shell front end to selected SecHub API calls.
+Shell front end to selected SecHub API calls (https://daimler.github.io/sechub/latest/sechub-restapi.html).
 Output will be beautified/colorized by piping json output through jq command (https://github.com/stedolan/jq)
-unless you specify -p or -plain option.
+unless you specify -p or -plain option. Option -y or -yes skips confirmation dialog when deleting items.
 
 You are encouraged to set SECHUB_SERVER, SECHUB_USERID and SECHUB_APITOKEN as environment variables
 so you can omit setting them via options which is better, because your secrets will not be revealed in the process list.
@@ -26,23 +25,37 @@ so you can omit setting them via options which is better, because your secrets w
 List of actions and mandatory parameters:
 ACTION [PARAMETERS] - EXPLANATION
 ----------------------------------
+alive_check - alive check (No user needed)
+executor_create <json-file> - Create executor configuration from JSON file
+executor_delete <executor-uuid> - Delete executor <executor-uuid>
 executor_details <executor-uuid> - Show definition of executor <executor-uuid>
 executor_list - List all existing executors (json format)
+executor_update <executor-uuid> <json-file> - Update executor <executor-uuid> with <json-file> contents
 job_cancel <job-uuid> - Cancel job <job-uuid>
 job_list_running - List running jobs (json format)
 job_restart <job-uuid> - Restart/activate job <job-uuid>
 job_restart_hard <job-uuid> - Run new backend scan of job <job-uuid>
 job_status <project-id> <job-uuid> - Get status of job <job-uuid> in project <project-id> (json format)
+profile_create <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
+               Create execution profile <profile-id> with named executors assigned; description optional
+profile_delete <profile-id> - Delete execution profile <profile-id>
 profile_details <profile-id> - Show details of execution profile <profile-id> (e.g. assinged executors)
 profile_list - List all existing execution profiles (json format)
+profile_update <profile-id> <executor-uuid1>[,<executor-uuid2>...] [<description>]
+               Update execution profile <profile-id> with named executors assigned; description optional
 project_assign_profile <project-id> <profile-id> - Assign execution profile <profile-id> to project <project-id>
 project_assign_user <project-id> <user-id> - Assign user to project (allow scanning)
 project_create <project-id> <owner> ["<project short description>"] - Create a new project. The short description is optional.
+project_delete <project-id> - Delete project <project-id>
 project_details <project-id> - Show owner, users, whitelist etc. of project <project-id>
 project_details_all <project-id> - project_details plus assigned execution profiles
 project_falsepositives_list <project-id> - Get defined false-positives for project <project-id> (json format)
 project_list - List all projects (json format)
+project_metadata_set <project-id> <key1>:<value1> [<key2>:<value2> ...] - define metadata for <project-id>
+project_mockdata_list <project-id> - display defined mocked results (if server runs 'mocked-products')
+project_mockdata_set <project-id> <code> <web> <infra> - define mocked results (possible values: RED YELLOW GREEN)
 project_scan_list <project-id> - List scan jobs for project <project-id> (json format)
+project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
 project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
 scheduler_disable - Stop SecHub job scheduler
@@ -50,9 +63,12 @@ scheduler_enable - Continue SecHub job scheduler
 scheduler_status - Get scheduler status
 server_status - Get status entries of SecHub server like scheduler, jobs etc. (json format)
 server_version - Print version of SecHub server
+superadmin_grant <user-id> - Grant superadmin role to user <user-id>
+superadmin_list - List all superadmin users (json format)
+superadmin_revoke - Revoke superadmin role from user <user-id>
+user_delete <user-id> - Delete user <user-id>
 user_details <user-id> - List details of user <user-id> (json format)
 user_list - List all users (json format)
-user_list_admins - List all superadmin users (json format)
 user_list_open_signups - List all users waiting to get their signup accepted (json format)
 user_reset_apitoken <email address> - Request new api token for <email address> (invalidates current api token immediately)
 user_signup <new user-id> <email address> - Add <new user-id> with <email address> (needs to be accepted then)
@@ -63,17 +79,114 @@ EOF
 }
 
 
+#################################
+# Generic helper functions
+
+function are_you_sure {
+  local INPUT
+  if $YES ; then # Skip dialog?
+    return 0
+  fi
+
+  echo -n " Are you sure? (y/n) "
+  read INPUT
+  case "$INPUT" in
+    y|Y|yes|Yes|Yes) ;;
+    *) echo "No action taken."
+      exit 0
+      ;;
+  esac
+}
+
+
+function generate_json_key_value {
+  local key="$1"
+  shift
+  local value="$*"
+  cat <<EOF
+"$key": "$value"
+EOF
+}
+
+
 function check_parameter {
   param="$1"
+  parameter_name="$2"
   if [ -z "${!param}" ] ; then
-    echo "$param not set"
-    failed=1
+    echo "Required parameter $parameter_name is missing"
+    failed=true
   fi
+}
+
+
+function check_trafficlight {
+  param="$1"
+  parameter_name="$2"
+  case "${!param}" in
+    RED|YELLOW|GREEN) ;;
+    "") echo "Trafficlight value for $parameter_name not set"
+      failed=true
+      ;;
+    *) echo "$parameter_name = \"${!param}\" is no trafficlight value (RED|YELLOW|GREEN)"
+      failed=true
+      ;;
+  esac
+}
+
+
+function check_file {
+  file="$1"
+  parameter_name="$2"
+  if [ -z "$file" ] ; then
+    echo "$parameter_name is missing"
+    failed=true
+  elif [ ! -r "$file" ] ; then
+    echo "File \"$file\" is not readable/existing. Please check."
+    failed=true
+  fi
+}
+
+
+function generate_short_description {
+  local action="$1"
+  shift
+  if [ $# -gt 0 ] ; then
+    echo "$*"
+  else
+    echo "$action by sechub-api.sh at $TIMESTAMP"
+  fi
+}
+
+
+#######################################
+# SecHub api functions
+
+function sechub_alive_check {
+  echo "Alive status of $SECHUB_SERVER"
+  curl $CURL_PARAMS -i -X GET "$SECHUB_SERVER/api/anonymous/check/alive" | $CURL_FILTER
+}
+
+
+function sechub_executor_create {
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "@$1" "$SECHUB_SERVER/api/admin/config/executor" | $RESULT_FILTER
+  echo
 }
 
 
 function sechub_executor_details {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function sechub_executor_delete {
+  echo "Executor \"$1\" will be deleted. This cannot be undone."
+  are_you_sure
+  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
+}
+
+
+function sechub_executor_update {
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "@$2" "$SECHUB_SERVER/api/admin/config/executor/$1" | $CURL_FILTER
 }
 
 
@@ -107,6 +220,33 @@ function sechub_job_status {
 }
 
 
+function generate_sechub_profile_data {
+  local EXECUTORS=$(echo $1 | awk -F',' '{ for (i = 1; i < NF; i++) { printf("{\"uuid\": \"%s\"}, ", $i) } printf ("{\"uuid\": \"%s\"}", $NF) }')
+  shift
+  local SHORT_DESCRIPTION="$*"
+  cat <<EOF
+{
+  "configurations": [ $EXECUTORS ],
+  "description": "$SHORT_DESCRIPTION",
+  "enabled": true
+}
+EOF
+}
+
+function sechub_profile_create {
+  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
+}
+
+
+function sechub_profile_delete {
+  echo "Execution profile \"$1\" will be deleted. This cannot be undone."
+  are_you_sure
+  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
+}
+
+
 function sechub_profile_details {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -114,6 +254,13 @@ function sechub_profile_details {
 
 function sechub_profile_list {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/config/execution/profiles" | $RESULT_FILTER | jq '.executionProfiles'
+}
+
+
+function sechub_profile_update {
+  JSON_DATA="$(generate_sechub_profile_data $2 $3)"
+  echo $JSON_DATA | $JSON_FORMATTER
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/config/execution/profile/$1" | $CURL_FILTER
 }
 
 
@@ -167,8 +314,15 @@ EOF
 
 function sechub_project_create {
   JSON_DATA="$(generate_sechub_project_create_data $1 $2 $3)"
-  echo $JSON_DATA  # Show what is sent
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project"
+  echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project" | $CURL_FILTER
+}
+
+
+function sechub_project_delete {
+  echo "Project \"$1\" will be deleted. This cannot be undone."
+  are_you_sure
+  curl $CURL_PARAMS -i -X DELETE -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1" | $CURL_FILTER
 }
 
 
@@ -202,8 +356,64 @@ function sechub_project_list {
 }
 
 
+function sechub_project_metadata_set {
+  local key
+  local value
+  local PROJECT_ID="${1,,}"  # ,, converts to lowercase
+  shift
+  JSON_DATA="{\"apiVersion\": \"$SECHUB_API_VERSION\",\"metaData\":{"
+  arr=("$@")
+  first=true
+  for i in "${arr[@]}" ; do
+    if $first ; then
+      first=false
+    else
+      JSON_DATA+=", "
+    fi
+    echo "sechub_project_metadata_set \"$i\""
+    key=`echo $i | awk -F':' '{print $1}'`
+    echo $i | awk -F':' '{$1=""; print $0}'
+    # The awk script enables that the separator ':' can also be part of the value and is passed through
+    # e.g.:  "mykey:myvalue is:2" ; value will be "myvalue is:2"
+    value=$(echo $i | awk -F':' '{ for (i = 2; i < NF; i++) { printf("%s:", $i) } print $NF }')
+    JSON_DATA+="$(generate_json_key_value $key $value)"
+  done
+  JSON_DATA+="}}"
+  echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/admin/project/$PROJECT_ID/metadata" | $CURL_FILTER
+}
+
+
+function sechub_project_mockdata_list {
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/project/$1/mockdata" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function generate_sechub_project_mockdata {
+  cat <<EOF
+{
+  "apiVersion": "$SECHUB_API_VERSION",
+  "codeScan": { "result": "$1" },
+  "webScan": { "result": "$2" },
+  "infraScan": { "result": "$3" }
+}
+EOF
+}
+
+function sechub_project_mockdata_set {
+  JSON_DATA="$(generate_sechub_project_mockdata $2 $3 $4)"
+  echo $JSON_DATA | $JSON_FORMATTER  # Show what is sent
+  curl $CURL_PARAMS -i -X PUT -H 'Content-Type: application/json' -d "$JSON_DATA" "$SECHUB_SERVER/api/project/$1/mockdata" | $CURL_FILTER
+}
+
+
 function sechub_project_scan_list {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/scan/logs" | $RESULT_FILTER | $JSON_FORMATTER
+}
+
+
+function sechub_project_set_owner {
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/owner/$2" | $CURL_FILTER
 }
 
 
@@ -244,6 +454,28 @@ function sechub_server_version {
 }
 
 
+function sechub_superadmin_grant {
+  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/grant/superadmin" | $CURL_FILTER
+}
+
+
+function sechub_superadmin_list {
+  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/admins" | $RESULT_FILTER | $JSON_FORMAT_SORT
+}
+
+
+function sechub_superadmin_revoke {
+  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/user/$1/revoke/superadmin" | $CURL_FILTER
+}
+
+
+function sechub_user_delete {
+  echo "User \"$1\" will be deleted. This cannot be undone."
+  are_you_sure
+  curl $CURL_PARAMS -i -X DELETE "$SECHUB_SERVER/api/admin/user/$1" | $CURL_FILTER
+}
+
+
 function sechub_user_details {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/user/$1" | $RESULT_FILTER | $JSON_FORMATTER
 }
@@ -254,18 +486,13 @@ function sechub_user_list {
 }
 
 
-function sechub_user_list_admins {
-  curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/admins" | $RESULT_FILTER | $JSON_FORMAT_SORT
-}
-
-
 function sechub_user_list_open_signups {
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/signups" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
 
 function sechub_user_reset_apitoken {
-  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1"
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/anonymous/refresh/apitoken/$1" | $CURL_FILTER
 }
 
 
@@ -282,22 +509,23 @@ EOF
 function sechub_user_signup {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' \
     -d "$(generate_sechub_user_signup_data $1 $2)" \
-    "$SECHUB_SERVER/api/anonymous/signup"
+    "$SECHUB_SERVER/api/anonymous/signup" | $CURL_FILTER
 }
 
 
 function sechub_user_signup_accept {
-  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/signup/accept/$1"
+  curl $CURL_PARAMS -i -X POST "$SECHUB_SERVER/api/admin/signup/accept/$1" | $CURL_FILTER
 }
 
 
 function sechub_user_signup_decline {
-  curl $CURL_PARAMS -i -X DELETE "$SECHUB_SERVER/api/admin/signup/$1"
+  curl $CURL_PARAMS -i -X DELETE "$SECHUB_SERVER/api/admin/signup/$1" | $CURL_FILTER
 }
 
 # -----------------------------
 # main
-failed=0
+failed=false
+YES=false
 SECHUB_API_VERSION="1.0"
 NOFORMAT_PIPE="cat -"
 RESULT_FILTER="tail -1"
@@ -347,6 +575,10 @@ while [[ "${opt:0:1}" == "-" ]] ; do
     echo "### Connecting as $SECHUB_USERID to $SECHUB_SERVER"
     shift
     ;;
+  -y|-yes)
+    YES=true
+    shift
+    ;;
   *)
     echo "Unknown option: \"$opt\""
     usage
@@ -358,142 +590,217 @@ done
 
 # Check if mandatory parameters are defined
 for i in SECHUB_SERVER SECHUB_USERID SECHUB_APITOKEN ; do
-  check_parameter "$i"
+  check_parameter "$i" "\$$i"
 done
 AUTH="$SECHUB_USERID:$SECHUB_APITOKEN"
 CURL_PARAMS="-u $AUTH --silent --insecure --show-error"
+CURL_FILTER="grep -i http/\|error"
 
 action="$1" && shift
 case "$action" in
+  alive_check)
+    $failed || sechub_alive_check
+    ;;
+  executor_create)
+    EXECUTOR_JSONFILE="$1" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
+    $failed || sechub_executor_create "$EXECUTOR_JSONFILE"
+    ;;
+  executor_delete)
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    $failed || sechub_executor_delete "$EXECUTOR_UUID"
+    ;;
   executor_details)
-    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID
-    [ $failed == 0 ] && sechub_executor_details "$EXECUTOR_UUID"
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    $failed || sechub_executor_details "$EXECUTOR_UUID"
     ;;
   executor_list)
-    [ $failed == 0 ] && sechub_executor_list
+    $failed || sechub_executor_list
+    ;;
+  executor_update)
+    EXECUTOR_UUID="$1" ; check_parameter EXECUTOR_UUID '<executor-uuid>'
+    EXECUTOR_JSONFILE="$2" ; check_file "$EXECUTOR_JSONFILE" '<json-file>'
+    $failed || sechub_executor_update "$EXECUTOR_UUID" "$EXECUTOR_JSONFILE"
     ;;
   job_cancel)
-    JOB_UUID="$1" ; check_parameter JOB_UUID
-    [ $failed == 0 ] && sechub_job_cancel "$JOB_UUID"
+    JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_cancel "$JOB_UUID"
     ;;
   job_list_running)
-    [ $failed == 0 ] && sechub_job_list_running
+    $failed || sechub_job_list_running
     ;;
   job_restart)
-    JOB_UUID="$1" ; check_parameter JOB_UUID
-    [ $failed == 0 ] && sechub_job_restart "$JOB_UUID"
+    JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_restart "$JOB_UUID"
     ;;
   job_restart_hard)
-    JOB_UUID="$1" ; check_parameter JOB_UUID
-    [ $failed == 0 ] && sechub_job_restart_hard "$JOB_UUID"
+    JOB_UUID="$1" ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_restart_hard "$JOB_UUID"
     ;;
   job_status)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    JOB_UUID="$2"   ; check_parameter JOB_UUID
-    [ $failed == 0 ] && sechub_job_status "$PROJECT_ID" "$JOB_UUID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    JOB_UUID="$2"   ; check_parameter JOB_UUID '<job-uuid>'
+    $failed || sechub_job_status "$PROJECT_ID" "$JOB_UUID"
+    ;;
+  profile_create)
+    PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
+    EXECUTORS="$2" ; check_parameter EXECUTORS '<executor-uuid1>[,<executor-uuid2>...]'
+    shift ; shift
+    PROFILE_SHORT_DESCRIPTION="$(generate_short_description Created $*)"
+    $failed || sechub_profile_create "$PROFILE_ID" "$EXECUTORS" "$PROFILE_SHORT_DESCRIPTION"
+    ;;
+  profile_delete)
+    PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
+    $failed || sechub_profile_delete "$PROFILE_ID"
     ;;
   profile_details)
-    PROFILE_ID="$1" ; check_parameter PROFILE_ID
-    [ $failed == 0 ] && sechub_profile_details "$PROFILE_ID"
+    PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
+    $failed || sechub_profile_details "$PROFILE_ID"
     ;;
   profile_list)
-    [ $failed == 0 ] && sechub_profile_list
+    $failed || sechub_profile_list
+    ;;
+  profile_update)
+    PROFILE_ID="$1" ; check_parameter PROFILE_ID '<profile-id>'
+    EXECUTORS="$2" ; check_parameter EXECUTORS '<executor-uuid1>[,<executor-uuid2>...]'
+    shift ; shift
+    PROFILE_SHORT_DESCRIPTION="$(generate_short_description Updated $*)"
+    $failed || sechub_profile_update "$PROFILE_ID" "$EXECUTORS" "$PROFILE_SHORT_DESCRIPTION"
     ;;
   project_assign_profile)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    PROFILE_ID="$2" ; check_parameter PROFILE_ID
-    [ $failed == 0 ] && sechub_project_assign_profile "$PROJECT_ID" "$PROFILE_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
+    $failed || sechub_project_assign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
   project_assign_user)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    SECHUB_USER="$2" ; check_parameter SECHUB_USER
-    [ $failed == 0 ] && sechub_project_assign_user "$PROJECT_ID" "$SECHUB_USER"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_project_assign_user "$PROJECT_ID" "$SECHUB_USER"
     ;;
   project_create)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER
-    shift
-    shift
-    if [ $# -gt 0 ] ; then
-      PROJECT_SHORT_DESCRIPTION="$*"
-    else
-      PROJECT_SHORT_DESCRIPTION="Created by sechub-api.sh at $TIMESTAMP"
-    fi
-    [ $failed == 0 ] && sechub_project_create "$PROJECT_ID" "$PROJECT_OWNER" "$PROJECT_SHORT_DESCRIPTION"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
+    shift ; shift
+    PROJECT_SHORT_DESCRIPTION="$(generate_short_description Created $*)"
+    $failed || sechub_project_create "$PROJECT_ID" "$PROJECT_OWNER" "$PROJECT_SHORT_DESCRIPTION"
+    ;;
+  project_delete)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_delete "$PROJECT_ID"
     ;;
   project_details)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    [ $failed == 0 ] && sechub_project_details "$PROJECT_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_details "$PROJECT_ID"
     ;;
   project_details_all)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    [ $failed == 0 ] && sechub_project_details_all "$PROJECT_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_details_all "$PROJECT_ID"
     ;;
   project_falsepositives_list)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    [ $failed == 0 ] && sechub_project_falsepositives_list "$PROJECT_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_falsepositives_list "$PROJECT_ID"
     ;;
   project_list)
-    [ $failed == 0 ] && sechub_project_list
+    $failed || sechub_project_list
+    ;;
+  project_metadata_set)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    METADATA="$2" ; check_parameter METADATA '<key1>:<value1>' # We expect at least one pair
+    shift
+    for item in "$@"; do
+      echo "\"${item}\""
+      METADATA_LIST+=("${item}")
+    done
+    # for i in "${METADATA_LIST[@]}"; do
+    #     echo "main: \"${i}\""
+    # done
+    $failed || sechub_project_metadata_set "$PROJECT_ID" "${METADATA_LIST[@]}"
+    ;;
+  project_mockdata_list)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_mockdata_list "$PROJECT_ID"
+    ;;
+  project_mockdata_set)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    TRAFFICLIGHT_CODESCAN="$2" ; check_trafficlight TRAFFICLIGHT_CODESCAN '<code>'
+    TRAFFICLIGHT_WEBSCAN="$3" ; check_trafficlight TRAFFICLIGHT_WEBSCAN '<web>'
+    TRAFFICLIGHT_INFRASCAN="$4" ; check_trafficlight TRAFFICLIGHT_INFRASCAN '<infra>'
+    $failed || sechub_project_mockdata_set "$PROJECT_ID" "$TRAFFICLIGHT_CODESCAN" "$TRAFFICLIGHT_WEBSCAN" "$TRAFFICLIGHT_INFRASCAN"
     ;;
   project_scan_list)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    [ $failed == 0 ] && sechub_project_scan_list "$PROJECT_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    $failed || sechub_project_scan_list "$PROJECT_ID"
+    ;;
+  project_set_owner)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    PROJECT_OWNER="$2" ; check_parameter PROJECT_OWNER '<owner>'
+    $failed || sechub_project_set_owner "$PROJECT_ID" "$PROJECT_OWNER"
     ;;
   project_unassign_profile)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    PROFILE_ID="$2" ; check_parameter PROFILE_ID
-    [ $failed == 0 ] && sechub_project_unassign_profile "$PROJECT_ID" "$PROFILE_ID"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    PROFILE_ID="$2" ; check_parameter PROFILE_ID '<profile-id>'
+    $failed || sechub_project_unassign_profile "$PROJECT_ID" "$PROFILE_ID"
     ;;
   project_unassign_user)
-    PROJECT_ID="$1" ; check_parameter PROJECT_ID
-    SECHUB_USER="$2" ; check_parameter SECHUB_USER
-    [ $failed == 0 ] && sechub_project_unassign_user "$PROJECT_ID" "$SECHUB_USER"
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    SECHUB_USER="$2" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_project_unassign_user "$PROJECT_ID" "$SECHUB_USER"
     ;;
   scheduler_disable)
-    [ $failed == 0 ] && sechub_scheduler_disable
+    $failed || sechub_scheduler_disable
     ;;
   scheduler_enable)
-    [ $failed == 0 ] && sechub_scheduler_enable
+    $failed || sechub_scheduler_enable
     ;;
   scheduler_status)
-    [ $failed == 0 ] && sechub_scheduler_status
+    $failed || sechub_scheduler_status
     ;;
   server_status)
-    [ $failed == 0 ] && sechub_server_status
+    $failed || sechub_server_status
     ;;
   server_version)
-    [ $failed == 0 ] && sechub_server_version
+    $failed || sechub_server_version
+    ;;
+  superadmin_grant)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_superadmin_grant "$SECHUB_USER"
+    ;;
+  superadmin_list)
+    $failed || sechub_superadmin_list
+    ;;
+  superadmin_revoke)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_superadmin_revoke "$SECHUB_USER"
+    ;;
+  user_delete)
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_user_delete "$SECHUB_USER"
     ;;
   user_details)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER
-    [ $failed == 0 ] && sechub_user_details "$SECHUB_USER"
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<user-id>'
+    $failed || sechub_user_details "$SECHUB_USER"
     ;;
   user_list)
-    [ $failed == 0 ] && sechub_user_list
-    ;;
-  user_list_admins)
-    [ $failed == 0 ] && sechub_user_list_admins
+    $failed || sechub_user_list
     ;;
   user_list_open_signups)
-    [ $failed == 0 ] && sechub_user_list_open_signups
+    $failed || sechub_user_list_open_signups
     ;;
   user_reset_apitoken)
-    SECHUB_EMAIL="$1" ; check_parameter SECHUB_EMAIL
-    [ $failed == 0 ] && sechub_user_reset_apitoken "$SECHUB_EMAIL"
+    SECHUB_EMAIL="$1" ; check_parameter SECHUB_EMAIL '<email address>'
+    $failed || sechub_user_reset_apitoken "$SECHUB_EMAIL"
     ;;
   user_signup)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER
-    SECHUB_EMAIL="$2" ; check_parameter SECHUB_EMAIL
-    [ $failed == 0 ] && sechub_user_signup "$SECHUB_USER" "$SECHUB_EMAIL"
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
+    SECHUB_EMAIL="$2" ; check_parameter SECHUB_EMAIL '<email address>'
+    $failed || sechub_user_signup "$SECHUB_USER" "$SECHUB_EMAIL"
     ;;
   user_signup_decline)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER
-    [ $failed == 0 ] && sechub_user_signup_decline "$SECHUB_USER"
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
+    $failed || sechub_user_signup_decline "$SECHUB_USER"
     ;;
   user_signup_accept)
-    SECHUB_USER="$1" ; check_parameter SECHUB_USER
-    [ $failed == 0 ] && sechub_user_signup_accept "$SECHUB_USER"
+    SECHUB_USER="$1" ; check_parameter SECHUB_USER '<new user-id>'
+    $failed || sechub_user_signup_accept "$SECHUB_USER"
     ;;
   ""|help)
     usage
@@ -508,7 +815,6 @@ esac
 [ "$JSON_FORMATTER" == "$NOFORMAT_PIPE" ] && echo ""
 
 # failed?
-if [ $failed != 0 ] ; then
-  usage
+if $failed ; then
   exit 1
 fi
