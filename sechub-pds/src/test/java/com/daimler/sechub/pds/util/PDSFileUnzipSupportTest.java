@@ -23,6 +23,26 @@ class PDSFileUnzipSupportTest {
     }
 
     @Test
+    void bugfix_773_zipfile_without_explicit_directory_entries_can_be_extracted_as_well() throws Exception {
+        /* prepare */
+        File singleZipfile = resolveTestFile("zipfiles/bugfix-773.zip");
+        File targetFolder = Files.createTempDirectory("pds_773-bugfix_test").toFile();
+        targetFolder.mkdirs();
+
+        /* execute */
+        UnzipResult result = supportToTest.unzipArchive(singleZipfile, targetFolder);
+
+        /* test */
+        File docs = assertFolderExists(targetFolder, "docs");
+
+        File latest = assertFolderExists(docs, "latest");
+        assertContainsFiles(latest, "sechub-architecture.html");
+
+        assertEquals(1, result.getExtractedFilesCount());
+        assertEquals(2, result.getCreatedFoldersCount());
+    }
+
+    @Test
     void single_file_zip_can_be_extracted() throws Exception {
         /* prepare */
         File singleZipfile = resolveTestFile("zipfiles/single_file.zip");
@@ -34,8 +54,8 @@ class PDSFileUnzipSupportTest {
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go");
-        assertEquals(1,result.getExtractedFilesCount());
-        assertEquals(0,result.getCreatedFoldersCount());
+        assertEquals(1, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
     }
 
     @Test
@@ -50,8 +70,8 @@ class PDSFileUnzipSupportTest {
 
         /* test */
         assertContainsFiles(targetFolder, "hardcoded_password.go", "README.md");
-        assertEquals(2,result.getExtractedFilesCount());
-        assertEquals(0,result.getCreatedFoldersCount());
+        assertEquals(2, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
     }
 
     @Test
@@ -77,8 +97,8 @@ class PDSFileUnzipSupportTest {
         File ghiFolder = assertFolderExists(defFolder, "ghi");
         assertContainsFiles(ghiFolder, "README-ghi.md");
 
-        assertEquals(4,result.getExtractedFilesCount());
-        assertEquals(3,result.getCreatedFoldersCount());
+        assertEquals(4, result.getExtractedFilesCount());
+        assertEquals(3, result.getCreatedFoldersCount());
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -90,12 +110,12 @@ class PDSFileUnzipSupportTest {
         for (File child : children) {
             if (child.getName().equals(subFolder)) {
                 if (!child.isDirectory()) {
-                    fail("Subfolder:" + subFolder + " found but is not a directory: "+child);
+                    fail("Subfolder:" + subFolder + " found but is not a directory: " + child);
                 }
                 return child;
             }
         }
-        fail("Subfolder:" + subFolder + " not found inside directory: "+folder);
+        fail("Subfolder:" + subFolder + " not found inside directory: " + folder);
         throw new IllegalStateException("Should not be called");
 
     }
@@ -110,7 +130,7 @@ class PDSFileUnzipSupportTest {
         for (File child : children) {
             foundChildNames.add(child.getName());
         }
-        
+
         /* test names contained */
         for (String childName : childNames) {
             if (!foundChildNames.contains(childName)) {
