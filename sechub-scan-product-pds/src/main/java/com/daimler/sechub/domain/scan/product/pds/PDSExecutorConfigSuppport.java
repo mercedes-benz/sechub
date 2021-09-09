@@ -73,22 +73,22 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         return getParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER);
     }
 
-    public int getScanResultCheckPeriodInMinutes(PDSInstallSetup setup) {
+    public int getTimeToWaitForNextCheckOperationInMinutes(PDSInstallSetup setup) {
         int value = getParameterIntValue(PDSProductExecutorKeyProvider.TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION);
         if (value != -1) {
             return value;
         }
         /* fallback to setup */
-        return setup.getDefaultScanResultCheckPeriodInMinutes();
+        return setup.getDefaultTimeToWaitForNextCheckOperationInMinutes();
     }
 
-    public int getScanResultCheckTimeoutInMinutes(PDSInstallSetup setup) {
+    public int getTimeoutInMinutes(PDSInstallSetup setup) {
         int value = getParameterIntValue(PDSProductExecutorKeyProvider.TIME_TO_WAIT_BEFORE_TIMEOUT);
         if (value != -1) {
             return value;
         }
         /* fallback to setup */
-        return setup.getDefaultScanResultCheckPeriodInMinutes();
+        return setup.getDefaultTimeOutInMinutes();
     }
 
     /**

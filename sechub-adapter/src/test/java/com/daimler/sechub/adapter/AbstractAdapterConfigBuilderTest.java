@@ -261,7 +261,7 @@ public class AbstractAdapterConfigBuilderTest {
 
 	@Test
 	public void config_with_timeout_n1_set_has_5_days_per_default() {
-		TestAdapterConfigInterface cf1 = validConfigAnd().setScanResultTimeOutInMinutes(-1).build();
+		TestAdapterConfigInterface cf1 = validConfigAnd().setTimeOutInMinutes(-1).build();
 
 		/* 5 days a 24 hours a 60 minutes a 60 seconds a 1000 milliseconds */
 		assertEquals(5 * 24 * 60 * 60 * 1000, cf1.getTimeOutInMilliseconds());
@@ -269,7 +269,7 @@ public class AbstractAdapterConfigBuilderTest {
 
 	@Test
 	public void config_with_timeout_set_with_3_minutes_has_3_minutes() {
-		TestAdapterConfigInterface cf1 = validConfigAnd().setScanResultTimeOutInMinutes(3).build();
+		TestAdapterConfigInterface cf1 = validConfigAnd().setTimeOutInMinutes(3).build();
 
 		/* 3 hours a 60 minutes a 60 seconds a 1000 milliseconds */
 		assertEquals(3 * 60 * 1000, cf1.getTimeOutInMilliseconds());

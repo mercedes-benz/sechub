@@ -5,8 +5,19 @@ import com.daimler.sechub.domain.scan.InstallSetup;
 
 public interface PDSInstallSetup extends InstallSetup {
 
-	public int getDefaultScanResultCheckPeriodInMinutes();
+    /**
+     * Resolves amount of minutes to wait before next check for scan result from PDS
+     * server will be done.
+     * 
+     * @return default check period time in minutes
+     */
+    public int getDefaultTimeToWaitForNextCheckOperationInMinutes();
 
-	public int getScanResultCheckTimeOutInMinutes();
+    /**
+     * Resolves default timeout in minutes when PDS scan will terminate.
+     * 
+     * @return default timeout in minutes
+     */
+    public int getDefaultTimeOutInMinutes();
 
 }

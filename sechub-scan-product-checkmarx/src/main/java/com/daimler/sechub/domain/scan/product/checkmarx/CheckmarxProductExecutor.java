@@ -113,7 +113,7 @@ public class CheckmarxProductExecutor extends AbstractCodeScanProductExecutor<Ch
 
     					setAlwaysFullScan(callback.isAlwaysFullScanEnabled()).
     					setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-    					setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+    					setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
     					setFileSystemSourceFolders(data.getCodeUploadFileSystemFolders()).
     					setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
     					setTeamIdForNewProjects(configSupport.getTeamIdForNewProjects(projectId)).

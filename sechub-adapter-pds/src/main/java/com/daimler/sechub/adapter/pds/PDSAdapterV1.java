@@ -61,8 +61,9 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
     private void waitForJobDone(PDSContext context) throws AdapterException {
         PDSAdapterConfig config = context.getConfig();
-        UUID jobUUID = config.getSecHubJobUUID();
-        UUID uuid = context.getPdsJobUUID();
+
+        UUID secHubJobUUID = config.getSecHubJobUUID();
+        UUID pdsJobUUID = context.getPdsJobUUID();
 
         int count = 0;
         boolean jobEnded = false;
@@ -71,7 +72,16 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
         long started = getCurrentTimeMilliseconds();
 
         int timeToWaitForNextCheckOperationInMilliseconds = config.getTimeToWaitForNextCheckOperationInMilliseconds();
+
+        LOG.info("Start waiting for PDS-job:{} to be done. Related SecHub-Job is:{} . Will check every {} ms. Adapter will wait maximum {} ms before timeout.",
+                pdsJobUUID, secHubJobUUID, timeToWaitForNextCheckOperationInMilliseconds, config.getTimeOutInMilliseconds());
+
         while (!jobEnded && isNotTimeout(config, started)) {
+
+            count++;
+
+            LOG.debug("Fetch job status for PDS-job:{}. Elapsed time for {} retries:{} ms", pdsJobUUID, count, calculateElapsedTime(started));
+
             /* see PDSJobStatusState.java */
             jobstatus = getJobStatus(context);
 
@@ -88,20 +98,21 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             if (jobEnded) {
                 break; // break while...
             }
+
             assertNotInterrupted();
+
             try {
                 Thread.sleep(timeToWaitForNextCheckOperationInMilliseconds);
             } catch (InterruptedException e) {
                 throw new AdapterException(getAdapterLogId(null), "Execution thread was interrupted");
             }
-            count++;
 
         }
         if (!jobEnded) {
             long elapsedTimeInMilliseconds = calculateElapsedTime(started);
             throw new IllegalStateException("Even after " + count + " retries, every waiting " + timeToWaitForNextCheckOperationInMilliseconds
                     + " ms, no job report state acceppted as END was found.!\nElapsed time were" + elapsedTimeInMilliseconds
-                    + " ms.\nLAST fetched jobstatus for " + jobUUID + ", PDS job uuid: " + uuid + " was:\n" + jobstatus);
+                    + " ms.\nLAST fetched jobstatus for " + secHubJobUUID + ", PDS job uuid: " + pdsJobUUID + " was:\n" + jobstatus);
         }
 
     }

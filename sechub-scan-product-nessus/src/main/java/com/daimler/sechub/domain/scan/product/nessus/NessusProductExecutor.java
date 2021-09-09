@@ -66,7 +66,7 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
 				configure(createAdapterOptionsStrategy(context)).
 				configure(new TargetIdentifyingMultiInstallSetupConfigBuilderStrategy(setup,targetType)).
 				setTimeToWaitForNextCheckOperationInMinutes(scanResultCheckPeriodInMinutes).
-				setScanResultTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
+				setTimeOutInMinutes(scanResultCheckTimeOutInMinutes).
 				setProxyHostname(proxyHostname).
 				setProxyPort(proxyPort).
 				setTraceID(context.getTraceLogIdAsString()).

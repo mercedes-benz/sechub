@@ -36,7 +36,7 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 
     @Autowired
     PDSInstallSetup installSetup;
-    
+
     @Autowired
     SystemEnvironment systemEnvironment;
 
@@ -55,7 +55,8 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
             return Collections.emptyList();
         }
         TargetType targetType = info.getTargetType();
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
         if (configSupport.isTargetTypeForbidden(targetType)) {
             LOG.info("pds adapter does not accept target type:{} so cancel execution");
             return Collections.emptyList();
@@ -77,8 +78,8 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 		    PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
 		            configure(createAdapterOptionsStrategy(context)).
 
-		            setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultScanResultCheckPeriodInMinutes()).
-		            setScanResultTimeOutInMinutes(setup.getScanResultCheckTimeOutInMinutes()).
+		            setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultTimeToWaitForNextCheckOperationInMinutes()).
+		            setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
 
 
 		            setTraceID(context.getTraceLogIdAsString()).

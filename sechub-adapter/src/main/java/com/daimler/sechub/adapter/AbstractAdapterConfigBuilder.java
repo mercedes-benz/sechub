@@ -38,7 +38,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private String productBaseURL;
 
     private int timeToWaitForNextCheckOperationInMinutes = DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES;// one minute check default
-    private int scanResultTimeOutInMinutes = DEFAULT_SCAN_RESULT_TIMEOUT_IN_MINUTES; // 5 days default
+    private int timeOutInMinutes = DEFAULT_SCAN_RESULT_TIMEOUT_IN_MINUTES; // 5 days default
 
     private String proxyHostname;
 
@@ -104,19 +104,19 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     }
 
     /**
-     * Set result check timeout in minutes.
+     * Set timeout in minutes. When a adapter call runs longer than defined time,
+     * the adapter will stop and return a failure.
      *
-     * @param scanResultTimeOutInMinutes when <0 the setting will be ignored and
-     *                                   default value used!" see
-     *                                   {@link #DOCUMENT_INFO_TIMEOUT}
+     * @param timeOutInMinutes when <0 the setting will be ignored and default value
+     *                         used!" see {@link #DOCUMENT_INFO_TIMEOUT}
      * @return
      */
     @SuppressWarnings("unchecked")
-    public final B setScanResultTimeOutInMinutes(int scanResultTimeOutInMinutes) {
-        if (scanResultTimeOutInMinutes < 0) {
+    public final B setTimeOutInMinutes(int timeOutInMinutes) {
+        if (timeOutInMinutes < 0) {
             return (B) this;
         }
-        this.scanResultTimeOutInMinutes = scanResultTimeOutInMinutes;
+        this.timeOutInMinutes = timeOutInMinutes;
         return (B) this;
     }
 
@@ -273,7 +273,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
         abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
         ensureMinimumTimeToWait(abstractAdapterConfig);
-        abstractAdapterConfig.timeOutInMilliseconds = scanResultTimeOutInMinutes * 60 * 1000;
+        abstractAdapterConfig.timeOutInMilliseconds = timeOutInMinutes * 60 * 1000;
 
         abstractAdapterConfig.proxyHostname = proxyHostname;
         abstractAdapterConfig.proxyPort = proxyPort;
@@ -332,9 +332,9 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
                     timeToWaitForNextCheckOperationInMinutes);
             timeToWaitForNextCheckOperationInMinutes = MAX_1_HOUR_IN_MINUTES;
         }
-        if (scanResultTimeOutInMinutes > MAX_5_DAYS_IN_MINUTES) {
-            LOG.warn("Scan check timeout {} bigger than 5 days. Automatic reset to 5 days done. Please check your configuration!", scanResultTimeOutInMinutes);
-            scanResultTimeOutInMinutes = MAX_5_DAYS_IN_MINUTES;
+        if (timeOutInMinutes > MAX_5_DAYS_IN_MINUTES) {
+            LOG.warn("Scan check timeout {} bigger than 5 days. Automatic reset to 5 days done. Please check your configuration!", timeOutInMinutes);
+            timeOutInMinutes = MAX_5_DAYS_IN_MINUTES;
         }
 
     }
@@ -395,13 +395,13 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private boolean isProxyDefinedButPortMissing() {
         return proxyHostname != null && !proxyHostname.isEmpty() && proxyPort == 0;
     }
-    
-    private void throwIllegalArgument(String message) throws IllegalArgumentException{
-        throw new IllegalArgumentException(message + " in "+getClass().getSimpleName());
+
+    private void throwIllegalArgument(String message) throws IllegalArgumentException {
+        throw new IllegalArgumentException(message + " in " + getClass().getSimpleName());
     }
-    
-    private void throwIllegalState(String message) throws IllegalStateException{
-        throw new IllegalStateException(message + " in "+getClass().getSimpleName());
+
+    private void throwIllegalState(String message) throws IllegalStateException {
+        throw new IllegalStateException(message + " in " + getClass().getSimpleName());
     }
 
 }
