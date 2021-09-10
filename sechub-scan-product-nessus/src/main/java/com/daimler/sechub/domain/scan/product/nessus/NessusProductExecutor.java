@@ -40,11 +40,11 @@ public class NessusProductExecutor extends AbstractInfrastructureScanProductExec
     int proxyPort;
 
     @Value("${sechub.adapter.nessus.scanresultcheck.period.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
     private int scanResultCheckPeriodInMinutes;
 
     @Value("${sechub.adapter.nessus.scanresultcheck.timeout.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
     private int scanResultCheckTimeOutInMinutes;
 
     @Autowired

@@ -78,7 +78,7 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
 		    PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
 		            configure(createAdapterOptionsStrategy(context)).
 
-		            setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultTimeToWaitForNextCheckOperationInMinutes()).
+		            setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
 		            setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
 
 

@@ -109,7 +109,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                             setProductBaseUrl(configSupport.getProductBaseURL()).
                             setSecHubJobUUID(context.getSechubJobUUID()).
 							configure(createAdapterOptionsStrategy(context)).
-							setTimeToWaitForNextCheckOperationInMinutes(configSupport.getTimeToWaitForNextCheckOperationInMinutes(setup)).
+							setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
 							setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
 							setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
 							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).

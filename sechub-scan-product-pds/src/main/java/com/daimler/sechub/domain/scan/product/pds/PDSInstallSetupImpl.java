@@ -7,20 +7,21 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import static com.daimler.sechub.adapter.TimeConstants.*;
 
 @Component
 public class PDSInstallSetupImpl implements PDSInstallSetup {
 
-    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:"+30*1000+"}") // check every 30 seconds
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK)
-    private int defaultTimeToWaitForNextCheckOperationInMinutes;
+    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:" + 30 * TIME_1_SECOND_IN_MILLISECONDS + "}") 
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MILLISECONDS)
+    private int defaultTimeToWaitForNextCheckOperationInMilliseconds;
 
-    @Value("${sechub.adapter.pds.default.timeout.minutes:"+4*60+"}") // 4 hours
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+    @Value("${sechub.adapter.pds.default.timeout.minutes:" + 4 * 60 + "}") // 4 hours
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
     private int defaultTimeOutInMinutes;
 
-    public int getDefaultTimeToWaitForNextCheckOperationInMinutes() {
-        return defaultTimeToWaitForNextCheckOperationInMinutes;
+    public int getDefaultTimeToWaitForNextCheckOperationInMilliseconds() {
+        return defaultTimeToWaitForNextCheckOperationInMilliseconds;
     }
 
     public int getDefaultTimeOutInMinutes() {

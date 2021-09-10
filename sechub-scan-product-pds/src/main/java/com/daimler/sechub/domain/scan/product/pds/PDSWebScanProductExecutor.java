@@ -84,7 +84,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 			        setSecHubJobUUID(context.getSechubJobUUID()).
 					configure(createAdapterOptionsStrategy(context)).
 				    configure(new WebConfigBuilderStrategy(context)).
-					setTimeToWaitForNextCheckOperationInMinutes(setup.getDefaultTimeToWaitForNextCheckOperationInMinutes()).
+					setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
 					setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
 					setTraceID(context.getTraceLogIdAsString()).
 					setJobParameters(jobParameters).
