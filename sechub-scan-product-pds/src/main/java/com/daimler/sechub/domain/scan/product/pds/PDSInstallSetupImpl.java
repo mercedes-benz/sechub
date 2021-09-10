@@ -11,11 +11,11 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 @Component
 public class PDSInstallSetupImpl implements PDSInstallSetup {
 
-    @Value("${sechub.adapter.pds.default.scanresultcheck.period.minutes:1}") // check every minute
+    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:"+30*1000+"}") // check every 30 seconds
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK)
     private int defaultTimeToWaitForNextCheckOperationInMinutes;
 
-    @Value("${sechub.adapter.pds.default.scanresultcheck.timeout.minutes:240}") // 4 hours
+    @Value("${sechub.adapter.pds.default.timeout.minutes:"+4*60+"}") // 4 hours
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
     private int defaultTimeOutInMinutes;
 
