@@ -6,57 +6,46 @@ FROM ${BASE_IMAGE}
 
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
-ARG WORKSPACE="/workspace"
-ARG PDS_FOLDER="/pds"
-ARG PDS_CHECKSUM="f3101a6a2a96b39edf493249f2300c627fa01fcb7a6b96c5ae1edfbe70a31d46"
-ARG TOOL_FOLDER="/tool"
-ARG GOSEC_VERSION="2.8.1"
-ARG GO="go1.16.5.linux-amd64.tar.gz"
-ARG GO_CHECKSUM="b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061"
 
-ENV PDS_VERSION=0.21.0
+# Folders
+ARG PDS_FOLDER="/pds"
+ARG SCRIPT_FOLDER="/scripts"
+ENV TOOL_FOLDER="/tools"
+ARG WORKSPACE="/workspace"
+
+# PDS
+ENV PDS_VERSION=0.23.1
+ARG PDS_CHECKSUM="fb70f3131324f0070631f78229c25168ff50d570a9d481420d095b3bb5aa4a69"
+
+# GoSec
+ARG GOSEC_VERSION="2.8.1"
+ARG GOSEC_CHECKSUM="b9632585292c5ebc749b0afe064661bee7ea422fc7c54a5282a001e52c8ed30d"
+
+# Shared volumes
+ENV SHARED_VOLUMES="/shared_volumes"
+ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
 # non-root user
 # using fixed group and user ids
 # gosec needs a home directory for the cache
-RUN groupadd --gid 2323 gosec \
-     && useradd --uid 2323 --no-log-init --create-home --gid gosec gosec
+RUN addgroup --gid 2323 gosec \
+     && adduser --uid 2323 --disabled-password --ingroup gosec gosec
 
-# Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk update --no-cache && \
+    apk add --no-cache go openjdk11-jre-headless wget unzip tar
 
-RUN apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-11-jre-headless && \
-    apt-get clean
-
-# Create tool folder
-COPY gosec.sh $TOOL_FOLDER/gosec.sh
-RUN chmod +x $TOOL_FOLDER/gosec.sh
-
-# Install Go
-RUN cd /tmp && \
-    # create checksum file
-    echo "$GO_CHECKSUM $GO" > $GO.sha256sum && \
-    # download Go
-    wget https://dl.google.com/go/${GO} && \
-    # verify that the checksum and the checksum of the file are same
-    sha256sum --check $GO.sha256sum && \
-    # extract Go
-    tar --extract --file $GO --directory "/usr/local/" && \
-    # remove go tar.gz
-    rm $GO && \
-    # add Go to path
-    echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
+# Create script folder
+COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
+RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
 # Install GoSec
 RUN cd /tmp && \
+    # create checksum file
+    echo "$GOSEC_CHECKSUM  gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" > gosec_${GOSEC_VERSION}_linux_amd64.tar.gz.sha256sum && \
     # download gosec
     wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
-    # download checksum
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
     # verify checksum
-    sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
+    sha256sum -c "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz.sha256sum" && \
     # create gosec folder
     mkdir -p "$TOOL_FOLDER/gosec" && \
     # unpack gosec
@@ -66,14 +55,14 @@ RUN cd /tmp && \
     
 
 # Install the Product Delegation Server (PDS)
-RUN mkdir -p "$PDS_FOLDER" && \
+RUN mkdir --parents "$PDS_FOLDER" && \
     cd /pds && \
     # create checksum file
     echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
     # download pds
     wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+    sha256sum -c sechub-pds-$PDS_VERSION.jar.sha256sum
 
 # Copy PDS configfile
 COPY pds-config.json /$PDS_FOLDER/pds-config.json
@@ -82,11 +71,14 @@ COPY pds-config.json /$PDS_FOLDER/pds-config.json
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
+# Create shared volumes and upload dir
+RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
+
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $TOOL_FOLDER $WORKSPACE $PDS_FOLDER /run.sh
+RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # switch from root to non-root user
 USER gosec

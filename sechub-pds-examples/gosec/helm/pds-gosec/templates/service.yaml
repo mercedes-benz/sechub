@@ -6,7 +6,7 @@ metadata:
     name: {{ .Chart.Name }}
 spec:
     selector:
-        app: {{ .Chart.Name }}
+        name: {{ .Chart.Name }}
     ports:
         - protocol: TCP
           port: 8444
