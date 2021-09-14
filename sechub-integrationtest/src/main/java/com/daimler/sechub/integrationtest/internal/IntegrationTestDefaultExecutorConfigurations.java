@@ -113,7 +113,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
         jobParameters.add(new TestExecutorSetupJobParam("pds.config.use.sechub.storage", Boolean.valueOf(useSecHubStorage).toString()));
         
         jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.trustall.certificates","true")); // accept for testing
-        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.minutes","0")); // speed up tests...
+        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.milliseconds","500")); // speed up tests...
         
         jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled","true")); // mandatory from PDS integration test server
         jobParameters.add(new TestExecutorSetupJobParam("product1.level",VALUE_PRODUCT_LEVEL)); // mandatory from PDS integration test server

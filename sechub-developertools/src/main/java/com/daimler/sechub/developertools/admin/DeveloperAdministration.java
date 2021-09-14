@@ -258,7 +258,7 @@ public class DeveloperAdministration {
                     sb.append("# Optional:\n");
                     sb.append("# pds.productexecutor.forbidden.targettype.internet=true #does stop executing this one for intranet\n");
                     sb.append("# pds.productexecutor.forbidden.targettype.intranet=true #does stop executing this one for intranet \n");
-                    sb.append("# pds.productexecutor.timetowait.nextcheck.minutes=10 #10 is ten minutes, 0 would be 0.5 seconds, if not set PDSInstallSetup values will be used\n");
+                    sb.append("# pds.productexecutor.timetowait.nextcheck.milliseconds=1000 #1000 is 1 second, 0 will fallback to 500 ms, if not set PDSInstallSetup values will be used\n");
                     sb.append("# pds.productexecutor.timeout.minutes=120 #would timeout pds connection after 2 hours, if not set PDSInstallSetup values will be used\n");
                     sb.append("# pds.productexecutor.trustall.certificates=true # will trust any PDS server. Use this only in NON PRODUCTION environments (e.g when using self signed certificate)\n\n");
                     sb.append("# ---------------------\n");

@@ -15,11 +15,11 @@ public enum PDSProductExecutorKeyProvider implements PDSSecHubConfigDataKeyProvi
 
     PDS_FORBIDS_TARGETTYPE_INTRANET(createSupportTargetType(TargetType.INTRANET)),
 
-    TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION(new PDSProductAdapterKey("pds.productexecutor.timetowait.nextcheck.minutes",
-            "When this is set the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.")), 
+    TIME_TO_WAIT_FOR_NEXT_CHECKOPERATION_IN_MILLISECONDS(new PDSProductAdapterKey("pds.productexecutor.timetowait.nextcheck.milliseconds",
+            "When this is set, the value will be used to wait for next check on PDS server. If not, the default from PDS install set up is used instead.")), 
     
-    TIME_TO_WAIT_BEFORE_TIMEOUT(new PDSProductAdapterKey("pds.productexecutor.timeout.minutes",
-            "When this is set the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.")), 
+    TIME_TO_WAIT_BEFORE_TIMEOUT_IN_MINUTES(new PDSProductAdapterKey("pds.productexecutor.timeout.minutes",
+            "When this is set, the value will be used to wait before timeout happens happens when no communication with PDS server is possible. If not, the default from PDS install set up is used instead.")), 
     
     TRUST_ALL_CERTIFICATES(new PDSProductAdapterKey("pds.productexecutor.trustall.certificates", "When 'true' then all certificates are accepted. Do not use this in production!")), 
     
