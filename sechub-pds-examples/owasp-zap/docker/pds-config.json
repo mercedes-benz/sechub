@@ -1,0 +1,13 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "OWASP_ZAP_CLUSTER", 
+
+    "products" : [
+        {
+            "id" : "PDS_OWASP_ZAP",
+            "path" : "/scripts/owasp-zap.sh",
+            "scanType" : "webScan",
+            "description" : "Runs owasp zap"
+        }
+    ]
+}
