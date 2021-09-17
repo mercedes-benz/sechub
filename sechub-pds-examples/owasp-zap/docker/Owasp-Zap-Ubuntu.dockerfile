@@ -17,12 +17,9 @@ ARG WORKSPACE="/workspace"
 ENV PDS_VERSION=0.23.1
 ARG PDS_CHECKSUM="fb70f3131324f0070631f78229c25168ff50d570a9d481420d095b3bb5aa4a69"
 
-# Go
-ARG GO="go1.17.1.linux-amd64.tar.gz"
-ARG GO_CHECKSUM="dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef"
-
-# GoSec
-ARG GOSEC_VERSION="2.8.1"
+# OWASP ZAP
+ARG OWASP_ZAP_CHECKSUM="54750581ec2fd21bd5aa8429b31b09eeb1e750ab6bb7e56f12504251892ccb09"
+ARG OWASP_ZAP_VERSION=2.10.0
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -39,18 +36,27 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-11-jre-headless && \
+    apt-get install --assume-yes wget openjdk-11-jre firefox && \
     apt-get clean
 
 # Create script folder
 COPY owasp-zap.sh $SCRIPT_FOLDER/owasp-zap.sh
 RUN chmod +x $SCRIPT_FOLDER/owasp-zap.sh
 
-RUN mkdir --parents "$TOOL_FOLDER"
-   
+# Install OWASP ZAP
+RUN mkdir --parents "$TOOL_FOLDER" && \
+	cd "$TOOL_FOLDER" && \
+	# download latest release of owasp zap
+	wget https://github.com/zaproxy/zaproxy/releases/download/v$OWASP_ZAP_VERSION/zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
+	# verify that the checksum and the checksum of the file are same
+    echo "$OWASP_ZAP_CHECKSUM zaproxy_$OWASP_ZAP_VERSION-1_all.deb" | sha256sum --check && \
+	dpkg -i zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
+	# remove zaproxy deb package
+	rm zaproxy_$OWASP_ZAP_VERSION-1_all.deb
+	
 # Install the Product Delegation Server (PDS)
 RUN mkdir --parents "$PDS_FOLDER" && \
-    cd /pds && \
+    cd "$PDS_FOLDER" && \
     # create checksum file
     echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
     # download pds
