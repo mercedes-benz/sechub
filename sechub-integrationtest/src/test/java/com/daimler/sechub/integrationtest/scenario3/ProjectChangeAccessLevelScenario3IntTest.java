@@ -18,6 +18,7 @@ import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
+import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestDataConstants;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -52,10 +53,11 @@ public class ProjectChangeAccessLevelScenario3IntTest {
             assignUserToProject(USER_1, PROJECT_1);
         
         /* test*/
-        // now we test that the acces level is full... and not NONE as before the delete...
+        TestAPI.waitMilliSeconds(300); // we wait some time to get events done inside all domains 
         
+        // now we test that the acces level is full... and not NONE as before the delete...
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
-        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new projectis "FULL"
+        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new project is "FULL"
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).
