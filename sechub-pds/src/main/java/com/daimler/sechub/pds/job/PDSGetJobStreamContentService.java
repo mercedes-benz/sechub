@@ -33,19 +33,19 @@ public class PDSGetJobStreamContentService {
     private static final int DEFAULT_RESILIENCE_MAX_RETRIES = 3;
 
     private static final long DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS = 500;
-    private static final long DEFAULT_WATCH_PERIOD_MAX_RETRIES = 10;
+    private static final int DEFAULT_WATCH_PERIOD_MAX_RETRIES = 10;
 
     @PDSMustBeDocumented("Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)")
     @Value("${sechub.pds.config.job.stream.check.retries:" + DEFAULT_WATCH_PERIOD_MAX_RETRIES + "}")
-    private int maximumRefreshCheckRetries;
+    int maximumRefreshCheckRetries=DEFAULT_WATCH_PERIOD_MAX_RETRIES;
 
     @PDSMustBeDocumented("Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh")
     @Value("${sechub.pds.config.job.stream.check.timetowait:" + DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS + "}")
-    private int timeToWaitForNextCheckInMilliseconds;
+    long timeToWaitForNextCheckInMilliseconds=DEFAULT_WATCH_TIME_PERIOD_IN_MILLIS;
 
     @PDSMustBeDocumented("Maximum amount of retries to mark job stream data refresh")
     @Value("${sechub.pds.config.job.stream.mark.retries:" + DEFAULT_RESILIENCE_MAX_RETRIES + "}")
-    private int maximumRefreshRequestRetries;
+    int maximumRefreshRequestRetries=DEFAULT_RESILIENCE_MAX_RETRIES;
 
     private ExceptionThrower<IllegalStateException> streamDataRefreshExceptionThrower;
 
@@ -136,7 +136,7 @@ public class PDSGetJobStreamContentService {
         LOG.debug("Wait until refresh request for PDS job:{} has updated stream data", jobUUID);
 
         PDSJob updatedPDSjob = null;
-        int amountOfChecks = 0;
+        int amountOfRetries = 0;
         do {
             try {
                 Thread.sleep(timeToWaitForNextCheckInMilliseconds);
@@ -152,12 +152,12 @@ public class PDSGetJobStreamContentService {
             } else {
                 LOG.debug("Stream data for PDS job:{} still outdated - continue waiting", jobUUID);
             }
-            amountOfChecks++;
+            amountOfRetries++;
 
-        } while (amountOfChecks < maximumRefreshCheckRetries);
+        } while (amountOfRetries <= maximumRefreshCheckRetries);
 
         /* still refresh necessary but took too much time... */
-        throw new IllegalStateException("Timeout! Even after " + amountOfChecks + " retries, waiting each " + timeToWaitForNextCheckInMilliseconds
+        throw new IllegalStateException("Timeout! Even after " + amountOfRetries + " retries, waiting each " + timeToWaitForNextCheckInMilliseconds
                 + " milliseconds there was no update for stream data content of PDS job:" + jobUUID);
 
     }
