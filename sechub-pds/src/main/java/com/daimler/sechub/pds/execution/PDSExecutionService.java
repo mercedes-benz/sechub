@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -64,11 +65,11 @@ public class PDSExecutionService {
     private final PDSExecutionWatcher watcher = new PDSExecutionWatcher();
     private final Map<UUID, Future<PDSExecutionResult>> jobsInQueue = new LinkedHashMap<>();
 
-    @PDSMustBeDocumented(value="Set amount of worker threads used for exeuctions", scope="execution")
+    @PDSMustBeDocumented(value = "Set amount of worker threads used for exeuctions", scope = "execution")
     @Value("${sechub.pds.config.execute.worker.thread.count:" + DEFAULT_WORKER_THREAD_COUNT + "}")
     int workerThreadCount = DEFAULT_WORKER_THREAD_COUNT;
 
-    @PDSMustBeDocumented(value="Set amount of maximum executed parts in queue for same time", scope="execution")
+    @PDSMustBeDocumented(value = "Set amount of maximum executed parts in queue for same time", scope = "execution")
     @Value("${sechub.pds.config.execute.queue.max:" + DEFAULT_QUEUE_MAX + "}")
     int queueMax = DEFAULT_QUEUE_MAX;
 
@@ -91,7 +92,7 @@ public class PDSExecutionService {
         scheduler.scheduleAtFixedRate(watcher, 300, 1000, TimeUnit.MILLISECONDS);
     }
 
-    @UseCaseUserCancelsJob(@PDSStep(name="service call",description = "job execution will be canceled in queue",number=3))
+    @UseCaseUserCancelsJob(@PDSStep(name = "service call", description = "job execution will be canceled in queue", number = 3))
     public boolean cancel(UUID jobUUID) {
         notNull(jobUUID, "job uuid may not be null!");
 
@@ -147,7 +148,7 @@ public class PDSExecutionService {
         handleFormerJob(jobUUID, former);
     }
 
-    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name="db lookup",description = "service fetches all execution state",number=2))
+    @UseCaseAdminFetchesMonitoringStatus(@PDSStep(name = "db lookup", description = "service fetches all execution state", number = 2))
     public PDSExecutionStatus getExecutionStatus() {
         PDSExecutionStatus status = new PDSExecutionStatus();
         synchronized (jobsInQueue) {
@@ -185,6 +186,8 @@ public class PDSExecutionService {
 
     private class PDSExecutionWatcher implements Runnable {
 
+        private static final int MAXIMUM_TRIES_TO_STORE_JOB_RESILIENT = 5;
+
         @Override
         public void run() {
             if (watcherDisabled) {
@@ -218,63 +221,80 @@ public class PDSExecutionService {
         }
 
         /**
-         * Handles work being done - all done parts are marked automatically in database
+         * Handles work being done - all done parts are marked automatically in database.
+         * The execution will be tried resilient. See {@link #getMaximumRetriesToStoreResilient()}
          * 
          * @param entry
          * @param future
          * @return <code>true</code> when work can be removed from jobsInQueue
          */
-        @UseCaseUserCancelsJob(@PDSStep(name="queue work",description = "canceled job will be marked as CANCELED in db",number=5))
+        @UseCaseUserCancelsJob(@PDSStep(name = "queue work", description = "canceled job will be marked as CANCELED in db", number = 5))
         private boolean isFutureDoneAndChangesToDatabaseCanBeApplied(Entry<UUID, Future<PDSExecutionResult>> entry, Future<PDSExecutionResult> future) {
             UUID jobUUID = entry.getKey();
 
-            Optional<PDSJob> jobOption = repository.findById(jobUUID);
-            if (!jobOption.isPresent()) {
-                LOG.error("pds job with uuid:{} does no longer exist, but result available! So remove from queue", jobUUID);
-                return true;
-            }
-
-            try {
-                PDSJob job = jobOption.get();
-                // we use this moment of time for all, currently the easiest and central way 
-                job.setEnded(LocalDateTime.now());
-                
-                if (future.isCancelled()) {
-                    job.setState(PDSJobStatusState.CANCELED);
-                } else {
-                    PDSExecutionResult callResult;
-                    try {
-                        callResult = future.get();
-                        LOG.debug("Fetch job result from future, pds job uuid={}, state={}",job.getUUID(),job.getState());
-                        job.setResult(callResult.result);
-                        
-                        if (callResult.failed) {
-                            job.setState(PDSJobStatusState.FAILED);
-                        } else {
-                            job.setState(PDSJobStatusState.DONE);
-                        }
-                        
-                    } catch (InterruptedException e) {
-                        LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
-                        job.setState(PDSJobStatusState.FAILED);
-                        job.setResult("Job interrupted");
-                    } catch (ExecutionException e) {
-                        LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
-                        job.setState(PDSJobStatusState.FAILED);
-                        job.setResult("Job execution failed");
-                    }
-                    LOG.debug("Handled job result and state job uuid={}, state={}",job.getUUID(),job.getState());
+            int tries = 0;
+            while (tries < getMaximumRetriesToStoreResilient()) {
+                if (tries > 0) {
+                    LOG.info("Retry to store work for PDS job {}. Tried {} times before");
                 }
-                repository.save(job);
-                LOG.debug("Stored job pds uuid={}, state={}",job.getUUID(),job.getState());
+                tries++;
+                Optional<PDSJob> jobOption = repository.findById(jobUUID);
+                if (!jobOption.isPresent()) {
+                    LOG.error("pds job with uuid:{} does no longer exist, but result available! So remove from queue", jobUUID);
+                    return true;
+                }
 
-                return true;
+                try {
+                    PDSJob job = jobOption.get();
+                    // we use this moment of time for all, currently the easiest and central way
+                    job.setEnded(LocalDateTime.now());
 
-            } catch (Exception e) {
-                LOG.error("Was not able to handle work for job with uuid:{}", jobUUID, e);
-                return false;
+                    if (future.isCancelled()) {
+                        job.setState(PDSJobStatusState.CANCELED);
+                    } else {
+                        PDSExecutionResult callResult;
+                        try {
+                            callResult = future.get();
+                            LOG.debug("Fetch job result from future, pds job uuid={}, state={}", job.getUUID(), job.getState());
+                            job.setResult(callResult.result);
+
+                            if (callResult.failed) {
+                                job.setState(PDSJobStatusState.FAILED);
+                            } else {
+                                job.setState(PDSJobStatusState.DONE);
+                            }
+
+                        } catch (InterruptedException e) {
+                            LOG.error("Job with uuid:{} was interrupted", jobUUID, e);
+                            job.setState(PDSJobStatusState.FAILED);
+                            job.setResult("Job interrupted");
+                        } catch (ExecutionException e) {
+                            LOG.error("Job with uuid:{} failed in execution", jobUUID, e);
+                            job.setState(PDSJobStatusState.FAILED);
+                            job.setResult("Job execution failed");
+                        }
+                        LOG.debug("Handled job result and state job uuid={}, state={}", job.getUUID(), job.getState());
+                    }
+                    repository.save(job);
+                    LOG.debug("Stored job pds uuid={}, state={}", job.getUUID(), job.getState());
+
+                    return true;
+
+                } catch (OptimisticLockingFailureException e) {
+                    LOG.warn("Optimistic lock problem - so not able to handle work for job with uuid:{}", jobUUID, e);
+                } catch (Exception e) {
+                    LOG.error("Eror happend - so not able to handle work for job with uuid:{}", jobUUID, e);
+                }
             }
 
+            LOG.error("Was not able to write work for job with uuid:{} - even after {} tries.", jobUUID, tries);
+            // now we return true, so the job will be removed from the queue!
+            return true;
+
+        }
+
+        private int getMaximumRetriesToStoreResilient() {
+            return MAXIMUM_TRIES_TO_STORE_JOB_RESILIENT;
         }
 
     }

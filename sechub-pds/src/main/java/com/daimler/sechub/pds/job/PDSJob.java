@@ -55,6 +55,13 @@ public class PDSJob {
 
     public static final String COLUMN_RESULT = "RESULT";
 
+    public static final String COLUMN_ERROR_STREAM_TXT = "ERROR_STREAM_TXT";
+
+    public static final String COLUMN_OUTPUT_STREAM_TXT = "OUTPUT_STREAM_TXT";
+
+    public static final String COLUMN_LAST_STREAM_TXT_REFRESH_REQUEST = "LAST_STREAM_TXT_REFRESH_REQUEST";
+    public static final String COLUMN_LAST_STREAM_TXT_UPDATE = "LAST_STREAM_TXT_UPDATE";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -82,29 +89,39 @@ public class PDSJob {
 
     @Column(name = COLUMN_OWNER, nullable = false)
     String owner;
-    
+
     /**
-     * Server ID is used to give possibilty to use a shared database for multiple PDS clusters.
-     * Members of cluster use the same server id, so scheduling etc. is working well even when
-     * multiple PDS are running
+     * Server ID is used to give possibilty to use a shared database for multiple
+     * PDS clusters. Members of cluster use the same server id, so scheduling etc.
+     * is working well even when multiple PDS are running
      */
     @Column(name = COLUMN_SERVER_ID, nullable = false)
     String serverId;
 
     @Column(name = COLUMN_CREATED, nullable = false) // remark: we setup hibernate to use UTC settings - see
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
     LocalDateTime created;
 
     @Column(name = COLUMN_STARTED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
     LocalDateTime started;
 
     @Column(name = COLUMN_ENDED) // remark: we setup hibernate to use UTC settings - see application.properties
-    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)  
-    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)  
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
     LocalDateTime ended;
+
+    @Column(name = COLUMN_LAST_STREAM_TXT_REFRESH_REQUEST) // remark: we setup hibernate to use UTC settings - see application.properties
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    LocalDateTime lastStreamTxtRefreshRequest;
+
+    @Column(name = COLUMN_LAST_STREAM_TXT_UPDATE) // remark: we setup hibernate to use UTC settings - see application.properties
+    @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
+    LocalDateTime lastStreamTxtUpdate;
 
     @Column(name = COLUMN_CONFIGURATION)
     String jsonConfiguration;
@@ -113,6 +130,14 @@ public class PDSJob {
     @Type(type = "text") // why not using @Lob, because hibernate/postgres issues. see
     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
     String result;
+
+    @Column(name = COLUMN_ERROR_STREAM_TXT)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String errorStreamText;
+
+    @Column(name = COLUMN_OUTPUT_STREAM_TXT)
+    @Type(type = "text") // see remarks on COLUMN_RESULT
+    String outputStreamText;
 
     @Enumerated(STRING)
     @Column(name = COLUMN_STATE, nullable = false)
@@ -125,7 +150,7 @@ public class PDSJob {
     public void setServerId(String serverId) {
         this.serverId = serverId;
     }
-    
+
     public String getServerId() {
         return serverId;
     }
@@ -133,7 +158,7 @@ public class PDSJob {
     public void setResult(String result) {
         this.result = result;
     }
-    
+
     public void setState(PDSJobStatusState executionResult) {
         this.state = executionResult;
     }
@@ -177,9 +202,25 @@ public class PDSJob {
     public PDSJobStatusState getState() {
         return state;
     }
-    
+
     public String getResult() {
         return result;
+    }
+
+    public LocalDateTime getLastStreamTxtRefreshRequest() {
+        return lastStreamTxtRefreshRequest;
+    }
+
+    public LocalDateTime getLastStreamTxtUpdate() {
+        return lastStreamTxtUpdate;
+    }
+
+    public String getOutputStreamText() {
+        return outputStreamText;
+    }
+
+    public String getErrorStreamText() {
+        return errorStreamText;
     }
 
     @Override
@@ -204,7 +245,5 @@ public class PDSJob {
         PDSJob other = (PDSJob) obj;
         return Objects.equals(uUID, other.uUID);
     }
-
-   
 
 }

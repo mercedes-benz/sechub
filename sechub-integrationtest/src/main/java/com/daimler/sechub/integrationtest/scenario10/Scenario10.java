@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario10;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
+
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
@@ -8,14 +10,18 @@ import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario10 - the PDS integrationtest SARIF scenario (NO reuse of sechub storage)</u></b><br>
+ * <b><u>Scenario10 - the PDS integrationtest SARIF scenario (NO reuse of sechub
+ * storage)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
- * removed as well): <br> <br>
- * a) <b> PDS integrationtest configuration is done automatically - <b>but we DO NOT use sechub storage here - so PDS will store at its own location pathes and secub will upload sources!</b></b> 
- * All configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json' will be
- * configured automatically!<br><br>
+ * removed as well): <br>
+ * <br>
+ * a) <b> PDS integrationtest configuration is done automatically - <b>but we DO
+ * NOT use sechub storage here - so PDS will store at its own location pathes
+ * and secub will upload sources!</b></b> All configurations from
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * will be configured automatically!<br>
+ * <br>
  * b) User and project data:
  *
  * <pre>
@@ -43,10 +49,10 @@ public class Scenario10 extends AbstractSecHubServerTestScenario implements PDST
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile_4_PDS_codescan_sarif_no_sechub_storage_used().
+            ensureDefaultExecutionProfile(PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile_4_PDS_SARIF_NOT_USING_SECHUB_STORAGE(PROJECT_1).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF,PROJECT_1).
             assignUserToProject(PROJECT_1,USER_1)
             ;
         /* @formatter:on */

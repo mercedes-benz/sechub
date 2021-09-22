@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.pds.job.PDSCheckJobStatusService;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
 
@@ -16,12 +17,15 @@ public class PDSExecutionCallableFactory {
     PDSJobTransactionService updateJobTransactionService;
     
     @Autowired
+    PDSCheckJobStatusService jobStatusService;
+    
+    @Autowired
     PDSWorkspaceService workspaceService;
     
     @Autowired
     PDSExecutionEnvironmentService environmentService;
 
     public PDSExecutionCallable createCallable(UUID jobUUID) {
-        return new PDSExecutionCallable(jobUUID, updateJobTransactionService, workspaceService,environmentService);
+        return new PDSExecutionCallable(jobUUID, updateJobTransactionService, workspaceService,environmentService,jobStatusService);
     }
 }

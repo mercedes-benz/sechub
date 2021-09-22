@@ -48,7 +48,7 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         // now we create a new project with same name etc.
         as(SUPER_ADMIN).
             createProject(PROJECT_1, USER_1.getUserId()).
-            addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID, PROJECT_1).
+            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, PROJECT_1).
             assignUserToProject(USER_1, PROJECT_1);
         
         /* test*/

@@ -1,23 +1,28 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.integrationtest.scenario5;
+package com.daimler.sechub.integrationtest.scenario11;
+
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
+import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
-
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN;
+import com.daimler.sechub.integrationtest.scenario5.Scenario5;
 
 /**
- * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9 (REUSE SECHUB DATA enabled!)</u></b><br>
+ * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9
+ * (REUSE SECHUB DATA enabled!)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
- * removed as well): <br> <br>
- * a) <b> PDS integration test configuration is done automatically!</b> 
- * All configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json' will be
- * configured automatically!<br><br>
+ * removed as well): <br>
+ * <br>
+ * a) <b> PDS integration test configuration is done automatically!</b> All
+ * configurations from
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * will be configured automatically!<br>
+ * <br>
  * b) User and project data:
  *
  * <pre>
@@ -25,11 +30,15 @@ import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefault
  * USER_1, is automatically registered, created and assigned to project1
  * </pre>
  * 
+ * c) The error and input streams will contain additional data. Those
+ * information will be laziliy available. See
+ * {@link IntegrationTestDefaultProfiles#PROFILE_5_PDS_CODESCAN_LAZY_STREAMS}
+ * for details.
  * 
  * @author Albert Tregnaghi
  *
  */
-public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario11 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
@@ -45,10 +54,10 @@ public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTe
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN).
+            ensureDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,PROJECT_1).
             assignUserToProject(PROJECT_1,USER_1)
             ;
         /* @formatter:on */

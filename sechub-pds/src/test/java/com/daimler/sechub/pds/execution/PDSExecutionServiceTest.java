@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.pds.job.PDSCheckJobStatusService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobTestHelper;
@@ -62,7 +63,7 @@ public class PDSExecutionServiceTest {
         private PDSExecutionResult result;
 
         public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
-            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class));
+            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class), mock(PDSCheckJobStatusService.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }

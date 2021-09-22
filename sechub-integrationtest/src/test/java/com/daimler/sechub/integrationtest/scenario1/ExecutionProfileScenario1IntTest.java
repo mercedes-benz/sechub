@@ -31,7 +31,7 @@ public class ExecutionProfileScenario1IntTest {
 
         /* test */
         for (TestExecutionProfileListEntry profileEntry : profiles.executionProfiles) {
-            if (profileEntry.id.equals(ExecutionConstants.DEFAULT_PROFILE_1_ID)) {
+            if (profileEntry.id.equals(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID)) {
                 return;
             }
         }
@@ -41,7 +41,7 @@ public class ExecutionProfileScenario1IntTest {
     @Test
     public void sanity_check_for_default_profile1() {
         /* execute */
-        TestExecutionProfile profile = as(SUPER_ADMIN).fetchProductExecutionProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID);
+        TestExecutionProfile profile = as(SUPER_ADMIN).fetchProductExecutionProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID);
 
         /* dump */
         String json = JSONConverter.get().toJSON(profile);

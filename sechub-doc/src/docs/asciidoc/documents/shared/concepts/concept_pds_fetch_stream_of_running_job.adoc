@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 We use `error.txt` and `output.txt` inside the workspace location of 
 a running PDS job.
 
