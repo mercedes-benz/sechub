@@ -220,7 +220,16 @@ public class DeveloperAdministration {
         public TestPDSServerConfgiuration fetchServerConfiguration() {
             return JSONConverter.get().fromJSON(TestPDSServerConfgiuration.class, fetchServerConfigurationAsString());
         }
+        
+        public String getJobOutputStream(UUID jobUUID) {
+           return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobOutputStreamUrl(jobUUID));
+        }
 
+        public String getJobErrorStream(UUID jobUUID) {
+            return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobErrorStreamUrl(jobUUID));
+         }
+
+        
         public ProductIdentifier findProductIdentifier(TestPDSServerConfgiuration config, String productId) {
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
