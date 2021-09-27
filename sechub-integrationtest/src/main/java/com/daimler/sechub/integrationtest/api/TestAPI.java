@@ -893,4 +893,27 @@ public class TestAPI {
         String url = getURLBuilder().buildSetSchedulerStrategyIdUrl(strategyId);
         getSuperAdminRestHelper().put(url);
     }
+
+    /**
+     * Waits for at least one heart beat by PDS server. Every 200 milliseconds there is a check 
+     * if at least one heart beat time stamp is found. After 10 tries the method will fail.
+     */
+    public static void waitForAtLeastOnePDSHeartbeat() {
+        int maxTries = 10;
+
+        boolean heartBeatFound = false;
+        int tried = 0;
+        while (!heartBeatFound && tried < maxTries) {
+            tried++;
+            String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
+            heartBeatFound = json.contains("heartBeatTimestamp");
+            if (!heartBeatFound) {
+                LOG.info("No heart beat time stamp found (tried {} times) - so will wait and retry",tried);
+                waitMilliSeconds(200);
+            }
+        }
+        assertTrue("Even after "+tried+" tries to fetch a heartbeat there was no heartbeat found!", heartBeatFound);
+
+    }
+
 }
