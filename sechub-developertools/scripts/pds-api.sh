@@ -71,14 +71,14 @@ function job_result {
 function job_stream_output {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/stream/output"
+  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/output"
   echo ""
 }
 
 function job_stream_error {
   local jobUUID=$1
 
-  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: application/json" "$PDS_SERVER/api/job/$jobUUID/stream/error"
+  curl $CURL_AUTH $CURL_PARAMS -X GET --header "Accept: text/plain" "$PDS_SERVER/api/admin/job/$jobUUID/stream/error"
   echo ""
 }
 
