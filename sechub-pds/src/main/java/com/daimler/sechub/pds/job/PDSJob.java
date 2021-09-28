@@ -55,12 +55,12 @@ public class PDSJob {
 
     public static final String COLUMN_RESULT = "RESULT";
 
-    public static final String COLUMN_ERROR_STREAM_TXT = "ERROR_STREAM_TXT";
+    public static final String COLUMN_ERROR_STREAM_TEXT = "ERROR_STREAM_TEXT";
 
-    public static final String COLUMN_OUTPUT_STREAM_TXT = "OUTPUT_STREAM_TXT";
+    public static final String COLUMN_OUTPUT_STREAM_TEXT = "OUTPUT_STREAM_TEXT";
 
-    public static final String COLUMN_LAST_STREAM_TXT_REFRESH_REQUEST = "LAST_STREAM_TXT_REFRESH_REQUEST";
-    public static final String COLUMN_LAST_STREAM_TXT_UPDATE = "LAST_STREAM_TXT_UPDATE";
+    public static final String COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST = "LAST_STREAM_TEXT_REFRESH_REQUEST";
+    public static final String COLUMN_LAST_STREAM_TEXT_UPDATE = "LAST_STREAM_TEXT_UPDATE";
 
     /* +-----------------------------------------------------------------------+ */
     /* +............................ JPQL .....................................+ */
@@ -113,15 +113,15 @@ public class PDSJob {
     @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
     LocalDateTime ended;
 
-    @Column(name = COLUMN_LAST_STREAM_TXT_REFRESH_REQUEST) // remark: we setup hibernate to use UTC settings - see application.properties
+    @Column(name = COLUMN_LAST_STREAM_TEXT_REFRESH_REQUEST) // remark: we setup hibernate to use UTC settings - see application.properties
     @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
     @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
-    LocalDateTime lastStreamTxtRefreshRequest;
+    LocalDateTime lastStreamTextRefreshRequest;
 
-    @Column(name = COLUMN_LAST_STREAM_TXT_UPDATE) // remark: we setup hibernate to use UTC settings - see application.properties
+    @Column(name = COLUMN_LAST_STREAM_TEXT_UPDATE) // remark: we setup hibernate to use UTC settings - see application.properties
     @JsonDeserialize(using = PDSLocalDateTimeDeserializer.class)
     @JsonSerialize(using = PDSLocalDateTimeSerializer.class)
-    LocalDateTime lastStreamTxtUpdate;
+    LocalDateTime lastStreamTextUpdate;
 
     @Column(name = COLUMN_CONFIGURATION)
     String jsonConfiguration;
@@ -131,11 +131,11 @@ public class PDSJob {
     // https://stackoverflow.com/questions/25094410/hibernate-error-while-persisting-text-datatype?noredirect=1#comment39048566_25094410
     String result;
 
-    @Column(name = COLUMN_ERROR_STREAM_TXT)
+    @Column(name = COLUMN_ERROR_STREAM_TEXT)
     @Type(type = "text") // see remarks on COLUMN_RESULT
     String errorStreamText;
 
-    @Column(name = COLUMN_OUTPUT_STREAM_TXT)
+    @Column(name = COLUMN_OUTPUT_STREAM_TEXT)
     @Type(type = "text") // see remarks on COLUMN_RESULT
     String outputStreamText;
 
@@ -207,12 +207,12 @@ public class PDSJob {
         return result;
     }
 
-    public LocalDateTime getLastStreamTxtRefreshRequest() {
-        return lastStreamTxtRefreshRequest;
+    public LocalDateTime getLastStreamTextRefreshRequest() {
+        return lastStreamTextRefreshRequest;
     }
 
-    public LocalDateTime getLastStreamTxtUpdate() {
-        return lastStreamTxtUpdate;
+    public LocalDateTime getLastStreamTextUpdate() {
+        return lastStreamTextUpdate;
     }
 
     public String getOutputStreamText() {

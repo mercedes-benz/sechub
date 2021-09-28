@@ -21,8 +21,8 @@ import com.daimler.sechub.pds.security.PDSRoleConstants;
 import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor.ExceptionThrower;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 @Service
 @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
@@ -145,7 +145,7 @@ public class PDSGetJobStreamContentService {
             }
             updatedPDSjob = assertJobFound(jobUUID, repository);
 
-            if (!refreshCheckCalculator.isLastUpdateTooOld(updatedPDSjob.getLastStreamTxtUpdate(), refreshRequestTime)) {
+            if (!refreshCheckCalculator.isLastUpdateTooOld(updatedPDSjob.getLastStreamTextUpdate(), refreshRequestTime)) {
                 /* okay, data has been updated so return it... */
                 LOG.debug("Stream data for PDS job:{} has been updated, stop waiting", jobUUID);
                 return updatedPDSjob;
@@ -168,7 +168,7 @@ public class PDSGetJobStreamContentService {
          * here we execute the refresh request in a resilient way - so updates by other
          * cluster members are gracefully accepted
          */
-        PDSResillientRetryExecutor<IllegalStateException> executor = new PDSResillientRetryExecutor<>(getMaximumRefreshRequestRetries(),
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(getMaximumRefreshRequestRetries(),
                 streamDataRefreshExceptionThrower, OptimisticLockingFailureException.class);
 
         LocalDateTime refreshRequestTime = executor.execute(() -> {

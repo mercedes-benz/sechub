@@ -50,8 +50,8 @@ public class Scenario9 extends AbstractSecHubServerTestScenario implements PDSTe
             ensureDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_3_PDS_CODESCAN_SARIF, PROJECT_1).
+            assignUserToProject(PROJECT_1, USER_1)
             ;
         /* @formatter:on */
     }

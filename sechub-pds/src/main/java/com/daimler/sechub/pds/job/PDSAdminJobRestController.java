@@ -42,7 +42,7 @@ public class PDSAdminJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "job/{jobUUID}/result", method = RequestMethod.GET)
-    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name="rest call",description = "an admin fetches result or failure text for job from db.",number=1))
+    @UseCaseAdminFetchesJobResultOrFailureText(@PDSStep(name="rest call",description = "an admin fetches result or failure text for job from db.", number=1))
     public String getJobResultOrFailureText(
             @PathVariable("jobUUID") UUID jobUUID
             ) {
@@ -53,7 +53,7 @@ public class PDSAdminJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "job/{jobUUID}/stream/output", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-    @UseCaseAdminFetchesJobOutputStream(@PDSStep(name="rest call",description = "an admin fetches output stream text.",number=1))
+    @UseCaseAdminFetchesJobOutputStream(@PDSStep(name="rest call",description = "an admin fetches output stream text.", number=1))
     public String getJobOutputStreamContentAsText(
             @PathVariable("jobUUID") UUID jobUUID
             ) {
@@ -64,7 +64,7 @@ public class PDSAdminJobRestController {
     /* @formatter:off */
     @Validated
     @RequestMapping(path = "job/{jobUUID}/stream/error", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-    @UseCaseAdminFetchesJobErrorStream(@PDSStep(name="rest call",description = "an admin fetches error stream text.",number=1))
+    @UseCaseAdminFetchesJobErrorStream(@PDSStep(name="rest call",description = "an admin fetches error stream text.", number=1))
     public String getJobErrorStreamContentAsText(
             @PathVariable("jobUUID") UUID jobUUID
             ) {

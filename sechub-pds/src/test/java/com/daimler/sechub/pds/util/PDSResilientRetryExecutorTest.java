@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor.ExceptionThrower;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
-class PDSResillientRetryExecutorTest {
+class PDSResilientRetryExecutorTest {
 
     private ExceptionThrower<TestTargetException> thrower;
 
@@ -40,7 +40,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void no_problem_no_exception() throws TestTargetException {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
 
         /* execute +test */
         executorToTest.execute(()-> System.currentTimeMillis(), "id1");
@@ -52,7 +52,7 @@ class PDSResillientRetryExecutorTest {
         /* test */
         assertThrows(IllegalArgumentException.class, () -> {
             /* execute */
-            new PDSResillientRetryExecutor<TestTargetException>(1, thrower);
+            new PDSResilientRetryExecutor<TestTargetException>(1, thrower);
         });
 
     }
@@ -60,7 +60,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception_will_be_handled() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
 
         /* test */
         assertThrows(TestTargetException.class, () -> {
@@ -76,7 +76,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_runtime_exception_will_be_handled() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
 
         /* test */
         assertThrows(TestTargetException.class, () -> {
@@ -91,7 +91,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_IOException_will_be_handled_as_well() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
 
         /* test */
         assertThrows(TestTargetException.class, () -> {
@@ -107,7 +107,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_two_times_but_one_retry_execution_is_done() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
         AtomicInteger executionCount = new AtomicInteger();
         
         /* test */
@@ -127,7 +127,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_one_time_but_one_retry_execution_is_done() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(1, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(1, thrower, RuntimeException.class);
         AtomicInteger executionCount = new AtomicInteger();
 
         /* execute */
@@ -146,7 +146,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_10_times_but_11_retry_execution_is_done() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(11, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(11, thrower, RuntimeException.class);
         AtomicInteger executionCount = new AtomicInteger();
 
         /* execute */
@@ -165,7 +165,7 @@ class PDSResillientRetryExecutorTest {
     @Test
     void when_runtime_exception_is_defined_as_handled_a_illegal_state_exception__happening_1_times_but_5_retry_execution_is_done() throws Exception {
         /* prepare */
-        PDSResillientRetryExecutor<TestTargetException> executorToTest = new PDSResillientRetryExecutor<>(5, thrower, RuntimeException.class);
+        PDSResilientRetryExecutor<TestTargetException> executorToTest = new PDSResilientRetryExecutor<>(5, thrower, RuntimeException.class);
         AtomicInteger executionCount = new AtomicInteger();
 
         /* execute */

@@ -195,7 +195,7 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being running - after 5 seconds time out is reached
+     * Wait until SecHub job is running - after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
@@ -205,7 +205,7 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being running
+     * Wait until SecHub job is running
      * 
      * @param project
      * @param timeOutInSeconds

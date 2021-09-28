@@ -16,7 +16,7 @@ public class PDSStreamContentUpdateChecker {
 
     private static final long DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
 
-    @PDSMustBeDocumented("PDS job stream data caching.time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid")
+    @PDSMustBeDocumented("PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid")
     @Value("${sechub.pds.config.job.stream.cachetime:" + DEFAULT_CACHE_REFRESH_IN_MILLISECONDS + "}")
     private int streamDataCacheTimeMilliseconds;
 
@@ -31,7 +31,7 @@ public class PDSStreamContentUpdateChecker {
         }
         /* currently running so check last refresh */
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime lastUpdate = job.getLastStreamTxtUpdate();
+        LocalDateTime lastUpdate = job.getLastStreamTextUpdate();
 
         return isLastUpdateTooOld(lastUpdate, now);
     }
@@ -44,8 +44,8 @@ public class PDSStreamContentUpdateChecker {
             return false;
         }
         /* currently running so check last refresh */
-        LocalDateTime lastRequest = job.getLastStreamTxtRefreshRequest();
-        LocalDateTime lastUpdate = job.getLastStreamTxtUpdate();
+        LocalDateTime lastRequest = job.getLastStreamTextRefreshRequest();
+        LocalDateTime lastUpdate = job.getLastStreamTextUpdate();
 
         return isLastUpdateTooOld(lastUpdate, lastRequest);
     }

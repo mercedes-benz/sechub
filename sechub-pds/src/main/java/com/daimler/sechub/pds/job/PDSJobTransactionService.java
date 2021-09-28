@@ -56,6 +56,7 @@ public class PDSJobTransactionService {
 
     /**
      * Mark job as being requested to refresh stream data
+     * 
      * @param jobUUID
      * @return local date time for the new refresh time stamp
      */
@@ -63,19 +64,20 @@ public class PDSJobTransactionService {
     @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
     public LocalDateTime markJobStreamDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
         PDSJob job = assertJobFound(jobUUID, repository);
-        
+
         updateJobRefreshRequestInOwnTransaction(job);
-        
-        return job.getLastStreamTxtRefreshRequest();
+
+        return job.getLastStreamTextRefreshRequest();
     }
 
     private void updateJobRefreshRequestInOwnTransaction(PDSJob job) {
-        job.lastStreamTxtRefreshRequest=LocalDateTime.now();
+        job.lastStreamTextRefreshRequest = LocalDateTime.now();
         repository.save(job);
-        
-        LOG.debug("Updated job refresh stream txt request in own transaction - PDS job uuid={}, lastStreamTxtRefreshTimeStamp={}", job.getUUID(), job.getLastStreamTxtRefreshRequest());
+
+        LOG.debug("Updated job refresh stream text request in own transaction - PDS job uuid={}, lastStreamTxtRefreshTimeStamp={}", job.getUUID(),
+                job.getLastStreamTextRefreshRequest());
     }
-    
+
     private void updateJobInOwnTransaction(UUID jobUUID, String result, LocalDateTime started, LocalDateTime ended, PDSJobStatusState newState,
             PDSJobStatusState... acceptedStatesBefore) {
         notNull(jobUUID, "job uuid may not be null!");
@@ -123,11 +125,11 @@ public class PDSJobTransactionService {
 
     public void updateJobStreamDataInOwnTransaction(UUID jobUUID, String outputStreamData, String errorStreamData) {
         PDSJob job = assertJobFound(jobUUID, repository);
-        
-        job.outputStreamText=outputStreamData;
-        job.errorStreamText=errorStreamData;
-        job.lastStreamTxtUpdate=LocalDateTime.now();
-        
+
+        job.outputStreamText = outputStreamData;
+        job.errorStreamText = errorStreamData;
+        job.lastStreamTextUpdate = LocalDateTime.now();
+
         repository.save(job);
     }
 

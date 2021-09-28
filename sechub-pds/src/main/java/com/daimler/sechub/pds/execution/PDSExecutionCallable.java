@@ -28,8 +28,8 @@ import com.daimler.sechub.pds.usecase.PDSStep;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
 import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor.ExceptionThrower;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
@@ -202,7 +202,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         final StreamData streamData = readStreamData(jobUUID);
 
-        PDSResillientRetryExecutor<IllegalStateException> executor = new PDSResillientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
                 OptimisticLockingFailureException.class);
         executor.execute(() -> {
             jobTransactionService.updateJobStreamDataInOwnTransaction(jobUUID, streamData.outputStreamData, streamData.errorStreamData);

@@ -8,9 +8,9 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PDSResillientRetryExecutor<E extends Exception> {
+public class PDSResilientRetryExecutor<E extends Exception> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PDSResillientRetryExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PDSResilientRetryExecutor.class);
 
     private int maxRetries;
 
@@ -19,7 +19,7 @@ public class PDSResillientRetryExecutor<E extends Exception> {
     private ExceptionThrower<E> thrower;
 
     @SafeVarargs
-    public PDSResillientRetryExecutor(int maxRetries, ExceptionThrower<E> thrower, Class<? extends Exception>... handledExceptions) {
+    public PDSResilientRetryExecutor(int maxRetries, ExceptionThrower<E> thrower, Class<? extends Exception>... handledExceptions) {
         requireNonNull(thrower);
         if (handledExceptions == null || handledExceptions.length == 0) {
             throw new IllegalArgumentException("At least one handled exception class must be added at constructor call");
@@ -35,13 +35,13 @@ public class PDSResillientRetryExecutor<E extends Exception> {
      * exceptions.
      * 
      * @param <V>
-     * @param r
+     * @param callable
      * @param identifier will be used inside target exception message to identify
      *                   the problem - e.g. could contain a job UUID
      * @return
      * @throws E
      */
-    public <V> V execute(Callable<V> r, String identifier) throws E {
+    public <V> V execute(Callable<V> callable, String identifier) throws E {
         boolean done = false;
 
         int retries = 0;
@@ -53,7 +53,7 @@ public class PDSResillientRetryExecutor<E extends Exception> {
                 if (retries > 0) {
                     LOG.info("Start retry {} for {}", retries, identifier);
                 }
-                result = r.call();
+                result = callable.call();
                 done = true;
 
             } catch (Exception e) {

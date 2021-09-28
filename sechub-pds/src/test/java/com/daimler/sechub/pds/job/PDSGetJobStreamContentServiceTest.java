@@ -29,10 +29,9 @@ class PDSGetJobStreamContentServiceTest {
         serviceToTest.repository = repository;
         serviceToTest.refreshCheckCalculator = refreshCheckCalculator;
         serviceToTest.jobTransactionService = jobTransactionService;
-        
-        serviceToTest.timeToWaitForNextCheckInMilliseconds=10; // faster testing...
+
+        serviceToTest.timeToWaitForNextCheckInMilliseconds = 10; // faster testing...
     }
-    
 
     @Test
     void initial_default_settings_are_valid() {
@@ -183,37 +182,37 @@ class PDSGetJobStreamContentServiceTest {
         verify(jobTransactionService).markJobStreamDataRefreshRequestedInOwnTransaction(job.getUUID()); // must be marked
 
     }
-    
+
     @Test
     void checker_update_necessary__fetch_output_waits_fails_on_timeout() {
         /* prepare */
         PDSJob job = prepareJobCanBeFound();
         job.errorStreamText = "err1";
-        
-        serviceToTest.maximumRefreshCheckRetries=1; // only one retry...
-        
+
+        serviceToTest.maximumRefreshCheckRetries = 1; // only one retry...
+
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true); // first wait says still update necessary...
 
         /* execute + test */
-        IllegalStateException result = assertThrows(IllegalStateException.class, ()-> serviceToTest.getJobOutputStreamContentAsText(job.getUUID()));
+        IllegalStateException result = assertThrows(IllegalStateException.class, () -> serviceToTest.getJobOutputStreamContentAsText(job.getUUID()));
         assertTrue(result.getMessage().contains("Timeout!"));
 
     }
-    
+
     @Test
     void checker_update_necessary__fetch_error_waits_fails_on_timeout() {
         /* prepare */
         PDSJob job = prepareJobCanBeFound();
         job.errorStreamText = "err1";
-        
-        serviceToTest.maximumRefreshCheckRetries=1; // only one retry...
-        
+
+        serviceToTest.maximumRefreshCheckRetries = 1; // only one retry...
+
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true); // first wait says still update necessary...
 
         /* execute + test */
-        IllegalStateException result = assertThrows(IllegalStateException.class, ()-> serviceToTest.getJobErrorStreamContentAsText(job.getUUID()));
+        IllegalStateException result = assertThrows(IllegalStateException.class, () -> serviceToTest.getJobErrorStreamContentAsText(job.getUUID()));
         assertTrue(result.getMessage().contains("Timeout!"));
 
     }

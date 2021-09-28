@@ -210,7 +210,7 @@ public class AssertSecHubReport {
         TrafficLight foundTrafficLight = TrafficLight.fromString(trText);
         if (!trafficLight.equals(foundTrafficLight)) {
             /*
-             * in this case we log out the complete JSON content - interesting for debugging
+             * in this case we log the complete JSON content - interesting for debugging
              */
             dump();
             LOG.info("Last ouptput line was:" + lastOutputLIne);

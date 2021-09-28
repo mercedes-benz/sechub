@@ -13,14 +13,14 @@ database "PDS DB" as pdsDB
 pdsJobQueue<-pdsMember1: fetches Job and starts execution
 pdsMember1->pdsJobProcess: starts process
 pdsJobProcess->pdsMember1: writes streams to filesystem
-note over pdsAdmin, pdsMember2: Administrator wants to fetch content stream\nbut loadbalancer uses other cluster member\nwhich does not execute the process".
+note over pdsAdmin, pdsMember2: Administrator wants to fetch content stream\nbut loadbalancer uses other cluster member\nwhich does not execute the process.
 pdsAdmin->pdsLoadBalancer:Wants to fetch \nstream content
 pdsLoadBalancer->pdsMember2:delegates
 pdsMember2->pdsDB: check job finished
 
 alt job still running
 
-note over pdsMember2: Cluster member2 has no \ndirect access to the job\nwhich runs on another member!".
+note over pdsMember2: Cluster member2 has no \ndirect access to the job\nwhich runs on another member!
 
 pdsMember2->pdsDB: check for last update timestamp
 alt outdated data or no data found
@@ -41,7 +41,7 @@ hnote across: End of current process still running case
 
 else job already finished
 pdsMember1->pdsDB:  write file to DB field after process ended 
-note over pdsMember2: Just fetch final data from DB".
+note over pdsMember2: Just fetch final data from DB.
 pdsMember2->pdsDB: fetch stream content from DB field
 pdsMember2->pdsLoadBalancer: return content
 hnote across: End of process finished

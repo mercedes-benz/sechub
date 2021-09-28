@@ -16,8 +16,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.pds.security.PDSRoleConstants;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor;
-import com.daimler.sechub.pds.util.PDSResillientRetryExecutor.ExceptionThrower;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 @Service
 @RolesAllowed(PDSRoleConstants.ROLE_SUPERADMIN)
@@ -59,14 +59,14 @@ public class PDSUpdateJobStreamContentService {
          * here we execute the refresh request in a resilient way - so updates by other
          * cluster members are gracefully accepted
          */
-        PDSResillientRetryExecutor<IllegalStateException> executor = new PDSResillientRetryExecutor<>(getMaximumRefreshRequestRetries(), exceptionThrower,
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(getMaximumRefreshRequestRetries(), exceptionThrower,
                 OptimisticLockingFailureException.class);
 
         executor.execute(() -> {
             PDSJob job = assertJobFound(jobUUID, repository);
             job.outputStreamText = outputStreamText;
             job.errorStreamText = errorStreamText;
-            job.lastStreamTxtUpdate = LocalDateTime.now();
+            job.lastStreamTextUpdate = LocalDateTime.now();
 
             jobTransactionService.saveInOwnTransaction(job);
 
