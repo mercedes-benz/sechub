@@ -895,8 +895,9 @@ public class TestAPI {
     }
 
     /**
-     * Waits for at least one heart beat by PDS server. Every 200 milliseconds there is a check 
-     * if at least one heart beat time stamp is found. After 10 tries the method will fail.
+     * Waits for at least one heart beat by PDS server. Every 200 milliseconds there
+     * is a check if at least one heart beat time stamp is found. After 10 tries the
+     * method will fail.
      */
     public static void waitForAtLeastOnePDSHeartbeat() {
         int maxTries = 10;
@@ -908,12 +909,22 @@ public class TestAPI {
             String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
             heartBeatFound = json.contains("heartBeatTimestamp");
             if (!heartBeatFound) {
-                LOG.info("No heart beat time stamp found (tried {} times) - so will wait and retry",tried);
+                LOG.info("No heart beat time stamp found (tried {} times) - so will wait and retry", tried);
                 waitMilliSeconds(200);
             }
         }
-        assertTrue("Even after "+tried+" tries to fetch a heartbeat there was no heartbeat found!", heartBeatFound);
+        assertTrue("Even after " + tried + " tries to fetch a heartbeat there was no heartbeat found!", heartBeatFound);
 
+    }
+
+    /**
+     * Wait that project does not exist. Will try 3 times with 1 second delay before
+     * next retry. After this time this method will fail.
+     * 
+     * @param project
+     */
+    public static void waitProjectDoesNotExist(TestProject project) {
+        assertProject(project).doesNotExist(3);
     }
 
 }

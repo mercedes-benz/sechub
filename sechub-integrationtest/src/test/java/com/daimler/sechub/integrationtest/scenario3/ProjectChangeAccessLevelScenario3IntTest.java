@@ -18,7 +18,6 @@ import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
-import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestDataConstants;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.internal.SecHubClientExecutor.ExecutionResult;
@@ -45,18 +44,20 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         assertProject(project).hasAccessLevel(ProjectAccessLevel.NONE);
         
         /* execute */
-        as(SUPER_ADMIN).deleteProject(PROJECT_1);
+        as(SUPER_ADMIN).deleteProject(project);
+
+        /* test*/
+        waitProjectDoesNotExist(project);
+        
         // now we create a new project with same name etc.
         as(SUPER_ADMIN).
-            createProject(PROJECT_1, USER_1.getUserId()).
-            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, PROJECT_1).
-            assignUserToProject(USER_1, PROJECT_1);
-        
-        /* test*/
-        TestAPI.waitMilliSeconds(300); // we wait some time to get events done inside all domains 
+            createProject(project, USER_1.getUserId()).
+            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, project).
+            assignUserToProject(USER_1, project);
         
         // now we test that the acces level is full... and not NONE as before the delete...
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
+        
         // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new project is "FULL"
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
