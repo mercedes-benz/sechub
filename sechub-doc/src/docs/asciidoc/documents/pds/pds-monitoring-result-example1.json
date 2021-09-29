@@ -28,14 +28,12 @@
                 "jobsInQueue": 1,
                 "entries": [
                     {
+                        "jobUUID" : "c3917a46-456f-4006-888a-08f74cc26a7a",
                         "done": false,
                         "canceled": false,
-                        "job": {
-                            "owner": "developer",
-                            "serverId": "serverid1",
-                            "started": "2020-07-08T17:22:36.295",
-                            "state": "RUNNING"
-                        }
+                        "created": "2020-07-08T17:22:33.132",
+                        "started": "2020-07-08T17:22:36.295",
+                        "state": "RUNNING"
                     }
                 ]
             }

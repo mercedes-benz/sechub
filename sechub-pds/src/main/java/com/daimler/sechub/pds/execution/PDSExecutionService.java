@@ -166,7 +166,10 @@ public class PDSExecutionService {
 
                 Optional<PDSJob> jobOption = repository.findById(entry.getKey());
                 if (jobOption.isPresent()) {
-                    statusEntry.job = jobOption.get();
+                    PDSJob job = jobOption.get();
+                    statusEntry.created = job.getCreated();
+                    statusEntry.started = job.getStarted();
+                    statusEntry.state = job.getState();
                 }
                 status.entries.add(statusEntry);
             }
