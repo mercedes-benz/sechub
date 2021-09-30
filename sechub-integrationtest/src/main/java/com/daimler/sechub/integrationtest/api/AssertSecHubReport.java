@@ -33,8 +33,9 @@ public class AssertSecHubReport {
             throw new RuntimeException("Not able to read json obj", e);
         }
     }
-    
-    @Deprecated // use assertReport instead (newer implementation has more details and uses common SecHubReport object inside)
+
+    @Deprecated // use assertReport instead (newer implementation has more details and uses
+                // common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
         return new AssertSecHubReport(json);
     }
@@ -206,7 +207,15 @@ public class AssertSecHubReport {
             fail("No trafficlight found inside report!\nLast output line was:" + lastOutputLIne);
         }
         String trText = r.asText();
-        assertEquals(trafficLight, TrafficLight.fromString(trText));
+        TrafficLight foundTrafficLight = TrafficLight.fromString(trText);
+        if (!trafficLight.equals(foundTrafficLight)) {
+            /*
+             * in this case we log the complete JSON content - interesting for debugging
+             */
+            dump();
+            LOG.info("Last ouptput line was:" + lastOutputLIne);
+        }
+        assertEquals("Returned traffic light not as expected. See JSON dump in log file for details.", trafficLight, foundTrafficLight);
         return this;
     }
 

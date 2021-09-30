@@ -55,6 +55,8 @@ import com.daimler.sechub.developertools.admin.ui.action.pds.CheckPDSJobStatusAc
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreateNewPDSExecutionConfigurationAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.CreatePDSJobAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSConfigurationAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobErrorStreamAction;
+import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobOutputStreamAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSJobParameterExampleAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.FetchPDSMonitoringStatusAction;
 import com.daimler.sechub.developertools.admin.ui.action.pds.MarkPDSJobReadyAction;
@@ -274,6 +276,8 @@ public class CommandUI {
         menu.addSeparator();
         add(menu, new CheckPDSJobStatusAction(context));
         add(menu, new CheckPDSJobResultOrErrorAction(context));
+        add(menu, new FetchPDSJobOutputStreamAction(context));
+        add(menu, new FetchPDSJobErrorStreamAction(context));
     }
 
     private void createUserMenu() {

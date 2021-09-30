@@ -19,9 +19,9 @@ public class TestProject {
     TestProject() {
         all.add(this);
     }
-    
+
     public TestProject(String projectIdPart) {
-        this(projectIdPart,false);
+        this(projectIdPart, false);
     }
 
     public TestProject(String projectIdPart, boolean withWhiteList) {

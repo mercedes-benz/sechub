@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.daimler.sechub.pds.job.PDSCheckJobStatusService;
 import com.daimler.sechub.pds.job.PDSJob;
 import com.daimler.sechub.pds.job.PDSJobRepository;
 import com.daimler.sechub.pds.job.PDSJobTestHelper;
@@ -62,7 +63,7 @@ public class PDSExecutionServiceTest {
         private PDSExecutionResult result;
 
         public TestPDSExecutionCallable(UUID jobUUID, long waitMillis, PDSExecutionResult result) {
-            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class));
+            super(jobUUID, mock(PDSJobTransactionService.class), mock(PDSWorkspaceService.class), mock(PDSExecutionEnvironmentService.class), mock(PDSCheckJobStatusService.class));
             this.waitMillis = waitMillis;
             this.result = result;
         }
@@ -127,15 +128,15 @@ public class PDSExecutionServiceTest {
         serviceToTest.queueMax = 5;
         serviceToTest.postConstruct(); // simulate spring boot container...
         UUID uuid1 = UUID.randomUUID();
-        PDSJob job1 = PDSJobTestHelper.createTestJob(uuid1);
+        PDSJob job1 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid1);
         when(executionCallableFactory.createCallable(uuid1)).thenReturn(new TestPDSExecutionCallable(uuid1,0, result1));
 
         UUID uuid2 = UUID.randomUUID();
-        PDSJob job2 = PDSJobTestHelper.createTestJob(uuid2);
+        PDSJob job2 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid2);
         when(executionCallableFactory.createCallable(uuid2)).thenReturn(new TestPDSExecutionCallable(uuid2,500, result1));
 
         UUID uuid3 = UUID.randomUUID();
-        PDSJob job3 = PDSJobTestHelper.createTestJob(uuid3);
+        PDSJob job3 = PDSJobTestHelper.createTestJobStartedNowCreated3SecondsBefore(uuid3);
         when(executionCallableFactory.createCallable(uuid3)).thenReturn(new TestPDSExecutionCallable(uuid3,500, result1));
 
         when(repository.findById(uuid1)).thenReturn(Optional.of(job1));
@@ -161,19 +162,26 @@ public class PDSExecutionServiceTest {
         PDSExecutionJobInQueueStatusEntry entry1 = it.next();
         assertTrue(entry1.done);
         assertFalse(entry1.canceled);
-        assertEquals(job1,entry1.job);
+        assertEquals(job1.getState(),entry1.state);
+        assertEquals(job1.getCreated(),entry1.created);
+        assertEquals(job1.getStarted(),entry1.started);
         assertEquals(uuid1,entry1.jobUUID);
         
         PDSExecutionJobInQueueStatusEntry entry2 = it.next();
         assertTrue(entry2.done);
         assertTrue(entry2.canceled);
-        assertEquals(job2,entry2.job);
+        assertEquals(job2.getUUID(),entry2.jobUUID);
+        assertEquals(job2.getState(),entry2.state);
+        assertEquals(job2.getCreated(),entry2.created);
+        assertEquals(job2.getStarted(),entry2.started);
         assertEquals(uuid2,entry2.jobUUID);
         
         PDSExecutionJobInQueueStatusEntry entry3 = it.next();
         assertFalse(entry3.done);
         assertFalse(entry3.canceled);
-        assertEquals(job3,entry3.job);
+        assertEquals(job3.getState(),entry3.state);
+        assertEquals(job3.getCreated(),entry3.created);
+        assertEquals(job3.getStarted(),entry3.started);
         assertEquals(uuid3,entry3.jobUUID);
         
 

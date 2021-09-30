@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.scenario1;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.*;
+
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractGrowingSecHubServerTestScenario;
@@ -38,9 +40,9 @@ public class Scenario1 extends AbstractGrowingSecHubServerTestScenario {
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile_1().
+            ensureDefaultExecutionProfile(PROFILE_1).
             createUser(OWNER_1).
-            addProjectIdsToDefaultExecutionProfile_1(PROJECT_1);
+            addProjectIdsToDefaultExecutionProfile(PROFILE_1, PROJECT_1);
         /* @formatter:on */
 
     }
@@ -54,6 +56,5 @@ public class Scenario1 extends AbstractGrowingSecHubServerTestScenario {
     public String getPrefixMainId() {
         return "s01";
     }
-    
 
 }

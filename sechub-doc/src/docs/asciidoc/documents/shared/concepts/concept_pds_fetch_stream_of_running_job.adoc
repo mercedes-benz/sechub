@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+We use `error.txt` and `output.txt` inside the workspace location of 
+a running PDS job.
+
+The PDS job process does not store the files on a shared volume or S3 bucket
+but on the local file system (like done for uploaded source files for example).
+
+So we can easily write those text content from the files to our database when 
+the OS process (executing PDS caller script) has finished or failed, because
+at this time we have direct access to the files.
+
+
+But when an administrator wants to get the current output for a running job
+/ operation this becomes tricky in a clustered environment, because the process 
+stream data is only available on the machine where the job is executed. 
+Using a loadbalancer we do not know which machine will be used for the REST 
+operation.
+
+So it becomes necessary, that the executing cluster member will store the
+error and output text data in database to provide this cluster wide.
+
+On the other hand it shall not slow down or block the execution machine because of
+permanent updates inside the DB. If an admin wants to check the output or 
+error stream content of a running job, the information shall be gathered on demand.
+But when the job has finished _(no matter if canceled, done or failed)_ the information will always be written to DB. 
+
+The next figure gives an overview about the workflow to achieve this goal:
+
+plantuml::diagrams/diagram_pds_overview_stream_access.puml[format=svg, alt="Overview diagram about stream content fetching in cluster"]
