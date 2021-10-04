@@ -11,11 +11,12 @@ import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.Severities;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.domain.scan.ReportTransformationResult;
 
 @Component
 public class ScanReportTrafficLightCalculator {
 
-	public TrafficLight calculateTrafficLight(SecHubResult result) {
+	public TrafficLight calculateTrafficLight(ReportTransformationResult result) {
 		if (result == null) {
 			throw new IllegalArgumentException("SecHub result may not be null!");
 		}
@@ -30,7 +31,7 @@ public class ScanReportTrafficLightCalculator {
 		return TrafficLight.GREEN;
 	}
 
-	TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(SecHubResult result, TrafficLight found, Severity severity) {
+	TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(ReportTransformationResult result, TrafficLight found, Severity severity) {
 		if (found != null) {
 			return found;
 		}
@@ -67,11 +68,11 @@ public class ScanReportTrafficLightCalculator {
 		return filteredResult;
 	}
 
-	private boolean hasResultOneFindingWith(SecHubResult result, Severity severity) {
+	private boolean hasResultOneFindingWith(ReportTransformationResult result, Severity severity) {
 		if (severity == null) {
 			return false;
 		}
-		List<SecHubFinding> findings = result.getFindings();
+		List<SecHubFinding> findings = result.getResult().getFindings();
 		if (findings == null || findings.isEmpty()) {
 			return false;
 		}

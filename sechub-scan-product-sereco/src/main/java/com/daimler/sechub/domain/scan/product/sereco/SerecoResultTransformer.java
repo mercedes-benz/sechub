@@ -2,6 +2,7 @@
 package com.daimler.sechub.domain.scan.product.sereco;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -13,11 +14,16 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
-import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubMessage;
+import com.daimler.sechub.commons.model.SecHubMessageType;
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.domain.scan.ReportTransformationResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
-import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
+import com.daimler.sechub.domain.scan.report.ReportProductResultTransformer;
+import com.daimler.sechub.sereco.metadata.SerecoAnnotation;
+import com.daimler.sechub.sereco.metadata.SerecoAnnotationType;
 import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
@@ -26,7 +32,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
-public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHubResultTransformer {
+public class SerecoResultTransformer implements ReportProductResultTransformer {
 
     @Autowired
     SerecoFalsePositiveMarker falsePositiveMarker;
@@ -35,20 +41,21 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
     @MustBeDocumented(scope = "administration", value = "Administrators can turn on this mode to allow product links in json and HTML output")
     boolean showProductLineResultLink;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoReportToSecHubResultTransformer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoResultTransformer.class);
 
     @Override
-    public SecHubResult transform(ProductResult productResult) throws SecHubExecutionException {
-        String origin = productResult.getResult();
-        String projectId = productResult.getProjectId();
+    public ReportTransformationResult transform(ProductResult serecoProductResult) throws SecHubExecutionException {
+        String origin = serecoProductResult.getResult();
+        String projectId = serecoProductResult.getProjectId();
+        UUID sechubJobUUID = serecoProductResult.getSecHubJobUUID();
 
         SerecoMetaData data = JSONConverter.get().fromJSON(SerecoMetaData.class, origin);
 
         falsePositiveMarker.markFalsePositives(projectId, data.getVulnerabilities());
 
-        SecHubResult result = new SecHubResult();
+        ReportTransformationResult transformerResult = new ReportTransformationResult();
 
-        List<SecHubFinding> findings = result.getFindings();
+        List<SecHubFinding> findings = transformerResult.getResult().getFindings();
 
         int findingId = 0;
         for (SerecoVulnerability v : data.getVulnerabilities()) {
@@ -62,8 +69,8 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
                 continue;
             }
             SecHubFinding finding = new SecHubFinding();
-            handleClassifications(finding, v, productResult.getSecHubJobUUID());
-            
+            handleClassifications(finding, v, serecoProductResult.getSecHubJobUUID());
+
             finding.setDescription(v.getDescription());
             finding.setName(v.getType());
             finding.setId(findingId);
@@ -78,7 +85,55 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
             findings.add(finding);
         }
 
-        return result;
+        handleAnnotations(sechubJobUUID, data, transformerResult);
+
+        return transformerResult;
+    }
+
+    private void handleAnnotations(UUID sechubJobUUID, SerecoMetaData data, ReportTransformationResult transformerResult) {
+        Set<SerecoAnnotation> annotations = data.getAnnotations();
+        for (SerecoAnnotation annotation : annotations) {
+            handleAnnotation(annotation, transformerResult, sechubJobUUID);
+        }
+    }
+
+    private void handleAnnotation(SerecoAnnotation annotation, ReportTransformationResult transformerResult, UUID sechubJobUUID) {
+        if (annotation == null) {
+            return;
+        }
+        SerecoAnnotationType annotationType = annotation.getType();
+
+        String annotationValue = annotation.getValue();
+        if (annotationType == null) {
+            LOG.error("Sereco message type not set for message :{}, sechub job uuid: {}", annotationValue, sechubJobUUID);
+            return;
+        }
+
+        switch (annotationType) {
+        case USER_INFO:
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.INFO, annotationValue));
+            return;
+        case USER_WARNING:
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.WARNING, annotationValue));
+            return;
+        case USER_ERROR:
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, annotationValue));
+            return;
+        case INTERNAL_ERROR_PRODUCT_FAILED:
+            /* internal errors are marked with status failed */
+            transformerResult.setStatus(SecHubStatus.FAILED);
+            return;
+        default:
+            // nothing
+            LOG.error("Unhandled sereco annotation type:{}, value:{}, sechub job uuid: {}", annotationType, annotationValue, sechubJobUUID);
+        }
+       
+    }
+
+    private void appendSecHubMessage(ReportTransformationResult transformerResult, SecHubMessage sechubMessage) {
+        if (sechubMessage != null) {
+            transformerResult.getMessages().add(sechubMessage);
+        }
     }
 
     private void handleClassifications(SecHubFinding finding, SerecoVulnerability v, UUID jobUUID) {
@@ -88,8 +143,8 @@ public class SerecoReportToSecHubResultTransformer implements ScanReportToSecHub
             try {
                 int cweInt = Integer.parseInt(cwe);
                 finding.setCweId(cweInt);
-            }catch(NumberFormatException e) {
-                LOG.error("CWE information not valid:{} inside result for job:{}",cwe, jobUUID);
+            } catch (NumberFormatException e) {
+                LOG.error("CWE information not valid:{} inside result for job:{}", cwe, jobUUID);
             }
         }
         finding.setCveId(clazz.getCve());

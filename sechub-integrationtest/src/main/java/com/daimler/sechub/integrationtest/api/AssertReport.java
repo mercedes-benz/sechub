@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
-import com.daimler.sechub.commons.model.SecHubReport;
+import com.daimler.sechub.commons.model.SecHubReportModel;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
@@ -22,13 +22,13 @@ public class AssertReport {
 
     private static final Logger LOG = LoggerFactory.getLogger(AssertReport.class);
 
-    private SecHubReport report;
+    private SecHubReportModel report;
 
     public static AssertReport assertReport(String json) {
-        return new AssertReport(SecHubReport.fromJSONString(json));
+        return new AssertReport(SecHubReportModel.fromJSONString(json));
     }
     
-    AssertReport(SecHubReport report) {
+    AssertReport(SecHubReportModel report) {
         assertNotNull("Report may not be null", report);
         this.report = report;
     }
@@ -192,7 +192,7 @@ public class AssertReport {
 
     }
 
-    private List<SecHubFinding> assertFindings(SecHubReport report) {
+    private List<SecHubFinding> assertFindings(SecHubReportModel report) {
         assertNotNull("Report may not be null", report);
         SecHubResult result = report.getResult();
         assertNotNull(result);

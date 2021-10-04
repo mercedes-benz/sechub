@@ -16,12 +16,12 @@ import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.WebScanDurationConfiguration;
+import com.daimler.sechub.sharedkernel.configuration.login.Action;
 import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.login.Page;
 import com.daimler.sechub.sharedkernel.configuration.login.Script;
-import com.daimler.sechub.sharedkernel.configuration.login.Action;
 import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 

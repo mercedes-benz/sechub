@@ -60,7 +60,7 @@ public class ScanReportRestControllerMockTest {
     private DownloadScanReportService downloadReportService;
 
     @MockBean
-    SecHubResultService secHubResultService;
+    SecHubReportProductTransformerService secHubResultService;
 
     @MockBean
     ReportProductExecutionService reportProductExecutionService;

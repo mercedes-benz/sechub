@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.ScanAssertService;
-import com.daimler.sechub.domain.scan.SecHubResultService;
+import com.daimler.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
@@ -21,7 +21,7 @@ public class DownloadScanReportService {
     ScanAssertService scanAssertService;
 
     @Autowired
-    SecHubResultService secHubResultService;
+    SecHubReportProductTransformerService secHubResultService;
 
     @Autowired
     ScanReportRepository reportRepository;

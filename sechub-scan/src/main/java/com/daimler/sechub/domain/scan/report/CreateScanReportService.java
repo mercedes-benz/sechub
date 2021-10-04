@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.SecHubResultService;
+import com.daimler.sechub.domain.scan.ReportTransformationResult;
+import com.daimler.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
@@ -25,7 +25,7 @@ public class CreateScanReportService {
 	private static final Logger LOG = LoggerFactory.getLogger(CreateScanReportService.class);
 
 	@Autowired
-	SecHubResultService secHubResultService;
+	SecHubReportProductTransformerService reportTransformerService;
 
 	@Autowired
 	ReportProductExecutionService reportProductExecutionService;
@@ -69,17 +69,19 @@ public class CreateScanReportService {
 		} catch (SecHubExecutionException e) {
 			throw new ScanReportException("Report product execution failed", e);
 		}
+		
 		/* transform */
-		SecHubResult secHubResult;
+		ReportTransformationResult reportTransformerResult;
 		try {
-			secHubResult = secHubResultService.createResult(context);
-			report.setResult(secHubResult.toJSON());
+			reportTransformerResult = reportTransformerService.createResult(context);
+			report.setResult(reportTransformerResult.getResult().toJSON());
+			
 		} catch (Exception e) {
 			throw new ScanReportException("Was not able to build sechub result", e);
 		}
 
 		/* create and set the traffic light */
-		TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(secHubResult);
+		TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(reportTransformerResult);
 		report.setTrafficLight(trafficLight);
 
 		/* update time stamp*/

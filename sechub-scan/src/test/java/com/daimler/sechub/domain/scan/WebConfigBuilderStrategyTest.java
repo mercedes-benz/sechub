@@ -40,7 +40,11 @@ public class WebConfigBuilderStrategyTest {
 		assertEquals("user0", loginConfig.asBasic().getUser());
 		assertEquals("pwd0", loginConfig.asBasic().getPassword());
 		assertEquals("realm0", loginConfig.asBasic().getRealm());
-		assertEquals(new URL("https://productfailure.demo.example.org/login"), loginConfig.asBasic().getLoginURL());
+		// we test external forms - reason: URL equals compares also content so extreme
+		// slow. So much faster
+		String fetchedUrlExternalFrom = loginConfig.asBasic().getLoginURL().toExternalForm();
+		String expectedUrlExternalForm = new URL("https://productfailure.demo.example.org/login").toExternalForm();
+		assertEquals(expectedUrlExternalForm,fetchedUrlExternalFrom);
 
 	}
 
