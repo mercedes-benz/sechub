@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.scan.report;
 
 import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -10,7 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.commons.model.JSONConverterException;
 import com.daimler.sechub.commons.model.JSONable;
+import com.daimler.sechub.commons.model.SecHubMessage;
+import com.daimler.sechub.commons.model.SecHubReportData;
 import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubStatus;
+import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -22,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MustBeKeptStable("This is the result returend from REST API to cli and other systems. So has to be stable")
-public class ScanReportResult implements JSONable<ScanReportResult>{
+public class ScanReportResult implements JSONable<ScanReportResult>, SecHubReportData{
 
 	public static final String PROPERTY_RESULT="result";
 	public static final String PROPERTY_JOBUUID="jobUUID";
@@ -52,9 +57,9 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 		return info;
 	}
 
-	String trafficLight;
+	TrafficLight trafficLight;
 
-	public String getTrafficLight() {
+	public TrafficLight getTrafficLight() {
 		return trafficLight;
 	}
 	
@@ -65,7 +70,7 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public ScanReportResult(ScanReport report) {
 		notNull(report, "Report may not be null!");
 		jobUUID = report.getSecHubJobUUID();
-		trafficLight = report.getTrafficLightAsString();
+//		trafficLight = report.getTrafficLightAsString();
 		try {
 			result = SecHubResult.fromJSONString(report.getResult());
 		} catch (JSONConverterException e) {
@@ -86,5 +91,17 @@ public class ScanReportResult implements JSONable<ScanReportResult>{
 	public static ScanReportResult fromJSONString(String json) {
 	    return IMPORTER.fromJSON(json);
 	}
+
+    @Override
+    public Set<SecHubMessage> getMessages() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public SecHubStatus getStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 	
 }

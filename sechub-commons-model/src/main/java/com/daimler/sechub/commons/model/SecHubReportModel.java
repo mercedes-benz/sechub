@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecHubReportModel implements JSONable<SecHubReportModel> {
+public class SecHubReportModel implements JSONable<SecHubReportModel>, SecHubReportData {
 
     private static final SecHubReportModel IMPORTER = new SecHubReportModel();
 
@@ -20,6 +20,7 @@ public class SecHubReportModel implements JSONable<SecHubReportModel> {
 
     private Set<SecHubMessage> messages = new TreeSet<>();
 
+    @Override
     public Set<SecHubMessage> getMessages() {
         return messages;
     }
@@ -30,6 +31,7 @@ public class SecHubReportModel implements JSONable<SecHubReportModel> {
         this.messages.addAll(messages);
     }
 
+    @Override
     public SecHubStatus getStatus() {
         return status;
     }
@@ -38,6 +40,7 @@ public class SecHubReportModel implements JSONable<SecHubReportModel> {
         this.status = status;
     }
 
+    @Override
     public TrafficLight getTrafficLight() {
         return trafficLight;
     }
@@ -46,6 +49,7 @@ public class SecHubReportModel implements JSONable<SecHubReportModel> {
         this.trafficLight = trafficLight;
     }
 
+    @Override
     public SecHubResult getResult() {
         return result;
     }
@@ -54,6 +58,7 @@ public class SecHubReportModel implements JSONable<SecHubReportModel> {
         this.result = result;
     }
 
+    @Override
     public UUID getJobUUID() {
         return jobUUID;
     }
