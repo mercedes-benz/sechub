@@ -40,7 +40,7 @@ public class DownloadScanReportService {
      * @return
      */
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
-    public ScanReportResult getScanReportResult(String projectId, UUID jobUUID) {
+    public ScanSecHubReport getScanReportResult(String projectId, UUID jobUUID) {
         /* validate */
         assertion.isValidProjectId(projectId);
         assertion.isValidJobUUID(jobUUID);
@@ -59,7 +59,7 @@ public class DownloadScanReportService {
         }
         scanAssertService.assertUserHasAccessToReport(report);
 
-        return new ScanReportResult(report);
+        return new ScanSecHubReport(report);
     }
 
 }

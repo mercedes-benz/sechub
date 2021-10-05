@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: MIT
+[[section-shared-concepts-report-dataflow]]
+==== Report data flow
+
+===== Creation of ScanReport entities
+Here a graphical overview how the report data is created by the `ScanService` and 
+finally written as `ScanReport` entity onto DB:
+
+plantuml::./diagrams/diagram_report_dataflow.plantuml[format=svg, title="Report data flow"] 
+
+===== Read and delivery of report data to end user
+plantuml::diagrams/diagram_report_delivery.plantuml[format=svg, title="Delivery"] 

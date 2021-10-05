@@ -1,0 +1,14 @@
+// SPDX-License-Identifier: MIT
+=== Product results
+Product results can be either from security products or from reporting products.
+
+For a job different products can be executed, depending on the <<section-concepts-product-execution,execution configuration,>>. After this the results will be stored in database as
+dedicated `ProductResult` entries.
+
+
+When all `normal` products are executed, the special reporting products will be executed - when no
+special configured report collector is found, the embedded product: `Sereco` ("SecHub report collector") will used .  
+
+
+
+include::concept_report_dataflow.adoc[]

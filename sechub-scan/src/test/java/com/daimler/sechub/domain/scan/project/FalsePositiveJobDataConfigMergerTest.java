@@ -14,7 +14,7 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 
 public class FalsePositiveJobDataConfigMergerTest {
 
@@ -34,7 +34,7 @@ public class FalsePositiveJobDataConfigMergerTest {
     @Test
     public void sanity_check_for_JSON_example_data() {
         /* execute */
-        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
         SecHubFinding secHubFinding = scanReportResult.getResult().getFindings().get(1);
         assertEquals(Severity.MEDIUM,secHubFinding.getSeverity());
         Integer cweId = secHubFinding.getCweId();
@@ -46,7 +46,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData = new FalsePositiveJobData();
         falsePositiveJobData.setComment("comment1");
@@ -89,7 +89,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData = new FalsePositiveJobData();
         falsePositiveJobData.setComment("comment1");
@@ -126,7 +126,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanReportResult scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData2 = new FalsePositiveJobData();
         falsePositiveJobData2.setComment("comment2");
@@ -178,9 +178,9 @@ public class FalsePositiveJobDataConfigMergerTest {
         
     }
 
-    private ScanReportResult loadScanReport(String path) {
+    private ScanSecHubReport loadScanReport(String path) {
         String reportJSON = ScanDomainTestFileSupport.getTestfileSupport().loadTestFile(path);
-        return ScanReportResult.fromJSONString(reportJSON);
+        return ScanSecHubReport.fromJSONString(reportJSON);
     }
 
 }

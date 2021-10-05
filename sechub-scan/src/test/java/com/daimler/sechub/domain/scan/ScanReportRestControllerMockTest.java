@@ -37,7 +37,7 @@ import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.test.TestPortProvider;
 
@@ -90,7 +90,7 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
+        ScanSecHubReport result1 = new ScanSecHubReport(report);
         when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
 
         /* execute + test @formatter:off */
@@ -196,7 +196,7 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
+        ScanSecHubReport result1 = new ScanSecHubReport(report);
         when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
 
         /* execute + test @formatter:off */
@@ -205,7 +205,7 @@ public class ScanReportRestControllerMockTest {
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
+	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
 	    		);
 
 	    /* @formatter:on */
@@ -217,7 +217,7 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
+        ScanSecHubReport result1 = new ScanSecHubReport(report);
         when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
 
         /* execute + test @formatter:off */

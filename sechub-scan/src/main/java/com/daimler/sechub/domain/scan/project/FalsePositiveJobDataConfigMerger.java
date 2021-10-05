@@ -9,7 +9,7 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
@@ -26,7 +26,7 @@ public class FalsePositiveJobDataConfigMerger {
 
     private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataConfigMerger.class);
 
-    public void addJobDataWithMetaDataToConfig(ScanReportResult scanReportResult, FalsePositiveProjectConfiguration config,
+    public void addJobDataWithMetaDataToConfig(ScanSecHubReport scanReportResult, FalsePositiveProjectConfiguration config,
             FalsePositiveJobData falsePositiveJobData, String author) {
 
         SecHubFinding finding = fetchFindingInReportOrFail(scanReportResult, falsePositiveJobData);
@@ -141,7 +141,7 @@ public class FalsePositiveJobDataConfigMerger {
         return null;
     }
 
-    private SecHubFinding fetchFindingInReportOrFail(ScanReportResult scanReportResult, FalsePositiveJobData falsePositiveJobData) {
+    private SecHubFinding fetchFindingInReportOrFail(ScanSecHubReport scanReportResult, FalsePositiveJobData falsePositiveJobData) {
         SecHubResult result = scanReportResult.getResult();
 
         for (SecHubFinding finding : result.getFindings()) {

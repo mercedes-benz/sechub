@@ -60,8 +60,8 @@ public class CreateScanReportService {
 		
 		/* create report - project id in configuration was set on job creation time and is always correct/valid and
 		 * will differ between api parameter and config..!*/
-		ScanReport report = new ScanReport(sechubJobUUID,context.getConfiguration().getProjectId());
-		report.setStarted(LocalDateTime.now());
+		ScanReport scanReport = new ScanReport(sechubJobUUID,context.getConfiguration().getProjectId());
+		scanReport.setStarted(LocalDateTime.now());
 
 		/* execute report products */
 		try {
@@ -74,7 +74,9 @@ public class CreateScanReportService {
 		ReportTransformationResult reportTransformerResult;
 		try {
 			reportTransformerResult = reportTransformerService.createResult(context);
-			report.setResult(reportTransformerResult.getResult().toJSON());
+			
+			scanReport.setResultType(ScanReportResultType.MODEL);
+			scanReport.setResult(reportTransformerResult.toJSON());
 			
 		} catch (Exception e) {
 			throw new ScanReportException("Was not able to build sechub result", e);
@@ -82,13 +84,13 @@ public class CreateScanReportService {
 
 		/* create and set the traffic light */
 		TrafficLight trafficLight = trafficLightCalculator.calculateTrafficLight(reportTransformerResult);
-		report.setTrafficLight(trafficLight);
+		scanReport.setTrafficLight(trafficLight);
 
 		/* update time stamp*/
-		report.setEnded(LocalDateTime.now());
+		scanReport.setEnded(LocalDateTime.now());
 
 		/* persist */
-		return reportRepository.save(report);
+		return reportRepository.save(scanReport);
 	}
 
 }

@@ -6,13 +6,13 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubReportModel;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.ReportTransformationResult;
 
 class AssertCalculation {
 
     private ScanReportTrafficLightCalculator calculator;
-    private ReportTransformationResult currentResult;
+    private SecHubReportModel currentResult;
 
     private AssertCalculation(ScanReportTrafficLightCalculator calculator) {
         this.calculator = calculator;
@@ -40,7 +40,7 @@ class AssertCalculation {
 
     }
 
-    public AssertCalculation withResult(ReportTransformationResult result) {
+    public AssertCalculation withResult(SecHubReportModel result) {
         this.currentResult = result;
         return this;
     }

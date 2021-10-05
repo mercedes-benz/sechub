@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
@@ -41,21 +41,21 @@ public class HTMLScanResultReportModelBuilder {
     @Autowired
     ScanReportTrafficLightCalculator trafficLightCalculator;
 
-    public Map<String, Object> build(ScanReportResult scanResult) {
-        String trafficLight = scanResult.getTrafficLight();
+    public Map<String, Object> build(ScanSecHubReport scanResult) {
+        TrafficLight trafficLight = scanResult.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;
         String styleYellow = HIDE_LIGHT;
         String styleGreen = HIDE_LIGHT;
 
         switch (trafficLight) {
-        case "RED":
+        case RED:
             styleRed = SHOW_LIGHT;
             break;
-        case "YELLOW":
+        case YELLOW:
             styleYellow = SHOW_LIGHT;
             break;
-        case "GREEN":
+        case GREEN:
             styleGreen = SHOW_LIGHT;
             break;
         default:
@@ -74,7 +74,7 @@ public class HTMLScanResultReportModelBuilder {
         model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
         model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
 
-        model.put("trafficlight", trafficLight);
+        model.put("trafficlight", trafficLight.name());
 
         model.put("styleRed", styleRed);
         model.put("styleYellow", styleYellow);

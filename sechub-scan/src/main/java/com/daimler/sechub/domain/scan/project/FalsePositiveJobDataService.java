@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.scan.ScanAssertService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
@@ -107,7 +107,7 @@ public class FalsePositiveJobDataService {
         /* we want to load reports only one time, so sort by report job UUID... */
         list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
-        ScanReportResult scanReportResult = null;
+        ScanSecHubReport scanReportResult = null;
         for (FalsePositiveJobData data : list) {
             UUID jobUUID = data.getJobUUID();
 
@@ -116,7 +116,7 @@ public class FalsePositiveJobDataService {
                 if (report == null) {
                     throw new NotFoundException("No report found for job " + jobUUID);
                 }
-                scanReportResult = new ScanReportResult(report);
+                scanReportResult = new ScanSecHubReport(report);
             }
             merger.addJobDataWithMetaDataToConfig(scanReportResult, config, data, userContextService.getUserId());
         }

@@ -7,16 +7,16 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.commons.model.SecHubFinding;
+import com.daimler.sechub.commons.model.SecHubReportModel;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.Severities;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.ReportTransformationResult;
 
 @Component
 public class ScanReportTrafficLightCalculator {
 
-	public TrafficLight calculateTrafficLight(ReportTransformationResult result) {
+	public TrafficLight calculateTrafficLight(SecHubReportModel result) {
 		if (result == null) {
 			throw new IllegalArgumentException("SecHub result may not be null!");
 		}
@@ -31,7 +31,7 @@ public class ScanReportTrafficLightCalculator {
 		return TrafficLight.GREEN;
 	}
 
-	TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(ReportTransformationResult result, TrafficLight found, Severity severity) {
+	TrafficLight resolveTrafficLightWhenOneEntryWithSuchSeverity(SecHubReportModel result, TrafficLight found, Severity severity) {
 		if (found != null) {
 			return found;
 		}
@@ -68,7 +68,7 @@ public class ScanReportTrafficLightCalculator {
 		return filteredResult;
 	}
 
-	private boolean hasResultOneFindingWith(ReportTransformationResult result, Severity severity) {
+	private boolean hasResultOneFindingWith(SecHubReportModel result, Severity severity) {
 		if (severity == null) {
 			return false;
 		}

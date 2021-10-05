@@ -202,11 +202,13 @@ public class AssertSecHubReport {
     }
 
     public AssertSecHubReport hasTrafficLight(TrafficLight trafficLight) {
-        JsonNode r = jsonObj.get("trafficLight");
-        if (r == null) {
-            fail("No trafficlight found inside report!\nLast output line was:" + lastOutputLIne);
+        JsonNode trafficLightNode = jsonObj.get("trafficLight");
+        if (trafficLightNode == null) {
+            dump();
+            LOG.info("Last ouptput line was:" + lastOutputLIne);
+            fail("No trafficlight found inside report!\nPlease look inside log for details");
         }
-        String trText = r.asText();
+        String trText = trafficLightNode.asText();
         TrafficLight foundTrafficLight = TrafficLight.fromString(trText);
         if (!trafficLight.equals(foundTrafficLight)) {
             /*
@@ -215,7 +217,7 @@ public class AssertSecHubReport {
             dump();
             LOG.info("Last ouptput line was:" + lastOutputLIne);
         }
-        assertEquals("Returned traffic light not as expected. See JSON dump in log file for details.", trafficLight, foundTrafficLight);
+        assertEquals("Returned traffic light:"+foundTrafficLight+"is  not as expected:"+trafficLight+". See JSON dump in log file for details.", trafficLight, foundTrafficLight);
         return this;
     }
 

@@ -1,0 +1,46 @@
+@startuml
+
+interface SecHubReportData
+
+class SecHubReportModel implements SecHubReportData 
+class ReportTransformationResult extends SecHubReportModel
+
+class SerecoProductExecutor
+
+
+class ScanService 
+
+class ProductResult {
+    String: productIdentifier
+}
+
+class SerecoResultTransformer
+class CreateScanReportService
+class ScanReport {
+    <<Entity>>
+    String result
+    ScanReportResultType type
+}
+ScanService -[#black,plain,thickness=2]-> "uses" CreateScanReportService  
+CreateScanReportService -[#green,dashed,thickness=3]-> "starts" SerecoProductExecutor : [1]
+CreateScanReportService -[#blue,dashed,thickness=3]-> "uses" SecHubReportProductTransformerService : [2] 
+CreateScanReportService -[#Coral,dashed,thickness=3]-> "creates" ScanReport : [3]
+ 
+SecHubReportProductTransformerService -[#blue,dashed,thickness=1]-> "uses" SerecoResultTransformer
+
+ScanReport o..  ReportTransformationResult
+
+
+CreateScanReportService <-[#blue,dashed,thickness=1]- ReportTransformationResult
+
+SerecoProductExecutor .[#green,dashed,thickness=3].> "creates" ProductResult
+
+'SerecoProductExecutor --> ProductResult 
+
+note "transforms former\nread Sereco product result" as N2 #CornflowerBlue
+
+SerecoResultTransformer -[#blue,dashed,thickness=1]-> "reads" ProductResult 
+SerecoResultTransformer -[#blue,dashed,thickness=1]-> N2
+N2 -[#blue,dashed,thickness=1]> "builds" ReportTransformationResult
+
+@enduml 

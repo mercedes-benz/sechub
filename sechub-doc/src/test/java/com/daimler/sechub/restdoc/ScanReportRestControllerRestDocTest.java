@@ -40,7 +40,7 @@ import com.daimler.sechub.domain.scan.HTMLScanResultReportModelBuilder;
 import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
 import com.daimler.sechub.test.ExampleConstants;
@@ -80,7 +80,7 @@ public class ScanReportRestControllerRestDocTest {
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanReportResult result1 = new ScanReportResult(report);
+		ScanSecHubReport result1 = new ScanSecHubReport(report);
 		when(downloadReportService.getScanReportResult(PROJECT1_ID, jobUUID)).thenReturn(result1);
 
 		/* execute + test @formatter:off */
@@ -90,7 +90,7 @@ public class ScanReportRestControllerRestDocTest {
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
+	    			andExpect(content().json("{\"jobUUID\":\""+jobUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")).
 
 	    			andDo(document(RestDocFactory.createPath(useCase, "JSON"),
                             resource(
@@ -122,7 +122,7 @@ public class ScanReportRestControllerRestDocTest {
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanReportResult result1 = new ScanReportResult(report);
+		ScanSecHubReport result1 = new ScanSecHubReport(report);
 		when(downloadReportService.getScanReportResult(PROJECT1_ID, jobUUID)).thenReturn(result1);
 
 		/* execute + test @formatter:off */

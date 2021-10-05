@@ -2,7 +2,6 @@
 package com.daimler.sechub.domain.scan.report;
 
 import static com.daimler.sechub.domain.scan.report.AssertCalculation.*;
-import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.commons.model.SecHubFinding;
-import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubReportModel;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.ReportTransformationResult;
@@ -214,19 +213,16 @@ public class ReportTrafficLightCalculatorTest {
     /* +............................ Helpers ..................................+ */
     /* +-----------------------------------------------------------------------+ */
 
-    private ReportTransformationResult prepareSechubResultWithFindings(Severity... severities) {
-        SecHubResult secHubResult = mock(SecHubResult.class);
+    private SecHubReportModel prepareSechubResultWithFindings(Severity... severities) {
         List<SecHubFinding> findingList = new ArrayList<>();
         for (Severity severity : severities) {
             SecHubFinding finding = new SecHubFinding();
             finding.setSeverity(severity);
             findingList.add(finding);
         }
-        ReportTransformationResult transformationResult = mock(ReportTransformationResult.class);
-        SecHubResult sechubResult = mock(SecHubResult.class);
-        when(secHubResult.getFindings()).thenReturn(findingList);
-        when(transformationResult.getResult()).thenReturn(sechubResult);
-        return transformationResult;
+        SecHubReportModel model = new SecHubReportModel();
+        model.getResult().getFindings().addAll(findingList);
+        return model;
     }
 
     private class MultiFindingsTestSetup {
