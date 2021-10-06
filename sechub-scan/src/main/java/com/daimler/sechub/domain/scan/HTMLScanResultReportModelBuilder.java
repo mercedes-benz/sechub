@@ -104,8 +104,6 @@ public class HTMLScanResultReportModelBuilder {
         } else {
             model.put("jobuuid", "none");
         }
-        model.put("info", scanResult.getInfo());
-
         return model;
     }
 }

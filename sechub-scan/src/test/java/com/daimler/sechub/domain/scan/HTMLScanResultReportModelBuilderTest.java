@@ -70,7 +70,6 @@ public class HTMLScanResultReportModelBuilderTest {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
-        when(scanResult.getInfo()).thenReturn("theInfo");
         when(scanResult.getJobUUID()).thenReturn(uuid);
         when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED);
 
@@ -81,7 +80,6 @@ public class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanResult);
 
         /* test */
-        assertEquals("theInfo", map.get("info"));
         assertSame(result, map.get("result"));
         assertSame(greenList, map.get("greenList"));
         assertSame(redList, map.get("redList"));
@@ -101,7 +99,6 @@ public class HTMLScanResultReportModelBuilderTest {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
-        when(scanResult.getInfo()).thenReturn("theInfo");
         when(scanResult.getJobUUID()).thenReturn(uuid);
         when(scanResult.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
         builderToTest.webDesignMode = true;
@@ -116,7 +113,6 @@ public class HTMLScanResultReportModelBuilderTest {
         Map<String, Object> map = builderToTest.build(scanResult);
 
         /* test */
-        assertEquals("theInfo", map.get("info"));
         assertSame(result, map.get("result"));
         assertSame(greenList, map.get("greenList"));
         assertSame(redList, map.get("redList"));

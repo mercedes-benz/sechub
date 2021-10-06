@@ -21,8 +21,6 @@ import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.daimler.sechub.sharedkernel.UUIDTraceLogID;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MustBeKeptStable("This is the result returend from REST API to cli and other systems. So has to be stable")
@@ -38,14 +36,6 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
     private static final ScanSecHubReport IMPORTER = new ScanSecHubReport();
 
     private SecHubReportModel model;
-
-    @JsonInclude(Include.NON_NULL) // only include info when additional data is set
-    String info;
-
-    @Deprecated // will be removed, we have messages instead
-    public String getInfo() {
-        return info;
-    }
 
     private ScanSecHubReport() {
         /* only internal for IMPORTER */
@@ -88,7 +78,9 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
             } catch (JSONConverterException e) {
                 LOG.error("{} FATAL PROBLEM! Failed to create sechub result for origin:\n{}", UUIDTraceLogID.traceLogID(report.getSecHubJobUUID()),
                         report.getResult());
-                info = "Origin result data problems! Please inform administrators about this problem.";
+                String info = "Origin result data problems! Please inform administrators about this problem.";
+                SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR,info);
+                model.getMessages().add(message);
 
                 model.getMessages().add(new SecHubMessage(SecHubMessageType.ERROR, "Internal SecHub failure happend."));
                 model.setStatus(SecHubStatus.FAILED);
