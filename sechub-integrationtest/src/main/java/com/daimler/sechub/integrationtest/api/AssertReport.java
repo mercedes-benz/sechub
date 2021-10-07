@@ -16,6 +16,7 @@ import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubReportData;
 import com.daimler.sechub.commons.model.SecHubReportModel;
 import com.daimler.sechub.commons.model.SecHubResult;
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
 
@@ -28,7 +29,7 @@ public class AssertReport {
     public static AssertReport assertReport(String json) {
         return new AssertReport(SecHubReportModel.fromJSONString(json));
     }
-    
+
     AssertReport(SecHubReportModel report) {
         assertNotNull("Report may not be null", report);
         this.report = report;
@@ -39,31 +40,41 @@ public class AssertReport {
         assertEquals(expectedCount, findings.size());
         return this;
     }
+    
+    public AssertReport hasMessages(int expectedAmountOfMessages) {
+        assertEquals(expectedAmountOfMessages, report.getMessages().size());
+        return this;
+    }
 
+    public AssertReport hasStatus(SecHubStatus expectedStatus) {
+        assertEquals(expectedStatus, report.getStatus());
+        return this;
+    }
+    
     public AssertReport hasTrafficLight(TrafficLight expectedLight) {
         assertEquals(expectedLight, report.getTrafficLight());
         return this;
     }
 
+
     public AssertFinding finding(int number) {
         SecHubFinding secHubFinding = assertFindings(report).get(number);
-        return new AssertFinding(secHubFinding,number);
+        return new AssertFinding(secHubFinding, number);
     }
-    
 
     public class AssertFinding {
 
         private SecHubFinding finding;
 
         public AssertFinding(SecHubFinding finding, int number) {
-            assertNotNull("Finding may not be null! But was for number:"+number, finding);
+            assertNotNull("Finding may not be null! But was for number:" + number, finding);
             this.finding = finding;
         }
 
         public AssertReport andReport() {
             return AssertReport.this;
         }
-        
+
         public AssertFinding hasId(int id) {
             assertEquals(id, finding.getId());
             return this;
@@ -73,7 +84,7 @@ public class AssertReport {
             assertEquals(name, finding.getName());
             return this;
         }
-        
+
         public AssertFinding hasScanType(ScanType type) {
             assertEquals(type, finding.getType());
             return this;
@@ -84,10 +95,10 @@ public class AssertReport {
             return this;
         }
 
-        
         public AssertFinding hasNoHostnames() {
             return hasHostnames();
         }
+
         public AssertFinding hasHostnames(String... hostnames) {
             List<String> hostnames2 = finding.getHostnames();
 
@@ -107,7 +118,7 @@ public class AssertReport {
         public AssertFinding hasNoReferences() {
             return hasReferences();
         }
-        
+
         public AssertFinding hasReferences(String... references) {
             List<String> references2 = finding.getReferences();
 
@@ -121,71 +132,71 @@ public class AssertReport {
         }
 
         public AssertFinding hasSeverity(Severity severity) {
-            if (!Objects.equals(severity, finding.getSeverity())){
+            if (!Objects.equals(severity, finding.getSeverity())) {
                 dump();
-                assertEquals("Finding id:"+finding.getId()+" has not expected severity!", severity,finding.getSeverity());
+                assertEquals("Finding id:" + finding.getId() + " has not expected severity!", severity, finding.getSeverity());
             }
             return this;
         }
-        
+
         public AssertCodeCall codeCall(int level) {
-            int currentLevel=0;
+            int currentLevel = 0;
             SecHubCodeCallStack code = finding.getCode();
-            while (code!=null && currentLevel!=level) {
+            while (code != null && currentLevel != level) {
                 code = code.getCalls();
                 currentLevel++;
             }
-            return new AssertCodeCall(code,currentLevel);
+            return new AssertCodeCall(code, currentLevel);
         }
-        
-        public class AssertCodeCall{
-            
+
+        public class AssertCodeCall {
+
             private SecHubCodeCallStack callStack;
 
             public AssertCodeCall(SecHubCodeCallStack callStack, int level) {
-                if (callStack==null) {
-                    fail("Finding "+finding.getId()+" has no code call stack with level:"+level);
+                if (callStack == null) {
+                    fail("Finding " + finding.getId() + " has no code call stack with level:" + level);
                 }
-                this.callStack=callStack;
+                this.callStack = callStack;
             }
-            
+
             public AssertFinding finding(int number) {
                 return AssertReport.this.finding(number);
             }
 
             public AssertCodeCall hasLocation(String expected) {
-                assertEquals(expected,callStack.getLocation());
+                assertEquals(expected, callStack.getLocation());
                 return this;
             }
-            
+
             public AssertCodeCall hasSource(String expected) {
-                assertEquals(expected,callStack.getSource());
+                assertEquals(expected, callStack.getSource());
                 return this;
             }
-            
+
             public AssertCodeCall hasRelevantPart(String expected) {
-                assertEquals(expected,callStack.getRelevantPart());
+                assertEquals(expected, callStack.getRelevantPart());
                 return this;
             }
-            
+
             public AssertCodeCall hasColumn(int column) {
-                assertEquals(Integer.valueOf(column),callStack.getColumn());
+                assertEquals(Integer.valueOf(column), callStack.getColumn());
                 return this;
             }
-            
+
             public AssertCodeCall hasLine(int column) {
-                assertEquals(Integer.valueOf(column),callStack.getLine());
+                assertEquals(Integer.valueOf(column), callStack.getLine());
                 return this;
             }
-            
+
             public AssertFinding andFinding(int number) {
                 return AssertReport.this.finding(number);
             }
-            
+
             public AssertCodeCall codeCall(int level) {
                 return AssertFinding.this.codeCall(level);
             }
-            
+
             public AssertFinding andFinding() {
                 return AssertFinding.this;
             }
@@ -215,4 +226,5 @@ public class AssertReport {
         LOG.info("-----------------------------------------------------------");
         return this;
     }
+
 }

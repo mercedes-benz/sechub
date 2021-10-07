@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.report;
 
 import com.daimler.sechub.commons.model.SecHubReportModel;

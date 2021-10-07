@@ -32,7 +32,7 @@ import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Component
-public class SerecoResultTransformer implements ReportProductResultTransformer {
+public class SerecoProductResultTransformer implements ReportProductResultTransformer {
 
     @Autowired
     SerecoFalsePositiveMarker falsePositiveMarker;
@@ -41,7 +41,7 @@ public class SerecoResultTransformer implements ReportProductResultTransformer {
     @MustBeDocumented(scope = "administration", value = "Administrators can turn on this mode to allow product links in json and HTML output")
     boolean showProductLineResultLink;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoResultTransformer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoProductResultTransformer.class);
 
     @Override
     public ReportTransformationResult transform(ProductResult serecoProductResult) throws SecHubExecutionException {
@@ -87,6 +87,11 @@ public class SerecoResultTransformer implements ReportProductResultTransformer {
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
+        /* when status is not set already, no failure has appeared an we mark as OK */
+        if (transformerResult.getStatus() == null) {
+            transformerResult.setStatus(SecHubStatus.SUCCESS);
+        }
+
         return transformerResult;
     }
 
@@ -127,7 +132,7 @@ public class SerecoResultTransformer implements ReportProductResultTransformer {
             // nothing
             LOG.error("Unhandled sereco annotation type:{}, value:{}, sechub job uuid: {}", annotationType, annotationValue, sechubJobUUID);
         }
-       
+
     }
 
     private void appendSecHubMessage(ReportTransformationResult transformerResult, SecHubMessage sechubMessage) {

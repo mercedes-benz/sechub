@@ -26,13 +26,13 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
-public class SerecoReportToSecHubResultTransformerTest {
+public class SerecoProductResultTransformerTest {
 
-    private SerecoResultTransformer transformerToTest;
+    private SerecoProductResultTransformer transformerToTest;
 
     @Before
     public void before() {
-        transformerToTest = new SerecoResultTransformer();
+        transformerToTest = new SerecoProductResultTransformer();
         transformerToTest.falsePositiveMarker = mock(SerecoFalsePositiveMarker.class);
     }
 

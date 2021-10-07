@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.report;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,10 +38,10 @@ class ScanSecHubReportTest {
         report.setResult(result.toJSON());
 
         /* execute */
-        ScanSecHubReport resultToTest = new ScanSecHubReport(report);
+        ScanSecHubReport reportToTest = new ScanSecHubReport(report);
 
         /* test */
-        assertEquals(2, resultToTest.getResult().getCount());
+        assertEquals(2, reportToTest.getResult().getCount());
     }
 
     @Test
@@ -59,13 +60,13 @@ class ScanSecHubReportTest {
         report.setResultType(ScanReportResultType.MODEL);
 
         /* execute */
-        ScanSecHubReport createdResult = new ScanSecHubReport(report);
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
         // no we also check if the JSON deserialization /serialization works as expected
-        String json = createdResult.toJSON();
-        ScanSecHubReport resultToTest = ScanSecHubReport.fromJSONString(json);
+        String json = createdReport.toJSON();
+        ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
         /* test */
-        assertEquals(TrafficLight.GREEN, resultToTest.getTrafficLight());
+        assertEquals(TrafficLight.GREEN, reportToTest.getTrafficLight());
     }
     
     @Test
@@ -84,13 +85,13 @@ class ScanSecHubReportTest {
         report.setResultType(ScanReportResultType.RESULT);
         
         /* execute */
-        ScanSecHubReport createdResult = new ScanSecHubReport(report);
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
         // no we also check if the JSON deserialization /serialization works as expected
-        String json = createdResult.toJSON();
-        ScanSecHubReport resultToTest = ScanSecHubReport.fromJSONString(json);
+        String json = createdReport.toJSON();
+        ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
         
         /* test */
-        assertEquals(TrafficLight.GREEN, resultToTest.getTrafficLight());
+        assertEquals(TrafficLight.GREEN, reportToTest.getTrafficLight());
     }
 
     @Test
@@ -108,17 +109,17 @@ class ScanSecHubReportTest {
         report.setResultType(ScanReportResultType.RESULT);
 
         /* execute */
-        ScanSecHubReport createdResult = new ScanSecHubReport(report);
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
         // no we also check if the JSON deserialization /serialization works as expected
-        String json = createdResult.toJSON();
-        ScanSecHubReport resultToTest = ScanSecHubReport.fromJSONString(json);
+        String json = createdReport.toJSON();
+        ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
         /* test */
-        assertEquals(SecHubStatus.OK, resultToTest.getStatus()); // no status available from simple result, expecting OK
-        assertEquals(TrafficLight.YELLOW, resultToTest.getTrafficLight());
-        assertEquals(0, resultToTest.getMessages().size());
-        assertEquals(1, resultToTest.getResult().getFindings().size());
-        assertEquals(1, resultToTest.getResult().getCount());
+        assertEquals(SecHubStatus.SUCCESS, reportToTest.getStatus()); // no status available from simple result, expecting OK
+        assertEquals(TrafficLight.YELLOW, reportToTest.getTrafficLight());
+        assertEquals(0, reportToTest.getMessages().size());
+        assertEquals(1, reportToTest.getResult().getFindings().size());
+        assertEquals(1, reportToTest.getResult().getCount());
     }
 
     @Test
@@ -137,20 +138,20 @@ class ScanSecHubReportTest {
         report.setResultType(ScanReportResultType.MODEL);
 
         /* execute */
-        ScanSecHubReport createdResult = new ScanSecHubReport(report);
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
         // no we also check if the JSON deserialization /serialization works as expected
-        String json = createdResult.toJSON();
-        ScanSecHubReport resultToTest = ScanSecHubReport.fromJSONString(json);
+        String json = createdReport.toJSON();
+        ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
         /* test */
-        assertEquals(SecHubStatus.FAILED, resultToTest.getStatus());
-        assertEquals(null, resultToTest.getTrafficLight()); // traffic light was not set at all
-        assertEquals(1, resultToTest.getMessages().size());
-        SecHubMessage message1 = resultToTest.getMessages().iterator().next();
+        assertEquals(SecHubStatus.FAILED, reportToTest.getStatus());
+        assertEquals(null, reportToTest.getTrafficLight()); // traffic light was not set at all
+        assertEquals(1, reportToTest.getMessages().size());
+        SecHubMessage message1 = reportToTest.getMessages().iterator().next();
         assertEquals("Testwarning", message1.getText());
         assertEquals(SecHubMessageType.WARNING, message1.getType());
-        assertEquals(1, resultToTest.getResult().getFindings().size());
-        assertEquals(1, resultToTest.getResult().getCount());
+        assertEquals(1, reportToTest.getResult().getFindings().size());
+        assertEquals(1, reportToTest.getResult().getCount());
     }
 
 }

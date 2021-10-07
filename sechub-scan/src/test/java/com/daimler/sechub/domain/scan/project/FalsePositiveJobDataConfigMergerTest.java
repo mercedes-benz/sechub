@@ -34,8 +34,8 @@ public class FalsePositiveJobDataConfigMergerTest {
     @Test
     public void sanity_check_for_JSON_example_data() {
         /* execute */
-        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
-        SecHubFinding secHubFinding = scanReportResult.getResult().getFindings().get(1);
+        ScanSecHubReport scanSecHubReport = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        SecHubFinding secHubFinding = scanSecHubReport.getResult().getFindings().get(1);
         assertEquals(Severity.MEDIUM,secHubFinding.getSeverity());
         Integer cweId = secHubFinding.getCweId();
         assertEquals(Integer.valueOf(1),cweId);
@@ -46,7 +46,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanSecHubReport = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData = new FalsePositiveJobData();
         falsePositiveJobData.setComment("comment1");
@@ -54,7 +54,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         falsePositiveJobData.setJobUUID(jobUUID);
         
         /* execute */
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData, TEST_AUTHOR);
         
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
@@ -89,7 +89,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanSecHubReport = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData = new FalsePositiveJobData();
         falsePositiveJobData.setComment("comment1");
@@ -97,7 +97,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         falsePositiveJobData.setJobUUID(jobUUID);
         
         // first call does setup configuration
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData, TEST_AUTHOR);
       
         // now we change the false positive job data
         FalsePositiveJobData falsePositiveJobData2 = new FalsePositiveJobData();
@@ -106,7 +106,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         falsePositiveJobData2.setJobUUID(jobUUID);
         
         /* execute */
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData2, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData2, TEST_AUTHOR);
         
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
@@ -126,7 +126,7 @@ public class FalsePositiveJobDataConfigMergerTest {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
         
-        ScanSecHubReport scanReportResult = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
+        ScanSecHubReport scanSecHubReport = loadScanReport("sechub_result/sechub-report-example1-noscantype.json");
 
         FalsePositiveJobData falsePositiveJobData2 = new FalsePositiveJobData();
         falsePositiveJobData2.setComment("comment2");
@@ -144,9 +144,9 @@ public class FalsePositiveJobDataConfigMergerTest {
         falsePositiveJobData4.setJobUUID(jobUUID);
         
         
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData2, TEST_AUTHOR);
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData3, TEST_AUTHOR);
-        toTest.addJobDataWithMetaDataToConfig(scanReportResult, config, falsePositiveJobData4, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData2, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData3, TEST_AUTHOR);
+        toTest.addJobDataWithMetaDataToConfig(scanSecHubReport, config, falsePositiveJobData4, TEST_AUTHOR);
       
         /* test */
         List<FalsePositiveEntry> falsePositives = config.getFalsePositives();

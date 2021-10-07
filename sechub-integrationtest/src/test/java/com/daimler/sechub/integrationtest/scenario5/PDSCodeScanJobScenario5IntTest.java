@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
@@ -35,6 +36,27 @@ public class PDSCodeScanJobScenario5IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     TestProject project = PROJECT_1;
+    
+    
+    @Test
+    public void a_pds_scan_where_bash_execution_returns_1_as_exit_code_is_marked_as_failed() {
+        /* @formatter:off */
+
+        /* prepare */
+        TestProject project = PROJECT_2;
+        UUID jobUUID = as(USER_1).createCodeScan(project,NOT_MOCKED);// scenario10 uses really integration test pds server! but WITHOUT reusage of sechub storage
+        
+        /* execute */
+        as(USER_1).
+            // no upload necessary, will always fail with exit code 1...
+            approveJob(project, jobUUID);
+        
+        waitForJobDone(project, jobUUID,10);
+        
+        String report = as(USER_1).getJobReport(project, jobUUID);
+        assertReport(report).hasStatus(SecHubStatus.FAILED);
+        
+    }
 
 
     @SuppressWarnings("deprecation") // we use assertSecHubReport here - old implementation okay here

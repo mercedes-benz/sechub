@@ -80,8 +80,8 @@ public class ScanReportRestControllerRestDocTest {
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanSecHubReport result1 = new ScanSecHubReport(report);
-		when(downloadReportService.getScanReportResult(PROJECT1_ID, jobUUID)).thenReturn(result1);
+		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
 		/* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -122,8 +122,8 @@ public class ScanReportRestControllerRestDocTest {
 		report.setResult("{'count':'1'}");
 		report.setTrafficLight(TrafficLight.YELLOW);
 
-		ScanSecHubReport result1 = new ScanSecHubReport(report);
-		when(downloadReportService.getScanReportResult(PROJECT1_ID, jobUUID)).thenReturn(result1);
+		ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+		when(downloadReportService.getScanSecHubReport(PROJECT1_ID, jobUUID)).thenReturn(scanSecHubReport);
 
 		/* execute + test @formatter:off */
         this.mockMvc.perform(

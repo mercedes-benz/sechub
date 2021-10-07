@@ -86,12 +86,12 @@ public class ScanReportRestControllerMockTest {
     @WithMockUser
     public void get_report_from_existing_job_returns_406_NOT_ACCEPTABLE__when_type_is_APPLICATION_PDF() throws Exception {
         /* prepare */
-        ScanReport report = new ScanReport(randomUUID, PROJECT1_ID);
-        report.setResult("{'count':'1'}");
-        report.setTrafficLight(TrafficLight.YELLOW);
+        ScanReport scanReport = new ScanReport(randomUUID, PROJECT1_ID);
+        scanReport.setResult("{'count':'1'}");
+        scanReport.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanSecHubReport result1 = new ScanSecHubReport(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(scanReport);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -196,8 +196,8 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanSecHubReport result1 = new ScanSecHubReport(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -217,8 +217,8 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanSecHubReport result1 = new ScanSecHubReport(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

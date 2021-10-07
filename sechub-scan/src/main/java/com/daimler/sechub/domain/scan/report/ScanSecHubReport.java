@@ -74,7 +74,7 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
             model.setJobUUID(report.getSecHubJobUUID());
             try {
                 model.setResult(SecHubResult.fromJSONString(report.getResult()));
-                model.setStatus(SecHubStatus.OK);
+                model.setStatus(SecHubStatus.SUCCESS);
             } catch (JSONConverterException e) {
                 LOG.error("{} FATAL PROBLEM! Failed to create sechub result for origin:\n{}", UUIDTraceLogID.traceLogID(report.getSecHubJobUUID()),
                         report.getResult());

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.commons.model;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,7 +8,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-class SecHubReportTest {
+class SecHubReportModelTest {
 
     @Test
     void a_report_without_status_and_messages_can_be_read_and_when_traffic_light_is_red_status_is_failed() {

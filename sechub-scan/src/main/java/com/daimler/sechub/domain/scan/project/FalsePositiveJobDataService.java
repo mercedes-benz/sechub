@@ -107,18 +107,18 @@ public class FalsePositiveJobDataService {
         /* we want to load reports only one time, so sort by report job UUID... */
         list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
-        ScanSecHubReport scanReportResult = null;
+        ScanSecHubReport report = null;
         for (FalsePositiveJobData data : list) {
             UUID jobUUID = data.getJobUUID();
 
-            if (scanReportResult == null || !jobUUID.equals(scanReportResult.getJobUUID())) {
-                ScanReport report = scanReportRepository.findBySecHubJobUUID(jobUUID);
-                if (report == null) {
+            if (report == null || !jobUUID.equals(report.getJobUUID())) {
+                ScanReport scanReport = scanReportRepository.findBySecHubJobUUID(jobUUID);
+                if (scanReport == null) {
                     throw new NotFoundException("No report found for job " + jobUUID);
                 }
-                scanReportResult = new ScanSecHubReport(report);
+                report = new ScanSecHubReport(scanReport);
             }
-            merger.addJobDataWithMetaDataToConfig(scanReportResult, config, data, userContextService.getUserId());
+            merger.addJobDataWithMetaDataToConfig(report, config, data, userContextService.getUserId());
         }
 
     }

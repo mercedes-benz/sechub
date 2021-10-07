@@ -41,8 +41,8 @@ public class HTMLScanResultReportModelBuilder {
     @Autowired
     ScanReportTrafficLightCalculator trafficLightCalculator;
 
-    public Map<String, Object> build(ScanSecHubReport scanResult) {
-        TrafficLight trafficLight = scanResult.getTrafficLight();
+    public Map<String, Object> build(ScanSecHubReport report) {
+        TrafficLight trafficLight = report.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;
         String styleYellow = HIDE_LIGHT;
@@ -61,7 +61,7 @@ public class HTMLScanResultReportModelBuilder {
         default:
         }
         HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
-        SecHubResult result = scanResult.getResult();
+        SecHubResult result = report.getResult();
 
         Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
         for (SecHubFinding finding : result.getFindings()) {
@@ -69,7 +69,7 @@ public class HTMLScanResultReportModelBuilder {
         }
 
         Map<String, Object> model = new HashMap<>();
-        model.put("result", scanResult.getResult());
+        model.put("result", report.getResult());
         model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
         model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
         model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
@@ -98,7 +98,7 @@ public class HTMLScanResultReportModelBuilder {
                 LOG.error("Was not able get file from resource:{}", cssResource, e);
             }
         }
-        UUID jobUUID = scanResult.getJobUUID();
+        UUID jobUUID = report.getJobUUID();
         if (jobUUID != null) {
             model.put("jobuuid", jobUUID.toString());
         } else {

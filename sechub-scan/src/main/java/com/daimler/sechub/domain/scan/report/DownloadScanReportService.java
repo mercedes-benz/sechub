@@ -32,15 +32,8 @@ public class DownloadScanReportService {
     @Autowired
     UserInputAssertion assertion;
 
-    /**
-     * There must be a a security check because useable from outside
-     * 
-     * @param projectId
-     * @param jobUUID
-     * @return
-     */
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
-    public ScanSecHubReport getScanReportResult(String projectId, UUID jobUUID) {
+    public ScanSecHubReport getScanSecHubReport(String projectId, UUID jobUUID) {
         /* validate */
         assertion.isValidProjectId(projectId);
         assertion.isValidJobUUID(jobUUID);

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.JSONTestSupport;
@@ -217,9 +218,22 @@ public class AssertSecHubReport {
             dump();
             LOG.info("Last ouptput line was:" + lastOutputLIne);
         }
-        assertEquals("Returned traffic light:"+foundTrafficLight+"is  not as expected:"+trafficLight+". See JSON dump in log file for details.", trafficLight, foundTrafficLight);
+        assertEquals("Returned traffic light:"+foundTrafficLight+" is  not as expected:"+trafficLight+". See JSON dump in log file for details.", trafficLight, foundTrafficLight);
         return this;
     }
+    
+    public AssertSecHubReport hasStatus(SecHubStatus expectedStatus) {
+        JsonNode statusNode = jsonObj.get("status");
+        if (statusNode == null) {
+            dump();
+            LOG.info("Last ouptput line was:" + lastOutputLIne);
+            fail("No status found inside report!\nPlease look inside log for details");
+        }
+        SecHubStatus foundStatus = SecHubStatus.valueOf(statusNode.asText());
+        assertEquals("Status not as expected!", expectedStatus, foundStatus);
+        return this;
+    }
+
 
     /**
      * Dumps curren json content to log output - just for debugging, do not keep it
@@ -236,4 +250,5 @@ public class AssertSecHubReport {
         return this;
     }
 
+   
 }
