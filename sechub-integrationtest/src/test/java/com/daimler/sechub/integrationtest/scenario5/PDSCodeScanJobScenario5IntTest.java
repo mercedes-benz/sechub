@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.rules.Timeout;
 
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubReportVersion;
 import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
@@ -20,15 +21,17 @@ import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultExecutorConfigurations;
 
 /**
- * Integration test doing code scans by integration test servers (sechub server, pds server)
+ * Integration test doing code scans by integration test servers (sechub server,
+ * pds server)
  * 
  * @author Albert Tregnaghi
  *
  */
 public class PDSCodeScanJobScenario5IntTest {
 
-    public static final String PATH ="pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip";
-    
+    public static final String PATH_CRITICAL = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_critical.zip";
+    public static final String PATH_LOW = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_low.zip";
+
     @Rule
     public IntegrationTestSetup setup = IntegrationTestSetup.forScenario(Scenario5.class);
 
@@ -36,10 +39,9 @@ public class PDSCodeScanJobScenario5IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     TestProject project = PROJECT_1;
-    
-    
+
     @Test
-    public void a_pds_scan_where_bash_execution_returns_1_as_exit_code_is_marked_as_failed() {
+    public void a_pds_scan_where_bash_execution_returns_1_as_exit_code_is_marked_as_failed_and_report_version_1_0() {
         /* @formatter:off */
 
         /* prepare */
@@ -48,16 +50,18 @@ public class PDSCodeScanJobScenario5IntTest {
         
         /* execute */
         as(USER_1).
-            // no upload necessary, will always fail with exit code 1...
+            upload(project, jobUUID, PATH_LOW).
             approveJob(project, jobUUID);
         
         waitForJobDone(project, jobUUID,10);
         
         String report = as(USER_1).getJobReport(project, jobUUID);
-        assertReport(report).hasStatus(SecHubStatus.FAILED);
-        
+        assertReport(report).
+            hasReportVersion(SecHubReportVersion.VERSION_1_0).
+            hasStatus(SecHubStatus.FAILED).
+            hasMessages(1);
+        /* @formatter:on */
     }
-
 
     @SuppressWarnings("deprecation") // we use assertSecHubReport here - old implementation okay here
     @Test
@@ -71,13 +75,18 @@ public class PDSCodeScanJobScenario5IntTest {
         
         /* execute */
         as(USER_1).
-            upload(project, jobUUID, PATH).
+            upload(project, jobUUID, PATH_CRITICAL).
             approveJob(project, jobUUID);
         
         waitForJobDone(project, jobUUID,30);
         
         /* test */
         String report = as(USER_1).getJobReport(project, jobUUID);
+        
+        assertReport(report).
+            hasStatus(SecHubStatus.SUCCESS).
+            hasMessages(0);
+        
         assertSecHubReport(report).
             hasTrafficLight(RED).
                 // findings from uploaded zip (1:1 mapped by textfile:
@@ -103,6 +112,7 @@ public class PDSCodeScanJobScenario5IntTest {
                   // we check the parameters in next line: we are using variant a in this scenario, level is always 42, but given as job parameter and returned by integrationtest-codescan.sh
                   description("pds.test.key.variantname as PDS_TEST_KEY_VARIANTNAME=a,product1.level as PRODUCT1_LEVEL="+IntegrationTestDefaultExecutorConfigurations.VALUE_PRODUCT_LEVEL).
                 isContained();
+        /* @formatter:on */
     }
-    
+
 }
