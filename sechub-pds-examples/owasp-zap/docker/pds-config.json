@@ -1,13 +1,17 @@
 {
-    "apiVersion" : "1.0",
-    "serverId" : "OWASP_ZAP_CLUSTER", 
-
-    "products" : [
-        {
-            "id" : "PDS_OWASP_ZAP",
-            "path" : "/scripts/owasp-zap.sh",
-            "scanType" : "webScan",
-            "description" : "Runs owasp zap"
-        }
-    ]
+  "apiVersion" : "1.0",
+  "serverId" : "OWASP_ZAP_CLUSTER",
+  "products" : [ {
+    "id" : "PDS_OWASP_ZAP",
+    "path" : "/scripts/owasp-zap.sh",
+    "scanType" : "webScan",
+    "unzipUploads" : false,
+    "description" : "Runs owasp zap",
+    "parameters" : {
+      "mandatory" : [ {
+        "key" : "owaspzap.targeturl",
+        "description" : "the target url for the scan"
+      } ]
+    }
+  } ]
 }

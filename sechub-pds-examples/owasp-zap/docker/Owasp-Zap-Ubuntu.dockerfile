@@ -39,10 +39,6 @@ RUN apt-get update && \
     apt-get install --assume-yes wget openjdk-11-jre firefox && \
     apt-get clean
 
-# Create script folder
-COPY owasp-zap.sh $SCRIPT_FOLDER/owasp-zap.sh
-RUN chmod +x $SCRIPT_FOLDER/owasp-zap.sh
-
 # Install OWASP ZAP
 RUN mkdir --parents "$TOOL_FOLDER" && \
 	cd "$TOOL_FOLDER" && \
@@ -63,6 +59,12 @@ RUN mkdir --parents "$PDS_FOLDER" && \
     wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
+
+# Setup script
+COPY owasp-zap.sh $SCRIPT_FOLDER/owasp-zap.sh
+RUN chmod +x $SCRIPT_FOLDER/owasp-zap.sh
+
+COPY owaspzap-wrapper.jar $TOOL_FOLDER/owaspzap-wrapper.jar
 
 # Create shared volumes and upload dir
 RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
