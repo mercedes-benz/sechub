@@ -16,6 +16,7 @@ import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubMessage;
 import com.daimler.sechub.commons.model.SecHubMessageType;
+import com.daimler.sechub.commons.model.SecHubReportVersion;
 import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.domain.scan.ReportTransformationResult;
@@ -54,6 +55,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         falsePositiveMarker.markFalsePositives(projectId, data.getVulnerabilities());
 
         ReportTransformationResult transformerResult = new ReportTransformationResult();
+        transformerResult.setReportVersion(SecHubReportVersion.VERSION_1_0.getVersionAsString());
 
         List<SecHubFinding> findings = transformerResult.getResult().getFindings();
 
@@ -127,6 +129,8 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         case INTERNAL_ERROR_PRODUCT_FAILED:
             /* internal errors are marked with status failed */
             transformerResult.setStatus(SecHubStatus.FAILED);
+            /* we add an information to user as well */
+            appendSecHubMessage(transformerResult, new SecHubMessage(SecHubMessageType.ERROR, "Job execution failed because of an internal problem."));
             return;
         default:
             // nothing

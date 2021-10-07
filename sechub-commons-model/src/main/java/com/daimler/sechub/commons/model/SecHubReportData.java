@@ -21,6 +21,9 @@ public interface SecHubReportData {
     void setJobUUID(UUID jobUUID);
     UUID getJobUUID();
     
+    String getReportVersion();
+    void setReportVersion(String version);
+    
     
 
 }

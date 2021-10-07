@@ -15,6 +15,7 @@ import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubReportData;
 import com.daimler.sechub.commons.model.SecHubReportModel;
+import com.daimler.sechub.commons.model.SecHubReportVersion;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
@@ -40,22 +41,30 @@ public class AssertReport {
         assertEquals(expectedCount, findings.size());
         return this;
     }
-    
+
     public AssertReport hasMessages(int expectedAmountOfMessages) {
         assertEquals(expectedAmountOfMessages, report.getMessages().size());
         return this;
     }
 
     public AssertReport hasStatus(SecHubStatus expectedStatus) {
-        assertEquals(expectedStatus, report.getStatus());
+        if (!Objects.equals(expectedStatus, report.getStatus())){
+            dump();
+            assertEquals(expectedStatus, report.getStatus());
+        }
         return this;
     }
-    
+
     public AssertReport hasTrafficLight(TrafficLight expectedLight) {
         assertEquals(expectedLight, report.getTrafficLight());
         return this;
     }
 
+    public AssertReport hasReportVersion(SecHubReportVersion version) {
+        assertNotNull("Wrong implemented unit test, given version may not be null!", version);
+        assertEquals(version.getVersionAsString(), report.getReportVersion());
+        return this;
+    }
 
     public AssertFinding finding(int number) {
         SecHubFinding secHubFinding = assertFindings(report).get(number);

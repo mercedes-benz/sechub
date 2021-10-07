@@ -158,4 +158,14 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
         return model.getTrafficLight();
     }
 
+    @Override
+    public String getReportVersion() {
+        return model.getReportVersion();
+    }
+
+    @Override
+    public void setReportVersion(String version) {
+        model.setReportVersion(version);
+    }
+
 }

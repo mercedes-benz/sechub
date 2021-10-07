@@ -17,6 +17,7 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
 
     private SecHubResult result = new SecHubResult();
     private SecHubStatus status;
+    private String reportVersion;
 
     private Set<SecHubMessage> messages = new TreeSet<>();
 
@@ -80,6 +81,16 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
 
     public static SecHubReportModel fromJSONString(String json) {
         return IMPORTER.fromJSON(json);
+    }
+
+    @Override
+    public String getReportVersion() {
+        return reportVersion;
+    }
+
+    @Override
+    public void setReportVersion(String version) {
+        this.reportVersion=version;
     }
 
 }
