@@ -71,14 +71,14 @@ public class ProjectChangeOwnerServiceTest {
         serviceToTest.assignOwnerToProject(newOwner.getName(), project1.getId());
 
         /* test */
-        verify(transactionService).saveInOwnTransaction(project1, newOwner);
+        verify(transactionService).saveInOwnTransaction(project1, newOwner, oldOwner);
     }
-    
+
     @Test
     public void assign_same_owner_to_project__throws_already_exists_exception() {
-        
+
         User oldOwner = mock(User.class);
-                        
+
         /* prepare */
         Project project1 = new Project();
         project1.id = "project1";
@@ -87,7 +87,7 @@ public class ProjectChangeOwnerServiceTest {
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
         when(oldOwner.getName()).thenReturn("old");
         when(userRepository.findOrFailUser("old")).thenReturn(oldOwner);
-        
+
         /* execute */
         /* test */
         assertThrows(AlreadyExistsException.class, () -> {
