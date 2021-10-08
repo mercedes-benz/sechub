@@ -41,25 +41,29 @@ public class ProjectTransactionService {
 	}
 
 	/**
-	 * Persists a project and an user entity in same transaction
+	 * Persists a project, user entity and also project meta data in same (new) transaction
 	 * @param project
-	 * @param user
+	 * @param users
 	 * @return persisted project
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Project saveInOwnTransaction(Project project, User user) {
+	public Project saveInOwnTransaction(Project project, User ... users) {
 		requireNonNull(project, "Project may not be null!");
-		requireNonNull(user, "User may not be null!");
+		requireNonNull(users, "User may not be null!");
 
 		/* store */
-		Project result = projectRepository.save(project);
-		LOG.debug("Saved project:{}", result.getId());
-		userRepository.save(user);
-		LOG.debug("Saved user:{}", result.getId());
+		Project savedProject = projectRepository.save(project);
+		LOG.debug("Saved project:{}", savedProject.getId());
 		
 		metaDataRepository.saveAll(project.metaData);
+		LOG.debug("Saved metadata for project:{}", savedProject.getId());
+
+		for (User user: users) {
+		    User savedUser = userRepository.save(user);
+		    LOG.debug("Saved user:{}", savedUser.getName());
+		}
 		
-		return result;
+		return savedProject;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -73,17 +73,22 @@ public class ProjectChangeOwnerService {
             throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
 
-        User previousOwner = project.owner;
-        project.owner = newOwner;
+        User previousOwner = changeProjectOwnerAndReturnPreviousOwner(project, newOwner);
 
-        newOwner.getProjects().add(project);
-        previousOwner.getProjects().remove(project);
-
-        transactionService.saveInOwnTransaction(project, newOwner);
+        transactionService.saveInOwnTransaction(project, newOwner, previousOwner);
 
         sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
+    }
+
+    private User changeProjectOwnerAndReturnPreviousOwner(Project project, User newOwner) {
+        User previousOwner = project.owner;
+        project.owner = newOwner;
+
+        newOwner.getOwnedProjects().add(project);
+        previousOwner.getOwnedProjects().remove(project);
+        return previousOwner;
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
