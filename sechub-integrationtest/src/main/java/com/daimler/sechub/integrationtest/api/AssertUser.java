@@ -24,6 +24,8 @@ import junit.framework.AssertionFailedError;
 public class AssertUser extends AbstractAssert {
 
     private TestUser user;
+    private String cachedFetchedUserDetails;
+    private String cachedFetchedSuperAdminList;
 
     AssertUser(TestUser user) {
         this.user = user;
@@ -32,26 +34,27 @@ public class AssertUser extends AbstractAssert {
     public AssertUser doesNotExist() {
         return doesNotExist(1);
     }
-    
+
     /**
-     * Check user does exists 
+     * Check user does exists
+     * 
      * @param tries - amount of retries . Every retry will wait 1 second
      * @return
      */
     public AssertUser doesNotExist(int tries) {
         AssertionFailedError failure = null;
-        for (int i=0;i<tries && failure==null;i++) {
+        for (int i = 0; i < tries && failure == null; i++) {
             try {
-                if (i>0) {
+                if (i > 0) {
                     /* we wait before next check */
                     TestAPI.waitSeconds(1);
                 }
-                expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchUserDetails(), user.getUserId() + " found!");
-            }catch(AssertionFailedError e) {
-                failure=e;
+                expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchUserDetailsNotCached(), user.getUserId() + " found!");
+            } catch (AssertionFailedError e) {
+                failure = e;
             }
         }
-        if (failure!=null) {
+        if (failure != null) {
             throw failure;
         }
         return this;
@@ -84,11 +87,11 @@ public class AssertUser extends AbstractAssert {
 
     boolean internalIsAssignedToProject(TestProject project) {
         String fetchUserDetails = fetchUserDetails();
-        return isAssignedToProject(project, fetchUserDetails);
+        return checkIsAssignedToProject(project, fetchUserDetails);
     }
 
-    static boolean isAssignedToProject(TestProject project, String fetchedUserDetails) {
-        return isInList(project, fetchedUserDetails, "projects");
+    static boolean checkIsAssignedToProject(TestProject project, String fetchedUserDetails) {
+        return checkIsInList(project, fetchedUserDetails, "projects");
     }
 
     public AssertUser isSuperAdmin() {
@@ -113,7 +116,7 @@ public class AssertUser extends AbstractAssert {
 
     boolean internalIsSuperAdmin() {
         String fetchUserDetails = fetchUserDetails();
-        return isSuperAdmin(fetchUserDetails);
+        return checkIsSuperAdmin(fetchUserDetails);
     }
 
     public AssertUser isNotSuperAdmin() {
@@ -121,7 +124,7 @@ public class AssertUser extends AbstractAssert {
         return this;
     }
 
-    static boolean isSuperAdmin(String fetchedUserDetails) {
+    static boolean checkIsSuperAdmin(String fetchedUserDetails) {
         try {
             JsonNode json = JSONTestSupport.DEFAULT.fromJson(fetchedUserDetails);
             JsonNode superAdmin = json.get("superAdmin");
@@ -131,11 +134,11 @@ public class AssertUser extends AbstractAssert {
         }
     }
 
-    static boolean isOwnerOfProject(TestProject project, String fetchedUserDetails) {
-        return isInList(project, fetchedUserDetails, "ownedProjects");
+    static boolean checkIsOwnerOfProject(TestProject project, String fetchedUserDetails) {
+        return checkIsInList(project, fetchedUserDetails, "ownedProjects");
     }
 
-    static boolean isInList(TestProject project, String fetchedUserDetails, String listName) {
+    static boolean checkIsInList(TestProject project, String fetchedUserDetails, String listName) {
         try {
             JsonNode json = JSONTestSupport.DEFAULT.fromJson(fetchedUserDetails);
             JsonNode projects = json.get(listName);
@@ -158,10 +161,24 @@ public class AssertUser extends AbstractAssert {
     }
 
     private String fetchUserDetails() {
+        if (cachedFetchedUserDetails == null) {
+            cachedFetchedUserDetails = fetchUserDetailsNotCached();
+        }
+        return cachedFetchedUserDetails;
+    }
+
+    private String fetchUserDetailsNotCached() {
         return getRestHelper().getJSon(getUrlBuilder().buildGetUserDetailsUrl(user.getUserId()));
     }
 
     private String fetchSuperAdminList() {
+        if (cachedFetchedSuperAdminList == null) {
+            cachedFetchedSuperAdminList = fetchSuperAdminListNotCached();
+        }
+        return cachedFetchedSuperAdminList;
+    }
+
+    private String fetchSuperAdminListNotCached() {
         return getRestHelper().getJSon(getUrlBuilder().buildAdminListsAdminsUrl());
     }
 
@@ -199,13 +216,14 @@ public class AssertUser extends AbstractAssert {
 
         return this;
     }
-    
+
     /**
-     * Asserts that the user can assign targetUser as owner to given project. Will fail if
-     * the project or target user does not exist before, or assignment is not
-     * possible.<br>
+     * Asserts that the user can assign targetUser as owner to given project. Will
+     * fail if the project or target user does not exist before, or assignment is
+     * not possible.<br>
      * <br>
-     * After this is executed the user is assigned as new owner to project or test fails
+     * After this is executed the user is assigned as new owner to project or test
+     * fails
      *
      * @param targetUser
      * @param project
@@ -227,7 +245,6 @@ public class AssertUser extends AbstractAssert {
         /* @formatter:on */
         return this;
     }
-
 
     /**
      * Asserts that the user can assign targetUser to given project. Will fail if
@@ -346,7 +363,7 @@ public class AssertUser extends AbstractAssert {
         expectHttpFailure(() -> canCreateWebScan(project), expectedError);
         return this;
     }
-    
+
     public AssertUser canGetStatusForJob(TestProject project, UUID jobUUID) {
         as(user).getJobStatus(project.getProjectId(), jobUUID);
         return this;
@@ -446,6 +463,7 @@ public class AssertUser extends AbstractAssert {
 
     public AssertUser isOwnerOf(TestProject project) {
         assertProject(project).hasOwner(user);
+        assertTrue(checkIsOwnerOfProject(project, fetchUserDetails())); // test user.ownedProjects
         return this;
     }
 
@@ -460,13 +478,13 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser isNotOwnerOf(TestProject project) {
-        assertProject(project).hasNotOwner(user);
+        assertProject(project).hasNotOwner(user);  // test project.owener
+        assertFalse(checkIsOwnerOfProject(project, fetchUserDetails())); // test user.ownedProjects
         return this;
     }
 
     public AssertUser canDownloadReportForJob(TestProject project, UUID jobUUID) {
         as(user).getStringFromURL(getUrlBuilder().buildGetJobReportUrl(project.getProjectId(), jobUUID));
-        ;
         return this;
     }
 
@@ -498,19 +516,19 @@ public class AssertUser extends AbstractAssert {
     public AssertUser hasReceivedEmail(String subject) {
         AssertMail.assertMailExists(user.getEmail(), subject);
         return this;
-	}
+    }
 
-	public AssertUser hasReceivedEmail(String subject, boolean asRegularExpression) {
-		AssertMail.assertMailExists(user.getEmail(),subject,asRegularExpression);
+    public AssertUser hasReceivedEmail(String subject, boolean asRegularExpression) {
+        AssertMail.assertMailExists(user.getEmail(), subject, asRegularExpression);
         return this;
     }
 
     public AssertUser isWaitingForSignup() {
         return isWaitingForSignup(true);
     }
-        
+
     private AssertUser isWaitingForSignup(boolean expectWaiting) {
-        
+
         int maxTries = 20;
         boolean foundWaiting = !expectWaiting;
         int tries = 0;
@@ -521,12 +539,12 @@ public class AssertUser extends AbstractAssert {
                 return this;
             }
             TestAPI.waitMilliSeconds(300);
-            
+
             SortedMap<String, String> signups = TestAPI.listSignups();
             String email = signups.get(user.getUserId());
             foundWaiting = user.getEmail().equals(email);
         }
-        
+
         return this;
     }
 
@@ -546,7 +564,7 @@ public class AssertUser extends AbstractAssert {
 
     /**
      * Waits maximum 5 seconds for job being done {@link TestExecutionState#ENDED}.
-     * A precondition is that the job must exist before calling this method. 
+     * A precondition is that the job must exist before calling this method.
      * 
      * @param project
      * @param jobUUID
@@ -555,23 +573,19 @@ public class AssertUser extends AbstractAssert {
     public AssertUser waitForJobDone(TestProject project, UUID jobUUID) {
         long start = System.currentTimeMillis();
         int failed = 0;
-        boolean atLeastOneTimeOkay=false;
-        while (!atLeastOneTimeOkay && failed<10) {
-            if(onJobScheduling(project).
-                canFindJob(jobUUID).
-                    hasExecutionState(TestExecutionState.ENDED)) {
-                atLeastOneTimeOkay=true;
-            }else {
+        boolean atLeastOneTimeOkay = false;
+        while (!atLeastOneTimeOkay && failed < 10) {
+            if (onJobScheduling(project).canFindJob(jobUUID).hasExecutionState(TestExecutionState.ENDED)) {
+                atLeastOneTimeOkay = true;
+            } else {
                 failed++;
                 waitMilliSeconds(500);
             }
         }
         if (!atLeastOneTimeOkay) {
-            fail("wait for job "+jobUUID+" for project "+project+" timed out:"+(System.currentTimeMillis()-start)+" ms elapsed");
+            fail("wait for job " + jobUUID + " for project " + project + " timed out:" + (System.currentTimeMillis() - start) + " ms elapsed");
         }
         return this;
     }
-
-   
 
 }

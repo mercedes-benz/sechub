@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class AssertProject extends AbstractAssert {
 
     private TestProject project;
+    private String cachedProjectDetails;
 
     AssertProject(TestProject project) {
         this.project = project;
@@ -45,7 +46,7 @@ public class AssertProject extends AbstractAssert {
     public AssertProject doesNotExist(int tries) {
 
         TestAPI.executeRunnableAndAcceptAssertionsMaximumTimes(tries,
-                () -> expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetails(), project.getProjectId() + " found!"), 1000);
+                () -> expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetailsNotCached(), project.getProjectId() + " found!"), 1000);
         return this;
     }
 
@@ -118,6 +119,14 @@ public class AssertProject extends AbstractAssert {
     }
 
     private String fetchProjectDetails() {
+        if (cachedProjectDetails==null) {
+            cachedProjectDetails = fetchProjectDetailsNotCached();
+        }
+        return cachedProjectDetails;
+        
+    }
+
+    private String fetchProjectDetailsNotCached() {
         return getRestHelper().getJSon(getUrlBuilder().buildAdminGetProjectDetailsUrl(project.getProjectId()));
     }
 
