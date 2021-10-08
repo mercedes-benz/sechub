@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -306,6 +307,35 @@ public class TestAPI {
         } while (notExceeded(maxMilliseconds, start));
         fail("Timeout of waiting for successful execution - waited " + e.getTimeoutInSeconds() + " seconds");
         return;
+    }
+
+    public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
+        executeCallableAndAcceptAssertionsMaximumTimes(tries, ()-> {
+            runnable.run();
+            return null;
+        }, millisBeforeNextRetry);
+    }
+    
+    public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
+        T result = null;
+        AssertionFailedError failure = null;
+        for (int i = 0; i < tries && failure == null; i++) {
+            try {
+                if (i > 0) {
+                    /* we wait before next check */
+                    TestAPI.waitMilliSeconds(millisBeforeNextRetry);
+                }
+                result = assertionCallable.call();
+            } catch (AssertionFailedError e) {
+                failure = e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
+        return result;
     }
 
     /**
