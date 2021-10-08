@@ -2,16 +2,13 @@
 
 :toc:
 
-= GoSec + PDS
+= OWASP ZAP + PDS
 
-https://securego.io/[GoSec] is a free and open source static application security testing tool. GoSec is a command line interface (CLI) tool. By combining GoSec with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub. Another scenario is to use PDS + GoSec standalone.
+https://www.zaproxy.org/[OWASP ZAP] is a free and open source dynamic application security testing tool. By combining OWASP ZAP with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub.
 
-Furthermore, the combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+Furthermore, the combination of OWASP ZAP and PDS make it possible to run both inside a Kubernetes cluser or virtual machines.
 
-This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
-
-[NOTE]
-We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux image is intended for experienced Linux users.
+This folder contains the necessary scripts to run PDS + OWASP ZAP inside a container locally. Additionally, it contains scripts to build and push the PDS + OWASP ZAP container to your container registry and a Helm chart to install and run PDS + OWASP ZAP in a Kubernetes cluster.
 
 == Run Locally
 
@@ -37,12 +34,6 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 
 ----
 ./01-start-docker-compose.sh
-----
-
-or to start the Alpine Linux container:
-
-----
-./01-start-docker-compose.sh alpine
 ----
 
 ==== Manually
@@ -86,6 +77,7 @@ The folder contains a `pds-api.sh` script.
 export PDS_SERVER=https://<pds-host>:<pds-port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
 The default values for the PDS-GoSec `docker-compose` examples are:
@@ -94,6 +86,7 @@ The default values for the PDS-GoSec `docker-compose` examples are:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
 [TIP]
@@ -117,23 +110,16 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 +
 <1> The `HTTP/1.1 200` tells you the server is alive and running.
 
+TODO: A JSON is needed for the target url
+
 . Create a new job to get the PDS JobUUID
 +
 ----
-./pds-api.sh create_job PDS_GOSEC "288607bf-ac81-4088-842c-005d5702a9e9"
+./pds-api.sh create_job PDS_OWASP_ZAP "288607bf-ac81-4088-842c-005d5702a9e9"
 {
   "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 }
 ----
-
-. Upload a ZIP file with Go code
-+
-----
-./pds-api.sh upload_zip "8d4236cf-b512-40bc-bb70-c247fa4c9c37" /home/<myuser>/go_code.zip
-----
-+
-[TIP]
-GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
 
 . Mark the job ready to start
 +
@@ -162,212 +148,6 @@ GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202
 ----
 $ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 ----
-+
-Output
-+
-[source,json]
-----
-{
-	"runs": [
-		{
-			"results": [
-				{
-					"level": "error",
-					"locations": [
-						{
-							"physicalLocation": {
-								"artifactLocation": {
-									"uri": "code/hardcoded_password.go"
-								},
-								"region": {
-									"endColumn": 9,
-									"endLine": 7,
-									"snippet": {
-										"text": "6:     username := \"admin\"\n7:     var password = \"f62e5bcda4fae4f82370da0c6f20697b8f8447ef\"\n8: \n"
-									},
-									"sourceLanguage": "go",
-									"startColumn": 9,
-									"startLine": 7
-								}
-							}
-						}
-					],
-					"message": {
-						"text": "Potential hardcoded credentials"
-					},
-					"ruleId": "G101"
-				},
-				{
-					"level": "error",
-					"locations": [
-						{
-							"physicalLocation": {
-								"artifactLocation": {
-									"uri": "code/sql_injection.go"
-								},
-								"region": {
-									"endColumn": 10,
-									"endLine": 12,
-									"snippet": {
-										"text": "11:     }\n12:     q := fmt.Sprintf(\"SELECT * FROM foo where name = '%s'\", os.Args[1])\n13:     rows, err := db.Query(q)\n"
-									},
-									"sourceLanguage": "go",
-									"startColumn": 10,
-									"startLine": 12
-								}
-							}
-						}
-					],
-					"message": {
-						"text": "SQL string formatting"
-					},
-					"ruleId": "G201",
-					"ruleIndex": 1
-				}
-			],
-			"taxonomies": [
-				{
-					"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
-					"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-					"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
-					"isComprehensive": true,
-					"language": "en",
-					"minimumRequiredLocalizedDataSemanticVersion": "4.4",
-					"name": "CWE",
-					"organization": "MITRE",
-					"releaseDateUtc": "2021-03-15",
-					"shortDescription": {
-						"text": "The MITRE Common Weakness Enumeration"
-					},
-					"taxa": [
-						{
-							"fullDescription": {
-								"text": "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data."
-							},
-							"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
-							"helpUri": "https://cwe.mitre.org/data/definitions/798.html",
-							"id": "798",
-							"shortDescription": {
-								"text": "Use of Hard-coded Credentials"
-							}
-						},
-						{
-							"fullDescription": {
-								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
-							},
-							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
-							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
-							"id": "89",
-							"shortDescription": {
-								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
-							}
-						}
-					],
-					"version": "4.4"
-				}
-			],
-			"tool": {
-				"driver": {
-					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
-					"informationUri": "https://github.com/securego/gosec/",
-					"name": "gosec",
-					"rules": [
-						{
-							"defaultConfiguration": {
-								"level": "error"
-							},
-							"fullDescription": {
-								"text": "Potential hardcoded credentials"
-							},
-							"help": {
-								"text": "Potential hardcoded credentials\nSeverity: HIGH\nConfidence: LOW\n"
-							},
-							"id": "G101",
-							"name": "Potential hardcoded credentials",
-							"properties": {
-								"precision": "low",
-								"tags": [
-									"security",
-									"HIGH"
-								]
-							},
-							"relationships": [
-								{
-									"kinds": [
-										"superset"
-									],
-									"target": {
-										"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
-										"id": "798",
-										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
-										}
-									}
-								}
-							],
-							"shortDescription": {
-								"text": "Potential hardcoded credentials"
-							}
-						},
-						{
-							"defaultConfiguration": {
-								"level": "error"
-							},
-							"fullDescription": {
-								"text": "SQL string formatting"
-							},
-							"help": {
-								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
-							},
-							"id": "G201",
-							"name": "SQL string formatting",
-							"properties": {
-								"precision": "high",
-								"tags": [
-									"security",
-									"MEDIUM"
-								]
-							},
-							"relationships": [
-								{
-									"kinds": [
-										"superset"
-									],
-									"target": {
-										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
-										"id": "89",
-										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
-										}
-									}
-								}
-							],
-							"shortDescription": {
-								"text": "SQL string formatting"
-							}
-						}
-					],
-					"semanticVersion": "2.8.0",
-					"supportedTaxonomies": [
-						{
-							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-							"name": "CWE"
-						}
-					],
-					"version": "2.8.0"
-				}
-			}
-		}
-	],
-	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-	"version": "2.1.0"
-}
-----
-+
-[NOTE]
-This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
 
 ==== Scan Script 
 
@@ -534,27 +314,13 @@ Build the container image.
 . Using the default image: 
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
-----
-
-==== Alpine
-
-. Using the default image: 
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1
-----
-
-. Using your own base image:
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1 "my.registry.example.org/ubuntu:focal"
 ----
 
 === Push Image to Registry
@@ -564,13 +330,13 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_owasp_zap v0.1 yes
 ----
 
 == Kubernetes
@@ -584,7 +350,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
+* `pds_gosec_ubuntu` image pushed to registry
 
 ==== Installation
 
@@ -634,7 +400,7 @@ An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_gosec
+   registry: my.registry.example.org/pds_owasp_zap
    tag: latest
 
 pds:

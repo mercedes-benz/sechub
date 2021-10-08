@@ -2,12 +2,12 @@
 
 version: "3"
 services:
-    pds-gosec:
+    pds-owasp-zap:
         build:
             args:
-                - BASE_IMAGE=ubuntu:focal
+                - BASE_IMAGE=ubuntu:20.04
             context: docker/
-            dockerfile: GoSec-Ubuntu.dockerfile
+            dockerfile: Owasp-Zap-Ubuntu.dockerfile
         env_file:
             - .env-cluster-object-storage
         networks:
@@ -24,7 +24,7 @@ services:
         networks:
             - internal
         depends_on:
-            - pds-gosec
+            - pds-owasp-zap
         ports:
             - "127.0.0.1:8444:8444"
     

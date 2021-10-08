@@ -8,9 +8,9 @@ JAVA_ENABLE_DEBUG=false
 KEEP_CONTAINER_ALIVE_AFTER_PDS_CRASHED=false
 DATABASE_START_MODE=server
 POSTGRES_ENABLED=true
-DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=gosec
+DATABASE_CONNECTION=jdbc:postgresql://database:5432/pds?currentSchema=owaspzap
 DATABASE_PASSWORD=top$ecret
-DATABASE_USERNAME=gosec
+DATABASE_USERNAME=owaspzap
 OBJECT_STORAGE_START_MODE=server
 MINIO_ROOT_USER=admin
 MINIO_ROOT_PASSWORD=2apples$4

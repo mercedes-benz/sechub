@@ -19,9 +19,9 @@ fi
 
 if [[ -z "$BASE_IMAGE" ]]
 then
-    BASE_IMAGE="ubuntu:focal"
+    BASE_IMAGE="ubuntu:20.04"
 fi
 
 echo ">> Base image: $BASE_IMAGE"
-docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/GoSec-Ubuntu.dockerfile docker/
+docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/Owasp-Zap-Ubuntu.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"

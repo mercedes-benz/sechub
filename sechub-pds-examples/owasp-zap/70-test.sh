@@ -25,7 +25,7 @@ export RETRIES=<number-of-retries>
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
-export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
+export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 USAGE
 }
 
@@ -75,7 +75,7 @@ if [[ ! -z "$RETRIES" ]]
 then
     retries=$RETRIES
 else
-    retries=20
+    retries=100
 fi
 
 if [[ ! -z "$json_config" ]]
