@@ -22,14 +22,14 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class ProjectAssignOwnerService {
+public class ProjectChangeOwnerService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignOwnerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectChangeOwnerService.class);
 
     @Autowired
     DomainMessageService eventBus;
@@ -53,7 +53,7 @@ public class ProjectAssignOwnerService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdminAssignsUserToProject(
+	@UseCaseAdminChangesProjectOwner(
 			@Step(
 					number = 2,
 					name = "Assign owner",

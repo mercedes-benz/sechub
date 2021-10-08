@@ -56,7 +56,7 @@ public class ProjectAdministrationRestController {
     ProjectCreationService creationService;
 
     @Autowired
-    ProjectAssignOwnerService assignOwnerToProjectService;
+    ProjectChangeOwnerService assignOwnerToProjectService;
 
     @Autowired
     ProjectAssignUserService assignUserToProjectService;

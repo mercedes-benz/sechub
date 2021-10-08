@@ -44,7 +44,7 @@ import com.daimler.sechub.domain.administration.project.CreateProjectInputValida
 import com.daimler.sechub.domain.administration.project.ListProjectsService;
 import com.daimler.sechub.domain.administration.project.Project;
 import com.daimler.sechub.domain.administration.project.ProjectAdministrationRestController;
-import com.daimler.sechub.domain.administration.project.ProjectAssignOwnerService;
+import com.daimler.sechub.domain.administration.project.ProjectChangeOwnerService;
 import com.daimler.sechub.domain.administration.project.ProjectAssignUserService;
 import com.daimler.sechub.domain.administration.project.ProjectChangeAccessLevelService;
 import com.daimler.sechub.domain.administration.project.ProjectCreationService;
@@ -98,7 +98,7 @@ public class ProjectAdministrationRestControllerRestDocTest {
     ProjectCreationService creationService;
 
     @MockBean
-    ProjectAssignOwnerService assignOwnerService;
+    ProjectChangeOwnerService assignOwnerService;
 
     @MockBean
     ProjectAssignUserService assignUserService;

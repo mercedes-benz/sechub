@@ -20,9 +20,9 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
-public class ProjectAssignOwnerServiceTest {
+public class ProjectChangeOwnerServiceTest {
 
-    private ProjectAssignOwnerService serviceToTest;
+    private ProjectChangeOwnerService serviceToTest;
     private UserContextService userContext;
     private DomainMessageService eventBusService;
     private ProjectRepository projectRepository;
@@ -41,7 +41,7 @@ public class ProjectAssignOwnerServiceTest {
 
         transactionService = mock(ProjectTransactionService.class);
 
-        serviceToTest = new ProjectAssignOwnerService();
+        serviceToTest = new ProjectChangeOwnerService();
         serviceToTest.eventBus = eventBusService;
         serviceToTest.projectRepository = projectRepository;
         serviceToTest.userRepository = userRepository;
