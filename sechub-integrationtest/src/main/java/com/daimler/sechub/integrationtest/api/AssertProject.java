@@ -29,24 +29,25 @@ public class AssertProject extends AbstractAssert {
     }
 
     /**
-     * Assert the project does not exist in administration domain
+     * Assert the project does not exist in administration domain. Will wait 3x330
+     * milliseconds
      * 
      * @return
      */
     public AssertProject doesNotExist() {
-        return doesNotExist(1);
+        return doesNotExist(3);
     }
 
     /**
      * Check user does exists
      * 
-     * @param tries - amount of retries . Every retry will wait 1 second
+     * @param tries - amount of retries . Every retry will wait 330 milliseconds
      * @return
      */
     public AssertProject doesNotExist(int tries) {
 
         TestAPI.executeRunnableAndAcceptAssertionsMaximumTimes(tries,
-                () -> expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetailsNotCached(), project.getProjectId() + " found!"), 1000);
+                () -> expectHttpClientError(HttpStatus.NOT_FOUND, () -> fetchProjectDetailsNotCached(), project.getProjectId() + " found!"), 330);
         return this;
     }
 
@@ -119,11 +120,11 @@ public class AssertProject extends AbstractAssert {
     }
 
     private String fetchProjectDetails() {
-        if (cachedProjectDetails==null) {
+        if (cachedProjectDetails == null) {
             cachedProjectDetails = fetchProjectDetailsNotCached();
         }
         return cachedProjectDetails;
-        
+
     }
 
     private String fetchProjectDetailsNotCached() {

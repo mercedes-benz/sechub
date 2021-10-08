@@ -948,13 +948,13 @@ public class TestAPI {
     }
 
     /**
-     * Wait that project does not exist. Will try 3 times with 1 second delay before
+     * Wait that project does not exist. Will try 9 times with 330 milliseconds delay before
      * next retry. After this time this method will fail.
      * 
      * @param project
      */
     public static void waitProjectDoesNotExist(TestProject project) {
-        assertProject(project).doesNotExist(3);
+        assertProject(project).doesNotExist(9);
     }
 
 }

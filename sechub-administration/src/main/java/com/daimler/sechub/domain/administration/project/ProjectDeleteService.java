@@ -73,10 +73,12 @@ public class ProjectDeleteService {
 			LOG.warn("No owner found for project {} while deleting", project.getId());
 		} else {
 			message.setProjectOwnerEmailAddress(owner.getEmailAdress());
+			owner.getOwnedProjects().remove(project);// handle ORM mapping. Avoid cache conflicts
 		}
 
 		for (User user : project.getUsers()) {
 			message.addUserEmailAddress(user.getEmailAdress());
+			user.getProjects().remove(project); // handle ORM mapping. Avoid cache conflicts
 		}
 
 		transactionService.deleteWithAssociationsInOwnTransaction(projectId);
