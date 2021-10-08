@@ -76,10 +76,10 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
             lastOutput = asPDSUser(PDS_ADMIN).getJobOutputStreamText(pdsJobUUID);
             lastError = asPDSUser(PDS_ADMIN).getJobErrorStreamText(pdsJobUUID);
 
-            if (lastOutput == null) { // when body is empty, happens when job has not yet been started
+            if (lastOutput == null || lastOutput.trim().isEmpty()) { // when body is empty, happens when job has not yet been started
                 LOG.info("No output data found for job:{}", pdsJobUUID);
                 continue;
-            } else if (lastError == null) { // when body is empty, happens when job has not yet been started
+            } else if (lastError == null || lastError.trim().isEmpty()) { // when body is empty, happens when job has not yet been started
                 LOG.info("No error data found for job:{}", pdsJobUUID);
                 continue;
             } else {
@@ -103,27 +103,30 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
         } while (!ended);
 
         /* test */
-        assertEquals(4, outputTextSet.size());
-        assertEquals(4, errorTextSet.size());
+        // check just that there are more than one different outputs - means we can use
+        // a watch dog to fetch changes at runtime - we could also check directly for 4
+        // different entries but this can lead to flaky tests. So we check only this
+        LOG.info("fetched {} different output entries", outputTextSet.size());
+        LOG.info("fetched {} different error entries", errorTextSet.size());
+
+        assertTrue(outputTextSet.size() > 1);
+        assertTrue(errorTextSet.size() > 1);
 
         Iterator<String> outIt = outputTextSet.iterator();
         Iterator<String> errIt = errorTextSet.iterator();
 
-        assertNextEndsWith(outIt, "STARTING");
-        assertNextEndsWith(outIt, "WORKING1");
-        assertNextEndsWith(outIt, "WORKING2");
-        assertNextEndsWith(outIt, "WORKING3");
-
-        assertNextEndsWith(errIt, "NO-PROBLEMS");
-        assertNextEndsWith(errIt, "ERRORS1");
-        assertNextEndsWith(errIt, "ERRORS2");
-        assertNextEndsWith(errIt, "ERRORS3");
+        checkLastEnds(outIt, "WORKING3");
+        checkLastEnds(errIt, "ERRORS3");
 
     }
 
-    private void assertNextEndsWith(Iterator<String> it, String expectedEnd) {
+    private void checkLastEnds(Iterator<String> it, String expectedEnd) {
         int maxLength = 30;
-        String next = it.next().trim(); // we trim to get rid of the last new line...
+        String next = null;
+        while (it.hasNext()) {
+            next = it.next();
+        }
+        next = next.trim();
         if (!next.endsWith(expectedEnd)) {
             String show = next;
             int length = show.length();
@@ -132,6 +135,7 @@ public class DirectPDSAPIJobStreamDataScenario6IntTest {
             }
             fail("expected to end with:\n'" + expectedEnd + "'\n, but was:\n...'" + show + "'");
         }
+
     }
 
 }
