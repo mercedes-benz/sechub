@@ -14,11 +14,11 @@ import com.daimler.sechub.pds.PDSMustBeDocumented;
 @Component
 public class PDSStreamContentUpdateChecker {
 
-    private static final long DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
+    private static final int DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
 
     @PDSMustBeDocumented("PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid")
     @Value("${sechub.pds.config.job.stream.cachetime:" + DEFAULT_CACHE_REFRESH_IN_MILLISECONDS + "}")
-    private int streamDataCacheTimeMilliseconds;
+    private int streamDataCacheTimeMilliseconds = DEFAULT_CACHE_REFRESH_IN_MILLISECONDS;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSStreamContentUpdateChecker.class);
 

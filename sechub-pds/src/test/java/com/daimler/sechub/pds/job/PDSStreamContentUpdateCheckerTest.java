@@ -98,7 +98,7 @@ class PDSStreamContentUpdateCheckerTest {
     void check_RUNNING_state_and_update_time_gap_too_big_a_refresh_IS_NOT_necessary(long milliseconds) {
         /* prepare */
         PDSJob job = createCompleteJobWithoutLastStreamUpdateSet(PDSJobStatusState.RUNNING);
-        job.lastStreamTextUpdate = LocalDateTime.now().minusNanos(TimeUnit.NANOSECONDS.toMillis(milliseconds));
+        job.lastStreamTextUpdate = LocalDateTime.now().minusNanos(TimeUnit.MILLISECONDS.toNanos(milliseconds));
 
         /* execute */
         boolean necessary = checkerToTest.isUpdateNecessaryWhenRefreshRequestedNow(job);
