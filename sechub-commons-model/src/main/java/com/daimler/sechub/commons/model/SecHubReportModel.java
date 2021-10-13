@@ -99,6 +99,4 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
                 + (messages != null ? "messages=" + messages : "") + "]";
     }
 
-    
-    
 }

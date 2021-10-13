@@ -17,7 +17,7 @@ public class LoadJSONAdapterDialogAction extends AbstractAdapterDialogMappingAct
     protected void execute(ActionEvent e) throws Exception {
         DeveloperAdministration adm = getDialogUI().getContext().getAdministration();
         String url = adm.getUrlBuilder().buildGetMapping(getMappingUI().getMappingId());
-        String json= adm.getRestHelper().getJSon(url);
+        String json= adm.getRestHelper().getJSON(url);
         getMappingUI().setJSON(json);
         
     }

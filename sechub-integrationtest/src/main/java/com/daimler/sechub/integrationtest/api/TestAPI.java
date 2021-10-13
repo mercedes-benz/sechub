@@ -564,7 +564,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
 
-        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         if (result == null) {
             return null;
         }
@@ -584,7 +584,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
 
-        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         ObjectMapper mapper = TestJSONHelper.get().getMapper();
         ObjectReader readerForListOf = mapper.readerForListOf(SecurityLogData.class);
         try {
@@ -635,7 +635,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildFetchMetaDataInspectionsURL();
 
-        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSon(url);
+        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSON(url);
         TestJSONHelper jsonHelper = TestJSONHelper.get();
 
         List<Map<String, Object>> data;
@@ -685,7 +685,7 @@ public class TestAPI {
                 if (timeElapsed > timeOutInMilliseconds) {
                     throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
                 }
-                String json = getSuperAdminRestHelper().getJSon(url);
+                String json = getSuperAdminRestHelper().getJSON(url);
                 JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
                 if (obj instanceof ArrayNode) {
                     ArrayNode an = (ArrayNode) obj;
@@ -772,13 +772,13 @@ public class TestAPI {
 
     public static IntegrationTestEventHistory fetchEventInspectionHistory() {
         String url = getURLBuilder().buildIntegrationTestFetchEventInspectionHistory();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         return IntegrationTestEventHistory.fromJSONString(json);
     }
 
     public static Map<String, String> listStatusEntries() {
         String url = getURLBuilder().buildAdminListsStatusEntries();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -815,7 +815,7 @@ public class TestAPI {
 
     public static SortedMap<String, String> listSignups() {
         String url = getURLBuilder().buildAdminListsUserSignupsUrl();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);

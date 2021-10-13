@@ -168,7 +168,7 @@ public class AssertUser extends AbstractAssert {
     }
 
     private String fetchUserDetailsNotCached() {
-        return getRestHelper().getJSon(getUrlBuilder().buildGetUserDetailsUrl(user.getUserId()));
+        return getRestHelper().getJSON(getUrlBuilder().buildGetUserDetailsUrl(user.getUserId()));
     }
 
     private String fetchSuperAdminList() {
@@ -179,7 +179,7 @@ public class AssertUser extends AbstractAssert {
     }
 
     private String fetchSuperAdminListNotCached() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsAdminsUrl());
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminListsAdminsUrl());
     }
 
     /**

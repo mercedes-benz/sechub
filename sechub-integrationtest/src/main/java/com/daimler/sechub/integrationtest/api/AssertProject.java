@@ -102,7 +102,7 @@ public class AssertProject extends AbstractAssert {
         long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectProductResults(projectId));
 
         if (value != expected) {
-            String json = getRestHelper().getJSon(getUrlBuilder().buildFetchAllProjectProductResultsButShrinked(projectId, 200));
+            String json = getRestHelper().getJSON(getUrlBuilder().buildFetchAllProjectProductResultsButShrinked(projectId, 200));
             fail("Expected product results for project " + projectId + "were : " + expected + " but resulted in: " + value + "\n\nProduct Results:"
                     + TestJSONHelper.get().beatuifyJSON(json));
         }
@@ -128,7 +128,7 @@ public class AssertProject extends AbstractAssert {
     }
 
     private String fetchProjectDetailsNotCached() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminGetProjectDetailsUrl(project.getProjectId()));
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminGetProjectDetailsUrl(project.getProjectId()));
     }
 
     public AssertProject hasOwner(TestUser user) {
