@@ -10,14 +10,14 @@ public class SecHubMessage implements Comparable<SecHubMessage> {
     private String text;
 
     public SecHubMessage() {
-        /* normally just for jackson JSON serialization */
+        /* just for Jackson JSON serialization */
     }
-    
+
     public SecHubMessage(SecHubMessageType type, String text) {
-        this.type=type;
-        this.text=text;
+        this.type = type;
+        this.text = text;
     }
-    
+
     public void setType(SecHubMessageType type) {
         this.type = type;
     }
@@ -74,12 +74,19 @@ public class SecHubMessage implements Comparable<SecHubMessage> {
     }
 
     private int compareOnMessageIfTypeIsSame(SecHubMessage otherNotNull) {
-        if (otherNotNull.text==this.text) {
+        if (otherNotNull.text == this.text) {
             return 0;
         }
-        if (text==null) {
+        if (text == null) {
             return -1;
         }
         return text.compareTo(otherNotNull.text);
     }
+
+    @Override
+    public String toString() {
+        return "SecHubMessage [" + (type != null ? "type=" + type + ", " : "") + (text != null ? "text=" + text : "") + "]";
+    }
+    
+    
 }

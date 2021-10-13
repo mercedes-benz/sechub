@@ -36,18 +36,18 @@ public class ReportTransformationResultMergerTest {
     }
 
     @Test
-    public void r1_r2_merged_contains_all_findings() {
+    public void result1_result2_merged_contains_all_findings() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
+        ReportTransformationResult result1 = new ReportTransformationResult();
         SecHubFinding finding1 = new SecHubFinding();
-        r1.getResult().getFindings().add(finding1);
+        result1.getResult().getFindings().add(finding1);
 
         SecHubFinding finding2 = new SecHubFinding();
-        ReportTransformationResult r2 = new ReportTransformationResult();
-        r1.getResult().getFindings().add(finding2);
+        ReportTransformationResult result2 = new ReportTransformationResult();
+        result1.getResult().getFindings().add(finding2);
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         List<SecHubFinding> findings = merged.getResult().getFindings();
@@ -58,18 +58,18 @@ public class ReportTransformationResultMergerTest {
     }
 
     @Test
-    public void r1_r2_merged_contains_all_messages() {
+    public void result11_result2_merged_contains_all_messages() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        ReportTransformationResult r2 = new ReportTransformationResult();
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        ReportTransformationResult result2 = new ReportTransformationResult();
 
         SecHubMessage message1 = new SecHubMessage(SecHubMessageType.INFO, "msg1");
         SecHubMessage message2 = new SecHubMessage(SecHubMessageType.INFO, "msg2");
-        r1.getMessages().add(message1);
-        r2.getMessages().add(message2);
+        result1.getMessages().add(message1);
+        result2.getMessages().add(message2);
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         Set<SecHubMessage> messages = merged.getMessages();
@@ -80,15 +80,15 @@ public class ReportTransformationResultMergerTest {
     }
 
     @Test
-    public void r1_r2_merged_r1_has_status_failed_merge_result_is_failed() {
+    public void result1_result2_merged_result1_has_status_failed_merge_result_is_failed() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        r1.setStatus(SecHubStatus.FAILED);
-        ReportTransformationResult r2 = new ReportTransformationResult();
-        r2.setStatus(SecHubStatus.SUCCESS);
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        result1.setStatus(SecHubStatus.FAILED);
+        ReportTransformationResult result2 = new ReportTransformationResult();
+        result2.setStatus(SecHubStatus.SUCCESS);
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         assertTrue(merged.getStatus() == SecHubStatus.FAILED);
@@ -96,67 +96,66 @@ public class ReportTransformationResultMergerTest {
     }
 
     @Test
-    public void r1_r2_merged_r2_has_status_failed_merge_result_is_failed() {
+    public void result1_result2_merged_result2_has_status_failed_merge_result_is_failed() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        r1.setStatus(SecHubStatus.SUCCESS);
-        ReportTransformationResult r2 = new ReportTransformationResult();
-        r2.setStatus(SecHubStatus.FAILED);
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        result1.setStatus(SecHubStatus.SUCCESS);
+        ReportTransformationResult result2 = new ReportTransformationResult();
+        result2.setStatus(SecHubStatus.FAILED);
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         assertTrue(merged.getStatus() == SecHubStatus.FAILED);
 
     }
-    
+
     @Test
-    public void r1_r2_merged_r1_has_report_version_42_0_merged_has_same_version() {
+    public void result1_result2_merged_result1_has_report_version_42_0_merged_has_same_version() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        r1.setReportVersion("42.0");
-        ReportTransformationResult r2 = new ReportTransformationResult();
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        result1.setReportVersion("42.0");
+        ReportTransformationResult result2 = new ReportTransformationResult();
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         assertEquals("42.0", merged.getReportVersion());
 
     }
-    
+
     @Test
-    public void r1_r2_merged_r1_has_report_version_42_0_r2_has_version_47_11_merged_has_47_11() {
+    public void result1_result2_merged_result1_has_report_version_42_0_result2_has_version_47_11_merged_has_47_11() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        r1.setReportVersion("42.0");
-        ReportTransformationResult r2 = new ReportTransformationResult();
-        r2.setReportVersion("47.11");
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        result1.setReportVersion("42.0");
+        ReportTransformationResult result2 = new ReportTransformationResult();
+        result2.setReportVersion("47.11");
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         assertEquals("47.11", merged.getReportVersion());
 
     }
-    
+
     @Test
-    public void r1_r2_merged_r1_has_report_version_47_11_r2_has_version_42_0_merged_has_42_0() {
+    public void result1_result2_merged_result1_has_report_version_47_11_result2_has_version_42_0_merged_has_42_0() {
         /* prepare */
-        ReportTransformationResult r1 = new ReportTransformationResult();
-        r1.setReportVersion("47.11");
-        ReportTransformationResult r2 = new ReportTransformationResult();
-        r2.setReportVersion("42.0");
+        ReportTransformationResult result1 = new ReportTransformationResult();
+        result1.setReportVersion("47.11");
+        ReportTransformationResult result2 = new ReportTransformationResult();
+        result2.setReportVersion("42.0");
 
         /* execute */
-        ReportTransformationResult merged = mergerToTest.merge(r1, r2);
+        ReportTransformationResult merged = mergerToTest.merge(result1, result2);
 
         /* test */
         assertEquals("42.0", merged.getReportVersion());
 
     }
-
 
 }

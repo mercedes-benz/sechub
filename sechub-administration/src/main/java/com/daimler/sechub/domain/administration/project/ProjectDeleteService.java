@@ -74,7 +74,7 @@ public class ProjectDeleteService {
             LOG.warn("No owner found for project {} while deleting", project.getId());
         } else {
             message.setProjectOwnerEmailAddress(owner.getEmailAdress());
-            owner.getOwnedProjects().remove(project);// handle ORM mapping. Avoid cache conflicts
+            owner.getOwnedProjects().remove(project); // handle ORM mapping. Avoid cache conflicts
         }
 
         for (User user : project.getUsers()) {

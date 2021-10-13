@@ -107,7 +107,7 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // no we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -167,7 +167,7 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // no we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -191,7 +191,7 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // no we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 
@@ -204,7 +204,7 @@ class ScanSecHubReportTest {
     }
 
     @Test
-    void scanreport_result_with_report_containing_sechub_report_model_init_and_son_parts_work() {
+    void scanreport_result_with_report_containing_sechub_report_model_init_and_json_parts_work() {
 
         /* prepare */
         SecHubReportModel reportModel = new SecHubReportModel();
@@ -220,7 +220,7 @@ class ScanSecHubReportTest {
 
         /* execute */
         ScanSecHubReport createdReport = new ScanSecHubReport(report);
-        // no we also check if the JSON deserialization /serialization works as expected
+        // now we also check if the JSON deserialization /serialization works as expected
         String json = createdReport.toJSON();
         ScanSecHubReport reportToTest = ScanSecHubReport.fromJSONString(json);
 

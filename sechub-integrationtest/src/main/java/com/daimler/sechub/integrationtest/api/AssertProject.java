@@ -41,7 +41,7 @@ public class AssertProject extends AbstractAssert {
     /**
      * Check user does exists
      * 
-     * @param tries - amount of retries . Every retry will wait 330 milliseconds
+     * @param tries - amount of retries. Every retry will wait 330 milliseconds
      * @return
      */
     public AssertProject doesNotExist(int tries) {

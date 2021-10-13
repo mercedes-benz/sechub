@@ -20,9 +20,8 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 @Service
 /**
- * This service will load the product result data from FARRADAY (and maybe also
- * other products or own implementations) and transform those data a sechub
- * result
+ * This service will load the product result data from report collectors and
+ * transform those data a sechub result
  * 
  * @author Albert Tregnaghi
  *

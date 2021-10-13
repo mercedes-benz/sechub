@@ -2,13 +2,12 @@
 === Product results
 Product results can be either from security products or from reporting products.
 
-For a job different products can be executed, depending on the <<section-concepts-product-execution,execution configuration,>>. After this the results will be stored in database as
-dedicated `ProductResult` entries.
+For a job different security products can be executed, depending on the <<section-concepts-product-execution,execution configuration>>. 
+After this the results will be stored in database as dedicated `ProductResult` entries.
 
+Afterwards reporting products will be executed to collect the former stored reports and merge them together.
+The report product merge result will be stored as a `ProductResult` as well in database for the job.
 
-When all `normal` products are executed, the special reporting products will be executed - when no
-special configured report collector is found, the embedded product: `Sereco` ("SecHub report collector") will used .  
-
-
+NOTE: When no report collector is configured/available the embedded report product `Sereco` ("SecHub report collector") will be used .  
 
 include::concept_report_dataflow.adoc[]

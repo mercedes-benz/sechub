@@ -21,7 +21,7 @@ class AssertCalculation {
     public AssertCalculation isFilteringFindingsTo(TrafficLight wanted, SecHubFinding... findings) {
         List<SecHubFinding> filtered = calculator.filterFindingsFor(currentResult.getResult(), wanted);
 
-        assertNotNull(filtered); // never null!s
+        assertNotNull(filtered); // never null!
         for (SecHubFinding finding : findings) {
             assertTrue("Finding missing:" + finding, filtered.contains(finding)); // just same object. equals not custom implemented
         }
@@ -33,7 +33,7 @@ class AssertCalculation {
     public AssertCalculation isCalculatedTo(TrafficLight light) {
         TrafficLight calcLight = calculator.calculateTrafficLight(currentResult);
 
-        assertNotNull(calcLight); // never null!s
+        assertNotNull(calcLight); // never null!
         assertEquals("calculated light not as expected!", light, calcLight);
 
         return this;

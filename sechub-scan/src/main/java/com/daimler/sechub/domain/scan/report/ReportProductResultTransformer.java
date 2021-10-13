@@ -16,7 +16,7 @@ import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 public interface ReportProductResultTransformer {
 
     /**
-     * Transforms given report product result into common report ransformation
+     * Transforms given report product result into common report transformation
      * result
      * 
      * @param result

@@ -175,7 +175,7 @@ public abstract class AbstractSecHubServerTestScenario implements SecHubServerTe
 				/* ok did not exist before... so no delete possible but still okay */
 			}
 		}
-		TestAPI.assertProject(project).doesNotExist(9); // we try maximum 9x330 millis = ca. 3 seconds
+		TestAPI.assertProject(project).doesNotExist(9); // we try maximum 9x330 millis = approx. 3 seconds
 	}
 
 	private void dropExistingUser(TestUser user) {

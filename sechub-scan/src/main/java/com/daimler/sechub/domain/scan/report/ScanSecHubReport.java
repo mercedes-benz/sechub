@@ -55,11 +55,11 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
             resultType = ScanReportResultType.RESULT;
             LOG.warn("In scan report for job:{} was no result type set, fallback set to:{}", report.getSecHubJobUUID(), resultType);
         }
-        
+
         if (ScanReportResultType.MODEL.equals(resultType)) {
             try {
                 model = SecHubReportModel.fromJSONString(report.getResult());
-                
+
             } catch (JSONConverterException e) {
                 LOG.error("FATAL PROBLEM! Failed to create sechub result by model for job:{}", report.getSecHubJobUUID(), e);
 
@@ -72,14 +72,17 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
 
             model = new SecHubReportModel();
             model.setJobUUID(report.getSecHubJobUUID());
+
             try {
                 model.setResult(SecHubResult.fromJSONString(report.getResult()));
                 model.setStatus(SecHubStatus.SUCCESS);
+
             } catch (JSONConverterException e) {
-                LOG.error("{} FATAL PROBLEM! Failed to create sechub result for origin:\n{}", UUIDTraceLogID.traceLogID(report.getSecHubJobUUID()),
-                        report.getResult());
+                LOG.error("{} FATAL PROBLEM! Failed to set sechub result because of JSON conversion problems. Tried to convert:\n{}",
+                        UUIDTraceLogID.traceLogID(report.getSecHubJobUUID()), report.getResult(), e);
+
                 String info = "Origin result data problems! Please inform administrators about this problem.";
-                SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR,info);
+                SecHubMessage message = new SecHubMessage(SecHubMessageType.ERROR, info);
                 model.getMessages().add(message);
 
                 model.getMessages().add(new SecHubMessage(SecHubMessageType.ERROR, "Internal SecHub failure happend."));

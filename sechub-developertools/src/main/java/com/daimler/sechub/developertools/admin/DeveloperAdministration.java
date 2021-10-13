@@ -529,7 +529,7 @@ public class DeveloperAdministration {
     }
 
     public String assignOwnerToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(projectId, userId));
+        getRestHelper().post(getUrlBuilder().buildAdminChangesProjectOwnerUrl(projectId, userId));
         return "assigned " + userId + " as new owner to project " + projectId;
     }
 

@@ -478,7 +478,7 @@ public class AssertUser extends AbstractAssert {
     }
 
     public AssertUser isNotOwnerOf(TestProject project) {
-        assertProject(project).hasNotOwner(user);  // test project.owener
+        assertProject(project).hasNotOwner(user);  // test project.owner
         assertFalse(checkIsOwnerOfProject(project, fetchUserDetails())); // test user.ownedProjects
         return this;
     }

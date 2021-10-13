@@ -67,12 +67,12 @@ public class ReportTrafficLightCalculatorTest {
     /* +-----------------------------------------------------------------------+ */
 
     @Test
-    public void having_critical_findings_filtering_to_green_returns_only_mpty() {
+    public void having_critical_findings_filtering_to_green_returns_only_empty() {
         assertCalculator(calculatorToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
     }
 
     @Test
-    public void having_critical_findings_filtering_to_yellow_returns_only_mpty() {
+    public void having_critical_findings_filtering_to_yellow_returns_only_empty() {
         assertCalculator(calculatorToTest).withResult(prepareSechubResultWithFindings(Severity.CRITICAL)).isFilteringFindingsTo(TrafficLight.GREEN);
     }
 

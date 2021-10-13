@@ -339,7 +339,7 @@ public class AsUser {
      */
     public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAdminChangesProjectOwnerUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
     }
 

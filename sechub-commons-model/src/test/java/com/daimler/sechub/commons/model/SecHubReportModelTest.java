@@ -17,17 +17,17 @@ class SecHubReportModelTest {
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonNoStatusOrMessages);
-        
+
         /* test */
         assertNotNull(report);
         assertEquals(TrafficLight.RED, report.getTrafficLight());
-        assertEquals(null,report.getStatus());
-        
+        assertEquals(null, report.getStatus());
+
         Set<SecHubMessage> messages = report.getMessages();
         assertNotNull(messages);
         assertTrue(messages.isEmpty());
     }
-    
+
     @Test
     void a_report_without_status_and_messages_can_be_read_and_when_traffic_light_is_green_status_is_ok() {
         /* prepare */
@@ -35,17 +35,17 @@ class SecHubReportModelTest {
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonNoStatusOrMessages);
-        
+
         /* test */
         assertNotNull(report);
         assertEquals(TrafficLight.GREEN, report.getTrafficLight());
         assertEquals(null, report.getStatus());
-        
+
         Set<SecHubMessage> messages = report.getMessages();
         assertNotNull(messages);
         assertTrue(messages.isEmpty());
     }
-    
+
     @Test
     void a_report_with_status_failed_and_messages_can_be_read() {
         /* prepare */
@@ -53,21 +53,21 @@ class SecHubReportModelTest {
 
         /* execute */
         SecHubReportModel report = SecHubReportModel.fromJSONString(jsonWithStatusAndMessages);
-        
+
         /* test */
         assertNotNull(report);
         assertEquals(TrafficLight.GREEN, report.getTrafficLight());
         assertEquals(SecHubStatus.FAILED, report.getStatus());
-        
+
         Set<SecHubMessage> messages = report.getMessages();
         assertNotNull(messages);
         assertFalse(messages.isEmpty());
         assertEquals(1, messages.size());
         SecHubMessage message = messages.iterator().next();
-        
-        assertEquals(SecHubMessageType.ERROR,message.getType());
-        assertEquals("The code scan execution did fail!",message.getText());
-        
+
+        assertEquals(SecHubMessageType.ERROR, message.getType());
+        assertEquals("The code scan execution did fail!", message.getText());
+
     }
 
 }

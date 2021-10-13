@@ -68,7 +68,7 @@ public class ProjectChangeOwnerServiceTest {
         when(newOwner.getProjects()).thenReturn(new HashSet<Project>());
 
         /* execute */
-        serviceToTest.assignOwnerToProject(newOwner.getName(), project1.getId());
+        serviceToTest.changeProjectOwner(newOwner.getName(), project1.getId());
 
         /* test */
         verify(transactionService).saveInOwnTransaction(project1, newOwner, oldOwner);
@@ -91,7 +91,7 @@ public class ProjectChangeOwnerServiceTest {
         /* execute */
         /* test */
         assertThrows(AlreadyExistsException.class, () -> {
-            serviceToTest.assignOwnerToProject(oldOwner.getName(), project1.getId());
+            serviceToTest.changeProjectOwner(oldOwner.getName(), project1.getId());
         });
     }
 

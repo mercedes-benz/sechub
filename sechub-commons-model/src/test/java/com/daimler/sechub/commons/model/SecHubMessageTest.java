@@ -18,7 +18,7 @@ class SecHubMessageTest {
 
         SecHubMessage info1 = new SecHubMessage(SecHubMessageType.INFO, "info1");
         SecHubMessage error1 = new SecHubMessage(SecHubMessageType.ERROR, "error1");
-        SecHubMessage warning1 = new SecHubMessage(SecHubMessageType.WARNING, "error1");
+        SecHubMessage warning1 = new SecHubMessage(SecHubMessageType.WARNING, "warning1");
 
         /* execute + test */
         assertOrderingAsExpected(new TreeSet<>(), new SecHubMessage[] { info1 }, new SecHubMessage[] { info1 });

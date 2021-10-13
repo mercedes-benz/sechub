@@ -9,28 +9,29 @@ import java.io.InputStreamReader;
 public class TestFileReader {
 
     /**
-    *
-    * @param file
-    * @param lineBreak
-    * @return
-    */
-   public static String loadTextFile(File file, String lineBreak) {
-       StringBuilder sb = new StringBuilder();
+     * Load text file
+     * 
+     * @param file
+     * @param lineBreak
+     * @return
+     */
+    public static String loadTextFile(File file, String lineBreak) {
+        StringBuilder sb = new StringBuilder();
 
-       try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-           String line = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+            String line = null;
 
-           boolean firstEntry = true;
-           while ((line = br.readLine()) != null) {
-               if (!firstEntry) {
-                   sb.append(lineBreak);
-               }
-               sb.append(line);
-               firstEntry = false;// this prevents additional line break at end of file...
-           }
-           return sb.toString();
-       } catch (Exception e) {
-           throw new IllegalStateException("Testcase corrupt: Cannot read test file " + file.getAbsolutePath(), e);
-       }
-   }
+            boolean firstEntry = true;
+            while ((line = br.readLine()) != null) {
+                if (!firstEntry) {
+                    sb.append(lineBreak);
+                }
+                sb.append(line);
+                firstEntry = false;// this prevents additional line break at end of file...
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            throw new IllegalStateException("Testcase corrupt: Cannot read test file " + file.getAbsolutePath(), e);
+        }
+    }
 }

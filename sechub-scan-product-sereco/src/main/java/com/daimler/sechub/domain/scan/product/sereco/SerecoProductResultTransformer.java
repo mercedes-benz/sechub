@@ -60,9 +60,9 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         List<SecHubFinding> findings = transformerResult.getResult().getFindings();
 
         int findingId = 0;
-        for (SerecoVulnerability v : data.getVulnerabilities()) {
+        for (SerecoVulnerability vulnerability : data.getVulnerabilities()) {
             findingId++;
-            if (v.isFalsePositive()) {
+            if (vulnerability.isFalsePositive()) {
                 /*
                  * we do not add false positives to report - so we store only real positives.
                  * False positive data is still available in SeReCo results and so in admin scan
@@ -71,18 +71,18 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
                 continue;
             }
             SecHubFinding finding = new SecHubFinding();
-            handleClassifications(finding, v, serecoProductResult.getSecHubJobUUID());
+            handleClassifications(finding, vulnerability, serecoProductResult.getSecHubJobUUID());
 
-            finding.setDescription(v.getDescription());
-            finding.setName(v.getType());
+            finding.setDescription(vulnerability.getDescription());
+            finding.setName(vulnerability.getType());
             finding.setId(findingId);
-            finding.setSeverity(transformSeverity(v.getSeverity()));
+            finding.setSeverity(transformSeverity(vulnerability.getSeverity()));
 
             if (showProductLineResultLink) {
-                finding.setProductResultLink(v.getProductResultLink());
+                finding.setProductResultLink(vulnerability.getProductResultLink());
             }
-            finding.setCode(convert(v.getCode()));
-            finding.setType(v.getScanType());
+            finding.setCode(convert(vulnerability.getCode()));
+            finding.setType(vulnerability.getScanType());
 
             findings.add(finding);
         }

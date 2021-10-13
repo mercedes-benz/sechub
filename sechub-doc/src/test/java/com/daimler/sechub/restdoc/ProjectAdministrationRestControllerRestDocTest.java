@@ -240,9 +240,9 @@ public class ProjectAdministrationRestControllerRestDocTest {
 
     @Test
     @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectOwner.class)
-    public void restdoc_assign_owner2project() throws Exception {
+    public void restdoc_change_project_owner() throws Exception {
         /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAssignsOwnerToProjectUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
+        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectOwnerUrl(USER_ID.pathElement(), PROJECT_ID.pathElement());
         Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
 
         /* execute + test @formatter:off */

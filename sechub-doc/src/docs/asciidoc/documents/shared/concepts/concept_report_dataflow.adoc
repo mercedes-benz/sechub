@@ -4,7 +4,7 @@
 
 ===== Creation of ScanReport entities
 Here a graphical overview how the report data is created by the `ScanService` and 
-finally written as `ScanReport` entity onto DB:
+finally written as `ScanReport` entity into the database:
 
 plantuml::./diagrams/diagram_report_dataflow.plantuml[format=svg, title="Report data flow"] 
 

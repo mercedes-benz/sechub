@@ -6,8 +6,10 @@ import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 /**
  * An enumeration with all currently known products identifiers. If one of the
  * products is no longer supported the identifiers should be marked deprecated
- * but no removed! Do also NOT rename those enums!<br><br>
- * REASON: We use the names inside database for results and as identifiers! So keep as is! 
+ * but no removed! Do also NOT rename those enums!<br>
+ * <br>
+ * REASON: We use the names inside database for results and as identifiers! So
+ * keep as is!
  *
  * @author Albert Tregnaghi
  *
@@ -18,36 +20,42 @@ public enum ProductIdentifier {
     /**
      * Webscanner
      */
-    NETSPARKER,
+    NETSPARKER(ProductType.WEBSCAN),
 
     /**
      * Infrastructure scanner
      */
-    NESSUS,
+    NESSUS(ProductType.INFRASCAN),
 
     /**
      * SERECO = Security report collector
      */
-    SERECO,
+    SERECO(ProductType.REPORT_COLLECTOR),
 
     /**
      * Static code analysis
      */
-    CHECKMARX,
+    CHECKMARX(ProductType.CODESCAN),
 
     /** Product delegation server - code scan */
-    PDS_CODESCAN,
+    PDS_CODESCAN(ProductType.CODESCAN),
 
     /** Product delegation server - web scan */
-    PDS_WEBSCAN,
+    PDS_WEBSCAN(ProductType.WEBSCAN),
 
     /** Product delegation server - infrastructure scan execution */
-    PDS_INFRASCAN,
+    PDS_INFRASCAN(ProductType.INFRASCAN),
 
     ;
 
-    private ProductIdentifier() {
+    private ProductType type;
 
+    private ProductIdentifier(ProductType type) {
+        this.type = type;
+    }
+    
+    public ProductType getType() {
+        return type;
     }
 
 }

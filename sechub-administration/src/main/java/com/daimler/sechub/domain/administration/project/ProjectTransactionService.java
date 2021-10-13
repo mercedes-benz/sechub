@@ -16,64 +16,66 @@ import com.daimler.sechub.domain.administration.user.UserRepository;
 @Service
 public class ProjectTransactionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectTransactionService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectTransactionService.class);
 
-	@Autowired
-	ProjectRepository projectRepository;
-	
-	@Autowired
-	ProjectMetaDataEntityRepository metaDataRepository;
+    @Autowired
+    ProjectRepository projectRepository;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    ProjectMetaDataEntityRepository metaDataRepository;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Project saveInOwnTransaction(Project project) {
-		requireNonNull(project, "Project may not be null!");
+    @Autowired
+    UserRepository userRepository;
 
-		/* store */
-		Project result = projectRepository.save(project);
-		
-		metaDataRepository.saveAll(project.metaData);
-		
-		LOG.debug("Saved project:{}", result.getId());
-		return result;
-	}
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Project saveInOwnTransaction(Project project) {
+        requireNonNull(project, "Project may not be null!");
 
-	/**
-	 * Persists a project, user entity and also project meta data in same (new) transaction
-	 * @param project
-	 * @param users
-	 * @return persisted project
-	 */
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public Project saveInOwnTransaction(Project project, User ... users) {
-		requireNonNull(project, "Project may not be null!");
-		requireNonNull(users, "User may not be null!");
+        /* store */
+        Project result = projectRepository.save(project);
 
-		/* store */
-		Project savedProject = projectRepository.save(project);
-		LOG.debug("Saved project:{}", savedProject.getId());
-		
-		metaDataRepository.saveAll(project.metaData);
-		LOG.debug("Saved metadata for project:{}", savedProject.getId());
+        metaDataRepository.saveAll(project.metaData);
 
-		for (User user: users) {
-		    User savedUser = userRepository.save(user);
-		    LOG.debug("Saved user:{}", savedUser.getName());
-		}
-		
-		return savedProject;
-	}
+        LOG.debug("Saved project:{}", result.getId());
+        return result;
+    }
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void deleteWithAssociationsInOwnTransaction(String projectId) {
-		requireNonNull(projectId, "projectId may not be null!");
+    /**
+     * Persists a project, users and project meta data in same (new)
+     * transaction
+     * 
+     * @param project
+     * @param users
+     * @return persisted project
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Project saveInOwnTransaction(Project project, User... users) {
+        requireNonNull(project, "Project may not be null!");
+        requireNonNull(users, "User may not be null!");
 
-		/* store */
-		projectRepository.deleteProjectWithAssociations(projectId);
+        /* store */
+        Project savedProject = projectRepository.save(project);
+        LOG.debug("Saved project:{}", savedProject.getId());
 
-		LOG.debug("Deleted project:{} with associations", projectId);
-	}
+        metaDataRepository.saveAll(project.metaData);
+        LOG.debug("Saved metadata for project:{}", savedProject.getId());
+
+        for (User user : users) {
+            User savedUser = userRepository.save(user);
+            LOG.debug("Saved user:{}", savedUser.getName());
+        }
+
+        return savedProject;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteWithAssociationsInOwnTransaction(String projectId) {
+        requireNonNull(projectId, "projectId may not be null!");
+
+        /* store */
+        projectRepository.deleteProjectWithAssociations(projectId);
+
+        LOG.debug("Deleted project:{} with associations", projectId);
+    }
 
 }

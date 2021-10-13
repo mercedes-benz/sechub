@@ -43,7 +43,7 @@ public class Workspace {
         this.id = id;
         this.objectMapper = new ObjectMapper();
 
-        // configure. we do NOT want empty or null values inside our JSON any more. So
+        // configure. we do NOT want empty or null values inside our JSON anymore. So
         // easier to read
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setSerializationInclusion(Include.NON_EMPTY);

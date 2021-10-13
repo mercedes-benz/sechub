@@ -18,7 +18,7 @@ public enum ScanReportResultType {
 
     /**
      * The result contains only {@link SecHubResult} - old style which contains no
-     * messages or status information. Will only be used for back ward compatibility
+     * messages or status information. Will only be used for backward compatibility
      * with old reports
      */
     RESULT,

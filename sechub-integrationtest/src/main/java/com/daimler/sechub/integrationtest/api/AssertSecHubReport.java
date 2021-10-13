@@ -218,10 +218,11 @@ public class AssertSecHubReport {
             dump();
             LOG.info("Last ouptput line was:" + lastOutputLIne);
         }
-        assertEquals("Returned traffic light:"+foundTrafficLight+" is  not as expected:"+trafficLight+". See JSON dump in log file for details.", trafficLight, foundTrafficLight);
+        assertEquals("Returned traffic light:" + foundTrafficLight + " is not as expected:" + trafficLight + ". See JSON dump in log file for details.",
+                trafficLight, foundTrafficLight);
         return this;
     }
-    
+
     public AssertSecHubReport hasStatus(SecHubStatus expectedStatus) {
         JsonNode statusNode = jsonObj.get("status");
         if (statusNode == null) {
@@ -233,7 +234,6 @@ public class AssertSecHubReport {
         assertEquals("Status not as expected!", expectedStatus, foundStatus);
         return this;
     }
-
 
     /**
      * Dumps curren json content to log output - just for debugging, do not keep it
@@ -250,5 +250,4 @@ public class AssertSecHubReport {
         return this;
     }
 
-   
 }

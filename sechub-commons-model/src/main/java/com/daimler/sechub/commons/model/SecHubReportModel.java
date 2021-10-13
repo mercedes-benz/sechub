@@ -27,9 +27,12 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
     }
 
     public void setMessages(Set<SecHubMessage> messages) {
-        // we want to have always sorted messages, so we reuse our tree set and not use
+        // We want to have always sorted messages, so we reuse our TreeSet and not use
         // given one
         this.messages.clear();
+        if (messages == null) {
+            return;
+        }
         this.messages.addAll(messages);
     }
 
@@ -70,11 +73,6 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
     }
 
     @Override
-    public String toString() {
-        return "SecHubReport [jobUUID=" + jobUUID + ", trafficLight=" + trafficLight + ", result=" + result + "]";
-    }
-
-    @Override
     public Class<SecHubReportModel> getJSONTargetClass() {
         return SecHubReportModel.class;
     }
@@ -90,7 +88,17 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
 
     @Override
     public void setReportVersion(String version) {
-        this.reportVersion=version;
+        this.reportVersion = version;
     }
 
+    @Override
+    public String toString() {
+        return "SecHubReportModel [" + (jobUUID != null ? "jobUUID=" + jobUUID + ", " : "")
+                + (trafficLight != null ? "trafficLight=" + trafficLight + ", " : "") + (result != null ? "result=" + result + ", " : "")
+                + (status != null ? "status=" + status + ", " : "") + (reportVersion != null ? "reportVersion=" + reportVersion + ", " : "")
+                + (messages != null ? "messages=" + messages : "") + "]";
+    }
+
+    
+    
 }
