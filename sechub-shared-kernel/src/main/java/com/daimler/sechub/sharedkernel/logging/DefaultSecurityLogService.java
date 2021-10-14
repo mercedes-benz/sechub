@@ -157,16 +157,16 @@ public class DefaultSecurityLogService implements SecurityLogService {
         }
         HttpSession session = request.getSession();
         if (session != null) {
-            logContext.sessionId = session.getId();
+            logContext.sessionId = logSanititzer.sanitize(session.getId(),1024);
         }
-        logContext.clientIp = request.getRemoteAddr();
-        logContext.requestURI = request.getRequestURI();
+        logContext.clientIp = logSanititzer.sanitize(request.getRemoteAddr(),1024);
+        logContext.requestURI = logSanititzer.sanitize(request.getRequestURI(),1024);
 
-        appendHttpHeaders(request, logContext);
+        appendSanitizedHttpHeaders(request, logContext);
 
     }
 
-    private void appendHttpHeaders(HttpServletRequest request, SecurityLogData logContext) {
+    private void appendSanitizedHttpHeaders(HttpServletRequest request, SecurityLogData logContext) {
         int amountOfHeadersFound = 0;
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
