@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.configuration;
 
+import com.daimler.sechub.commons.model.AbstractSecHubConfigurationModel;
 import com.daimler.sechub.commons.model.JSONable;
 import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
