@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.configuration;
 
-import static com.daimler.sechub.commons.model.AbstractSecHubConfigurationModel.*;
+import static com.daimler.sechub.commons.model.SecHubConfigurationModel.*;
 
 import java.net.URI;
 import java.util.List;

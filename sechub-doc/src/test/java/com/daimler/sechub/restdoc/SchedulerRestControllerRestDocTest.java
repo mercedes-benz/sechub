@@ -2,7 +2,7 @@
 package com.daimler.sechub.restdoc;
 
 import static com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.*;
-import static com.daimler.sechub.sharedkernel.configuration.AbstractSecHubConfigurationModel.*;
+import static com.daimler.sechub.commons.model.SecHubConfigurationModel.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;

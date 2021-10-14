@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.client.java;
+package com.daimler.sechub.commons.model;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -3,7 +3,7 @@ package com.daimler.sechub.commons.model;
 
 import java.util.Optional;
 
-public abstract class AbstractSecHubConfigurationModel {
+public class SecHubConfigurationModel {
 
 	public static final String PROPERTY_PROJECT_ID = "projectId";
 	public static final String PROPERTY_API_VERSION = "apiVersion";
