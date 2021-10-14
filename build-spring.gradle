@@ -57,7 +57,7 @@ subprojects {
 
             /* when not the kernel project we add kernel testframework as test dependency */
             if (! project.name.equals('sechub-shared-kernel')){
-                testCompile project(':sechub-shared-kernel-testframework')
+                testCompile project(':sechub-commons-model-testframework')
             }
 
             /* REST */

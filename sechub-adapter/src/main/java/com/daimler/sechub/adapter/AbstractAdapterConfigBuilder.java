@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
+import static com.daimler.sechub.adapter.TimeConstants.*;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collections;
@@ -16,8 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.core.security.CryptoAccess;
-
-import static com.daimler.sechub.adapter.TimeConstants.*;
 
 public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> {
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration;
+package com.daimler.sechub.commons.model;
 
 import java.util.ArrayList;
 import java.util.List;

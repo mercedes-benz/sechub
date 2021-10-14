@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration.login;
+package com.daimler.sechub.commons.model.login;
 
 import java.util.List;
 import java.util.Optional;

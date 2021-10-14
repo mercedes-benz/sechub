@@ -17,14 +17,17 @@ import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.commons.model.JSONConverterException;
+import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
+import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
+import com.daimler.sechub.commons.model.login.Action;
+import com.daimler.sechub.commons.model.login.AutoDetectUserLoginConfiguration;
+import com.daimler.sechub.commons.model.login.BasicLoginConfiguration;
+import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
+import com.daimler.sechub.commons.model.login.Page;
+import com.daimler.sechub.commons.model.login.Script;
+import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.SharedKernelTestFileSupport;
-import com.daimler.sechub.sharedkernel.configuration.login.AutoDetectUserLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.BasicLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.Page;
-import com.daimler.sechub.sharedkernel.configuration.login.Script;
-import com.daimler.sechub.sharedkernel.configuration.login.Action;
-import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.test.PojoTester;
 
 public class SecHubConfigurationTest {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration.login;
+package com.daimler.sechub.commons.model.login;
 
 import static org.junit.Assert.*;
 
@@ -8,14 +8,15 @@ import javax.crypto.SealedObject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicLoginConfigurationTest {
 
-	private BasicLoginConfiguration config;
+public class AutoDetectUserLoginConfigurationTest {
+
+	private AutoDetectUserLoginConfiguration config;
 
 	@Before
 	public void before() {
-		/* prepare */
-		config = new BasicLoginConfiguration();
+		/* prepare*/
+		config = new AutoDetectUserLoginConfiguration();
 	}
 
 	@Test
@@ -42,7 +43,7 @@ public class BasicLoginConfigurationTest {
 		config.setPassword("abcdefgh$_ü".toCharArray());
 
 		/* test */
-		assertEquals("abcdefgh$_ü", new String(config.getPassword()));
+		assertEquals("abcdefgh$_ü",new String(config.getPassword()));
 
 	}
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration;
+package com.daimler.sechub.commons.model;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -7,8 +7,9 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.daimler.sechub.sharedkernel.configuration.login.TestWebLoginConfigurationBuilder;
-import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
+import com.daimler.sechub.commons.model.login.TestWebLoginConfigurationBuilder;
+import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
+import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public class TestSecHubConfigurationBuilder {
 

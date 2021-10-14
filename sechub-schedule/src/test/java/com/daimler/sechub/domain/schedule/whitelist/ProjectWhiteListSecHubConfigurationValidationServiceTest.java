@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.schedule.whitelist;
 
-import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.*;
+import static com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 

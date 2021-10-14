@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration;
+package com.daimler.sechub.commons.model;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
+import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
 
 public class SecHubWebScanConfiguration {
 

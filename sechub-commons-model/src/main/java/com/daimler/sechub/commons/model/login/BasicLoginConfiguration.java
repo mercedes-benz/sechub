@@ -1,15 +1,22 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration.login;
+package com.daimler.sechub.commons.model.login;
+
+import java.util.Optional;
 
 import javax.crypto.SealedObject;
 
-import com.daimler.sechub.sharedkernel.SharedKernelCryptoAccess;
+import com.daimler.sechub.commons.core.security.SharedKernelCryptoAccess;
 
-public class AutoDetectUserLoginConfiguration{
-
+public class BasicLoginConfiguration {
 	private SharedKernelCryptoAccess<char[]> cryptoAccess = SharedKernelCryptoAccess.CRYPTO_CHAR_ARRAY;
+
+	private Optional<String> realm;
 	private char[] user;
 	SealedObject password;
+
+	public Optional<String> getRealm() {
+		return realm;
+	}
 
 	public void setUser(char[] user) {
 		this.user = user;

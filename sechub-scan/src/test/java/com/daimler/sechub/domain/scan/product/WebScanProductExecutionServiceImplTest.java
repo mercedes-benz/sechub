@@ -15,12 +15,12 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigRepository;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
+import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 
 public class WebScanProductExecutionServiceImplTest {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel.configuration.login;
+package com.daimler.sechub.commons.model.login;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.SecHubTimeUnit;
-import com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.TestWebConfigurationBuilder;
+import com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.TestWebConfigurationBuilder;
 
 public class TestWebLoginConfigurationBuilder {
 

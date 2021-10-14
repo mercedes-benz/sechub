@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.sharedkernel;
+package com.daimler.sechub.commons.core.security;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
