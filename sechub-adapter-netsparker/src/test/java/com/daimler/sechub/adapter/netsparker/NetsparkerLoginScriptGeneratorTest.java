@@ -10,9 +10,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.LoginScriptAction;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
 
 public class NetsparkerLoginScriptGeneratorTest {
 

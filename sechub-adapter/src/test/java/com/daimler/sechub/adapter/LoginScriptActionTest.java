@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.login.ActionType;
+
 public class LoginScriptActionTest {
 
 	@Test

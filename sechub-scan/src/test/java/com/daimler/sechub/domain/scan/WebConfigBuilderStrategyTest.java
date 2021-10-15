@@ -15,8 +15,8 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.adapter.LoginConfig;
 import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.LoginScriptPage;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 

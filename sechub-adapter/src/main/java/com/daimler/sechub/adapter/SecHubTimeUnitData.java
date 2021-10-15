@@ -3,6 +3,7 @@ package com.daimler.sechub.adapter;
 
 import java.util.Objects;
 
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SecHubTimeUnitData {

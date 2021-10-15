@@ -14,9 +14,9 @@ import org.junit.rules.ExpectedException;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
 /**

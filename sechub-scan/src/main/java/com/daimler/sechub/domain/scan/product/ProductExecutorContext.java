@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product;
 
+import static com.daimler.sechub.sharedkernel.util.Assert.*;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
-import static com.daimler.sechub.sharedkernel.util.Assert.*;
 
 public class ProductExecutorContext {
     

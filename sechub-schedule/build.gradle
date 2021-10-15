@@ -7,8 +7,10 @@
  */
 dependencies {
 
-    compile(library.springboot_starter_batch)
-    compile project(':sechub-shared-kernel')
-    testCompile project(':sechub-testframework')
+    implementation(library.springboot_starter_batch)
+    implementation project(':sechub-shared-kernel')
+    
+    testImplementation project(':sechub-testframework')
+    testImplementation project(':sechub-commons-model-testframework')
 }
 

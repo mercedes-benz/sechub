@@ -3,6 +3,9 @@ package com.daimler.sechub.adapter;
 
 import java.net.URL;
 
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
+
 public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig>
         extends AbstractAdapterConfigBuilder<B, C> {
 

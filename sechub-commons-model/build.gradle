@@ -7,7 +7,9 @@ dependencies{
     compile library.slf4j
     compile project(':sechub-commons-core')
     
-    testCompile library.junit
+    testImplementation library.junit5_impl
+    testRuntimeOnly library.junit5_runtime
+    
     testCompile library.mockito
     testCompile library.hamcrest
 }
