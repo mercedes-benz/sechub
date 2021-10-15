@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.domain.schedule.whitelist.ProjectWhitelistEntry.ProjectWhiteListEntryCompositeKey;
-import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.logging.LogSanitizer;
 
@@ -35,7 +35,7 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 	@Autowired
 	LogSanitizer logSanitizer;
 
-	public void assertAllowedForProject(SecHubConfiguration configuration) {
+	public void assertAllowedForProject(SecHubConfigurationModel configuration) {
 		List<URI> allowed = fetchAllowedUris(configuration);
 
 		Optional<SecHubInfrastructureScanConfiguration> infrascanOpt = configuration.getInfraScan();
@@ -72,7 +72,7 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 		}
 	}
 
-	private List<URI> fetchAllowedUris(SecHubConfiguration configuration) {
+	private List<URI> fetchAllowedUris(SecHubConfigurationModel configuration) {
 		List<ProjectWhitelistEntry> whiteListEntries = projectWhiteListEntryRepository.fetchWhiteListEntriesForProject(configuration.getProjectId());
 		List<URI> list = new ArrayList<>();
 		for (ProjectWhitelistEntry entry: whiteListEntries) {

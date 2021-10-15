@@ -40,13 +40,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
-import com.daimler.sechub.adapter.ActionType;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.SecHubCodeScanConfiguration;
 import com.daimler.sechub.commons.model.SecHubFileSystemConfiguration;
 import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.commons.model.login.ActionType;
 import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
 import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
 import com.daimler.sechub.docgen.util.RestDocFactory;

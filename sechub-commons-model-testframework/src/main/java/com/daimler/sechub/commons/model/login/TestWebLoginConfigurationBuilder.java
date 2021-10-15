@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.daimler.sechub.adapter.ActionType;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.TestWebConfigurationBuilder;
 
 public class TestWebLoginConfigurationBuilder {

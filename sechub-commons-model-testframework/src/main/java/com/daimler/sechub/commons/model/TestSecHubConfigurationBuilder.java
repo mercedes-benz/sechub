@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import com.daimler.sechub.commons.model.login.TestWebLoginConfigurationBuilder;
 import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public class TestSecHubConfigurationBuilder {
 
@@ -23,8 +22,8 @@ public class TestSecHubConfigurationBuilder {
 		this.data = new Data();
 	}
 
-	public SecHubConfiguration build() {
-		SecHubConfiguration result = new SecHubConfiguration();
+	public SecHubScanConfiguration build() {
+	    SecHubScanConfiguration result = new SecHubScanConfiguration();
 		
 		result.setApiVersion(data.version);
 		result.setInfraScan(data.infraConfig);
@@ -57,7 +56,7 @@ public class TestSecHubConfigurationBuilder {
 		private TestWebConfigurationBuilder() {
 			TestSecHubConfigurationBuilder.this.data.webConfig=new SecHubWebScanConfiguration();
 		}
-		public SecHubConfiguration build() {
+		public SecHubScanConfiguration build() {
 			return TestSecHubConfigurationBuilder.this.build();
 		}
 		
@@ -94,7 +93,7 @@ public class TestSecHubConfigurationBuilder {
 		private TestCodeSCanConfigurationBuilder() {
 			TestSecHubConfigurationBuilder.this.data.codeScanConfig=new SecHubCodeScanConfiguration();
 		}
-		public SecHubConfiguration build() {
+		public SecHubScanConfiguration build() {
 			return TestSecHubConfigurationBuilder.this.build();
 		}
 		
@@ -118,7 +117,7 @@ public class TestSecHubConfigurationBuilder {
 		private TestInfraConfigurationBuilder() {
 			TestSecHubConfigurationBuilder.this.data.infraConfig=new SecHubInfrastructureScanConfiguration();
 		}
-		public SecHubConfiguration build() {
+		public SecHubScanConfiguration build() {
 			return TestSecHubConfigurationBuilder.this.build();
 		}
 		

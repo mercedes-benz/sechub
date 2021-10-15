@@ -6,7 +6,5 @@
  * ============================================================================
  */
 dependencies {
-        compile project(':sechub-shared-kernel')
-        compile project(':sechub-testframework')
+   implementation project(':sechub-commons-model')
 }
-

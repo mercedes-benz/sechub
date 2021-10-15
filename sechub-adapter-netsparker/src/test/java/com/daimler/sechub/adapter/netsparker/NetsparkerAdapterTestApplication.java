@@ -7,12 +7,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.AdapterMetaData;
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.netsparker.NetsparkerConfig.NetsparkerConfigBuilder;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
 
 /**
  * A simple java application to test netsparker adapter

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.adapter;
+package com.daimler.sechub.commons.model.login;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

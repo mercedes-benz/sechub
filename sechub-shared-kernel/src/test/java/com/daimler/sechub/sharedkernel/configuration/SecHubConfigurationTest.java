@@ -13,14 +13,14 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.adapter.ActionType;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.JSONConverter;
 import com.daimler.sechub.commons.model.JSONConverterException;
 import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.WebScanDurationConfiguration;
 import com.daimler.sechub.commons.model.login.Action;
+import com.daimler.sechub.commons.model.login.ActionType;
 import com.daimler.sechub.commons.model.login.AutoDetectUserLoginConfiguration;
 import com.daimler.sechub.commons.model.login.BasicLoginConfiguration;
 import com.daimler.sechub.commons.model.login.FormLoginConfiguration;

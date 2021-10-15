@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.commons.model;
 
-import com.daimler.sechub.adapter.SecHubTimeUnit;
-
 public class WebScanDurationConfiguration {
     private int duration;
     private SecHubTimeUnit unit;

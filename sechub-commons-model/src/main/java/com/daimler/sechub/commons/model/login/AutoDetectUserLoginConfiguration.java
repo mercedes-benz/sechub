@@ -3,11 +3,11 @@ package com.daimler.sechub.commons.model.login;
 
 import javax.crypto.SealedObject;
 
-import com.daimler.sechub.commons.core.security.SharedKernelCryptoAccess;
+import com.daimler.sechub.commons.core.security.CryptoAccess;
 
 public class AutoDetectUserLoginConfiguration{
 
-	private SharedKernelCryptoAccess<char[]> cryptoAccess = SharedKernelCryptoAccess.CRYPTO_CHAR_ARRAY;
+	private CryptoAccess<char[]> cryptoAccess = CryptoAccess.CRYPTO_CHAR_ARRAY;
 	private char[] user;
 	SealedObject password;
 

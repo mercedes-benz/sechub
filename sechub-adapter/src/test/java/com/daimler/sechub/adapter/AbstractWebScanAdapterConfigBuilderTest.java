@@ -10,6 +10,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
+
 public class AbstractWebScanAdapterConfigBuilderTest {
 
     @Test

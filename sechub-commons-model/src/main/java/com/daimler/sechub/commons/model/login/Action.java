@@ -3,8 +3,7 @@ package com.daimler.sechub.commons.model.login;
 
 import java.util.Optional;
 
-import com.daimler.sechub.adapter.ActionType;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
 
 public class Action {
 

@@ -55,11 +55,6 @@ subprojects {
             compile(library.springboot_starter_validation)
             testCompile project(':sechub-testframework')
 
-            /* when not the kernel project we add kernel testframework as test dependency */
-            if (! project.name.equals('sechub-shared-kernel')){
-                testCompile project(':sechub-commons-model-testframework')
-            }
-
             /* REST */
             compile(library.jackson_JDK8)
 
