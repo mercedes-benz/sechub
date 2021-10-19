@@ -10,7 +10,7 @@ dependencies{
     api library.jackson_JDK8
     api library.slf4j
     
-    implementation project(':sechub-commons-core')
+    api project(':sechub-commons-core')
     
     testImplementation library.junit5_impl
     testRuntimeOnly library.junit5_runtime
