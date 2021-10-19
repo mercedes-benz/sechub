@@ -47,8 +47,16 @@ public enum PDSConfigDataKeyProvider implements PDSSecHubConfigDataKeyProvider<P
      */
     PDS_SECHUB_STORAGE_PATH(new PDSConfigDataKey(PDSAdapterConstants.PARAM_KEY_SECHUB_STORAGE_PATH,
             "This conains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
-                    .markGenerated())
+                    .markGenerated()),
 
+    /**
+     * This is automatically given to PDS by SecHub (depending on type type. E.g. for a webscan this will be used to
+     * identify the current webscan target URL to start scanning.) 
+     */
+    PDS_TARGET_URL(new PDSConfigDataKey(PDSAdapterConstants.PARAM_KEY_TARGET_URL,
+            "This conains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
+                    .markGenerated())
+    
     ;
 
     private PDSConfigDataKey key;

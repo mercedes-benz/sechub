@@ -11,6 +11,8 @@ public class PDSAdapterConstants {
 
     public static final String PARAM_KEY_TARGET_TYPE = "pds.scan.target.type";
 
+    public static final String PARAM_KEY_TARGET_URL = "pds.config.target.url";
+
     public static final String METADATA_KEY_FILEUPLOAD_DONE = "pds.metadata.fileupload.done";
 
     public static final String PARAM_KEY_PRODUCT_IDENTIFIER = "pds.config.productidentifier";
@@ -18,4 +20,5 @@ public class PDSAdapterConstants {
     public static final String PARAM_KEY_USE_SECHUB_STORAGE = "pds.config.use.sechub.storage";
     
     public static final String PARAM_KEY_SECHUB_STORAGE_PATH = "pds.config.sechub.storage.path";
+
 }

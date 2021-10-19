@@ -74,6 +74,8 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
             jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_URL, config.getTargetAsString());
+            
             config.pdsProductIdentifier=pdsProductIdentifier;
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
             
