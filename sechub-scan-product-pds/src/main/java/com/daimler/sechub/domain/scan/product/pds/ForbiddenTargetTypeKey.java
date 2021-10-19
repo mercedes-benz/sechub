@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.product.pds;
 
+import com.daimler.sechub.commons.pds.AbstractPDSKey;
 import com.daimler.sechub.domain.scan.TargetType;
 
-public class PDSForbiddenTargetTypeInputKey extends PDSProductExecutorKey {
+public class ForbiddenTargetTypeKey extends AbstractPDSKey<SecHubProductExecutionPDSKey> implements SecHubProductExecutionPDSKey {
 
     private TargetType forbiddenTargetType;
 
-    PDSForbiddenTargetTypeInputKey(String id, String description, TargetType forbiddenTargetType) {
+    ForbiddenTargetTypeKey(String id, String description, TargetType forbiddenTargetType) {
         super(id, description);
         this.forbiddenTargetType = forbiddenTargetType;
     }

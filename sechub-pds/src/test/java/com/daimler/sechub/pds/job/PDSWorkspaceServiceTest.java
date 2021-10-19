@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.daimler.sechub.pds.execution.PDSExecutionParameterEntry;
 import com.daimler.sechub.pds.storage.PDSMultiStorageService;
 import com.daimler.sechub.pds.storage.PDSStorageInfoCollector;
@@ -71,8 +72,8 @@ class PDSWorkspaceServiceTest {
         UUID secHubJobUUID = UUID.randomUUID();
 
         PDSJobConfiguration config = new PDSJobConfiguration();
-        config.getParameters().add(createEntry(PDSJobConfigurationSupport.PARAM_KEY_USE_SECHUB_STORAGE,"true"));
-        config.getParameters().add(createEntry(PDSJobConfigurationSupport.PARAM_KEY_SECHUB_STORAGE_PATH,"xyz/abc/project1"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE,"true"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_STORAGE_PATH,"xyz/abc/project1"));
         config.setSechubJobUUID(secHubJobUUID);
 
         when(storage.listNames()).thenReturn(Collections.singleton("something.zip"));

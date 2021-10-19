@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
+import com.daimler.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants;
 import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
@@ -117,11 +119,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
         boolean useSecHubStorage = storageType == StorageType.REUSE_SECHUB_DATA;
 
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
-        jobParameters.add(new TestExecutorSetupJobParam("pds.config.productidentifier", productIdentifierId));
-        jobParameters.add(new TestExecutorSetupJobParam("pds.config.use.sechub.storage", Boolean.valueOf(useSecHubStorage).toString()));
+        jobParameters.add(new TestExecutorSetupJobParam(PDSDefaultParameterKeyConstants.PARAM_KEY_PRODUCT_IDENTIFIER, productIdentifierId));
+        jobParameters.add(new TestExecutorSetupJobParam(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE, Boolean.valueOf(useSecHubStorage).toString()));
 
-        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.trustall.certificates", "true")); // accept self signed certificates for testing
-        jobParameters.add(new TestExecutorSetupJobParam("pds.productexecutor.timetowait.nextcheck.milliseconds", "500")); // speed up tests...
+        jobParameters.add(new TestExecutorSetupJobParam(PDSProductExecutorKeyConstants.TRUST_ALL_CERTIFICATES, "true")); // accept self signed certificates for testing
+        jobParameters.add(new TestExecutorSetupJobParam(PDSProductExecutorKeyConstants.TIME_TO_WAIT_NEXT_CHECK_MILLIS, "500")); // speed up tests...
 
         jobParameters.add(new TestExecutorSetupJobParam("product1.qualititycheck.enabled", "true")); // mandatory from PDS integration test server
         jobParameters.add(new TestExecutorSetupJobParam("product1.level", VALUE_PRODUCT_LEVEL)); // mandatory from PDS integration test server

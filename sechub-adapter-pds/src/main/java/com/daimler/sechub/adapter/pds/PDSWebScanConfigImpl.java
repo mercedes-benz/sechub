@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig{
 
@@ -73,8 +74,8 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
-            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_URL, config.getTargetAsString());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_URL, config.getTargetAsString());
             
             config.pdsProductIdentifier=pdsProductIdentifier;
             config.jobParameters=Collections.unmodifiableMap(jobParameters);

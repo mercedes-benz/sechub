@@ -40,7 +40,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
     @Autowired
     SystemEnvironment systemEnvironment;
-    
+
     @Override
     protected PDSInstallSetup getInstallSetup() {
         return installSetup;
@@ -49,9 +49,10 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     @Override
     protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
             TargetRegistryInfo info) throws Exception {
-        
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
-        
+
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {
             /* no targets defined */
@@ -64,7 +65,6 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         }
         LOG.debug("Trigger PDS adapter execution for target {} ", targetType);
 
-        
         List<ProductResult> results = new ArrayList<>();
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());

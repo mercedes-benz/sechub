@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.daimler.sechub.adapter.AdapterMetaDataCallback;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.daimler.sechub.test.TestPortProvider;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -54,7 +55,7 @@ public class PDSAdapterV1WireMockTest {
     @Test
     public void when_pds_config_use_sechub_store_not_set__upload_is_called() throws Exception {
         /* @formatter:off */
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE,"");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE,"");
         
         /* prepare */
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
@@ -86,8 +87,8 @@ public class PDSAdapterV1WireMockTest {
         /* @formatter:off */
         
         /* prepare */
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE,"");
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE,"false");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE,"");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE,"false");
         
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).
                 simulateJobCanBeCreated(sechubJobUUID,productIdentifier,expectedJobParameters).
@@ -116,8 +117,8 @@ public class PDSAdapterV1WireMockTest {
         /* @formatter:off */
         
         /* prepare */
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE,"");
-        expectedJobParameters.put(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE,"true");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE,"");
+        expectedJobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE,"true");
         
         
         PDSWiremockTestSupport testSupport = PDSWiremockTestSupport.builder(wireMockRule).

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig{
 
@@ -38,7 +39,7 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
         
         @Override
         protected void customBuild(PDSInfraScanConfigImpl config) {
-            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID=sechubJobUUID;
             config.pdsProductIdentifier=pdsProductIdentifier;

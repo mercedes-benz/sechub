@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
+
 class PDSConfigDataKeyProviderTest {
 
     @Test

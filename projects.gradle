@@ -13,6 +13,7 @@ projectType = [
                project(':sechub-commons-core'),
                project(':sechub-commons-model'),
                project(':sechub-commons-model-testframework'),
+               project(':sechub-commons-pds'),
                project(':sechub-storage-core'),
                
             ],

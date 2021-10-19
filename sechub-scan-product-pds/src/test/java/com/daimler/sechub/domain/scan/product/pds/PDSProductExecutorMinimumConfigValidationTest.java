@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.pds.RuntimeEnvironmentKey;
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
@@ -90,14 +92,14 @@ public class PDSProductExecutorMinimumConfigValidationTest {
     private ProductExecutorConfig createConfigWithAllMandatoryParametersSetWith(String value) {
         ProductExecutorConfig config = createConfigWithNoParametersSet();
         List<ProductExecutorConfigSetupJobParameter> params = config.getSetup().getJobParameters();
-        for (PDSProductExecutorKeyProvider k : PDSProductExecutorKeyProvider.values()) {
-            PDSProductExecutorKey key = k.getKey();
+        for (SecHubProductExecutionPDSKeyProvider k : SecHubProductExecutionPDSKeyProvider.values()) {
+            SecHubProductExecutionPDSKey key = k.getKey();
             if (key.isMandatory()) {
                 params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }
         }
         for (PDSConfigDataKeyProvider k : PDSConfigDataKeyProvider.values()) {
-            PDSConfigDataKey key = k.getKey();
+            RuntimeEnvironmentKey key = k.getKey();
             if (key.isMandatory()) {
                 params.add(new ProductExecutorConfigSetupJobParameter(key.getId(),value));
             }

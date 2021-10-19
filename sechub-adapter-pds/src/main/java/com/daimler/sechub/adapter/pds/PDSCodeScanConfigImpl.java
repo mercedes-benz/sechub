@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig implements PDSCodeScanConfig{
 
@@ -76,7 +77,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum=sourceZipFileChecksum;
             
-            jobParameters.put(PDSAdapterConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID=sechubJobUUID;
             config.pdsProductIdentifier=pdsProductIdentifier;

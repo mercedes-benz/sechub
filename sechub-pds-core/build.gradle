@@ -7,14 +7,15 @@
  */
 dependencies {
 
-    compile library.springboot_starter_web  // so we got same jackson dependency...
-    compile library.apache_commons_io
+    implementation library.springboot_starter_web  // so we got same jackson dependency...
+    implementation library.apache_commons_io
 
     /* add storage - this is a complete  autark sechub library without any transitive dependencies to sechub */    
-    compile project(':sechub-storage-sharedvolume-spring')
-    compile project(':sechub-storage-s3-aws')
+    implementation project(':sechub-storage-sharedvolume-spring')
+    implementation project(':sechub-storage-s3-aws')
+    implementation project(':sechub-commons-pds')
     
-    testCompile project(':sechub-testframework') // testframework has no dependencies or page effects, so we can use the lib for testing
+    testImplementation project(':sechub-testframework') // testframework has no dependencies or page effects, so we can use the lib for testing
     
 }
 
