@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.domain.scan.InstallSetup;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
 
 public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements WebScanProductExecutor {
 

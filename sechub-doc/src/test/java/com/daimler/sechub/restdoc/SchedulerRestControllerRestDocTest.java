@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.restdoc;
 
-import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.*;
-import static com.daimler.sechub.sharedkernel.configuration.TestSecHubConfigurationBuilder.*;
+import static com.daimler.sechub.commons.model.TestSecHubConfigurationBuilder.*;
+import static com.daimler.sechub.commons.model.SecHubConfigurationModel.*;
 import static com.daimler.sechub.test.TestURLBuilder.*;
 import static com.daimler.sechub.test.TestURLBuilder.RestDocPathParameter.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.InputStream;
@@ -39,9 +40,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StringUtils;
 
-import com.daimler.sechub.adapter.ActionType;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubFileSystemConfiguration;
+import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.commons.model.TrafficLight;
+import com.daimler.sechub.commons.model.login.ActionType;
+import com.daimler.sechub.commons.model.login.FormLoginConfiguration;
+import com.daimler.sechub.commons.model.login.WebLoginConfiguration;
 import com.daimler.sechub.docgen.util.RestDocFactory;
 import com.daimler.sechub.docgen.util.RestDocTestFileSupport;
 import com.daimler.sechub.domain.schedule.ExecutionResult;
@@ -60,14 +67,8 @@ import com.daimler.sechub.domain.schedule.job.ScheduleSecHubJob;
 import com.daimler.sechub.domain.schedule.job.SecHubJobRepository;
 import com.daimler.sechub.sharedkernel.Profiles;
 import com.daimler.sechub.sharedkernel.configuration.AbstractAllowSecHubAPISecurityConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubCodeScanConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfigurationValidator;
-import com.daimler.sechub.sharedkernel.configuration.SecHubFileSystemConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubWebScanConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.FormLoginConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.login.WebLoginConfiguration;
 import com.daimler.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserApprovesJob;
 import com.daimler.sechub.sharedkernel.usecases.user.execute.UseCaseUserChecksJobStatus;

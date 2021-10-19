@@ -1,25 +1,32 @@
 #!/usr/bin/env bash
 
 file_to_upload="$1"
-retries=20
+json_config="$2"
 
 function usage() {
     local script_name=
-    echo "`basename $0` <file-to-upload>"
+    echo "`basename $0` <file-to-upload> [<job-configuration-file>]"
     echo ""
     
     cat <<'USAGE'
-Please set the environment variables:
+# Please set the environment variables:
 
 export PDS_SERVER=https://<server>:<port>
 export PDS_USERID=<username>
 export PDS_APITOKEN=<password>
+export PDS_PRODUCT_IDENTFIER=<pds-product-identifier>
 
-Example:
+optional:
+
+export RETRIES=<number-of-retries>
+
+
+# Example:
 
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_GOSEC
 USAGE
 }
 
@@ -39,7 +46,9 @@ function parameter_missing() {
     MESSAGE="$1"
 
     printf "[ERROR] $MESSAGE\n"
+
     usage
+
     exit 1
 }
 
@@ -58,6 +67,18 @@ then
     parameter_missing "Environment variable PDS_APITOKEN missing."
 fi
 
+if [[ -z "$PDS_PRODUCT_IDENTFIER" ]]
+then
+    parameter_missing "Environment variable PDS_PRODUCT_IDENTFIER missing."
+fi
+
+if [[ ! -z "$RETRIES" ]]
+then
+    retries=$RETRIES
+else
+    retries=20
+fi
+
 if [[ -z "$file_to_upload" ]]
 then
     parameter_missing "Please provide a file to upload."
@@ -66,6 +87,17 @@ fi
 if [[ ! -f "$file_to_upload" ]]
 then
     parameter_missing "File $file_to_upload does not exist."
+fi
+
+if [[ ! -z "$json_config" ]]
+then
+    echo "JSON job configuration provided."
+    
+    if [[ ! -f "$json_config" ]]
+    then
+        echo "File $json_config does not exist."
+        exit 1
+    fi
 fi
 
 pds_api="../../sechub-developertools/scripts/pds-api.sh"
@@ -80,7 +112,13 @@ then
 fi
 
 sechub_job_uuid=`uuidgen`
-jobUUID=`$pds_api create_job PDS_GOSEC "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
+
+if [[ ! -z "$json_config" ]]
+then
+    jobUUID=`$pds_api create_job_from_json "$json_config" | jq '.jobUUID' | tr -d \"`
+else
+    jobUUID=`$pds_api create_job "$PDS_PRODUCT_IDENTFIER" "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
+fi
 
 echo "Job created. Job UUID: $jobUUID."
 
