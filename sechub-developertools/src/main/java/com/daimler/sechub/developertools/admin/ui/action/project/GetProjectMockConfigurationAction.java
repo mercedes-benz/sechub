@@ -26,7 +26,7 @@ public class GetProjectMockConfigurationAction extends AbstractUIAction {
 		}
 		DeveloperAdministration administration = getContext().getAdministration();
 		String url = administration.getUrlBuilder().buildGetProjectMockConfiguration(asSecHubId(projectId.get()));
-		String json = administration.getRestHelper().getJSon(url);
+		String json = administration.getRestHelper().getJSON(url);
 		getContext().getOutputUI().output(JSONDeveloperHelper.INSTANCE.beatuifyJSON(json));
 
 	}

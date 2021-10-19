@@ -62,3 +62,10 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "f" ]]; then
     errEcho "ERRORS3"
     
 fi
+
+if [[ "$PDS_TEST_KEY_VARIANTNAME" = "g" ]]; then
+    errEcho $(date)
+    errEcho "ERROR message before doing an exit 1..."
+    exit 1
+    
+fi

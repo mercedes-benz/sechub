@@ -9,7 +9,7 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.error.NotAcceptableException;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 
@@ -26,10 +26,10 @@ public class FalsePositiveJobDataConfigMerger {
 
     private static final Logger LOG = LoggerFactory.getLogger(FalsePositiveJobDataConfigMerger.class);
 
-    public void addJobDataWithMetaDataToConfig(ScanReportResult scanReportResult, FalsePositiveProjectConfiguration config,
+    public void addJobDataWithMetaDataToConfig(ScanSecHubReport report, FalsePositiveProjectConfiguration config,
             FalsePositiveJobData falsePositiveJobData, String author) {
 
-        SecHubFinding finding = fetchFindingInReportOrFail(scanReportResult, falsePositiveJobData);
+        SecHubFinding finding = fetchFindingInReportOrFail(report, falsePositiveJobData);
 
         FalsePositiveEntry existingEntry = findExistingFalsePositiveEntryInConfig(config, falsePositiveJobData);
         if (existingEntry != null) {
@@ -141,8 +141,8 @@ public class FalsePositiveJobDataConfigMerger {
         return null;
     }
 
-    private SecHubFinding fetchFindingInReportOrFail(ScanReportResult scanReportResult, FalsePositiveJobData falsePositiveJobData) {
-        SecHubResult result = scanReportResult.getResult();
+    private SecHubFinding fetchFindingInReportOrFail(ScanSecHubReport report, FalsePositiveJobData falsePositiveJobData) {
+        SecHubResult result = report.getResult();
 
         for (SecHubFinding finding : result.getFindings()) {
             if (finding.getId() == falsePositiveJobData.getFindingId()) {
@@ -150,7 +150,7 @@ public class FalsePositiveJobDataConfigMerger {
             }
         }
         throw new NotFoundException(
-                "No finding with id:" + falsePositiveJobData.getFindingId() + " found inside report for job:" + scanReportResult.getJobUUID());
+                "No finding with id:" + falsePositiveJobData.getFindingId() + " found inside report for job:" + report.getJobUUID());
     }
 
 }

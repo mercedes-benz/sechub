@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 
@@ -41,27 +41,27 @@ public class HTMLScanResultReportModelBuilder {
     @Autowired
     ScanReportTrafficLightCalculator trafficLightCalculator;
 
-    public Map<String, Object> build(ScanReportResult scanResult) {
-        String trafficLight = scanResult.getTrafficLight();
+    public Map<String, Object> build(ScanSecHubReport report) {
+        TrafficLight trafficLight = report.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;
         String styleYellow = HIDE_LIGHT;
         String styleGreen = HIDE_LIGHT;
 
         switch (trafficLight) {
-        case "RED":
+        case RED:
             styleRed = SHOW_LIGHT;
             break;
-        case "YELLOW":
+        case YELLOW:
             styleYellow = SHOW_LIGHT;
             break;
-        case "GREEN":
+        case GREEN:
             styleGreen = SHOW_LIGHT;
             break;
         default:
         }
         HtmlCodeScanDescriptionSupport codeScanSupport = new HtmlCodeScanDescriptionSupport();
-        SecHubResult result = scanResult.getResult();
+        SecHubResult result = report.getResult();
 
         Map<Integer, List<HTMLScanResultCodeScanEntry>> codeScanEntries = new HashMap<>();
         for (SecHubFinding finding : result.getFindings()) {
@@ -69,12 +69,12 @@ public class HTMLScanResultReportModelBuilder {
         }
 
         Map<String, Object> model = new HashMap<>();
-        model.put("result", scanResult.getResult());
+        model.put("result", report.getResult());
         model.put("redList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.RED));
         model.put("yellowList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.YELLOW));
         model.put("greenList", trafficLightCalculator.filterFindingsFor(result, TrafficLight.GREEN));
 
-        model.put("trafficlight", trafficLight);
+        model.put("trafficlight", trafficLight.name());
 
         model.put("styleRed", styleRed);
         model.put("styleYellow", styleYellow);
@@ -98,14 +98,12 @@ public class HTMLScanResultReportModelBuilder {
                 LOG.error("Was not able get file from resource:{}", cssResource, e);
             }
         }
-        UUID jobUUID = scanResult.getJobUUID();
+        UUID jobUUID = report.getJobUUID();
         if (jobUUID != null) {
             model.put("jobuuid", jobUUID.toString());
         } else {
             model.put("jobuuid", "none");
         }
-        model.put("info", scanResult.getInfo());
-
         return model;
     }
 }

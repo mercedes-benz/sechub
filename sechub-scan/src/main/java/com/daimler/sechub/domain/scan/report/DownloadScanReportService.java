@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.domain.scan.ScanAssertService;
-import com.daimler.sechub.domain.scan.SecHubResultService;
+import com.daimler.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.daimler.sechub.sharedkernel.Step;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
@@ -21,7 +21,7 @@ public class DownloadScanReportService {
     ScanAssertService scanAssertService;
 
     @Autowired
-    SecHubResultService secHubResultService;
+    SecHubReportProductTransformerService secHubResultService;
 
     @Autowired
     ScanReportRepository reportRepository;
@@ -32,15 +32,8 @@ public class DownloadScanReportService {
     @Autowired
     UserInputAssertion assertion;
 
-    /**
-     * There must be a a security check because useable from outside
-     * 
-     * @param projectId
-     * @param jobUUID
-     * @return
-     */
     @UseCaseUserDownloadsJobReport(@Step(number = 3, name = "Resolve scan report result"))
-    public ScanReportResult getScanReportResult(String projectId, UUID jobUUID) {
+    public ScanSecHubReport getScanSecHubReport(String projectId, UUID jobUUID) {
         /* validate */
         assertion.isValidProjectId(projectId);
         assertion.isValidJobUUID(jobUUID);
@@ -59,7 +52,7 @@ public class DownloadScanReportService {
         }
         scanAssertService.assertUserHasAccessToReport(report);
 
-        return new ScanReportResult(report);
+        return new ScanSecHubReport(report);
     }
 
 }

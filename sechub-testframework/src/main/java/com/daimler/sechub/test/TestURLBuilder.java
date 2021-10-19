@@ -343,7 +343,7 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
     
-    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
+    public String buildAdminChangesProjectOwnerUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
     }
     

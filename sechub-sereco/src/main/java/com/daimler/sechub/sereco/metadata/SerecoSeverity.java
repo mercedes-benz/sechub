@@ -3,17 +3,19 @@ package com.daimler.sechub.sereco.metadata;
 
 public enum SerecoSeverity {
 	
-	INFO, // like faraday: info
+	INFO, 
 
-	UNCLASSIFIED, // like faraday: unclassfiied
+	UNCLASSIFIED, 
 
-	LOW, // like faraday: low
+	LOW, 
 
-	MEDIUM, // like faraday: low
+	MEDIUM, 
 
-	HIGH, // like faraday: high
+	HIGH, 
 
-	CRITICAL,;
+	CRITICAL,
+	
+	;
 
 	/**
 	 * Returns severity or <code>null</code> for given string.

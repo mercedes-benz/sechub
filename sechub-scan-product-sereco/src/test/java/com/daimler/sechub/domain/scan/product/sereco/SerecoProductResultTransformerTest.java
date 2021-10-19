@@ -16,6 +16,7 @@ import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.AssertSecHubResult;
+import com.daimler.sechub.domain.scan.ReportTransformationResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
@@ -25,13 +26,13 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
-public class SerecoReportToSecHubResultTransformerTest {
+public class SerecoProductResultTransformerTest {
 
-    private SerecoReportToSecHubResultTransformer transformerToTest;
+    private SerecoProductResultTransformer transformerToTest;
 
     @Before
     public void before() {
-        transformerToTest = new SerecoReportToSecHubResultTransformer();
+        transformerToTest = new SerecoProductResultTransformer();
         transformerToTest.falsePositiveMarker = mock(SerecoFalsePositiveMarker.class);
     }
 
@@ -41,10 +42,10 @@ public class SerecoReportToSecHubResultTransformerTest {
         String converted = createMetaDataWithOneVulnerabilityFound();
 
         /* execute */
-        SecHubResult result = transformerToTest.transform(createProductResult(converted));
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        AssertSecHubResult.assertSecHubResult(result).hasFindings(1);
+        AssertSecHubResult.assertSecHubResult(result.getResult()).hasFindings(1);
     }
 
     private ProductResult createProductResult(String converted) {
@@ -58,15 +59,16 @@ public class SerecoReportToSecHubResultTransformerTest {
         String converted = createMetaDataWithOneVulnerabilityAsCodeFound();
 
         /* execute */
-        SecHubResult result = transformerToTest.transform(createProductResult(converted));
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
-        for (SecHubFinding f : result.getFindings()) {
-            assertEquals(ScanType.CODE_SCAN, f.getType());
+        SecHubResult sechubResult = result.getResult();
+        for (SecHubFinding finding : sechubResult.getFindings()) {
+            assertEquals(ScanType.CODE_SCAN, finding.getType());
         }
 
-        AssertSecHubResult.assertSecHubResult(result).hasFindings(1);
-        SecHubFinding finding1 = result.getFindings().get(0);
+        AssertSecHubResult.assertSecHubResult(sechubResult).hasFindings(1);
+        SecHubFinding finding1 = sechubResult.getFindings().get(0);
 
         SecHubCodeCallStack code1 = finding1.getCode();
         assertNotNull(code1);
@@ -92,14 +94,14 @@ public class SerecoReportToSecHubResultTransformerTest {
         String converted = createMetaDataWithOneVulnerabilityFound();
 
         /* execute */
-        SecHubResult result = transformerToTest.transform(createProductResult(converted));
+        ReportTransformationResult result = transformerToTest.transform(createProductResult(converted));
 
         /* test */
         /* @formatter:off */
-		for (SecHubFinding f: result.getFindings()) {
+		for (SecHubFinding f: result.getResult().getFindings()) {
             assertEquals(ScanType.WEB_SCAN,f.getType());
         }
-		AssertSecHubResult.assertSecHubResult(result).
+		AssertSecHubResult.assertSecHubResult(result.getResult()).
 			hasFindingWithId(1).
 				hasDescription("desc1").
 				hasSeverity(com.daimler.sechub.commons.model.Severity.MEDIUM).

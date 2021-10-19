@@ -18,6 +18,13 @@ public class TrafficLightTest {
 			assertEquals(light, TrafficLight.fromString(light.name()));
 		}
 	}
+	
+	@Test
+    public void even_lowercased_values_are_supported() {
+        for (TrafficLight light : TrafficLight.values()) {
+            assertEquals(light, TrafficLight.fromString(light.name().toLowerCase()));
+        }
+    }
 
 	@Test
 	public void unknown_values_returns_null() {

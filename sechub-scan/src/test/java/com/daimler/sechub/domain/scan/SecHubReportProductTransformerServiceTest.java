@@ -15,27 +15,26 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.ProductResultRepository;
 import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfigInfo;
-import com.daimler.sechub.domain.scan.report.ScanReportToSecHubResultTransformer;
+import com.daimler.sechub.domain.scan.report.ReportProductResultTransformer;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
-public class SecHubResultServiceTest {
+public class SecHubReportProductTransformerServiceTest {
 
 	@Rule
 	public ExpectedException expected = ExpectedExceptionFactory.none();
 
-	private SecHubResultService serviceToTest;
-	private ScanReportToSecHubResultTransformer reportTransformer;
+	private SecHubReportProductTransformerService serviceToTest;
+	private ReportProductResultTransformer reportTransformer;
 	private ProductResultRepository productResultRepository;
 	private SecHubExecutionContext context;
 	private UUID secHubJobUUID;
-    private SecHubResultMerger resultMerger;
+    private ReportTransformationResultMerger resultMerger;
 
 	@Before
 	public void before() throws Exception {
@@ -43,11 +42,11 @@ public class SecHubResultServiceTest {
 		context = mock(SecHubExecutionContext.class);
 		when(context.getSechubJobUUID()).thenReturn(secHubJobUUID);
 
-		reportTransformer = mock(ScanReportToSecHubResultTransformer.class);
+		reportTransformer = mock(ReportProductResultTransformer.class);
 		productResultRepository = mock(ProductResultRepository.class);
-		resultMerger = mock(SecHubResultMerger.class);
+		resultMerger = mock(ReportTransformationResultMerger.class);
 
-		serviceToTest = new SecHubResultService();
+		serviceToTest = new SecHubReportProductTransformerService();
 		serviceToTest.transformers = Collections.singletonList(reportTransformer);
 		serviceToTest.productResultRepository = productResultRepository;
 		serviceToTest.resultMerger=resultMerger;
@@ -87,20 +86,20 @@ public class SecHubResultServiceTest {
 	public void when_product_result_repository_returns_only_sereco_report_result__sechubResultFromTransformer_is_returned()
 			throws Exception {
 		/* prepare */
-		SecHubResult secHubResult = new SecHubResult();
+	    ReportTransformationResult transformationResult = new ReportTransformationResult();
 		ProductResult scanResult = new ProductResult(secHubJobUUID, "project1",  new WithoutProductExecutorConfigInfo(ProductIdentifier.SERECO), "scan-result");
 		when(reportTransformer.canTransform(ProductIdentifier.SERECO)).thenReturn(true);
-		when(reportTransformer.transform(scanResult)).thenReturn(secHubResult);
+		when(reportTransformer.transform(scanResult)).thenReturn(transformationResult);
 
 		when(productResultRepository.findAllProductResults(eq(secHubJobUUID), any()))
 				.thenReturn(Arrays.asList(scanResult));
-		when(resultMerger.merge(null,secHubResult)).thenReturn(secHubResult);
+		when(resultMerger.merge(null,transformationResult)).thenReturn(transformationResult);
 
 		/* execute */
-		SecHubResult result = serviceToTest.createResult(context);
+		ReportTransformationResult result = serviceToTest.createResult(context);
 
 		/* test */
-		assertEquals(secHubResult, result);
+		assertEquals(transformationResult, result);
 
 	}
 

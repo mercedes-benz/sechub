@@ -113,7 +113,7 @@ public class AssertJobScheduler<R> extends AbstractAssert {
                 long waitedTimeInMilliseconds = System.currentTimeMillis() - start;
                 timeElapsed = waitedTimeInMilliseconds > timeOutInMilliseconds;
 
-                json = getRestHelper(user).getJSon(getUrlBuilder().buildGetJobStatusUrl(project.getProjectId(), jobUUID.toString()));
+                json = getRestHelper(user).getJSON(getUrlBuilder().buildGetJobStatusUrl(project.getProjectId(), jobUUID.toString()));
                 /* very simple ... maybe this should be improved... */
                 boolean found = json != null && json.contains("\"" + jobUUID);
                 if (expected) {

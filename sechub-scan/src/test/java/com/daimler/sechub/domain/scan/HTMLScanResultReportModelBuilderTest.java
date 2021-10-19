@@ -20,7 +20,7 @@ import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 
 public class HTMLScanResultReportModelBuilderTest {
@@ -33,7 +33,7 @@ public class HTMLScanResultReportModelBuilderTest {
     private static final String HIDE_LIGHT = "opacity: 0.25";
 
     private HTMLScanResultReportModelBuilder builderToTest;
-    private ScanReportResult scanResult;
+    private ScanSecHubReport scanSecHubReport;
     private ScanReportTrafficLightCalculator trafficLightCalculator;
     private SecHubResult result;
     private List<SecHubFinding> greenList;
@@ -53,8 +53,8 @@ public class HTMLScanResultReportModelBuilderTest {
 
         result = mock(SecHubResult.class);
 
-        scanResult = mock(ScanReportResult.class);
-        when(scanResult.getResult()).thenReturn(result);
+        scanSecHubReport = mock(ScanSecHubReport.class);
+        when(scanSecHubReport.getResult()).thenReturn(result);
 
         greenList = new ArrayList<>();
         redList = new ArrayList<>();
@@ -70,18 +70,16 @@ public class HTMLScanResultReportModelBuilderTest {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
-        when(scanResult.getInfo()).thenReturn("theInfo");
-        when(scanResult.getJobUUID()).thenReturn(uuid);
-        when(scanResult.getTrafficLight()).thenReturn("trafficlight1");
+        when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         builderToTest.webDesignMode = false;
         builderToTest.embeddedCSS = "embeddedCssContent";
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        assertEquals("theInfo", map.get("info"));
         assertSame(result, map.get("result"));
         assertSame(greenList, map.get("greenList"));
         assertSame(redList, map.get("redList"));
@@ -89,9 +87,9 @@ public class HTMLScanResultReportModelBuilderTest {
         assertEquals(false, map.get("isWebDesignMode"));
         assertNull(map.get("${includedCSSRef}"));
 
-        assertEquals("trafficlight1", map.get("trafficlight"));
+        assertEquals("RED", map.get("trafficlight"));
         assertEquals(uuid.toString(), map.get("jobuuid"));
-        assertEquals(HIDE_LIGHT, map.get("styleRed"));
+        assertEquals(SHOW_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
@@ -101,9 +99,8 @@ public class HTMLScanResultReportModelBuilderTest {
         /* prepare */
         UUID uuid = UUID.randomUUID();
 
-        when(scanResult.getInfo()).thenReturn("theInfo");
-        when(scanResult.getJobUUID()).thenReturn(uuid);
-        when(scanResult.getTrafficLight()).thenReturn("trafficlight1");
+        when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
         builderToTest.webDesignMode = true;
         builderToTest.embeddedCSS = "embeddedCssContent";
         Resource cssResource = mock(Resource.class);
@@ -113,10 +110,9 @@ public class HTMLScanResultReportModelBuilderTest {
         builderToTest.cssResource = cssResource;
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
-        assertEquals("theInfo", map.get("info"));
         assertSame(result, map.get("result"));
         assertSame(greenList, map.get("greenList"));
         assertSame(redList, map.get("redList"));
@@ -130,18 +126,18 @@ public class HTMLScanResultReportModelBuilderTest {
 
         assertEquals(expectedFile.getCanonicalPath(), foundFile.getCanonicalPath());
 
-        assertEquals("trafficlight1", map.get("trafficlight"));
+        assertEquals("YELLOW", map.get("trafficlight"));
         assertEquals(uuid.toString(), map.get("jobuuid"));
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
-        assertEquals(HIDE_LIGHT, map.get("styleYellow"));
+        assertEquals(SHOW_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
     }
 
     @Test
     public void trafficlight_red_set_display_block__others_are_none() {
-        when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED.name());
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
         assertEquals(SHOW_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -149,9 +145,9 @@ public class HTMLScanResultReportModelBuilderTest {
 
     @Test
     public void trafficlight_yellow_set_display_block__others_are_none() {
-        when(scanResult.getTrafficLight()).thenReturn(TrafficLight.YELLOW.name());
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
 
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(SHOW_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -159,9 +155,9 @@ public class HTMLScanResultReportModelBuilderTest {
 
     @Test
     public void trafficlight_green_set_display_block__others_are_none() {
-        when(scanResult.getTrafficLight()).thenReturn(TrafficLight.GREEN.name());
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.GREEN);
 
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(SHOW_LIGHT, map.get("styleGreen"));
@@ -175,14 +171,14 @@ public class HTMLScanResultReportModelBuilderTest {
         SecHubCodeCallStack code1 = mock(SecHubCodeCallStack.class);
         SecHubCodeCallStack subCode = mock(SecHubCodeCallStack.class);
 
-        when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED.name());
-        when(scanResult.getResult()).thenReturn(result);
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
+        when(scanSecHubReport.getResult()).thenReturn(result);
         when(result.getFindings()).thenReturn(Arrays.asList(finding));
         when(finding.getCode()).thenReturn(code1);
         when(code1.getCalls()).thenReturn(subCode);
 
         /* execute */
-        Map<String, Object> buildResult = builderToTest.build(scanResult);
+        Map<String, Object> buildResult = builderToTest.build(scanSecHubReport);
 
         /* test */
         assertNotNull(buildResult.get("codeScanEntries"));
@@ -200,10 +196,10 @@ public class HTMLScanResultReportModelBuilderTest {
     @Test
     public void code_scan_support_set_and_not_null() {
         /* prepare */
-        when(scanResult.getTrafficLight()).thenReturn(TrafficLight.RED.name());
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanResult);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport);
 
         /* test */
         

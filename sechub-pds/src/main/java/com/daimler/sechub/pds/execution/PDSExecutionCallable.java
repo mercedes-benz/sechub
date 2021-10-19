@@ -119,9 +119,17 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.result = "Execution of job uuid:" + jobUUID + " failed. Please look into PDS logs for details and search for former string.";
 
         } finally {
-
             cleanUpWorkspace(jobUUID, config);
         }
+
+        /*
+         * handle always exit code. Everything having an exit code != 0 is handled as an
+         * error
+         */
+        if (result.exitCode != 0) {
+            result.failed = true;
+        }
+
         LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
 
         return result;
