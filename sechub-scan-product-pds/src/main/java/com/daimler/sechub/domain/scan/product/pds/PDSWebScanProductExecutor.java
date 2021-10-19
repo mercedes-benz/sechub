@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 @Service
 public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
@@ -40,6 +43,21 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
     @Autowired
     SystemEnvironment systemEnvironment;
+
+    @Autowired
+    PDSResilienceConsultant pdsResilienceConsultant;
+
+    ResilientActionExecutor<ProductResult> resilientActionExecutor;
+
+    public PDSWebScanProductExecutor() {
+        /* we create here our own instance - only for this service! */
+        this.resilientActionExecutor = new ResilientActionExecutor<>();
+    }
+
+    @PostConstruct
+    protected void postConstruct() {
+        this.resilientActionExecutor.add(pdsResilienceConsultant);
+    }
 
     @Override
     protected PDSInstallSetup getInstallSetup() {
@@ -67,6 +85,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
         List<ProductResult> results = new ArrayList<>();
 
+        String projectId = context.getConfiguration().getProjectId();
+
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
         /* we currently scan always only ONE url at the same time */
         for (URI targetURI : targetURIs) {
@@ -77,26 +97,37 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 		     */
 		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 		    
-			PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
-			        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-			        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-			        setProductBaseUrl(configSupport.getProductBaseURL()).
-			        setSecHubJobUUID(context.getSechubJobUUID()).
-					configure(createAdapterOptionsStrategy(context)).
-				    configure(new WebConfigBuilderStrategy(context)).
-					setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
-					setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
-					setTraceID(context.getTraceLogIdAsString()).
-					setJobParameters(jobParameters).
-					setTargetURI(targetURI).build();
-			/* @formatter:on */
+//		    ProductResult result = resilientActionExecutor.executeResilient(() -> {
+		        PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+	                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+	                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+	                    setProductBaseUrl(configSupport.getProductBaseURL()).
+	                    setSecHubJobUUID(context.getSechubJobUUID()).
 
-            /* execute PDS by adapter and return product result */
-            String result = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+	                    configure(createAdapterOptionsStrategy(context)).
+	                    configure(new WebConfigBuilderStrategy(context)).
+	                    
+	                    setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
+	                    setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
+	                    
+	                    setUser(configSupport.getUser()).
+	                    setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+	                    setProjectId(projectId).
+	                    
+	                    setTraceID(context.getTraceLogIdAsString()).
+	                    setJobParameters(jobParameters).
+	                    setTargetURI(targetURI).build();
+	            /* @formatter:on */
 
-            ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(result);
-            results.add(currentProductResult);
+                /* execute PDS by adapter and return product result */
+                String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+
+                ProductResult currentProductResult = executorContext.getCurrentProductResult();
+                currentProductResult.setResult(pdsResult);
+//                return currentProductResult;
+//            });
+                results.add(currentProductResult);
+//            results.add(result);
 
         }
         return results;

@@ -108,15 +108,20 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                             setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
                             setProductBaseUrl(configSupport.getProductBaseURL()).
                             setSecHubJobUUID(context.getSechubJobUUID()).
-							configure(createAdapterOptionsStrategy(context)).
+							
+                            configure(createAdapterOptionsStrategy(context)).
+                            
 							setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
 							setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+							
 							setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
 							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
 							setSourceZipFileChecksum(sourceZipFileChecksum).
+							
 							setUser(configSupport.getUser()).
 							setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
 							setProjectId(projectId).
+							
 							setTraceID(context.getTraceLogIdAsString()).
 							setJobParameters(jobParams).
 							build();
@@ -127,10 +132,10 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                 inspection.notice(MetaDataInspection.TRACE_ID, pdsCodeScanConfig.getTraceID());
 
                 /* execute PDS by adapter and update product result */
-                String xml = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
+                String pdsResult = pdsAdapter.start(pdsCodeScanConfig, executorContext.getCallback());
 
                 ProductResult productResult = executorContext.getCurrentProductResult(); // product result is set by callback
-                productResult.setResult(xml);
+                productResult.setResult(pdsResult);
 
                 return productResult;
             }

@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -389,17 +389,24 @@ public class AsUser {
     }
 
     private String createWebScanJob(TestProject project, IntegrationTestMockMode runMode) {
+        List<String> whites = project.getWhiteListUrls();
+        String acceptedURI1 = createTargetURIForSechubConfiguration(runMode, whites);
+
+        return createWebScanJobForTargetURL(project, acceptedURI1);
+    }
+
+    private String createWebScanJobForTargetURL(TestProject project, String targetURL) {
         String json = IntegrationTestFileSupport.getTestfileSupport().loadTestFile("sechub-integrationtest-webscanconfig1.json");
         String projectId = project.getProjectId();
 
         json = json.replaceAll("__projectId__", projectId);
-        List<String> whites = project.getWhiteListUrls();
-        String acceptedURI1 = createTargetURIForSechubConfiguration(runMode, whites);
 
-        json = json.replaceAll("__acceptedUri1__", acceptedURI1);
+        json = json.replaceAll("__acceptedUri1__", targetURL);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         return getRestHelper().postJson(url, json);
     }
+    
+
 
     /**
      * Create taget uri - will either use
@@ -586,24 +593,42 @@ public class AsUser {
         if (runMode == null) {
             runMode = IntegrationTestMockMode.WEBSCAN__NETSPARKER_RESULT_GREEN__FAST;
         }
-        String response = createWebScanJob(project, runMode);
+        String jsonResponse = createWebScanJob(project, runMode);
+        
+        return fetchJobUUID(jsonResponse);
+
+    }
+
+    /**
+     * Creates a webscan for given target URL and returns job UUID. But be aware: The target URL
+     * must be whitelisted before!
+     * @param project
+     * @param targetURL
+     * @return uuid
+     */
+    public UUID createWebScan(TestProject project, String targetURL) {
+        String jsonResponse = createWebScanJobForTargetURL(project, targetURL);
+        return fetchJobUUID(jsonResponse);
+    }
+    
+    private UUID fetchJobUUID(String jsonResponse) {
         try {
-            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
+            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(jsonResponse);
             JsonNode jobId = jsonNode.get("jobId");
             if (jobId == null) {
-                fail("No jobID entry found in json:\n" + response);
+                fail("No jobID entry found in json:\n" + jsonResponse);
                 return null;
             }
             return UUID.fromString(jobId.textValue());
         } catch (IllegalArgumentException e) {
-            fail("Job did not return with a valid UUID!:" + response);
+            fail("Job did not return with a valid UUID!:" + jsonResponse);
             throw new IllegalStateException("fail not working");
         } catch (IOException e) {
             throw new IllegalStateException("io failure, should not occure", e);
         }
-
     }
 
+    
     /**
      * Creates a code scan job and returns corresponding job UUID. But job is NOT
      * approved and so not started!
@@ -618,20 +643,7 @@ public class AsUser {
             runMode = IntegrationTestMockMode.CODE_SCAN__CHECKMARX__YELLOW__FAST;
         }
         String response = createCodeScanJob(project, runMode);
-        try {
-            JsonNode jsonNode = JSONTestSupport.DEFAULT.fromJson(response);
-            JsonNode jobId = jsonNode.get("jobId");
-            if (jobId == null) {
-                fail("No jobID entry found in json:\n" + response);
-                return null;
-            }
-            return UUID.fromString(jobId.textValue());
-        } catch (IllegalArgumentException e) {
-            fail("Job did not return with a valid UUID!:" + response);
-            throw new IllegalStateException("fail not working");
-        } catch (IOException e) {
-            throw new IllegalStateException("io failure, should not occure", e);
-        }
+        return fetchJobUUID(response);
 
     }
 
@@ -1037,5 +1049,6 @@ public class AsUser {
         
         getRestHelper().post(url);
     }
+
 
 }

@@ -82,6 +82,11 @@ public class AssertReport {
             assertEquals(description, finding.getDescription());
             return this;
         }
+        
+        public AssertFinding hasDescriptionContaining(String descriptionPart) {
+            assertTrue(finding.getDescription().contains(descriptionPart));
+            return this;
+        }
 
         
         public AssertFinding hasNoHostnames() {

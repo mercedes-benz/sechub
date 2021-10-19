@@ -1,23 +1,25 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.integrationtest.scenario5;
+package com.daimler.sechub.integrationtest.scenario12;
 
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
-
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN;
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_6_PDS_WEBSCAN;;
 
 /**
- * <b><u>Scenario5 - the PDS integration test standard scenario.(REUSE SECHUB DATA enabled!)</u></b><br>
+ * <b><u>Scenario12 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
+ * enabled!)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
- * removed as well): <br> <br>
- * a) <b> PDS integration test configuration is done automatically!</b> 
- * All configurations from
- * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json' will be
- * configured automatically!<br><br>
+ * removed as well): <br>
+ * <br>
+ * a) <b> PDS integration test configuration is done automatically!</b> All
+ * configurations from
+ * 'sechub-integrationtest/src/main/resources/pds-config-integrationtest.json'
+ * will be configured automatically!<br>
+ * <br>
  * b) User and project data:
  *
  * <pre>
@@ -29,27 +31,27 @@ import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefault
  * @author Albert Tregnaghi
  *
  */
-public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
+public class Scenario12 extends AbstractSecHubServerTestScenario implements PDSTestScenario, CleanScenario {
 
     /**
      * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
      */
-    public static final TestUser USER_1 = createTestUser(Scenario5.class, "user1");
+    public static final TestUser USER_1 = createTestUser(Scenario12.class, "user1");
 
     /**
      * Project 1 is created on startup, and has {@link #USER_1} assigned
      */
-    public static final TestProject PROJECT_1 = createTestProject(Scenario5.class, "project1");
+    public static final TestProject PROJECT_1 = createTestProject(Scenario12.class, "project1");
 
     @Override
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN).
+            ensureDefaultExecutionProfile(PROFILE_6_PDS_WEBSCAN).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_6_PDS_WEBSCAN, PROJECT_1).
+            assignUserToProject(PROJECT_1, USER_1)
             ;
         /* @formatter:on */
     }

@@ -13,7 +13,7 @@ public class PDSDefaultParameterKeyConstants {
 
     public static final String PARAM_KEY_TARGET_TYPE = "pds.scan.target.type";
 
-    public static final String PARAM_KEY_TARGET_URL = "pds.config.target.url";
+    public static final String PARAM_KEY_TARGET_URL = "pds.scan.target.url";
 
     public static final String PARAM_KEY_PRODUCT_IDENTIFIER = "pds.config.productidentifier";
 

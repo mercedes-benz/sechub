@@ -46,6 +46,14 @@ public class IntegrationTestDefaultProfiles {
      * storage will be reused
      */
     public static final DoNotChangeTestExecutionProfile PROFILE_5_PDS_CODESCAN_LAZY_STREAMS = defineProfile5();
+    
+    
+    /**
+     * PDS WEN scan profile, returns no real data but some dynamic text messages -
+     * storage is reused
+     */
+    public static final DoNotChangeTestExecutionProfile PROFILE_6_PDS_WEBSCAN = defineProfile6();
+
 
     private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] {
 
@@ -58,6 +66,8 @@ public class IntegrationTestDefaultProfiles {
             PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF,
 
             PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,
+            
+            PROFILE_6_PDS_WEBSCAN,
 
     };
 
@@ -114,6 +124,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_F);
         profile.id = "inttest-p5-pds-lazy-output"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 5: PDS, reused storage, will return dynamic text results, output streams will be lazy, run is 1500 ms";
+        profile.enabled = true;
+        return profile;
+    }
+    
+    private static DoNotChangeTestExecutionProfile defineProfile6() {
+
+        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_A);
+        profile.id = "inttest-p6-pds-webscan";
+        profile.description = "Profile 6: PDS webscan, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }
