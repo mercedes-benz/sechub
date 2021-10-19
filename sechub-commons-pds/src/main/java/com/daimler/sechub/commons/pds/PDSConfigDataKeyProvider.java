@@ -52,7 +52,7 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<RuntimeEnvironmen
      * for a webscan this will be used to identify the current webscan target URL to
      * start scanning.)
      */
-    PDS_TARGET_URL(new RuntimeEnvironmentKey(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_URL,
+    PDS_TARGET_URL(new RuntimeEnvironmentKey(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL,
             "This conains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
                     .markGenerated())
 

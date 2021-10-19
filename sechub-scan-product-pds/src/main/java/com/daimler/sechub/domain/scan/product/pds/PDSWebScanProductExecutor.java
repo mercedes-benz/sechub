@@ -97,7 +97,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 		     */
 		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
 		    
-//		    ProductResult result = resilientActionExecutor.executeResilient(() -> {
+		    ProductResult result = resilientActionExecutor.executeResilient(() -> {
 		        PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
 	                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
 	                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
@@ -107,8 +107,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 	                    configure(createAdapterOptionsStrategy(context)).
 	                    configure(new WebConfigBuilderStrategy(context)).
 	                    
-	                    setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
-	                    setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
+	                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
+	                    setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
 	                    
 	                    setUser(configSupport.getUser()).
 	                    setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
@@ -124,10 +124,9 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
                 ProductResult currentProductResult = executorContext.getCurrentProductResult();
                 currentProductResult.setResult(pdsResult);
-//                return currentProductResult;
-//            });
-                results.add(currentProductResult);
-//            results.add(result);
+                return currentProductResult;
+            });
+            results.add(result);
 
         }
         return results;

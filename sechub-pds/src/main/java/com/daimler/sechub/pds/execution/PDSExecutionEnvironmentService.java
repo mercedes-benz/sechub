@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.daimler.sechub.commons.pds.RuntimeEnvironmentKey;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSProdutParameterDefinition;
 import com.daimler.sechub.pds.config.PDSProdutParameterSetup;
@@ -48,14 +50,26 @@ public class PDSExecutionEnvironmentService {
 
     private void addJobParamDataWhenAccepted(PDSProductSetup productSetup, PDSExecutionParameterEntry jobParam, Map<String, String> map) {
         PDSProdutParameterSetup params = productSetup.getParameters();
-        if (isJobParameterValid(jobParam, params.getMandatory()) || isJobParameterValid(jobParam, params.getOptional())) {
+
+        boolean validParam = false;
+        for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
+            RuntimeEnvironmentKey runtimeKey = provider.getKey();
+            if (!runtimeKey.getId().equals(jobParam.getKey())) {
+                continue;
+            }
+            validParam = runtimeKey.isGenerated() || runtimeKey.isMandatory();
+        }
+        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
+        validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());
+
+        if (validParam) {
             map.put(converter.convertKeyToEnv(jobParam.getKey()), jobParam.getValue());
         } else {
             LOG.warn("Ignored invalid job parameter key {} for product id:{} !", jobParam.getKey(), productSetup.getId());
         }
     }
 
-    private boolean isJobParameterValid(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
+    private boolean isJobParameterAcceptedByPDSServerConfiguration(PDSExecutionParameterEntry jobParam, List<PDSProdutParameterDefinition> definitions) {
         for (PDSProdutParameterDefinition paramDef : definitions) {
             if (paramDef.getKey().equals(jobParam.getKey())) {
                 return true;

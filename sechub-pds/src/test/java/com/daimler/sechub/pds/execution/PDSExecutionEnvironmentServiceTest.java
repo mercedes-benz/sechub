@@ -1,27 +1,28 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.pds.execution;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSProdutParameterDefinition;
 import com.daimler.sechub.pds.config.PDSServerConfigurationService;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 
-public class PDSExecutionEnvironmentServiceTest {
+class PDSExecutionEnvironmentServiceTest {
 
     private PDSExecutionEnvironmentService serviceToTest;
     private PDSServerConfigurationService serverConfigService;
     private PDSKeyToEnvConverter converter;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         converter = mock(PDSKeyToEnvConverter.class);
         serverConfigService = mock(PDSServerConfigurationService.class);
 
@@ -31,7 +32,35 @@ public class PDSExecutionEnvironmentServiceTest {
     }
 
     @Test
-    public void a_job_with_two_configured_keys_is_is_handling_them_but_third_own_is_ignored() {
+    void even_for_an_empty_product_setup_execution_environment_servicer_accepts_default_parameter_key_target_url() {
+        /* prepare */
+        // create job configuration
+        PDSJobConfiguration config = new PDSJobConfiguration();
+        config.setProductId("productid1");
+        PDSExecutionParameterEntry entry1 = new PDSExecutionParameterEntry();
+        entry1.setKey(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL);
+        entry1.setValue("https://testurl.example.com/app1");
+        
+        config.getParameters().add(entry1);
+
+        // create product setup configuration        
+        PDSProductSetup setup = new PDSProductSetup();
+        setup.setId("productid1");
+        
+        when(serverConfigService.getProductSetupOrNull("productid1")).thenReturn(setup);
+        
+        // fake key conversion
+        when(converter.convertKeyToEnv(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL)).thenReturn("PDS_SCAN_TARGET_URL");
+        
+        /* execute */
+        Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
+        
+        /* test */
+        assertEquals("https://testurl.example.com/app1",result.get("PDS_SCAN_TARGET_URL"));
+    }
+    
+    @Test
+    void a_job_with_two_configured_keys_is_is_handling_them_but_third_own_is_ignored() {
         /* prepare */
         // create job configuration
         PDSJobConfiguration config = new PDSJobConfiguration();
