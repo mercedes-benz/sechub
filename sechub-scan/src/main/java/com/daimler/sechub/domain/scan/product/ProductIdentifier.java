@@ -6,7 +6,7 @@ import com.daimler.sechub.sharedkernel.MustBeKeptStable;
 /**
  * An enumeration with all currently known products identifiers. If one of the
  * products is no longer supported the identifiers should be marked deprecated
- * but no removed! Do also NOT rename those enums!<br>
+ * but not removed! Do also NOT rename those enums!<br>
  * <br>
  * REASON: We use the names inside database for results and as identifiers! So
  * keep as is!

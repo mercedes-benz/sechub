@@ -108,7 +108,7 @@ public class ReportTrafficLightCalculatorTest {
     /* +............................ Single variants ..........................+ */
     /* +-----------------------------------------------------------------------+ */
     @Test
-    public void calculatore_called_with_null_returns_() {
+    public void calculator_called_with_null_returns_() {
         /* prepare for test */
         expected.expect(IllegalArgumentException.class);
 

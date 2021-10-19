@@ -112,7 +112,7 @@ public class Workspace {
     }
 
     private void mergeWithWorkspaceData(SerecoMetaData metaData) {
-        /* currently a very simple,stupid approach for vulnerabilities: */
+        /* currently a very simple approach for vulnerabilities: */
         workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
 
         workspaceMetaData.getAnnotations().addAll(metaData.getAnnotations());

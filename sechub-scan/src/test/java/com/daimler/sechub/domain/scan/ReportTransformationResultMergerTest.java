@@ -58,7 +58,7 @@ public class ReportTransformationResultMergerTest {
     }
 
     @Test
-    public void result11_result2_merged_contains_all_messages() {
+    public void result1_result2_merged_contains_all_messages() {
         /* prepare */
         ReportTransformationResult result1 = new ReportTransformationResult();
         ReportTransformationResult result2 = new ReportTransformationResult();

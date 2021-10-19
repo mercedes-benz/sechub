@@ -151,7 +151,7 @@ class ScanSecHubReportTest {
     }
 
     @Test
-    void scanreport_result_by_simple_result_does_not_recalculates_traffic_light_but_uses_report_traffic_light() {
+    void scanreport_result_by_simple_result_does_not_recalculate_traffic_light_but_uses_report_traffic_light() {
 
         /* prepare */
         SecHubResult result = new SecHubResult();
