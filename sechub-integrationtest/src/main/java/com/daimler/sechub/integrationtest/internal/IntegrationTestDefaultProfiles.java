@@ -47,14 +47,21 @@ public class IntegrationTestDefaultProfiles {
      */
     public static final DoNotChangeTestExecutionProfile PROFILE_5_PDS_CODESCAN_LAZY_STREAMS = defineProfile5();
     
+
+
+    /**
+     * PDS scan profile, will always return 1 from PDS execution script 'integrationtest-codescan.sh'
+     * reused
+     */
+    public static final DoNotChangeTestExecutionProfile PROFILE_6_NO_STORAGE_REUSED__PDS_CODESCAN_PROCESS_EXEC_FAILS_EXITCODE_1 = defineProfile6();
+
     
     /**
      * PDS WEN scan profile, returns no real data but some dynamic text messages -
      * storage is reused
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_6_PDS_WEBSCAN = defineProfile6();
-
-
+    public static final DoNotChangeTestExecutionProfile PROFILE_7_PDS_WEBSCAN = defineProfile7();
+    
     private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] {
 
             PROFILE_1,
@@ -67,7 +74,7 @@ public class IntegrationTestDefaultProfiles {
 
             PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,
             
-            PROFILE_6_PDS_WEBSCAN,
+            PROFILE_7_PDS_WEBSCAN,
 
     };
 
@@ -117,7 +124,7 @@ public class IntegrationTestDefaultProfiles {
         profile.enabled = true;
         return profile;
     }
-
+    
     private static DoNotChangeTestExecutionProfile defineProfile5() {
 
         DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
@@ -129,13 +136,24 @@ public class IntegrationTestDefaultProfiles {
     }
     
     private static DoNotChangeTestExecutionProfile defineProfile6() {
-
+        
         DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
-        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_A);
-        profile.id = "inttest-p6-pds-webscan";
-        profile.description = "Profile 6: PDS webscan, reused storage, dynamic text results";
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_G_FAIL_EXIT_CODE_1);
+        profile.id = "inttest-p6-fail-call"; // not more than 30 chars per profile id, so we use this
+        profile.description = "Profile 6: PDS, reused storage, will return nothing because of exit 1 in script";
         profile.enabled = true;
         return profile;
     }
+    
+    private static DoNotChangeTestExecutionProfile defineProfile7() {
+
+        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_A);
+        profile.id = "inttest-p7-pds-webscan";
+        profile.description = "Profile 7: PDS webscan, reused storage, dynamic text results";
+        profile.enabled = true;
+        return profile;
+    }
+    
 
 }

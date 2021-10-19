@@ -50,6 +50,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_D = "d";
     public static final String PDS_CODESCAN_VARIANT_E = "e";
     public static final String PDS_CODESCAN_VARIANT_F = "f";
+    public static final String PDS_CODESCAN_VARIANT_G = "g";
 
     public static final String PDS_WEBSCAN_VARIANT_A = "a";
 
@@ -81,6 +82,11 @@ public class IntegrationTestDefaultExecutorConfigurations {
     
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_F = definePDSCodeScan(
                                                 PDS_CODESCAN_VARIANT_F,false,
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
+                                                StorageType.REUSE_SECHUB_DATA);
+    
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_G_FAIL_EXIT_CODE_1 = definePDSCodeScan(
+                                                PDS_CODESCAN_VARIANT_G,false,
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
     

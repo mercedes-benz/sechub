@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.daimler.sechub.domain.scan.ScanAssertService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.error.NotFoundException;
 import com.daimler.sechub.sharedkernel.logging.AuditLogService;
@@ -107,18 +107,18 @@ public class FalsePositiveJobDataService {
         /* we want to load reports only one time, so sort by report job UUID... */
         list.sort(Comparator.comparing(FalsePositiveJobData::getJobUUID));
 
-        ScanReportResult scanReportResult = null;
+        ScanSecHubReport report = null;
         for (FalsePositiveJobData data : list) {
             UUID jobUUID = data.getJobUUID();
 
-            if (scanReportResult == null || !jobUUID.equals(scanReportResult.getJobUUID())) {
-                ScanReport report = scanReportRepository.findBySecHubJobUUID(jobUUID);
-                if (report == null) {
+            if (report == null || !jobUUID.equals(report.getJobUUID())) {
+                ScanReport scanReport = scanReportRepository.findBySecHubJobUUID(jobUUID);
+                if (scanReport == null) {
                     throw new NotFoundException("No report found for job " + jobUUID);
                 }
-                scanReportResult = new ScanReportResult(report);
+                report = new ScanSecHubReport(scanReport);
             }
-            merger.addJobDataWithMetaDataToConfig(scanReportResult, config, data, userContextService.getUserId());
+            merger.addJobDataWithMetaDataToConfig(report, config, data, userContextService.getUserId());
         }
 
     }

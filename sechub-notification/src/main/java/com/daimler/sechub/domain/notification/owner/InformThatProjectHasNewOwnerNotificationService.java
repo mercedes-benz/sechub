@@ -28,7 +28,7 @@ public class InformThatProjectHasNewOwnerNotificationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InformThatProjectHasNewOwnerNotificationService.class);
 
-    @UseCaseAdminChangesProjectOwner(@Step(number = 4, name = "Inform project owner that the project was assigned a new owner"))
+    @UseCaseAdminChangesProjectOwner(@Step(number = 4, name = "Inform new and previous project owners that the project owner ship has changed"))
     public void notify(ProjectMessage projectMessage, String baseUrl) {
         requireNonNull(projectMessage);
 

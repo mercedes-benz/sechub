@@ -14,7 +14,8 @@ import org.mockito.stubbing.Answer;
 
 import com.daimler.sechub.commons.model.SecHubResult;
 import com.daimler.sechub.commons.model.TrafficLight;
-import com.daimler.sechub.domain.scan.SecHubResultService;
+import com.daimler.sechub.domain.scan.ReportTransformationResult;
+import com.daimler.sechub.domain.scan.SecHubReportProductTransformerService;
 import com.daimler.sechub.domain.scan.product.ReportProductExecutionService;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
@@ -23,10 +24,10 @@ public class ReportServiceTest {
 
     private CreateScanReportService serviceToTest;
     private ReportProductExecutionService reportProductExecutionService;
-    private SecHubResultService secHubResultService;
+    private SecHubReportProductTransformerService secHubResultService;
     private ScanReportTrafficLightCalculator trafficLightCalculator;
     private SecHubExecutionContext context;
-    private SecHubResult secHubResult;
+    private ReportTransformationResult reportTransformationResult;
     private ScanReportRepository reportRepository;
     private UUID secHubJobUUID;
     private SecHubConfiguration configuration;
@@ -55,14 +56,16 @@ public class ReportServiceTest {
         scanReportTransactionService = mock(ScanReportTransactionService.class);
         reportProductExecutionService = mock(ReportProductExecutionService.class);
 
-        secHubResult = mock(SecHubResult.class);
-        secHubResultService = mock(SecHubResultService.class);
-        when(secHubResultService.createResult(context)).thenReturn(secHubResult);
+        reportTransformationResult = mock(ReportTransformationResult.class);
+        SecHubResult sechubResult = mock(SecHubResult.class);
+        when(reportTransformationResult.getResult()).thenReturn(sechubResult);
+        secHubResultService = mock(SecHubReportProductTransformerService.class);
+        when(secHubResultService.createResult(context)).thenReturn(reportTransformationResult);
 
         trafficLightCalculator = mock(ScanReportTrafficLightCalculator.class);
 
         serviceToTest.reportProductExecutionService = reportProductExecutionService;
-        serviceToTest.secHubResultService = secHubResultService;
+        serviceToTest.reportTransformerService = secHubResultService;
         serviceToTest.trafficLightCalculator = trafficLightCalculator;
         serviceToTest.reportRepository = reportRepository;
         serviceToTest.scanReportTransactionService = scanReportTransactionService;
@@ -83,7 +86,7 @@ public class ReportServiceTest {
     @Test
     public void createReport_set_report_traffic_light_red_name_when_defined_by_trafficlight_calculator() throws Exception {
         /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(secHubResult)).thenReturn(TrafficLight.RED);
+        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.RED);
 
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
@@ -97,7 +100,7 @@ public class ReportServiceTest {
     @Test
     public void createReport_set_report_traffic_light_yellow_name_when_defined_by_trafficlight_calculator() throws Exception {
         /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(secHubResult)).thenReturn(TrafficLight.YELLOW);
+        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.YELLOW);
 
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
@@ -111,7 +114,7 @@ public class ReportServiceTest {
     @Test
     public void createReport_set_report_traffic_green_yellow_name_when_defined_by_trafficlight_calculator() throws Exception {
         /* prepare */
-        when(trafficLightCalculator.calculateTrafficLight(secHubResult)).thenReturn(TrafficLight.GREEN);
+        when(trafficLightCalculator.calculateTrafficLight(reportTransformationResult)).thenReturn(TrafficLight.GREEN);
 
         /* execute */
         ScanReport report = serviceToTest.createReport(context);
@@ -180,7 +183,7 @@ public class ReportServiceTest {
         serviceToTest.createReport(context);
 
         /* test */
-        verify(trafficLightCalculator).calculateTrafficLight(secHubResult);
+        verify(trafficLightCalculator).calculateTrafficLight(reportTransformationResult);
     }
 
 }

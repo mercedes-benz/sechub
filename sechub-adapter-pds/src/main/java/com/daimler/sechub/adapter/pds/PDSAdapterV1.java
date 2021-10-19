@@ -89,10 +89,12 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             PDSAdapterJobStatusState state = jobstatus.state;
             switch (state) {
             case DONE:
-            case FAILED:
-            case CANCELED:
                 jobEnded = true;
-                break; // break case...
+                break;
+            case FAILED:
+                throw asAdapterException("PDS job execution failed", config);
+            case CANCELED:
+                throw asAdapterCanceledByUserException(config);
             default:
                 // just do nothing else
             }

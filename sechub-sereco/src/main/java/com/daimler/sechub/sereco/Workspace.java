@@ -42,8 +42,9 @@ public class Workspace {
     public Workspace(String id) {
         this.id = id;
         this.objectMapper = new ObjectMapper();
-        
-        // configure. we do NOT want empty or null values inside our JSON any more. So easier to read
+
+        // configure. we do NOT want empty or null values inside our JSON anymore. So
+        // easier to read
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.setSerializationInclusion(Include.NON_EMPTY);
     }
@@ -111,8 +112,10 @@ public class Workspace {
     }
 
     private void mergeWithWorkspaceData(SerecoMetaData metaData) {
-        /* currently a very simple,stupid approach: */
-        this.workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
+        /* currently a very simple approach for vulnerabilities: */
+        workspaceMetaData.getVulnerabilities().addAll(metaData.getVulnerabilities());
+
+        workspaceMetaData.getAnnotations().addAll(metaData.getAnnotations());
     }
 
     public String createReport() {

@@ -6,7 +6,7 @@ import com.daimler.sechub.integrationtest.api.TestUser;
 import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScenario;
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
-import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_6_PDS_WEBSCAN;;
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_7_PDS_WEBSCAN;;
 
 /**
  * <b><u>Scenario12 - the PDS integration test SARIF scenario (REUSE SECHUB DATA
@@ -47,10 +47,10 @@ public class Scenario12 extends AbstractSecHubServerTestScenario implements PDST
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile(PROFILE_6_PDS_WEBSCAN).
+            ensureDefaultExecutionProfile(PROFILE_7_PDS_WEBSCAN).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_6_PDS_WEBSCAN, PROJECT_1).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_7_PDS_WEBSCAN, PROJECT_1).
             assignUserToProject(PROJECT_1, USER_1)
             ;
         /* @formatter:on */

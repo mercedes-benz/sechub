@@ -20,9 +20,9 @@ import com.daimler.sechub.sharedkernel.messaging.DomainMessageService;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 import com.daimler.sechub.test.junit4.ExpectedExceptionFactory;
 
-public class ProjectAssignOwnerServiceTest {
+public class ProjectChangeOwnerServiceTest {
 
-    private ProjectAssignOwnerService serviceToTest;
+    private ProjectChangeOwnerService serviceToTest;
     private UserContextService userContext;
     private DomainMessageService eventBusService;
     private ProjectRepository projectRepository;
@@ -41,7 +41,7 @@ public class ProjectAssignOwnerServiceTest {
 
         transactionService = mock(ProjectTransactionService.class);
 
-        serviceToTest = new ProjectAssignOwnerService();
+        serviceToTest = new ProjectChangeOwnerService();
         serviceToTest.eventBus = eventBusService;
         serviceToTest.projectRepository = projectRepository;
         serviceToTest.userRepository = userRepository;
@@ -68,17 +68,17 @@ public class ProjectAssignOwnerServiceTest {
         when(newOwner.getProjects()).thenReturn(new HashSet<Project>());
 
         /* execute */
-        serviceToTest.assignOwnerToProject(newOwner.getName(), project1.getId());
+        serviceToTest.changeProjectOwner(newOwner.getName(), project1.getId());
 
         /* test */
-        verify(transactionService).saveInOwnTransaction(project1, newOwner);
+        verify(transactionService).saveInOwnTransaction(project1, newOwner, oldOwner);
     }
-    
+
     @Test
     public void assign_same_owner_to_project__throws_already_exists_exception() {
-        
+
         User oldOwner = mock(User.class);
-                        
+
         /* prepare */
         Project project1 = new Project();
         project1.id = "project1";
@@ -87,11 +87,11 @@ public class ProjectAssignOwnerServiceTest {
         when(projectRepository.findOrFailProject("project1")).thenReturn(project1);
         when(oldOwner.getName()).thenReturn("old");
         when(userRepository.findOrFailUser("old")).thenReturn(oldOwner);
-        
+
         /* execute */
         /* test */
         assertThrows(AlreadyExistsException.class, () -> {
-            serviceToTest.assignOwnerToProject(oldOwner.getName(), project1.getId());
+            serviceToTest.changeProjectOwner(oldOwner.getName(), project1.getId());
         });
     }
 

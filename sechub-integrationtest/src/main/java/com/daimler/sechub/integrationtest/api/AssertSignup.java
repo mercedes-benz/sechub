@@ -28,7 +28,7 @@ public class AssertSignup extends AbstractAssert{
 	}
 	
 	private String fetchUserDetails() {
-		return getRestHelper().getJSon(getUrlBuilder().buildAdminListsUserSignupsUrl());
+		return getRestHelper().getJSON(getUrlBuilder().buildAdminListsUserSignupsUrl());
 	}
 
 }

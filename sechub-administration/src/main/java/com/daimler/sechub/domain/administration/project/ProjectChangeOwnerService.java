@@ -22,14 +22,14 @@ import com.daimler.sechub.sharedkernel.messaging.IsSendingAsyncMessage;
 import com.daimler.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.daimler.sechub.sharedkernel.messaging.MessageID;
 import com.daimler.sechub.sharedkernel.messaging.ProjectMessage;
-import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
+import com.daimler.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
 import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
 @RolesAllowed(RoleConstants.ROLE_SUPERADMIN)
-public class ProjectAssignOwnerService {
+public class ProjectChangeOwnerService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectAssignOwnerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectChangeOwnerService.class);
 
     @Autowired
     DomainMessageService eventBus;
@@ -53,37 +53,42 @@ public class ProjectAssignOwnerService {
     ProjectTransactionService transactionService;
 
     /* @formatter:off */
-	@UseCaseAdminAssignsUserToProject(
+	@UseCaseAdminChangesProjectOwner(
 			@Step(
 					number = 2,
-					name = "Assign owner",
-					description = "The service will add the user as an owner to the project. If user does not have ROLE_USER it will obtain it"))
+					name = "Change project owner",
+					description = "The service will set the user as the owner of the project. If user does not have ROLE_OWNER it will obtain it. The old owner will loose project ownership."))
 	/* @formatter:on */
-    public void assignOwnerToProject(String userId, String projectId) {
-        LOG.info("User {} triggers assignment of user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(userId, 30),
+    public void changeProjectOwner(String newOnwerUserId, String projectId) {
+        LOG.info("User {} triggers project owner change - user:{} to project:{}", userContextService.getUserId(), logSanitizer.sanitize(newOnwerUserId, 30),
                 logSanitizer.sanitize(projectId, 30));
 
-        assertion.isValidUserId(userId);
+        assertion.isValidUserId(newOnwerUserId);
         assertion.isValidProjectId(projectId);
 
         Project project = projectRepository.findOrFailProject(projectId);
-        User newOwner = userRepository.findOrFailUser(userId);
+        User newOwner = userRepository.findOrFailUser(newOnwerUserId);
 
         if (project.owner.equals(newOwner)) {
             throw new AlreadyExistsException("User already assigned in the role as owner to this project!");
         }
 
-        User previousOwner = project.owner;
-        project.owner = newOwner;
+        User previousOwner = changeProjectOwnerAndReturnPreviousOwner(project, newOwner);
 
-        newOwner.getProjects().add(project);
-        previousOwner.getProjects().remove(project);
-
-        transactionService.saveInOwnTransaction(project, newOwner);
+        transactionService.saveInOwnTransaction(project, newOwner, previousOwner);
 
         sendOwnerChangedForProjectEvent(project, previousOwner, newOwner);
         sendRequestOwnerRoleRecalculation(newOwner);
         sendRequestOwnerRoleRecalculation(previousOwner);
+    }
+
+    private User changeProjectOwnerAndReturnPreviousOwner(Project project, User newOwner) {
+        User previousOwner = project.owner;
+        project.owner = newOwner;
+
+        newOwner.getOwnedProjects().add(project);
+        previousOwner.getOwnedProjects().remove(project);
+        return previousOwner;
     }
 
     @IsSendingAsyncMessage(MessageID.REQUEST_USER_ROLE_RECALCULATION)
@@ -93,17 +98,17 @@ public class ProjectAssignOwnerService {
 
     @IsSendingAsyncMessage(MessageID.PROJECT_OWNER_CHANGED)
     private void sendOwnerChangedForProjectEvent(Project project, User previousOwner, User newOwner) {
-        
+
         DomainMessage request = new DomainMessage(MessageID.PROJECT_OWNER_CHANGED);
         ProjectMessage projectData = new ProjectMessage();
         projectData.setProjectId(project.id);
         projectData.setPreviousProjectOwnerEmailAddress(previousOwner.getEmailAdress());
         projectData.setProjectOwnerEmailAddress(newOwner.getEmailAdress());
-        
+
         project.users.forEach(user -> {
             projectData.addUserEmailAddress(user.getEmailAdress());
         });
-        
+
         request.set(MessageDataKeys.PROJECT_OWNER_CHANGE_DATA, projectData);
         eventBus.sendAsynchron(request);
     }

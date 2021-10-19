@@ -160,7 +160,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchSignups() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsUserSignupsUrl());
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminListsUserSignupsUrl());
     }
 
     public TestRestHelper getRestHelper() {
@@ -186,7 +186,7 @@ public class DeveloperAdministration {
         }
 
         public String fetchServerConfigurationAsString() {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
         }
 
         public String getServerAlive() {
@@ -198,15 +198,15 @@ public class DeveloperAdministration {
         }
 
         public String getExecutionStatus() {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
         }
 
         public String getJobResultOrError(String jobUUID) {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
         }
 
         public String getJobStatus(String jobUUID) {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
         }
 
         public String markJobAsReadyToStart(UUID jobUUID) {
@@ -445,7 +445,7 @@ public class DeveloperAdministration {
 
     public List<String> fetchProjectWhiteList(String projectId) {
         List<String> result = new ArrayList<>();
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
         TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(json);
         JsonNode whitelist = jsonNode.get("whiteList");
@@ -463,7 +463,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectMetaData(String projectId) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
         TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(json);
         JsonNode metaData = jsonNode.get("metaData");
@@ -472,12 +472,12 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectScanLogs(String projectId) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
         return json;
     }
 
     public String fetchJSONReport(String projectId, UUID sechubJobUUID) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
         return json;
     }
 
@@ -532,7 +532,7 @@ public class DeveloperAdministration {
     }
 
     public String assignOwnerToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(projectId, userId));
+        getRestHelper().post(getUrlBuilder().buildAdminChangesProjectOwnerUrl(projectId, userId));
         return "assigned " + userId + " as new owner to project " + projectId;
     }
 
@@ -582,7 +582,7 @@ public class DeveloperAdministration {
     }
 
     public String getStatusList() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminListsStatusEntries());
     }
 
     public String checkAlive() {
@@ -626,7 +626,7 @@ public class DeveloperAdministration {
 
     public String fetchGlobalMappings(String mappingId) {
         String url = getUrlBuilder().buildGetMapping(mappingId);
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     public String updateGlobalMappings(String mappingId, String mappingDataAsJSON) {
@@ -650,7 +650,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectFalsePositiveConfiguration(String projectId) {
-        return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
+        return getRestHelper().getJSON(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
     }
 
     public String markFalsePositivesForProjectByJobData(String projectId, String json) {

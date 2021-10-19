@@ -8,25 +8,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
+import static com.daimler.sechub.pds.util.PDSAssert.*;
 import com.daimler.sechub.pds.PDSMustBeDocumented;
 
 @Component
 public class PDSStreamContentUpdateChecker {
 
-    private static final long DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
+    private static final int DEFAULT_CACHE_REFRESH_IN_MILLISECONDS = 2000;
 
     @PDSMustBeDocumented("PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid")
     @Value("${sechub.pds.config.job.stream.cachetime:" + DEFAULT_CACHE_REFRESH_IN_MILLISECONDS + "}")
-    private int streamDataCacheTimeMilliseconds;
+    private int streamDataCacheTimeMilliseconds = DEFAULT_CACHE_REFRESH_IN_MILLISECONDS;
 
     private static final Logger LOG = LoggerFactory.getLogger(PDSStreamContentUpdateChecker.class);
 
     public boolean isUpdateNecessaryWhenRefreshRequestedNow(PDSJob job) {
-        PDSJobStatusState state = job.getState();
-
-        if (!PDSJobStatusState.RUNNING.equals(state)) {
-            LOG.trace("State of job:{} currently:{}, so no update necessary.", job.getUUID(), state);
+        notNull(job, "Job may not be null!");
+        
+        if (!isJobInStateWhereUpdateNecessary(job)) {
             return false;
         }
         /* currently running so check last refresh */
@@ -37,10 +36,9 @@ public class PDSStreamContentUpdateChecker {
     }
 
     public boolean isUpdateRequestedAndNecessary(PDSJob job) {
-        PDSJobStatusState state = job.getState();
-
-        if (!PDSJobStatusState.RUNNING.equals(state)) {
-            LOG.trace("State of job:{} currently:{}, so no update necessary.", job.getUUID(), state);
+        notNull(job, "Job may not be null!");
+        
+        if (!isJobInStateWhereUpdateNecessary(job)) {
             return false;
         }
         /* currently running so check last refresh */
@@ -48,6 +46,17 @@ public class PDSStreamContentUpdateChecker {
         LocalDateTime lastUpdate = job.getLastStreamTextUpdate();
 
         return isLastUpdateTooOld(lastUpdate, lastRequest);
+    }
+    
+    public boolean isJobInStateWhereUpdateNecessary(PDSJob job) {
+        notNull(job, "Job may not be null!");
+        
+        PDSJobStatusState state = job.getState();
+        if (!PDSJobStatusState.RUNNING.equals(state)) {
+            LOG.trace("State of job:{} currently:{}, so no update necessary.", job.getUUID(), state);
+            return false;
+        }
+        return true;
     }
 
     public boolean isLastUpdateTooOld(LocalDateTime lastUpdate, LocalDateTime requestTime) {
