@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 /**
  * Converts the Netsparker HTML to the AsciiDoc plain text format
  */
+@SuppressWarnings("deprecation")
 public class NetsparkerHtmlToAsciiDocConverter {
 
     private final static Pattern NO_BREAK_SPACE_PATTERN = Pattern.compile("Â&nbsp;");
