@@ -110,6 +110,7 @@ include::product_delegation_server_config_example1.json[]
 |PDS_JOB_RESULT_FILE                | The absolute path to the result file _(this file contains security findings)_.
 |PDS_JOB_SOURCECODE_ZIP_FILE        | The absolute path to the uploaded "sourcecode.zip" file 
 |PDS_JOB_SOURCECODE_UNZIPPED_FOLDER | When auto unzipping is enabled (default) the uploaded source code is unzipped to this folder 
+|PDS_SCAN_TARGET_URL                | Target URL for current scan (e.g webscan). Will not be set in all scan types. E.g. for a code scan this environemnt variable will not be available  
 |===
 
 ==== Parameter variables
