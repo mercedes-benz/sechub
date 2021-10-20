@@ -11,7 +11,6 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.importer.ProductImportAbility;
 import com.daimler.sechub.sereco.importer.ProductResultImporter;
-import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
@@ -37,9 +36,7 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
         String[] lines = simpleText.split("\n");
         SerecoMetaData metaData = new SerecoMetaData();
         List<SerecoVulnerability> vulnerabilities = metaData.getVulnerabilities();
-        int pseudoLineNumber = 0;
         for (String line : lines) {
-            pseudoLineNumber++; // we just reuse result line...
             if (line.startsWith("#")) {
                 continue;
             }
@@ -52,17 +49,9 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
             String severity = splitted[pos++];
             String message = line.substring(severity.length()+1);// we use the full other content here, so we can have https://xyz.example.com as message content!
 
-            SerecoCodeCallStackElement code = new SerecoCodeCallStackElement();
-            code.setColumn(123);
-            code.setLine(pseudoLineNumber);
-            code.setLocation("data.txt");
-            code.setRelevantPart("integrationtest");
-            code.setSource("integration test code only!");
-
             SerecoVulnerability vulnerability = new SerecoVulnerability();
             vulnerability.setDescription(message);
             vulnerability.setScanType(ScanType.WEB_SCAN);
-            vulnerability.setCode(code);
 
             vulnerability.setSeverity(SerecoSeverity.fromString(severity));
 
