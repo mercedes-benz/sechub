@@ -11,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.integrationtest.api.IntegrationTestSetup;
 import com.daimler.sechub.integrationtest.api.TestProject;
 
@@ -32,7 +33,7 @@ public class PDSWebScanJobScenario12IntTest {
     TestProject project = PROJECT_1;
 
     @Test
-    public void pds_web_scan_has_expected_outputstream_text() {
+    public void pds_web_scan_has_expected_info_finding_with_given_target_url_and_product2_level_information() {
         /* @formatter:off */
 
         /* prepare */
@@ -50,7 +51,13 @@ public class PDSWebScanJobScenario12IntTest {
         /* test */
         String report = as(USER_1).getJobReport(project, jobUUID);
         // the first finding from integrationtest-webscan.sh has always an information inside
-        assertReport(report).dump().finding(0).hasDescriptionContaining("PDS_SCAN_TARGET_URL="+targetURL);
+        assertReport(report).
+            finding(0).
+                hasSeverity(Severity.INFO).
+                hasDescriptionContaining("PRODUCT2_LEVEL=4711").// this comes from custom mandatory parameter from PDS config
+                hasDescriptionContaining("PDS_SCAN_TARGET_URL="+targetURL); // this is a default generated parameter which will always be sent by SecHub without being defined in PDS config!
+        
+        /* @formatter:on */
     }
     
 }

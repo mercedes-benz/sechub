@@ -50,7 +50,7 @@ public class IntegrationTestPDSCWebScanImporter implements ProductResultImporter
             }
             int pos = 0;
             String severity = splitted[pos++];
-            String message = splitted[pos++];
+            String message = line.substring(severity.length()+1);// we use the full other content here, so we can have https://xyz.example.com as message content!
 
             SerecoCodeCallStackElement code = new SerecoCodeCallStackElement();
             code.setColumn(123);
