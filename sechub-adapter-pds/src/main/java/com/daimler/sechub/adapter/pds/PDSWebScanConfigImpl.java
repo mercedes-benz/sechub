@@ -9,9 +9,13 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
+import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubConfigurationModel;
+import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
+import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
-public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig{
+public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig {
 
     private String websiteName;
 
@@ -23,12 +27,12 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
     public String getWebsiteName() {
         return websiteName;
     }
-    
+
     @Override
     public Map<String, String> getJobParameters() {
         return jobParameters;
     }
-    
+
     public String getPdsProductIdentifier() {
         return pdsProductIdentifier;
     }
@@ -40,53 +44,64 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         return new PDSWebScanConfigBuilder();
     }
 
-
-    public static class PDSWebScanConfigBuilder
-            extends AbstractWebScanAdapterConfigBuilder<PDSWebScanConfigBuilder, PDSWebScanConfigImpl> {
+    public static class PDSWebScanConfigBuilder extends AbstractWebScanAdapterConfigBuilder<PDSWebScanConfigBuilder, PDSWebScanConfigImpl> {
 
         private Map<String, String> jobParameters;
         private UUID sechubJobUUID;
         private String pdsProductIdentifier;
-        
+        private SecHubConfigurationModel configurationModel;
+
         private PDSWebScanConfigBuilder() {
         }
 
-        
         public PDSWebScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
-            this.sechubJobUUID=sechubJobUUID;
+            this.sechubJobUUID = sechubJobUUID;
             return this;
         }
-        
+
         public PDSWebScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
-            this.pdsProductIdentifier=productIdentifier;
+            this.pdsProductIdentifier = productIdentifier;
             return this;
         }
+
+        public PDSWebScanConfigBuilder setSecHubConfigModel(SecHubConfigurationModel model) {
+            this.configurationModel = model;
+            return this;
+        }
+
         /**
          * Set job parameters - mandatory
          *
-         * @param  jobParameters a map with key values
+         * @param jobParameters a map with key values
          * @return builder
          */
-        public final PDSWebScanConfigBuilder setJobParameters(Map<String,String> jobParameters) {
+        public final PDSWebScanConfigBuilder setJobParameters(Map<String, String> jobParameters) {
             this.jobParameters = jobParameters;
             return this;
         }
 
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
+            if (configurationModel==null) {
+                throw new IllegalStateException("configuration model not set!");
+            }
+            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationClone(configurationModel, ScanType.WEB_SCAN);
+
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL, config.getTargetAsString());
-            
-            config.pdsProductIdentifier=pdsProductIdentifier;
-            config.jobParameters=Collections.unmodifiableMap(jobParameters);
-            
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+
+            config.pdsProductIdentifier = pdsProductIdentifier;
+            config.jobParameters = Collections.unmodifiableMap(jobParameters);
+
             int size = config.getRootTargetURIs().size();
-            if (size!=1) {
-                /* netsparker needs ONE root uri */
+            if (size != 1) {
+                /* wee provide ONE root uri for webscans */
                 throw new IllegalStateException("netsparker must have ONE unique root target uri and not many!");
             }
             String websiteURLAsString = config.getRootTargetURIasString();
-            if (websiteURLAsString==null) {
+            if (websiteURLAsString == null) {
                 throw new IllegalStateException("website url (root target url ) may not be null at this point!");
             }
             try {
@@ -95,16 +110,16 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
                 sb.append(url.getHost());
                 sb.append("_");
                 int port = url.getPort();
-                if (port<1) {
+                if (port < 1) {
                     sb.append("default");
-                }else {
+                } else {
                     sb.append(port);
                 }
 
-                config.websiteName= sb.toString().toLowerCase();
-                config.sechubJobUUID=sechubJobUUID;
+                config.websiteName = sb.toString().toLowerCase();
+                config.sechubJobUUID = sechubJobUUID;
             } catch (MalformedURLException e) {
-                throw new IllegalArgumentException("website root url '"+websiteURLAsString+"' is not a valid URL!",e);
+                throw new IllegalArgumentException("website root url '" + websiteURLAsString + "' is not a valid URL!", e);
             }
         }
 
@@ -114,11 +129,11 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
             assertPasswordSet();
             assertProjectIdSet();
             assertProductBaseURLSet();
-            
-            if (jobParameters==null) {
+
+            if (jobParameters == null) {
                 throw new IllegalStateException("job parameters not set!");
             }
-            if (sechubJobUUID==null) {
+            if (sechubJobUUID == null) {
                 throw new IllegalStateException("sechubJobUUID not set!");
             }
         }
@@ -129,7 +144,7 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         }
 
     }
-    
+
     @Override
     public UUID getSecHubJobUUID() {
         return sechubJobUUID;

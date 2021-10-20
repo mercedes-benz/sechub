@@ -108,6 +108,8 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                             setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
                             setProductBaseUrl(configSupport.getProductBaseURL()).
                             setSecHubJobUUID(context.getSechubJobUUID()).
+                            
+                            setSecHubConfigModel(context.getConfiguration()).
 							
                             configure(createAdapterOptionsStrategy(context)).
                             
@@ -124,6 +126,7 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 							
 							setTraceID(context.getTraceLogIdAsString()).
 							setJobParameters(jobParams).
+							
 							build();
 					/* @formatter:on */
 

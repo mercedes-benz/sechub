@@ -7,6 +7,10 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubConfigurationModel;
+import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
+import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig{
@@ -31,6 +35,7 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
         private Map<String, String> jobParameters;
         private UUID sechubJobUUID;
         private String pdsProductIdentifier;
+        private SecHubConfigurationModel configurationModel;
         
         public PDSInfraScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
             this.pdsProductIdentifier=productIdentifier;
@@ -39,7 +44,16 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
         
         @Override
         protected void customBuild(PDSInfraScanConfigImpl config) {
+            if (configurationModel==null) {
+                throw new IllegalStateException("configuration model not set!");
+            }
+            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationClone(configurationModel, ScanType.INFRA_SCAN);
+
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID=sechubJobUUID;
             config.pdsProductIdentifier=pdsProductIdentifier;
@@ -55,6 +69,11 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
             return this;
         }
         
+        public PDSInfraScanConfigBuilder setSecHubConfigModel(SecHubConfigurationModel model) {
+            this.configurationModel = model;
+            return this;
+        }
+        
         /**
          * Set job parameters - mandatory
          *
@@ -65,6 +84,8 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
             this.jobParameters = jobParameters;
             return this;
         }
+        
+        
         
         @Override
         protected void customValidate() {

@@ -8,22 +8,25 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfig;
 import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
+import com.daimler.sechub.commons.model.ScanType;
+import com.daimler.sechub.commons.model.SecHubConfigurationModel;
+import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
+import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
-public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig implements PDSCodeScanConfig{
+public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig implements PDSCodeScanConfig {
 
     private InputStream sourceCodeZipFileInputStream;
     private String sourceZipFileChecksum;
-    
+
     private Map<String, String> jobParameters;
 
     private UUID sechubJobUUID;
     private String pdsProductIdentifier;
 
-    
     private PDSCodeScanConfigImpl() {
     }
-    
+
     public String getPdsProductIdentifier() {
         return pdsProductIdentifier;
     }
@@ -32,7 +35,7 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
     public InputStream getSourceCodeZipFileInputStream() {
         return sourceCodeZipFileInputStream;
     }
-    
+
     @Override
     public String getSourceCodeZipFileChecksum() {
         return sourceZipFileChecksum;
@@ -49,38 +52,50 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         private UUID sechubJobUUID;
         private String sourceZipFileChecksum;
         private String pdsProductIdentifier;
-        
+        private SecHubConfigurationModel configurationModel;
+
         public PDSCodeScanConfigBuilder setSourceCodeZipFileInputStream(InputStream sourceCodeZipFileInputStream) {
             this.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             return this;
         }
-        
+
         public PDSCodeScanConfigBuilder setSecHubJobUUID(UUID sechubJobUUID) {
-            this.sechubJobUUID=sechubJobUUID;
+            this.sechubJobUUID = sechubJobUUID;
             return this;
         }
-        
+
+        public PDSCodeScanConfigBuilder setSecHubConfigModel(SecHubConfigurationModel model) {
+            this.configurationModel = model;
+            return this;
+        }
+
         public PDSCodeScanConfigBuilder setSourceZipFileChecksum(String sourceZipFileChecksum) {
             this.sourceZipFileChecksum = sourceZipFileChecksum;
             return this;
         }
-        
+
         public PDSCodeScanConfigBuilder setPDSProductIdentifier(String productIdentifier) {
-            this.pdsProductIdentifier=productIdentifier;
+            this.pdsProductIdentifier = productIdentifier;
             return this;
         }
 
-        
-
         @Override
         protected void customBuild(PDSCodeScanConfigImpl config) {
+            if (configurationModel==null) {
+                throw new IllegalStateException("configuration model not set!");
+            }
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
-            config.sourceZipFileChecksum=sourceZipFileChecksum;
-            
+            config.sourceZipFileChecksum = sourceZipFileChecksum;
+
+            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationClone(configurationModel, ScanType.CODE_SCAN);
+
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            config.jobParameters=Collections.unmodifiableMap(jobParameters);
-            config.sechubJobUUID=sechubJobUUID;
-            config.pdsProductIdentifier=pdsProductIdentifier;
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+
+            config.jobParameters = Collections.unmodifiableMap(jobParameters);
+            config.sechubJobUUID = sechubJobUUID;
+            config.pdsProductIdentifier = pdsProductIdentifier;
         }
 
         @Override
@@ -91,49 +106,45 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
         /**
          * Set job parameters - mandatory
          *
-         * @param  jobParameters a map with key values
+         * @param jobParameters a map with key values
          * @return builder
          */
-        public final PDSCodeScanConfigBuilder setJobParameters(Map<String,String> jobParameters) {
+        public final PDSCodeScanConfigBuilder setJobParameters(Map<String, String> jobParameters) {
             this.jobParameters = jobParameters;
             return this;
         }
-        
+
         @Override
         protected void customValidate() {
             assertUserSet();
             assertPasswordSet();
             assertProjectIdSet();
             assertProductBaseURLSet();
-            
-            if (pdsProductIdentifier==null) {
+
+            if (pdsProductIdentifier == null) {
                 throw new IllegalStateException("pds product identifier not set!");
             }
-            if (jobParameters==null) {
+            if (jobParameters == null) {
                 throw new IllegalStateException("job parameters not set!");
             }
-            if (sechubJobUUID==null) {
+            if (sechubJobUUID == null) {
                 throw new IllegalStateException("sechubJobUUID not set!");
             }
-            if (sourceCodeZipFileInputStream!= null && sourceZipFileChecksum==null) {
+            if (sourceCodeZipFileInputStream != null && sourceZipFileChecksum == null) {
                 throw new IllegalStateException("sourceZipFileChecksum not set but zipfile inputstream!");
             }
         }
 
-        
     }
-    
+
     @Override
     public Map<String, String> getJobParameters() {
         return jobParameters;
     }
-
 
     @Override
     public UUID getSecHubJobUUID() {
         return sechubJobUUID;
     }
 
-
-    
 }

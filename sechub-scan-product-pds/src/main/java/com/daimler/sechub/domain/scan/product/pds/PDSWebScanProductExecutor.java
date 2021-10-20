@@ -103,6 +103,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 	                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
 	                    setProductBaseUrl(configSupport.getProductBaseURL()).
 	                    setSecHubJobUUID(context.getSechubJobUUID()).
+	                    
+	                    setSecHubConfigModel(context.getConfiguration()).
 
 	                    configure(createAdapterOptionsStrategy(context)).
 	                    configure(new WebConfigBuilderStrategy(context)).
@@ -116,7 +118,10 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 	                    
 	                    setTraceID(context.getTraceLogIdAsString()).
 	                    setJobParameters(jobParameters).
-	                    setTargetURI(targetURI).build();
+	                    
+	                    setTargetURI(targetURI).
+	                    
+	                    build();
 	            /* @formatter:on */
 
                 /* execute PDS by adapter and return product result */

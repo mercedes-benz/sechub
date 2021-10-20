@@ -56,6 +56,16 @@ public enum PDSConfigDataKeyProvider implements PDSKeyProvider<RuntimeEnvironmen
             "This conains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
                     .markGenerated())
 
+    ,
+    /**
+     * This is automatically given to PDS by SecHub (depending on type type. E.g.
+     * for a webscan this will be used to identify the current webscan target URL to
+     * start scanning.)
+     */
+    PDS_SECHUB_SCAN_CONFIGURATION(new RuntimeEnvironmentKey(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION,
+            "This conains the sechub storage location when sechub storage shall be used. So PDS knows location - in combination with sechub job UUID reuse is possible")
+            .markGenerated())
+    
     ;
 
     private RuntimeEnvironmentKey key;

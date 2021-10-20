@@ -11,10 +11,14 @@ package com.daimler.sechub.commons.pds;
  */
 public class PDSDefaultParameterKeyConstants {
 
+    /* SecHub execution information ("dynamic" - job dependent */
     public static final String PARAM_KEY_TARGET_TYPE = "pds.scan.target.type";
 
     public static final String PARAM_KEY_SCAN_TARGET_URL = "pds.scan.target.url";
+    
+    public static final String PARAM_KEY_SCAN_CONFIGURATION = "pds.scan.configuration";
 
+    /* SecHub execution configuration parts ("static")*/
     public static final String PARAM_KEY_PRODUCT_IDENTIFIER = "pds.config.productidentifier";
 
     public static final String PARAM_KEY_USE_SECHUB_STORAGE = "pds.config.use.sechub.storage";
