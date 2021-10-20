@@ -80,17 +80,16 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
 
         @Override
         protected void customBuild(PDSCodeScanConfigImpl config) {
-            if (configurationModel==null) {
-                throw new IllegalStateException("configuration model not set!");
-            }
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum = sourceZipFileChecksum;
 
-            String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT
-                    .createReducedScanConfigurationCloneJSON(configurationModel, ScanType.CODE_SCAN);
-
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+
+            if (configurationModel != null) {
+                String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
+                        ScanType.CODE_SCAN);
+                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+            }
 
             config.jobParameters = Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID = sechubJobUUID;

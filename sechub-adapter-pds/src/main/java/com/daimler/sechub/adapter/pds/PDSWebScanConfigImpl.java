@@ -81,15 +81,14 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
-            if (configurationModel==null) {
-                throw new IllegalStateException("configuration model not set!");
-            }
-            String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT
-                    .createReducedScanConfigurationCloneJSON(configurationModel, ScanType.WEB_SCAN);
-
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL, config.getTargetAsString());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+
+            if (configurationModel != null) {
+                String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
+                        ScanType.WEB_SCAN);
+                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+            }
 
             config.pdsProductIdentifier = pdsProductIdentifier;
             config.jobParameters = Collections.unmodifiableMap(jobParameters);
