@@ -11,7 +11,6 @@ import com.daimler.sechub.adapter.AbstractCodeScanAdapterConfigBuilder;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
-import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig implements PDSCodeScanConfig {
@@ -87,11 +86,11 @@ public class PDSCodeScanConfigImpl extends AbstractCodeScanAdapterConfig impleme
             config.sourceCodeZipFileInputStream = sourceCodeZipFileInputStream;
             config.sourceZipFileChecksum = sourceZipFileChecksum;
 
-            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
-                    .createReducedScanConfigurationClone(configurationModel, ScanType.CODE_SCAN);
+            String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationCloneJSON(configurationModel, ScanType.CODE_SCAN);
 
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
 
             config.jobParameters = Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID = sechubJobUUID;

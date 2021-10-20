@@ -47,9 +47,10 @@ class SecHubConfigurationModelReducedCloningSupportTest {
         assertTrue(config.getCodeScan().isPresent());
 
         /* execute */
-        SecHubScanConfiguration resultClone = toTest.createReducedScanConfigurationClone(config, ScanType.CODE_SCAN);
-
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.CODE_SCAN);
+        
         /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
         assertTrue(resultClone.getCodeScan().isPresent());
         assertFalse(resultClone.getWebScan().isPresent());
         assertFalse(resultClone.getInfraScan().isPresent());
@@ -79,9 +80,10 @@ class SecHubConfigurationModelReducedCloningSupportTest {
         assertTrue(config.getCodeScan().isPresent());
 
         /* execute */
-        SecHubScanConfiguration resultClone = toTest.createReducedScanConfigurationClone(config, ScanType.WEB_SCAN);
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.WEB_SCAN);
 
         /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
         assertTrue(resultClone.getWebScan().isPresent());
         assertFalse(resultClone.getCodeScan().isPresent());
         assertFalse(resultClone.getInfraScan().isPresent());
@@ -111,9 +113,10 @@ class SecHubConfigurationModelReducedCloningSupportTest {
         assertTrue(config.getCodeScan().isPresent());
 
         /* execute */
-        SecHubScanConfiguration resultClone = toTest.createReducedScanConfigurationClone(config, ScanType.INFRA_SCAN);
+        String json = toTest.createReducedScanConfigurationCloneJSON(config, ScanType.INFRA_SCAN);
 
         /* test */
+        SecHubScanConfiguration resultClone = SecHubScanConfiguration.createFromJSON(json);
         assertTrue(resultClone.getInfraScan().isPresent());
         assertFalse(resultClone.getWebScan().isPresent());
         assertFalse(resultClone.getCodeScan().isPresent());

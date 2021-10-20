@@ -10,7 +10,6 @@ import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
-import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig{
@@ -47,12 +46,12 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
             if (configurationModel==null) {
                 throw new IllegalStateException("configuration model not set!");
             }
-            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
-                    .createReducedScanConfigurationClone(configurationModel, ScanType.INFRA_SCAN);
-
+            String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationCloneJSON(configurationModel, ScanType.INFRA_SCAN);
+            
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
 
             config.jobParameters=Collections.unmodifiableMap(jobParameters);
             config.sechubJobUUID=sechubJobUUID;

@@ -12,7 +12,6 @@ import com.daimler.sechub.adapter.AbstractWebScanAdapterConfigBuilder;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
-import com.daimler.sechub.commons.model.SecHubScanConfiguration;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implements PDSWebScanConfig {
@@ -85,12 +84,12 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
             if (configurationModel==null) {
                 throw new IllegalStateException("configuration model not set!");
             }
-            SecHubScanConfiguration reducedConfig = SecHubConfigurationModelReducedCloningSupport.DEFAULT
-                    .createReducedScanConfigurationClone(configurationModel, ScanType.WEB_SCAN);
+            String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT
+                    .createReducedScanConfigurationCloneJSON(configurationModel, ScanType.WEB_SCAN);
 
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL, config.getTargetAsString());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfig.toJSON());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
 
             config.pdsProductIdentifier = pdsProductIdentifier;
             config.jobParameters = Collections.unmodifiableMap(jobParameters);

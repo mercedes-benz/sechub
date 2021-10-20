@@ -19,9 +19,9 @@ public class SecHubConfigurationModelReducedCloningSupport {
      * 
      * @param model
      * @param scanTypeForClone
+     * @return JSON representing a reduced {@link SecHubScanConfiguration}
      */
-    public SecHubScanConfiguration createReducedScanConfigurationClone(SecHubConfigurationModel model, ScanType scanTypeForClone) {
-
+    public String createReducedScanConfigurationCloneJSON(SecHubConfigurationModel model, ScanType scanTypeForClone) {
         SecHubScanConfiguration newModel = new SecHubScanConfiguration();
         newModel.setApiVersion(model.getApiVersion());
         newModel.setProjectId(model.getProjectId());
@@ -64,10 +64,7 @@ public class SecHubConfigurationModelReducedCloningSupport {
          * serialize and deserialize back to have new instances...
          */
         String json = newModel.toJSON();
-
-        SecHubScanConfiguration cleanReducedCopy = SecHubScanConfiguration.createFromJSON(json);
-
-        return cleanReducedCopy;
+        return json;
     }
 
 }
