@@ -1,0 +1,43 @@
+{
+    "apiVersion" : "1.0",
+    "serverId" : "MULTI_TOOL_CLUSTER", 
+
+    "products" : [
+        {
+            "id" : "PDS_BANDIT",
+            "path" : "/scripts/bandit.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs Bandit. Bandit is a static analysis tool for Python3.",
+            "parameters" : {
+                "optional" : [
+                    {
+                        "key" : "bandit.severity",
+                        "description" : "Limit the result to findings above a severity of LOW, MEDIUM and HIGH."
+                    },
+                    {
+                        "key" : "bandit.confidence",
+                        "description" : "Limit the result to findings above a confidence of LOW, MEDIUM and HIGH."
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "PDS_FLAWFINDER",
+            "path" : "/scripts/flawfinder.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs Flawfinder. Flawfinder is a static analysis tool for C/C++."
+        },
+        {
+            "id" : "PDS_NJSSCAN",
+            "path" : "/scripts/njsscan.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs njsscan . njsscan is a static analysis tool for node.js applications. It scans only JavaScript Node.js applications."
+        },
+        {
+            "id" : "PDS_MOBSFSCAN",
+            "path" : "/scripts/mobsfscan.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs mobsfscan. mobsfscan is a static analysis tool for mobile applications. It can scan applications written in Java, Kotlin, Swift and Objective-C"
+        }
+    ]
+}

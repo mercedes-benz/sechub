@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-multi:
+        build:
+            args:
+                - BASE_IMAGE=ubuntu:20.04
+            context: docker/
+            dockerfile: Multi-Ubuntu.dockerfile
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        depends_on: 
+            - database
+            - object-storage
+
+    loadbalancer:
+        build:
+            context: docker/loadbalancer
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        depends_on:
+            - pds-multi
+        ports:
+            - "127.0.0.1:8444:8444"
+    
+    database:
+        build:
+            context: docker/database
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            - internal
+        ports:
+            - "127.0.0.1:5432:5432"
+        
+    object-storage:
+        build:
+            context: docker/object-storage
+        env_file:
+            - .env-cluster-object-storage
+        networks:
+            internal:
+                # A fixed IP address is necessary
+                # otherwise the AWS S3 client used by
+                # the PDS cannot resolve the address
+                ipv4_address: 10.42.43.7
+        ports:
+            - "127.0.0.1:9000:9000"
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.42.43.0/24
+          gateway: 10.42.43.1

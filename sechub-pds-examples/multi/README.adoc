@@ -1,0 +1,798 @@
+// SPDX-License-Identifier: MIT
+
+:toc:
+
+= Multiple Tools + PDS
+
+This example contains multiple free and open source static application security testing tool together with the https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
+
+|===
+|Name |Supported Languages |License
+
+|https://dwheeler.com/flawfinder/[Flawfinder]
+|C/C++
+|GPL v2
+
+|https://github.com/PyCQA/bandit[Bandit]
+|Python3
+|Apache-2.0
+
+|https://github.com/ajinabraham/njsscan[njsscan]
+|NodeJS (JavaScript) 
+|LGPL-3.0
+|===
+
+The combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+
+This folder contains the necessary scripts to run the multiple tools + PDS inside a container locally. Additionally, it contains scripts to build and push the container to your container registry and a Helm chart to install and run the tools + PDS in a Kubernetes cluster.
+
+[NOTE]
+We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux image is intended for experienced Linux users.
+
+== Run Locally
+
+This is the easiest way to get started.
+
+=== Requirements
+
+Docker and Docker-Compose need to be installed:
+
+. https://docs.docker.com/engine/install/[Install Docker]
+
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Run docker as non Root user]
+
+. https://docs.docker.com/compose/install/[Install Docker-Compose]
+
+=== Single Instance
+
+Start a single instance either by using the Bash wrapper script which does setup everything <<_automatic,automatically>> or follow the steps <<_manually, manual>>.
+
+==== Automatic
+
+The folder contains a start script which does the <<_manually, manual>> steps for you:
+
+----
+./01-start-docker-compose.sh
+----
+
+or to start the Alpine Linux container:
+
+----
+./01-start-docker-compose.sh alpine
+----
+
+==== Manually
+
+. Copy `env-initial` file to `.env`
+
+. Set values in `.env` file. The values are described in the `env-example` file.
++
+[NOTE]
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+GoSec container.
+
+. Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+docker-compose --file docker-compose_pds_multi_ubuntu.yaml up --build
+----
++
+or to start the Alpine Linux container:
++
+----
+docker-compose --file docker-compose_pds_multi_alpine.yaml up --build
+----
+
+=== Scan
+
+The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
+
+==== Scan Manually
+
+. Go to PDS Bash command line (CLI) script
++
+----
+cd ../../sechub-developertools/scripts
+----
++
+The folder contains a `pds-api.sh` script.
+
+. Set variables of your PDS instance.
++
+----
+export PDS_SERVER=https://<pds-host>:<pds-port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+----
++
+The default values for the PDS-GoSec `docker-compose` examples are:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+----
++
+[TIP]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. 
+
+. Check if server is alive and running
++
+----
+./pds-api.sh check_alive
+HTTP/1.1 200 <1>
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: DENY
+Content-Length: 0
+Date: Tue, 08 Jun 2021 16:38:02 GMT
+----
++
+<1> The `HTTP/1.1 200` tells you the server is alive and running.
+
+. Create a new job to get the PDS JobUUID
++
+----
+./pds-api.sh create_job PDS_GOSEC "288607bf-ac81-4088-842c-005d5702a9e9"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+}
+----
+
+. Upload a ZIP file with Go code
++
+----
+./pds-api.sh upload_zip "8d4236cf-b512-40bc-bb70-c247fa4c9c37" /home/<myuser>/go_code.zip
+----
++
+[TIP]
+GoSec provides vulnerable code samples: https://securego.io/docs/rules/g201-g202.html. Simply, take some of them and put them into a folder. Afterwards, ZIP the folder and upload it.
+
+. Mark the job ready to start
++
+----
+./pds-api.sh mark_job_ready_to_start "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
+
+. Check if the job is `DONE`
++
+----
+./pds-api.sh job_status "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+{
+  "jobUUID": "8d4236cf-b512-40bc-bb70-c247fa4c9c37",
+  "owner": "pds-dev-admin",
+  "created": "2021-06-08T16:45:00.111031",
+  "started": "2021-06-08T16:52:42.407752",
+  "ended": "2021-06-08T16:52:43.663005",
+  "state": "DONE" <1>
+}
+----
++
+<1> Job is `DONE`.
+
+. Download the job result
++
+----
+$ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+----
++
+Output
++
+[source,json]
+----
+{
+	"runs": [
+		{
+			"results": [
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "code/hardcoded_password.go"
+								},
+								"region": {
+									"endColumn": 9,
+									"endLine": 7,
+									"snippet": {
+										"text": "6:     username := \"admin\"\n7:     var password = \"f62e5bcda4fae4f82370da0c6f20697b8f8447ef\"\n8: \n"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 9,
+									"startLine": 7
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "Potential hardcoded credentials"
+					},
+					"ruleId": "G101"
+				},
+				{
+					"level": "error",
+					"locations": [
+						{
+							"physicalLocation": {
+								"artifactLocation": {
+									"uri": "code/sql_injection.go"
+								},
+								"region": {
+									"endColumn": 10,
+									"endLine": 12,
+									"snippet": {
+										"text": "11:     }\n12:     q := fmt.Sprintf(\"SELECT * FROM foo where name = '%s'\", os.Args[1])\n13:     rows, err := db.Query(q)\n"
+									},
+									"sourceLanguage": "go",
+									"startColumn": 10,
+									"startLine": 12
+								}
+							}
+						}
+					],
+					"message": {
+						"text": "SQL string formatting"
+					},
+					"ruleId": "G201",
+					"ruleIndex": 1
+				}
+			],
+			"taxonomies": [
+				{
+					"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
+					"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+					"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
+					"isComprehensive": true,
+					"language": "en",
+					"minimumRequiredLocalizedDataSemanticVersion": "4.4",
+					"name": "CWE",
+					"organization": "MITRE",
+					"releaseDateUtc": "2021-03-15",
+					"shortDescription": {
+						"text": "The MITRE Common Weakness Enumeration"
+					},
+					"taxa": [
+						{
+							"fullDescription": {
+								"text": "The software contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data."
+							},
+							"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
+							"helpUri": "https://cwe.mitre.org/data/definitions/798.html",
+							"id": "798",
+							"shortDescription": {
+								"text": "Use of Hard-coded Credentials"
+							}
+						},
+						{
+							"fullDescription": {
+								"text": "The software constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+							},
+							"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+							"helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+							"id": "89",
+							"shortDescription": {
+								"text": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+							}
+						}
+					],
+					"version": "4.4"
+				}
+			],
+			"tool": {
+				"driver": {
+					"guid": "8b518d5f-906d-39f9-894b-d327b1a421c5",
+					"informationUri": "https://github.com/securego/gosec/",
+					"name": "gosec",
+					"rules": [
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
+								"text": "Potential hardcoded credentials"
+							},
+							"help": {
+								"text": "Potential hardcoded credentials\nSeverity: HIGH\nConfidence: LOW\n"
+							},
+							"id": "G101",
+							"name": "Potential hardcoded credentials",
+							"properties": {
+								"precision": "low",
+								"tags": [
+									"security",
+									"HIGH"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
+										"id": "798",
+										"toolComponent": {
+											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+											"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "Potential hardcoded credentials"
+							}
+						},
+						{
+							"defaultConfiguration": {
+								"level": "error"
+							},
+							"fullDescription": {
+								"text": "SQL string formatting"
+							},
+							"help": {
+								"text": "SQL string formatting\nSeverity: MEDIUM\nConfidence: HIGH\n"
+							},
+							"id": "G201",
+							"name": "SQL string formatting",
+							"properties": {
+								"precision": "high",
+								"tags": [
+									"security",
+									"MEDIUM"
+								]
+							},
+							"relationships": [
+								{
+									"kinds": [
+										"superset"
+									],
+									"target": {
+										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
+										"id": "89",
+										"toolComponent": {
+											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+											"name": "CWE"
+										}
+									}
+								}
+							],
+							"shortDescription": {
+								"text": "SQL string formatting"
+							}
+						}
+					],
+					"semanticVersion": "2.8.0",
+					"supportedTaxonomies": [
+						{
+							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+							"name": "CWE"
+						}
+					],
+					"version": "2.8.0"
+				}
+			}
+		}
+	],
+	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	"version": "2.1.0"
+}
+----
++
+[NOTE]
+This is an example output. The output can be very different depending on the files you scanned. The output depends on the uploaded `ZIP` file.
+
+==== Scan Script 
+
+It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+
+. Set the environment variables
++
+----
+export PDS_SERVER=https://<pds-host>:<port>
+export PDS_USERID=admin
+export PDS_APITOKEN="<pds-admin-apitoken>"
+----
++
+For example:
++
+----
+export PDS_SERVER=https://localhost:8444
+export PDS_USERID=admin
+export PDS_APITOKEN="pds-apitoken"
+----
++
+[NOTE]
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+GoSec in Kubernetes or other environments those values will be different.
+
+. Scan by providing a `ZIP` folder with Go source code.
++
+----
+./70-test.sh <path-to-zip-file>
+----
++
+For example:
++
+----
+./70-test.sh ~/myproject.zip
+----
+
+=== Cluster
+
+The cluster is created locally via `docker-compose`.
+
+==== Shared Volume
+
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
+
+image::cluster_shared_volume.svg[Components of cluster with shared volume]
+
+===== Automatic
+
+Starting several PDS + GoSec instances:
+
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + GoSec instances:
+
+----
+./50-start-multiple-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster`
++
+NOTE: It is recommended to change the passwords in `.env-cluster`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./50-start-multiple-docker-compose.sh <replicas>
+----
+
+==== Object Storage
+
+WARNING: Please beware, that the object storage Docker image contains content licensed under AGPL. For example MinIO, which are not covered under the MIT license of this repository.
+
+The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+
+The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
+
+image::cluster_object_storage.svg[Components of cluster with object storage]
+
+===== Automatic
+
+Starting several PDS + GoSec instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+Example of starting 3 PDS + GoSec instances
+
+----
+./51-start-multiple-object-storage-docker-compose.sh 3
+----
+
+===== Manually
+
+. Copy `env-cluster-initial` file to `.env-cluster-object-storage`
++
+NOTE: It is recommended to change the passwords in `.env-cluster-object-storage`. Other values can be changed as well. Be aware, that a change of values requires a restart of all containers in the cluster.
+
+. Set `S3_ENABLED` to `true`.
++
+----
+S3_ENABLED=true
+----
+
+. Start cluster using https://docs.docker.com/compose/[Docker Compose]:
++
+----
+./51-start-multiple-object-storage-docker-compose.sh <replicas>
+----
+
+=== Change the Configuration
+
+There are several configuration options available for the PDS+GoSec `docker-compose` files. Have a look at `env-example` for more details.
+
+=== Troubleshooting
+
+This section contains information about how to troubleshoot PDS+GoSec if something goes wrong.
+
+==== Access the Ubuntu container
+
+----
+docker exec -it pds-gosec-ubuntu bash
+----
+
+==== Access the Alpine Linux container
+
+----
+docker exec -it pds-gosec-alpine sh
+----
+
+==== Java Application Remote Debugging of PDS
+
+. Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
+
+. Connect via remote debugging to the `pds`
++
+connect via CLI
+(see: )
++
+----
+jdb -attach localhost:15024
+----
++
+TIP: https://www.baeldung.com/java-application-remote-debugging[Java Application Remote Debugging] and https://www.tutorialspoint.com/jdb/jdb_basic_commands.htm[JDB - Basic Commands]
++
+or connect via IDE (e. g. Eclipse IDE, VSCodium, Eclipse Theia, IntelliJ etc.).
++
+TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php[Debugging the Eclipse IDE for Java Developers]
+
+== Build Image and Push to Registry
+
+Build container images and push them to registry to run PDS+GoSec on virtual machines, Kubernetes or any other distributed system.
+
+=== Build Image
+
+Build the container image.
+
+==== Ubuntu
+
+. Using the default image: 
++
+----
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+. Using your own base image:
++
+----
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+----
+
+==== Alpine
+
+. Using the default image: 
++
+----
+./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+. Using your own base image:
++
+----
+./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
+----
+
+=== Push Image to Registry
+
+Push the container image to a registry.
+
+* Push the version tag only
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+----
+
+* Push the version and `latest` tags
++
+----
+./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+----
+
+== Kubernetes
+
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+GoSec in Kubernetes.
+
+=== Helm
+
+https://helm.sh/[Helm] is a package manager for Kubernetes.
+
+==== Requierments
+
+* https://helm.sh/docs/intro/install/[Helm] installed
+* `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
+
+==== Installation
+
+. Create a `myvalues.yaml` configuration file
++
+A minimal example configuration file with one instance:
++
+[source,yaml]
+----
+replicaCount: 1
+
+image:
+   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   tag: latest
+
+pds:
+   startMode: localserver
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+
+storage:
+    local:
+        enabled: true
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage:
++
+[source,yaml]
+----
+replicaCount: 3
+
+image:
+   registry: my.registry.example.org/pds_gosec
+   tag: latest
+
+pds:
+   startMode: localserver
+   keepContainerAliveAfterPDSCrashed: true
+
+users:
+   admin:
+      id: "admin"
+      apiToken: "{noop}<my-admin-password>"
+   technical:
+      id: "techuser"
+      apiToken: "{noop}<my-technical-password>"
+      
+
+database:
+    postgres:
+        enabled: true
+        connection: "jdbc:postgresql://<my-database-host>:<port>/<my-database>"
+        username: "<username-for-my-database>"
+        password: "<password-for-my-database>"
+
+storage:
+    local:
+        enabled: false
+    s3:
+        enabled: true
+        endpoint: "https://<my-s3-object-storage>:443"
+        bucketname: "<my-bucket>"
+        accesskey: "<my-accesskey>"
+        secretkey: "<my-secretkey>"
+
+networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+                name: sechub-server
+        - podSelector:
+            matchLabels:
+                name: sechub-adminserver
+----
++
+[TIP]
+To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''`, `openssl rand -base64 15`, `apg -MSNCL -m 15 -x 20` or `shuf -zer -n20  {A..Z} {a..z} {0..9}`.
+
+. Install helm package from file system
++
+----
+helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+----
++
+[TIP]
+Use `helm --namespace <my-namespace> install…` to install the helm chart into another namespace in the Kubernetes cluster.
+
+. List pods
++
+----
+kubectl get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+pds-gosec-545f5bc8-7s6rh         1/1     Running   0          1m43s
+pds-gosec-545f5bc8-px9cs         1/1     Running   0          1m43s
+pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
+
+----
+
+. Forward port of one of the pods to own machine
++
+----
+kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
+----
+
+. Scan as explained in <<_scan>>.
+
+==== Upgrade
+
+In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
+
+----
+helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
+----
+
+==== Uninstall 
+
+. Helm list
++
+----
+helm list
+NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
+----
+
+. Helm uninstall
++
+----
+helm uninstall pds-gosec
+----
+
+=== Troubleshooting
+
+* Access deployment events.
++
+----
+kubectl describe pod pds-gosec-545f5bc8-7s6rh
+…
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-gosec-749fcb8d7f-jjqwn to kube-node01
+  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_gosec:v0.1"
+  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_gosec:v0.1" in 13.815348799s
+  Normal  Created    15s   kubelet            Created container pds-gosec
+  Normal  Started    10s   kubelet            Started container pds-gosec
+----
+
+* Access container logs.
++
+----
+kubectl logs pds-gosec-545f5bc8-7s6rh
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.4.0)
+
+2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-gosec-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by gosec in /workspace)
+2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
+2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
+2021-06-09 14:46:09.000  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-06-09 14:46:09.228  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-06-09 14:46:09.485  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-06-09 14:46:10.243  INFO 7 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2021-06-09 14:46:10.439  INFO 7 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
+2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+----
