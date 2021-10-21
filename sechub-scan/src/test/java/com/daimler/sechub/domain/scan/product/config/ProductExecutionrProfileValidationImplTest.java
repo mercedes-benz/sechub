@@ -10,8 +10,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.daimler.sechub.sharedkernel.validation.ProfileDescriptionValidation;
 import com.daimler.sechub.sharedkernel.validation.ProductExecutionProfileIdValidation;
+import com.daimler.sechub.sharedkernel.validation.ProfileDescriptionValidation;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;
 

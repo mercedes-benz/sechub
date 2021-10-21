@@ -77,7 +77,7 @@ public class AsUser {
     }
 
     public List<String> listAllUserIds() {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminListsUsersUrl());
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminListsUsersUrl());
         SimpleTestStringList list = JSONConverter.get().fromJSON(SimpleTestStringList.class, json);
         return list;
     }
@@ -202,7 +202,7 @@ public class AsUser {
 
     public TestExecutionProfile fetchProductExecutionProfile(String profileId) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
     }
 
@@ -213,7 +213,7 @@ public class AsUser {
 
     public String fetchProductExecutionProfilesAsJSON() {
         String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionProfiles();
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return json;
     }
 
@@ -238,7 +238,7 @@ public class AsUser {
 
     public AsUser addConfigurationToProfile(String profileId, UUID... uuids) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
 
         for (UUID uuid : uuids) {
@@ -253,7 +253,7 @@ public class AsUser {
 
     public AsUser removeConfigurationFromProfile(String profileId, UUID... uuids) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutionProfile(profileId);
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         TestExecutionProfile profile = JSONConverter.get().fromJSON(TestExecutionProfile.class, json);
 
         for (UUID uuid : uuids) {
@@ -280,13 +280,13 @@ public class AsUser {
 
     public String fetchProductExecutorConfigListAsJSON() {
         String url = getUrlBuilder().buildAdminFetchesListOfProductExecutionConfigurations();
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
         return json;
     }
 
     public String fetchProductExecutorConfigAsJSON(UUID uuid) {
         String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     public TestExecutorConfig fetchProductExecutorConfig(UUID uuid) {
@@ -339,7 +339,7 @@ public class AsUser {
      */
     public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAdminChangesProjectOwnerUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
     }
 
@@ -479,7 +479,7 @@ public class AsUser {
     }
 
     public String getJobStatus(String projectId, UUID jobUUID) {
-        return getRestHelper().getJSon(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobStatusUrl(projectId, jobUUID.toString()));
     }
 
     public String getJobReport(TestProject project, UUID jobUUID) {
@@ -506,7 +506,7 @@ public class AsUser {
                     + jobstatus);
         }
         /* okay report is available - so do download */
-        return getRestHelper().getJSon(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
+        return getRestHelper().getJSON(getUrlBuilder().buildGetJobReportUrl(projectId, jobUUID));
     }
 
     /**
@@ -660,7 +660,7 @@ public class AsUser {
     }
 
     public String getServerVersion() {
-        return getRestHelper().getJSon(getUrlBuilder().buildGetServerVersionUrl());
+        return getRestHelper().getJSON(getUrlBuilder().buildGetServerVersionUrl());
     }
 
     public boolean getIsAlive() {
@@ -688,7 +688,7 @@ public class AsUser {
 
     public String getScanLogsForProject(TestProject project1) {
         String url = getUrlBuilder().buildAdminFetchesScanLogsForProject(project1.getProjectId());
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     /**
@@ -734,7 +734,7 @@ public class AsUser {
 
     public String getProjectMockConfiguration(TestProject project1) {
         String url = getUrlBuilder().buildGetProjectMockConfiguration(project1.getProjectId());
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
 
     }
 
@@ -746,13 +746,13 @@ public class AsUser {
 
     public MappingData getMappingData(String mappingId) {
         String url = getUrlBuilder().buildGetMapping(mappingId);
-        return MappingData.fromString(getRestHelper().getJSon(url));
+        return MappingData.fromString(getRestHelper().getJSON(url));
     }
 
     public ProjectFalsePositivesDefinition getFalsePositiveConfigurationOfProject(TestProject project) {
 
         String url = getUrlBuilder().buildGetFalsePositiveConfigurationOfProject(project.getProjectId());
-        String json = getRestHelper().getJSon(url);
+        String json = getRestHelper().getJSON(url);
 
         return create(project, json);
 

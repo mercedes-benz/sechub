@@ -18,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.integrationtest.api.IntegrationTestJSONLocation;
 import com.daimler.sechub.integrationtest.api.IntegrationTestMockMode;
@@ -130,6 +131,7 @@ public class SecHubExecutionScenarioSecHubClientIntTest {
 		as(user).
 			withSecHubClient().
 			startDownloadJobReport(project, jobUUID, location).
+			hasStatus(SecHubStatus.SUCCESS).
 			hasTrafficLight(TrafficLight.GREEN)
 
 			;

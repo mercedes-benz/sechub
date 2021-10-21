@@ -2,6 +2,8 @@
 package com.daimler.sechub.sereco.importer;
 
 import com.daimler.sechub.sereco.ImportParameter;
+import com.daimler.sechub.sereco.metadata.SerecoAnnotation;
+import com.daimler.sechub.sereco.metadata.SerecoAnnotationType;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
@@ -21,15 +23,24 @@ public class ProductFailureMetaDataBuilder {
 		description.append(productId);
 		description.append("' failed, so cannot give a correct answer.");
 
+		String descriptionAsString = description.toString();
 		SerecoMetaData data = new SerecoMetaData();
 
-		SerecoVulnerability v = new SerecoVulnerability();
-		v.setSeverity(SerecoSeverity.CRITICAL);
-		v.setType("SecHub failure");
-		v.setDescription(description.toString());
+		/* deprecated way: we add an artifical vulnerability */
+		SerecoVulnerability vulnerability = new SerecoVulnerability();
+		vulnerability.setSeverity(SerecoSeverity.CRITICAL);
+		vulnerability.setType("SecHub failure");
+        vulnerability.setDescription(descriptionAsString);
 
-		data.getVulnerabilities().add(v);
-
+		data.getVulnerabilities().add(vulnerability);
+		
+		/* new way */
+		SerecoAnnotation failedMessage = new SerecoAnnotation();
+		failedMessage.setValue(descriptionAsString);
+		failedMessage.setType(SerecoAnnotationType.INTERNAL_ERROR_PRODUCT_FAILED);
+		
+		data.getAnnotations().add(failedMessage);
+		
 		return data;
 	}
 

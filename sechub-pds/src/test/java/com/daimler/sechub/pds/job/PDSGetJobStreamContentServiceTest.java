@@ -68,6 +68,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.outputStreamText = "output1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(false);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(false); // after mark for refresh the next check accepts the "update"
 
@@ -88,6 +89,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.errorStreamText = "err1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(false);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(false); // after mark for refresh the next check accepts the "update"
 
@@ -108,6 +110,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.outputStreamText = "output1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(false); // after mark for refresh the next check accepts the "update"
 
@@ -128,6 +131,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.errorStreamText = "err1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(false); // after mark for refresh the next check accepts the "update" // after
                                                                                          // mark for refresh the next check accepts the "update"
@@ -149,6 +153,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.outputStreamText = "output1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true).thenReturn(false); // at least one wait
 
@@ -169,6 +174,7 @@ class PDSGetJobStreamContentServiceTest {
         PDSJob job = prepareJobCanBeFound();
         job.errorStreamText = "err1";
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true).thenReturn(false); // at least one wait
 
@@ -191,12 +197,31 @@ class PDSGetJobStreamContentServiceTest {
 
         serviceToTest.maximumRefreshCheckRetries = 1; // only one retry...
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true); // first wait says still update necessary...
 
         /* execute + test */
         IllegalStateException result = assertThrows(IllegalStateException.class, () -> serviceToTest.getJobOutputStreamContentAsText(job.getUUID()));
         assertTrue(result.getMessage().contains("Timeout!"));
+
+    }
+    
+    
+    @Test
+    void checker_update_necessary__fetch_output_waits_fails_not_when_job_in_state_where_no_update_necessary() {
+        /* prepare */
+        PDSJob job = prepareJobCanBeFound();
+        job.errorStreamText = "err1";
+
+        serviceToTest.maximumRefreshCheckRetries = 1; // only one retry...
+
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(false);
+        when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
+        when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true); // first wait says still update necessary...
+
+        /* execute + test */
+        serviceToTest.getJobOutputStreamContentAsText(job.getUUID());
 
     }
 
@@ -208,6 +233,7 @@ class PDSGetJobStreamContentServiceTest {
 
         serviceToTest.maximumRefreshCheckRetries = 1; // only one retry...
 
+        when(refreshCheckCalculator.isJobInStateWhereUpdateNecessary(job)).thenReturn(true);
         when(refreshCheckCalculator.isUpdateNecessaryWhenRefreshRequestedNow(job)).thenReturn(true);
         when(refreshCheckCalculator.isLastUpdateTooOld(any(), any())).thenReturn(true).thenReturn(true); // first wait says still update necessary...
 

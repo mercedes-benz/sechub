@@ -11,7 +11,7 @@ public class EventInspectionAPI {
     public static Map<String, String> fetchMap() {
         IntegrationTestContext context = IntegrationTestContext.get();
         String url = context.getUrlBuilder().buildIntegrationTestFetchEventInspectionStatus();
-        String json = context.getSuperAdminRestHelper().getJSon(url);
+        String json = context.getSuperAdminRestHelper().getJSON(url);
         @SuppressWarnings("unchecked")
         Map<String, String> map = JSONConverter.get().fromJSON(Map.class, json);
         return map;

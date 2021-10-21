@@ -47,6 +47,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final String PDS_CODESCAN_VARIANT_D = "d";
     public static final String PDS_CODESCAN_VARIANT_E = "e";
     public static final String PDS_CODESCAN_VARIANT_F = "f";
+    public static final String PDS_CODESCAN_VARIANT_G = "g";
 
     /* @formatter:off */
     public static final TestExecutorConfig PDS_V1_CODE_SCAN_A = definePDSScan(
@@ -79,12 +80,17 @@ public class IntegrationTestDefaultExecutorConfigurations {
                                                 PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
                                                 StorageType.REUSE_SECHUB_DATA);
     
+    public static final TestExecutorConfig PDS_V1_CODE_SCAN_G_FAIL_EXIT_CODE_1 = definePDSScan(
+                                                PDS_CODESCAN_VARIANT_G,false,
+                                                PDSIntTestProductIdentifier.PDS_INTTEST_CODESCAN,
+                                                StorageType.REUSE_SECHUB_DATA);
     /* @formatter:on */
 
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID = "TEST_PDS_TECHUSER_ID";
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_APITOKEN = "TEST_PDS_TECHUSER_APITOKEN";
 
     public static final String JOBPARAM_PDS_KEY_FOR_VARIANTNAME = "pds.test.key.variantname";
+
 
     public static List<TestExecutorConfig> getAllConfigurations() {
         return Collections.unmodifiableList(registeredConfigurations);
