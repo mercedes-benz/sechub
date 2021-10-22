@@ -44,7 +44,7 @@ public class KeyValueUI implements TemplateDataUIPart {
         
         /* when recommended, we provide the recommended value initially - will be overridden when defined */
         if (data.necessarity == Necessarity.RECOMMENDED) {
-            if (data.recommendedValue != null || !data.recommendedValue.isEmpty()) {
+            if (data.recommendedValue != null && !data.recommendedValue.isEmpty()) {
                 textArea.setText(data.recommendedValue);
             }
 

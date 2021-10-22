@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 
 # define fd 3 to log into console and log file
 exec 3>&1 1>>integrationtest-console.log 2>&1

@@ -7,9 +7,10 @@
  */
 dependencies {
 
+    implementation project(':sechub-commons-pds')
+
     compile project(':sechub-scan')
     compile project(':sechub-adapter-pds')
-
     testCompile project(':sechub-testframework')
 }
 

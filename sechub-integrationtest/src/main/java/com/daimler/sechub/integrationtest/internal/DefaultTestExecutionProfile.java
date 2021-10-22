@@ -12,7 +12,19 @@ import com.daimler.sechub.test.executorconfig.TestExecutorConfig;
  * @author Albert Tregnaghi
  *
  */
-public class DoNotChangeTestExecutionProfile extends TestExecutionProfile{
+public class DefaultTestExecutionProfile extends TestExecutionProfile{
+    
+    static List<DefaultTestExecutionProfile> allDefaultTestExecutionProfiles=new ArrayList<>();
+    
+    
 
+    /**
+     * Contains all executor configuration entities for this profile (but at the beginning they 
+     * have not the correct UUID) 
+     */
     List<TestExecutorConfig> initialConfigurationsWithoutUUID = new ArrayList<>();  
+    
+    DefaultTestExecutionProfile(){
+        allDefaultTestExecutionProfiles.add(this);
+    }
 }
