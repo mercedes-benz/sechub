@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.daimler.sechub.commons.model;
 
 import java.util.Optional;
@@ -59,10 +60,7 @@ public class SecHubConfigurationModelReducedCloningSupport {
             }
             break;
         }
-        /*
-         * we want to have a deep clone - without references to origin parts. So we just
-         * serialize and deserialize back to have new instances...
-         */
+
         String json = newModel.toJSON();
         return json;
     }

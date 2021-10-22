@@ -32,17 +32,15 @@ public class PDSWebScanJobScenario12IntTest {
     @Rule
     public Timeout timeOut = Timeout.seconds(600);
 
-    TestProject project = PROJECT_1;
-
     @Test
     public void pds_web_scan_has_expected_info_finding_with_given_target_url_and_product2_level_information_and_sechub_web_config_parts() {
         /* @formatter:off */
 
         /* prepare */
-        String targetURL = "https://mytargeturl.example.com/app1";
         TestProject project = PROJECT_1;
-        as(SUPER_ADMIN).updateWhiteListForProject(PROJECT_1, Arrays.asList(targetURL));
-        UUID jobUUID = as(USER_1).createWebScan(PROJECT_1, targetURL);
+        String targetURL = "https://mytargeturl.example.com/app1";
+        as(SUPER_ADMIN).updateWhiteListForProject(project, Arrays.asList(targetURL));
+        UUID jobUUID = as(USER_1).createWebScan(project, targetURL);
         
         /* execute */
         as(USER_1).

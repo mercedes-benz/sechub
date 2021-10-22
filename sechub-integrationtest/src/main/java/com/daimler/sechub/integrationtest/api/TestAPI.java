@@ -25,7 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
-import com.daimler.sechub.integrationtest.internal.DoNotChangeTestExecutionProfile;
+import com.daimler.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -310,12 +310,12 @@ public class TestAPI {
     }
 
     public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
-        executeCallableAndAcceptAssertionsMaximumTimes(tries, ()-> {
+        executeCallableAndAcceptAssertionsMaximumTimes(tries, () -> {
             runnable.run();
             return null;
         }, millisBeforeNextRetry);
     }
-    
+
     public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
         T result = null;
         AssertionFailedError failure = null;
@@ -892,7 +892,7 @@ public class TestAPI {
     }
 
     public static void assertNoDefaultProfileId(String profileId) {
-        for (DoNotChangeTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()) {
+        for (DefaultTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()){
             if (doNotChangeProfile.id.equals(profileId)) {
                 throw new IllegalArgumentException("Profile " + profileId
                         + " is a default profile and may not be changed! This would destroy test scenarios! Please define own profiles in your tests and change them!");
@@ -900,7 +900,7 @@ public class TestAPI {
         }
     }
 
-    public static boolean canReloadExecutionProfileData(DoNotChangeTestExecutionProfile profile) {
+    public static boolean canReloadExecutionProfileData(DefaultTestExecutionProfile profile) {
         if (!TestAPI.isExecutionProfileExisting(profile.id)) {
             return false;
         }
@@ -948,8 +948,8 @@ public class TestAPI {
     }
 
     /**
-     * Wait that project does not exist. Will try 9 times with 330 milliseconds delay before
-     * next retry. After this time this method will fail.
+     * Wait that project does not exist. Will try 9 times with 330 milliseconds
+     * delay before next retry. After this time this method will fail.
      * 
      * @param project
      */

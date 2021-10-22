@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 # Inside this test script we just do some output which will be fetched from integration tests
 # and then inspected and asserted

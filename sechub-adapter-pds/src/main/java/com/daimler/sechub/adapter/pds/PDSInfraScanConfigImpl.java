@@ -43,13 +43,12 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
 
         @Override
         protected void customBuild(PDSInfraScanConfigImpl config) {
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE, config.getTargetType());
+
             if (configurationModel != null) {
                 String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
                         ScanType.INFRA_SCAN);
-                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, reducedConfigJSON);
             }
 
             config.jobParameters = Collections.unmodifiableMap(jobParameters);

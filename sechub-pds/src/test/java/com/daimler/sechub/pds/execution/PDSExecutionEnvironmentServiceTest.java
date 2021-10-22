@@ -32,13 +32,13 @@ class PDSExecutionEnvironmentServiceTest {
     }
 
     @Test
-    void even_for_an_empty_product_setup_execution_environment_servicer_accepts_default_parameter_key_target_url() {
+    void even_for_an_empty_product_setup_execution_environment_service_accepts_default_parameter_key_target_url() {
         /* prepare */
         // create job configuration
         PDSJobConfiguration config = new PDSJobConfiguration();
         config.setProductId("productid1");
         PDSExecutionParameterEntry entry1 = new PDSExecutionParameterEntry();
-        entry1.setKey(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL);
+        entry1.setKey(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL);
         entry1.setValue("https://testurl.example.com/app1");
         
         config.getParameters().add(entry1);
@@ -50,7 +50,7 @@ class PDSExecutionEnvironmentServiceTest {
         when(serverConfigService.getProductSetupOrNull("productid1")).thenReturn(setup);
         
         // fake key conversion
-        when(converter.convertKeyToEnv(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL)).thenReturn("PDS_SCAN_TARGET_URL");
+        when(converter.convertKeyToEnv(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL)).thenReturn("PDS_SCAN_TARGET_URL");
         
         /* execute */
         Map<String, String> result = serviceToTest.buildEnvironmentMap(config);
@@ -60,7 +60,7 @@ class PDSExecutionEnvironmentServiceTest {
     }
     
     @Test
-    void a_job_with_two_configured_keys_is_is_handling_them_but_third_own_is_ignored() {
+    void a_job_with_two_configured_keys_is_is_handling_them_but_third_one_is_ignored() {
         /* prepare */
         // create job configuration
         PDSJobConfiguration config = new PDSJobConfiguration();

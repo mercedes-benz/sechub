@@ -101,8 +101,8 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
 
                 /* @formatter:off */
 
-					Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-					
+                    Map<String, String> jobParams = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+                    
                     PDSCodeScanConfig pdsCodeScanConfig =PDSCodeScanConfigImpl.builder().
                             setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
                             setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
@@ -110,25 +110,25 @@ public class PDSCodeScanProductExecutor extends AbstractCodeScanProductExecutor<
                             setSecHubJobUUID(context.getSechubJobUUID()).
                             
                             setSecHubConfigModel(context.getConfiguration()).
-							
+                            
                             configure(createAdapterOptionsStrategy(context)).
                             
-							setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
-							setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
-							
-							setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
-							setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
-							setSourceZipFileChecksum(sourceZipFileChecksum).
-							
-							setUser(configSupport.getUser()).
-							setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-							setProjectId(projectId).
-							
-							setTraceID(context.getTraceLogIdAsString()).
-							setJobParameters(jobParams).
-							
-							build();
-					/* @formatter:on */
+                            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
+                            setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+                            
+                            setFileSystemSourceFolders(info.getCodeUploadFileSystemFolders()).
+                            setSourceCodeZipFileInputStream(sourceCodeZipFileInputStream).
+                            setSourceZipFileChecksum(sourceZipFileChecksum).
+                            
+                            setUser(configSupport.getUser()).
+                            setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+                            setProjectId(projectId).
+                            
+                            setTraceID(context.getTraceLogIdAsString()).
+                            setJobParameters(jobParams).
+                            
+                            build();
+                    /* @formatter:on */
 
                 /* inspect */
                 MetaDataInspection inspection = scanMetaDataCollector.inspect(ProductIdentifier.PDS_CODESCAN.name());

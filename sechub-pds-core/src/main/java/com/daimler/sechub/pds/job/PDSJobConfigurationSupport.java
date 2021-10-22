@@ -14,11 +14,11 @@ public class PDSJobConfigurationSupport {
     }
 
     public boolean isSecHubStorageEnabled() {
-        return isEnabled(PARAM_KEY_USE_SECHUB_STORAGE);
+        return isEnabled(PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
     }
 
     public String getSecHubStoragePath() {
-        return getStringParameterOrNull(PARAM_KEY_SECHUB_STORAGE_PATH);
+        return getStringParameterOrNull(PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH);
     }
 
     public boolean isEnabled(String key) {

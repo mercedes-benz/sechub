@@ -175,7 +175,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return;
         }
 
-        String useSecHubStorage = config.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        String useSecHubStorage = config.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
         if (Boolean.parseBoolean(useSecHubStorage)) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
             return;

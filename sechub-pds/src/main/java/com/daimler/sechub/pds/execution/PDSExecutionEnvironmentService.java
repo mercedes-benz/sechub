@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
-import com.daimler.sechub.commons.pds.RuntimeEnvironmentKey;
+import com.daimler.sechub.commons.pds.ExecutionPDSKey;
 import com.daimler.sechub.pds.config.PDSProductSetup;
 import com.daimler.sechub.pds.config.PDSProdutParameterDefinition;
 import com.daimler.sechub.pds.config.PDSProdutParameterSetup;
@@ -53,11 +53,11 @@ public class PDSExecutionEnvironmentService {
 
         boolean validParam = false;
         for (PDSConfigDataKeyProvider provider : PDSConfigDataKeyProvider.values()) {
-            RuntimeEnvironmentKey runtimeKey = provider.getKey();
-            if (!runtimeKey.getId().equals(jobParam.getKey())) {
+            ExecutionPDSKey key = provider.getKey();
+            if (!key.getId().equals(jobParam.getKey())) {
                 continue;
             }
-            validParam = runtimeKey.isGenerated() || runtimeKey.isMandatory();
+            validParam = key.isAvailableInsideScript();
         }
         validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getMandatory());
         validParam = validParam || isJobParameterAcceptedByPDSServerConfiguration(jobParam, params.getOptional());

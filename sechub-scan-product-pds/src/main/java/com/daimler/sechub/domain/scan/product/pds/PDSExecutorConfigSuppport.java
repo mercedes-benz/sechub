@@ -61,19 +61,19 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
             }
         }
         /* provide SecHub storage when necessary */
-        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        String useSecHubStorage = parametersToSend.get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
         if (Boolean.parseBoolean(useSecHubStorage)) {
             String projectId = secHubConfiguration.getProjectId();
             String sechubStoragePath = SecHubStorageUtil.createStoragePath(projectId);
 
-            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_STORAGE_PATH, sechubStoragePath);
+            parametersToSend.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, sechubStoragePath);
         }
 
         return parametersToSend;
     }
 
     public String getPDSProductIdentifier() {
-        return getParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER);
+        return getParameter(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER);
     }
 
     public int getTimeToWaitForNextCheckOperationInMilliseconds(PDSInstallSetup setup) {
@@ -109,10 +109,10 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
                 break;
             }
             PDSKey forbiddenKey = provider.getKey();
-            if (!(forbiddenKey instanceof ForbiddenTargetTypeKey)) {
+            if (!(forbiddenKey instanceof ForbiddenTargetTypePDSKey)) {
                 continue;
             }
-            ForbiddenTargetTypeKey pdsForbiddenKey = (ForbiddenTargetTypeKey) forbiddenKey;
+            ForbiddenTargetTypePDSKey pdsForbiddenKey = (ForbiddenTargetTypePDSKey) forbiddenKey;
             if (!targetType.equals(pdsForbiddenKey.getForbiddenTargetType())) {
                 continue;
             }
@@ -130,12 +130,12 @@ public class PDSExecutorConfigSuppport extends DefaultExecutorConfigSupport {
         return getParameter(configDataKey.getId());
     }
 
-    private int getParameterIntValue(SecHubProductExecutionPDSKeyProvider k) {
-        return getParameterIntValue(k.getKey().getId());
+    private int getParameterIntValue(PDSKeyProvider<? extends PDSKey> provider) {
+        return getParameterIntValue(provider.getKey().getId());
     }
 
-    private boolean getParameterBooleanValue(SecHubProductExecutionPDSKeyProvider k) {
-        return getParameterBooleanValue(k.getKey().getId());
+    private boolean getParameterBooleanValue(PDSKeyProvider<? extends PDSKey> provider) {
+        return getParameterBooleanValue(provider.getKey().getId());
     }
 
 }

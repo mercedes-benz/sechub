@@ -9,9 +9,9 @@ import com.daimler.sechub.commons.pds.AbstractPDSKey;
  * @author Albert Tregnaghi
  *
  */
-public class AdapterSetupKey extends AbstractPDSKey<AdapterSetupKey> implements SecHubProductExecutionPDSKey{
+public class AdapterSetupPDSKey extends AbstractPDSKey<AdapterSetupPDSKey> implements SecHubProductExecutionPDSKey{
 
-    AdapterSetupKey(String id, String description) {
+    AdapterSetupPDSKey(String id, String description) {
         super(id, description);
     }
 

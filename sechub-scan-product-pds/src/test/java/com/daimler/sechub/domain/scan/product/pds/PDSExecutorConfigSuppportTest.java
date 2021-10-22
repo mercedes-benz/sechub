@@ -34,7 +34,7 @@ public class PDSExecutorConfigSuppportTest {
         setup = mock(ProductExecutorConfigSetup.class);
         
         jobParameters=new ArrayList<>();
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
         jobParameters.add(new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
         

@@ -148,8 +148,8 @@ public class IntegrationTestDefaultExecutorConfigurations {
         boolean useSecHubStorage = storageType == StorageType.REUSE_SECHUB_DATA;
 
         List<TestExecutorSetupJobParam> jobParameters = config.setup.jobParameters;
-        jobParameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PRODUCT_IDENTIFIER, productIdentifierId));
-        jobParameters.add(new TestExecutorSetupJobParam(PARAM_KEY_USE_SECHUB_STORAGE, Boolean.valueOf(useSecHubStorage).toString()));
+        jobParameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_PRODUCTIDENTIFIER, productIdentifierId));
+        jobParameters.add(new TestExecutorSetupJobParam(PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, Boolean.valueOf(useSecHubStorage).toString()));
 
         jobParameters.add(new TestExecutorSetupJobParam(TRUST_ALL_CERTIFICATES, "true")); // accept self signed certificates for
                                                                                           // testing

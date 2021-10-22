@@ -266,7 +266,7 @@ public class DeveloperAdministration {
                     sb.append("# ---------------------\n");
                     sb.append("# sechub call needs:   \n");
                     sb.append("# ---------------------\n");
-                    sb.append(PDSDefaultParameterKeyConstants.PARAM_KEY_PRODUCT_IDENTIFIER+"=" + c.id + "\n");
+                    sb.append(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCTIDENTIFIER+"=" + c.id + "\n");
                     sb.append("# Optional:\n");
                     sb.append("# "+SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId()+"=true #does stop executing this one for internet\n");
                     sb.append("# "+SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId()+"=true #does stop executing this one for intranet \n");

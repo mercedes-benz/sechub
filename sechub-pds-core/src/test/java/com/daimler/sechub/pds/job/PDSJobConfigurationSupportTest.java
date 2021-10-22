@@ -48,7 +48,7 @@ class PDSJobConfigurationSupportTest {
     void get_sechub_storage_path_uses_parameter_key() {
         
         /* prepare */
-        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_STORAGE_PATH, "path/somewhere");
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, "path/somewhere");
         
         /* execute */
         String result = supportToTest.getSecHubStoragePath();
@@ -133,7 +133,7 @@ class PDSJobConfigurationSupportTest {
     void is_sechub_storage_enabled_uses_parameter_key() {
         
         /* prepare */
-        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE, "true");
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
         
         /* execute */
         boolean result = supportToTest.isSecHubStorageEnabled();

@@ -72,8 +72,8 @@ class PDSWorkspaceServiceTest {
         UUID secHubJobUUID = UUID.randomUUID();
 
         PDSJobConfiguration config = new PDSJobConfiguration();
-        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_USE_SECHUB_STORAGE,"true"));
-        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_SECHUB_STORAGE_PATH,"xyz/abc/project1"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE,"true"));
+        config.getParameters().add(createEntry(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH,"xyz/abc/project1"));
         config.setSechubJobUUID(secHubJobUUID);
 
         when(storage.listNames()).thenReturn(Collections.singleton("something.zip"));

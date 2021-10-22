@@ -70,37 +70,37 @@ public class PDSInfraScanProductExecutor extends AbstractInfrastructureScanProdu
         
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
-		    
-		    /* special behavior, because having multiple results here, we must find former result corresponding to 
-		     * target URI.
-		     */
-		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-		    
-		    PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
-		            setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-		            setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-		            setProductBaseUrl(configSupport.getProductBaseURL()).
-		            setSecHubJobUUID(context.getSechubJobUUID()).
+            
+            /* special behavior, because having multiple results here, we must find former result corresponding to 
+             * target URI.
+             */
+            executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
+            
+            PDSInfraScanConfig pdsInfraScanConfig = PDSInfraScanConfigImpl.builder().
+                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+                    setProductBaseUrl(configSupport.getProductBaseURL()).
+                    setSecHubJobUUID(context.getSechubJobUUID()).
 
-		            setSecHubConfigModel(context.getConfiguration()).
-		            
-		            configure(createAdapterOptionsStrategy(context)).
+                    setSecHubConfigModel(context.getConfiguration()).
+                    
+                    configure(createAdapterOptionsStrategy(context)).
 
-		            setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
+                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
                     setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
                     
                     setUser(configSupport.getUser()).
                     setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
                     setProjectId(projectId).
                     
-		            setTraceID(context.getTraceLogIdAsString()).
-					setJobParameters(jobParameters).
-					
-					setTargetIPs(info.getIPs()).
-					setTargetURIs(info.getURIs()).
+                    setTraceID(context.getTraceLogIdAsString()).
+                    setJobParameters(jobParameters).
+                    
+                    setTargetIPs(info.getIPs()).
+                    setTargetURIs(info.getURIs()).
 
-					build();
-			/* @formatter:on */
+                    build();
+            /* @formatter:on */
 
             /* execute PDS by adapter and return product result */
             String xml = pdsAdapter.start(pdsInfraScanConfig, executorContext.getCallback());

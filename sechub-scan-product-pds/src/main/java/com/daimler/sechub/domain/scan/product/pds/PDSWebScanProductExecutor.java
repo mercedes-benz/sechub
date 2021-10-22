@@ -91,38 +91,38 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         /* we currently scan always only ONE url at the same time */
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
-		    
-		    /* special behavior, because having multiple results here, we must find former result corresponding to 
-		     * target URI.
-		     */
-		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-		    
-		    ProductResult result = resilientActionExecutor.executeResilient(() -> {
-		        PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
-	                    setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-	                    setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-	                    setProductBaseUrl(configSupport.getProductBaseURL()).
-	                    setSecHubJobUUID(context.getSechubJobUUID()).
-	                    
-	                    setSecHubConfigModel(context.getConfiguration()).
+            
+            /* special behavior, because having multiple results here, we must find former result corresponding to 
+             * target URI.
+             */
+            executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
+            
+            ProductResult result = resilientActionExecutor.executeResilient(() -> {
+                PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+                        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+                        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+                        setProductBaseUrl(configSupport.getProductBaseURL()).
+                        setSecHubJobUUID(context.getSechubJobUUID()).
+                        
+                        setSecHubConfigModel(context.getConfiguration()).
 
-	                    configure(createAdapterOptionsStrategy(context)).
-	                    configure(new WebConfigBuilderStrategy(context)).
-	                    
-	                    setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
-	                    setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
-	                    
-	                    setUser(configSupport.getUser()).
-	                    setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
-	                    setProjectId(projectId).
-	                    
-	                    setTraceID(context.getTraceLogIdAsString()).
-	                    setJobParameters(jobParameters).
-	                    
-	                    setTargetURI(targetURI).
-	                    
-	                    build();
-	            /* @formatter:on */
+                        configure(createAdapterOptionsStrategy(context)).
+                        configure(new WebConfigBuilderStrategy(context)).
+                        
+                        setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
+                        setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+                        
+                        setUser(configSupport.getUser()).
+                        setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+                        setProjectId(projectId).
+                        
+                        setTraceID(context.getTraceLogIdAsString()).
+                        setJobParameters(jobParameters).
+                        
+                        setTargetURI(targetURI).
+                        
+                        build();
+                /* @formatter:on */
 
                 /* execute PDS by adapter and return product result */
                 String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());

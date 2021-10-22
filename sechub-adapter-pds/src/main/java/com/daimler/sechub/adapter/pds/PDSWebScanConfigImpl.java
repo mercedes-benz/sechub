@@ -81,13 +81,13 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_TARGET_TYPE, config.getTargetType());
-            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_TARGET_URL, config.getTargetAsString());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE, config.getTargetType());
+            jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL, config.getTargetAsString());
 
             if (configurationModel != null) {
                 String reducedConfigJSON = SecHubConfigurationModelReducedCloningSupport.DEFAULT.createReducedScanConfigurationCloneJSON(configurationModel,
                         ScanType.WEB_SCAN);
-                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_SCAN_CONFIGURATION, reducedConfigJSON);
+                jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_CONFIGURATION, reducedConfigJSON);
             }
 
             config.pdsProductIdentifier = pdsProductIdentifier;
@@ -95,7 +95,7 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
 
             int size = config.getRootTargetURIs().size();
             if (size != 1) {
-                /* wee provide ONE root uri for webscans */
+                /* We provide ONE root URI for webscans */
                 throw new IllegalStateException("netsparker must have ONE unique root target uri and not many!");
             }
             String websiteURLAsString = config.getRootTargetURIasString();
