@@ -82,6 +82,10 @@ task assembleArtifact(type: Zip, group: 'client') {
     description "Assemble archive $archiveName into ${relativePath(destinationDir)}"
 }
 
+if (buildDoneByGitHubActions ){
+    println("publish $project.name will be ignored at github actions at the moment!")
+   return;
+}
 /**
  * We currently  publish only client binaries in a zipped file, containing all build platforms - documentation can be found inside sechub-doc
  */
