@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.daimler.sechub.pds.execution.PDSExecutionParameterEntry;
 
 import static org.mockito.Mockito.*;
@@ -47,7 +48,7 @@ class PDSJobConfigurationSupportTest {
     void get_sechub_storage_path_uses_parameter_key() {
         
         /* prepare */
-        addParameter(PDSJobConfigurationSupport.PARAM_KEY_SECHUB_STORAGE_PATH, "path/somewhere");
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_SECHUB_STORAGE_PATH, "path/somewhere");
         
         /* execute */
         String result = supportToTest.getSecHubStoragePath();
@@ -132,7 +133,7 @@ class PDSJobConfigurationSupportTest {
     void is_sechub_storage_enabled_uses_parameter_key() {
         
         /* prepare */
-        addParameter(PDSJobConfigurationSupport.PARAM_KEY_USE_SECHUB_STORAGE, "true");
+        addParameter(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE, "true");
         
         /* execute */
         boolean result = supportToTest.isSecHubStorageEnabled();

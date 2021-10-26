@@ -4,6 +4,8 @@ package com.daimler.sechub.adapter;
 import javax.crypto.SealedObject;
 
 import com.daimler.sechub.commons.core.security.CryptoAccess;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
 
 public class LoginScriptAction {
 

@@ -48,11 +48,11 @@ public class NetsparkerInstallSetupImpl extends AbstractTargetIdentifyingOneInst
 	private String agentName;
 
 	@Value("${sechub.adapter.netsparker.scanresultcheck.period.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
+	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
 	private int scanResultCheckPeriodInMinutes;
 
 	@Value("${sechub.adapter.netsparker.scanresultcheck.timeout.minutes:-1}")
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK)
+	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MINUTES)
 	private int scanResultCheckTimeOutInMinutes;
 	
 	public int getScanResultCheckPeriodInMinutes() {

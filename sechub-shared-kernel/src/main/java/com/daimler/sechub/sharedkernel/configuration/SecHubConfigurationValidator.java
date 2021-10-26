@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.sharedkernel.configuration;
 
-import static com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration.*;
+import static com.daimler.sechub.commons.model.SecHubConfigurationModel.*;
 
 import java.net.URI;
 import java.util.List;
@@ -18,6 +18,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.UserContextService;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;

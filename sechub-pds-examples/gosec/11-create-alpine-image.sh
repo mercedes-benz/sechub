@@ -23,6 +23,6 @@ then
 fi
 
 echo ">> Base image: $BASE_IMAGE"
-docker build --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file context/Dockerfile-Alpine context/
+docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/GoSec-Alpine.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
 

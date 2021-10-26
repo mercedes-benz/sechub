@@ -16,7 +16,9 @@ dependencies {
     
     implementation library.apache_httpcomponents_client
 
-    testImplementation library.junit
+    testImplementation library.junit5_impl
+    testRuntimeOnly library.junit5_runtime
+    
     testImplementation library.mockito
     testImplementation library.hamcrest
 }
@@ -87,7 +89,7 @@ task buildJavaClientAll(type: Jar) {
 	group 'sechub'
     description 'This creates java client library jar containing all libraries.'
     baseName = 'sechub-java-client-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 

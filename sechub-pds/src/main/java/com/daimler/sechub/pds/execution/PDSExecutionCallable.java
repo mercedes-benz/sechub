@@ -16,14 +16,20 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.daimler.sechub.pds.PDSJSONConverterException;
+import com.daimler.sechub.pds.job.PDSCheckJobStatusService;
 import com.daimler.sechub.pds.job.PDSJobConfiguration;
 import com.daimler.sechub.pds.job.PDSJobTransactionService;
 import com.daimler.sechub.pds.job.PDSWorkspaceService;
 import com.daimler.sechub.pds.job.WorkspaceLocationData;
 import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 import com.daimler.sechub.pds.usecase.UseCaseUserCancelsJob;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor;
+import com.daimler.sechub.pds.util.PDSResilientRetryExecutor.ExceptionThrower;
 
 /**
  * Represents the callable executed inside {@link PDSExecutionFutureTask}
@@ -44,16 +50,30 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
     private UUID jobUUID;
 
+    private PDSCheckJobStatusService jobStatusService;
+
+    private ExceptionThrower<IllegalStateException> pdsJobUpdateExceptionThrower;
+
     public PDSExecutionCallable(UUID jobUUID, PDSJobTransactionService jobTransactionService, PDSWorkspaceService workspaceService,
-            PDSExecutionEnvironmentService environmentService) {
+            PDSExecutionEnvironmentService environmentService, PDSCheckJobStatusService jobStatusService) {
         notNull(jobUUID, "jobUUID may not be null!");
         notNull(jobTransactionService, "jobTransactionService may not be null!");
         notNull(workspaceService, "workspaceService may not be null!");
+        notNull(jobStatusService, "jobStatusService may not be null!");
 
         this.jobUUID = jobUUID;
         this.jobTransactionService = jobTransactionService;
         this.workspaceService = workspaceService;
         this.environmentService = environmentService;
+        this.jobStatusService = jobStatusService;
+
+        pdsJobUpdateExceptionThrower = new ExceptionThrower<IllegalStateException>() {
+
+            @Override
+            public void throwException(String message, Exception cause) throws IllegalStateException {
+                throw new IllegalStateException("Job stream data refresh failed. " + message, cause);
+            }
+        };
     }
 
     @Override
@@ -76,6 +96,7 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             LOG.debug("Handle source upload for job with uuid:{}", jobUUID);
             workspaceService.prepareWorkspace(jobUUID, config);
             workspaceService.unzipUploadsWhenConfigured(jobUUID, config);
+
             String path = workspaceService.getProductPathFor(config);
             if (path == null) {
                 throw new IllegalStateException("Path not defined for product id:" + config.getProductId());
@@ -83,7 +104,12 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
             createProcess(jobUUID, config, path);
 
-            waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult);
+            StreamDataRefreshRequestWatcherRunnable watcherRunnable = new StreamDataRefreshRequestWatcherRunnable(jobUUID);
+            Thread watcherThread = new Thread(watcherRunnable);
+            watcherThread.setName("stream-watcher-" + jobUUID);
+            watcherThread.start();
+
+            waitForProcessEndAndGetResultByFiles(result, jobUUID, config, minutesToWaitForResult, watcherRunnable);
 
         } catch (Exception e) {
 
@@ -93,16 +119,24 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
             result.result = "Execution of job uuid:" + jobUUID + " failed. Please look into PDS logs for details and search for former string.";
 
         } finally {
-
             cleanUpWorkspace(jobUUID, config);
         }
+
+        /*
+         * handle always exit code. Everything having an exit code != 0 is handled as an
+         * error
+         */
+        if (result.exitCode != 0) {
+            result.failed = true;
+        }
+
         LOG.info("Finished execution of job {} with exitCode={}, failed={}", jobUUID, result.exitCode, result.failed);
 
         return result;
     }
 
-    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult)
-            throws InterruptedException, IOException {
+    private void waitForProcessEndAndGetResultByFiles(PDSExecutionResult result, UUID jobUUID, PDSJobConfiguration config, long minutesToWaitForResult,
+            StreamDataRefreshRequestWatcherRunnable watcherRunnable) throws InterruptedException, IOException {
         LOG.debug("Wait for process of job with uuid:{}, will wait {} minutes for result from product with id:{}", jobUUID, minutesToWaitForResult,
                 config.getProductId());
         long started = System.currentTimeMillis();
@@ -112,10 +146,14 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
 
         if (!exitDoneInTime) {
             LOG.error("Job {} failed - product id:{} time out reached.", jobUUID, config.getProductId());
+
             result.failed = true;
             result.result = "Product time out.";
             result.exitCode = 1;
             prepareForCancel(true);
+
+            watcherRunnable.stop();
+
             return;
         }
 
@@ -158,6 +196,53 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
                     shrinkedErrorStream);
 
         }
+
+        watcherRunnable.stop();
+
+        writeStreamDataToDatabase(jobUUID);
+
+    }
+
+    @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Update stream data", description = "Reads all stream data (output and error ) from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
+    @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Update stream data", description = "Reads all stream data (output and error ) from workspace files and stores content inside database. Will also refresh update time stamp for caching mechanism.", number = 4))
+    private void writeStreamDataToDatabase(UUID jobUUID) {
+        LOG.debug("Writing stream data to database for job:{}", jobUUID);
+
+        final StreamData streamData = readStreamData(jobUUID);
+
+        PDSResilientRetryExecutor<IllegalStateException> executor = new PDSResilientRetryExecutor<>(3, pdsJobUpdateExceptionThrower,
+                OptimisticLockingFailureException.class);
+        executor.execute(() -> {
+            jobTransactionService.updateJobStreamDataInOwnTransaction(jobUUID, streamData.outputStreamData, streamData.errorStreamData);
+            return null;
+        }, jobUUID.toString());
+
+    }
+
+    private StreamData readStreamData(UUID jobUUID) {
+        String encoding = workspaceService.getFileEncoding(jobUUID);
+
+        StreamData streamData = new StreamData();
+
+        /* handle output stream */
+        File systemOutFile = workspaceService.getSystemOutFile(jobUUID);
+        if (systemOutFile.exists()) {
+            try {
+                streamData.outputStreamData = FileUtils.readFileToString(systemOutFile, encoding);
+            } catch (IOException e) {
+                LOG.error("Was not able to fetch output stream data for PDS job:{} on path:{}!", jobUUID, systemOutFile.getAbsolutePath(), e);
+            }
+        }
+        /* handle error stream */
+        File systemErrorFile = workspaceService.getSystemErrorFile(jobUUID);
+        if (systemErrorFile.exists()) {
+            try {
+                streamData.errorStreamData = FileUtils.readFileToString(systemErrorFile, encoding);
+            } catch (IOException e) {
+                LOG.error("Was not able to fetch error stream data for PDS job:{} on path:{}!", jobUUID, systemOutFile.getAbsolutePath(), e);
+            }
+        }
+        return streamData;
     }
 
     private String maximum1024chars(String content) {
@@ -179,8 +264,8 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         builder.directory(currentDir);
         builder.inheritIO();
 
-        builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
         builder.redirectOutput(workspaceService.getSystemOutFile(jobUUID));
+        builder.redirectError(workspaceService.getSystemErrorFile(jobUUID));
 
         /*
          * add parts from PDS job configuration - means data defined by caller before
@@ -250,6 +335,42 @@ class PDSExecutionCallable implements Callable<PDSExecutionResult> {
         } catch (IOException e) {
             LOG.error("workspace cleanup failed for job:{}!", jobUUID);
         }
+    }
+
+    private class StreamDataRefreshRequestWatcherRunnable implements Runnable {
+
+        private boolean stopped;
+        private UUID jobUUID;
+
+        private StreamDataRefreshRequestWatcherRunnable(UUID jobUUID) {
+            this.jobUUID = jobUUID;
+        }
+
+        @Override
+        public void run() {
+            while (!stopped && !Thread.currentThread().isInterrupted()) {
+                LOG.trace("start checking stream data refresh requests");
+
+                if (jobStatusService.isJobStreamUpdateNecessary(jobUUID)) {
+                    writeStreamDataToDatabase(jobUUID);
+                }
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        public void stop() {
+            stopped = true;
+        }
+
+    }
+
+    private class StreamData {
+        String outputStreamData = "";
+        String errorStreamData = "";
     }
 
 }

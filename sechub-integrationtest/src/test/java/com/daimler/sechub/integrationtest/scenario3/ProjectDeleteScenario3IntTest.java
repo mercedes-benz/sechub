@@ -37,10 +37,6 @@ public class ProjectDeleteScenario3IntTest {
             isAssignedToProject(PROJECT_1).
             hasOwnerRole().
             hasUserRole();
-        
-        assertUser(USER_1).
-            hasOwnerRole().
-            hasUserRole();
 
         assertProject(PROJECT_1).
             doesExist().
@@ -55,6 +51,11 @@ public class ProjectDeleteScenario3IntTest {
         waitAsyncDeleteEventsDone();
 
         assertProject(PROJECT_1).
+            doesNotExist().
+            hasAccessEntriesInDomainSchedule(0).
+            hasAccessEntriesInDomainScan(0); // no longer access
+        
+        assertProject(PROJECT_2).
             doesNotExist().
             hasAccessEntriesInDomainSchedule(0).
             hasAccessEntriesInDomainScan(0); // no longer access

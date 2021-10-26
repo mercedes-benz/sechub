@@ -7,37 +7,37 @@ import org.springframework.stereotype.Component;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
+import static com.daimler.sechub.adapter.TimeConstants.*;
 
 @Component
-public class PDSInstallSetupImpl implements PDSInstallSetup{
+public class PDSInstallSetupImpl implements PDSInstallSetup {
 
+    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:" + 30 * TIME_1_SECOND_IN_MILLISECONDS + "}")
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MILLISECONDS)
+    private int defaultTimeToWaitForNextCheckOperationInMilliseconds;
 
-	@Value("${sechub.adapter.pds.default.scanresultcheck.period.minutes:1}") // check every minute
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK)
-	private int scanResultCheckPeriodInMinutes;
+    @Value("${sechub.adapter.pds.default.timeout.minutes:" + 4 * 60 + "}") // 4 hours
+    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
+    private int defaultTimeOutInMinutes;
 
-	@Value("${sechub.adapter.pds.default.scanresultcheck.timeout.minutes:240}") // 4 hours
-	@MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT)
-	private int scanResultCheckTimeOutInMinutes;
-	
-	public int getDefaultScanResultCheckPeriodInMinutes() {
-		return scanResultCheckPeriodInMinutes;
-	}
-	
-	public int getScanResultCheckTimeOutInMinutes() {
-		return scanResultCheckTimeOutInMinutes;
-	}
+    public int getDefaultTimeToWaitForNextCheckOperationInMilliseconds() {
+        return defaultTimeToWaitForNextCheckOperationInMilliseconds;
+    }
+
+    public int getDefaultTimeOutInMinutes() {
+        return defaultTimeOutInMinutes;
+    }
 
     @Override
     public boolean isAbleToScan(TargetType targetType) {
-        if (targetType==null) {
+        if (targetType == null) {
             return false;
         }
-        /* otherwise this setup will always answer true - will be done dynamically at executor
-         * reading its config...
+        /*
+         * Otherwise this setup will always answer true - will be done dynamically at
+         * executor reading its configuration.
          */
         return true;
     }
-	
 
 }

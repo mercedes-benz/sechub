@@ -1,0 +1,13 @@
+{
+  "jobUUID" : "d47c1e28-9f76-4e43-a879-9af5184d505e",
+  "result" : {
+    "count" : 0,
+    "findings" : [ ]
+  },
+  "trafficLight" : "GREEN",
+  "status" : "FAILED",
+  "messages" : [ {
+    "type" : "ERROR",
+    "text" : "The code scan execution did fail!"
+  } ]
+}

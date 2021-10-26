@@ -9,6 +9,7 @@ include 'sechub-cli',
 /* commons */
 'sechub-commons-core',
 'sechub-commons-model',
+'sechub-commons-pds',
 
 /* server POD area */
 'sechub-server',       // executable spring boot jar
@@ -57,7 +58,7 @@ include 'sechub-cli',
 'sechub-testframework',
 
 'sechub-scan-testframework',
-'sechub-shared-kernel-testframework',
+'sechub-commons-model-testframework',
 
 'sechub-storage-core',
 'sechub-storage-sharedvolume-spring',

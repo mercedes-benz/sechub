@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
@@ -33,9 +34,9 @@ public class PDSExecutorConfigSuppportTest {
         setup = mock(ProductExecutorConfigSetup.class);
         
         jobParameters=new ArrayList<>();
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_PRODUCT_IDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
-        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSProductExecutorKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(PDSConfigDataKeyProvider.PDS_CONFIG_PRODUCTIDENTIFIER.getKey().getId(),CONFIGURED_PDS_PRODUCT_IDENTIFIER));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId(),"true"));
+        jobParameters.add(new ProductExecutorConfigSetupJobParameter(SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId(),"false"));
         
         when(config.getSetup()).thenReturn(setup);
         credentialsInConfigSetup = new ProductExecutorConfigSetupCredentials();

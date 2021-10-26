@@ -163,6 +163,14 @@ public class TestURLBuilder {
         public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage",jobUUID,"path");
         }
+        
+        public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","output");
+        }
+        
+        public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","error");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {
@@ -335,7 +343,7 @@ public class TestURLBuilder {
         return buildUrl(API_ADMIN_PROJECT, projectId);
     }
     
-    public String buildAdminAssignsOwnerToProjectUrl(String projectId, String userId) {
+    public String buildAdminChangesProjectOwnerUrl(String projectId, String userId) {
         return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
     }
     

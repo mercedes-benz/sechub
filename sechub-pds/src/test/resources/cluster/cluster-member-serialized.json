@@ -1,0 +1,18 @@
+{
+  "hostname" : "fv-az290-473",
+  "ip" : "10.1.2.1",
+  "port" : 8444,
+  "heartBeatTimestamp" : "2021-09-28T15:00:03.664",
+  "executionState" : {
+    "queueMax" : 50,
+    "jobsInQueue" : 1,
+    "entries" : [ {
+      "jobUUID" : "c3917a46-456f-4006-888a-08f74cc26a7a",
+      "done" : true,
+      "canceled" : false,
+      "created" : "2021-09-28T15:00:02.763",
+      "started" : "2021-09-28T15:00:03.312",
+      "state" : "RUNNING"
+    } ]
+  }
+}

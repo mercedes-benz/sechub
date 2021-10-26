@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
+import static com.daimler.sechub.adapter.TimeConstants.*;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collections;
@@ -21,24 +23,32 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAdapterConfigBuilder.class);
 
-    private static final int MAX_5_DAYS_IN_MINUTES = 5 * 24 * 60;
-    private static final int MAX_1_HOUR_IN_MINUTES = 60;
+    // scan result check period
+    private static final int DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_MINUTE_IN_MILLISECONDS;
+    private static final int MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS = 500;
+    private static final int MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS = TIME_1_HOUR_IN_MILLISECONDS;
 
-    private static final int DEFAULT_SCAN_RESULT_TIMEOUT_IN_MINUTES = MAX_5_DAYS_IN_MINUTES;
-    private static final int DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES = 1;
+    private static final int DEFAULT_TIMEOUT_IN_MINUTES = TIME_5_DAYS_IN_MINUTES;
+    private static final int MAX_SCAN_TIMEOUT_IN_MINUTES = TIME_5_DAYS_IN_MINUTES;
+    private static final int MIN_SCAN_TIMEOUT_IN_MINUTES = 1;
 
-    public static final String DOCUMENT_INFO_TIMEOUT = "Time in minutes when adapter result check will be canceled/time out. When -1 timeout is "
-            + AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_TIMEOUT_IN_MINUTES + " minutes";
-    public static final String DOCUMENT_INFO_CHECK = "Time in minutes when adapter check operation is called next. When -1 value is "
-            + AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES + " minutes";
+    public static final String DOCUMENT_INFO_TIMEOUT_IN_MINUTES = "Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is "
+            + AbstractAdapterConfigBuilder.DEFAULT_TIMEOUT_IN_MINUTES + " minutes";
+
+    public static final String DOCUMENT_INFO_CHECK_IN_MILLISECONDS = "Time in milliseconds when adapter check operation is called next. When -1 value is "
+            + AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS + " minutes";
+
+    public static final String DOCUMENT_INFO_CHECK_IN_MINUTES = "Time in minutes when adapter check operation is called next. When -1 value is "
+            + (AbstractAdapterConfigBuilder.DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS / 1000 / 60) + " minutes";
+
     public static final String DOCUMENT_INFO_TRUSTALL = "Turns off certification checks for this product only. Should only be used in test or development environments!";
 
     private String traceID;
     private String user;
     private String productBaseURL;
 
-    private int timeToWaitForNextCheckOperationInMinutes = DEFAULT_SCAN_RESULT_CHECK_IN_MINUTES;// one minute check default
-    private int scanResultTimeOutInMinutes = DEFAULT_SCAN_RESULT_TIMEOUT_IN_MINUTES; // 5 days default
+    private int timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS * 60 * 1000;// one minute check default
+    private int timeOutInMinutes = DEFAULT_TIMEOUT_IN_MINUTES;
 
     private String proxyHostname;
 
@@ -88,10 +98,10 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     }
 
     /**
-     * Set result check interval in milliseconds.
+     * Set result check interval in minutes.
      *
      * @param minutes when <0 the setting will be ignored and default value used!"
-     *                see {@link #DOCUMENT_INFO_CHECK}
+     *                see {@link #DOCUMENT_INFO_CHECK_IN_MINUTES}
      * @return builder
      */
     @SuppressWarnings("unchecked")
@@ -99,24 +109,40 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         if (minutes < 0) {
             return (B) this;
         }
-        this.timeToWaitForNextCheckOperationInMinutes = minutes;
+        this.timeToWaitForNextCheckOperationInMilliseconds = minutes * TIME_1_MINUTE_IN_MILLISECONDS;
         return (B) this;
     }
 
     /**
-     * Set result check timeout in minutes.
+     * Set result check interval in milliseconds.
      *
-     * @param scanResultTimeOutInMinutes when <0 the setting will be ignored and
-     *                                   default value used!" see
-     *                                   {@link #DOCUMENT_INFO_TIMEOUT}
+     * @param minutes when <0 the setting will be ignored and default value used!"
+     *                see {@link #DOCUMENT_INFO_CHECK_IN_MILLISECONDS}
+     * @return builder
+     */
+    @SuppressWarnings("unchecked")
+    public final B setTimeToWaitForNextCheckOperationInMilliseconds(int milliseconds) {
+        if (milliseconds < 0) {
+            return (B) this;
+        }
+        this.timeToWaitForNextCheckOperationInMilliseconds = milliseconds;
+        return (B) this;
+    }
+
+    /**
+     * Set timeout in minutes. When a adapter call runs longer than defined time,
+     * the adapter will stop and return a failure.
+     *
+     * @param timeOutInMinutes when <0 the setting will be ignored and default value
+     *                         used!" see {@link #DOCUMENT_INFO_TIMEOUT_IN_MINUTES}
      * @return
      */
     @SuppressWarnings("unchecked")
-    public final B setScanResultTimeOutInMinutes(int scanResultTimeOutInMinutes) {
-        if (scanResultTimeOutInMinutes < 0) {
+    public final B setTimeOutInMinutes(int timeOutInMinutes) {
+        if (timeOutInMinutes < 0) {
             return (B) this;
         }
-        this.scanResultTimeOutInMinutes = scanResultTimeOutInMinutes;
+        this.timeOutInMinutes = timeOutInMinutes;
         return (B) this;
     }
 
@@ -271,9 +297,9 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
         abstractAdapterConfig.productBaseURL = productBaseURL;
 
-        abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMinutes * 60 * 1000;
+        abstractAdapterConfig.timeToWaitForNextCheckOperationInMilliseconds = timeToWaitForNextCheckOperationInMilliseconds;
         ensureMinimumTimeToWait(abstractAdapterConfig);
-        abstractAdapterConfig.timeOutInMilliseconds = scanResultTimeOutInMinutes * 60 * 1000;
+        abstractAdapterConfig.timeOutInMilliseconds = timeOutInMinutes * 60 * 1000;
 
         abstractAdapterConfig.proxyHostname = proxyHostname;
         abstractAdapterConfig.proxyPort = proxyPort;
@@ -327,16 +353,40 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     }
 
     private void ensureTimeSetup() {
-        if (timeToWaitForNextCheckOperationInMinutes > MAX_1_HOUR_IN_MINUTES) {
-            LOG.warn("Check interval {} bigger than 1 hour. Automatic reset to one hour done. Please check your configuration!",
-                    timeToWaitForNextCheckOperationInMinutes);
-            timeToWaitForNextCheckOperationInMinutes = MAX_1_HOUR_IN_MINUTES;
+        ensureValidTimeForNextCheckOperationInMilliseconds();
+        ensureValidTimeForTimeOutInMinutes();
+    }
+
+    private void ensureValidTimeForNextCheckOperationInMilliseconds() {
+        if (timeToWaitForNextCheckOperationInMilliseconds > MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS) {
+            LOG.warn(
+                    "{} - Configured check interval:{} milliseconds is bigger than maximum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
+                    getClass().getSimpleName(), MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS, DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
+            timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS;
         }
-        if (scanResultTimeOutInMinutes > MAX_5_DAYS_IN_MINUTES) {
-            LOG.warn("Scan check timeout {} bigger than 5 days. Automatic reset to 5 days done. Please check your configuration!", scanResultTimeOutInMinutes);
-            scanResultTimeOutInMinutes = MAX_5_DAYS_IN_MINUTES;
+        if (timeToWaitForNextCheckOperationInMilliseconds < MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS) {
+            LOG.warn(
+                    "{} - Configured check interval:{} milliseconds is lower than minimum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
+                    getClass().getSimpleName(), timeToWaitForNextCheckOperationInMilliseconds, MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS,
+                    DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
+            timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS;
+        }
+    }
+
+    private void ensureValidTimeForTimeOutInMinutes() {
+        if (timeOutInMinutes > MAX_SCAN_TIMEOUT_IN_MINUTES) {
+            LOG.warn(
+                    "{} - Configured scan timeout:{} minutes is bigger than maximum value:{} minutes. Automatic reset to maximum done. Please check your configuration!",
+                    getClass().getSimpleName(), timeOutInMinutes, MAX_SCAN_TIMEOUT_IN_MINUTES);
+            timeOutInMinutes = MAX_SCAN_TIMEOUT_IN_MINUTES;
         }
 
+        if (timeOutInMinutes < MIN_SCAN_TIMEOUT_IN_MINUTES) {
+            LOG.warn(
+                    "{} -Configured scan timeout:{} minutes is lower than minimum value:{} minutes. Automatic reset to minimum done. Please check your configuration!",
+                    getClass().getSimpleName(), timeOutInMinutes, MIN_SCAN_TIMEOUT_IN_MINUTES);
+            timeOutInMinutes = MIN_SCAN_TIMEOUT_IN_MINUTES;
+        }
     }
 
     private void validate() {
@@ -395,13 +445,13 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private boolean isProxyDefinedButPortMissing() {
         return proxyHostname != null && !proxyHostname.isEmpty() && proxyPort == 0;
     }
-    
-    private void throwIllegalArgument(String message) throws IllegalArgumentException{
-        throw new IllegalArgumentException(message + " in "+getClass().getSimpleName());
+
+    private void throwIllegalArgument(String message) throws IllegalArgumentException {
+        throw new IllegalArgumentException(message + " in " + getClass().getSimpleName());
     }
-    
-    private void throwIllegalState(String message) throws IllegalStateException{
-        throw new IllegalStateException(message + " in "+getClass().getSimpleName());
+
+    private void throwIllegalState(String message) throws IllegalStateException {
+        throw new IllegalStateException(message + " in " + getClass().getSimpleName());
     }
 
 }

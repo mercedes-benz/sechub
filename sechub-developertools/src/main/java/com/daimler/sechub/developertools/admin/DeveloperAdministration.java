@@ -18,9 +18,12 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.daimler.sechub.developertools.admin.ui.ConfigurationSetup;
 import com.daimler.sechub.developertools.admin.ui.UIContext;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
+import com.daimler.sechub.domain.scan.product.pds.PDSProductExecutorKeyConstants;
+import com.daimler.sechub.domain.scan.product.pds.SecHubProductExecutionPDSKeyProvider;
 import com.daimler.sechub.integrationtest.api.AsPDSUser;
 import com.daimler.sechub.integrationtest.api.AsUser;
 import com.daimler.sechub.integrationtest.api.FixedTestProject;
@@ -157,7 +160,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchSignups() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsUserSignupsUrl());
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminListsUserSignupsUrl());
     }
 
     public TestRestHelper getRestHelper() {
@@ -183,7 +186,7 @@ public class DeveloperAdministration {
         }
 
         public String fetchServerConfigurationAsString() {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetServerConfiguration());
         }
 
         public String getServerAlive() {
@@ -195,15 +198,15 @@ public class DeveloperAdministration {
         }
 
         public String getExecutionStatus() {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildAdminGetMonitoringStatus());
         }
 
         public String getJobResultOrError(String jobUUID) {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobResultOrErrorText(UUID.fromString(jobUUID)));
         }
 
         public String getJobStatus(String jobUUID) {
-            return restHelper.getJSon(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
+            return restHelper.getJSON(pdsUrlBuilder.pds().buildGetJobStatus(UUID.fromString(jobUUID)));
         }
 
         public String markJobAsReadyToStart(UUID jobUUID) {
@@ -220,7 +223,16 @@ public class DeveloperAdministration {
         public TestPDSServerConfgiuration fetchServerConfiguration() {
             return JSONConverter.get().fromJSON(TestPDSServerConfgiuration.class, fetchServerConfigurationAsString());
         }
+        
+        public String getJobOutputStream(UUID jobUUID) {
+           return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobOutputStreamUrl(jobUUID));
+        }
 
+        public String getJobErrorStream(UUID jobUUID) {
+            return restHelper.getStringFromURL(pdsUrlBuilder.pds().buildAdminFetchesJobErrorStreamUrl(jobUUID));
+         }
+
+        
         public ProductIdentifier findProductIdentifier(TestPDSServerConfgiuration config, String productId) {
             for (TestPDSServerProductConfig c : config.products) {
                 if (c.id.equals(productId)) {
@@ -254,13 +266,13 @@ public class DeveloperAdministration {
                     sb.append("# ---------------------\n");
                     sb.append("# sechub call needs:   \n");
                     sb.append("# ---------------------\n");
-                    sb.append("pds.config.productidentifier=" + c.id + "\n");
+                    sb.append(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_PRODUCTIDENTIFIER+"=" + c.id + "\n");
                     sb.append("# Optional:\n");
-                    sb.append("# pds.productexecutor.forbidden.targettype.internet=true #does stop executing this one for intranet\n");
-                    sb.append("# pds.productexecutor.forbidden.targettype.intranet=true #does stop executing this one for intranet \n");
-                    sb.append("# pds.productexecutor.timetowait.nextcheck.minutes=10 #10 is ten minutes, 0 would be 0.5 seconds, if not set PDSInstallSetup values will be used\n");
-                    sb.append("# pds.productexecutor.timeout.minutes=120 #would timeout pds connection after 2 hours, if not set PDSInstallSetup values will be used\n");
-                    sb.append("# pds.productexecutor.trustall.certificates=true # will trust any PDS server. Use this only in NON PRODUCTION environments (e.g when using self signed certificate)\n\n");
+                    sb.append("# "+SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTERNET.getKey().getId()+"=true #does stop executing this one for internet\n");
+                    sb.append("# "+SecHubProductExecutionPDSKeyProvider.PDS_FORBIDS_TARGETTYPE_INTRANET.getKey().getId()+"=true #does stop executing this one for intranet \n");
+                    sb.append("# "+PDSProductExecutorKeyConstants.TIME_TO_WAIT_NEXT_CHECK_MILLIS+"=1000 #1000 is 1 second, 0 will fallback to 500 ms, if not set PDSInstallSetup values will be used\n");
+                    sb.append("# "+PDSProductExecutorKeyConstants.TIME_OUT_IN_MINUTES+"=120 #would timeout pds connection after 2 hours, if not set PDSInstallSetup values will be used\n");
+                    sb.append("# "+PDSProductExecutorKeyConstants.TRUST_ALL_CERTIFICATES+"=true # will trust any PDS server. Use this only in NON PRODUCTION environments (e.g when using self signed certificate)\n\n");
                     sb.append("# ---------------------\n");
                     sb.append("# mandatory parameters:\n");
                     sb.append("# ---------------------\n");
@@ -433,7 +445,7 @@ public class DeveloperAdministration {
 
     public List<String> fetchProjectWhiteList(String projectId) {
         List<String> result = new ArrayList<>();
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
         TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(json);
         JsonNode whitelist = jsonNode.get("whiteList");
@@ -451,7 +463,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectMetaData(String projectId) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchProjectInfoUrl(projectId));
         TestJSONHelper jsonHelper = TestJSONHelper.get();
         JsonNode jsonNode = jsonHelper.readTree(json);
         JsonNode metaData = jsonNode.get("metaData");
@@ -460,12 +472,12 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectScanLogs(String projectId) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildAdminFetchesScanLogsForProject(projectId));
         return json;
     }
 
     public String fetchJSONReport(String projectId, UUID sechubJobUUID) {
-        String json = getRestHelper().getJSon(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
+        String json = getRestHelper().getJSON(getUrlBuilder().buildFetchReport(projectId, sechubJobUUID));
         return json;
     }
 
@@ -520,7 +532,7 @@ public class DeveloperAdministration {
     }
 
     public String assignOwnerToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsOwnerToProjectUrl(projectId, userId));
+        getRestHelper().post(getUrlBuilder().buildAdminChangesProjectOwnerUrl(projectId, userId));
         return "assigned " + userId + " as new owner to project " + projectId;
     }
 
@@ -570,7 +582,7 @@ public class DeveloperAdministration {
     }
 
     public String getStatusList() {
-        return getRestHelper().getJSon(getUrlBuilder().buildAdminListsStatusEntries());
+        return getRestHelper().getJSON(getUrlBuilder().buildAdminListsStatusEntries());
     }
 
     public String checkAlive() {
@@ -614,7 +626,7 @@ public class DeveloperAdministration {
 
     public String fetchGlobalMappings(String mappingId) {
         String url = getUrlBuilder().buildGetMapping(mappingId);
-        return getRestHelper().getJSon(url);
+        return getRestHelper().getJSON(url);
     }
 
     public String updateGlobalMappings(String mappingId, String mappingDataAsJSON) {
@@ -638,7 +650,7 @@ public class DeveloperAdministration {
     }
 
     public String fetchProjectFalsePositiveConfiguration(String projectId) {
-        return getRestHelper().getJSon(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
+        return getRestHelper().getJSON(getUrlBuilder().buildUserFetchesFalsePositiveConfigurationOfProject(projectId));
     }
 
     public String markFalsePositivesForProjectByJobData(String projectId, String json) {

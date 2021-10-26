@@ -15,6 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
 import org.springframework.validation.Errors;
 
+import com.daimler.sechub.commons.model.SecHubCodeScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
+import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidation;
 import com.daimler.sechub.sharedkernel.validation.ApiVersionValidationFactory;
 import com.daimler.sechub.sharedkernel.validation.ValidationResult;

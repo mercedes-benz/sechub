@@ -46,12 +46,12 @@ public class ScanReportRestController {
 	@UseCaseUserDownloadsJobReport(@Step(number=1,next= {3},name="REST API call to get JSON report",needsRestDoc=true))
 	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public ScanReportResult getScanReportResultJSON(
+	public ScanSecHubReport getScanSecHubReportAsJSON(
 			@PathVariable("projectId") String projectId,
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		return fetchScanReportResult(projectId, jobUUID);
+		return fetchScanSecHubReport(projectId, jobUUID);
 
 	}
 
@@ -59,19 +59,19 @@ public class ScanReportRestController {
 	@UseCaseUserDownloadsJobReport(@Step(number=2,next= {3},name="REST API call to get HTML report",needsRestDoc=true))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
 	@ResponseBody
-	public ModelAndView getScanReportResultHTML(
+	public ModelAndView getScanSecHubReportAsHTML(
 			@PathVariable("projectId") String projectId,
 			@PathVariable("jobUUID") UUID jobUUID
 			) {
 		/* @formatter:on */
-		ScanReportResult scanResult = fetchScanReportResult(projectId, jobUUID);
+		ScanSecHubReport scanSecHubReport = fetchScanSecHubReport(projectId, jobUUID);
 
-		Map<String, Object> model = htmlModelBuilder.build(scanResult);
+		Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport);
 		return new ModelAndView("report/html/scanresult", model);
 	}
 
-	private ScanReportResult fetchScanReportResult(String projectId, UUID jobUUID) {
-		return downloadReportService.getScanReportResult(projectId, jobUUID);
+	private ScanSecHubReport fetchScanSecHubReport(String projectId, UUID jobUUID) {
+		return downloadReportService.getScanSecHubReport(projectId, jobUUID);
 	}
 
 

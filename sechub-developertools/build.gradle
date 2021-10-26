@@ -11,6 +11,8 @@ dependencies {
     compile project(':sechub-integrationtest')
     compile project(':sechub-scan')
     
+    implementation project(':sechub-commons-pds')
+    
 }
 
 task startIntegrationTestAdminUI(type: JavaExec){

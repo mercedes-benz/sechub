@@ -43,4 +43,4 @@ sechub-false-positives*.json
 java-gen/
 
 # Docker container
-.env
+.env*

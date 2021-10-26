@@ -96,6 +96,9 @@ pipeline {
                SECHUB_PDS_STORAGE_S3_ENDPOINT = getStringCredentialsOrUndefined('sechub-storage-s3-endpoint')
 
                SECHUB_INTEGRATIONTEST_PREPARE_WAIT_MS=100
+               
+               /* avoid race conditions with management port */
+               MANAGEMENT_SERVER_PORT= getJenkinsExecutorPort(10250)
 
             }
 

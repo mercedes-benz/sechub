@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.adapter.nessus.NessusAdapter;
+import com.daimler.sechub.commons.model.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
@@ -25,7 +26,6 @@ import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
-import com.daimler.sechub.sharedkernel.configuration.SecHubInfrastructureScanConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 

@@ -65,7 +65,10 @@ class DefaultSecurityLogServiceTest {
         request = mock(HttpServletRequest.class);
         ServletRequestAttributes attributes = new ServletRequestAttributes(request); // final methods, so not by mockito
         httpSession = mock(HttpSession.class);
-
+        when(request.getRemoteAddr()).thenReturn("fake-remote-addr");
+        when(httpSession.getId()).thenReturn("fake-http-session-id");
+        when(request.getRequestURI()).thenReturn("fake-request-uri");
+        
         when(requestAttributesProvider.getRequestAttributes()).thenReturn(attributes);
         when(request.getSession()).thenReturn(httpSession);
 
@@ -143,7 +146,8 @@ class DefaultSecurityLogServiceTest {
 
         assertTrue(end > data); // check ordering
         assertTrue(data > begin); // check ordering
-
+        
+        
         // test first parameter
         String type = typeStringCaptor.getValue();
         assertEquals(SecurityLogType.POTENTIAL_INTRUSION.getTypeId(), type);
@@ -174,6 +178,11 @@ class DefaultSecurityLogServiceTest {
 
         // test third parameter
         assertEquals("param1", messageParamCaptor.getValue());
+        
+        // test some fields  which could be tampered as well are also sanitized:
+        assertEquals(SANITIZED+"fake-remote-addr",jsonNode.get("clientIp").textValue());
+        assertEquals(SANITIZED+"fake-http-session-id",jsonNode.get("sessionId").textValue());
+        assertEquals(SANITIZED+"fake-request-uri",jsonNode.get("requestURI").textValue());
     }
 
 }

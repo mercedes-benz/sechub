@@ -1,13 +1,20 @@
 // SPDX-License-Identifier: MIT
+plugins {
+    id 'java-library'
+}
+
 dependencies{
     
-    compile library.jackson_core
-    compile library.jackson_databind
-    compile library.jackson_JDK8
-    compile library.slf4j
-    compile project(':sechub-commons-core')
+    api library.jackson_core
+    api library.jackson_databind
+    api library.jackson_JDK8
+    api library.slf4j
     
-    testCompile library.junit
-    testCompile library.mockito
-    testCompile library.hamcrest
+    api project(':sechub-commons-core')
+    
+    testImplementation library.junit5_impl
+    testRuntimeOnly library.junit5_runtime
+    
+    testImplementation library.mockito
+    testImplementation library.hamcrest
 }

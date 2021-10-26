@@ -15,16 +15,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.daimler.sechub.adapter.ActionType;
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.BasicLoginConfig;
 import com.daimler.sechub.adapter.FormAutoDetectLoginConfig;
 import com.daimler.sechub.adapter.FormScriptLoginConfig;
 import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.LoginScriptPage;
-import com.daimler.sechub.adapter.SecHubTimeUnit;
 import com.daimler.sechub.adapter.SecHubTimeUnitData;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+import com.daimler.sechub.commons.model.login.ActionType;
 
 public class NetsparkerAdapterV1Test {
 

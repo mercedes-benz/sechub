@@ -19,46 +19,55 @@ import com.daimler.sechub.sharedkernel.validation.UserInputAssertion;
 @Service
 public class UserRoleCalculationService {
 
-	@Autowired
-	DomainMessageService eventBus;
+    @Autowired
+    DomainMessageService eventBus;
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Autowired
-	UserInputAssertion assertion;
+    @Autowired
+    UserInputAssertion assertion;
 
-	public void recalculateRolesOfUser(String userId) {
-		assertion.isValidUserId(userId);
+    public void recalculateRolesOfUser(String userId) {
+        assertion.isValidUserId(userId);
 
-		User user = userRepository.findOrFailUser(userId);
+        User user = userRepository.findOrFailUser(userId);
 
-		boolean active = ! user.isDeactivated();
+        boolean active = !user.isDeactivated();
 
-		boolean isUser =  active;
-		boolean isOwner = active && !user.getOwnedProjects().isEmpty();
-		boolean isAdmin = active && user.isSuperAdmin();
+        boolean isUser = active;
+        boolean isOwner = active && userOwnsAtLeastOneProject(userId);
+        boolean isAdmin = active && user.isSuperAdmin();
 
-		Set<String> roles = new LinkedHashSet<>();
-		if (isAdmin){
-			roles.add(RoleConstants.ROLE_SUPERADMIN);
-		}
-		if (isOwner){
-			roles.add(RoleConstants.ROLE_OWNER);
-		}
-		if (isUser){
-			roles.add(RoleConstants.ROLE_USER);
-		}
-		sendUserRoleChangedEvent(user, roles);
-	}
+        Set<String> roles = new LinkedHashSet<>();
+        if (isAdmin) {
+            roles.add(RoleConstants.ROLE_SUPERADMIN);
+        }
+        if (isOwner) {
+            roles.add(RoleConstants.ROLE_OWNER);
+        }
+        if (isUser) {
+            roles.add(RoleConstants.ROLE_USER);
+        }
+        sendUserRoleChangedEvent(user, roles);
+    }
 
-	@IsSendingAsyncMessage(MessageID.USER_ROLES_CHANGED)
-	private void sendUserRoleChangedEvent(User user, Set<String> roles) {
-		DomainMessage roleChangeRequest = new DomainMessage(MessageID.USER_ROLES_CHANGED);
-		UserMessage rolesData = new UserMessage();
-		rolesData.setUserId(user.getName());
-		rolesData.setRoles(roles);
-		roleChangeRequest.set(MessageDataKeys.USER_ROLES_DATA, rolesData);
-		eventBus.sendAsynchron(roleChangeRequest);
-	}
+    private boolean userOwnsAtLeastOneProject(String userId) {
+        // we do NOT use the user entity and the ownedProjects set
+        // instead we simply count. Reason for this is to avoid
+        // unexpected caching issues with ORM.
+        return userRepository.countAmountOfOwnedProjects(userId) > 0;
+    }
+
+    @IsSendingAsyncMessage(MessageID.USER_ROLES_CHANGED)
+    private void sendUserRoleChangedEvent(User user, Set<String> roles) {
+        DomainMessage roleChangeRequest = new DomainMessage(MessageID.USER_ROLES_CHANGED);
+
+        UserMessage rolesData = new UserMessage();
+        rolesData.setUserId(user.getName());
+        rolesData.setRoles(roles);
+        roleChangeRequest.set(MessageDataKeys.USER_ROLES_DATA, rolesData);
+
+        eventBus.sendAsynchron(roleChangeRequest);
+    }
 }

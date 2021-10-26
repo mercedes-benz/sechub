@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.daimler.sechub.integrationtest.api.AbstractTestExecutable;
-import com.daimler.sechub.integrationtest.api.ExecutionConstants;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestProject;
 import com.daimler.sechub.integrationtest.api.TestUser;
@@ -24,50 +23,18 @@ public class ScenarioInitializer {
 
 	private static final int DEFAULT_TIME_TO_WAIT_FOR_RESOURCE_CREATION = 3;
 	private static final Logger LOG = LoggerFactory.getLogger(ScenarioInitializer.class);
-	
 
 	public ScenarioInitializer createProject(TestProject project, TestUser owner) {
 		TestAPI.as(TestAPI.SUPER_ADMIN).createProject(project,owner.getUserId());
 		return this;
 	}
 
-	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_1(TestProject ...projects) {
-	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID,projects);
-	    return this;
-	}
-	
-	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_2_PDS(TestProject ...projects) {
-        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_2_ID,projects);
+	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile(DefaultTestExecutionProfile profile, TestProject ...projects) {
+        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(profile.id,projects);
         return this;
     }
 	
-	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_3_PDS_SARIF(TestProject ...projects) {
-        TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_3_ID,projects);
-        return this;
-    }
-	public ScenarioInitializer addProjectIdsToDefaultExecutionProfile_4_PDS_SARIF_NOT_USING_SECHUB_STORAGE(TestProject ...projects) {
-	    TestAPI.as(TestAPI.SUPER_ADMIN).addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_4_ID,projects);
-	    return this;
-	}
-    
-	
-	public  ScenarioInitializer ensureDefaultExecutionProfile_1() {
-	    return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_1);
-	}
-	
-	public  ScenarioInitializer ensureDefaultExecutionProfile_2_PDS_codescan() {
-        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN);
-    }
-	
-	public  ScenarioInitializer ensureDefaultExecutionProfile_3_PDS_codescan_sarif() {
-        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_3_PDS_CODESCAN_SARIF);
-    }
-	
-	public  ScenarioInitializer ensureDefaultExecutionProfile_4_PDS_codescan_sarif_no_sechub_storage_used() {
-        return ensureDefaultExecutionProfile(IntegrationTestDefaultProfiles.PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF);
-    }
-	
-	private  ScenarioInitializer ensureDefaultExecutionProfile(DoNotChangeTestExecutionProfile profile) {
+	public ScenarioInitializer ensureDefaultExecutionProfile(DefaultTestExecutionProfile profile) {
 	    if (TestAPI.canReloadExecutionProfileData(profile)){
 	        return this;
 	    }
