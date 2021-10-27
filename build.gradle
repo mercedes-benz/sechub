@@ -28,7 +28,19 @@ plugins {
     id 'org.openapi.generator' version '5.2.0'
     id 'org.springframework.boot' version '2.5.2' apply false
 }
+/* check buildsystem */
+def githubActor = System.getenv('GITHUB_ACTOR')
 
+def atGitHubActions = false
+
+if (githubActor == null || githubActor.isEmpty()){
+    /* not inside github actions */
+    atGitHubActions = false
+}else{
+    atGitHubActions = true
+}
+
+ext.buildDoneByGitHubActions=atGitHubActions
 ext.springBootMavenBomCoordinates = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 ext {

@@ -5,7 +5,7 @@ projectType = [
             goProjects: [
                     project(':sechub-cli'),
             ],
- 			javaProjects: [
+            javaProjects: [
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
                project(':sechub-client-java'),
@@ -17,6 +17,12 @@ projectType = [
                project(':sechub-storage-core'),
                
             ],
+            
+            publishedLibraries: [
+               project(':sechub-commons-core'),
+               project(':sechub-commons-model'),
+            ],
+            
 
             /* any project using spring parts but not already in other spring boot group must be defined here */
             springBootProjects: [

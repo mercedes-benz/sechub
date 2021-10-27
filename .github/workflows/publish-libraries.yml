@@ -13,7 +13,7 @@ on:
         required: true
 jobs:
   release-version:
-    name: Publish + release libraries
+    name: Build, publish and release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
@@ -21,10 +21,10 @@ jobs:
         with:
           ref: master
       # Create temporary local tags, so we build documentation for this tag...
-      # The final tag on git server side will be done by the release when the draft is saved as "real" release
+      # The final tag on git server side will be automatically done by the release step at the end
       # automatically.
       - name: "Temporary tag libraries version: v${{ github.event.inputs.libraries-version }}-libraries"
-        run: git tag v${{ github.event.inputs.libraries-version }}-server
+        run: git tag v${{ github.event.inputs.libraries-version }}-libraries
 
       # Build
       - name: Set up JDK 1.8
@@ -33,26 +33,9 @@ jobs:
           java-version: 8
           distribution: adopt
           cache: gradle
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.15.3
-          stable: true
-      - uses: actions/cache@v2
-        id: go-cache
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Gradle clean
-        run: ./gradlew clean
 
       - name: Build
-        run: ./gradlew build -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew clean build -x :sechub-integrationtest:test -x :sechub-cli:build
 
       - name: Create combined test report
         if: always()
@@ -87,12 +70,18 @@ jobs:
       # -----------------------------------------
       - name: Assert releasable
         run: ./gradlew assertReleaseable
-      - name: Publish
-        run: ./gradlew publish
         
       # **************************************************
       # Now let's create + publish a new LIBRARIES release
       # **************************************************
+
+      # Publish to github packages      
+      - name: Publish
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      
+      # Create release
       - name: Create libraries release
         id: create_libraries_release
         uses: actions/create-release@v1
@@ -103,10 +92,9 @@ jobs:
           commitish: master
           release_name: Libraries Version ${{ github.event.inputs.libraries-version }}
           body: |
-            Changes in this Release
-            - New artifacts with this version added at https://maven.pkg.github.com/daimler/sechub
+            New library artifacts can be found at https://github.com/Daimler/sechub/packages
 
-            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+            For details about changes look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: false
           prerelease: false
       
