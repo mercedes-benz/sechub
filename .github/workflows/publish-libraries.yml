@@ -19,11 +19,9 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
-        # normally master, but here we currently use the feature branch where sources are changed...
-#          ref: master
-          ref: feature-848-provide-gh-packages-for-commons-model-and-core
+          ref: master
       # Create temporary local tags, so we build documentation for this tag...
-      # The final tag on git server side will be done by the release when the draft is saved as "real" release
+      # The final tag on git server side will be automatically done by the release step at the end
       # automatically.
       - name: "Temporary tag libraries version: v${{ github.event.inputs.libraries-version }}-libraries"
         run: git tag v${{ github.event.inputs.libraries-version }}-libraries
@@ -94,10 +92,9 @@ jobs:
           commitish: master
           release_name: Libraries Version ${{ github.event.inputs.libraries-version }}
           body: |
-            Changes in this Release
-            - New artifacts with this version added at https://maven.pkg.github.com/daimler/sechub
+            New library artifacts can be found at https://github.com/Daimler/sechub/packages
 
-            For more details please look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
+            For details about changes look at [Milestone ${{github.event.inputs.milestone-number}}]( https://github.com/Daimler/sechub/milestone/${{github.event.inputs.milestone-number}}?closed=1)
           draft: false
           prerelease: false
       
