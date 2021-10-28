@@ -174,6 +174,8 @@ function startServer(){
     pathToJar="./../sechub-server/build/libs/sechub-server-$SERVER_VERSION.jar"
     if [ ! -f $pathToJar ]; then
         echo ">> FAILURE: version not build:$SERVER_VERSION, looked into $pathToJar"
+        echo ">> Found content inside library folder:"
+        ls -all "./../sechub-server/build/libs/"
         exit 1
     fi
     pathToLog="$currentDir/integrationtest-server.log"
