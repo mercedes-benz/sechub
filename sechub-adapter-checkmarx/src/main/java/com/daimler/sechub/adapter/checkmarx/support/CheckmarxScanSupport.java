@@ -32,29 +32,30 @@ public class CheckmarxScanSupport {
      * Starts new scan - means : Will create an entry inside QUEUE! And wait until
      * processed. If checkmarx queuing fails because of full scan is necessary a
      * automatic retry will be done. If another failure occurs the scan will fail.
+     * @param oauthSupport 
      * 
      * @param context        - if scan is started, the corresponding queue id will
      *                       be set to context
      * @param sessionContext
      * @throws AdapterException
      */
-    public void startNewScan(CheckmarxContext context) throws AdapterException {
+    public void startNewScan(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
         LOG.info("Start new checkmarx scan for: {}", context.getSessionData().getProjectName());
        
-        triggerNewEntryInQueue(context);
-        waitForQueingDone(context);
-        checkScanAvailable(context);
+        triggerNewEntryInQueue(oauthSupport, context);
+        waitForQueingDone(oauthSupport, context);
+        checkScanAvailable(oauthSupport, context);
 
     }
 
-    private void checkScanAvailable(CheckmarxContext context) throws AdapterException {
-        WaitForScanStateSupport support = new WaitForScanStateSupport(context.getCheckmarxAdapter());
+    private void checkScanAvailable(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
+        WaitForScanStateSupport support = new WaitForScanStateSupport(oauthSupport, context.getCheckmarxAdapter());
         support.waitForOK(context);
 
     }
 
-    private void waitForQueingDone(CheckmarxContext context) throws AdapterException {
-        WaitForQueueStateSupport queueSupport = new WaitForQueueStateSupport(context.getCheckmarxAdapter());
+    private void waitForQueingDone(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
+        WaitForQueueStateSupport queueSupport = new WaitForQueueStateSupport(oauthSupport, context.getCheckmarxAdapter());
         queueSupport.waitForOK(context);
 
         QueueDetails queueDetails = context.getQueueDetails();
@@ -75,7 +76,9 @@ public class CheckmarxScanSupport {
     }
 
     // https://checkmarx.atlassian.net/wiki/spaces/KC/pages/814121878/Swagger+Examples+v8.8.0+-+v1
-    private void triggerNewEntryInQueue(CheckmarxContext context) throws AdapterException {
+    private void triggerNewEntryInQueue(CheckmarxOAuthSupport oauthSupport, CheckmarxContext context) throws AdapterException {
+        oauthSupport.refreshBearerTokenWhenNecessary(context);
+        
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         Long scanIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_SCAN_ID);
         long scanId = -1;
