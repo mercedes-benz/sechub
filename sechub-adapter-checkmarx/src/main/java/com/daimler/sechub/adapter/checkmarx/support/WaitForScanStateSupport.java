@@ -15,8 +15,11 @@ import com.daimler.sechub.adapter.support.JSONAdapterSupport.Access;
 
 class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, CheckmarxAdapterConfig>{
 
-	public WaitForScanStateSupport(Adapter<?> adapter) {
+	private CheckmarxOAuthSupport oauthSupport;
+
+    public WaitForScanStateSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
 		super(adapter);
+		this.oauthSupport=oauthSupport;
 	}
 
 	@Override
@@ -32,6 +35,8 @@ class WaitForScanStateSupport extends WaitForStateSupport<CheckmarxContext, Chec
 	
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/569442454/Get+SAST+Scan+Details+by+Scan+Id+-+GET+sast+scans+id+v8.8.0+and+up
 	private void fetchScanDetails(CheckmarxContext context) throws AdapterException {
+	    oauthSupport.refreshBearerTokenWhenNecessary(context);
+	    
 		ScanDetails details = context.getScanDetails();
 		try {
 			RestOperations restTemplate = context.getRestOperations();
