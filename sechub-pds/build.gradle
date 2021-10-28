@@ -62,6 +62,8 @@ task ensureLocalhostCertificate(type: Exec) {
 /* make eclipse task depend on ensured local certificate*/
 tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
 
+version =   VersionData.getPdsVersion()
+
 if (buildDoneByGitHubActions ){
     println("publish $project.name will be ignored at github actions at the moment!")
    return;
@@ -72,7 +74,6 @@ if (buildDoneByGitHubActions ){
  */
 apply plugin: 'maven-publish'
 
-version =   VersionData.getPdsVersion()
 
 publishing {
     publications {
