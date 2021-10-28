@@ -162,7 +162,6 @@ public class CheckmarxAdapterV1WireMockTest {
        /* execute */
        String result = adapterToTest.start(config, callback);
        
-       /* @formatter:on */
        /* test */
        assertEquals(CONTENT_FROM_CHECKMARX,result);
        history.assertAllRememberedUrlsWereRequested();
