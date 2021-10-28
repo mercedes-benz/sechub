@@ -52,16 +52,18 @@ task ensureLocalhostCertificate(type: Exec) {
 /* make eclipse task depend on ensured local certificate*/
 tasks.eclipse.dependsOn 'ensureLocalhostCertificate'
 
+version =   VersionData.getServerVersion()
+
 if (buildDoneByGitHubActions ){
     println("publish $project.name will be ignored at github actions at the moment!")
    return;
 }
+
 /**
  * We currently  publish only the server java spring boot jar, so having complete server on maven repository - documentation can be found inside sechub-doc
  */
 apply plugin: 'maven-publish'
 
-version =   VersionData.getServerVersion()
 
 publishing {
     publications {
