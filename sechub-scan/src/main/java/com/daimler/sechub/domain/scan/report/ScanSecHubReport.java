@@ -59,6 +59,11 @@ public class ScanSecHubReport implements SecHubReportData, JSONable<ScanSecHubRe
         if (ScanReportResultType.MODEL.equals(resultType)) {
             try {
                 model = SecHubReportModel.fromJSONString(report.getResult());
+                if (model.getJobUUID() == null) {
+                    // Fallback for problems when model did not contain job uuid - see https://github.com/Daimler/sechub/issues/864 
+                    LOG.warn("Job uuid not found inside report result JSON, will set Job UUID from entity data");
+                    model.setJobUUID(report.getSecHubJobUUID());
+                }
 
             } catch (JSONConverterException e) {
                 LOG.error("FATAL PROBLEM! Failed to create sechub result by model for job:{}", report.getSecHubJobUUID(), e);

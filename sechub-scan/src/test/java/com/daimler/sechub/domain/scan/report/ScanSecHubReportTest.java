@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,8 @@ import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
 import com.daimler.sechub.commons.model.TrafficLight;
 import com.daimler.sechub.domain.scan.ScanDomainTestFileSupport;
+
+import static org.mockito.Mockito.*;
 
 class ScanSecHubReportTest {
 
@@ -115,6 +118,52 @@ class ScanSecHubReportTest {
         assertEquals(TrafficLight.GREEN, reportToTest.getTrafficLight());
     }
 
+    @Test
+    void report_by_model_sets_jobUUID_from_scanreport_when_not_inside_model() {
+
+        /* prepare */
+        UUID uuid = UUID.randomUUID();
+        
+        ScanReport report = mock(ScanReport.class);
+        when(report.getResultType()).thenReturn(ScanReportResultType.MODEL);
+        when(report.getSecHubJobUUID()).thenReturn(uuid);
+        
+        SecHubReportModel model = new SecHubReportModel();
+        
+        String jsonResult = model.toJSON();
+        when(report.getResult()).thenReturn(jsonResult);
+        
+        /* execute */
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertEquals(uuid, createdReport.getJobUUID());
+    }
+    
+    @Test
+    void report_by_model_has_jobUUID_from_model_when_there_not_null() {
+
+        /* prepare */
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
+        
+        ScanReport report = mock(ScanReport.class);
+        when(report.getResultType()).thenReturn(ScanReportResultType.MODEL);
+        when(report.getSecHubJobUUID()).thenReturn(uuid1);
+        
+        SecHubReportModel model = new SecHubReportModel();
+        model.setJobUUID(uuid2);
+        
+        String jsonResult = model.toJSON();
+        when(report.getResult()).thenReturn(jsonResult);
+        
+        /* execute */
+        ScanSecHubReport createdReport = new ScanSecHubReport(report);
+
+        /* test */
+        assertEquals(uuid2, createdReport.getJobUUID());
+    }
+    
     @Test
     void report_by_model_sets_version_to_version_from_model() {
 
