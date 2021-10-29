@@ -56,6 +56,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
         ReportTransformationResult transformerResult = new ReportTransformationResult();
         transformerResult.setReportVersion(SecHubReportVersion.VERSION_1_0.getVersionAsString());
+        transformerResult.setJobUUID(sechubJobUUID);
 
         List<SecHubFinding> findings = transformerResult.getResult().getFindings();
 

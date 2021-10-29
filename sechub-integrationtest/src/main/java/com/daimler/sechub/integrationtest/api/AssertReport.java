@@ -235,10 +235,14 @@ public class AssertReport {
         assertNotNull(findings);
         return findings;
     }
-
-    public AssertReport hasJobUUID(String uuidAsString) {
-        assertEquals(UUID.fromString(uuidAsString), report.getJobUUID());
+    
+    public AssertReport hasJobUUID(UUID uuid) {
+        assertEquals(uuid, report.getJobUUID());
         return this;
+    }
+    
+    public AssertReport hasJobUUID(String uuidAsString) {
+        return hasJobUUID(UUID.fromString(uuidAsString));
     }
 
     public AssertReport dump() {

@@ -66,6 +66,7 @@ public class PDSCodeScanSarifJobScenario10IntTest {
         assertReport(report).
             hasStatus(SecHubStatus.SUCCESS).
             hasMessages(0).
+            hasJobUUID(jobUUID).
             hasTrafficLight(RED).
                finding(0).
                    hasSeverity(Severity.HIGH).
