@@ -45,7 +45,7 @@ public class AsPDSUser {
     }
 
     public String getJobStatus(UUID jobUUID) {
-        return getRestHelper().getJSon(getUrlBuilder().pds().buildGetJobStatus(jobUUID));
+        return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobStatus(jobUUID));
     }
 
     public String getJobReport(UUID jobUUID) {
@@ -84,9 +84,9 @@ public class AsPDSUser {
         }
         /* okay report is available - so do download */
         if (orGetErrorText) {
-            return getRestHelper().getJSon(getUrlBuilder().pds().buildGetJobResultOrErrorText(jobUUID));
+            return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobResultOrErrorText(jobUUID));
         }
-        return getRestHelper().getJSon(getUrlBuilder().pds().buildGetJobResult(jobUUID));
+        return getRestHelper().getJSON(getUrlBuilder().pds().buildGetJobResult(jobUUID));
     }
 
     public boolean getIsAlive() {
@@ -96,7 +96,7 @@ public class AsPDSUser {
 
     public String getMonitoringStatus() {
         String url = getUrlBuilder().pds().buildAdminGetMonitoringStatus();
-        String result = getRestHelper().getJSon(url);
+        String result = getRestHelper().getJSON(url);
         return result;
     }
 
@@ -188,7 +188,7 @@ public class AsPDSUser {
 
     public String getServerConfiguration() {
         String url = getUrlBuilder().pds().buildAdminGetServerConfiguration();
-        String result = getRestHelper().getJSon(url);
+        String result = getRestHelper().getJSON(url);
         return result;
     }
 

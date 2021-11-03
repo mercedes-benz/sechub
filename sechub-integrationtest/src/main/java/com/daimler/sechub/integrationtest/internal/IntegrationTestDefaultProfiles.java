@@ -1,30 +1,32 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.integrationtest.internal;
 
+import java.util.List;
+
 public class IntegrationTestDefaultProfiles {
     /**
      * Standard profile for testing: Netsparker, Nessus and Checkmarx are configured
      * but no PDS configuration. Storage is reused.
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_1 = defineProfile1();
+    public static final DefaultTestExecutionProfile PROFILE_1 = defineProfile1();
 
     /**
      * PDS scan profile, returns no real data but some dynamic text messages -
      * storage is reused
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_2_PDS_CODESCAN = defineProfile2();
+    public static final DefaultTestExecutionProfile PROFILE_2_PDS_CODESCAN = defineProfile2();
 
     /**
      * PDS scan profile, returns code scan results in SARIF format - storage is
      * reused
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_3_PDS_CODESCAN_SARIF = defineProfile3();
+    public static final DefaultTestExecutionProfile PROFILE_3_PDS_CODESCAN_SARIF = defineProfile3();
 
     /**
      * PDS scan profile, returns code scan results in SARIF format - storage is NOT
      * reused
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF = defineProfile4();
+    public static final DefaultTestExecutionProfile PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF = defineProfile4();
 
     /**
      * PDS scan profile, returns no real data but some dynamic text messages - the
@@ -45,29 +47,30 @@ public class IntegrationTestDefaultProfiles {
      * we will have some additional text content to simulate larger outputs. <br>
      * storage will be reused
      */
-    public static final DoNotChangeTestExecutionProfile PROFILE_5_PDS_CODESCAN_LAZY_STREAMS = defineProfile5();
+    public static final DefaultTestExecutionProfile PROFILE_5_PDS_CODESCAN_LAZY_STREAMS = defineProfile5();
 
-    private static final DoNotChangeTestExecutionProfile[] ALL_PROFILES = new DoNotChangeTestExecutionProfile[] {
+    /**
+     * PDS scan profile, will always return 1 from PDS execution script
+     * 'integrationtest-codescan.sh' reused
+     */
+    public static final DefaultTestExecutionProfile PROFILE_6_NO_STORAGE_REUSED__PDS_CODESCAN_PROCESS_EXEC_FAILS_EXITCODE_1 = defineProfile6();
 
-            PROFILE_1,
+    /**
+     * PDS WEN scan profile, returns no real data but some dynamic text messages -
+     * storage is reused
+     */
+    public static final DefaultTestExecutionProfile PROFILE_7_PDS_WEBSCAN = defineProfile7();
 
-            PROFILE_2_PDS_CODESCAN,
-
-            PROFILE_3_PDS_CODESCAN_SARIF,
-
-            PROFILE_4_NO_STORAGE_REUSED__PDS_CODESCAN_SARIF,
-
-            PROFILE_5_PDS_CODESCAN_LAZY_STREAMS,
-
-    };
-
-    public static DoNotChangeTestExecutionProfile[] getAllDefaultProfiles() {
-        return ALL_PROFILES;
+    /**
+     * @return all default profiles
+     */
+    public static List<DefaultTestExecutionProfile> getAllDefaultProfiles() {
+        return DefaultTestExecutionProfile.allDefaultTestExecutionProfiles;
     }
 
-    private static DoNotChangeTestExecutionProfile defineProfile1() {
+    private static DefaultTestExecutionProfile defineProfile1() {
 
-        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.CHECKMARX_V1);
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.NETSPARKER_V1);
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.NESSUS_V1);
@@ -77,9 +80,9 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DoNotChangeTestExecutionProfile defineProfile2() {
+    private static DefaultTestExecutionProfile defineProfile2() {
 
-        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_A);
         profile.id = "inttest-p2-pds";
         profile.description = "Profile 2: PDS, reused storage, dynamic text results";
@@ -87,9 +90,9 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DoNotChangeTestExecutionProfile defineProfile3() {
+    private static DefaultTestExecutionProfile defineProfile3() {
 
-        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_D);
         profile.id = "inttest-p3-sarif"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 3: PDS, reused storage, will return SARIF results";
@@ -97,9 +100,9 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DoNotChangeTestExecutionProfile defineProfile4() {
+    private static DefaultTestExecutionProfile defineProfile4() {
 
-        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_E_DO_NOT_REUSE_SECHUBDATA);
         profile.id = "inttest-p4-sarif"; // not more than 30 chars per profile id, so we use this
         profile.description = "Same as profile 3, but executor config does not reuse sechub storage!";
@@ -108,12 +111,32 @@ public class IntegrationTestDefaultProfiles {
         return profile;
     }
 
-    private static DoNotChangeTestExecutionProfile defineProfile5() {
+    private static DefaultTestExecutionProfile defineProfile5() {
 
-        DoNotChangeTestExecutionProfile profile = new DoNotChangeTestExecutionProfile();
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_F);
         profile.id = "inttest-p5-pds-lazy-output"; // not more than 30 chars per profile id, so we use this
         profile.description = "Profile 5: PDS, reused storage, will return dynamic text results, output streams will be lazy, run is 1500 ms";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile6() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_CODE_SCAN_G_FAIL_EXIT_CODE_1);
+        profile.id = "inttest-p6-fail-call"; // not more than 30 chars per profile id, so we use this
+        profile.description = "Profile 6: PDS, reused storage, will return nothing because of exit 1 in script";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile7() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_WEB_SCAN_A);
+        profile.id = "inttest-p7-pds-webscan";
+        profile.description = "Profile 7: PDS webscan, reused storage, dynamic text results";
         profile.enabled = true;
         return profile;
     }

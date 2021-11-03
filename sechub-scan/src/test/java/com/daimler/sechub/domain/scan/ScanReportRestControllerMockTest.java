@@ -37,7 +37,7 @@ import com.daimler.sechub.domain.scan.report.DownloadScanReportService;
 import com.daimler.sechub.domain.scan.report.ScanReport;
 import com.daimler.sechub.domain.scan.report.ScanReportRepository;
 import com.daimler.sechub.domain.scan.report.ScanReportRestController;
-import com.daimler.sechub.domain.scan.report.ScanReportResult;
+import com.daimler.sechub.domain.scan.report.ScanSecHubReport;
 import com.daimler.sechub.domain.scan.report.ScanReportTrafficLightCalculator;
 import com.daimler.sechub.test.TestPortProvider;
 
@@ -60,7 +60,7 @@ public class ScanReportRestControllerMockTest {
     private DownloadScanReportService downloadReportService;
 
     @MockBean
-    SecHubResultService secHubResultService;
+    SecHubReportProductTransformerService secHubResultService;
 
     @MockBean
     ReportProductExecutionService reportProductExecutionService;
@@ -86,12 +86,12 @@ public class ScanReportRestControllerMockTest {
     @WithMockUser
     public void get_report_from_existing_job_returns_406_NOT_ACCEPTABLE__when_type_is_APPLICATION_PDF() throws Exception {
         /* prepare */
-        ScanReport report = new ScanReport(randomUUID, PROJECT1_ID);
-        report.setResult("{'count':'1'}");
-        report.setTrafficLight(TrafficLight.YELLOW);
+        ScanReport scanReport = new ScanReport(randomUUID, PROJECT1_ID);
+        scanReport.setResult("{'count':'1'}");
+        scanReport.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(scanReport);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -196,8 +196,8 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
 	    this.mockMvc.perform(
@@ -205,7 +205,7 @@ public class ScanReportRestControllerMockTest {
 	    			contentType(MediaType.APPLICATION_JSON_VALUE)
 	    		).
 	    			andExpect(status().isOk()).
-	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":1,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
+	    			andExpect(content().json("{\"jobUUID\":\""+randomUUID.toString()+"\",\"result\":{\"count\":0,\"findings\":[]},\"trafficLight\":\"YELLOW\"}")
 	    		);
 
 	    /* @formatter:on */
@@ -217,8 +217,8 @@ public class ScanReportRestControllerMockTest {
         report.setResult("{'count':'1'}");
         report.setTrafficLight(TrafficLight.YELLOW);
 
-        ScanReportResult result1 = new ScanReportResult(report);
-        when(downloadReportService.getScanReportResult(PROJECT1_ID, randomUUID)).thenReturn(result1);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
+        when(downloadReportService.getScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(

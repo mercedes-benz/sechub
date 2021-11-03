@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +104,76 @@ public class CheckmarxAdapterV1WireMockTest {
         when(config.getSourceCodeZipFileInputStream()).thenReturn(new ByteArrayInputStream("pseudo-zip-content".getBytes()));
     }
     
+    
+    @Test
+    public void simulate_start__create_new_project_and_scan_token_expires_very_often() throws Exception {
+       /* prepare */
+      
+       
+       LinkedHashMap<String, String> loginResponse = login(0);
+       /* project creation*/
+       simulateCheckProjectExistsReturnsFalse(loginResponse);
+       simulateCreateProjectWasSuccessful();
+       
+       /* update scan settings */
+       LinkedHashMap<String, Object> fetchScanSettingsResultMap = simulateFetchScanSettingsForProject();
+       List<Map<String, Object>> fetchEngineConfigurationsMap = simulateFetchEngineConfigurations();
+       Map<String, Object> multiLanguageEngineConfiguration = findMapByValue(CHECKMARX_ENGINE_CONFIGURATION_NAME, fetchEngineConfigurationsMap);
+       long serverReturnedEngineConfigurationId = Long.valueOf(multiLanguageEngineConfiguration.get("id").toString());
+       
+       simulateUpdateScanSettingsForProjectWereSuccessful(fetchScanSettingsResultMap, serverReturnedEngineConfigurationId);
+       
+       /* upload */
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateUploadZipFileWasSuccesful();
+       
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateStartScanAccepted();
+       
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForQueingDoneReturns("New");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForQueingDoneReturns("New");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForQueingDoneReturns("Finished");
+       
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateCheckScanAvailableReturns("Running");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateCheckScanAvailableReturns("Running");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateCheckScanAvailableReturns("Finished");
+
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateStartReportCreationWasSuccesful();
+       
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForReportResultsReturns("Something");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForReportResultsReturns("Something");
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateWaitForReportResultsReturns("Created");
+       
+       simulateExpiredBearerTokenLeadsToLoginRequest();
+       simulateDownloadReportSuccesful();
+
+       
+       
+       /* execute */
+       String result = adapterToTest.start(config, callback);
+       
+       /* test */
+       assertEquals(CONTENT_FROM_CHECKMARX,result);
+       history.assertAllRememberedUrlsWereRequested();
+       
+    }
+
+
+    private void simulateExpiredBearerTokenLeadsToLoginRequest() throws JSONException {
+        login(0);
+    }
+    
+    
     @Test
     public void simulate_restart_upload_done_but_no_scan() throws Exception {
         /* prepare */
@@ -114,7 +183,7 @@ public class CheckmarxAdapterV1WireMockTest {
         when(callback.getMetaDataOrNull()).thenReturn(metadata);
       
        
-       LinkedHashMap<String, String> loginResponse = login();
+       LinkedHashMap<String, String> loginResponse = login(3600);
        simulateCheckProjectExistsReturnsTrue(loginResponse);
        /* no project creation*/
        /* no upload */
@@ -150,7 +219,7 @@ public class CheckmarxAdapterV1WireMockTest {
         when(callback.getMetaDataOrNull()).thenReturn(metadata);
       
        
-       LinkedHashMap<String, String> loginResponse = login();
+       LinkedHashMap<String, String> loginResponse = login(3600);
        simulateCheckProjectExistsReturnsTrue(loginResponse);
        /* no project creation*/
        /* no upload */
@@ -168,8 +237,6 @@ public class CheckmarxAdapterV1WireMockTest {
        
        /* download report */
        simulateDownloadReportSuccesful();
-
-       
        
        /* execute */
        String result = adapterToTest.start(config, callback);
@@ -192,7 +259,7 @@ public class CheckmarxAdapterV1WireMockTest {
         when(callback.getMetaDataOrNull()).thenReturn(metadata);
       
        
-       LinkedHashMap<String, String> loginResponse = login();
+       LinkedHashMap<String, String> loginResponse = login(3600);
        simulateCheckProjectExistsReturnsTrue(loginResponse);
        /* no project creation*/
        /* no upload */
@@ -219,11 +286,11 @@ public class CheckmarxAdapterV1WireMockTest {
     }
     
     @Test
-    public void simulate_start__create_new_project_and_scan() throws Exception {
+    public void simulate_start__create_new_project_and_scan_token_expires_one_hour_as_usual() throws Exception {
        /* prepare */
       
        
-       LinkedHashMap<String, String> loginResponse = login();
+       LinkedHashMap<String, String> loginResponse = login(3600);
        /* project creation*/
        simulateCheckProjectExistsReturnsFalse(loginResponse);
        simulateCreateProjectWasSuccessful();
@@ -271,6 +338,7 @@ public class CheckmarxAdapterV1WireMockTest {
        history.assertAllRememberedUrlsWereRequested();
        
     }
+
 
     private void simulateDownloadReportSuccesful() {
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/reports/sastScan/"+CHECKMARX_REPORT_ID)))).
@@ -429,7 +497,6 @@ public class CheckmarxAdapterV1WireMockTest {
                    )
            );
     }
-    
     private void simulateCheckProjectExistsReturnsTrue(LinkedHashMap<String, String> checkProjectExistingMap) {
         /* @formatter:off */
         LinkedHashMap<String,Object> createProjectResult = new LinkedHashMap<>();
@@ -451,7 +518,7 @@ public class CheckmarxAdapterV1WireMockTest {
         
     }
     
-    private LinkedHashMap<String, String> login() throws JSONException {
+    private LinkedHashMap<String, String> login(long tokenExpiresInSeconds) throws JSONException {
         String sessionToken = "token-returned-by-checkmarx"; 
            
            LinkedHashMap<String,String> map = new LinkedHashMap<>();
@@ -472,7 +539,7 @@ public class CheckmarxAdapterV1WireMockTest {
            JSONObject expectedLoginResult = new JSONObject();
            expectedLoginResult.put("access_token", sessionToken);
            expectedLoginResult.put("token_type", "json");
-           expectedLoginResult.put("expires_in", new Date().toString());
+           expectedLoginResult.put("expires_in", tokenExpiresInSeconds);
 
            stubFor(post(urlEqualTo(history.rememberPOST(apiURLSupport.nextURL("/cxrestapi/auth/identity/connect/token")))).
                    //.inScenario(chain.getScenario()).whenScenarioStateIs(chain.getStateBefore())

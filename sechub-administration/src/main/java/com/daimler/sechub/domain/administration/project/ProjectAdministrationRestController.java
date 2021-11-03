@@ -56,7 +56,7 @@ public class ProjectAdministrationRestController {
     ProjectCreationService creationService;
 
     @Autowired
-    ProjectAssignOwnerService assignOwnerToProjectService;
+    ProjectChangeOwnerService assignOwnerToProjectService;
 
     @Autowired
     ProjectAssignUserService assignUserToProjectService;
@@ -137,12 +137,12 @@ public class ProjectAdministrationRestController {
 	}
 	
     /* @formatter:off */
-	@UseCaseAdminChangesProjectOwner(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to assign new owner", needsRestDoc=true))
+	@UseCaseAdminChangesProjectOwner(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to set new project owner", needsRestDoc=true))
     @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public void assignOwnerToProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
+    public void changeProjectOwner(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
         /* @formatter:on */
-        assignOwnerToProjectService.assignOwnerToProject(userId, projectId);
+        assignOwnerToProjectService.changeProjectOwner(userId, projectId);
     }
 
     /* @formatter:off */

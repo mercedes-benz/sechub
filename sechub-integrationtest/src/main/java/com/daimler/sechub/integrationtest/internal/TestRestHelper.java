@@ -68,7 +68,7 @@ public class TestRestHelper {
 		return template;
 	}
 
-	public String getJSon(String url) {
+	public String getJSON(String url) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 

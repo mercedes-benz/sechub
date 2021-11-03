@@ -1,4 +1,5 @@
 #!/bin/bash 
+# SPDX-License-Identifier: MIT
 
 # "${pwd}/output/result.txt" is the default target for every PDS job!
 #
@@ -60,5 +61,12 @@ if [[ "$PDS_TEST_KEY_VARIANTNAME" = "f" ]]; then
     echo "WORKING3" 
     errEcho $(date)
     errEcho "ERRORS3"
+    
+fi
+
+if [[ "$PDS_TEST_KEY_VARIANTNAME" = "g" ]]; then
+    errEcho $(date)
+    errEcho "ERROR message before doing an exit 1..."
+    exit 1
     
 fi

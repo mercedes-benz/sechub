@@ -14,7 +14,7 @@ dependencies {
     compile project(':sechub-pds') // we want to expect pds and all dependencies for documentation
     compile library.apache_commons_io
     testCompile library.epages_restdoc_api_spec_mockmvc
-    testCompile project(':sechub-shared-kernel-testframework')
+    testCompile project(':sechub-commons-model-testframework')
 
     /* next parts are necessary for rest doc generation in conjunction
        with reflection annoation scanning done wiht @UsecaseRestDoc

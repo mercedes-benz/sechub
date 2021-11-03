@@ -53,7 +53,7 @@ public class AssertJobInformationAdministration<R> extends AbstractAssert {
 				long waitedTimeInMilliseconds = System.currentTimeMillis()-start;
 				timeElapsed= waitedTimeInMilliseconds>timeOutInMilliseconds;
 
-				String json = getRestHelper(user).getJSon(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
+				String json = getRestHelper(user).getJSON(getUrlBuilder().buildAdminFetchAllRunningJobsUrl());
 				/* very simple ... maybe this should be improved... */
 				boolean found = json != null && json.contains("\"" + jobUUID);
 				if (expected) {

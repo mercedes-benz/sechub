@@ -1,0 +1,23 @@
+@startuml
+
+interface SecHubReportData
+
+class ScanSecHubReport implements SecHubReportData
+
+class SecHubReportModel implements SecHubReportData 
+
+class ScanReport {
+    <<Entity>>
+    String result
+    ScanReportResultType type
+}
+
+ScanReportRestController <-[#green,dashed,thickness=2]-  ScanSecHubReport
+ScanReportRestController -[#blue,dashed,thickness=2]-> "calls" DownloadScanReportService 
+DownloadScanReportService -[#blue,dashed,thickness=2]-> "reads from DB" ScanReport
+DownloadScanReportService -[#green,dashed,thickness=2]-> "creates" ScanSecHubReport
+
+ScanReport ..  SecHubReportModel
+ScanSecHubReport o-- SecHubReportModel 
+
+@enduml 

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.daimler.sechub.commons.model.SecHubTimeUnit;
+
 public class SecHubTimeUnitDataTest {
     @Test
     public void construction() {

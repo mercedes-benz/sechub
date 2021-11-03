@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.domain.scan.project;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import com.daimler.sechub.sharedkernel.project.ProjectAccessLevel;
 import com.daimler.sechub.sharedkernel.validation.ProjectIdValidation;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ScanProjectConfigAccessLevelServiceTest {
 

@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.daimler.sechub.commons.pds.PDSConfigDataKeyProvider;
+import com.daimler.sechub.commons.pds.PDSKey;
+import com.daimler.sechub.commons.pds.PDSKeyProvider;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfig;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetup;
 import com.daimler.sechub.domain.scan.product.config.ProductExecutorConfigSetupJobParameter;
@@ -24,13 +27,13 @@ import com.daimler.sechub.sharedkernel.validation.ValidationContext;
 @Component
 public class PDSProductExecutorMinimumConfigValidation extends AbstractValidation<ProductExecutorConfig> {
 
-    private List<PDSSecHubConfigDataKeyProvider<?>> dataKeyProviders;
+    private List<PDSKeyProvider<?>> dataKeyProviders;
 
     public PDSProductExecutorMinimumConfigValidation() {
 
         /* setup providers */
         dataKeyProviders = new ArrayList<>();
-        dataKeyProviders.addAll(Arrays.asList(PDSProductExecutorKeyProvider.values()));
+        dataKeyProviders.addAll(Arrays.asList(SecHubProductExecutionPDSKeyProvider.values()));
         dataKeyProviders.addAll(Arrays.asList(PDSConfigDataKeyProvider.values()));
     }
 
@@ -70,8 +73,8 @@ public class PDSProductExecutorMinimumConfigValidation extends AbstractValidatio
 
     private void validateMandatoryPartsSet(ValidationContext<ProductExecutorConfig> context, List<ProductExecutorConfigSetupJobParameter> jobParameters) {
         /* check mandatory fields are set */
-        for (PDSSecHubConfigDataKeyProvider<?> provider : dataKeyProviders) {
-            PDSSecHubConfigDataKey<?> key = provider.getKey();
+        for (PDSKeyProvider<?> provider : dataKeyProviders) {
+            PDSKey key = provider.getKey();
             if (!key.isMandatory()) {
                 continue;
             }

@@ -12,7 +12,7 @@ import static com.daimler.sechub.adapter.TimeConstants.*;
 @Component
 public class PDSInstallSetupImpl implements PDSInstallSetup {
 
-    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:" + 30 * TIME_1_SECOND_IN_MILLISECONDS + "}") 
+    @Value("${sechub.adapter.pds.default.check.timetowait.milliseconds:" + 30 * TIME_1_SECOND_IN_MILLISECONDS + "}")
     @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MILLISECONDS)
     private int defaultTimeToWaitForNextCheckOperationInMilliseconds;
 

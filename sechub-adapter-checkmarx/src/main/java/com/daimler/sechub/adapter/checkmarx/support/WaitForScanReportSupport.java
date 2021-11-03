@@ -15,8 +15,11 @@ import com.daimler.sechub.adapter.support.JSONAdapterSupport.Access;
 
 class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterContext, CheckmarxAdapterConfig>{
 
-	public WaitForScanReportSupport(Adapter<?> adapter) {
+	private CheckmarxOAuthSupport oauthSupport;
+
+    public WaitForScanReportSupport(CheckmarxOAuthSupport oauthSupport, Adapter<?> adapter) {
 		super(adapter);
+		this.oauthSupport=oauthSupport;
 	}
 
 	@Override
@@ -33,8 +36,9 @@ class WaitForScanReportSupport extends WaitForStateSupport<CheckmarxAdapterConte
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/563806382/Get+Report+Status+by+Id+-+GET+reports+sastScan+id+status+v8.8.0+and+up
 //	https://checkmarx.atlassian.net/wiki/spaces/KC/pages/814121878/Swagger+Examples+v8.8.0+-+v1
 	private void fetchScanDetails(CheckmarxAdapterContext context) throws AdapterException {
-		/* FIXME Albert Tregnaghi, 2018-10-10: the versioning of the rest API must be made fix, currently we do not send the version! this could lead
-		 * to problems in future, so we should define them explicit in headers! */
+
+	    oauthSupport.refreshBearerTokenWhenNecessary(context);
+	    
 		ReportDetails details = context.getReportDetails();
 		try {
 			RestOperations restTemplate = context.getRestOperations();

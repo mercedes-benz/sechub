@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
-import com.daimler.sechub.integrationtest.internal.DoNotChangeTestExecutionProfile;
+import com.daimler.sechub.integrationtest.internal.DefaultTestExecutionProfile;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestContext;
 import com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles;
 import com.daimler.sechub.integrationtest.internal.TestJSONHelper;
@@ -308,6 +309,35 @@ public class TestAPI {
         return;
     }
 
+    public static void executeRunnableAndAcceptAssertionsMaximumTimes(int tries, Runnable runnable, int millisBeforeNextRetry) {
+        executeCallableAndAcceptAssertionsMaximumTimes(tries, () -> {
+            runnable.run();
+            return null;
+        }, millisBeforeNextRetry);
+    }
+
+    public static <T> T executeCallableAndAcceptAssertionsMaximumTimes(int tries, Callable<T> assertionCallable, int millisBeforeNextRetry) {
+        T result = null;
+        AssertionFailedError failure = null;
+        for (int i = 0; i < tries && failure == null; i++) {
+            try {
+                if (i > 0) {
+                    /* we wait before next check */
+                    TestAPI.waitMilliSeconds(millisBeforeNextRetry);
+                }
+                result = assertionCallable.call();
+            } catch (AssertionFailedError e) {
+                failure = e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
+        return result;
+    }
+
     /**
      * As anonymous user one time token link is called and the resulting token is
      * set to given test user, so tests can continue without additional setup...
@@ -534,7 +564,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestFetchMappingDirectlyURL(mappingId);
 
-        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+        String result = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         if (result == null) {
             return null;
         }
@@ -554,7 +584,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
 
-        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
+        String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSON(url);
         ObjectMapper mapper = TestJSONHelper.get().getMapper();
         ObjectReader readerForListOf = mapper.readerForListOf(SecurityLogData.class);
         try {
@@ -605,7 +635,7 @@ public class TestAPI {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildFetchMetaDataInspectionsURL();
 
-        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSon(url);
+        String json = IntegrationTestContext.get().getSuperAdminRestHelper().getJSON(url);
         TestJSONHelper jsonHelper = TestJSONHelper.get();
 
         List<Map<String, Object>> data;
@@ -655,7 +685,7 @@ public class TestAPI {
                 if (timeElapsed > timeOutInMilliseconds) {
                     throw new IllegalStateException("Time out - even after " + timeElapsed + " ms we have still running jobs.");
                 }
-                String json = getSuperAdminRestHelper().getJSon(url);
+                String json = getSuperAdminRestHelper().getJSON(url);
                 JsonNode obj = TestJSONHelper.get().getMapper().readTree(json);
                 if (obj instanceof ArrayNode) {
                     ArrayNode an = (ArrayNode) obj;
@@ -742,13 +772,13 @@ public class TestAPI {
 
     public static IntegrationTestEventHistory fetchEventInspectionHistory() {
         String url = getURLBuilder().buildIntegrationTestFetchEventInspectionHistory();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         return IntegrationTestEventHistory.fromJSONString(json);
     }
 
     public static Map<String, String> listStatusEntries() {
         String url = getURLBuilder().buildAdminListsStatusEntries();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -785,7 +815,7 @@ public class TestAPI {
 
     public static SortedMap<String, String> listSignups() {
         String url = getURLBuilder().buildAdminListsUserSignupsUrl();
-        String json = getSuperAdminRestHelper().getJSon(url);
+        String json = getSuperAdminRestHelper().getJSON(url);
         JsonNode node;
         try {
             node = TestJSONHelper.get().getMapper().readTree(json);
@@ -862,7 +892,7 @@ public class TestAPI {
     }
 
     public static void assertNoDefaultProfileId(String profileId) {
-        for (DoNotChangeTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()) {
+        for (DefaultTestExecutionProfile doNotChangeProfile : IntegrationTestDefaultProfiles.getAllDefaultProfiles()){
             if (doNotChangeProfile.id.equals(profileId)) {
                 throw new IllegalArgumentException("Profile " + profileId
                         + " is a default profile and may not be changed! This would destroy test scenarios! Please define own profiles in your tests and change them!");
@@ -870,7 +900,7 @@ public class TestAPI {
         }
     }
 
-    public static boolean canReloadExecutionProfileData(DoNotChangeTestExecutionProfile profile) {
+    public static boolean canReloadExecutionProfileData(DefaultTestExecutionProfile profile) {
         if (!TestAPI.isExecutionProfileExisting(profile.id)) {
             return false;
         }
@@ -918,13 +948,13 @@ public class TestAPI {
     }
 
     /**
-     * Wait that project does not exist. Will try 3 times with 1 second delay before
-     * next retry. After this time this method will fail.
+     * Wait that project does not exist. Will try 9 times with 330 milliseconds
+     * delay before next retry. After this time this method will fail.
      * 
      * @param project
      */
     public static void waitProjectDoesNotExist(TestProject project) {
-        assertProject(project).doesNotExist(3);
+        assertProject(project).doesNotExist(9);
     }
 
 }
