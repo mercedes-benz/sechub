@@ -4,7 +4,7 @@
 
 = OWASP ZAP + PDS
 
-https://www.zaproxy.org/[OWASP ZAP] is a free and open source dynamic application security testing tool. By combining OWASP ZAP with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, GoSec can be used with SecHub.
+https://www.zaproxy.org/[OWASP ZAP] is a free and open source dynamic application security testing tool. By combining OWASP ZAP with the SecHub https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)] in a container, OWASP ZAP can be used with SecHub.
 
 Furthermore, the combination of OWASP ZAP and PDS make it possible to run both inside a Kubernetes cluser or virtual machines.
 
@@ -26,16 +26,18 @@ Docker and Docker-Compose need to be installed:
 
 === Single Instance
 
-Start a single instance either by using the Bash wrapper script which does setup everything <<_automatic,automatically>> or follow the steps <<_manually, manual>>.
+Start a single instance either by using the Bash wrapper script which does setup everything <<automatic-setup,automatically>> or follow the steps <<manual-setup,manually>>.
 
-==== Automatic
+[[automatic-setup]]
+==== Automatically
 
-The folder contains a start script which does the <<_manually, manual>> steps for you:
+The folder contains a start script which does the <<manual-setup, manual>> steps for you:
 
 ----
 ./01-start-docker-compose.sh
 ----
 
+[[manual-setup]]
 ==== Manually
 
 . Copy `env-initial` file to `.env`
@@ -43,24 +45,20 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 . Set values in `.env` file. The values are described in the `env-example` file.
 +
 [NOTE]
-It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the PDS+GoSec container.
+It is recommended to change the default passwords in the `.env` file to improve security. It is possible to change other values in the `.env` file as well. Any change requires a restart of the container.
 
 . Start container the Ubuntu container using https://docs.docker.com/compose/[Docker Compose]:
 +
 ----
-docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
-----
-+
-or to start the Alpine Linux container:
-+
-----
-docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
+docker-compose --file docker-compose_pds_owasp_zap_ubuntu.yaml up --build
 ----
 
+[[scan]]
 === Scan
 
 The steps required to scan with the PDS. Scan manually if you are new to the PDS. Use the script, if you are tired of typing the same commands over and over again.
 
+[[manual-scan]]
 ==== Scan Manually
 
 . Go to PDS Bash command line (CLI) script
@@ -151,7 +149,7 @@ $ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 
 ==== Scan Script 
 
-It is recommended to start with a manual <<_scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
+It is recommended to start with a <<manual-scan,manual scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
 
 . Set the environment variables
 +
@@ -159,6 +157,7 @@ It is recommended to start with a manual <<_scan>> the first time using the PDS.
 export PDS_SERVER=https://<pds-host>:<port>
 export PDS_USERID=admin
 export PDS_APITOKEN="<pds-admin-apitoken>"
+export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
 For example:
@@ -167,6 +166,7 @@ For example:
 export PDS_SERVER=https://localhost:8444
 export PDS_USERID=admin
 export PDS_APITOKEN="pds-apitoken"
+export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
 [NOTE]
@@ -474,7 +474,7 @@ pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
 kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
 ----
 
-. Scan as explained in <<_scan>>.
+. Scan as explained in the <<scan,scan>> section.
 
 ==== Upgrade
 

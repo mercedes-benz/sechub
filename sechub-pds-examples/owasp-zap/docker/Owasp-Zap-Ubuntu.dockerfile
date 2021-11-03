@@ -12,10 +12,11 @@ ARG PDS_FOLDER="/pds"
 ARG SCRIPT_FOLDER="/scripts"
 ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
-ENV PDS_VERSION=0.23.1
-ARG PDS_CHECKSUM="fb70f3131324f0070631f78229c25168ff50d570a9d481420d095b3bb5aa4a69"
+ENV PDS_VERSION=0.24.0
+ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # OWASP ZAP
 ARG OWASP_ZAP_CHECKSUM="54750581ec2fd21bd5aa8429b31b09eeb1e750ab6bb7e56f12504251892ccb09"
@@ -60,10 +61,17 @@ RUN mkdir --parents "$PDS_FOLDER" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
-# Setup script
+# Copy mock folders
+COPY mocks/ "$MOCK_FOLDER"
+
+# Setup scripts
 COPY owasp-zap.sh $SCRIPT_FOLDER/owasp-zap.sh
 RUN chmod +x $SCRIPT_FOLDER/owasp-zap.sh
 
+COPY owasp-zap-mock.sh $SCRIPT_FOLDER/owasp-zap-mock.sh
+RUN chmod +x $SCRIPT_FOLDER/owasp-zap-mock.sh
+
+# OWASP ZAP wrapper
 COPY owaspzap-wrapper.jar $TOOL_FOLDER/owaspzap-wrapper.jar
 
 # Create shared volumes and upload dir

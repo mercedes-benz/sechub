@@ -49,10 +49,8 @@ localserver () {
         echo " * Bucketname: $S3_BUCKETNAME"
         echo " * Accesskey: $S3_ACCESSKEY"
     fi
-    
-    # TODO figure out how to a file and maybe log rotation 
-    # DO NOT specify the real api.key in process name
-    nohup owasp-zap -daemon -config api.key=change-me > /dev/null &
+
+    nohup owasp-zap -daemon -config api.key="$OWASP_ZAP_API_KEY" > "$TOOL_FOLDER/log" &
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-json_config="$1"
+targetURL="$1"
+json_config="$2"
 
 function usage() {
     local script_name=
-    echo "`basename $0` <file-to-upload> [<job-configuration-file>]"
-    echo ""
+    printf "`basename $0` <targetURL> [<job-configuration-file>]\n\n"
     
     cat <<'USAGE'
 # Please set the environment variables:
@@ -44,11 +44,33 @@ function is_job_finished () {
 function parameter_missing() {
     MESSAGE="$1"
 
-    printf "[ERROR] $MESSAGE\n"
+    printf "[ERROR] $MESSAGE\n\n"
 
     usage
 
     exit 1
+}
+
+function create_json() {
+    local target_url="$1"
+    local sechub_job_uuid=`uuidgen`
+
+json=$(cat <<JSON
+{
+    "apiVersion" : "1.0",
+    "sechubJobUUID": "$sechub_job_uuid", 
+    "productId": "$PDS_PRODUCT_IDENTFIER", 
+    "parameters": [
+        {
+            "key" : "webscan.targeturl", 
+            "value" : "$target_url" 
+        }
+     ]
+}
+JSON
+)
+
+    echo "$json"
 }
 
 if [[ -z "$PDS_SERVER" ]]
@@ -78,6 +100,11 @@ else
     retries=100
 fi
 
+if [[ -z "$targetURL" ]]
+then
+    parameter_missing "Parameter Target URL is missing."
+fi
+
 if [[ ! -z "$json_config" ]]
 then
     echo "JSON job configuration provided."
@@ -100,16 +127,21 @@ then
     exit 3
 fi
 
-sechub_job_uuid=`uuidgen`
-
-if [[ ! -z "$json_config" ]]
+FILE_NAME="$PWD/temp.json"
+if [[ -z "$json_config" ]]
 then
-    jobUUID=`$pds_api create_job_from_json "$json_config" | jq '.jobUUID' | tr -d \"`
-else
-    jobUUID=`$pds_api create_job "$PDS_PRODUCT_IDENTFIER" "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
+    create_json $targetURL > $FILE_NAME
+    json_config="$FILE_NAME"
 fi
 
+echo "JSON config"
+echo "$json_config"
+
+jobUUID=`$pds_api create_job_from_json "$json_config" | jq '.jobUUID' | tr -d \"`
+rm "$FILE_NAME"
+
 echo "Job created. Job UUID: $jobUUID."
+
 
 "$pds_api" mark_job_ready_to_start "$jobUUID"
 
@@ -126,5 +158,5 @@ do
     sleep 0.5
 done
 
-# echo return the actual result
+echo "Return the result"
 "$pds_api" job_result "$jobUUID"
