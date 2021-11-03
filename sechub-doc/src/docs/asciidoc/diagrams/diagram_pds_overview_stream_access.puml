@@ -1,0 +1,51 @@
+@startuml
+'see https://plantuml.com/sequence-diagram
+queue "PDS Job Queue" as pdsJobQueue
+actor "PDS admin" as pdsAdmin
+control "PDS Loadbalancer" as pdsLoadBalancer
+entity "PDS member 1" as pdsMember1
+entity "PDS member 2" as pdsMember2
+entity "..." as pdsMemberOther
+entity "PDS member n" as pdsMemberN
+boundary "Job process" as pdsJobProcess
+database "PDS DB" as pdsDB
+
+pdsJobQueue<-pdsMember1: fetches Job and starts execution
+pdsMember1->pdsJobProcess: starts process
+pdsJobProcess->pdsMember1: writes streams to filesystem
+note over pdsAdmin, pdsMember2: Administrator wants to fetch content stream\nbut loadbalancer uses other cluster member\nwhich does not execute the process.
+pdsAdmin->pdsLoadBalancer:Wants to fetch \nstream content
+pdsLoadBalancer->pdsMember2:delegates
+pdsMember2->pdsDB: check job finished
+
+alt job still running
+
+note over pdsMember2: Cluster member2 has no \ndirect access to the job\nwhich runs on another member!
+
+pdsMember2->pdsDB: check for last update timestamp
+alt outdated data or no data found
+    pdsMember2->pdsDB: set request refresh time stamp for stream content\nand wait until last update timestamp newer or job has been done
+end
+
+loop check for last refresh request timestamp
+note over pdsMember2: Here we have a watcher thread,\nrunning on executing machine.
+    pdsMember1<-pdsDB: inspect if **request time stamp** for stream content\n and **last update timestamp > ACCEPTED_GAP**\n**and job is still running**
+    alt refresh necessary
+        pdsMember1->pdsDB: write current stream content (file) to DB field
+        pdsMember1->pdsDB: update **"last update timestamp"**
+    end    
+end
+pdsMember2->pdsDB: fetch stream content from DB field
+pdsMember2->pdsLoadBalancer: return content
+hnote across: End of current process still running case
+
+else job already finished
+pdsMember1->pdsDB:  write file to DB field after process ended 
+note over pdsMember2: Just fetch final data from DB.
+pdsMember2->pdsDB: fetch stream content from DB field
+pdsMember2->pdsLoadBalancer: return content
+hnote across: End of process finished
+end
+pdsLoadBalancer->pdsAdmin: Returns content stream
+
+@enduml

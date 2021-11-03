@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.daimler.sechub.pds.security.PDSRoleConstants;
+import com.daimler.sechub.pds.usecase.PDSStep;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobErrorStream;
+import com.daimler.sechub.pds.usecase.UseCaseAdminFetchesJobOutputStream;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -51,6 +54,30 @@ public class PDSJobTransactionService {
         updateJobInOwnTransaction(jobUUID, null, LocalDateTime.now(), null, PDSJobStatusState.RUNNING, PDSJobStatusState.values());
     }
 
+    /**
+     * Mark job as being requested to refresh stream data
+     * 
+     * @param jobUUID
+     * @return local date time for the new refresh time stamp
+     */
+    @UseCaseAdminFetchesJobOutputStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
+    @UseCaseAdminFetchesJobErrorStream(@PDSStep(name = "Request stream data refresh", description = "Updates the refresh request timestamp in database. This timestamp will be introspected while PDS job process execution - which will fetch and update stream content", number = 3))
+    public LocalDateTime markJobStreamDataRefreshRequestedInOwnTransaction(UUID jobUUID) {
+        PDSJob job = assertJobFound(jobUUID, repository);
+
+        updateJobRefreshRequestInOwnTransaction(job);
+
+        return job.getLastStreamTextRefreshRequest();
+    }
+
+    private void updateJobRefreshRequestInOwnTransaction(PDSJob job) {
+        job.lastStreamTextRefreshRequest = LocalDateTime.now();
+        repository.save(job);
+
+        LOG.debug("Updated job refresh stream text request in own transaction - PDS job uuid={}, lastStreamTxtRefreshTimeStamp={}", job.getUUID(),
+                job.getLastStreamTextRefreshRequest());
+    }
+
     private void updateJobInOwnTransaction(UUID jobUUID, String result, LocalDateTime started, LocalDateTime ended, PDSJobStatusState newState,
             PDSJobStatusState... acceptedStatesBefore) {
         notNull(jobUUID, "job uuid may not be null!");
@@ -67,7 +94,7 @@ public class PDSJobTransactionService {
         }
 
         repository.save(job);
-        LOG.debug("Updated job in own transaction - pds job uuid={}, state={}", job.getUUID(), job.getState());
+        LOG.debug("Updated job in own transaction - PDS job uuid={}, state={}", job.getUUID(), job.getState());
     }
 
     /**
@@ -86,7 +113,7 @@ public class PDSJobTransactionService {
      * @return uuid or <code>null</code> if no job found to put in queue.
      */
     public UUID findNextJobToExecuteAndMarkAsQueued() {
-        
+
         Optional<PDSJob> nextJob = repository.findNextJobToExecute();
         if (!nextJob.isPresent()) {
             return null;
@@ -94,5 +121,19 @@ public class PDSJobTransactionService {
         PDSJob pdsJob = nextJob.get();
         pdsJob.setState(PDSJobStatusState.QUEUED);
         return pdsJob.getUUID();
+    }
+
+    public void updateJobStreamDataInOwnTransaction(UUID jobUUID, String outputStreamData, String errorStreamData) {
+        PDSJob job = assertJobFound(jobUUID, repository);
+
+        job.outputStreamText = outputStreamData;
+        job.errorStreamText = errorStreamData;
+        job.lastStreamTextUpdate = LocalDateTime.now();
+
+        repository.save(job);
+    }
+
+    public void saveInOwnTransaction(PDSJob job) {
+        repository.save(job);
     }
 }

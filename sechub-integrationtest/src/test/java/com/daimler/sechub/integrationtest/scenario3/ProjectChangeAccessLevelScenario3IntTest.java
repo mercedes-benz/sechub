@@ -44,18 +44,21 @@ public class ProjectChangeAccessLevelScenario3IntTest {
         assertProject(project).hasAccessLevel(ProjectAccessLevel.NONE);
         
         /* execute */
-        as(SUPER_ADMIN).deleteProject(PROJECT_1);
+        as(SUPER_ADMIN).deleteProject(project);
+
+        /* test*/
+        waitProjectDoesNotExist(project);
+        
         // now we create a new project with same name etc.
         as(SUPER_ADMIN).
-            createProject(PROJECT_1, USER_1.getUserId()).
-            addProjectsToProfile(ExecutionConstants.DEFAULT_PROFILE_1_ID, PROJECT_1).
-            assignUserToProject(USER_1, PROJECT_1);
+            createProject(project, USER_1.getUserId()).
+            addProjectsToProfile(ExecutionConstants.DEFAULT_EXECUTION_PROFILE_ID, project).
+            assignUserToProject(USER_1, project);
         
-        /* test*/
         // now we test that the acces level is full... and not NONE as before the delete...
-        
         assertProject(project).hasAccessLevel(ProjectAccessLevel.FULL);
-        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new projectis "FULL"
+        
+        // we start a job by USER1 and download the results- at this moment, this is possible, because project access level of new project is "FULL"
         IntegrationTestJSONLocation location = IntegrationTestJSONLocation.CLIENT_JSON_SOURCESCAN_YELLOW;
         ExecutionResult result = as(USER_1).withSecHubClient().startSynchronScanFor(project, location);
         assertSecHubReport(result).

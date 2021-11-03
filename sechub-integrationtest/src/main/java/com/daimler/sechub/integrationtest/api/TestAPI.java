@@ -92,19 +92,20 @@ public class TestAPI {
         return new AsPDSUser(user);
     }
 
-    @Deprecated // use assertReport instead (newer implementation , has more details and uses common SecHubReport object inside)
+    @Deprecated // use assertReport instead (newer implementation , has more details and uses
+                // common SecHubReport object inside)
     public static AssertSecHubReport assertSecHubReport(String json) {
-        return  AssertSecHubReport.assertSecHubReport(json);
+        return AssertSecHubReport.assertSecHubReport(json);
     }
-    
+
     public static AssertReport assertReport(String json) {
         return AssertReport.assertReport(json);
     }
-    
+
     public static AssertFullScanData assertFullScanDataZipFile(File file) {
         return AssertFullScanData.assertFullScanDataZipFile(file);
     }
-    
+
     public static AssertPDSStatus assertPDSJobStatus(String json) {
         return new AssertPDSStatus(json);
     }
@@ -132,7 +133,7 @@ public class TestAPI {
     public static AssertJSON assertJSON(String json) {
         return AssertJSON.assertJson(json);
     }
-    
+
     public static AssertSecurityLog assertSecurityLog() {
         return AssertSecurityLog.assertSecurityLog();
     }
@@ -155,7 +156,7 @@ public class TestAPI {
         String url = getPDSURLBuilder().buildIntegrationTestLogInfoUrl();
         getContext().getPDSRestHelper(ANONYMOUS).postPlainText(url, text);
     }
-    
+
     public static String getPDSStoragePathForJobUUID(UUID jobUUID) {
         String url = getPDSURLBuilder().pds().buildIntegrationTestCheckStoragePath(jobUUID);
         return getContext().getPDSRestHelper(ANONYMOUS).getStringFromURL(url);
@@ -169,8 +170,9 @@ public class TestAPI {
      * @param jobUUID
      */
     public static void waitForJobDone(TestProject project, UUID jobUUID) {
-        waitForJobDone(project, jobUUID,5);
+        waitForJobDone(project, jobUUID, 5);
     }
+
     /**
      * Waits for sechub job being done (means status execution result is OK)- after
      * 5 seconds time out is reached
@@ -193,16 +195,29 @@ public class TestAPI {
     }
 
     /**
-     * Waits for sechub job being running - after 5 seconds time out is reached
+     * Wait until SecHub job is running - after 5 seconds time out is reached
      * 
      * @param project
      * @param jobUUID
      */
-    @SuppressWarnings("unchecked")
     public static void waitForJobRunning(TestProject project, UUID jobUUID) {
-        LOG.debug("wait for job running project:{}, job:{}", project.getProjectId(), jobUUID);
+        waitForJobRunning(project, 5, 300, jobUUID);
+    }
 
-        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, 5, HttpClientErrorException.class) {
+    /**
+     * Wait until SecHub job is running
+     * 
+     * @param project
+     * @param timeOutInSeconds
+     * @param timeToWaitInMillis
+     * @param jobUUID
+     */
+    @SuppressWarnings("unchecked")
+    public static void waitForJobRunning(TestProject project, int timeOutInSeconds, int timeToWaitInMillis, UUID jobUUID) {
+        LOG.debug("wait for job running project:{}, job:{}, timeToWaitInMillis{}, timeOutInSeconds:{}", project.getProjectId(), jobUUID, timeToWaitInMillis,
+                timeOutInSeconds);
+
+        TestAPI.executeUntilSuccessOrTimeout(new AbstractTestExecutable(SUPER_ADMIN, timeOutInSeconds, timeToWaitInMillis, HttpClientErrorException.class) {
             @Override
             public boolean runImpl() throws Exception {
                 String status = as(getUser()).getJobStatus(project.getProjectId(), jobUUID);
@@ -531,24 +546,24 @@ public class TestAPI {
     public static void clearSecurityLogs() {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestClearSecurityLogs();
-        
+
         IntegrationTestContext.get().getRestHelper(ANONYMOUS).delete(url);
     }
-    
+
     public static List<SecurityLogData> getSecurityLogs() {
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
         String url = urlBuilder.buildIntegrationTestGetSecurityLogs();
-        
+
         String json = IntegrationTestContext.get().getRestHelper(ANONYMOUS).getJSon(url);
         ObjectMapper mapper = TestJSONHelper.get().getMapper();
         ObjectReader readerForListOf = mapper.readerForListOf(SecurityLogData.class);
         try {
             return readerForListOf.readValue(json);
         } catch (Exception e) {
-           throw new IllegalStateException("was not able to fetch security logs",e);
+            throw new IllegalStateException("was not able to fetch security logs", e);
         }
     }
-    
+
     public static String getIdForNameByNamePatternProvider(String namePatternProviderId, String name) {
 
         TestURLBuilder urlBuilder = IntegrationTestContext.get().getUrlBuilder();
@@ -873,9 +888,43 @@ public class TestAPI {
         }
         as(SUPER_ADMIN).ensureExecutorConfigUUIDs();
     }
-    
+
     public static void switchSchedulerStrategy(String strategyId) {
         String url = getURLBuilder().buildSetSchedulerStrategyIdUrl(strategyId);
         getSuperAdminRestHelper().put(url);
     }
+
+    /**
+     * Waits for at least one heart beat by PDS server. Every 200 milliseconds there
+     * is a check if at least one heart beat time stamp is found. After 10 tries the
+     * method will fail.
+     */
+    public static void waitForAtLeastOnePDSHeartbeat() {
+        int maxTries = 10;
+
+        boolean heartBeatFound = false;
+        int tried = 0;
+        while (!heartBeatFound && tried < maxTries) {
+            tried++;
+            String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
+            heartBeatFound = json.contains("heartBeatTimestamp");
+            if (!heartBeatFound) {
+                LOG.info("No heart beat time stamp found (tried {} times) - so will wait and retry", tried);
+                waitMilliSeconds(200);
+            }
+        }
+        assertTrue("Even after " + tried + " tries to fetch a heartbeat there was no heartbeat found!", heartBeatFound);
+
+    }
+
+    /**
+     * Wait that project does not exist. Will try 3 times with 1 second delay before
+     * next retry. After this time this method will fail.
+     * 
+     * @param project
+     */
+    public static void waitProjectDoesNotExist(TestProject project) {
+        assertProject(project).doesNotExist(3);
+    }
+
 }

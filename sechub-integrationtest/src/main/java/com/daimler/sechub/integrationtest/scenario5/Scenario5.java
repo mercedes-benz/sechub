@@ -7,6 +7,8 @@ import com.daimler.sechub.integrationtest.internal.AbstractSecHubServerTestScena
 import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 
+import static com.daimler.sechub.integrationtest.internal.IntegrationTestDefaultProfiles.PROFILE_2_PDS_CODESCAN;
+
 /**
  * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9 (REUSE SECHUB DATA enabled!)</u></b><br>
  * 
@@ -43,10 +45,10 @@ public class Scenario5 extends AbstractSecHubServerTestScenario implements PDSTe
     protected void initializeTestData() {
         /* @formatter:off */
         initializer().
-            ensureDefaultExecutionProfile_2_PDS_codescan().
+            ensureDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN).
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile_2_PDS(PROJECT_1).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1).
             assignUserToProject(PROJECT_1,USER_1)
             ;
         /* @formatter:on */

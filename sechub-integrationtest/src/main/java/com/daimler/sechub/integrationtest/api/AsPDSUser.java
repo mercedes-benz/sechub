@@ -105,27 +105,32 @@ public class AsPDSUser {
         getRestHelper().post(url);
         return this;
     }
-
     public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier) {
-        Map<String, String> params = new LinkedHashMap<>();
+        return createJobFor(sechubJobUUID, identifier,null);
+    }
+    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier,Map<String, String> customParameters) {
+        
+        Map<String, String> internalParameters = new LinkedHashMap<>();
 
         /* create default params */
         switch (identifier) {
         case PDS_INTTEST_CODESCAN:
-            params.put("product1.qualititycheck.enabled", "false");
-            params.put("product1.level", "1");
+            internalParameters.put("product1.qualititycheck.enabled", "false");
+            internalParameters.put("product1.level", "1");
             break;
         case PDS_INTTEST_INFRASCAN:
         case PDS_INTTEST_WEBSCAN:
         default:
-            params.put("nothing.special", "true");
+            internalParameters.put("nothing.special", "true");
         }
-
-        return createJobFor(sechubJobUUID, identifier, params);
+        if (customParameters!=null) {
+            internalParameters.putAll(customParameters);
+        }
+        
+        return createJobFor(sechubJobUUID, identifier.getId(), internalParameters);
     }
 
-    public String createJobFor(UUID sechubJobUUID, PDSIntTestProductIdentifier identifier, Map<String, String> params) {
-        String productId = identifier.getId();
+    private String createJobFor(UUID sechubJobUUID, String productId, Map<String, String> params) {
         TestRestHelper restHelper = getRestHelper();
         TestURLBuilder urlBuilder = getUrlBuilder();
         return createJobFor(sechubJobUUID, params, productId, restHelper, urlBuilder);
@@ -161,6 +166,18 @@ public class AsPDSUser {
     public AsPDSUser upload(UUID pdsJobUUID, String uploadName, File file) {
         upload(getUrlBuilder(), getRestHelper(), pdsJobUUID, uploadName, file);
         return this;
+    }
+    
+    public String getJobOutputStreamText(UUID jobUUID) {
+        String url = getUrlBuilder().pds().buildAdminFetchesJobOutputStreamUrl(jobUUID);
+        String result =  getRestHelper().getStringFromURL(url);
+        return result;
+    }
+    
+    public String getJobErrorStreamText(UUID jobUUID) {
+        String url = getUrlBuilder().pds().buildAdminFetchesJobErrorStreamUrl(jobUUID);
+        String result = getRestHelper().getStringFromURL(url);
+        return result;
     }
 
     public static void upload(TestURLBuilder urlBuilder, TestRestHelper restHelper, UUID pdsJobUUID, String uploadName, File file) {

@@ -29,6 +29,9 @@ public class DirectPDSAPIMonitoringStateScenario6IntTest {
 
     @Test
     public void pds_admin_can_fetch_execution_state() {
+        /* check preconditions */
+        waitForAtLeastOnePDSHeartbeat(); // wait for first heart beat, otherwise test can be flaky
+        
         /* execute */
         String json = asPDSUser(PDS_ADMIN).getMonitoringStatus();
         

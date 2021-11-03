@@ -163,6 +163,14 @@ public class TestURLBuilder {
         public String buildIntegrationTestCheckStoragePath(UUID jobUUID) {
             return buildUrl(API_PDS_INTEGRATIONTEST, "storage",jobUUID,"path");
         }
+        
+        public String buildAdminFetchesJobOutputStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","output");
+        }
+        
+        public String buildAdminFetchesJobErrorStreamUrl(UUID jobUUID) {
+            return buildUrl(API_ADMIN_JOB, jobUUID, "stream","error");
+        }
     }
 
     public ProductDelegationServerUrlsBuilder pds() {

@@ -50,7 +50,10 @@ public class PDSMonitoringTestDataUtil {
         job2a.setOwner(MEMBER2_JOBA_OWNER);
         job2a.setServerId(SERVER_ID);
         job2a.setState(PDSJobStatusState.RUNNING);
-        entry2a.job=job2a;
+        entry2a.state=job2a.getState();
+        entry2a.created=job2a.getCreated();
+        entry2a.started=job2a.getStarted();
+        
         member2.getExecutionState().entries.add(entry2a);
         
         monitoringToTest.getMembers().add(member1);

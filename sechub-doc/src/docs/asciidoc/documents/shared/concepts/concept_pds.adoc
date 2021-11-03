@@ -165,6 +165,23 @@ PDS instances for product `XYZ` would use a NFS to store job data. But of course
 [[section-pds-s3-storage-example-s3-nfs-mixed]]
 plantuml::diagrams/diagram_concept_pds_storage_example_s3_and_nfs_mixed.puml[]
 
+[[pds-process-handling]]
+==== Process execution
+PDS instances are executing so called `caller scripts` by spanning a new process. At this time 
+dedicated environment variables are automatically injected and available inside the scripts.
+
+[TIP]
+====
+When implementing a new PDS product integration you should always start with a normal, 
+executable script (e.g. `bash`).
+
+So you can simply call your script standalone and when it works you just have to create
+the PDS configuration file and make the script callable.
+====
+
+===== How PDS provides output and error stream content of running jobs in clustered environments
+include::concept_pds_fetch_stream_of_running_job.adoc[]
+
 
 ==== SecHub integration
 ===== Executors and Adapters

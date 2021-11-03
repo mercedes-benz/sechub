@@ -48,7 +48,7 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private String productBaseURL;
 
     private int timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS * 60 * 1000;// one minute check default
-    private int timeOutInMinutes = DEFAULT_TIMEOUT_IN_MINUTES; 
+    private int timeOutInMinutes = DEFAULT_TIMEOUT_IN_MINUTES;
 
     private String proxyHostname;
 
@@ -357,18 +357,18 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         ensureValidTimeForTimeOutInMinutes();
     }
 
-
     private void ensureValidTimeForNextCheckOperationInMilliseconds() {
         if (timeToWaitForNextCheckOperationInMilliseconds > MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS) {
             LOG.warn(
-                    "Configured check interval:{} milliseconds is bigger than maximum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
-                    timeToWaitForNextCheckOperationInMilliseconds, MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS, DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
+                    "{} - Configured check interval:{} milliseconds is bigger than maximum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
+                    getClass().getSimpleName(), MAX_SCAN_RESULT_CHECK_IN_MILLISECONDS, DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
             timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS;
         }
         if (timeToWaitForNextCheckOperationInMilliseconds < MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS) {
             LOG.warn(
-                    "Configured check interval:{} milliseconds is lower than minimum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
-                    timeToWaitForNextCheckOperationInMilliseconds, MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS, DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
+                    "{} - Configured check interval:{} milliseconds is lower than minimum value:{} milliseconds. Automatic reset to default value: {} milliseconds. Please check your configuration!",
+                    getClass().getSimpleName(), timeToWaitForNextCheckOperationInMilliseconds, MIN_SCAN_RESULT_CHECK_IN_MILLISECONDS,
+                    DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS);
             timeToWaitForNextCheckOperationInMilliseconds = DEFAULT_SCAN_RESULT_CHECK_IN_MILLISECONDS;
         }
     }
@@ -376,15 +376,15 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private void ensureValidTimeForTimeOutInMinutes() {
         if (timeOutInMinutes > MAX_SCAN_TIMEOUT_IN_MINUTES) {
             LOG.warn(
-                    "Configured scan timeout:{} minutes is bigger than maximum value:{} minutes. Automatic reset to maximum done. Please check your configuration!",
-                    timeOutInMinutes, MAX_SCAN_TIMEOUT_IN_MINUTES);
+                    "{} - Configured scan timeout:{} minutes is bigger than maximum value:{} minutes. Automatic reset to maximum done. Please check your configuration!",
+                    getClass().getSimpleName(), timeOutInMinutes, MAX_SCAN_TIMEOUT_IN_MINUTES);
             timeOutInMinutes = MAX_SCAN_TIMEOUT_IN_MINUTES;
         }
-        
+
         if (timeOutInMinutes < MIN_SCAN_TIMEOUT_IN_MINUTES) {
             LOG.warn(
-                    "Configured scan timeout:{} minutes is lower than minimum value:{} minutes. Automatic reset to minimum done. Please check your configuration!",
-                    timeOutInMinutes, MIN_SCAN_TIMEOUT_IN_MINUTES);
+                    "{} -Configured scan timeout:{} minutes is lower than minimum value:{} minutes. Automatic reset to minimum done. Please check your configuration!",
+                    getClass().getSimpleName(), timeOutInMinutes, MIN_SCAN_TIMEOUT_IN_MINUTES);
             timeOutInMinutes = MIN_SCAN_TIMEOUT_IN_MINUTES;
         }
     }
