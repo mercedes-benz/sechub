@@ -19,8 +19,8 @@ ENV PDS_VERSION=0.24.0
 ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # OWASP ZAP
-ARG OWASP_ZAP_CHECKSUM="54750581ec2fd21bd5aa8429b31b09eeb1e750ab6bb7e56f12504251892ccb09"
-ARG OWASP_ZAP_VERSION=2.10.0
+ARG OWASP_ZAP_CHECKSUM="0e0d8198f60dad56b010c5e26c069395af5bee333f4aa9c47f231c767be1f995"
+ARG OWASP_ZAP_VERSION=2.11.0
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -37,8 +37,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-11-jre firefox && \
+    apt-get install --assume-yes python3 python3-pip wget openjdk-11-jre firefox && \
     apt-get clean
+
+RUN pip3 install --upgrade zapcli
 
 # Install OWASP ZAP
 RUN mkdir --parents "$TOOL_FOLDER" && \

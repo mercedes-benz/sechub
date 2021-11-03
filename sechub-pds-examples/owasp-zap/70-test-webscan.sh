@@ -62,7 +62,7 @@ json=$(cat <<JSON
     "productId": "$PDS_PRODUCT_IDENTFIER", 
     "parameters": [
         {
-            "key" : "webscan.targeturl", 
+            "key" : "pds.scan.target.url", 
             "value" : "$target_url" 
         }
      ]

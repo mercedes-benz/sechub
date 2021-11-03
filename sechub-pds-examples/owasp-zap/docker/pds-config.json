@@ -11,13 +11,13 @@
       "parameters": {
         "mandatory": [
           {
-            "key": "webscan.targeturl",
+            "key": "pds.scan.target.url",
             "description": "The target url for the scan"
           }
         ],
         "optional" : [
           {
-            "key": "webscan.configuration",
+            "key": "pds.scan.configuration",
             "description": "The configuration of the web scan"
           }
         ]
@@ -32,13 +32,13 @@
       "parameters": {
         "mandatory": [
           {
-            "key": "webscan.targeturl",
+            "key": "pds.scan.target.url",
             "description": "The target url for the scan"
           }
         ],
         "optional" : [
           {
-            "key": "webscan.configuration",
+            "key": "pds.scan.configuration",
             "description": "The configuration of the web scan"
           }
         ]

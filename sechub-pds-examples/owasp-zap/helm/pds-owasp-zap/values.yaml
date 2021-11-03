@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-    registry: "my.registry.example.org/pds_gosec"
+    registry: "my.registry.example.org/pds-owasp-zap"
     tag: "latest"
 
 pds:
@@ -38,7 +38,7 @@ database:
     postgres:
         enabled: false
         connection: "jdbc:postgresql://database:5432/pds"
-        username: "gosec"
+        username: "owaspzap"
         password: "<password-of-db-user>"
 
 networkPolicy:
@@ -51,4 +51,3 @@ networkPolicy:
         - podSelector:
             matchLabels:
                 name: sechub-adminserver
-

@@ -50,7 +50,7 @@ localserver () {
         echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
-    nohup owasp-zap -daemon -config api.key="$OWASP_ZAP_API_KEY" > "$TOOL_FOLDER/log" &
+    nohup owasp-zap -daemon -host 127.0.0.1 -port 8080 -config api.key="$OWASP_ZAP_API_KEY" > "$TOOL_FOLDER/log" &
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 

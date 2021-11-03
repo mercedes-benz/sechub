@@ -5,9 +5,9 @@ echo "################################"
 echo "# Starting OWASP ZAP mock scan #"
 echo "################################"
 echo ""
-echo "Target URL: $WEBSCAN_TARGETURL"
+echo "Target URL: $PDS_SCAN_TARGET_URL"
 
-if [ "$WEBSCAN_TARGETURL" == "https://juice-shop.example.org" ]
+if [ "$PDS_SCAN_TARGET_URL" == "https://juice-shop.example.org" ]
 then
     echo "Juice-Shop mock"
     cp "$MOCK_FOLDER/juice-shop.json" "$PDS_JOB_RESULT_FILE"

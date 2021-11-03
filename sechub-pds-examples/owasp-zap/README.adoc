@@ -78,7 +78,7 @@ export PDS_APITOKEN="<pds-admin-apitoken>"
 export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
-The default values for the PDS-GoSec `docker-compose` examples are:
+The default values for the PDS-OWASP-ZAP `docker-compose` examples are:
 +
 ----
 export PDS_SERVER=https://localhost:8444
@@ -170,7 +170,7 @@ export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 ----
 +
 [NOTE]
-Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+GoSec in Kubernetes or other environments those values will be different.
+Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+OWSAP-Zap in Kubernetes or other environments those values will be different.
 
 . Scan by providing a `ZIP` folder with Go source code.
 +
@@ -190,7 +190,7 @@ The cluster is created locally via `docker-compose`.
 
 ==== Shared Volume
 
-The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+The cluster uses a shared volume defined in `docker-compose`. Docker allows to create volumes which can be used by multiple instances to upload files to. Reading, extracting and analysing the files is done in the PDS+OWSAP-Zap container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
@@ -198,13 +198,13 @@ image::cluster_shared_volume.svg[Components of cluster with shared volume]
 
 ===== Automatic
 
-Starting several PDS + GoSec instances:
+Starting several PDS + OWSAP-Zap instances:
 
 ----
 ./50-start-multiple-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + GoSec instances:
+Example of starting 3 PDS + OWSAP-Zap instances:
 
 ----
 ./50-start-multiple-docker-compose.sh 3
@@ -224,7 +224,7 @@ NOTE: It is recommended to change the passwords in `.env-cluster`. Other values 
 
 ==== Object Storage
 
-The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
+The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+OWASP-ZAP container.
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a MinIO object storage and one or more PDS server.
 
@@ -232,13 +232,13 @@ image::cluster_object_storage.svg[Components of cluster with object storage]
 
 ===== Automatic
 
-Starting several PDS + GoSec instances
+Starting several PDS + OWASP-Zap instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh <replicas>
 ----
 
-Example of starting 3 PDS + GoSec instances
+Example of starting 3 PDS + OWSAP-Zap instances
 
 ----
 ./51-start-multiple-object-storage-docker-compose.sh 3
@@ -264,22 +264,16 @@ S3_ENABLED=true
 
 === Change the Configuration
 
-There are several configuration options available for the PDS+GoSec `docker-compose` files. Have a look at `env-example` for more details.
+There are several configuration options available for the PDS+OWSAP-Zap `docker-compose` files. Have a look at `env-example` for more details.
 
 === Troubleshooting
 
-This section contains information about how to troubleshoot PDS+GoSec if something goes wrong.
+This section contains information about how to troubleshoot PDS+OWSAP-Zap if something goes wrong.
 
 ==== Access the Ubuntu container
 
 ----
-docker exec -it pds-gosec-ubuntu bash
-----
-
-==== Access the Alpine Linux container
-
-----
-docker exec -it pds-gosec-alpine sh
+docker exec -it pds-owasp-zap-ubuntu bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -303,7 +297,7 @@ TIP: https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php
 
 == Build Image and Push to Registry
 
-Build container images and push them to registry to run PDS+GoSec on virtual machines, Kubernetes or any other distributed system.
+Build container images and push them to registry to run PDS+OWSAP-Zap on virtual machines, Kubernetes or any other distributed system.
 
 === Build Image
 
@@ -341,7 +335,7 @@ Push the container image to a registry.
 
 == Kubernetes
 
-https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+GoSec in Kubernetes.
+https://kubernetes.io/[Kubernetes] is an open-source container-orchestration system. This sections explains how to deploy and run PDS+OWSAP-Zap in Kubernetes.
 
 === Helm
 
@@ -350,7 +344,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec_ubuntu` image pushed to registry
+* `pds_owasp_zap` image pushed to registry
 
 ==== Installation
 
@@ -363,7 +357,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   registry: registry.app.corpintra.net/sechub/pds_owasp_zap
    tag: latest
 
 pds:
