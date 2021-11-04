@@ -12,14 +12,16 @@ ARG PDS_FOLDER="/pds"
 ARG SCRIPT_FOLDER="/scripts"
 ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+ENV DOWNLOAD_FOLDER="/downloads"
+ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
-ENV PDS_VERSION=0.23.1
-ARG PDS_CHECKSUM="fb70f3131324f0070631f78229c25168ff50d570a9d481420d095b3bb5aa4a69"
+ENV PDS_VERSION=0.24.0
+ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # GoSec
-ARG GOSEC_VERSION="2.8.1"
-ARG GOSEC_CHECKSUM="b9632585292c5ebc749b0afe064661bee7ea422fc7c54a5282a001e52c8ed30d"
+ARG GOSEC_VERSION="2.9.1"
+ARG GOSEC_CHECKSUM="34505685c89f702719177e0c8a2b43907026d8c79b70fbaa76153fbd53603b66"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -38,8 +40,18 @@ RUN apk update --no-cache && \
 COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
 RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
+COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
+RUN chmod +x $SCRIPT_FOLDER/gosec_mock.sh
+
+# Setup mock product
+RUN mkdir "$MOCK_FOLDER"
+COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json 
+
+# Create download folder
+RUN mkdir "$DOWNLOAD_FOLDER"
+
 # Install GoSec
-RUN cd /tmp && \
+RUN cd "$DOWNLOAD_FOLDER" && \
     # create checksum file
     echo "$GOSEC_CHECKSUM  gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" > gosec_${GOSEC_VERSION}_linux_amd64.tar.gz.sha256sum && \
     # download gosec
@@ -78,7 +90,7 @@ RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
+RUN chown --recursive gosec:gosec $DOWNLOAD_FOLDER $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # switch from root to non-root user
 USER gosec
