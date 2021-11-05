@@ -12,17 +12,19 @@ ARG PDS_FOLDER="/pds"
 ARG SCRIPT_FOLDER="/scripts"
 ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+ENV DOWNLOAD_FOLDER="/downloads"
+ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
-ENV PDS_VERSION=0.23.1
-ARG PDS_CHECKSUM="fb70f3131324f0070631f78229c25168ff50d570a9d481420d095b3bb5aa4a69"
+ENV PDS_VERSION=0.24.0
+ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # Go
-ARG GO="go1.17.1.linux-amd64.tar.gz"
-ARG GO_CHECKSUM="dab7d9c34361dc21ec237d584590d72500652e7c909bf082758fb63064fca0ef"
+ARG GO="go1.17.2.linux-amd64.tar.gz"
+ARG GO_CHECKSUM="f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676"
 
 # GoSec
-ARG GOSEC_VERSION="2.8.1"
+ARG GOSEC_VERSION="2.9.1"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -46,8 +48,18 @@ RUN apt-get update && \
 COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
 RUN chmod +x $SCRIPT_FOLDER/gosec.sh
 
+COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
+RUN chmod +x $SCRIPT_FOLDER/gosec_mock.sh
+
+# Setup mock folder
+RUN mkdir "$MOCK_FOLDER"
+COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
+
+# Create download folder
+RUN mkdir "$DOWNLOAD_FOLDER"
+
 # Install Go
-RUN cd /tmp && \
+RUN cd "$DOWNLOAD_FOLDER" && \
     # create checksum file
     echo "$GO_CHECKSUM $GO" > $GO.sha256sum && \
     # download Go
@@ -62,7 +74,7 @@ RUN cd /tmp && \
     echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
 
 # Install GoSec
-RUN cd /tmp && \
+RUN cd "$DOWNLOAD_FOLDER" && \
     # download gosec
     wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
     # download checksum
@@ -75,7 +87,6 @@ RUN cd /tmp && \
     tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
     # Remove gosec tar.gz
     rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
-    
 
 # Install the Product Delegation Server (PDS)
 RUN mkdir --parents "$PDS_FOLDER" && \
@@ -101,7 +112,7 @@ RUN chmod +x /run.sh
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
+RUN chown --recursive gosec:gosec $DOWNLOAD_FOLDER $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # Switch from root to non-root user
 USER gosec

@@ -120,7 +120,7 @@ else
     jobUUID=`$pds_api create_job "$PDS_PRODUCT_IDENTFIER" "$sechub_job_uuid" | jq '.jobUUID' | tr -d \"`
 fi
 
-echo "Job created. Job UUID: $jobUUID."
+echo "Job created. Job UUID: $jobUUID"
 
 "$pds_api" upload_zip "$jobUUID" "$file_to_upload"
 

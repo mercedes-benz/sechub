@@ -7,7 +7,13 @@
             "id" : "PDS_GOSEC",
             "path" : "/scripts/gosec.sh",
             "scanType" : "codeScan",
-            "description" : "Runs gosec"
+            "description" : "Runs the sechurity checker gosec."
+        },
+        {
+            "id" : "PDS_GOSEC_MOCK",
+            "path" : "/scripts/gosec_mock.sh",
+            "scanType" : "codeScan",
+            "description" : "Runs gosec mock. It returns a fixed result file."
         }
     ]
 }
