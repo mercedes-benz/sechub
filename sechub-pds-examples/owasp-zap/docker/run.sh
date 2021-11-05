@@ -87,6 +87,7 @@ check_setup () {
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
+    check_variable "$OWASP_ZAP_API_KEY" "OWASP_ZAP_API_KEY"
 }
 
 check_variable () {

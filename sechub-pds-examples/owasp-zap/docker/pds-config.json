@@ -12,13 +12,21 @@
         "mandatory": [
           {
             "key": "pds.scan.target.url",
-            "description": "The target url for the scan"
+            "description": "The target url for the scan."
           }
         ],
         "optional" : [
           {
             "key": "pds.scan.configuration",
-            "description": "The configuration of the web scan"
+            "description": "The configuration of the web scan."
+          },
+          {
+            "key": "zap.activescan.enabled",
+            "description": "Active scanning uses known attacks against targets. If this option is enabled OWASP ZAP will actively attack the target."
+          },
+          {
+            "key": "zap.ajaxcrawler.enabled",
+            "description": "The AJAX crawler can crawl single-page and JavaScript pages. In case, this option is enabled the scanning will take more time."
           }
         ]
       }

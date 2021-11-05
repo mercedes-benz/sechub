@@ -37,10 +37,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes python3 python3-pip wget openjdk-11-jre firefox && \
+    apt-get install --assume-yes wget openjdk-11-jre firefox firefox-geckodriver && \
     apt-get clean
-
-RUN pip3 install --upgrade zapcli
 
 # Install OWASP ZAP
 RUN mkdir --parents "$TOOL_FOLDER" && \
@@ -94,5 +92,16 @@ RUN chown --recursive zap:zap $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER
 
 # Switch from root to non-root user
 USER zap
+
+# Install OWASP ZAP addons 
+# see: https://www.zaproxy.org/addons/
+RUN owasp-zap -cmd -addoninstall webdriverlinux && \
+    owasp-zap -cmd -addoninstall ascanrules && \
+    owasp-zap -cmd -addoninstall spiderAjax && \
+    owasp-zap -cmd -addoninstall pscanrules && \
+    owasp-zap -cmd -addoninstall commonlib && \
+    owasp-zap -cmd -addoninstall retire && \
+    owasp-zap -cmd -addoninstall domxss && \
+    owasp-zap -cmd -addoninstall reports
 
 CMD ["/run.sh"]

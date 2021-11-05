@@ -599,7 +599,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   registry: my.registry.example.org/sechub/pds_gosec
    tag: latest
 
 pds:
@@ -636,7 +636,7 @@ An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_gosec
+   registry: my.registry.example.org/sechub/pds_gosec
    tag: latest
 
 pds:

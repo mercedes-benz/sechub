@@ -53,6 +53,18 @@ It is recommended to change the default passwords in the `.env` file to improve 
 docker-compose --file docker-compose_pds_owasp_zap_ubuntu.yaml up --build
 ----
 
+==== Together with SecHub
+
+The container will be started and attached to the `sechub` Network.
+
+IMPORTANT: Make sure the SecHub container is running.
+
+. Start Ubuntu container:
++
+----
+./05-start-single-sechub-network-docker-compose.sh
+----
+
 [[scan]]
 === Scan
 
@@ -60,6 +72,8 @@ The steps required to scan with the PDS. Scan manually if you are new to the PDS
 
 [[manual-scan]]
 ==== Scan Manually
+
+WARNING: Scan only targets you have permission to scan.
 
 . Go to PDS Bash command line (CLI) script
 +
@@ -149,6 +163,8 @@ $ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 
 ==== Scan Script 
 
+WARNING: Scan only targets you have permission to scan.
+
 It is recommended to start with a <<manual-scan,manual scan>> the first time using the PDS. However, after some time typing in the commands becomes very tedious. To improve on the experience you can scan using this script.
 
 . Set the environment variables
@@ -172,16 +188,46 @@ export PDS_PRODUCT_IDENTFIER=PDS_OWASP_ZAP
 [NOTE]
 Those values are the default values from `env-initial` and `env-cluster-initial` files. In case you run PDS+OWSAP-Zap in Kubernetes or other environments those values will be different.
 
-. Scan by providing a `ZIP` folder with Go source code.
+. Scan by providing a `target-url` or a `path-to-json-config`.
 +
 ----
-./70-test.sh <path-to-zip-file>
+./70-test-webscan.sh <target-url or path-to-json-config-file>
 ----
 +
 For example:
 +
 ----
-./70-test.sh ~/myproject.zip
+./70-test.sh https://my.juiceshop.org
+----
++
+or
++
+----
+./70-test.sh my-scan-config.json
+----
++
+.my-scan-config.json
+[source,json]
+----
+{
+    "apiVersion" : "1.0",
+    "sechubJobUUID": "288607bf-ac81-4088-842c-005d5702a9e9", 
+    "productId": "PDS_OWASP_ZAP",
+    "parameters": [
+        {
+            "key" : "pds.scan.target.url",
+            "value" : "https://my.juiceshop.org" 
+        },
+        {
+            "key" : "zap.activescan.enabled",
+            "value" : true
+        },
+        {
+            "key" : "zap.ajaxcrawler.enabled",
+            "value" : true
+        }
+    ]
+}
 ----
 
 === Cluster
@@ -223,6 +269,8 @@ NOTE: It is recommended to change the passwords in `.env-cluster`. Other values 
 ----
 
 ==== Object Storage
+
+CAUTION: Please beware, that the object storage Docker image contains content licensed under AGPL. For example MinIO, which are **not** covered under the MIT license of this repository.
 
 The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+OWASP-ZAP container.
 
@@ -357,11 +405,14 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_owasp_zap
+   registry: my.registry.org/sechub/pds_owasp_zap
    tag: latest
 
 pds:
    startMode: localserver
+
+owaspZap:
+    apiKey: <my-apikey>
 
 users:
    admin:
@@ -374,58 +425,6 @@ users:
 storage:
     local:
         enabled: true
-
-networkPolicy:
-    enabled: true
-    ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-                name: sechub-server
-        - podSelector:
-            matchLabels:
-                name: sechub-adminserver
-----
-+
-An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage:
-+
-[source,yaml]
-----
-replicaCount: 3
-
-image:
-   registry: my.registry.example.org/pds_owasp_zap
-   tag: latest
-
-pds:
-   startMode: localserver
-   keepContainerAliveAfterPDSCrashed: true
-
-users:
-   admin:
-      id: "admin"
-      apiToken: "{noop}<my-admin-password>"
-   technical:
-      id: "techuser"
-      apiToken: "{noop}<my-technical-password>"
-      
-
-database:
-    postgres:
-        enabled: true
-        connection: "jdbc:postgresql://<my-database-host>:<port>/<my-database>"
-        username: "<username-for-my-database>"
-        password: "<password-for-my-database>"
-
-storage:
-    local:
-        enabled: false
-    s3:
-        enabled: true
-        endpoint: "https://<my-s3-object-storage>:443"
-        bucketname: "<my-bucket>"
-        accesskey: "<my-accesskey>"
-        secretkey: "<my-secretkey>"
 
 networkPolicy:
     enabled: true
@@ -445,7 +444,7 @@ To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+helm install --values myvalues.yaml pds-owasp-zap helm/pds-owasp-zap/
 ----
 +
 [TIP]
@@ -455,17 +454,14 @@ Use `helm --namespace <my-namespace> install…` to install the helm chart into 
 +
 ----
 kubectl get pods
-NAME                             READY   STATUS    RESTARTS   AGE
-pds-gosec-545f5bc8-7s6rh         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-px9cs         1/1     Running   0          1m43s
-pds-gosec-545f5bc8-t52p6         1/1     Running   0          3m
-
+NAME                                              READY   STATUS    RESTARTS   AGE
+pds-owasp-zap-759ffc8dfb-8jj8f                    1/1     Running   0          75s
 ----
 
 . Forward port of one of the pods to own machine
 +
 ----
-kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
+kubectl port-forward pds-owasp-zap-759ffc8dfb-8jj8f 8444:8444
 ----
 
 . Scan as explained in the <<scan,scan>> section.
@@ -475,7 +471,7 @@ kubectl port-forward pds-gosec-545f5bc8-7s6rh  8444:8444
 In case, `my-values.yaml` was changed. Simply, use `helm upgrade` to update the deployment. `helm` will handle scaling up and down as well as changing the configuration.
 
 ----
-helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
+helm upgrade --values my-values.yaml pds-owasp-zap helm/pds-owasp-zap/
 ----
 
 ==== Uninstall 
@@ -484,14 +480,14 @@ helm upgrade --values my-values.yaml pds-gosec helm/pds-gosec/
 +
 ----
 helm list
-NAME     	NAMESPACE 	REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
-pds-gosec	my-namespace	1       	2021-06-24 21:54:37.668489822 +0200 CEST	deployed	pds-gosec-0.1.0                	0.21.0 
+NAME                          	NAMESPACE 	    REVISION	UPDATED                                 	STATUS  	CHART                          	APP VERSION
+pds-owasp-zap                 	my-namespace	1       	2021-11-05 18:42:23.613991303 +0100 CET 	deployed	pds-owasp-zap-0.1.0            	0.24.0 
 ----
 
 . Helm uninstall
 +
 ----
-helm uninstall pds-gosec
+helm uninstall pds-owasp-zap
 ----
 
 === Troubleshooting
@@ -499,22 +495,22 @@ helm uninstall pds-gosec
 * Access deployment events.
 +
 ----
-kubectl describe pod pds-gosec-545f5bc8-7s6rh
+kubectl describe pod pds-owasp-zap-759ffc8dfb-8jj8f
 …
 Events:
-  Type    Reason     Age   From               Message
-  ----    ------     ----  ----               -------
-  Normal  Scheduled  1m    default-scheduler  Successfully assigned sechub-dev/pds-gosec-749fcb8d7f-jjqwn to kube-node01
-  Normal  Pulling    54s   kubelet            Pulling image "my.registry.example.org/sechub/pds_gosec:v0.1"
-  Normal  Pulled     40s   kubelet            Successfully pulled image "my.registry.example.org/sechub/pds_gosec:v0.1" in 13.815348799s
-  Normal  Created    15s   kubelet            Created container pds-gosec
-  Normal  Started    10s   kubelet            Started container pds-gosec
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  6m52s  default-scheduler  Successfully assigned sechub-zap/pds-owasp-zap-759ffc8dfb-8jj8f to c06p043-md-cc8c675cb-bqtpb
+  Normal  Pulling    6m52s  kubelet            Pulling image "my.registry.org/sechub/pds_owasp_zap:latest"
+  Normal  Pulled     6m31s  kubelet            Successfully pulled image "my.registry.org/sechub/pds_owasp_zap:latest" in 21.303104727s
+  Normal  Created    6m30s  kubelet            Created container pds-owasp-zap
+  Normal  Started    6m30s  kubelet            Started container pds-owasp-zap
 ----
 
 * Access container logs.
 +
 ----
-kubectl logs pds-gosec-545f5bc8-7s6rh
+kubectl logs pds-owasp-zap-759ffc8dfb-8jj8f
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -522,19 +518,23 @@ kubectl logs pds-gosec-545f5bc8-7s6rh
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v2.4.0)
+ :: Spring Boot ::                (v2.5.2)
 
-2021-06-09 14:46:07.310  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-gosec-749fcb8d7f-jjqwn with PID 7 (/pds/sechub-pds-0.21.0.jar started by gosec in /workspace)
-2021-06-09 14:46:07.312  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
-2021-06-09 14:46:08.945  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-06-09 14:46:08.945  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
-2021-06-09 14:46:09.000  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-06-09 14:46:09.228  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-06-09 14:46:09.485  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2021-06-09 14:46:10.243  INFO 7 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
-2021-06-09 14:46:10.439  INFO 7 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
-2021-06-09 14:46:13.192  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 6.783 seconds (JVM running for 7.27)
-2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
-2021-06-09 14:46:14.206  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
-2021-06-09 14:46:14.255  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:GOSEC_CLUSTER, heartbeatuuid:a46b97b2-4cfb-449d-a171-42b255c4aab8, cluster-member-data:{"hostname":"pds-gosec-749fcb8d7f-jjqwn","ip":"192.168.129.206","port":8444,"heartBeatTimestamp":"2021-06-09T14:46:14.207113","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
+2021-11-05 17:42:47.697  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Starting ProductDelegationServerApplication using Java 11.0.11 on pds-owasp-zap-759ffc8dfb-8jj8f with PID 7 (/pds/sechub-pds-0.24.0.jar started by zap in /workspace)
+2021-11-05 17:42:47.702  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : The following profiles are active: pds_localserver
+2021-11-05 17:42:53.054  WARN 7 --- [           main] o.apache.tomcat.util.net.SSLHostConfig   : The protocol [TLSv1.3] was added to the list of protocols on the SSLHostConfig named [_default_]. Check if a +/- prefix is missing.
+2021-11-05 17:42:53.131  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-11-05 17:42:53.132  INFO 7 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.48]
+2021-11-05 17:42:53.195  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-11-05 17:42:53.498  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-11-05 17:42:53.776  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-11-05 17:42:56.333  INFO 7 --- [           main] .s.s.AbstractSharedVolumePropertiesSetup : Using /shared_volumes/uploads as shared volume directory for uploads
+2021-11-05 17:42:56.333  INFO 7 --- [           main] .s.s.AbstractSharedVolumePropertiesSetup : Upload directory set to:/shared_volumes/uploads
+2021-11-05 17:42:56.334  INFO 7 --- [           main] c.d.s.p.storage.PDSMultiStorageService   : Created storage factory: SharedVolumeJobStorageFactory
+2021-11-05 17:42:56.349  INFO 7 --- [           main] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat service created with 1000 millisecondss initial delay and 60000 millisecondss as fixed delay
+2021-11-05 17:42:56.500  INFO 7 --- [           main] c.d.s.pds.batch.PDSBatchTriggerService   : Scheduler service created with 100 millisecondss initial delay and 500 millisecondss as fixed delay
+2021-11-05 17:42:58.375  INFO 7 --- [           main] d.s.p.ProductDelegationServerApplication : Started ProductDelegationServerApplication in 13.2 seconds (JVM running for 14.465)
+2021-11-05 17:42:59.394  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Heartbeat will be initialized
+2021-11-05 17:42:59.394  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : Create new server hearbeat
+2021-11-05 17:42:59.467  INFO 7 --- [   scheduling-1] c.d.s.p.m.PDSHeartBeatTriggerService     : heartbeat update - serverid:OWASP_ZAP_CLUSTER, heartbeatuuid:d6b06e92-e3e6-4f39-aefb-eb70fee49ce7, cluster-member-data:{"hostname":"pds-owasp-zap-759ffc8dfb-8jj8f","ip":"192.168.128.4","port":8444,"heartBeatTimestamp":"2021-11-05T17:42:59.395871","executionState":{"queueMax":50,"jobsInQueue":0,"entries":[]}}
 ----

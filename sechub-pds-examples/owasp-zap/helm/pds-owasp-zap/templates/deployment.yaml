@@ -32,6 +32,8 @@ spec:
                       value: "{{ .Values.users.technical.id }}"
                     - name: TECHUSER_APITOKEN
                       value: "{{ .Values.users.technical.apiToken }}"
+                    - name: OWASP_ZAP_API_KEY
+                      value: "{{ .Values.owaspZap.apiKey }}"
                     {{- if .Values.pds.javaDebug.enabled }}
                     - name: JAVA_ENABLE_DEBUG
                       value: "true"
