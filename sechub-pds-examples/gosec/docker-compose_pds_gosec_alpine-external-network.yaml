@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+
+version: "3"
+services:
+    pds-gosec-alpine:
+        build:
+            args:
+                - BASE_IMAGE=alpine:3.14
+            context: docker/
+            dockerfile: GoSec-Alpine.dockerfile
+        container_name: pds-gosec-alpine
+        env_file:
+            - .env
+        networks:
+            - "sechub"
+
+networks:
+    sechub:
+        external: true
+        name: "sechub"
