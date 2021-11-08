@@ -67,7 +67,7 @@ public abstract class AbstractMockedAdapter<A extends AdapterContext<C>, C exten
     private boolean mockSanityCheckEnabled;
 
     @Autowired
-    private MockedAdapterSetupService setupService;
+    protected MockedAdapterSetupService setupService;
 
     @Override
     protected final String getAPIPrefix() {
