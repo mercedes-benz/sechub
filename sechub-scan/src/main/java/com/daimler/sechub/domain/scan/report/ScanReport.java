@@ -59,6 +59,7 @@ public class ScanReport {
     @Column(name = COLUMN_RESULT)
     private String result;
 
+    @Enumerated(STRING)
     @Column(name = COLUMN_RESULT_TYPE)
     private ScanReportResultType resultType;
 
