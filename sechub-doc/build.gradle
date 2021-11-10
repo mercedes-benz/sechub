@@ -137,13 +137,13 @@ asciidoctor {
 
 asciidoctorj {
 
-    version = '2.0.0'
+    version = '2.5.2'
     
     // Enable jdiagram support (new way)
     // see https://asciidoctor.github.io/asciidoctor-gradle-plugin/development-3.x/user-guide/#diagram
     modules {
        diagram.use() 
-       diagram.version '1.5.16' 
+       diagram.version '2.2.1' 
     }
 }
 
