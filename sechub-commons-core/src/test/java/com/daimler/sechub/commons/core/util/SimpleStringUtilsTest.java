@@ -4,7 +4,7 @@ package com.daimler.sechub.commons.core.util;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleStringUtilsTest {
 
