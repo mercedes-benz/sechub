@@ -20,6 +20,10 @@ This example contains multiple free and open source static application security 
 |https://github.com/ajinabraham/njsscan[njsscan]
 |NodeJS (JavaScript) 
 |LGPL-3.0
+
+|https://github.com/MobSF/mobsfscan[mobsfscan]
+|Java, Kotlin, Swift, Objective C
+|LGPL-3.0
 |===
 
 The combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
@@ -460,7 +464,7 @@ NOTE: It is recommended to change the passwords in `.env-cluster`. Other values 
 
 ==== Object Storage
 
-WARNING: Please beware, that the object storage Docker image contains content licensed under AGPL. For example MinIO, which are not covered under the MIT license of this repository.
+WARNING: Please beware, that the object storage Docker image contains content licensed under AGPL. For example MinIO, which are **not** covered under the MIT license of this repository.
 
 The cluster uses an object storage to store files. The cluster uses https://min.io/[MinIO] (S3 compatible) to store files. The PDS instance(s) use the object storage to upload files to. Reading, extracting and analysing the files is done in the PDS+GoSec container.
 

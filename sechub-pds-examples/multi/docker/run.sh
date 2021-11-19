@@ -64,6 +64,8 @@ localserver () {
         -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
+        -Dspring.servlet.multipart.max-file-size=$PDS_MAX_FILE_UPLOAD_SIZE \
+        -Dspring.servlet.multipart.max-request-size=$PDS_MAX_FILE_UPLOAD_SIZE \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
         -jar /pds/sechub-pds-$PDS_VERSION.jar
@@ -85,6 +87,7 @@ check_setup () {
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
+    check_variable "$PDS_MAX_FILE_UPLOAD_SIZE" "PDS_MAX_FILE_UPLOAD_SIZE"
 }
 
 check_variable () {
