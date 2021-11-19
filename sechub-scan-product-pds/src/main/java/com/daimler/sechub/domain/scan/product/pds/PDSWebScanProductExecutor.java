@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
 import com.daimler.sechub.sharedkernel.SystemEnvironment;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
+import com.daimler.sechub.sharedkernel.resilience.ResilientActionExecutor;
 
 @Service
 public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PDSInstallSetup> {
@@ -40,7 +43,22 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
 
     @Autowired
     SystemEnvironment systemEnvironment;
-    
+
+    @Autowired
+    PDSResilienceConsultant pdsResilienceConsultant;
+
+    ResilientActionExecutor<ProductResult> resilientActionExecutor;
+
+    public PDSWebScanProductExecutor() {
+        /* we create here our own instance - only for this service! */
+        this.resilientActionExecutor = new ResilientActionExecutor<>();
+    }
+
+    @PostConstruct
+    protected void postConstruct() {
+        this.resilientActionExecutor.add(pdsResilienceConsultant);
+    }
+
     @Override
     protected PDSInstallSetup getInstallSetup() {
         return installSetup;
@@ -49,9 +67,10 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
     @Override
     protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, PDSInstallSetup setup,
             TargetRegistryInfo info) throws Exception {
-        
-        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),systemEnvironment);
-        
+
+        PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
+                systemEnvironment);
+
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {
             /* no targets defined */
@@ -64,39 +83,55 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         }
         LOG.debug("Trigger PDS adapter execution for target {} ", targetType);
 
-        
         List<ProductResult> results = new ArrayList<>();
+
+        String projectId = context.getConfiguration().getProjectId();
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
         /* we currently scan always only ONE url at the same time */
         for (URI targetURI : targetURIs) {
             /* @formatter:off */
-		    
-		    /* special behavior, because having multiple results here, we must find former result corresponding to 
-		     * target URI.
-		     */
-		    executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-		    
-			PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
-			        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
-			        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
-			        setProductBaseUrl(configSupport.getProductBaseURL()).
-			        setSecHubJobUUID(context.getSechubJobUUID()).
-					configure(createAdapterOptionsStrategy(context)).
-				    configure(new WebConfigBuilderStrategy(context)).
-					setTimeToWaitForNextCheckOperationInMilliseconds(setup.getDefaultTimeToWaitForNextCheckOperationInMilliseconds()).
-					setTimeOutInMinutes(setup.getDefaultTimeOutInMinutes()).
-					setTraceID(context.getTraceLogIdAsString()).
-					setJobParameters(jobParameters).
-					setTargetURI(targetURI).build();
-			/* @formatter:on */
+            
+            /* special behavior, because having multiple results here, we must find former result corresponding to 
+             * target URI.
+             */
+            executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
+            
+            ProductResult result = resilientActionExecutor.executeResilient(() -> {
+                PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+                        setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
+                        setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
+                        setProductBaseUrl(configSupport.getProductBaseURL()).
+                        setSecHubJobUUID(context.getSechubJobUUID()).
+                        
+                        setSecHubConfigModel(context.getConfiguration()).
 
-            /* execute PDS by adapter and return product result */
-            String result = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+                        configure(createAdapterOptionsStrategy(context)).
+                        configure(new WebConfigBuilderStrategy(context)).
+                        
+                        setTimeToWaitForNextCheckOperationInMilliseconds(configSupport.getTimeToWaitForNextCheckOperationInMilliseconds(setup)).
+                        setTimeOutInMinutes(configSupport.getTimeoutInMinutes(setup)).
+                        
+                        setUser(configSupport.getUser()).
+                        setPasswordOrAPIToken(configSupport.getPasswordOrAPIToken()).
+                        setProjectId(projectId).
+                        
+                        setTraceID(context.getTraceLogIdAsString()).
+                        setJobParameters(jobParameters).
+                        
+                        setTargetURI(targetURI).
+                        
+                        build();
+                /* @formatter:on */
 
-            ProductResult currentProductResult = executorContext.getCurrentProductResult();
-            currentProductResult.setResult(result);
-            results.add(currentProductResult);
+                /* execute PDS by adapter and return product result */
+                String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+
+                ProductResult currentProductResult = executorContext.getCurrentProductResult();
+                currentProductResult.setResult(pdsResult);
+                return currentProductResult;
+            });
+            results.add(result);
 
         }
         return results;

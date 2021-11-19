@@ -5,12 +5,19 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+plugins {
+    id 'java'
+    id 'java-library'
+}
 dependencies {
 
-    compile project(':sechub-testframework')
-    compile project(':sechub-adapter') // we reuse trustall approach from adapters
-    compile project(':sechub-shared-kernel') // we want to have access to some shared kernel parts (e.g. trafficlight)
-    compile library.springboot_starter_mail // to have easier access to email parts
+    api project(':sechub-testframework')
+    api project(':sechub-adapter') // we reuse trustall approach from adapters
+    api project(':sechub-shared-kernel') 
+    api project(':sechub-scan-product-pds') // we want configuration entries available
+    api library.springboot_starter_mail // to have easier access to email parts
+    
+    api project(':sechub-commons-pds')
 }
 import java.nio.file.Files;
 import java.nio.file.Paths;

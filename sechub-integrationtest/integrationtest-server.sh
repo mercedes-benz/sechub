@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
 
 # define fd 3 to log into console and log file
 exec 3>&1 1>>integrationtest-console.log 2>&1
@@ -173,6 +174,8 @@ function startServer(){
     pathToJar="./../sechub-server/build/libs/sechub-server-$SERVER_VERSION.jar"
     if [ ! -f $pathToJar ]; then
         echo ">> FAILURE: version not build:$SERVER_VERSION, looked into $pathToJar"
+        echo ">> Found content inside library folder:"
+        ls -all "./../sechub-server/build/libs/"
         exit 1
     fi
     pathToLog="$currentDir/integrationtest-server.log"

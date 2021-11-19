@@ -48,7 +48,7 @@ public class AssertReport {
     }
 
     public AssertReport hasStatus(SecHubStatus expectedStatus) {
-        if (!Objects.equals(expectedStatus, report.getStatus())){
+        if (!Objects.equals(expectedStatus, report.getStatus())) {
             dump();
             assertEquals(expectedStatus, report.getStatus());
         }
@@ -98,9 +98,23 @@ public class AssertReport {
             assertEquals(type, finding.getType());
             return this;
         }
+        
+        public String getDescription() {
+            return finding.getDescription();
+        }
 
         public AssertFinding hasDescription(String description) {
             assertEquals(description, finding.getDescription());
+            return this;
+        }
+
+        public AssertFinding hasDescriptionContaining(String descriptionPart) {
+            if (!finding.getDescription().contains(descriptionPart)) {
+                dump();
+                // we use assertEquals here, so in IDEs we got a compare function (e.g. eclipse
+                // double click on first stacktrace element (ComparisionFailure))
+                assertEquals("The description part '" + descriptionPart + "' is not inside finding!", descriptionPart, finding.getDescription());
+            }
             return this;
         }
 
@@ -221,10 +235,14 @@ public class AssertReport {
         assertNotNull(findings);
         return findings;
     }
-
-    public AssertReport hasJobUUID(String uuidAsString) {
-        assertEquals(UUID.fromString(uuidAsString), report.getJobUUID());
+    
+    public AssertReport hasJobUUID(UUID uuid) {
+        assertEquals(uuid, report.getJobUUID());
         return this;
+    }
+    
+    public AssertReport hasJobUUID(String uuidAsString) {
+        return hasJobUUID(UUID.fromString(uuidAsString));
     }
 
     public AssertReport dump() {

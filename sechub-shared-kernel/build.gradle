@@ -5,9 +5,13 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+plugins {
+    id 'java-library'
+}
+ 
 dependencies {
 
-    compile project(':sechub-commons-model')
+    api project(':sechub-commons-model')
     compile project(':sechub-storage-sharedvolume-spring')
     compile project(':sechub-storage-s3-aws')
     compile project(':sechub-adapter')

@@ -20,6 +20,7 @@ import com.daimler.sechub.adapter.pds.data.PDSJobData;
 import com.daimler.sechub.adapter.pds.data.PDSJobParameterEntry;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus;
 import com.daimler.sechub.adapter.pds.data.PDSJobStatus.PDSAdapterJobStatusState;
+import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
 /**
  * This component is able to handle PDS API V1
@@ -174,7 +175,7 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
             return;
         }
 
-        String useSecHubStorage = config.getJobParameters().get(PDSAdapterConstants.PARAM_KEY_USE_SECHUB_STORAGE);
+        String useSecHubStorage = config.getJobParameters().get(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_CONFIG_USE_SECHUB_STORAGE);
         if (Boolean.parseBoolean(useSecHubStorage)) {
             LOG.info("Not uploading job data because configuration wants to use SecHub storage");
             return;
@@ -182,13 +183,13 @@ public class PDSAdapterV1 extends AbstractAdapter<PDSAdapterContext, PDSAdapterC
 
         PDSSourceZipConfig sourceZipConfig = (PDSSourceZipConfig) config;
         AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
-        if (!metaData.hasValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
+        if (!metaData.hasValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true)) {
             /* upload source code */
             PDSUploadSupport uploadSupport = new PDSUploadSupport();
             uploadSupport.uploadZippedSourceCode(context, sourceZipConfig);
 
             /* after this - mark file upload done, so on a restart we don't need this */
-            metaData.setValue(PDSAdapterConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
+            metaData.setValue(PDSMetaDataConstants.METADATA_KEY_FILEUPLOAD_DONE, true);
             context.getRuntimeContext().getCallback().persist(metaData);
         } else {
             LOG.info("Reuse existing upload for:{}", context.getTraceID());

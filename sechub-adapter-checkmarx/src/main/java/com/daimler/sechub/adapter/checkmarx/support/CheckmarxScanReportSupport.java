@@ -31,6 +31,7 @@ public class CheckmarxScanReportSupport {
 	/**
 	 * Starts new scan - means : Will create an entry inside QUEUE! And wait until
 	 * processed
+	 * @param oauthSupport 
 	 * 
 	 * @param context
 	 *            - if scan is started, the corresponding queue id will be set to
@@ -38,15 +39,17 @@ public class CheckmarxScanReportSupport {
 	 * @param sessionContext
 	 * @throws AdapterException
 	 */
-	public void startFetchReport(CheckmarxAdapterContext context) throws AdapterException {
-		triggerNewReport(context);
-		waitForReport(context);
-		fetchReportResult(context);
+	public void startFetchReport(CheckmarxOAuthSupport oauthSupport, CheckmarxAdapterContext context) throws AdapterException {
+		triggerNewReport(oauthSupport,context);
+		waitForReport(oauthSupport,context);
+		fetchReportResult(oauthSupport,context);
 
 	}
 
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/222101925/Get+Report+s+by+Id+-+GET+reports+sastScan+id
-	void fetchReportResult(CheckmarxAdapterContext context) throws AdapterException {
+	void fetchReportResult(CheckmarxOAuthSupport oauthSupport, CheckmarxAdapterContext context) throws AdapterException {
+	    oauthSupport.refreshBearerTokenWhenNecessary(context);
+	    
 		ReportDetails details = context.getReportDetails();
 		try {
 			RestOperations restTemplate = context.getRestOperations();
@@ -73,9 +76,9 @@ public class CheckmarxScanReportSupport {
 	}
 
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/563806382/Get+Report+Status+by+Id+-+GET+reports+sastScan+id+status+v8.8.0+and+up
-	void waitForReport(CheckmarxAdapterContext context) throws AdapterException {
+	void waitForReport(CheckmarxOAuthSupport oauthSupport, CheckmarxAdapterContext context) throws AdapterException {
 
-		WaitForScanReportSupport support = new WaitForScanReportSupport(context.getCheckmarxAdapter());
+		WaitForScanReportSupport support = new WaitForScanReportSupport(oauthSupport, context.getCheckmarxAdapter());
 		support.waitForOK(context);
 
 		ReportDetails reportDetails = context.getReportDetails();
@@ -86,7 +89,9 @@ public class CheckmarxScanReportSupport {
 	}
 
 	// https://checkmarx.atlassian.net/wiki/spaces/KC/pages/223379587/Register+Scan+Report+-+POST+reports+sastScan
-	void triggerNewReport(CheckmarxAdapterContext context) throws AdapterException {
+	void triggerNewReport(CheckmarxOAuthSupport oauthSupport, CheckmarxAdapterContext context) throws AdapterException {
+	    oauthSupport.refreshBearerTokenWhenNecessary(context);
+	    
 	    AdapterMetaData metaData = context.getRuntimeContext().getMetaData();
         Long reportIdLong = metaData.getValueLong(CheckmarxMetaDataID.KEY_REPORT_ID);
         long reportId = -1;

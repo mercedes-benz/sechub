@@ -10,7 +10,7 @@ import com.daimler.sechub.integrationtest.internal.CleanScenario;
 import com.daimler.sechub.integrationtest.internal.PDSTestScenario;
 
 /**
- * <b><u>Scenario5 - the PDS integration test standard scenario. Scenario9 (REUSE SECHUB DATA enabled!)</u></b><br>
+ * <b><u>Scenario5 - the PDS integration test standard scenario.(REUSE SECHUB DATA enabled!)</u></b><br>
  * 
  * In this scenario following is automatically initialized at start (old data
  * removed as well): <br> <br>
