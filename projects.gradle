@@ -90,7 +90,7 @@ projectType = [
                     project(':sechub-doc'),
                     project(':sechub-other'),
                     project(':sechub-client-java'),
-                    project(':sechub-pds-examples'),
+                    project(':sechub-pds-solutions'),
             ],
 
             asciiDoctorProjects: [

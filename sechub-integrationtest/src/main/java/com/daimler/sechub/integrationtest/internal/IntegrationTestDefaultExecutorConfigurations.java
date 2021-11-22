@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.daimler.sechub.adapter.pds.DelegatingMockablePDSAdapterV1;
 import com.daimler.sechub.integrationtest.api.PDSIntTestProductIdentifier;
 import com.daimler.sechub.integrationtest.api.TestAPI;
 import com.daimler.sechub.integrationtest.api.TestExecutorProductIdentifier;
@@ -126,7 +127,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
 
     private static TestExecutorConfig definePDSScan(String variant, boolean credentialsAsEnvEntries, String productIdentifierId, StorageType storageType,
             TestExecutorProductIdentifier sechubProductIdentifier) {
-        TestExecutorConfig config = createTestEditorConfig();
+        TestExecutorConfig config = createTestExecutorConfig();
 
         String middleConfigName = sechubProductIdentifier.name().toLowerCase() + "_";
 
@@ -167,7 +168,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
 
     private static TestExecutorConfig defineNetsparkerConfig() {
-        TestExecutorConfig config = createTestEditorConfig();
+        TestExecutorConfig config = createTestExecutorConfig();
         config.enabled = true;
         config.executorVersion = 1;
         config.productIdentifier = TestExecutorProductIdentifier.NETSPARKER.name();
@@ -180,7 +181,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
 
     private static TestExecutorConfig defineCheckmarxConfig() {
-        TestExecutorConfig config = createTestEditorConfig();
+        TestExecutorConfig config = createTestExecutorConfig();
         config.enabled = true;
         config.executorVersion = 1;
         config.productIdentifier = TestExecutorProductIdentifier.CHECKMARX.name();
@@ -204,7 +205,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
     }
 
     private static TestExecutorConfig defineNessusConfig() {
-        TestExecutorConfig config = createTestEditorConfig();
+        TestExecutorConfig config = createTestExecutorConfig();
         config.enabled = true;
         config.executorVersion = 1;
         config.productIdentifier = TestExecutorProductIdentifier.NESSUS.name();
@@ -219,9 +220,10 @@ public class IntegrationTestDefaultExecutorConfigurations {
         return config;
     }
 
-    private static TestExecutorConfig createTestEditorConfig() {
+    private static TestExecutorConfig createTestExecutorConfig() {
         TestExecutorConfig testExecutorConfig = new TestExecutorConfig();
         registeredConfigurations.add(testExecutorConfig);
+        testExecutorConfig.setup.jobParameters.add(new TestExecutorSetupJobParam(DelegatingMockablePDSAdapterV1.JOB_PARAMETER_KEY__PDS_MOCKING_DISABLED, "true"));
         return testExecutorConfig;
     }
 
