@@ -20,8 +20,8 @@ ENV PDS_VERSION=0.24.0
 ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # GoSec
-ARG GOSEC_VERSION="2.9.1"
-ARG GOSEC_CHECKSUM="34505685c89f702719177e0c8a2b43907026d8c79b70fbaa76153fbd53603b66"
+ARG GOSEC_VERSION="2.9.2"
+ARG GOSEC_CHECKSUM="f008efd1b95a2970cf9c21f61e3bd6ec1c5cee2e779910baafe670846690a7de"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -64,7 +64,6 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     tar --extract --ungzip --file "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz" --directory "$TOOL_FOLDER/gosec" && \
     # Remove gosec tar.gz
     rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
-    
 
 # Install the Product Delegation Server (PDS)
 RUN mkdir --parents "$PDS_FOLDER" && \
