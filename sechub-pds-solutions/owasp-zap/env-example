@@ -3,6 +3,12 @@
 #   localserver - starts the server locally
 PDS_START_MODE=debug, localserver
 
+# Elements in the queue
+PDS_CONFIG_EXECUTE_QUEUE_MAX=10
+
+# Parallel worker instances calling the products
+PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT=1
+
 # Enable Java Remote Debugging
 JAVA_ENABLE_DEBUG=true, false
 
@@ -55,7 +61,7 @@ S3_ENABLED=true, false
 # The s3 endpoint
 S3_ENDPOINT=http://10.42.43.7:9000
 
-# The s3 bucket name (MinIO or S3)
+# The s3 bucket name
 S3_BUCKETNAME=pds
 S3_ACCESSKEY=user
 S3_SECRETKEY=Why$5forThat?

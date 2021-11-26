@@ -13,6 +13,10 @@ ARG SCRIPT_FOLDER="/scripts"
 ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
+ENV DOWNLOAD_FOLDER="/downloads"
+
+# Other
+ENV USER="zap"
 
 # PDS
 ENV PDS_VERSION=0.24.0
@@ -26,11 +30,14 @@ ARG OWASP_ZAP_VERSION=2.11.0
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
+# Create download folder
+RUN mkdir "$DOWNLOAD_FOLDER"
+
 # non-root user
 # using fixed group and user ids
 # gosec needs a home directory for the cache
-RUN groupadd --gid 2323 zap \
-     && useradd --uid 2323 --no-log-init --create-home --gid zap zap
+RUN groupadd --gid 2323 "$USER" \
+     && useradd --uid 2323 --no-log-init --create-home --gid "$USER" "$USER"
 
 # Update image and install dependencies
 ENV DEBIAN_FRONTEND noninteractive
@@ -80,6 +87,9 @@ RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
 # Copy PDS configfile
 COPY pds-config.json /$PDS_FOLDER/pds-config.json
 
+# Copy zap addon download urls into container
+COPY zap-addons.txt $TOOL_FOLDER/zap-addons.txt
+
 # Copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
@@ -88,20 +98,17 @@ RUN chmod +x /run.sh
 WORKDIR "$WORKSPACE"
 
 # Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive zap:zap $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
+RUN chown --recursive "$USER:$USER" $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # Switch from root to non-root user
-USER zap
+USER "$USER"
 
-# Install OWASP ZAP addons 
+# Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
-RUN owasp-zap -cmd -addoninstall webdriverlinux && \
-    owasp-zap -cmd -addoninstall ascanrules && \
-    owasp-zap -cmd -addoninstall spiderAjax && \
-    owasp-zap -cmd -addoninstall pscanrules && \
-    owasp-zap -cmd -addoninstall commonlib && \
-    owasp-zap -cmd -addoninstall retire && \
-    owasp-zap -cmd -addoninstall domxss && \
-    owasp-zap -cmd -addoninstall reports
+# via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
+
+RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
+    cd "/home/$USER/.ZAP/plugin" && \
+    wget --input-file="$TOOL_FOLDER/zap-addons.txt"
 
 CMD ["/run.sh"]

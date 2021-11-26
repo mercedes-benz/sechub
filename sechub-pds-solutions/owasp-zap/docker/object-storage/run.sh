@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 debug () {
+    create_s3_config
+
     while true
     do
 	    echo "Press [CTRL+C] to stop.."
@@ -9,42 +11,69 @@ debug () {
     done
 }
 
-server () {
-    echo "Start MinIO"
+create_s3_config() {
+    s3_config=$(cat <<-JSON
+{
+    "identities": [
+        {
+            "name": "admin",
+            "credentials": [
+                {
+                "accessKey": "${S3_ACCESSKEY}",
+                "secretKey": "${S3_SECRETKEY}"
+                }
+            ],
+            "actions": [
+                "Read",
+                "Write",
+                "List",
+                "Tagging",
+                "Admin"
+            ]
+        }
+    ]
+}
+JSON
+)
 
-    # start MinIO server in background
-    minio server /storage &
-    minio_server_process_id=$!
 
-    # setup MinIO
-    setup
-
-    # wait for MinIO server process
-    wait $minio_server_process_id
+    echo "$s3_config" > "/home/$USER/s3_config.json"
 }
 
-setup () {
-    # wait for 3 seconds until the server is available
-    sleep 3
+server () {
+    create_s3_config
 
-    echo "Setup MinIO object storage"
+    echo "Start SeaweedFS"
 
-    localhost="http://127.0.0.1:9000"
+    weed server -dir=/storage -master.volumeSizeLimitMB=1024 -master.volumePreallocate=false -s3 -s3.port=9000 -s3.config="/home/$USER/s3_config.json" &
+    weed_server_process_id=$!
 
-    # set root user connection information
-    mcli alias set minio_admin "$localhost" "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+    init
 
-    # show server state
-    mcli admin info minio_admin
+    wait $weed_server_process_id
+}
 
-    # add new user as root user
-    mcli admin user add minio_admin "$S3_ACCESSKEY" "$S3_SECRETKEY"
+init() {
+    sleep 25
+    
+    echo "# init"
 
-    # create bucket as user
-    mcli mb minio_admin/"$S3_BUCKETNAME" 
+    export AWS_ACCESS_KEY_ID=${S3_ACCESSKEY}
+    export AWS_SECRET_ACCESS_KEY=${S3_SECRETKEY}
 
-    # set readwrite policy of bucket for minio_user
-    mcli admin policy set minio_admin/"$S3_BUCKETNAME" readwrite user="$S3_ACCESSKEY"
+s3cmd_config=$(cat <<-CONFIG
+# Setup endpoint
+host_base = localhost:9000
+host_bucket = localhost:9000
+use_https = No
+# Enable S3 v4 signature APIs
+signature_v2 = False
+CONFIG
+)
+    echo "$s3cmd_config" > "/home/$USER/.s3cfg"
+    
+    # Create bucket
+    s3cmd mb s3://"$S3_BUCKETNAME"
 }
 
 if [ "$OBJECT_STORAGE_START_MODE" = "server" ]

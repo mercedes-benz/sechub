@@ -50,7 +50,7 @@ localserver () {
         echo " * Accesskey: $S3_ACCESSKEY"
     fi
 
-    nohup owasp-zap -daemon -host 127.0.0.1 -port 8080 -config api.key="$OWASP_ZAP_API_KEY" > "$TOOL_FOLDER/log" &
+    nohup owasp-zap -daemon -host 127.0.0.1 -port 8080 -config api.key="$ZAP_API_KEY" > "$TOOL_FOLDER/log" &
 
     # Regarding entropy collection:
     #   with JDK 8+ the "obscure workaround using file:///dev/urandom 
@@ -64,6 +64,8 @@ localserver () {
         -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
         -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
         -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
+        -Dsechub.pds.config.execute.queue.max=$PDS_CONFIG_EXECUTE_QUEUE_MAX \
+        -Dsechub.pds.config.execute.worker.thread.count=$PDS_CONFIG_EXECUTE_WORKER_THREAD_COUNT \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
         -Dserver.port=8444 \
@@ -87,7 +89,7 @@ check_setup () {
     check_variable "$TECHUSER_USERID" "TECHUSER_USERID"
     check_variable "$TECHUSER_APITOKEN" "TECHUSER_APITOKEN"
     check_variable "$SHARED_VOLUME_UPLOAD_DIR" "SHARED_VOLUME_UPLOAD_DIR"
-    check_variable "$OWASP_ZAP_API_KEY" "OWASP_ZAP_API_KEY"
+    check_variable "$ZAP_API_KEY" "ZAP_API_KEY"
 }
 
 check_variable () {

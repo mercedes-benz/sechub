@@ -13,6 +13,10 @@ pds:
     javaDebug:
         enabled: false
     keepContainerAliveAfterPDSCrashed: false
+    config:
+        execute:
+            queueMax: 10
+            workerThreatCount: 1
 
 users:
     technical:

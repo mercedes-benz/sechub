@@ -2,27 +2,42 @@
 
 FROM alpine:edge
 
+ENV STORAGE_FOLDER=/storage
+ENV SEAWEEDFS_VERSION=2.78
+ENV SEAWEEDFS_CHECKSUM=eec03dadc81ffa8ee39c62f077ee8b35
+ENV USER=seaweedfs
+
 # non-root user
 # using fixed group and user ids
-# gosec needs a home directory for the cache
-RUN addgroup --gid 9000 minio \
-     && adduser --uid 9000 --disabled-password --ingroup minio minio
+RUN addgroup --gid 9000 "$USER" \
+     && adduser --uid 9000 --disabled-password --ingroup "$USER" "$USER"
 
 # create storage directory
-RUN mkdir /storage && \
-    chown -R minio /storage && \
-    chmod u+rxw /storage
+RUN mkdir "$STORAGE_FOLDER" && \
+    chown -R "$USER" "$STORAGE_FOLDER" && \
+    chmod u+rxw "$STORAGE_FOLDER"
 
 # copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# upgrade system, install Minio server and client
+# upgrade system, install s3cmd server and client
 RUN apk update --no-cache && \
-    # install Minio Server and client from the alpine testing repository
-    apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing minio minio-client
+    apk add --no-cache wget && \
+    # install s3cmd client from the alpine testing repository
+    apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing s3cmd
+
+RUN cd /tmp && \
+    # download seaweedfs
+    wget "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz" && \
+    # create checksum file
+    echo "$SEAWEEDFS_CHECKSUM  linux_amd64.tar.gz" > linux_amd64.tar.gz.md5sum && \
+    # verify checksum
+    md5sum -c linux_amd64.tar.gz.md5sum && \
+    # extract seaweedfs executable
+    tar -xvzf "linux_amd64.tar.gz" -C "/usr/local/bin/"
 
 # switch from root to non-root user
-USER minio
+USER $USER
 
 CMD ["/run.sh"]
