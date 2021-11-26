@@ -71,7 +71,9 @@ signature_v2 = False
 CONFIG
 )
     echo "$s3cmd_config" > "/home/$USER/.s3cfg"
-    s3cmd mb s3://pds
+    
+    # Create bucket
+    s3cmd mb s3://"$S3_BUCKETNAME"
 }
 
 if [ "$OBJECT_STORAGE_START_MODE" = "server" ]

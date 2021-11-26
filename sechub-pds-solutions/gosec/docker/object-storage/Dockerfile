@@ -9,7 +9,6 @@ ENV USER=seaweedfs
 
 # non-root user
 # using fixed group and user ids
-# gosec needs a home directory for the cache
 RUN addgroup --gid 9000 "$USER" \
      && adduser --uid 9000 --disabled-password --ingroup "$USER" "$USER"
 

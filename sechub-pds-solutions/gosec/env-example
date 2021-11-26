@@ -44,11 +44,6 @@ DATABASE_USERNAME=gosec
 #   server - initializes and starts the object storage
 OBJECT_STORAGE_START_MODE=debug, server
 
-# The MinIO root user
-MINIO_ROOT_USER=admin
-# The MinIO root password
-MINIO_ROOT_PASSWORD=2apples$4
-
 # Enable s3 (MinIO) as object storage
 S3_ENABLED=true, false
 
