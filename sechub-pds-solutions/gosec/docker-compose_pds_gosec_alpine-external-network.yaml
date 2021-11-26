@@ -5,7 +5,7 @@ services:
     pds-gosec-alpine:
         build:
             args:
-                - BASE_IMAGE=alpine:3.14
+                - BASE_IMAGE=alpine:3.15
             context: docker/
             dockerfile: GoSec-Alpine.dockerfile
         container_name: pds-gosec-alpine

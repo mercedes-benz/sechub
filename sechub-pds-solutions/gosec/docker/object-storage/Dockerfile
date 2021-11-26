@@ -39,6 +39,6 @@ RUN cd /tmp && \
     tar -xvzf "linux_amd64.tar.gz" -C "/usr/local/bin/"
 
 # switch from root to non-root user
-#USER $USER
+USER $USER
 
 CMD ["/run.sh"]

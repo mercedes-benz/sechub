@@ -24,7 +24,7 @@ ARG GO="go1.17.3.linux-amd64.tar.gz"
 ARG GO_CHECKSUM="550f9845451c0c94be679faf116291e7807a8d78b43149f9506c1b15eb89008c"
 
 # GoSec
-ARG GOSEC_VERSION="2.9.2"
+ARG GOSEC_VERSION="2.9.3"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"

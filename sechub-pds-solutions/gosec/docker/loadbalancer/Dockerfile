@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN apk update --no-cache && \
     apk add --no-cache nginx openssl

@@ -16,32 +16,11 @@ create_s3_config() {
 {
     "identities": [
         {
-            "name": "user",
+            "name": "admin",
             "credentials": [
                 {
                 "accessKey": "${S3_ACCESSKEY}",
                 "secretKey": "${S3_SECRETKEY}"
-                }
-            ],
-            "actions": [
-                "Read:${S3_BUCKETNAME}",
-                "Write:${S3_BUCKETNAME}"
-            ]
-        }
-    ]
-}
-JSON
-)
-
-    s3_config2=$(cat <<-JSON
-{
-    "identities": [
-        {
-            "name": "me",
-            "credentials": [
-                {
-                "accessKey": "any",
-                "secretKey": "anylongkey"
                 }
             ],
             "actions": [
@@ -58,7 +37,7 @@ JSON
 )
 
 
-    echo "$s3_config2" > "/home/$USER/s3_config.json"
+    echo "$s3_config" > "/home/$USER/s3_config.json"
 }
 
 server () {
@@ -66,7 +45,33 @@ server () {
 
     echo "Start SeaweedFS"
 
-    weed server -dir=/storage -master.volumeSizeLimitMB=1024 -master.volumePreallocate=false -s3 -s3.port=9000 -s3.config="/home/$USER/s3_config.json"
+    weed server -dir=/storage -master.volumeSizeLimitMB=1024 -master.volumePreallocate=false -s3 -s3.port=9000 -s3.config="/home/$USER/s3_config.json" &
+    weed_server_process_id=$!
+
+    init
+
+    wait $weed_server_process_id
+}
+
+init() {
+    sleep 25
+    
+    echo "# init"
+
+    export AWS_ACCESS_KEY_ID=${S3_ACCESSKEY}
+    export AWS_SECRET_ACCESS_KEY=${S3_SECRETKEY}
+
+s3cmd_config=$(cat <<-CONFIG
+# Setup endpoint
+host_base = localhost:9000
+host_bucket = localhost:9000
+use_https = No
+# Enable S3 v4 signature APIs
+signature_v2 = False
+CONFIG
+)
+    echo "$s3cmd_config" > "/home/$USER/.s3cfg"
+    s3cmd mb s3://pds
 }
 
 if [ "$OBJECT_STORAGE_START_MODE" = "server" ]
