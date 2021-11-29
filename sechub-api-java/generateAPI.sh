@@ -11,7 +11,7 @@ fi
 # Make gradlew executable
 chmod +x "$genFolder/gradlew"
 
-# Build Java Client
+# Build Java API
 "$genFolder/gradlew" --project-dir "$genFolder" build
 
 # Publish artifacts to local maven repository
