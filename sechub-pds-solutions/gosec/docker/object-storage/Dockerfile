@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:edge
+FROM alpine:3.15
 
 ENV STORAGE_FOLDER=/storage
 ENV SEAWEEDFS_VERSION=2.78
 ENV SEAWEEDFS_CHECKSUM=eec03dadc81ffa8ee39c62f077ee8b35
 ENV USER=seaweedfs
+ENV BUCKET_FOLDER=/buckets
 
 # non-root user
 # using fixed group and user ids
@@ -23,9 +24,10 @@ RUN chmod +x /run.sh
 
 # upgrade system, install s3cmd server and client
 RUN apk update --no-cache && \
-    apk add --no-cache wget && \
-    # install s3cmd client from the alpine testing repository
-    apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing s3cmd
+    apk add --no-cache wget
+
+RUN mkdir -p $BUCKET_FOLDER && \
+    chown -R "$USER:$USER" /buckets
 
 RUN cd /tmp && \
     # download seaweedfs

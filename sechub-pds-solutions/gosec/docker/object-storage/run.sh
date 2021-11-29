@@ -16,19 +16,17 @@ create_s3_config() {
 {
     "identities": [
         {
-            "name": "admin",
+            "name": "pds",
             "credentials": [
                 {
-                "accessKey": "${S3_ACCESSKEY}",
-                "secretKey": "${S3_SECRETKEY}"
+                    "accessKey": "${S3_ACCESSKEY}",
+                    "secretKey": "${S3_SECRETKEY}"
                 }
             ],
             "actions": [
-                "Read",
-                "Write",
-                "List",
-                "Tagging",
-                "Admin"
+                "Read:${S3_BUCKETNAME}",
+                "Write:${S3_BUCKETNAME}",
+                "List:${S3_BUCKETNAME}"
             ]
         }
     ]
@@ -55,25 +53,10 @@ server () {
 
 init() {
     sleep 25
-    
-    echo "# init"
 
-    export AWS_ACCESS_KEY_ID=${S3_ACCESSKEY}
-    export AWS_SECRET_ACCESS_KEY=${S3_SECRETKEY}
-
-s3cmd_config=$(cat <<-CONFIG
-# Setup endpoint
-host_base = localhost:9000
-host_bucket = localhost:9000
-use_https = No
-# Enable S3 v4 signature APIs
-signature_v2 = False
-CONFIG
-)
-    echo "$s3cmd_config" > "/home/$USER/.s3cfg"
-    
     # Create bucket
-    s3cmd mb s3://"$S3_BUCKETNAME"
+    echo "Create bucket"
+    echo "s3.bucket.create -name $S3_BUCKETNAME" | weed shell
 }
 
 if [ "$OBJECT_STORAGE_START_MODE" = "server" ]
