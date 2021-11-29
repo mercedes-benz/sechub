@@ -28,7 +28,7 @@ jobs:
 # FIXME:de-jcup: only for testing! must be changed
 # back to master later!        
 #          ref: master
-          ref: feature-728-build-java-api
+          ref: feature-728-buld-java-api
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
