@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
  /*============================================================================
- * Build file for subproject sechub-client-java
+ * Build file for subproject sechub-api-java
  *
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
@@ -37,7 +37,7 @@ task generateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.Gen
     generatorName = "java"
     
     inputSpec = "$specFilePath"
-    outputDir = "$rootDir/sechub-client-java/gen"
+    outputDir = "$rootDir/sechub-api-java/gen"
     apiPackage = "com.daimler.sechub.client.java.api"
     invokerPackage = "com.daimler.sechub.client.java.api"
     modelPackage = "com.daimler.sechub.client.java.api.model"
@@ -57,7 +57,7 @@ task generateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.Gen
             dateLibrary          		: "java8",
             serializableModel    		: "true",
             serializationLibrary 		: "jackson",
-            artifactId           		: "sechub-client-java-api",
+            artifactId           		: "sechub-api-java-api",
             artifactDescription			: "The SecHub API client library for Java",
             artifactUrl					: "https://github.com/Daimler/sechub",
             legacyDiscriminatorBehavior : "false",
@@ -85,7 +85,7 @@ tasks.withType(org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 /**
  * Custom gradle task to build a "fatJar".
  */
-task buildJavaClientAll(type: Jar) {
+task buildAPIJavaAll(type: Jar) {
 	group 'sechub'
     description 'This creates java client library jar containing all libraries.'
     baseName = 'sechub-java-client-all'
@@ -104,7 +104,7 @@ sourceSets {
 }
 
 //TODO: This task should create the FatJar.
-task buildJavaClient(type:Exec) {
+task buildAPIJava(type:Exec) {
   group 'sechub'
   description 'This builds only the generated SecHub Java Client'
   dependsOn 'generateJavaClient'

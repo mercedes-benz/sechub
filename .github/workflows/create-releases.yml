@@ -73,7 +73,7 @@ jobs:
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
       - name: Generate OpenAPI Java client
-        run: ./gradlew :sechub-client-java:buildJavaClient
+        run: ./gradlew :sechub-api-java:buildAPIJava
 
       - name: Integration test
         run: ./gradlew integrationtest
