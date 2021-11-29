@@ -25,10 +25,7 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
-# FIXME:de-jcup: only for testing! must be changed
-# back to master later!        
-#          ref: master
-          ref: feature-728-buld-java-api
+          ref: master
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
@@ -289,11 +286,6 @@ jobs:
           asset_path: ./sechub-doc/build/api-spec/openapi3.json
           asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.json
           asset_content_type: text/plain
-      # Publish to github packages      
-      - name: Publish sechub-api-java
-        run: ./gradlew :sechub-api-java:publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
  
 
       # ******************************************
