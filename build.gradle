@@ -40,6 +40,7 @@ if (githubActor == null || githubActor.isEmpty()){
     atGitHubActions = true
 }
 
+/* define global `buildDoneByGitHubActions` - so sub projects can reuse this information*/
 ext.buildDoneByGitHubActions=atGitHubActions
 ext.springBootMavenBomCoordinates = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 

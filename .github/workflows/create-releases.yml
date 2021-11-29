@@ -25,7 +25,10 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
-          ref: master
+# FIXME:de-jcup: only for testing! must be changed
+# back to master later!        
+#          ref: master
+          ref: feature-728-build-java-api
       # Create temporary local tags, so we build documentation for this tag...
       # The final tag on git server side will be done by the release when the draft is saved as "real" release
       # automatically.
@@ -72,7 +75,7 @@ jobs:
       - name: Build Server
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
-      - name: Generate OpenAPI Java client
+      - name: Generate, build (and publish on server release) Java API
         run: ./gradlew :sechub-api-java:buildAPIJava
 
       - name: Integration test
@@ -283,6 +286,12 @@ jobs:
           asset_path: ./sechub-doc/build/api-spec/openapi3.json
           asset_name: sechub-openapi3-${{ github.event.inputs.server-version }}.json
           asset_content_type: text/plain
+      # Publish to github packages      
+      - name: Publish sechub-api-java
+        run: ./gradlew :sechub-api-java:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+ 
 
       # ******************************************
       # Now let's create a new CLIENT release

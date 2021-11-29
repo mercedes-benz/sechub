@@ -19,13 +19,18 @@ subprojects {
         return;
     }
 
+    version = VersionData.getLibrariesVersion()
+    def libraryPublishNecessary = version != "0.0.0";
+    if (! libraryPublishNecessary){
+        return;
+    }
+
     /* ensure we are at GITHUB actions when we want to publish the libraries */
     if (! buildDoneByGitHubActions ){
         println("library $project.name publish will be ignored - only provided by github actions")
         return;
     }
     
-    version = VersionData.getLibrariesVersion()
 
 	apply plugin: 'maven-publish'
 	

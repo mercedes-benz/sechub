@@ -93,7 +93,7 @@ class VersionData{
     }
     
     /**
-     * Inpsect versoin - if not starting with 0.0.0 this means it's a release ando
+     * Inpsect version - if not starting with 0.0.0 this means it's a release ando
      *                   a "dirty" may not be contained inside long version name
      */
     private static void inspectReleaseVersion(String longVersionName){
