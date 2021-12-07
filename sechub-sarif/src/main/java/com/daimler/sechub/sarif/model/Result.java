@@ -25,6 +25,10 @@ public class Result {
 
     private List<Location> locations;
     private List<CodeFlow> codeflows;
+    
+    private WebResponse webResponse;
+    private WebRequest webRequest;
+    
 
     private PropertyBag properties = new PropertyBag();
 
@@ -104,6 +108,22 @@ public class Result {
         this.properties = properties;
     }
 
+    public WebResponse getWebResponse() {
+        return webResponse;
+    }
+    
+    public void setWebResponse(WebResponse webResponse) {
+        this.webResponse = webResponse;
+    }
+    
+    public WebRequest getWebRequest() {
+        return webRequest;
+    }
+    
+    public void setWebRequest(WebRequest webRequest) {
+        this.webRequest = webRequest;
+    }
+    
     @Override
     public String toString() {
         return "Result [" + (ruleId != null ? "ruleId=" + ruleId + ", " : "") + (level != null ? "level=" + level + ", " : "")
@@ -113,21 +133,25 @@ public class Result {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codeflows, level, locations, message, properties, ruleId, ruleIndex);
+        return Objects.hash(codeflows, level, locations, message, properties, ruleId, ruleIndex, webRequest, webResponse);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Result other = (Result) obj;
         return Objects.equals(codeflows, other.codeflows) && level == other.level && Objects.equals(locations, other.locations)
                 && Objects.equals(message, other.message) && Objects.equals(properties, other.properties) && Objects.equals(ruleId, other.ruleId)
-                && ruleIndex == other.ruleIndex;
+                && ruleIndex == other.ruleIndex && Objects.equals(webRequest, other.webRequest) && Objects.equals(webResponse, other.webResponse);
     }
+
 
 }

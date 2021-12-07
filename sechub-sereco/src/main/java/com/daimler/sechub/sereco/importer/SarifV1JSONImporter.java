@@ -28,11 +28,17 @@ import com.daimler.sechub.sarif.model.Rule;
 import com.daimler.sechub.sarif.model.Run;
 import com.daimler.sechub.sarif.model.ThreadFlow;
 import com.daimler.sechub.sarif.model.ToolComponentReference;
+import com.daimler.sechub.sarif.model.WebRequest;
+import com.daimler.sechub.sarif.model.WebResponse;
 import com.daimler.sechub.sereco.ImportParameter;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoSeverity;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoWeb;
+import com.daimler.sechub.sereco.metadata.SerecoWebBody;
+import com.daimler.sechub.sereco.metadata.SerecoWebRequest;
+import com.daimler.sechub.sereco.metadata.SerecoWebResponse;
 
 /**
  * This Importer supports SARIF
@@ -104,12 +110,68 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         vulnerability.setSeverity(resolveSeverity(result, run));
         vulnerability.getClassification().setCwe(resultData.cweId);
 
-        vulnerability.setCode(resolveCodeInfoFromResult(result));
-
-        // Static Analysis Results Format (SARIF) is only suitable for type CODE_SCAN
-        vulnerability.setScanType(ScanType.CODE_SCAN);
+        detectScanTypeAndInspectOnDemand(result, vulnerability);
 
         return vulnerability;
+    }
+
+    private void detectScanTypeAndInspectOnDemand(Result result, SerecoVulnerability vulnerability) {
+        WebRequest sarifWebRequest = result.getWebRequest();
+        if (sarifWebRequest != null) {
+            vulnerability.setScanType(ScanType.WEB_SCAN);
+            vulnerability.setWeb(resolveWebInfoFromResult(result));
+        } else {
+            vulnerability.setScanType(ScanType.CODE_SCAN);
+            vulnerability.setCode(resolveCodeInfoFromResult(result));
+        }
+    }
+
+    private SerecoWeb resolveWebInfoFromResult(Result result) {
+        SerecoWeb serecoWeb = new SerecoWeb();
+
+        handleWebRequest(result, serecoWeb);
+        handleWebResponse(result, serecoWeb);
+
+        return serecoWeb;
+
+    }
+
+    private void handleWebResponse(Result result, SerecoWeb serecoWeb) {
+        SerecoWebResponse serecoReponse = serecoWeb.getResponse();
+
+        WebResponse sarifWebResponse = result.getWebResponse();
+        serecoReponse.setProtocol(sarifWebResponse.getProtocol());
+        serecoReponse.setVersion(sarifWebResponse.getVersion());
+        serecoReponse.setReasonPhrase(sarifWebResponse.getReasonPhrase());
+        serecoReponse.setStatusCode(sarifWebResponse.getStatusCode());
+        serecoReponse.setNoResponseReceived(sarifWebResponse.isNoResponseReceived());
+
+        serecoReponse.getHeaders().putAll(sarifWebResponse.getHeaders());
+
+        /* body */
+        SerecoWebBody serecoWebResponseBody = serecoReponse.getBody();
+        com.daimler.sechub.sarif.model.Body sarifWebResponseBody = sarifWebResponse.getBody();
+
+        serecoWebResponseBody.setText(sarifWebResponseBody.getText());
+        serecoWebResponseBody.setBinary(sarifWebResponseBody.getBinary());
+    }
+
+    private void handleWebRequest(Result result, SerecoWeb serecoWeb) {
+        SerecoWebRequest serecoWebRequest = serecoWeb.getRequest();
+
+        WebRequest sarifWebRequest = result.getWebRequest();
+        serecoWebRequest.setProtocol(sarifWebRequest.getProtocol());
+        serecoWebRequest.setVersion(sarifWebRequest.getVersion());
+        serecoWebRequest.setMethod(sarifWebRequest.getMethod());
+        serecoWebRequest.setTarget(sarifWebRequest.getTarget());
+        serecoWebRequest.getHeaders().putAll(sarifWebRequest.getHeaders());
+
+        /* body */
+        SerecoWebBody serecoWebRequestBody = serecoWebRequest.getBody();
+        com.daimler.sechub.sarif.model.Body sarifWebRequestBody = sarifWebRequest.getBody();
+
+        serecoWebRequestBody.setText(sarifWebRequestBody.getText());
+        serecoWebRequestBody.setBinary(sarifWebRequestBody.getBinary());
     }
 
     private SerecoSeverity resolveSeverity(Result result, Run run) {
@@ -160,7 +222,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             }
 
             if (CWE.equalsIgnoreCase(toolComponentName)) {
-                /* cwe found, so lets look after the id */
+                /* CWE found, so lets look after the id */
                 data.cweId = id;
             }
         }
