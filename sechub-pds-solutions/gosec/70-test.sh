@@ -88,8 +88,10 @@ if [[ ! -z "$RETRIES" ]]
 then
     retries=$RETRIES
 else
-    retries=20
+    retries=1200
 fi
+
+echo "Aborting after a maximum of $retries retries"
 
 if [[ -z "$file_to_upload" ]]
 then
@@ -149,7 +151,7 @@ do
     echo "Job status: $status"
 
     ((retries--))
-    sleep 0.5
+    sleep 0.5s
 done
 
 if [[ $(did_job_fail $status) == "yes" ]]
