@@ -88,7 +88,7 @@ if [[ ! -z "$RETRIES" ]]
 then
     retries=$RETRIES
 else
-    retries=1000
+    retries=1200
 fi
 
 echo "Aborting after a maximum of $retries retries"
