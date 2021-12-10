@@ -111,4 +111,6 @@ RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
     cd "/home/$USER/.ZAP/plugin" && \
     wget --input-file="$TOOL_FOLDER/zap-addons.txt"
 
+COPY reports-release-0.10.0.zap /home/$USER/.ZAP/plugin/reports-release-0.10.0.zap
+
 CMD ["/run.sh"]

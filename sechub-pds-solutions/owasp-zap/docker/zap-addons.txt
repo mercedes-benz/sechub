@@ -5,4 +5,3 @@ https://github.com/zaproxy/zap-extensions/releases/download/spiderAjax-v23.7.0/s
 https://github.com/zaproxy/zap-extensions/releases/download/pscanrules-v36/pscanrules-release-36.zap
 https://github.com/zaproxy/zap-extensions/releases/download/retire-v0.9.0/retire-release-0.9.0.zap
 https://github.com/zaproxy/zap-extensions/releases/download/domxss-v11/domxss-beta-11.zap
-https://github.com/zaproxy/zap-extensions/releases/download/reports-v0.9.1/reports-release-0.9.1.zap
