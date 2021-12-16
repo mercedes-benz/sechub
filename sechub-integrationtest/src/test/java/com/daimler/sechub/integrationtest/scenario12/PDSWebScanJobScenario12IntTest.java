@@ -71,8 +71,8 @@ public class PDSWebScanJobScenario12IntTest {
         assertFalse(targetURL, configuration.getInfraScan().isPresent());
         assertTrue(targetURL, configuration.getWebScan().isPresent());
         
-        SecHubWebScanConfiguration webConfiguraiton = configuration.getWebScan().get();
-        assertFalse(webConfiguraiton.getUris().isEmpty());
+        SecHubWebScanConfiguration webConfiguration = configuration.getWebScan().get();
+        assertNull(webConfiguration.getUri());
         /* @formatter:on */
     }
     

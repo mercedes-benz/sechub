@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.scan;
 
 import static org.junit.Assert.*;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,22 @@ public class WebConfigBuilderStrategyTest {
 
     private static final SecHubConfiguration SECHUB_CONFIG = new SecHubConfiguration();
 
+    @Test
+    public void no_authentication() throws Exception {
+        /* prepare */
+        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_no_auth.json");
+        String expectedUrl = URI.create("https://productfailure.demo.example.org/").toString();
+        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
+
+        /* execute */
+        strategyToTest.configure(configBuilder);
+
+        /* test */
+        TestWebScanAdapterConfig result = configBuilder.build();
+
+        assertEquals(expectedUrl, result.getTargetURI());
+    }
+    
     @Test
     public void basic_login_data_transfered() throws Exception {
         /* prepare */

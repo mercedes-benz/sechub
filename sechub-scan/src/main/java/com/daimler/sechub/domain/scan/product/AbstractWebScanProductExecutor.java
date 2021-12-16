@@ -4,6 +4,7 @@ package com.daimler.sechub.domain.scan.product;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements WebScanProductExecutor {
 
+
 	@Override
 	protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
 		/* assert WEBSCAN configuration available */
@@ -23,7 +25,10 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		}
 		/* Fetch URL */
 		SecHubWebScanConfiguration secHubWebScanConfiguration = webscan.get();
-		List<URI> uris = secHubWebScanConfiguration.getUris();
+		
+	    //FIXME jeeppler, 2021-12-16: This code is unnecessarily complex
+		List<URI> uris = new LinkedList<>();
+		uris.add(secHubWebScanConfiguration.getUri());
 		if (uris == null) {
 			throw new IllegalStateException("At this state the URIs must be set - validation failed!");
 		}

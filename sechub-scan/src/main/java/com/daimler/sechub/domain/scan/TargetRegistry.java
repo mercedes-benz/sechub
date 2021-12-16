@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * Target registry is a data container object used by product executors. <br>
- * It is created on execution time and filled up with conifguration data.
+ * It is created on execution time and filled up with configuration data.
  * <br>
  * After fill up the target will be registered and target registry info can
  * be fetched, which contains runtime information.

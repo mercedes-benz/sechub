@@ -100,8 +100,8 @@ public class SecHubConfigurationValidatorTest {
 
 		/* prepare */
 		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-		List<URI> list = new ArrayList<>();
-		when(webscan.getUris()).thenReturn(list);
+		URI uri = URI.create(null);
+		when(webscan.getUri()).thenReturn(uri);
 		when(target.getWebScan()).thenReturn(Optional.of(webscan));
 
 		/* execute */
@@ -116,9 +116,8 @@ public class SecHubConfigurationValidatorTest {
 
 		/* prepare */
 		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-		List<URI> list = new ArrayList<>();
-		list.add(URI.create("http://www.example.com"));
-		when(webscan.getUris()).thenReturn(list);
+		URI uri = URI.create("http://www.example.com");
+		when(webscan.getUri()).thenReturn(uri);
 		when(target.getWebScan()).thenReturn(Optional.of(webscan));
 
 		/* execute */
@@ -132,9 +131,8 @@ public class SecHubConfigurationValidatorTest {
 
 		/* prepare */
 		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-		List<URI> list = new ArrayList<>();
-		list.add(URI.create("https://www.example.com"));
-		when(webscan.getUris()).thenReturn(list);
+		URI uri = URI.create("https://www.example.com");
+		when(webscan.getUri()).thenReturn(uri);
 		when(target.getWebScan()).thenReturn(Optional.of(webscan));
 
 		/* execute */
@@ -149,9 +147,8 @@ public class SecHubConfigurationValidatorTest {
 
 		/* prepare */
 		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-		List<URI> list = new ArrayList<>();
-		list.add(URI.create("ftp://www.example.com"));
-		when(webscan.getUris()).thenReturn(list);
+		URI uri = URI.create("ftp://www.example.com");
+		when(webscan.getUri()).thenReturn(uri);
 		when(target.getWebScan()).thenReturn(Optional.of(webscan));
 
 		/* execute */

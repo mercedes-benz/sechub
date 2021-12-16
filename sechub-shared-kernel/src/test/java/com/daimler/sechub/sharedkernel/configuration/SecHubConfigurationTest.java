@@ -451,7 +451,7 @@ public class SecHubConfigurationTest {
 
         /* test */
         assertTrue("webscan config must be present", result.getWebScan().isPresent());
-        assertTrue(result.getWebScan().get().getUris().contains(new URI("https://fscan.intranet.example.org/")));
+        assertEquals(result.getWebScan().get().getUri(), new URI("https://fscan.intranet.example.org/"));
     }
 
     @Test

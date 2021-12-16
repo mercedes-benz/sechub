@@ -44,10 +44,11 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 			assertWhitelisted(allowed, infraconf.getUris());
 			assertWhitelisted(allowed, asUris(infraconf.getIps()));
 		}
+		
 		Optional<SecHubWebScanConfiguration> webscanopt = configuration.getWebScan();
 		if (webscanopt.isPresent()) {
 			SecHubWebScanConfiguration webconf = webscanopt.get();
-			assertWhitelisted(allowed, webconf.getUris());
+			assertWhitelisted(allowed, webconf.getUri());
 		}
 
 	}
@@ -70,6 +71,12 @@ public class ProjectWhiteListSecHubConfigurationValidationService {
 				throw new NotAcceptableException("URI not whitelisted in project:"+uri);
 			}
 		}
+	}
+	
+	private void assertWhitelisted(List<URI> allowed, URI targetUri) {
+        if (! support.isWhitelisted(targetUri.toString(), allowed)) {
+            throw new NotAcceptableException("URI not whitelisted in project:"+targetUri);
+        }
 	}
 
 	private List<URI> fetchAllowedUris(SecHubConfigurationModel configuration) {

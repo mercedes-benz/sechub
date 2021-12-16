@@ -87,22 +87,29 @@ public class SecHubConfigurationValidator implements Validator {
 		}
 
 		SecHubWebScanConfiguration webscan = webscanOption.get();
-		List<URI> uris = webscan.getUris();
-		if (uris.isEmpty()) {
+		URI uri = webscan.getUri();
+		
+		if (uri == null) {
 			errors.reject("api.error.webscan.target.missing", new Object[] { },
-					"Webscan configuration contains no target at all - but at least one URI is necessary for a webscan!");
+					"Webscan configuration contains no target at all - but at one URI is necessary for a webscan!");
 
-		}else {
-
-			for (URI uri : uris) {
+		} else {
 				String schema = uri.getScheme();
-				if ("http".equals(schema) || "https".equals(schema)) {
-					continue;
+				if (!isHttpProtocol(schema)) {
+	                errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
+	                        "Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
 				}
-				errors.reject("api.error.webscan.uri.illegalschema", new Object[] { uri },
-						"Webscan configuration contains uri '{0}' which is not of supported protocolls (http,https)");
-			}
 		}
+	}
+	
+	private boolean isHttpProtocol(String schema) {
+	    boolean isHttpProtocol = false;
+	    
+        if ("http".equals(schema) || "https".equals(schema)) {
+            isHttpProtocol = true;
+        }
+        
+        return isHttpProtocol;
 	}
 
 	private void validateInfraScan(SecHubConfiguration configuration, Errors errors) {

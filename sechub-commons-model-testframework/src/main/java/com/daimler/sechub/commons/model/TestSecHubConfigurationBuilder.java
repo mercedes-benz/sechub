@@ -70,7 +70,7 @@ public class TestSecHubConfigurationBuilder {
 		}
 		
 		public TestWebConfigurationBuilder addURI(String uri) {
-			TestSecHubConfigurationBuilder.this.data.webConfig.getUris().add(URI.create(uri));
+			TestSecHubConfigurationBuilder.this.data.webConfig.uri=URI.create(uri);
 			return this;
 		}
 		
