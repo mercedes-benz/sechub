@@ -74,26 +74,6 @@ public class NetsparkerAdapterV1Test {
     }
 
     @Test
-    public void build_json_for_new_scan_with_autodetect_form_auth() throws Exception {
-        /* prepare */
-        FormAutoDetectLoginConfig formAutoDetectLoginConfig = mock(FormAutoDetectLoginConfig.class);
-        when(config.getLoginConfig()).thenReturn(formAutoDetectLoginConfig);
-        when(formAutoDetectLoginConfig.asFormAutoDetect()).thenReturn(formAutoDetectLoginConfig);
-        when(formAutoDetectLoginConfig.isFormAutoDetect()).thenReturn(true);
-
-        when(formAutoDetectLoginConfig.getLoginURL()).thenReturn(new URL("https://www.example.com/login"));
-        when(formAutoDetectLoginConfig.getUser()).thenReturn("weblogin-user");
-        when(formAutoDetectLoginConfig.getPassword()).thenReturn("weblogin-password");
-
-        /* execute */
-        String json = adapterToTest.buildJsonForCreateNewScan(jsonAdapterSupport, config);
-
-        /* test */
-        String expected = NetsparkerAdapterTestFileSupport.getTestfileSupport().loadTestFile("json/form_auto_detect_weblogin.json");
-        assertEquals(expected, json);
-    }
-
-    @Test
     public void build_json_for_new_scan_with_max_scan_duration_one_hour() throws Exception {
         /* prepare */
         SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(60, SecHubTimeUnit.MINUTE);

@@ -61,28 +61,6 @@ public class AbstractWebScanAdapterConfigBuilderTest {
     }
 
     @Test
-    public void login_form_automated() {
-        /* execute */
-        /* @formatter:off */
-		TestWebScanAdapterConfig webScanConfig = new TestAbstractWebScanAdapterConfigBuilder().
-				login().
-					form().autoDetect().
-						username("user1").
-						password("passwd1").
-				endLogin().
-				build();
-		/* @formatter:on */
-
-        /* test */
-        assertNotNull(webScanConfig);
-        LoginConfig config = webScanConfig.getLoginConfig();
-        assertNotNull(config);
-        assertTrue(null, config.isFormAutoDetect());
-        assertEquals("user1", config.asFormAutoDetect().getUser());
-        assertEquals("passwd1", config.asFormAutoDetect().getPassword());
-    }
-
-    @Test
     public void login_form_scripted() {
         /* execute */
         /* @formatter:off */

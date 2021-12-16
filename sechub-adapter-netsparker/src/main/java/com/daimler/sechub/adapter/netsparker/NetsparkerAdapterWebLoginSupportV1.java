@@ -31,10 +31,7 @@ public class NetsparkerAdapterWebLoginSupportV1 {
 			addBasicAuthorization(loginConfig,rootMap);
 			return;
 		}
-		if (loginConfig.isFormAutoDetect()) {
-			addFormAutodetectAuthorization(loginConfig,rootMap);
-			return;
-		}
+
 		if (loginConfig.isFormScript()) {
 			addFormScriptAuthorization(loginConfig,rootMap);
 			return;
@@ -110,54 +107,6 @@ private List<Pair<String, String>> generateCustomScripts(List<LoginScriptPage> p
   
   return customScripts;
 }
-
-	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New
-	private void addFormAutodetectAuthorization(LoginConfig config, Map<String, Object> rootMap) {
-//		"FormAuthenticationSettingModel": {
-//	    "CustomScripts": [],
-//	    "DefaultPersonaValidation": true,
-//	    "DetectBearerToken": true,
-//	    "DisableLogoutDetection": false,
-//	    "IsEnabled": true,
-//	    "LoginFormUrl": "http://example.com/login.php",
-//	    "LoginRequiredUrl": "http://example.com/admin.php",
-//	    "LogoutKeywordPatterns": [
-//	      {
-//	        "Pattern": "Signin required",
-//	        "Regex": true
-//	      }
-//	    ],
-//	    "LogoutKeywordPatternsValue": "[{\"Pattern\":\"Signin required\",\"Regex\":true}]",
-//	    "LogoutRedirectPattern": "http://example.com/Default.php?ref=*",
-//	    "OverrideTargetUrl": false,
-//	    "Personas": [
-//	      {
-//	        "IsActive": true,
-//	        "Password": "pass",
-//	        "UserName": "user"
-//	      }
-//	    ],
-//	    "PersonasValidation": true
-//	  },
-		Map<String, Object> formAuthenticationSettingModel = new TreeMap<>();
-		FormAutoDetectLoginConfig asFormAutoDetect = config.asFormAutoDetect();
-
-		rootMap.put("FormAuthenticationSettingModel", formAuthenticationSettingModel);
-
-
-		List<Map<String,Object>> personas = new ArrayList<Map<String,Object>>();
-		Map<String, Object> entry = new TreeMap<>();
-		entry.put("UserName", asFormAutoDetect.getUser());
-		entry.put("Password", asFormAutoDetect.getPassword());
-		entry.put("IsActive", true);
-		personas.add(entry);
-
-		formAuthenticationSettingModel.put("DisableLogoutDetection", true);
-		formAuthenticationSettingModel.put("LoginFormUrl", asFormAutoDetect.getLoginURL());
-		formAuthenticationSettingModel.put("Personas", personas);
-		formAuthenticationSettingModel.put("PersonasValidation", true);
-		formAuthenticationSettingModel.put("IsEnabled", true);
-	}
 
 	// see https://your-netsparker-server/docs/index#!/Scans/Scans_New
 	private void addBasicAuthorization(LoginConfig config, Map<String,Object> rootMap) {

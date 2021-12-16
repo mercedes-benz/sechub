@@ -68,42 +68,6 @@ public class WebConfigBuilderStrategyTest {
     }
 
     @Test
-    public void form_autodetect_login_data_transfered() {
-        /* prepare */
-        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect.json");
-        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
-
-        /* execute */
-        strategyToTest.configure(configBuilder);
-
-        /* test */
-        TestWebScanAdapterConfig result = configBuilder.build();
-        LoginConfig loginConfig = result.getLoginConfig();
-        assertTrue(loginConfig.isFormAutoDetect());
-        assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
-        assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
-    }
-
-    @Test
-    public void form_autodetect_with_max_scan_duration() {
-        /* prepare */
-        WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_login_form_autodetect_with_max_scan_duration.json");
-        TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
-
-        /* execute */
-        strategyToTest.configure(configBuilder);
-
-        /* test */
-        TestWebScanAdapterConfig result = configBuilder.build();
-        LoginConfig loginConfig = result.getLoginConfig();
-        SecHubTimeUnitData maxScanDuration = result.getMaxScanDuration();
-        assertNotNull(maxScanDuration);
-        assertTrue(loginConfig.isFormAutoDetect());
-        assertEquals("user1", loginConfig.asFormAutoDetect().getUser());
-        assertEquals("pwd1", loginConfig.asFormAutoDetect().getPassword());
-    }
-
-    @Test
     public void webscan_max_scan_duration() {
         /* prepare */
         WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_max_scan_duration.json");

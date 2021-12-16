@@ -27,10 +27,6 @@ public interface LoginConfig {
         return (BasicLoginConfig) this;
     }
 
-    default FormAutoDetectLoginConfig asFormAutoDetect() {
-        return (FormAutoDetectLoginConfig) this;
-    }
-
     default FormScriptLoginConfig asFormScript() {
         return (FormScriptLoginConfig) this;
     }
