@@ -445,6 +445,9 @@ function sechub_scheduler_status {
 
 
 function sechub_server_status {
+  # 1. Update status in admin domain
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json;charset=UTF-8' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
+  # 2. Display status
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
