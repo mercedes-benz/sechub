@@ -32,6 +32,25 @@ public class URIShrinkSupport {
 		
 		return result;
 	}
+	
+    /**
+     * Shrinks given uris to a set containing only {@link URI} elements which
+     * represent same protocol, hostname and port
+     * @param uris
+     * @return set of {@link URI} , never <code>null</code>
+     */
+    public URI shrinkToRootURI(URI uris){
+        Set<URI> result = new LinkedHashSet<>();
+        
+        if (uris==null) {
+            return result;
+        }
+        for (URI uri: uris) {
+            buildRootURI(result, uri);
+        }
+        
+        return result;
+    }
 
 
 	private void buildRootURI(Set<URI> result, URI uri) {

@@ -100,7 +100,7 @@ public class SecHubConfigurationValidatorTest {
 
 		/* prepare */
 		SecHubWebScanConfiguration webscan = mock(SecHubWebScanConfiguration.class);
-		URI uri = URI.create(null);
+		URI uri = URI.create("");
 		when(webscan.getUri()).thenReturn(uri);
 		when(target.getWebScan()).thenReturn(Optional.of(webscan));
 

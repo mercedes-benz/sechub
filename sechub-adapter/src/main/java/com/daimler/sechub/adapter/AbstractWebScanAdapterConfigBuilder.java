@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
+import java.net.URI;
 import java.net.URL;
 
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
@@ -11,10 +12,20 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
     private LoginBuilder currentLoginBuilder;
     private SecHubTimeUnitData maxScanDuration;
+    private URI targetURI;
 
     @SuppressWarnings("unchecked")
     public B setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
         this.maxScanDuration = maxScanDuration;
+        return (B) this;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public B setTargetURI(URI targetURI) {
+        if (targetURI == null) {
+            return (B) this;
+        }
+        this.targetURI = targetURI;
         return (B) this;
     }
 
@@ -182,6 +193,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     @Override
     void packageInternalCustomBuild(C config) {
         config.maxScanDuration = maxScanDuration;
+        config.targetURI = targetURI;
 
         if (currentLoginBuilder == null) {
             return;

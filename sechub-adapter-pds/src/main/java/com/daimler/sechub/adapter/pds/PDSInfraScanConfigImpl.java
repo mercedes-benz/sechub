@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.AbstractInfraScanAdapterConfig;
 import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
@@ -29,7 +30,7 @@ public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDS
         return new PDSInfraScanConfigBuilder();
     }
 
-    public static class PDSInfraScanConfigBuilder extends AbstractAdapterConfigBuilder<PDSInfraScanConfigBuilder, PDSInfraScanConfigImpl> {
+    public static class PDSInfraScanConfigBuilder extends AbstractInfraScanAdapterConfig {
 
         private Map<String, String> jobParameters;
         private UUID sechubJobUUID;

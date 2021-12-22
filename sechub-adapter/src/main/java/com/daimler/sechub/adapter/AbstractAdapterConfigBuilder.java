@@ -58,10 +58,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     private String policyID;
 
-    private LinkedHashSet<URI> targetURIs = new LinkedHashSet<>();
-
-    private LinkedHashSet<InetAddress> targetIPs = new LinkedHashSet<>();
-
     private boolean trustAllCertificatesEnabled;
 
     private URIShrinkSupport uriShrinker;
@@ -205,47 +201,9 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     }
 
     @SuppressWarnings("unchecked")
-    public B setTargetURIs(Set<URI> targetURIs) {
-        if (targetURIs == null) {
-            this.targetURIs = new LinkedHashSet<>();
-        } else {
-            this.targetURIs = new LinkedHashSet<>();
-            this.targetURIs.addAll(targetURIs);
-        }
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetURI(URI targetURI) {
-        if (targetURI == null) {
-            return (B) this;
-        }
-        return setTargetURIs(Collections.singleton(targetURI));
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetIPs(Set<InetAddress> targetIPs) {
-        if (targetIPs == null) {
-            this.targetIPs = new LinkedHashSet<>();
-        } else {
-            this.targetIPs = new LinkedHashSet<>();
-            this.targetIPs.addAll(targetIPs);
-        }
-        return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
     public B setProjectId(String projectId) {
         this.projectId = projectId;
         return (B) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public B setTargetIP(InetAddress ipAdress) {
-        if (ipAdress == null) {
-            return (B) this;
-        }
-        return setTargetIPs(Collections.singleton(ipAdress));
     }
 
     /**
