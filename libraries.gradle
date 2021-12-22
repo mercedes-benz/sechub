@@ -80,11 +80,11 @@ ext {
          // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
          apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.13",
          apache_commons_validator:              "commons-validator:commons-validator:1.7",
-         apache_commons_io:                     "commons-io:commons-io:2.6",
-         apache_commons_cli:					"commons-cli:commons-cli:1.4",
+         apache_commons_io:                     "commons-io:commons-io:2.11",
+         apache_commons_cli:					"commons-cli:commons-cli:1.5.0",
          apache_commons_lang3:					"org.apache.commons:commons-lang3:3.12.0",
 
-         openjson:                              "com.github.openjson:openjson:1.0.10",
+         openjson:                              "com.github.openjson:openjson:1.0.12",
 
          flyway:                                "org.flywaydb:flyway-core:6.0.8",
 
