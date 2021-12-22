@@ -71,14 +71,14 @@ ext {
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
          jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.3",
          // https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
-         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.12.3",
-         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.12.3",
-         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.12.3",
+         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.12.6",
+         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.12.6",
+         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.12.6",
 
          /* apache commons */
-         apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.9",
+         apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.15",
          // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.10",
+         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.13",
          apache_commons_validator:              "commons-validator:commons-validator:1.7",
          apache_commons_io:                     "commons-io:commons-io:2.6",
          apache_commons_cli:					"commons-cli:commons-cli:1.4",
