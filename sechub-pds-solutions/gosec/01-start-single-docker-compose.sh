@@ -19,8 +19,8 @@ fi
 if [[ "$IMAGE_TYPE" == "alpine" ]]
 then
     echo "Starting single Alpine container."
-    docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
+    docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build --remove-orphans
 else
     echo "Starting single Ubuntu container."
-    docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
+    docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build --remove-orphans
 fi

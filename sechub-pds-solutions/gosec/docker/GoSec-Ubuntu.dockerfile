@@ -17,14 +17,13 @@ ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
 ENV PDS_VERSION=0.24.0
-ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # Go
-ARG GO="go1.17.3.linux-amd64.tar.gz"
-ARG GO_CHECKSUM="550f9845451c0c94be679faf116291e7807a8d78b43149f9506c1b15eb89008c"
+ARG GO="go1.17.5.linux-amd64.tar.gz"
+ARG GO_CHECKSUM="bd78114b0d441b029c8fe0341f4910370925a4d270a6a590668840675b0c653e"
 
 # GoSec
-ARG GOSEC_VERSION="2.9.3"
+ARG GOSEC_VERSION="2.9.5"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
@@ -36,6 +35,10 @@ ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 RUN groupadd --gid 2323 gosec \
      && useradd --uid 2323 --no-log-init --create-home --gid gosec gosec
 
+# Create folders & change owner of folders
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
+    chown --recursive gosec:gosec "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$SCRIPT_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUMES"
+
 # Update image and install dependencies
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -44,26 +47,12 @@ RUN apt-get update && \
     apt-get install --assume-yes wget openjdk-11-jre-headless && \
     apt-get clean
 
-# Create script folder
-COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
-RUN chmod +x $SCRIPT_FOLDER/gosec.sh
-
-COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
-RUN chmod +x $SCRIPT_FOLDER/gosec_mock.sh
-
-# Setup mock folder
-RUN mkdir "$MOCK_FOLDER"
-COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
-
-# Create download folder
-RUN mkdir "$DOWNLOAD_FOLDER"
-
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
     # create checksum file
     echo "$GO_CHECKSUM $GO" > $GO.sha256sum && \
     # download Go
-    wget https://dl.google.com/go/${GO} && \
+    wget --no-verbose https://dl.google.com/go/${GO} && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check $GO.sha256sum && \
     # extract Go
@@ -73,12 +62,21 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # add Go to path
     echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
 
+# Switch from root to non-root user
+USER gosec
+
+# Copy mock file
+COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
+
+# Copy PDS configfile
+COPY pds-config.json /$PDS_FOLDER/pds-config.json
+
 # Install GoSec
 RUN cd "$DOWNLOAD_FOLDER" && \
     # download gosec
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
+    wget --no-verbose https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
     # download checksum
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
+    wget --no-verbose https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
     # verify checksum
     sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
     # create gosec folder
@@ -89,32 +87,34 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
 
 # Install the Product Delegation Server (PDS)
-RUN mkdir --parents "$PDS_FOLDER" && \
-    cd /pds && \
-    # create checksum file
-    echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
+RUN cd /pds && \
+    # download checksum file
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
-# Create shared volumes and upload dir
-RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
-
-# Copy PDS configfile
-COPY pds-config.json /$PDS_FOLDER/pds-config.json
-
 # Copy run script into container
 COPY run.sh /run.sh
-RUN chmod +x /run.sh
 
-# Create the PDS workspace
-WORKDIR "$WORKSPACE"
+# Copy scripts
+COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
+COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
 
-# Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $DOWNLOAD_FOLDER $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
+# Switch back to root
+USER root
+
+# Change owner of run.sh
+RUN chown gosec:gosec /run.sh 
+
+# Set execute permissions for scripts
+RUN chmod +x /run.sh $SCRIPT_FOLDER/gosec.sh $SCRIPT_FOLDER/gosec_mock.sh
 
 # Switch from root to non-root user
 USER gosec
+
+# Set workspace
+WORKDIR "$WORKSPACE"
 
 CMD ["/run.sh"]
