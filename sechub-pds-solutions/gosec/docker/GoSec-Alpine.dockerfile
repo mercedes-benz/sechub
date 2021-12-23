@@ -7,6 +7,9 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
+# User
+ENV USER="gosec"
+
 # Folders
 ARG PDS_FOLDER="/pds"
 ARG SCRIPT_FOLDER="/scripts"
@@ -29,18 +32,18 @@ ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 # non-root user
 # using fixed group and user ids
 # gosec needs a home directory for the cache
-RUN addgroup --gid 2323 gosec \
-     && adduser --uid 2323 --disabled-password --ingroup gosec gosec
+RUN addgroup --gid 2323 "$USER" \
+     && adduser --uid 2323 --disabled-password --ingroup "$USER" "$USER"
 
 # Create folders & change owner of folders
 RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
-    chown --recursive gosec:gosec "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$SCRIPT_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUMES"
+    chown --recursive "$USER:$USER" "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$SCRIPT_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUMES"
 
 RUN apk update --no-cache && \
     apk add --no-cache go openjdk11-jre-headless wget unzip tar
 
 # Switch from root to non-root user
-USER gosec
+USER "$USER"
 
 # Copy mock file
 COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
@@ -82,19 +85,13 @@ COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
 # Switch back to root
 USER root
 
-# Change owner of run.sh
-RUN chown gosec:gosec /run.sh 
-
 # Set execute permissions for scripts
 RUN chmod +x /run.sh $SCRIPT_FOLDER/gosec.sh $SCRIPT_FOLDER/gosec_mock.sh
 
 # Switch from root to non-root user
-USER gosec
+USER "$USER"
 
 # Set workspace
 WORKDIR "$WORKSPACE"
-
-# switch from root to non-root user
-USER gosec
 
 CMD ["/run.sh"]

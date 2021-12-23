@@ -24,4 +24,4 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_gosec_cluster.yaml up --scale pds-gosec=$REPLICAS --build
+docker-compose --file docker-compose_pds_gosec_cluster.yaml up --scale pds-gosec=$REPLICAS --build --remove-orphans
