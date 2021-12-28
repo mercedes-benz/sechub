@@ -23,5 +23,7 @@ then
 fi
 
 echo ">> Base image: $BASE_IMAGE"
-docker build --pull --no-cache --build-arg BASE_IMAGE=$BASE_IMAGE --tag "$REGISTRY:$VERSION" --file docker/GoSec-Ubuntu.dockerfile docker/
+docker build --pull --no-cache \
+  --build-arg BASE_IMAGE=$BASE_IMAGE \
+  --tag "$REGISTRY:$VERSION" --file docker/GoSec-Ubuntu.dockerfile docker/
 docker tag "$REGISTRY:$VERSION" "$REGISTRY:latest"
