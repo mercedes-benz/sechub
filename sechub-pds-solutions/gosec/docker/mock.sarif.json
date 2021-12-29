@@ -131,8 +131,8 @@
 										"guid": "93d834a1-2cc5-38db-837f-66dfc7d711cc",
 										"id": "798",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -169,8 +169,8 @@
 										"guid": "6bd55435-166c-3594-bc06-5e0dea916067",
 										"id": "89",
 										"toolComponent": {
-											"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
-											"name": "CWE"
+										"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
+										"name": "CWE"
 										}
 									}
 								}
@@ -180,14 +180,14 @@
 							}
 						}
 					],
-					"semanticVersion": "2.8.0",
+					"semanticVersion": "2.9.5",
 					"supportedTaxonomies": [
 						{
 							"guid": "f2856fc0-85b7-373f-83e7-6f8582243547",
 							"name": "CWE"
 						}
 					],
-					"version": "2.8.0"
+					"version": "2.9.5"
 				}
 			}
 		}
