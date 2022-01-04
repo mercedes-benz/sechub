@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.15
+FROM ubuntu:20.04
 
 ENV STORAGE_FOLDER=/storage
 ENV SEAWEEDFS_VERSION=2.78
@@ -22,9 +22,11 @@ RUN mkdir "$STORAGE_FOLDER" && \
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# upgrade system, install s3cmd server and client
-RUN apk update --no-cache && \
-    apk add --no-cache wget
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade --assume-yes && \
+    apt-get install --assume-yes wget && \
+    apt-get clean
 
 RUN mkdir -p $BUCKET_FOLDER && \
     chown -R "$USER:$USER" /buckets
