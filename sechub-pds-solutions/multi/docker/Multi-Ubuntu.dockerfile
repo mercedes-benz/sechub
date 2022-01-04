@@ -55,7 +55,8 @@ RUN  mkdir --parents "$TOOL_FOLDER"
 RUN  mkdir --parents "$DOWNLOAD_FOLDER"
 
 # Install Flawfinder, Bandit, njsscan and mobsfscan
-RUN pip install flawfinder bandit bandit_sarif_formatter njsscan mobsfscan
+COPY packages.txt $TOOL_FOLDER/packages.txt
+RUN pip install -r $TOOL_FOLDER/packages.txt
 
 # Install the Product Delegation Server (PDS)
 RUN mkdir --parents "$PDS_FOLDER" && \
