@@ -4,7 +4,7 @@
 REGISTRY="$1"
 VERSION="$2"
 BASE_IMAGE="$3"  # optional
-DEFAULT_BASE_IMAGE="ubuntu:focal"
+DEFAULT_BASE_IMAGE="ubuntu:20.04"
 
 usage() {
   cat - <<EOF
