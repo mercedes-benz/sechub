@@ -2,8 +2,6 @@
 
 FROM ubuntu:20.04
 
-ARG DATABASE_FOLDER=/database
-ENV PGDATA="$DATABASE_FOLDER/data"
 ENV POSTGRE_CONFIG_FOLDER="/etc/postgresql/12/main/"
 ENV USER=postgres
 
