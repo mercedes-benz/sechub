@@ -1,9 +1,19 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.15
+FROM ubuntu:20.04
 
-RUN apk update --no-cache && \
-    apk add --no-cache nginx openssl
+ENV USER=nginx
+
+# non-root user
+# using fixed group and user ids
+RUN addgroup --gid 9000 "$USER" \
+     && adduser --uid 9000 --disabled-password --ingroup "$USER" "$USER"
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade --assume-yes && \
+    apt-get install --assume-yes nginx openssl && \
+    apt-get clean
 
 # Create self-signed certificate
 RUN cd /tmp && \
@@ -26,7 +36,9 @@ RUN mkdir -p /certificates && \
 # see: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html#toc_5
 RUN openssl dhparam -out /certificates/certsdhparam.pem 2048
 
-RUN chown -R nginx:nginx /certificates
+# Create PID file and set permissions
+RUN touch /var/run/nginx.pid && \
+    chown -R "$USER:$USER" /certificates /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid
 
 # Copy configuration script
 RUN rm /etc/nginx/nginx.conf
@@ -37,6 +49,6 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 # Switch from root to non-root user
-USER nginx
+USER "$USER"
 
 CMD ["/run.sh"]
