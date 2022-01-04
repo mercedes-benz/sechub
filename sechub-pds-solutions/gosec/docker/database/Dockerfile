@@ -1,35 +1,30 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.15
+FROM ubuntu:20.04
 
 ARG DATABASE_FOLDER=/database
 ENV PGDATA="$DATABASE_FOLDER/data"
+ENV POSTGRE_CONFIG_FOLDER="/etc/postgresql/12/main/"
+ENV USER=postgres
 
 # install PostgreSQL
-RUN apk update --no-cache && \
-    apk add --no-cache postgresql
-
-# setup PostgreSQL directories
-RUN mkdir --parents "$PGDATA" && \
-    mkdir --parents "/run/postgresql" && \
-    chown --recursive postgres:postgres "$DATABASE_FOLDER" "/run/postgresql"
-
-# initialize PostgreSQL
-RUN su -c "pg_ctl init" postgres
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade --assume-yes && \
+    apt-get install --assume-yes postgresql postgresql-client && \
+    apt-get clean
 
 # PostgreSQL configuration files
-RUN rm "$PGDATA/pg_hba.conf"
-COPY pg_hba.conf  "$PGDATA/pg_hba.conf"
+RUN rm "$POSTGRE_CONFIG_FOLDER/pg_hba.conf"
+COPY pg_hba.conf  "$POSTGRE_CONFIG_FOLDER/pg_hba.conf"
 
-RUN rm "$PGDATA/postgresql.conf"
-COPY postgresql.conf "$PGDATA/postgresql.conf"
-
-RUN chown postgres:postgres "$PGDATA/pg_hba.conf" "$PGDATA/postgresql.conf"
+RUN rm "$POSTGRE_CONFIG_FOLDER/postgresql.conf"
+COPY postgresql.conf "$POSTGRE_CONFIG_FOLDER/postgresql.conf"
 
 # copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-USER postgres
+USER "$USER"
 
 CMD ["/run.sh"]
