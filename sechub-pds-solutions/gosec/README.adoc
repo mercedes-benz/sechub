@@ -11,7 +11,7 @@ Furthermore, the combination of GoSec and PDS makes it possible to run both insi
 This folder contains the necessary scripts to run PDS + GoSec inside a container locally. Additionally, it contains scripts to build and push the PDS + GoSec container to your container registry and a Helm chart to install and run PDS + GoSec in a Kubernetes cluster.
 
 [NOTE]
-We offer Alpine Linux and Ubuntu based images. What you choose is up to you. However, for people with little Linux experience we recommend to use the Ubuntu image. The Alpine Linux image is intended for experienced Linux users.
+We offer Ubuntu based images. What you choose is up to you.
 
 == Run Locally
 
@@ -39,12 +39,6 @@ The folder contains a start script which does the <<_manually, manual>> steps fo
 ./01-start-docker-compose.sh
 ----
 
-or to start the Alpine Linux container:
-
-----
-./01-start-docker-compose.sh alpine
-----
-
 ==== Manually
 
 . Copy `env-initial` file to `.env`
@@ -59,12 +53,6 @@ It is recommended to change the default passwords in the `.env` file to improve 
 ----
 docker-compose --file docker-compose_pds_gosec_ubuntu.yaml up --build
 ----
-+
-or to start the Alpine Linux container:
-+
-----
-docker-compose --file docker-compose_pds_gosec_alpine.yaml up --build
-----
 
 ==== Together with SecHub
 
@@ -76,12 +64,6 @@ WARNING: Make sure the SecHub container is running.
 +
 ----
 ./05-start-single-sechub-network-docker-compose.sh
-----
-+
-or Alpine
-+
-----
-05-start-single-sechub-network-docker-compose.sh alpine
 ----
 
 === Scan
@@ -516,12 +498,6 @@ This section contains information about how to troubleshoot PDS+GoSec if somethi
 docker exec -it pds-gosec-ubuntu bash
 ----
 
-==== Access the Alpine Linux container
-
-----
-docker exec -it pds-gosec-alpine sh
-----
-
 ==== Java Application Remote Debugging of PDS
 
 . Set `JAVA_ENABLE_DEBUG=true` in the `.env` file
@@ -560,21 +536,7 @@ Build the container image.
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
-----
-
-==== Alpine
-
-. Using the default image: 
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1
-----
-
-. Using your own base image:
-+
-----
-./11-create-alpine-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/alpine:3.14"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:20.04"
 ----
 
 === Push Image to Registry
@@ -604,7 +566,7 @@ https://helm.sh/[Helm] is a package manager for Kubernetes.
 ==== Requierments
 
 * https://helm.sh/docs/intro/install/[Helm] installed
-* `pds_gosec_ubuntu` or `pds_gosec_alpine` image pushed to registry
+* `pds_gosec_ubuntu` image pushed to registry
 
 ==== Installation
 
