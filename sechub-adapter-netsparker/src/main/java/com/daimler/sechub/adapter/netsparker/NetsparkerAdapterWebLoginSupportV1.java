@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.daimler.sechub.adapter.FormAutoDetectLoginConfig;
 import com.daimler.sechub.adapter.FormScriptLoginConfig;
 import com.daimler.sechub.adapter.LoginConfig;
 import com.daimler.sechub.adapter.LoginScriptPage;

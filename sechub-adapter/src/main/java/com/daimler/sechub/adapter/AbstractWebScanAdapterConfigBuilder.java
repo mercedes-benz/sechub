@@ -4,6 +4,7 @@ package com.daimler.sechub.adapter;
 import java.net.URI;
 import java.net.URL;
 
+import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.login.ActionType;
 
@@ -13,6 +14,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     private LoginBuilder currentLoginBuilder;
     private SecHubTimeUnitData maxScanDuration;
     private URI targetURI;
+    private URI rootTargetURI;
+    private URIShrinkSupport uriShrinkSupport = new URIShrinkSupport();
 
     @SuppressWarnings("unchecked")
     public B setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
@@ -26,6 +29,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
             return (B) this;
         }
         this.targetURI = targetURI;
+        this.rootTargetURI = uriShrinkSupport.shrinkToRootURI(targetURI);
         return (B) this;
     }
 
@@ -194,6 +198,7 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
     void packageInternalCustomBuild(C config) {
         config.maxScanDuration = maxScanDuration;
         config.targetURI = targetURI;
+        config.rootTargetURI = rootTargetURI;
 
         if (currentLoginBuilder == null) {
             return;

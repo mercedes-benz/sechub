@@ -13,7 +13,7 @@ import com.daimler.sechub.commons.model.SecHubConfigurationModel;
 import com.daimler.sechub.commons.model.SecHubConfigurationModelReducedCloningSupport;
 import com.daimler.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 
-public class PDSInfraScanConfigImpl extends AbstractAdapterConfig implements PDSInfraScanConfig {
+public class PDSInfraScanConfigImpl extends AbstractInfraScanAdapterConfig implements PDSInfraScanConfig {
 
     Map<String, String> jobParameters;
     UUID sechubJobUUID;

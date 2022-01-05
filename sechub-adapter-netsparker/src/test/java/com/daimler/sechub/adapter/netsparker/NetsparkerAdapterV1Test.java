@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.daimler.sechub.adapter.AdapterException;
 import com.daimler.sechub.adapter.BasicLoginConfig;
-import com.daimler.sechub.adapter.FormAutoDetectLoginConfig;
 import com.daimler.sechub.adapter.FormScriptLoginConfig;
 import com.daimler.sechub.adapter.LoginScriptAction;
 import com.daimler.sechub.adapter.LoginScriptPage;

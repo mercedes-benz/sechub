@@ -5,17 +5,12 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.daimler.sechub.adapter.netsparker.NetsparkerAdapter;
-import com.daimler.sechub.commons.model.SecHubWebScanConfiguration;
 import com.daimler.sechub.domain.scan.Target;
 import com.daimler.sechub.domain.scan.TargetType;
 import com.daimler.sechub.domain.scan.product.ProductExecutorContext;
@@ -25,7 +20,6 @@ import com.daimler.sechub.domain.scan.product.config.WithoutProductExecutorConfi
 import com.daimler.sechub.domain.scan.resolve.TargetResolver;
 import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionContext;
-import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 public class NetsparkerProductExecutorTest {
 

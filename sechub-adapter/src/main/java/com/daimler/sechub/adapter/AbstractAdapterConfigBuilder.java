@@ -3,14 +3,8 @@ package com.daimler.sechub.adapter;
 
 import static com.daimler.sechub.adapter.TimeConstants.*;
 
-import java.net.InetAddress;
-import java.net.URI;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
 import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
@@ -60,8 +54,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
 
     private boolean trustAllCertificatesEnabled;
 
-    private URIShrinkSupport uriShrinker;
-
     private String projectId;
 
     private Map<AdapterOptionKey, String> options = new LinkedHashMap<>();
@@ -69,7 +61,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private static int minimumTimeToWaitForNextCheckOperationInMilliseconds = 500;
 
     protected AbstractAdapterConfigBuilder() {
-        uriShrinker = createURIShrinker();
     }
 
     /**
@@ -249,7 +240,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         if (!(config instanceof AbstractAdapterConfig)) {
             throw new IllegalStateException(getClass().getName() + " does not return a child of AbstractAdapterConfig!");
         }
-        Set<URI> shrinkedRootURIs = uriShrinker.shrinkToRootURIs(targetURIs);
 
         AbstractAdapterConfig abstractAdapterConfig = (AbstractAdapterConfig) config;
 
@@ -265,9 +255,6 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
         abstractAdapterConfig.trustAllCertificatesEnabled = trustAllCertificatesEnabled;
         abstractAdapterConfig.passwordOrAPIToken = passwordOrApiToken;
         abstractAdapterConfig.policyId = policyID;
-        abstractAdapterConfig.targetURIs = targetURIs;
-        abstractAdapterConfig.rootTargetUris.addAll(shrinkedRootURIs);
-        abstractAdapterConfig.targetIPs = targetIPs;
 
         abstractAdapterConfig.traceID = traceID;
         abstractAdapterConfig.projectId = projectId;

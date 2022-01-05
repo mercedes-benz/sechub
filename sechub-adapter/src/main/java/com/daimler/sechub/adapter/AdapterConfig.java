@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter;
 
-import java.net.InetAddress;
-import java.net.URI;
 import java.util.Map;
-import java.util.Set;
 
 public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
     

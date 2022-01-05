@@ -8,7 +8,8 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
     AbstractLoginConfig loginConfig;
     SecHubTimeUnitData maxScanDuration;
     URI targetURI;
-    private String targetType;
+    URI rootTargetURI;
+    String targetType;
 
     public SecHubTimeUnitData getMaxScanDuration() {
         return maxScanDuration;
@@ -34,6 +35,20 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
     @Override
     public URI getTargetURI() {
         return targetURI;
+    }
+    
+    @Override
+    public String getRootTargetURIasString() {
+        URI uri = getRootTargetURI();
+        if (uri == null) {
+            return null;
+        }
+        return uri.toString();
+    }
+
+    @Override
+    public URI getRootTargetURI() {
+        return rootTargetURI;
     }
     
     @Override

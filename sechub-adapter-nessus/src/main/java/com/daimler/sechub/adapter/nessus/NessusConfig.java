@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.nessus;
 
-import com.daimler.sechub.adapter.AbstractAdapterConfig;
 import com.daimler.sechub.adapter.AbstractAdapterConfigBuilder;
+import com.daimler.sechub.adapter.AbstractInfraScanAdapterConfig;
 
-public class NessusConfig extends AbstractAdapterConfig implements NessusAdapterConfig{
+public class NessusConfig extends AbstractInfraScanAdapterConfig implements NessusAdapterConfig{
 
 	private NessusConfig() {
 	}

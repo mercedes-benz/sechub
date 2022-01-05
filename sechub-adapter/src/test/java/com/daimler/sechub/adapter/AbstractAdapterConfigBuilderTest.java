@@ -161,7 +161,7 @@ public class AbstractAdapterConfigBuilderTest {
     }
 
     @Test
-    public void when_doublicated_target_uri_is_set__target_uri_is_as_expected_and_list_is_1() throws Exception {
+    public void when_duplicated_target_uri_is_set__target_uri_is_as_expected_and_list_is_1() throws Exception {
 
         /* prepare */
         String uriString = "http://www.my.cool.stuff.com";

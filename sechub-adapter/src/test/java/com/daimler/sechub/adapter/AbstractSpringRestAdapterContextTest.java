@@ -4,8 +4,6 @@ package com.daimler.sechub.adapter;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.net.URI;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +13,7 @@ import com.daimler.sechub.adapter.testclasses.TestAdapterInterface;
 
 public class AbstractSpringRestAdapterContextTest {
 	/*
-	 * we use the TestAbstractSpringRestAdapterContext as an representant for
+	 * we use the TestAbstractSpringRestAdapterContext as a representative for
 	 * AbstractSpringRestAdapterContext
 	 */
 	private TestAbstractSpringRestAdapterContext contextToTest;
@@ -30,7 +28,7 @@ public class AbstractSpringRestAdapterContextTest {
 		runtimeContext = mock(AdapterRuntimeContext.class);
 
 		when(config.getProductBaseURL()).thenReturn("http://localhost");
-		when(config.getTargetURI()).thenReturn(new URI("https://my.scan.target"));
+		//when(config.getTargetURI()).thenReturn(new URI("https://my.scan.target"));
 
         contextToTest = new TestAbstractSpringRestAdapterContext(config, adapter, runtimeContext);
 	}
@@ -49,7 +47,7 @@ public class AbstractSpringRestAdapterContextTest {
 		/* prepare */
 		when(config.getTimeOutInMilliseconds()).thenReturn(1);
 
-		Thread.sleep(2); // NOSONAR
+		Thread.sleep(2);
 
 		/* execute + test */
 		assertTrue(contextToTest.isTimeOut());

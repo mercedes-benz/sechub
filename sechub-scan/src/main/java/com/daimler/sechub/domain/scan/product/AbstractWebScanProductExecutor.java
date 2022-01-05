@@ -30,14 +30,14 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		List<URI> uris = new LinkedList<>();
 		uris.add(secHubWebScanConfiguration.getUri());
 		if (uris == null) {
-			throw new IllegalStateException("At this state the URIs must be set - validation failed!");
+			throw new IllegalStateException("At this state the URI must be set - validation failed!");
 		}
 		return uris;
 	}
 	
 	@Override
 	protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
-		/* SecHubWebScanConfiguration configuration currently has no IPs iniside, so we do not provide this */
+		/* SecHubWebScanConfiguration configuration currently has no IPs inside, so we do not provide this */
 		return Collections.emptyList();
 	}
 

@@ -27,7 +27,7 @@ public class MockedAdapterSetupServiceTest {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
-	public void static_read_default_setup_possible_and_has_atleast_checkmarx_and_netsparker_data_for_ANY_OTHER_TARGET_inside() {
+	public void static_read_default_setup_possible_and_has_at_least_checkmarx_and_netsparker_data_for_ANY_OTHER_TARGET_inside() {
 		/* prepare */
 		File gradleSafeTestFile = SecHubAdapterTestFileSupport.INSTANCE
 				.createFileFromResourcePath(MockedAdapterSetupService.DEFAULT_FILE_PATH);
@@ -65,7 +65,8 @@ public class MockedAdapterSetupServiceTest {
 		Map<AdapterOptionKey, String> options = new HashMap<>();
 		options.put(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, "yellow");
 		when(config.getOptions()).thenReturn(options);
-		when(config.getTargetAsString()).thenReturn("target1");
+		// TODO jeeppler, 2022-01-04: Can we remove this? 
+		//when(config.getTargetAsString()).thenReturn("target1");
 		when(mockedCheckmarxAdapter.getPathToMockResultFile("yellow")).thenReturn("pathFromAdapter");
 		
 		/* execute */

@@ -20,18 +20,22 @@ public class URIShrinkSupport {
 	 * @param uris
 	 * @return set of {@link URI} , never <code>null</code>
 	 */
-	public Set<URI> shrinkToRootURIs(Collection<URI> uris){
-		Set<URI> result = new LinkedHashSet<>();
-		
-		if (uris==null) {
-			return result;
-		}
-		for (URI uri: uris) {
-			buildRootURI(result, uri);
-		}
-		
-		return result;
-	}
+    public Set<URI> shrinkToRootURIs(Collection<URI> uris) {
+        Set<URI> rootURIs = new LinkedHashSet<>();
+
+        if (uris == null) {
+            return rootURIs;
+        }
+
+        for (URI uri : uris) {
+            if (uri != null) {
+                URI rootURI = buildRootURI(uri);
+                rootURIs.add(rootURI);
+            }
+        }
+
+        return rootURIs;
+    }
 	
     /**
      * Shrinks given uris to a set containing only {@link URI} elements which
@@ -39,21 +43,17 @@ public class URIShrinkSupport {
      * @param uris
      * @return set of {@link URI} , never <code>null</code>
      */
-    public URI shrinkToRootURI(URI uris){
-        Set<URI> result = new LinkedHashSet<>();
-        
-        if (uris==null) {
-            return result;
+    public URI shrinkToRootURI(URI uri) {
+        if (uri == null) {
+            return null;
         }
-        for (URI uri: uris) {
-            buildRootURI(result, uri);
-        }
-        
-        return result;
+
+        return buildRootURI(uri);
     }
 
 
-	private void buildRootURI(Set<URI> result, URI uri) {
+	private URI buildRootURI(URI uri) {
+	    
 		String scheme = uri.getScheme();
 		String host = uri.getHost();
 		int port = uri.getPort();
@@ -63,12 +63,13 @@ public class URIShrinkSupport {
 		String query=null;
 		String fragment=null;
 		
-		URI rootURI;
+		URI rootURI = null;
 		try {
-			rootURI = new URI(scheme, userInfo, host, port, path, query, fragment);
-			result.add(rootURI);
+			rootURI = new URI(scheme, userInfo, host, port, path, query, fragment);			
 		} catch (URISyntaxException e) {
 			LOG.error("Was not able to build root uri for:"+uri, e);
 		}
+		
+		return rootURI;
 	}
 }

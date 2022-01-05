@@ -3,9 +3,9 @@ package com.daimler.sechub.adapter.checkmarx;
 
 import java.io.InputStream;
 
-import com.daimler.sechub.adapter.AdapterConfig;
+import com.daimler.sechub.adapter.CodeScanAdapterConfig;
 
-public interface CheckmarxAdapterConfig extends AdapterConfig {
+public interface CheckmarxAdapterConfig extends CodeScanAdapterConfig {
 
     /**
      *
