@@ -2,18 +2,13 @@
 
 FROM ubuntu:20.04
 
-ENV USER=nginx
-
-# non-root user
-# using fixed group and user ids
-RUN addgroup --gid 9000 "$USER" \
-     && adduser --uid 9000 --disabled-password --ingroup "$USER" "$USER"
+ARG USER=www-data
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes nginx openssl && \
-    apt-get clean
+    apt-get --assume-yes upgrade && \
+    apt-get --assume-yes install nginx openssl && \
+    apt-get --assume-yes clean
 
 # Create self-signed certificate
 RUN cd /tmp && \
