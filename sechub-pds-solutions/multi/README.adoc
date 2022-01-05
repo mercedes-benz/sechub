@@ -4,29 +4,29 @@
 
 = Multiple Tools + PDS
 
-This example contains multiple free and open source static application security testing tool together with the https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
+Run multiple free and open source static application security testing tools together with the https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
 
 |===
 |Name |Supported Languages |License
-
-|https://dwheeler.com/flawfinder/[Flawfinder]
-|C/C++
-|GPL v2
 
 |https://github.com/PyCQA/bandit[Bandit]
 |Python3
 |Apache-2.0
 
-|https://github.com/ajinabraham/njsscan[njsscan]
-|NodeJS (JavaScript) 
-|LGPL-3.0
+|https://dwheeler.com/flawfinder/[Flawfinder]
+|C/C++
+|GPL v2
 
 |https://github.com/MobSF/mobsfscan[mobsfscan]
 |Java, Kotlin, Swift, Objective-C
 |LGPL-3.0
+
+|https://github.com/ajinabraham/njsscan[njsscan]
+|NodeJS (JavaScript) 
+|LGPL-3.0
 |===
 
-The combination of GoSec and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
+The combination of the tools and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
 
 This folder contains the necessary scripts to run the multiple tools + PDS inside a container locally. Additionally, it contains scripts to build and push the container to your container registry and a Helm chart to install and run the tools + PDS in a Kubernetes cluster.
 

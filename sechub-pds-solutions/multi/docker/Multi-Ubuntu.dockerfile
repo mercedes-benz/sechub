@@ -31,9 +31,9 @@ RUN groupadd --gid 2323 pds \
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-11-jre-headless pip && \
-    apt-get clean
+    apt-get --assume-yes upgrade  && \
+    apt-get --assume-yes install wget openjdk-11-jre-headless pip && \
+    apt-get --assume-yes clean
 
 # Copy scripts
 COPY flawfinder.sh $SCRIPT_FOLDER/flawfinder.sh
@@ -64,7 +64,7 @@ RUN mkdir --parents "$PDS_FOLDER" && \
     # create checksum file
     echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
     # download pds
-    wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
@@ -85,6 +85,6 @@ WORKDIR "$WORKSPACE"
 RUN chown --recursive pds:pds $TOOL_FOLDER $SCRIPT_FOLDER $DOWNLOAD_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # Switch from root to non-root user
-#USER pds
+USER pds
 
 CMD ["/run.sh"]

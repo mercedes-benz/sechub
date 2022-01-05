@@ -48,7 +48,7 @@ services:
                 # A fixed IP address is necessary
                 # otherwise the AWS S3 client used by
                 # the PDS cannot resolve the address
-                ipv4_address: 10.42.43.7
+                ipv4_address: 10.2.43.7
         ports:
             - "127.0.0.1:9000:9000"
 
@@ -58,5 +58,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 10.42.43.0/24
-          gateway: 10.42.43.1
+        - subnet: 10.2.43.0/24
+          gateway: 10.2.43.1

@@ -24,4 +24,4 @@ else
     echo "Starting cluster of $REPLICAS containers."
 fi
 
-docker-compose --file docker-compose_pds_multi_cluster.yaml up --scale pds-multi=$REPLICAS --build
+docker-compose --file docker-compose_pds_multi_cluster.yaml up --scale pds-multi=$REPLICAS --build --remove-orphans

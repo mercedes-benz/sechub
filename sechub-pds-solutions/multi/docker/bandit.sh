@@ -28,3 +28,5 @@ case "$BANDIT_SEVERITY" in
 esac
 
 bandit --format sarif --ignore-nosec $severity $confidence --output "$PDS_JOB_RESULT_FILE" --recursive "$PDS_JOB_SOURCECODE_UNZIPPED_FOLDER/"
+
+exit 0
