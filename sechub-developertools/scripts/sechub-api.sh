@@ -55,6 +55,7 @@ project_metadata_set <project-id> <key1>:<value1> [<key2>:<value2> ...] - define
 project_mockdata_list <project-id> - display defined mocked results (if server runs 'mocked-products')
 project_mockdata_set <project-id> <code> <web> <infra> - define mocked results (possible values: RED YELLOW GREEN)
 project_scan_list <project-id> - List scan jobs for project <project-id> (json format)
+project_set_accesslevel <project-id> <accesslevel> - Set access level of project <project-id> to one of: full read_only none
 project_set_owner <project-id> <owner> - Change owner of project <project-id> to <owner>
 project_unassign_profile <project-id> <profile-id> - Unassign execution profile <profile-id> from project <project-id>
 project_unassign_user <project-id> <user-id> - Unassign user from project (revoke scanning)
@@ -106,6 +107,26 @@ function generate_json_key_value {
   cat <<EOF
 "$key": "$value"
 EOF
+}
+
+
+function check_choice_parameter {
+  local param="$1" ; shift
+  local parameter_name="$1" ; shift
+  local allowed_values="$*"
+
+  check_parameter "$param" "$parameter_name"
+  if ! $failed ; then
+    local value="${!param}"
+    local match=false
+    for i in $allowed_values ; do
+      [ "$value" = "$i" ] && match=true
+    done
+    if ! $match ; then
+      echo "Required parameter $parameter_name is not one of: $allowed_values"
+      failed=true
+    fi
+  fi
 }
 
 
@@ -412,6 +433,11 @@ function sechub_project_scan_list {
 }
 
 
+function sechub_project_set_accesslevel {
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/accesslevel/$2" | $CURL_FILTER
+}
+
+
 function sechub_project_set_owner {
   curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/project/$1/owner/$2" | $CURL_FILTER
 }
@@ -445,6 +471,9 @@ function sechub_scheduler_status {
 
 
 function sechub_server_status {
+  # 1. Update status in admin domain
+  curl $CURL_PARAMS -i -X POST -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/scheduler/status/refresh" > /dev/null 2>&1
+  # 2. Display status
   curl $CURL_PARAMS -i -X GET -H 'Content-Type: application/json' "$SECHUB_SERVER/api/admin/status" | $RESULT_FILTER | $JSON_FORMAT_SORT
 }
 
@@ -729,6 +758,11 @@ case "$action" in
   project_scan_list)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
     $failed || sechub_project_scan_list "$PROJECT_ID"
+    ;;
+  project_set_accesslevel)
+    PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'
+    PROJECT_ACCESSLEVEL="$2" ; check_choice_parameter PROJECT_ACCESSLEVEL '<accesslevel>' full read_only none
+    $failed || sechub_project_set_accesslevel "$PROJECT_ID" "$PROJECT_ACCESSLEVEL"
     ;;
   project_set_owner)
     PROJECT_ID="$1" ; check_parameter PROJECT_ID '<project-id>'

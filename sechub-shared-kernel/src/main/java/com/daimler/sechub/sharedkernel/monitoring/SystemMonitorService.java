@@ -69,7 +69,7 @@ public class SystemMonitorService {
         } catch (IOException e) {
             LOG.error("Will not be able to check OS!", e);
         }
-        memoryUsageMonitor = new MemoryUsageMonitor(Runtime.getRuntime(), cacheTimeInMilliseconds);
+        memoryUsageMonitor = new MemoryUsageMonitor(new MemoryRuntime(), cacheTimeInMilliseconds);
         cpuMonitor = new CPUMonitor(osMBean, cacheTimeInMilliseconds);
 
     }
