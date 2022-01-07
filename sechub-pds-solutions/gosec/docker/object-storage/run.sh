@@ -35,7 +35,7 @@ JSON
 )
 
 
-    echo "$s3_config" > "/home/$USER/s3_config.json"
+    echo "$s3_config" > "/home/$STORAGE_USER/s3_config.json"
 }
 
 server () {
@@ -43,7 +43,7 @@ server () {
 
     echo "Start SeaweedFS"
 
-    weed server -dir=/storage -master.volumeSizeLimitMB=1024 -master.volumePreallocate=false -s3 -s3.port=9000 -s3.config="/home/$USER/s3_config.json" &
+    weed server -dir=/storage -master.volumeSizeLimitMB=1024 -master.volumePreallocate=false -s3 -s3.port=9000 -s3.config="/home/$STORAGE_USER/s3_config.json" &
     weed_server_process_id=$!
 
     init
