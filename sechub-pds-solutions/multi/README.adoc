@@ -302,7 +302,7 @@ This section contains information about how to troubleshoot PDS+Multi if somethi
 ==== Access the Ubuntu container
 
 ----
-docker exec -it pds-gosec-ubuntu bash
+docker exec -it pds-multi-ubuntu bash
 ----
 
 ==== Java Application Remote Debugging of PDS
@@ -337,13 +337,13 @@ Build the container image.
 . Using the default image: 
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_multi_ubuntu v0.1
 ----
 
 . Using your own base image:
 +
 ----
-./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_gosec v0.1 "my.registry.example.org/ubuntu:focal"
+./10-create-ubuntu-image.sh my.registry.example.org/sechub/pds_multi_ubuntu v0.1 "my.registry.example.org/ubuntu:focal"
 ----
 
 === Push Image to Registry
@@ -353,13 +353,13 @@ Push the container image to a registry.
 * Push the version tag only
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1
+./20-push-image.sh my.registry.example.org/sechub/pds_multi_ubuntu v0.1
 ----
 
 * Push the version and `latest` tags
 +
 ----
-./20-push-image.sh my.registry.example.org/sechub/pds_gosec v0.1 yes
+./20-push-image.sh my.registry.example.org/sechub/pds_multi_ubuntu v0.1 yes
 ----
 
 == Kubernetes
@@ -386,7 +386,7 @@ A minimal example configuration file with one instance:
 replicaCount: 1
 
 image:
-   registry: registry.app.corpintra.net/sechub/pds_gosec_ubuntu
+   registry: registry.app.corpintra.net/sechub/pds_multi_ubuntu
    tag: latest
 
 pds:
@@ -423,7 +423,7 @@ An example configuration file with 3 replicas, postgresql and s3 (MinIO) storage
 replicaCount: 3
 
 image:
-   registry: my.registry.example.org/pds_gosec
+   registry: my.registry.example.org/pds_multi_ubuntu
    tag: latest
 
 pds:
@@ -474,7 +474,7 @@ To generate passwords use `tr -dc A-Za-z0-9 </dev/urandom | head -c 18 ; echo ''
 . Install helm package from file system
 +
 ----
-helm install --values myvalues.yaml pds-gosec helm/pds-gosec/
+helm install --values myvalues.yaml pds-multi helm/pds-multi/
 ----
 +
 [TIP]
