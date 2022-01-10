@@ -26,7 +26,7 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
     id 'org.openapi.generator' version '5.2.0'
-    id 'org.springframework.boot' version '2.5.7' apply false
+    id 'org.springframework.boot' version '2.5.8' apply false
 }
 /* check buildsystem */
 def githubActor = System.getenv('GITHUB_ACTOR')

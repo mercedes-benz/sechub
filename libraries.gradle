@@ -17,7 +17,7 @@ ext {
    ]
 
    library = [
-        hsqldb: "org.hsqldb:hsqldb:2.4.0",
+        hsqldb: "org.hsqldb:hsqldb:2.6.1",
        
         /* autark JUnit parts, with same versions like current used spring boot version */
         // https://mvnrepository.com/artifact/junit/junit
@@ -65,33 +65,33 @@ ext {
 
          wiremock:                              "com.github.tomakehurst:wiremock-standalone:2.27.2",
 
-         database_h2:                           "com.h2database:h2:1.4.199", //:1.4.199 is supported by used spring boot release",
-         database_postgres:                     "org.postgresql:postgresql:42.2.2",
+         database_h2:                           "com.h2database:h2:1.4.200", //:1.4.200 is supported by used spring boot release",
+         database_postgres:                     "org.postgresql:postgresql:42.3.1",
 
          /* jackson libraries - please keep in sync with used ones by spring boot!*/
          jackson_JDK8:                          "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.3",
          // https://mvnrepository.com/artifact/com.fasterxml.jackson.jr/jackson-jr-all
-         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.12.3",
-         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.12.3",
-         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.12.3",
+         jackson_jr_all:                        "com.fasterxml.jackson.jr:jackson-jr-all:2.12.6",
+         jackson_core:                          "com.fasterxml.jackson.core:jackson-core:2.12.6",
+         jackson_databind:                      "com.fasterxml.jackson.core:jackson-databind:2.12.6",
 
          /* apache commons */
-         apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.9",
+         apache_httpcomponents_core:            "org.apache.httpcomponents:httpcore:4.4.15",
          // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.10",
+         apache_httpcomponents_client:          "org.apache.httpcomponents:httpclient:4.5.13",
          apache_commons_validator:              "commons-validator:commons-validator:1.7",
-         apache_commons_io:                     "commons-io:commons-io:2.6",
-         apache_commons_cli:					"commons-cli:commons-cli:1.4",
+         apache_commons_io:                     "commons-io:commons-io:2.11.0",
+         apache_commons_cli:					"commons-cli:commons-cli:1.5.0",
          apache_commons_lang3:					"org.apache.commons:commons-lang3:3.12.0",
 
-         openjson:                              "com.github.openjson:openjson:1.0.10",
+         openjson:                              "com.github.openjson:openjson:1.0.12",
 
-         flyway:                                "org.flywaydb:flyway-core:6.0.8",
+         flyway:                                "org.flywaydb:flyway-core:8.2.3",
 
          /* logback */
          // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-         logback_classic:                       "ch.qos.logback:logback-classic:1.2.3",
-         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.2",
+         logback_classic:                       "ch.qos.logback:logback-classic:1.2.9",
+         logstashLogbackEncoder        :        "net.logstash.logback:logstash-logback-encoder:6.6",
 
          // JDK 10 build problems handling
          // https://stackoverflow.com/questions/43574426/how-to-resolve-java-langnoclassdeffounderror-javax-xml-bind-jaxbexception-in-j
@@ -107,13 +107,13 @@ ext {
           * Link: https://github.com/google/re2j
           */
          // https://mvnrepository.com/artifact/com.google.re2j/re2j
-         google_re2j:                           "com.google.re2j:re2j:1.4",
+         google_re2j:                           "com.google.re2j:re2j:1.6",
          
          /* epages - see https://github.com/ePages-de/restdocs-api-spec */
          epages_restdoc_api_spec_mockmvc:       "com.epages:restdocs-api-spec-mockmvc:${libraryVersion.restDocsApiSpec}",
          
          /* jsoup: Java HTML Parser - see: https://github.com/jhy/jsoup */
-         jsoup:									"org.jsoup:jsoup:1.14.2",
+         jsoup:									"org.jsoup:jsoup:1.14.3",
 
    ]
 
