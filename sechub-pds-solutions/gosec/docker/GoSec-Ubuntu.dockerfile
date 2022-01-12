@@ -7,78 +7,79 @@ FROM ${BASE_IMAGE}
 # The remaining arguments need to be placed after the `FROM`
 # See: https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
 
-# Folders
+LABEL maintainer="SecHub FOSS Team"
+
+# Build args
+ARG GO="go1.17.5.linux-amd64.tar.gz"
+ARG GOSEC_VERSION="2.9.5"
 ARG PDS_FOLDER="/pds"
+ARG PDS_VERSION="0.24.0"
 ARG SCRIPT_FOLDER="/scripts"
-ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
+
+# env vars in container:
 ENV DOWNLOAD_FOLDER="/downloads"
 ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
-
-# PDS
-ENV PDS_VERSION=0.24.0
-ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
-
-# Go
-ARG GO="go1.17.2.linux-amd64.tar.gz"
-ARG GO_CHECKSUM="f242a9db6a0ad1846de7b6d94d507915d14062660616a61ef7c808a76e4f1676"
-
-# GoSec
-ARG GOSEC_VERSION="2.9.1"
-
-# Shared volumes
+ENV PDS_VERSION="${PDS_VERSION}"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
+ENV TOOL_FOLDER="/tools"
+ENV USER="gosec"
+ENV UID="2323"
+ENV GID="${UID}"
 
 # non-root user
 # using fixed group and user ids
 # gosec needs a home directory for the cache
-RUN groupadd --gid 2323 gosec \
-     && useradd --uid 2323 --no-log-init --create-home --gid gosec gosec
+RUN groupadd --gid "$GID" "$USER" && \
+    useradd --uid "$UID" --gid "$GID" --no-log-init --create-home "$USER"
 
-# Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
+# Create folders & change owner of folders
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
+    chown --recursive "$USER:$USER" "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$SCRIPT_FOLDER" "$WORKSPACE" "$SHARED_VOLUMES"
 
-RUN apt-get update && \
-    apt-get upgrade --assume-yes && \
-    apt-get install --assume-yes wget openjdk-11-jre-headless && \
-    apt-get clean
-
-# Create script folder
-COPY gosec.sh $SCRIPT_FOLDER/gosec.sh
-RUN chmod +x $SCRIPT_FOLDER/gosec.sh
-
-COPY gosec_mock.sh $SCRIPT_FOLDER/gosec_mock.sh
-RUN chmod +x $SCRIPT_FOLDER/gosec_mock.sh
-
-# Setup mock folder
-RUN mkdir "$MOCK_FOLDER"
+# Copy mock file
 COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
+# Copy PDS configfile
+COPY pds-config.json "$PDS_FOLDER"/pds-config.json
+# Copy GoSec stuff
+COPY gosec.sh "$SCRIPT_FOLDER"/gosec.sh
+COPY gosec_mock.sh "$SCRIPT_FOLDER"/gosec_mock.sh
+# Copy run script into container
+COPY run.sh /run.sh
 
-# Create download folder
-RUN mkdir "$DOWNLOAD_FOLDER"
+# Set execute permissions for scripts
+RUN chmod +x /run.sh "$SCRIPT_FOLDER"/gosec.sh "$SCRIPT_FOLDER"/gosec_mock.sh
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade --assume-yes && \
+    apt-get install --assume-yes w3m wget openjdk-11-jre-headless && \
+    apt-get clean
 
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
+    # Get checksum from Go download site
+    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep go1.17.5.linux-amd64.tar.gz | tail -1 | awk '{print $6}'` && \
     # create checksum file
-    echo "$GO_CHECKSUM $GO" > $GO.sha256sum && \
+    echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
     # download Go
-    wget https://dl.google.com/go/${GO} && \
+    wget --no-verbose https://go.dev/dl/"${GO}" && \
     # verify that the checksum and the checksum of the file are same
-    sha256sum --check $GO.sha256sum && \
+    sha256sum --check "$GO.sha256sum" && \
     # extract Go
-    tar --extract --file $GO --directory "/usr/local/" && \
+    tar --extract --file "$GO" --directory /usr/local/ && \
     # remove go tar.gz
-    rm $GO && \
+    rm "$GO" && \
     # add Go to path
     echo 'export PATH="/usr/local/go/bin:$PATH":' >> /root/.bashrc
 
 # Install GoSec
 RUN cd "$DOWNLOAD_FOLDER" && \
     # download gosec
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
+    wget --no-verbose https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz && \
     # download checksum
-    wget https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
+    wget --no-verbose https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_checksums.txt && \
     # verify checksum
     sha256sum --check --ignore-missing "gosec_${GOSEC_VERSION}_checksums.txt" && \
     # create gosec folder
@@ -88,33 +89,19 @@ RUN cd "$DOWNLOAD_FOLDER" && \
     # Remove gosec tar.gz
     rm "gosec_${GOSEC_VERSION}_linux_amd64.tar.gz"
 
-# Install the Product Delegation Server (PDS)
-RUN mkdir --parents "$PDS_FOLDER" && \
-    cd /pds && \
-    # create checksum file
-    echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
+# Install the SecHub Product Delegation Server (PDS)
+RUN cd "$PDS_FOLDER" && \
+    # download checksum file
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
-# Create shared volumes and upload dir
-RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
-
-# Copy PDS configfile
-COPY pds-config.json /$PDS_FOLDER/pds-config.json
-
-# Copy run script into container
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
-
-# Create the PDS workspace
-WORKDIR "$WORKSPACE"
-
-# Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive gosec:gosec $DOWNLOAD_FOLDER $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
-
 # Switch from root to non-root user
-USER gosec
+USER "$USER"
+
+# Set workspace
+WORKDIR "$WORKSPACE"
 
 CMD ["/run.sh"]

@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 SCRIPT_DIR=`dirname $0`
-IMAGE_TYPE="$1"
 
 ENVIRONMENT_FILE=".env"
 
@@ -16,11 +15,5 @@ else
     echo "Using existing environment file: $ENVIRONMENT_FILE."
 fi
 
-if [[ "$IMAGE_TYPE" == "alpine" ]]
-then
-    echo "Starting single Alpine container."
-    docker-compose --file docker-compose_pds_gosec_alpine-external-network.yaml up --build
-else
-    echo "Starting single Ubuntu container."
-    docker-compose --file docker-compose_pds_gosec_ubuntu-external-network.yaml up --build
-fi
+echo "Starting single Ubuntu container."
+docker-compose --file docker-compose_pds_gosec_ubuntu-external-network.yaml up --build --remove-orphans

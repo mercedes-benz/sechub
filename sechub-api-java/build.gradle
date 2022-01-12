@@ -20,6 +20,7 @@ dependencies {
     testRuntimeOnly library.junit5_runtime
     
     testImplementation library.mockito
+    testImplementation library.mockito_inline
     testImplementation library.hamcrest
 }
 
