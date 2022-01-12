@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 /*  ------------------------------------------------------------------------
  *   This file will be injected into generated gradle file, so publishing
  *   is possible.
