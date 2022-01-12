@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-package com.daimler.sechub.client.java;
+package com.daimler.sechub.api.java;
 
-import static com.daimler.sechub.client.java.AssertJavaClientAPI.*;
+import static com.daimler.sechub.api.java.AssertJavaClientAPI.*;
 import static org.junit.Assert.*;
 
 import java.io.File;

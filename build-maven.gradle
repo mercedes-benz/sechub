@@ -27,6 +27,11 @@ subprojects {
     // could be changes to last published one.
     version = VersionData.getLibrariesVersion()
     
+    def libraryPublishNecessary = version != "0.0.0";
+    if (! libraryPublishNecessary){
+        return;
+    }
+
     /* ensure we are at GITHUB actions when we want to publish the libraries */
     if (! buildDoneByGitHubActions ){
         println("library $project.name publish will be ignored - only provided by github actions")
