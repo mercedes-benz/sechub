@@ -31,13 +31,13 @@
             "id" : "PDS_NJSSCAN",
             "path" : "/scripts/njsscan.sh",
             "scanType" : "codeScan",
-            "description" : "Runs njsscan . njsscan is a static analysis tool for node.js applications. It scans only JavaScript Node.js applications."
+            "description" : "Runs njsscan. njsscan is a static analysis tool for Node.js applications. It scans only JavaScript Node.js applications."
         },
         {
             "id" : "PDS_MOBSFSCAN",
             "path" : "/scripts/mobsfscan.sh",
             "scanType" : "codeScan",
-            "description" : "Runs mobsfscan. mobsfscan is a static analysis tool for mobile applications. It can scan applications written in Java, Kotlin, Swift and Objective-C"
+            "description" : "Runs mobsfscan. mobsfscan is a static analysis tool for mobile applications. It can scan mobile applications written in Java, Kotlin, Swift and Objective-C"
         }
     ]
 }
