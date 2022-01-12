@@ -5,11 +5,14 @@
  * Root build file: "${rootProject.projectDir}/build.gradle"
  * ============================================================================
  */
+plugins {
+    id 'java-library'
+}
 dependencies {
 
-    compile project(':sechub-testframework')
-    compile project(':sechub-integrationtest')
-    compile project(':sechub-scan')
+    implementation project(':sechub-testframework')
+    implementation project(':sechub-integrationtest')
+    implementation project(':sechub-scan')
     
     implementation project(':sechub-commons-pds')
     
@@ -32,7 +35,7 @@ task startIntegrationTestAdminUI(type: JavaExec){
 
 }
 
-task buildDeveloperAdminUI(type: Jar) {
+task buildDeveloperAdminUI(type: Jar, dependsOn: build) {
     group 'sechub'
     description 'Builds the SecHub Developer Admin tool as standalone executable jar. Use launch-developer-admin-ui script to execute'
     baseName = 'sechub-developer-admin-ui'
@@ -43,7 +46,7 @@ task buildDeveloperAdminUI(type: Jar) {
     
     
     from { 
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } 
     }
 
     with jar
