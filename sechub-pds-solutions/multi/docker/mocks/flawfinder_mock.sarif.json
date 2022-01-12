@@ -1,0 +1,144 @@
+{
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+    "version": "2.1.0",
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "Flawfinder",
+                    "version": "2.0.19",
+                    "informationUri": "https://dwheeler.com/flawfinder/",
+                    "rules": [
+                        {
+                            "id": "FF1022",
+                            "name": "buffer/strlen",
+                            "shortDescription": {
+                                "text": "Does not handle strings that are not \\0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126)."
+                            },
+                            "defaultConfiguration": {
+                                "level": "note"
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/126.html",
+                            "relationships": [
+                                {
+                                    "target": {
+                                        "id": "CWE-126",
+                                        "toolComponent": {
+                                            "name": "CWE",
+                                            "guid": "FFC64C90-42B6-44CE-8BEB-F6B7DAE649E5"
+                                        }
+                                    },
+                                    "kinds": [
+                                        "relevant"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "FF1015",
+                            "name": "format/sprintf",
+                            "shortDescription": {
+                                "text": "Potential format string problem (CWE-134)."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "helpUri": "https://cwe.mitre.org/data/definitions/134.html",
+                            "relationships": [
+                                {
+                                    "target": {
+                                        "id": "CWE-134",
+                                        "toolComponent": {
+                                            "name": "CWE",
+                                            "guid": "FFC64C90-42B6-44CE-8BEB-F6B7DAE649E5"
+                                        }
+                                    },
+                                    "kinds": [
+                                        "relevant"
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "supportedTaxonomies": [
+                        {
+                            "name": "CWE",
+                            "guid": "FFC64C90-42B6-44CE-8BEB-F6B7DAE649E5"
+                        }
+                    ]
+                }
+            },
+            "columnKind": "utf16CodeUnits",
+            "results": [
+                {
+                    "ruleId": "FF1022",
+                    "level": "note",
+                    "message": {
+                        "text": "buffer/strlen:Does not handle strings that are not \\0-terminated; if given one it may perform an over-read (it could cause a crash if unprotected) (CWE-126)."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "/workspace/workspace/f725ec4c-0cdf-4eea-bc9a-5b68f2f7538b/upload/unzipped/sourcecode/Damn_Vulnerable_Device_Driver/DVDD.c",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 102,
+                                    "startColumn": 6,
+                                    "endColumn": 28,
+                                    "snippet": {
+                                        "text": "\tif (strlen(buff) != len) {"
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "fingerprints": {
+                        "contextHash/v1": "e4347673c7b5f2f2fe6fbcca2fce047b1823698f122199f1f2c7c602f62d581f"
+                    },
+                    "rank": 0.2
+                },
+                {
+                    "ruleId": "FF1015",
+                    "level": "error",
+                    "message": {
+                        "text": "format/sprintf:Potential format string problem (CWE-134)."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "/workspace/workspace/f725ec4c-0cdf-4eea-bc9a-5b68f2f7538b/upload/unzipped/sourcecode/Damn_Vulnerable_Device_Driver/DVDD.c",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 106,
+                                    "startColumn": 2,
+                                    "endColumn": 34,
+                                    "snippet": {
+                                        "text": "\tsprintf(diode->data, buff, len);"
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "fingerprints": {
+                        "contextHash/v1": "f6bfebb1bd7afaa981eb091cc3ddf89686b6dc50e4ede92d76c48046e4ae266c"
+                    },
+                    "rank": 0.8
+                }
+            ],
+            "externalPropertyFileReferences": {
+                "taxonomies": [
+                    {
+                        "location": {
+                            "uri": "https://raw.githubusercontent.com/sarif-standard/taxonomies/main/CWE_v4.4.sarif"
+                        },
+                        "guid": "FFC64C90-42B6-44CE-8BEB-F6B7DAE649E5"
+                    }
+                ]
+            }
+        }
+    ]
+}

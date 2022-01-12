@@ -13,14 +13,18 @@ ARG SCRIPT_FOLDER="/scripts"
 ENV TOOL_FOLDER="/tools"
 ARG WORKSPACE="/workspace"
 ENV DOWNLOAD_FOLDER="/downloads"
+ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 
 # PDS
-ENV PDS_VERSION=0.24.0
+ENV PDS_VERSION=0.25.0
 ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
 
 # Shared volumes
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
+
+# Create tool, pds, shared volume and download folder
+RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE"
 
 # non-root user
 # using fixed group and user ids
@@ -36,40 +40,24 @@ RUN apt-get update && \
     apt-get --assume-yes clean
 
 # Copy scripts
-COPY flawfinder.sh $SCRIPT_FOLDER/flawfinder.sh
-RUN chmod +x $SCRIPT_FOLDER/flawfinder.sh
+COPY scripts $SCRIPT_FOLDER
+RUN chmod -R +x $SCRIPT_FOLDER
 
-COPY bandit.sh $SCRIPT_FOLDER/bandit.sh
-RUN chmod +x $SCRIPT_FOLDER/bandit.sh
-
-COPY njsscan.sh $SCRIPT_FOLDER/njsscan.sh
-RUN chmod +x $SCRIPT_FOLDER/njsscan.sh
-
-COPY mobsfscan.sh $SCRIPT_FOLDER/mobsfscan.sh
-RUN chmod +x $SCRIPT_FOLDER/mobsfscan.sh
-
-# Create tool folder
-RUN  mkdir --parents "$TOOL_FOLDER"
-
-# Create download folder
-RUN  mkdir --parents "$DOWNLOAD_FOLDER"
+# Mock folder
+COPY mocks $SCRIPT_FOLDER/mocks/
 
 # Install Flawfinder, Bandit, njsscan and mobsfscan
 COPY packages.txt $TOOL_FOLDER/packages.txt
 RUN pip install -r $TOOL_FOLDER/packages.txt
 
-# Install the Product Delegation Server (PDS)
-RUN mkdir --parents "$PDS_FOLDER" && \
-    cd /pds && \
-    # create checksum file
-    echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
+# Install the SecHub Product Delegation Server (PDS)
+RUN cd "$PDS_FOLDER" && \
+    # download checksum file
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
     wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
-
-# Create shared volumes and upload dir
-RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
 
 # Copy PDS configfile
 COPY pds-config.json /$PDS_FOLDER/pds-config.json
