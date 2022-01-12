@@ -10,10 +10,10 @@ FROM ${BASE_IMAGE}
 LABEL maintainer="SecHub FOSS Team"
 
 # Build args
-ARG GO="go1.17.5.linux-amd64.tar.gz"
+ARG GO="go1.17.6.linux-amd64.tar.gz"
 ARG GOSEC_VERSION="2.9.5"
 ARG PDS_FOLDER="/pds"
-ARG PDS_VERSION="0.24.0"
+ARG PDS_VERSION="0.25.0"
 ARG SCRIPT_FOLDER="/scripts"
 ARG WORKSPACE="/workspace"
 
@@ -60,7 +60,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Install Go
 RUN cd "$DOWNLOAD_FOLDER" && \
     # Get checksum from Go download site
-    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep go1.17.5.linux-amd64.tar.gz | tail -1 | awk '{print $6}'` && \
+    GO_CHECKSUM=`w3m https://go.dev/dl/ | grep "$GO" | tail -1 | awk '{print $6}'` && \
     # create checksum file
     echo "$GO_CHECKSUM $GO" > "$GO.sha256sum" && \
     # download Go
