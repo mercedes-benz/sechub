@@ -73,23 +73,23 @@ spec:
                       value: "{{ .Values.storage.sharedVolume.upload.dir }}"
                     {{- end}}
                   ports:
-                    - containerPort: 8444
+                    - name: pds-https-port
+                      containerPort: 8444
                   startupProbe:
                     httpGet:
                       scheme: HTTPS
                       path: /api/anonymous/check/alive
-                      port: 8444
+                      port: pds-https-port
                     periodSeconds: 1
-                    # wait 300s = 5 mins before retrying
+                    # wait 1s x 300 = 5 mins before retrying
                     failureThreshold: 300
                     successThreshold: 1
                     timeoutSeconds: 1
-                    initialDelaySeconds: 1
                   livenessProbe:
                     httpGet:
                       scheme: HTTPS
                       path: /api/anonymous/check/alive
-                      port: 8444
+                      port: pds-https-port
                     periodSeconds: 5
                     failureThreshold: 3
                     successThreshold: 1

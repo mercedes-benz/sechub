@@ -2,12 +2,12 @@
 
 apiVersion: v2
 name: pds-gosec
-description: The GoSec + PDS as Helm chart for Kubernetes
+description: SecHub PDS + GoSec as Helm chart for Kubernetes
+
+type: application
 
 maintainers:
   - name: Jeremias Eppler
-
-type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
