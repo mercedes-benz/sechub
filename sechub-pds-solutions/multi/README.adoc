@@ -1,32 +1,37 @@
 // SPDX-License-Identifier: MIT
 
 :toc:
+:numbered:
 
 = Multiple Tools + PDS
 
-WARNING: At the moment, SecHub SERECO is not able to process any of the resulting reports.
+WARNING: As of 14th of January 2020, SecHub SERECO is not able to process any of the resulting reports.
 
 Run multiple free and open source static application security testing tools together with the https://daimler.github.io/sechub/latest/sechub-product-delegation-server.html[Product Delegation Server (PDS)]. A list of the included tools can be found below.
 
 [[multiple-tools]]
 |===
-|Name |Supported Languages |License
+|Name |Supported Languages |License |PDS_PRODUCT_IDENTFIER
 
 |https://github.com/PyCQA/bandit[Bandit]
 |Python3
 |Apache-2.0
+|PDS_BANDIT
 
 |https://dwheeler.com/flawfinder/[Flawfinder]
 |C/C++
 |GPL v2
+|PDS_FLAWFINDER
 
 |https://github.com/MobSF/mobsfscan[mobsfscan]
 |Java, Kotlin, Swift, Objective-C
 |LGPL-3.0
+|PDS_MOBSFSCAN
 
 |https://github.com/ajinabraham/njsscan[njsscan]
 |NodeJS (JavaScript) 
 |LGPL-3.0
+|PDS_NJSSCAN
 |===
 
 The combination of the tools and PDS makes it possible to run both inside a Kubernetes cluser or virtual machines.
@@ -43,7 +48,7 @@ Docker and Docker-Compose need to be installed:
 
 . https://docs.docker.com/engine/install/[Install Docker]
 
-. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Run docker as non Root user]
+. Linux: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user[Use Docker as non Root user]
 
 . https://docs.docker.com/compose/install/[Install Docker-Compose]
 
@@ -169,7 +174,7 @@ Date: Tue, 08 Jun 2021 16:38:02 GMT
 . Download the job result
 +
 ----
-$ ./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
+./pds-api.sh job_result "8d4236cf-b512-40bc-bb70-c247fa4c9c37"
 ----
 +
 [NOTE]

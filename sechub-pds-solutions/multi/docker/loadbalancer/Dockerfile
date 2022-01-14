@@ -36,7 +36,6 @@ RUN touch /var/run/nginx.pid && \
     chown -R "$USER:$USER" /certificates /var/log/nginx /var/lib/nginx /etc/nginx/conf.d /var/run/nginx.pid
 
 # Copy configuration script
-RUN rm /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy run script into container

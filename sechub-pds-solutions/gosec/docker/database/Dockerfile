@@ -2,7 +2,7 @@
 
 FROM ubuntu:20.04
 
-ENV POSTGRE_CONFIG_FOLDER="/etc/postgresql/12/main/"
+ARG POSTGRES_CONFIG_FOLDER="/etc/postgresql/12/main/"
 
 # Install PostgreSQL
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -12,8 +12,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get --assume-yes clean
 
 # PostgreSQL configuration files
-COPY pg_hba.conf  "$POSTGRE_CONFIG_FOLDER/pg_hba.conf"
-COPY postgresql.conf "$POSTGRE_CONFIG_FOLDER/postgresql.conf"
+COPY pg_hba.conf  "$POSTGRES_CONFIG_FOLDER/pg_hba.conf"
+COPY postgresql.conf "$POSTGRES_CONFIG_FOLDER/postgresql.conf"
 
 # Copy run script into container
 COPY run.sh /run.sh

@@ -19,7 +19,7 @@ fi
 
 if [[ -z "$BASE_IMAGE" ]]
 then
-    BASE_IMAGE="ubuntu:focal"
+    BASE_IMAGE="ubuntu:20.04"
 fi
 
 echo ">> Base image: $BASE_IMAGE"

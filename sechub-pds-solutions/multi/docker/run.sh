@@ -57,18 +57,18 @@ localserver () {
     java $JAVA_DEBUG_OPTIONS $database_options \
         $storage_options \
         -Dfile.encoding=UTF-8 \
-        -Dspring.profiles.active=$profiles \
-        -DsecHub.pds.admin.userid=$ADMIN_USERID \
-        -Dsechub.pds.admin.apitoken=$ADMIN_APITOKEN \
-        -DsecHub.pds.techuser.userid=$TECHUSER_USERID \
-        -Dsechub.pds.techuser.apitoken=$TECHUSER_APITOKEN \
+        -Dspring.profiles.active="$profiles" \
+        -DsecHub.pds.admin.userid="$ADMIN_USERID" \
+        -Dsechub.pds.admin.apitoken="$ADMIN_APITOKEN" \
+        -DsecHub.pds.techuser.userid="$TECHUSER_USERID" \
+        -Dsechub.pds.techuser.apitoken="$TECHUSER_APITOKEN" \
         -Dsechub.pds.workspace.rootfolder=/workspace \
         -Dsechub.pds.config.file=/pds/pds-config.json \
-        -Dspring.servlet.multipart.max-file-size=$PDS_MAX_FILE_UPLOAD_SIZE \
-        -Dspring.servlet.multipart.max-request-size=$PDS_MAX_FILE_UPLOAD_SIZE \
+        -Dspring.servlet.multipart.max-file-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
+        -Dspring.servlet.multipart.max-request-size="$PDS_MAX_FILE_UPLOAD_SIZE" \
         -Dserver.port=8444 \
         -Dserver.address=0.0.0.0 \
-        -jar /pds/sechub-pds-$PDS_VERSION.jar
+        -jar "/pds/sechub-pds-$PDS_VERSION.jar"
     
     keep_container_alive_or_exit
 }

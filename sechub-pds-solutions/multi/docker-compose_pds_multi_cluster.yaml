@@ -13,7 +13,7 @@ services:
         networks:
             - "internal"
         volumes:
-            - "shared_volume:/shared_volumes/uploads"
+            - "shared_volume:/shared_volumes/uploads:rw"
         depends_on: 
             - database
 
