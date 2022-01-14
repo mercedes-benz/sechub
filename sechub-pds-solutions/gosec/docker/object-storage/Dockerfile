@@ -1,37 +1,39 @@
 # SPDX-License-Identifier: MIT
 
-FROM alpine:3.15
+FROM ubuntu:20.04
 
+ENV STORAGE_USER=seaweedfs
 ENV STORAGE_FOLDER=/storage
 ENV SEAWEEDFS_VERSION=2.78
 ENV SEAWEEDFS_CHECKSUM=eec03dadc81ffa8ee39c62f077ee8b35
-ENV USER=seaweedfs
 ENV BUCKET_FOLDER=/buckets
 
 # non-root user
 # using fixed group and user ids
-RUN addgroup --gid 9000 "$USER" \
-     && adduser --uid 9000 --disabled-password --ingroup "$USER" "$USER"
+RUN addgroup --gid 9000 "$STORAGE_USER" \
+     && adduser --uid 9000 --disabled-password --ingroup "$STORAGE_USER" "$STORAGE_USER"
 
 # create storage directory
 RUN mkdir "$STORAGE_FOLDER" && \
-    chown -R "$USER" "$STORAGE_FOLDER" && \
+    chown -R "$STORAGE_USER" "$STORAGE_FOLDER" && \
     chmod u+rxw "$STORAGE_FOLDER"
 
 # copy run script into container
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-# upgrade system, install s3cmd server and client
-RUN apk update --no-cache && \
-    apk add --no-cache wget
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get --assume-yes upgrade  && \
+    apt-get --assume-yes install wget && \
+    apt-get --assume-yes clean
 
 RUN mkdir -p $BUCKET_FOLDER && \
-    chown -R "$USER:$USER" /buckets
+    chown -R "$STORAGE_USER:$STORAGE_USER" /buckets
 
 RUN cd /tmp && \
     # download seaweedfs
-    wget "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz" && \
+    wget --no-verbose "https://github.com/chrislusf/seaweedfs/releases/download/$SEAWEEDFS_VERSION/linux_amd64.tar.gz" && \
     # create checksum file
     echo "$SEAWEEDFS_CHECKSUM  linux_amd64.tar.gz" > linux_amd64.tar.gz.md5sum && \
     # verify checksum
@@ -40,6 +42,6 @@ RUN cd /tmp && \
     tar -xvzf "linux_amd64.tar.gz" -C "/usr/local/bin/"
 
 # switch from root to non-root user
-USER $USER
+USER $STORAGE_USER
 
 CMD ["/run.sh"]

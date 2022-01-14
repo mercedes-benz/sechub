@@ -150,6 +150,12 @@ do
     status=`$pds_api job_status "$jobUUID" | jq '.state' | tr -d \"`
     echo "Job status: $status"
 
+    if (( $retries % 10 == 0 ))
+    then
+        printf "\n# Job output stream\n"
+        "$pds_api" job_stream_output "$jobUUID"
+    fi
+
     ((retries--))
     sleep 0.5s
 done

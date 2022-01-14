@@ -40,13 +40,29 @@ public class PDSAnonymousCheckAliveRestControllerMockTest {
 	private MockMvc mockMvc;
 
 	@Test
-    public void a_get_execution_status_calls_executionService_and_returns_result() throws Exception {
+    public void calling_check_alive_head_returns_HTTP_200() throws Exception {
         /* prepare */
         
         /* execute + test */
         /* @formatter:off */
         this.mockMvc.perform(
                 head(https(PORT_USED).pds().buildAnonymousCheckAlive())
+                ).
+                    andExpect(status().isOk()
+                );
+
+        /* @formatter:on */
+
+    }
+	
+    @Test
+    public void calling_check_alive_get_returns_HTTP_200() throws Exception {
+        /* prepare */
+        
+        /* execute + test */
+        /* @formatter:off */
+        this.mockMvc.perform(
+                get(https(PORT_USED).pds().buildAnonymousCheckAlive())
                 ).
                     andExpect(status().isOk()
                 );
