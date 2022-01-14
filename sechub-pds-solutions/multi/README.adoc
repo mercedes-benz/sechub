@@ -225,7 +225,7 @@ The cluster uses a shared volume defined in `docker-compose`. Docker allows to c
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer and one or more PDS server.
 
-image::cluster_shared_volume.svg[Components of cluster with shared volume]
+image::../shared/media/cluster_shared_volume.svg[Components of cluster with shared volume]
 
 ===== Automatic
 
@@ -259,7 +259,7 @@ The cluster uses an object storage to store files. The cluster uses https://gith
 
 The cluster consists of a PostgreSQL database, a Nginx loadbalancer, a SeaweedFS object storage and one or more PDS server.
 
-image::cluster_object_storage.svg[Components of cluster with object storage]
+image::../shared/media/cluster_object_storage.svg[Components of cluster with object storage]
 
 ===== Automatic
 
