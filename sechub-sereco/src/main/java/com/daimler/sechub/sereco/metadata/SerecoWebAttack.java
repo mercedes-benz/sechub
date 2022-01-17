@@ -2,9 +2,10 @@ package com.daimler.sechub.sereco.metadata;
 
 import java.util.Objects;
 
-public class SerecoAttack {
+public class SerecoWebAttack {
+    
     String vector;
-    SerecoEvidence evicence;
+    SerecoWebEvidence evicence;
 
     public String getVector() {
         return vector;
@@ -14,11 +15,11 @@ public class SerecoAttack {
         this.vector = vector;
     }
 
-    public SerecoEvidence getEvicence() {
+    public SerecoWebEvidence getEvicence() {
         return evicence;
     }
 
-    public void setEvicence(SerecoEvidence evicence) {
+    public void setEvicence(SerecoWebEvidence evicence) {
         this.evicence = evicence;
     }
 
@@ -38,8 +39,13 @@ public class SerecoAttack {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SerecoAttack other = (SerecoAttack) obj;
+        SerecoWebAttack other = (SerecoWebAttack) obj;
         return Objects.equals(evicence, other.evicence) && Objects.equals(vector, other.vector);
+    }
+
+    @Override
+    public String toString() {
+        return "SerecoWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evicence != null ? "evicence=" + evicence : "") + "]";
     }
 
 }

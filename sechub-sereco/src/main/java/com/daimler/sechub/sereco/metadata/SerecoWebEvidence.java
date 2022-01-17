@@ -2,9 +2,10 @@ package com.daimler.sechub.sereco.metadata;
 
 import java.util.Objects;
 
-public class SerecoEvidence {
+public class SerecoWebEvidence {
+    
     String snippet;
-    long bodyLocation;
+    SerecoWebBodyLocation bodyLocation;
 
     public String getSnippet() {
         return snippet;
@@ -14,11 +15,11 @@ public class SerecoEvidence {
         this.snippet = snippet;
     }
 
-    public long getBodyLocation() {
+    public SerecoWebBodyLocation getBodyLocation() {
         return bodyLocation;
     }
 
-    public void setBodyLocation(long bodyLocation) {
+    public void setBodyLocation(SerecoWebBodyLocation bodyLocation) {
         this.bodyLocation = bodyLocation;
     }
 
@@ -38,8 +39,15 @@ public class SerecoEvidence {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SerecoEvidence other = (SerecoEvidence) obj;
+        SerecoWebEvidence other = (SerecoWebEvidence) obj;
         return bodyLocation == other.bodyLocation && Objects.equals(snippet, other.snippet);
     }
+
+    @Override
+    public String toString() {
+        return "SerecoWebEvidence [" + (snippet != null ? "snippet=" + snippet + ", " : "") + "bodyLocation=" + bodyLocation + "]";
+    }
+    
+    
     
 }

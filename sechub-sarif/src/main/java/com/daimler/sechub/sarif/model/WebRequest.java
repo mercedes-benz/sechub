@@ -3,7 +3,7 @@ package com.daimler.sechub.sarif.model;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class WebRequest {
+public class WebRequest extends SarifObject{
 
     private String protocol;
     private String version;

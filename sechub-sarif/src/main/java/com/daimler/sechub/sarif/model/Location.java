@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "physicalLocation" })
-public class Location {
+public class Location extends SarifObject {
     private PhysicalLocation physicalLocation;
 
     public Location() {

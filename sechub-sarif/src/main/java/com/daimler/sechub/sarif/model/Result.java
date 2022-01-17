@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "ruleId", "level", "message", "locations", "properties" })
-public class Result {
+public class Result extends SarifObject{
     private String ruleId;
     private Message message;
     private Level level;
@@ -29,9 +29,6 @@ public class Result {
     private WebResponse webResponse;
     private WebRequest webRequest;
     
-
-    private PropertyBag properties = new PropertyBag();
-
     public Result() {
         this(null, null);
     }
@@ -100,14 +97,6 @@ public class Result {
         this.locations = locations;
     }
 
-    public PropertyBag getProperties() {
-        return properties;
-    }
-
-    public void setProperties(PropertyBag properties) {
-        this.properties = properties;
-    }
-
     public WebResponse getWebResponse() {
         return webResponse;
     }
@@ -128,12 +117,12 @@ public class Result {
     public String toString() {
         return "Result [" + (ruleId != null ? "ruleId=" + ruleId + ", " : "") + (level != null ? "level=" + level + ", " : "")
                 + (message != null ? "message=" + message + ", " : "") + (locations != null ? "locations=" + locations + ", " : "")
-                + (properties != null ? "properties=" + properties : "") + "]";
+                + (getProperties() != null ? "properties=" + getProperties() : "") + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codeflows, level, locations, message, properties, ruleId, ruleIndex, webRequest, webResponse);
+        return Objects.hash(codeflows, level, locations, message, getProperties(), ruleId, ruleIndex, webRequest, webResponse);
     }
 
     @Override
@@ -149,7 +138,7 @@ public class Result {
         }
         Result other = (Result) obj;
         return Objects.equals(codeflows, other.codeflows) && level == other.level && Objects.equals(locations, other.locations)
-                && Objects.equals(message, other.message) && Objects.equals(properties, other.properties) && Objects.equals(ruleId, other.ruleId)
+                && Objects.equals(message, other.message) && Objects.equals(getProperties(), other.getProperties()) && Objects.equals(ruleId, other.ruleId)
                 && ruleIndex == other.ruleIndex && Objects.equals(webRequest, other.webRequest) && Objects.equals(webResponse, other.webResponse);
     }
 

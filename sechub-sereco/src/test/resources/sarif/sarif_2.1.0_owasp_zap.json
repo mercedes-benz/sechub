@@ -18,8 +18,7 @@
                         }
                      },
                      "properties": {
-                         "attack": "<\/p><script>alert(1);<\/script><p>",
-                         "evidence": "<\/p><script>alert(1);<\/script><p>"
+                         "attack": "<\/p><script>alert(1);<\/script><p>"
                      }
                   }
                ],
@@ -82,13 +81,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "script-src 'self'"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "script-src 'self'"
+                         "attack": ""
                      }
                   }
                ],
@@ -148,13 +146,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "script-src 'self'"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "script-src 'self'"
+                         "attack": ""
                      }
                   }
                ],
@@ -216,13 +213,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "script-src 'self'"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "script-src 'self'"
+                         "attack": ""
                      }
                   }
                ],
@@ -284,13 +280,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "script-src 'self'"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "script-src 'self'"
+                         "attack": ""
                      }
                   }
                ],
@@ -352,13 +347,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -418,13 +412,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -486,13 +479,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -554,13 +546,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -622,13 +613,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -687,13 +677,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -753,13 +742,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: locale"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: locale"
+                         "attack": ""
                      }
                   }
                ],
@@ -823,13 +811,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: JSESSIONID"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: JSESSIONID"
+                         "attack": ""
                      }
                   }
                ],
@@ -891,13 +878,12 @@
                         "region": {
                            "startLine": 1, 
                            "snippet": {
-                               "text": ""
+                               "text": "Set-Cookie: JSESSIONID"
                            }
                         }
                      },
                      "properties": {
-                         "attack": "",
-                         "evidence": "Set-Cookie: JSESSIONID"
+                         "attack": ""
                      }
                   }
                ],

@@ -6,6 +6,7 @@ public class SerecoWeb {
 
     SerecoWebRequest request = new SerecoWebRequest();
     SerecoWebResponse response = new SerecoWebResponse();
+    SerecoWebAttack attack = new SerecoWebAttack();
 
     public SerecoWebRequest getRequest() {
         return request;
@@ -13,6 +14,10 @@ public class SerecoWeb {
 
     public SerecoWebResponse getResponse() {
         return response;
+    }
+    
+    public SerecoWebAttack getAttack() {
+        return attack;
     }
 
     @Override
@@ -37,7 +42,17 @@ public class SerecoWeb {
 
     @Override
     public String toString() {
-        return "SerecoWeb [" + (request != null ? "\n>request=" + request + ", " : "") + (response != null ? "\n>response=" + response : "") + "]";
+        /* @formatter:off */
+        return "SerecoWeb [" 
+                + (attack != null ? "\n"
+                + ">attack=" + attack + ", " : "") 
+        
+                + (request != null ? "\n"
+                + ">request=" + request + ", " : "") 
+                
+                + (response != null ? "\n"
+                + ">response=" + response : "") + "]";
+        /* @formatter:on */
     }
 
 }

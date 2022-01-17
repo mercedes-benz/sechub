@@ -14,9 +14,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "startLine", "startColumn" })
-public class Region {
+public class Region extends SarifObject{
     private int startLine;
     private int startColumn;
+    private ArtifactContent snippet;
 
     public Region() {
     }
@@ -77,6 +78,19 @@ public class Region {
         }
         this.startColumn = startColumn;
     }
+    
+    
+    /**
+     * Set snippet property which is artifactContent object - see https://docs.oasis-open.org/sarif/sarif/v2.1.0/csprd01/sarif-v2.1.0-csprd01.html#_Toc10541136
+     * @param snippet
+     */
+    public void setSnippet(ArtifactContent snippet) {
+        this.snippet = snippet;
+    }
+    
+    public ArtifactContent getSnippet() {
+        return snippet;
+    }
 
     @Override
     public String toString() {
@@ -99,4 +113,5 @@ public class Region {
         Region other = (Region) obj;
         return startColumn == other.startColumn && startLine == other.startLine;
     }
+
 }

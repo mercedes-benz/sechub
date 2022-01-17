@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class ReportingDescriptorReference {
+public class ReportingDescriptorReference extends SarifObject{
 
     private String id;
     private String guid;

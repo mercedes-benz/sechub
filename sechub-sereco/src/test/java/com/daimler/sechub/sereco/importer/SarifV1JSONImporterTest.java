@@ -181,13 +181,17 @@ class SarifV1JSONImporterTest {
                     cwe(79).
                     and().
                 withSeverity(SerecoSeverity.HIGH).
+                withScanType(ScanType.CODE_SCAN).
                 withCodeLocation("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
                     calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
                     calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",41,0).
                     calling("securibench-micro/src/securibench/micro/aliasing/Aliasing1.java",45,0).
                     done().
                 withType("Cross-site scripting").
-                withDescriptionContaining("Untrusted user-supplied data").
+                withDescriptionContaining("XSS: Printing \"str\" to an HTML page allows cross-site scripting, because it was not properly sanitized for context HTML PCDATA block.\n"
+                        + "Remediation Advice: Perform the following escaping in the following order to guard against cross-site scripting attacks with Java.\n"
+                        + "\n"
+                        + "For example: \"Escape.html(str)\"").
             isContained();
         
         /* @formatter:on */
@@ -324,7 +328,7 @@ class SarifV1JSONImporterTest {
         SerecoVulnerability vulnerability = vulnerabilities.get(0);
 
         /* test */
-        assertEquals("Checks for XSS in calls to content_tag.", vulnerability.getDescription());
+        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.", vulnerability.getDescription());
     }
 
     @Test
@@ -354,7 +358,7 @@ class SarifV1JSONImporterTest {
         assertNotNull(codeInfo);
         assertEquals("BRAKE0102", vulnerability.getType()); // brakeman does not provide a short description, so fallback to id (which must
                                                             // be available)
-        assertEquals("Checks for XSS in calls to content_tag.", vulnerability.getDescription());
+        assertEquals("Rails 5.0.0 `content_tag` does not escape double quotes in attribute values (CVE-2016-6316). Upgrade to Rails 5.0.0.1.", vulnerability.getDescription());
         assertEquals("Gemfile.lock", codeInfo.getLocation());
         assertEquals(115, codeInfo.getLine().intValue());
         assertEquals(32, vulnerabilities.size());

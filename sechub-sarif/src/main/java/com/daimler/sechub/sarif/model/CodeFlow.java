@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author Albert Tregnaghi
  *
  */
-public class CodeFlow {
+public class CodeFlow extends SarifObject{
 
     private Message message;
 

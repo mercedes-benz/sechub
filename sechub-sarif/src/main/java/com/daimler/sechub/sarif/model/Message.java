@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "text" })
-public class Message {
+public class Message extends SarifObject{
     private String text;
 
     public Message() {

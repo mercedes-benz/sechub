@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  *
  */
 @JsonPropertyOrder({ "uri", "uriBaseId" })
-public class ArtifactLocation {
+public class ArtifactLocation extends SarifObject{
     private String uri;
     private String uriBaseId;
 

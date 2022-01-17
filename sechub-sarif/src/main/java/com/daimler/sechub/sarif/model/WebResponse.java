@@ -3,7 +3,7 @@ package com.daimler.sechub.sarif.model;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class WebResponse {
+public class WebResponse extends SarifObject {
 
     private int statusCode;
     private String reasonPhrase;
