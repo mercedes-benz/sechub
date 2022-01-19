@@ -14,6 +14,7 @@ dependencies {
 	
 	testCompile library.junit
 	testCompile library.mockito
+	testCompile library.mockito_inline
     testCompile library.hamcrest
 }
 

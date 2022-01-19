@@ -5,7 +5,7 @@ services:
     pds-gosec:
         build:
             args:
-                - BASE_IMAGE=ubuntu:focal
+                - BASE_IMAGE=ubuntu:20.04
             context: docker/
             dockerfile: GoSec-Ubuntu.dockerfile
         env_file:
@@ -51,6 +51,8 @@ services:
                 ipv4_address: 10.42.43.7
         ports:
             - "127.0.0.1:9000:9000"
+            - "127.0.0.1:9333:9333"
+            - "127.0.0.1:8080:8080"
 
 networks:
   internal:

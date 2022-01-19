@@ -9,6 +9,7 @@ dependencies {
 
     compile library.junit
     compile library.mockito
+    compile library.mockito_inline
     compile library.hamcrest
     compile library.slf4j
 

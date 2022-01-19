@@ -44,11 +44,11 @@ jobs:
       - name: Build CLI
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo
 
-      - name: Build Server
+      - name: Build Server, DAUI and generate OpenAPI file
         run: ./gradlew ensureLocalhostCertificate build generateOpenapi buildDeveloperAdminUI -x :sechub-integrationtest:test -x :sechub-cli:build
 
-      - name: Generate OpenAPI Java client
-        run: ./gradlew :sechub-client-java:buildJavaClient
+      - name: Generate and build API Java
+        run: ./gradlew :sechub-api-java:buildAPIJava
 
       - name: Integration test
         run: ./gradlew integrationtest
