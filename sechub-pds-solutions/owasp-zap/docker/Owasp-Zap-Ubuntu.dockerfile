@@ -16,11 +16,10 @@ ENV MOCK_FOLDER="$SCRIPT_FOLDER/mocks"
 ENV DOWNLOAD_FOLDER="/downloads"
 
 # Other
-ENV USER="zap"
+ARG USER="zap"
 
 # PDS
-ENV PDS_VERSION=0.24.0
-ARG PDS_CHECKSUM="ecc69561109ee98a57a087fd9e6a4980a38ac72d07467d6c69579c83c16b3255"
+ENV PDS_VERSION=0.25.0
 
 # OWASP ZAP
 ARG OWASP_ZAP_CHECKSUM="abbfe9ad057b3511043a0f0317d5f91d914145ada5b102a5708f8af6a5e191f8"
@@ -30,8 +29,11 @@ ARG OWASP_ZAP_VERSION=2.11.1
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
-# Create download folder
-RUN mkdir "$DOWNLOAD_FOLDER"
+# Update image and install dependencies
+ENV DEBIAN_FRONTEND noninteractive
+
+# Create folders & change owner of folders
+RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR"
 
 # non-root user
 # using fixed group and user ids
@@ -39,17 +41,13 @@ RUN mkdir "$DOWNLOAD_FOLDER"
 RUN groupadd --gid 2323 "$USER" \
      && useradd --uid 2323 --no-log-init --create-home --gid "$USER" "$USER"
 
-# Update image and install dependencies
-ENV DEBIAN_FRONTEND noninteractive
-
 RUN apt-get update && \
     apt-get upgrade --assume-yes && \
     apt-get install --assume-yes wget openjdk-11-jre firefox firefox-geckodriver && \
     apt-get clean
 
 # Install OWASP ZAP
-RUN mkdir --parents "$TOOL_FOLDER" && \
-	cd "$TOOL_FOLDER" && \
+RUN cd "$TOOL_FOLDER" && \
 	# download latest release of owasp zap
 	wget https://github.com/zaproxy/zaproxy/releases/download/v$OWASP_ZAP_VERSION/zaproxy_$OWASP_ZAP_VERSION-1_all.deb && \
 	# verify that the checksum and the checksum of the file are same
@@ -58,13 +56,13 @@ RUN mkdir --parents "$TOOL_FOLDER" && \
 	# remove zaproxy deb package
 	rm zaproxy_$OWASP_ZAP_VERSION-1_all.deb
 	
-# Install the Product Delegation Server (PDS)
-RUN mkdir --parents "$PDS_FOLDER" && \
-    cd "$PDS_FOLDER" && \
-    # create checksum file
-    echo "$PDS_CHECKSUM  sechub-pds-$PDS_VERSION.jar" > sechub-pds-$PDS_VERSION.jar.sha256sum && \
+
+# Install the SecHub Product Delegation Server (PDS)
+RUN cd "$PDS_FOLDER" && \
+    # download checksum file
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar.sha256sum" && \
     # download pds
-    wget "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
+    wget --no-verbose "https://github.com/Daimler/sechub/releases/download/v$PDS_VERSION-pds/sechub-pds-$PDS_VERSION.jar" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
@@ -81,14 +79,11 @@ RUN chmod +x $SCRIPT_FOLDER/owasp-zap-mock.sh
 # OWASP ZAP wrapper
 COPY owaspzap-wrapper.jar $TOOL_FOLDER/owaspzap-wrapper.jar
 
-# Create shared volumes and upload dir
-RUN mkdir --parents "$SHARED_VOLUME_UPLOAD_DIR"
-
 # Copy PDS configfile
-COPY pds-config.json /$PDS_FOLDER/pds-config.json
+COPY pds-config.json "$PDS_FOLDER/pds-config.json"
 
 # Copy zap addon download urls into container
-COPY zap-addons.txt $TOOL_FOLDER/zap-addons.txt
+COPY zap-addons.txt "$TOOL_FOLDER/zap-addons.txt"
 
 # Copy run script into container
 COPY run.sh /run.sh
@@ -106,7 +101,6 @@ USER "$USER"
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
-
 RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
     cd "/home/$USER/.ZAP/plugin" && \
     wget --input-file="$TOOL_FOLDER/zap-addons.txt"
