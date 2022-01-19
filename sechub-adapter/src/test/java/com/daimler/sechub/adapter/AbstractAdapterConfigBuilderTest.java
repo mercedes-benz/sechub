@@ -44,35 +44,36 @@ public class AbstractAdapterConfigBuilderTest {
 
     }
 
-    @Test
-    public void rootURIShrinker_is_used_when_building() throws Exception {
-
-        /* prepare */
-        URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
-        TestAdapterConfigBuilder builderToTest = new TestAdapterConfigBuilder() {
-            protected URIShrinkSupport createURIShrinker() {
-                return shrinker;
-            }
-        };
-
-        builderToTest.setProductBaseUrl("baseUrl");
-        Set<URI> targetURIs = new LinkedHashSet<>();
-        targetURIs.add(new URI("http://www.mycoolstuff.com/app1"));
-        targetURIs.add(new URI("http://www.mycoolstuff.com/app2"));
-
-        Set<URI> mockedShrink = new LinkedHashSet<>();
-        mockedShrink.add(new URI("http://www.shrinked.com"));
-
-        when(shrinker.shrinkToRootURIs(eq(targetURIs))).thenReturn(mockedShrink);
-
-        /* execute */
-        TestAdapterConfigInterface config = builderToTest.setTargetURIs(targetURIs).build();
-
-        /* test */
-        verify(shrinker).shrinkToRootURIs(eq(targetURIs));
-        assertEquals(mockedShrink, config.getRootTargetURIs());
-
-    }
+    //TODO webscan and infrascan test
+//    @Test
+//    public void rootURIShrinker_is_used_when_building() throws Exception {
+//
+//        /* prepare */
+//        URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
+//        TestAdapterConfigBuilder builderToTest = new TestAdapterConfigBuilder() {
+//            protected URIShrinkSupport createURIShrinker() {
+//                return shrinker;
+//            }
+//        };
+//
+//        builderToTest.setProductBaseUrl("baseUrl");
+//        Set<URI> targetURIs = new LinkedHashSet<>();
+//        targetURIs.add(new URI("http://www.mycoolstuff.com/app1"));
+//        targetURIs.add(new URI("http://www.mycoolstuff.com/app2"));
+//
+//        Set<URI> mockedShrink = new LinkedHashSet<>();
+//        mockedShrink.add(new URI("http://www.shrinked.com"));
+//
+//        when(shrinker.shrinkToRootURIs(eq(targetURIs))).thenReturn(mockedShrink);
+//
+//        /* execute */
+//        TestAdapterConfigInterface config = builderToTest.setTargetURIs(targetURIs).build();
+//
+//        /* test */
+//        verify(shrinker).shrinkToRootURIs(eq(targetURIs));
+//        assertEquals(mockedShrink, config.getRootTargetURIs());
+//
+//    }
 
     @Test
     public void when_projectId_is_set_its_also_in_configuration() {
@@ -84,65 +85,69 @@ public class AbstractAdapterConfigBuilderTest {
 
     }
 
-    @Test
-    public void when_no_target_url_set_the_config_has_null_as_target_uri_and_string_and_an_empty_list_of_uris() throws Exception {
+    //TODO implement in web and infrascan
+//    @Test
+//    public void when_no_target_url_set_the_config_has_null_as_target_uri_and_string_and_an_empty_list_of_uris() throws Exception {
+//
+//        /* execute */
+//        TestAdapterConfigInterface configToTest = validConfigAnd().build();
+//
+//        /* test */
+//        assertNull(configToTest.getTargetURI());
+//        assertNull(configToTest.getTargetAsString());
+//
+//        assertNotNull(configToTest.getTargetURIs());
+//        assertTrue(configToTest.getTargetURIs().isEmpty());
+//
+//    }
 
-        /* execute */
-        TestAdapterConfigInterface configToTest = validConfigAnd().build();
+    //TODO infrascan test
+//    @Test
+//    public void when_no_target_ips_set_the_config_has_an_empty_list_of_ips() throws Exception {
+//
+//        /* execute */
+//        TestAdapterConfigInterface configToTest = validConfigAnd().build();
+//
+//        /* test */
+//        assertNotNull(configToTest.getTargetIPs());
+//        assertTrue(configToTest.getTargetIPs().isEmpty());
+//
+//    }
 
-        /* test */
-        assertNull(configToTest.getTargetURI());
-        assertNull(configToTest.getTargetAsString());
+  //TODO infrascan test
+//    @Test
+//    public void when_one_target_ips_set_the_config_has_one_inet_adress_entry() throws Exception {
+//
+//        /* execute */
+//        TestAdapterConfigInterface configToTest = validConfigAnd().setTargetIP(InetAddress.getByName("192.168.1.1")).build();
+//
+//        /* test */
+//        assertNotNull(configToTest.getTargetIPs());
+//        assertFalse(configToTest.getTargetIPs().isEmpty());
+//        assertTrue(configToTest.getTargetIPs().contains(InetAddress.getByName("192.168.1.1")));
+//
+//    }
 
-        assertNotNull(configToTest.getTargetURIs());
-        assertTrue(configToTest.getTargetURIs().isEmpty());
-
-    }
-
-    @Test
-    public void when_no_target_ips_set_the_config_has_an_empty_list_of_ips() throws Exception {
-
-        /* execute */
-        TestAdapterConfigInterface configToTest = validConfigAnd().build();
-
-        /* test */
-        assertNotNull(configToTest.getTargetIPs());
-        assertTrue(configToTest.getTargetIPs().isEmpty());
-
-    }
-
-    @Test
-    public void when_one_target_ips_set_the_config_has_one_inet_adress_entry() throws Exception {
-
-        /* execute */
-        TestAdapterConfigInterface configToTest = validConfigAnd().setTargetIP(InetAddress.getByName("192.168.1.1")).build();
-
-        /* test */
-        assertNotNull(configToTest.getTargetIPs());
-        assertFalse(configToTest.getTargetIPs().isEmpty());
-        assertTrue(configToTest.getTargetIPs().contains(InetAddress.getByName("192.168.1.1")));
-
-    }
-
-    @Test
-    public void when_one_target_uri_is_set__target_uri_is_as_expected_and_list_is_1() throws Exception {
-
-        /* prepare */
-        String uriString = "http://www.my.cool.stuff.com";
-        URI uri = new URI(uriString);
-        /* execute */
-
-        TestAdapterConfigInterface configToTest = validConfigAnd().setTargetURIs(Collections.singleton(uri)).build();
-
-        /* test */
-        assertEquals(uri, configToTest.getTargetURI());
-        assertEquals(uriString, configToTest.getTargetAsString());
-
-        assertNotNull(configToTest.getTargetURIs());
-        assertEquals(1, configToTest.getTargetURIs().size());
-
-    }
-
+    // TODO implement in infra and webscan
+//    @Test
+//    public void when_one_target_uri_is_set__target_uri_is_as_expected_and_list_is_1() throws Exception {
+//
+//        /* prepare */
+//        String uriString = "http://www.my.cool.stuff.com";
+//        URI uri = new URI(uriString);
+//        /* execute */
+//
+//        TestAdapterConfigInterface configToTest = validConfigAnd().setTargetURIs(Collections.singleton(uri)).build();
+//
+//        /* test */
+//        assertEquals(uri, configToTest.getTargetURI());
+//        assertEquals(uriString, configToTest.getTargetAsString());
+//
+//        assertNotNull(configToTest.getTargetURIs());
+//        assertEquals(1, configToTest.getTargetURIs().size());
+//
+//    }
+    
     @Test
     public void when_target_uri_is_set_by_string__target_uri_is_as_expected_and_list_is_1() throws Exception {
         /* prepare */

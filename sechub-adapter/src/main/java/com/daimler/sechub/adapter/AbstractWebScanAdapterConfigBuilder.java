@@ -8,8 +8,7 @@ import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.login.ActionType;
 
-public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends AbstractWebScanAdapterConfig>
-        extends AbstractAdapterConfigBuilder<B, C> {
+public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends WebScanAdapterConfig> {
 
     private LoginBuilder currentLoginBuilder;
     private SecHubTimeUnitData maxScanDuration;

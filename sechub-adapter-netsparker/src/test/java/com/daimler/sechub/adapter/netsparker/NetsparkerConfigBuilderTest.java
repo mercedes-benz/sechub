@@ -4,10 +4,6 @@ package com.daimler.sechub.adapter.netsparker;
 import static org.junit.Assert.*;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,52 +25,54 @@ public class NetsparkerConfigBuilderTest {
 	@Rule
     public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
-	@Test
-	public void uris_with_different_roots_are_not_accepted() throws Exception {
-		/* prepare */
-		expectedException.expect(IllegalStateException.class);
+	//TODO: Delete test -> multiple uris are not possible anymore
+//	@Test
+//	public void uris_with_different_roots_are_not_accepted() throws Exception {
+//		/* prepare */
+//		expectedException.expect(IllegalStateException.class);
+//
+//		/* execute */
+//		Set<URI> collection = new LinkedHashSet<>();
+//		collection.add(URI.create("https://www.example1.com"));
+//		collection.add(URI.create("https://www.example2.com"));
+//
+//
+//		validConfigAnd().setTargetURIs(collection).build();
+//
+//	}
 
-		/* execute */
-		Set<URI> collection = new LinkedHashSet<>();
-		collection.add(URI.create("https://www.example1.com"));
-		collection.add(URI.create("https://www.example2.com"));
-
-
-		validConfigAnd().setTargetURIs(collection).build();
-
-	}
-
-	@Test
-	public void uris_with_different_roots_are_not_accepted_even_when_same_main_domain() throws Exception {
-		/* prepare */
-		expectedException.expect(IllegalStateException.class);
-
-		/* execute */
-		Set<URI> collection = new LinkedHashSet<>();
-		collection.add(URI.create("https://www.example1.com"));
-		collection.add(URI.create("https://other.example1.com"));
-
-
-		validConfigAnd().setTargetURIs(collection).build();
-
-	}
-
-	@Test
-	public void uris_with_same_roots_are_accepteden() throws Exception {
-
-		/* execute */
-		Set<URI> collection = new LinkedHashSet<>();
-		collection.add(URI.create("https://www.example1.com/app1"));
-		collection.add(URI.create("https://www.example1.com/app2"));
-
-		NetsparkerConfig cfg = validConfigAnd().setTargetURIs(collection).build();
-
-		/* test */
-		String websiteName = cfg.getWebsiteName();
-		assertNotNull(websiteName);
-		assertEquals("www.example1.com_default", websiteName);
-
-	}
+	   //TODO: Delete test -> multiple uris are not possible anymore
+//	@Test
+//	public void uris_with_different_roots_are_not_accepted_even_when_same_main_domain() throws Exception {
+//		/* prepare */
+//		expectedException.expect(IllegalStateException.class);
+//
+//		/* execute */
+//		Set<URI> collection = new LinkedHashSet<>();
+//		collection.add(URI.create("https://www.example1.com"));
+//		collection.add(URI.create("https://other.example1.com"));
+//
+//
+//		validConfigAnd().setTargetURIs(collection).build();
+//
+//	}
+//
+//	@Test
+//	public void uris_with_same_roots_are_accepteden() throws Exception {
+//
+//		/* execute */
+//		Set<URI> collection = new LinkedHashSet<>();
+//		collection.add(URI.create("https://www.example1.com/app1"));
+//		collection.add(URI.create("https://www.example1.com/app2"));
+//
+//		NetsparkerConfig cfg = validConfigAnd().setTargetURIs(collection).build();
+//
+//		/* test */
+//		String websiteName = cfg.getWebsiteName();
+//		assertNotNull(websiteName);
+//		assertEquals("www.example1.com_default", websiteName);
+//
+//	}
 
 	@Test
 	/* reason of fail: this is not a valid java url */
@@ -265,7 +263,7 @@ public class NetsparkerConfigBuilderTest {
 					setProductBaseUrl("https://netsparker.test.example.org").
 					setPolicyID("policyId").
 					setUser("userId").
-					setTargetURIs(Collections.singleton(URI.create("https://www.unknown.de")));
+					setTargetURI(URI.create("https://www.unknown.de"));
 		/* @formatter:on */
 	}
 

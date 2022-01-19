@@ -4,8 +4,7 @@ package com.daimler.sechub.adapter;
 import java.util.Iterator;
 import java.util.Set;
 
-public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCodeScanAdapterConfigBuilder<B, C>, C extends AbstractCodeScanAdapterConfig>
-        extends AbstractAdapterConfigBuilder<B, C> {
+public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCodeScanAdapterConfigBuilder<B, C>, C extends CodeScanAdapterConfig {
 
     private Set<String> sourceFolders;
 

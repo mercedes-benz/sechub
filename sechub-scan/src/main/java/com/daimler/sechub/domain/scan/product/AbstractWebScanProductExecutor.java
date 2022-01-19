@@ -35,6 +35,25 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		return uris;
 	}
 	
+    // FIXME jeeppler, does not overwrite -> @Override
+    protected URI resolveURIForTarget(SecHubConfiguration config) {
+        /* assert WEBSCAN configuration available */
+        Optional<SecHubWebScanConfiguration> webscan = config.getWebScan();
+        if (!webscan.isPresent()) {
+            throw new IllegalStateException("At this state there must be a webscan setup!");
+        }
+        /* Fetch URL */
+        SecHubWebScanConfiguration secHubWebScanConfiguration = webscan.get();
+        
+        URI uri = secHubWebScanConfiguration.getUri();
+        
+        if (uri == null) {
+            throw new IllegalStateException("At this state the URI must be set - validation failed!");
+        }
+
+        return uri;
+    }
+	
 	@Override
 	protected List<InetAddress> resolveInetAdressForTarget(SecHubConfiguration config) {
 		/* SecHubWebScanConfiguration configuration currently has no IPs inside, so we do not provide this */
