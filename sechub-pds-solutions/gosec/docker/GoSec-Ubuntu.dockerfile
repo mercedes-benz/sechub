@@ -36,7 +36,9 @@ RUN groupadd --gid "$GID" "$USER" && \
 
 # Create folders & change owner of folders
 RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "$DOWNLOAD_FOLDER" "MOCK_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" && \
-    chown --recursive "$USER:$USER" "$DOWNLOAD_FOLDER" "$TOOL_FOLDER" "$SCRIPT_FOLDER" "$WORKSPACE" "$SHARED_VOLUMES"
+    # Change owner and workspace and shared volumes folder
+    # the only two folders pds really needs write access to
+    chown --recursive "$USER:$USER" "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Copy mock file
 COPY mock.sarif.json "$MOCK_FOLDER"/mock.sarif.json
@@ -98,10 +100,10 @@ RUN cd "$PDS_FOLDER" && \
     # verify that the checksum and the checksum of the file are same
     sha256sum --check sechub-pds-$PDS_VERSION.jar.sha256sum
 
-# Switch from root to non-root user
-USER "$USER"
-
 # Set workspace
 WORKDIR "$WORKSPACE"
+
+# Switch from root to non-root user
+USER "$USER"
 
 CMD ["/run.sh"]

@@ -22,13 +22,16 @@ ENV PDS_VERSION=0.25.0
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 
-# Create tool, pds, shared volume and download folder
-RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE"
-
 # non-root user
 # using fixed group and user ids
 RUN groupadd --gid 2323 pds \
      && useradd --uid 2323 --no-log-init --create-home --gid pds pds
+
+# Create tool, pds, shared volume and download folder
+RUN  mkdir --parents "$TOOL_FOLDER" "$DOWNLOAD_FOLDER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR" "$WORKSPACE" && \
+    # Change owner and workspace and shared volumes folder
+    # the only two folders pds really needs write access to
+    chown --recursive pds:pds "$WORKSPACE" "$SHARED_VOLUMES"
 
 # Update image and install dependencies
 ENV DEBIAN_FRONTEND noninteractive
@@ -67,9 +70,6 @@ RUN chmod +x /run.sh
 
 # Create the PDS workspace
 WORKDIR "$WORKSPACE"
-
-# Change owner of tool, workspace and pds folder as well as /run.sh
-RUN chown --recursive pds:pds $TOOL_FOLDER $SCRIPT_FOLDER $DOWNLOAD_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
 # Switch from root to non-root user
 USER pds
