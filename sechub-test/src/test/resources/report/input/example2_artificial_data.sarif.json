@@ -1,0 +1,120 @@
+{
+  "runs" : [ {
+    "results" : [ {
+      "level" : "warning",
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "testdata.uri"
+          },
+          "region" : {
+            "startLine" : 42,
+            "snippet" : {
+              "text" : "testdata.snippet.text"
+            }
+          }
+        },
+        "properties" : {
+          "attack" : "testdata.properties.attack"
+        }
+      } ],
+      "message" : {
+        "text" : "testdata.message.text"
+      },
+      "ruleId" : "testdata.rule1.id",
+      "webRequest" : {
+        "protocol" : "testdata.webrequest.protocol",
+        "version" : "testdata.webrequest.version",
+        "target" : "testdata.webrequest.target",
+        "method" : "testdata.webrequest.method",
+        "headers" : {
+          "header1" : "testdata.headers.header1"
+        },
+        "body" : {
+            "text" : "testdata.webrequest.body.text",
+            "binary" : "testdata.webrequest.body.binary"
+         }
+      },
+      "webResponse" : {
+        "statusCode" : 12345,
+        "reasonPhrase" : "testdata.webresponse.reasonphrase",
+        "protocol" : "testdata.webresponse.protocol",
+        "version" : "testdata.webrespons.version",
+        "headers" : {
+          "header1" : "testdata.webresponse.header1"
+        },
+        "body" : {
+          "text" : "testdata.webresponse.body.text",
+          "binary" : "testdata.webresponse.body.binary"
+        },
+        "noResponseReceived" : true
+      }
+    } ],
+    "taxonomies" : [ {
+      "downloadUri" : "https://cwe.mitre.org/data/xml/cwec_v4.4.xml.zip",
+      "guid" : "6cd74e84-94e3-3d01-a45b-08ae89155abe",
+      "informationUri" : "https://cwe.mitre.org/data/published/cwe_v4.4.pdf/",
+      "isComprehensive" : true,
+      "language" : "en",
+      "minimumRequiredLocalizedDataSemanticVersion" : "4.4",
+      "name" : "CWE",
+      "organization" : "MITRE",
+      "releaseDateUtc" : "2021-03-15",
+      "shortDescription" : {
+        "text" : "The MITRE Common Weakness Enumeration"
+      },
+      "taxa" : [ {
+        "guid" : "fcacd315-2c69-1234-9f53-64346f599cfb",
+        "helpUri" : "https://cwe.mitre.org/data/definitions/614.html",
+        "id" : "614"
+      } ],
+      "version" : "4.4"
+    } ],
+    "tool" : {
+      "driver" : {
+        "guid" : "840570e4-2388-38c0-8afe-ed426f2f5199",
+        "informationUri" : "https://www.zaproxy.org/",
+        "name" : "OWASP ZAP",
+        "rules" : [ {
+          "id" : "testdata.rule1.id",
+          "defaultConfiguration" : {
+            "level" : "note"
+          },
+          "fullDescription" : {
+            "text" : "testdata.rule1.fulldescription.text"
+          },
+          "name" : "testdata.rule1.name",
+          "properties" : {
+            "references" : [ "testdata.rule1.properties.references.ref1" ],
+            "solution" : {
+              "text" : "testdata.rule1.properties.solution.text"
+            },
+            "confidence" : "medium"
+          },
+          "relationships" : [ {
+            "kinds" : [ "superset" ],
+            "target" : {
+              "guid" : "fcacd315-2c69-1234-9f53-64346f599cfb",
+              "id" : "614",
+              "toolComponent" : {
+                "guid" : "6cd74e84-94e3-3d01-a45b-08ae89155abe",
+                "name" : "CWE"
+              }
+            }
+          } ],
+          "shortDescription" : {
+            "text" : "testdata.rule1.shortdescription.text"
+          }
+        }],
+        "semanticVersion" : "Test only",
+        "supportedTaxonomies" : [ {
+          "guid" : "6cd74e84-94e3-3d01-a45b-08ae89155abe",
+          "name" : "CWE"
+        } ],
+        "version" : "Dev Build"
+      }
+    }
+  } ],
+  "$schema" : "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version" : "2.1.0"
+}

@@ -41,11 +41,6 @@ public class AssertSecHubResult {
 			return this;
 		}
 
-		public AssertSecHubFinding hasMethod(String method) {
-			assertThat(value.getMethod(), is(equalTo(method)));
-			return this;
-		}
-
 		public AssertSecHubFinding hasName(String name) {
 			assertThat(value.getName(), is(equalTo(name)));
 			return this;
@@ -110,11 +105,6 @@ public class AssertSecHubResult {
 
 		public AssertSecHubFinding hasTarget(String target) {
 			assertThat(value.getTarget(), is(equalTo(target)));
-			return this;
-		}
-
-		public AssertSecHubFinding hasWebsite(String website) {
-			assertThat(value.getWebsite(), is(equalTo(website)));
 			return this;
 		}
 

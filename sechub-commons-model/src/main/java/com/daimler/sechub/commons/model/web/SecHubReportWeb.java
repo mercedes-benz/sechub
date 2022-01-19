@@ -1,31 +1,31 @@
-package com.daimler.sechub.sereco.metadata;
+package com.daimler.sechub.commons.model.web;
 
 import java.util.Objects;
 
-public class SerecoWeb {
+public class SecHubReportWeb {
 
-    SerecoWebRequest request = new SerecoWebRequest();
-    SerecoWebResponse response = new SerecoWebResponse();
-    SerecoWebAttack attack = new SerecoWebAttack();
+    SecHubReportWebRequest request = new SecHubReportWebRequest();
+    SecHubReportWebResponse response = new SecHubReportWebResponse();
+    SecHubReportWebAttack attack = new SecHubReportWebAttack();
 
     /**
      * @return web request, never <code>null</code>
      */
-    public SerecoWebRequest getRequest() {
+    public SecHubReportWebRequest getRequest() {
         return request;
     }
 
     /**
      * @return web response, never <code>null</code>
      */
-    public SerecoWebResponse getResponse() {
+    public SecHubReportWebResponse getResponse() {
         return response;
     }
     
     /**
-     * @return web attck, never <code>null</code>
+     * @return web attack, never <code>null</code>
      */
-    public SerecoWebAttack getAttack() {
+    public SecHubReportWebAttack getAttack() {
         return attack;
     }
 
@@ -45,14 +45,14 @@ public class SerecoWeb {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SerecoWeb other = (SerecoWeb) obj;
+        SecHubReportWeb other = (SecHubReportWeb) obj;
         return Objects.equals(request, other.request) && Objects.equals(response, other.response);
     }
 
     @Override
     public String toString() {
         /* @formatter:off */
-        return "SerecoWeb [" 
+        return "SecHubReportWeb [" 
                 + (attack != null ? "\n"
                 + ">attack=" + attack + ", " : "") 
         

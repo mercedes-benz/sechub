@@ -1,0 +1,51 @@
+package com.daimler.sechub.commons.model.web;
+
+import java.util.Objects;
+
+public class SecHubReportWebAttack {
+    
+    String vector;
+    SecHubReportWebEvidence evicence;
+
+    public String getVector() {
+        return vector;
+    }
+
+    public void setVector(String vector) {
+        this.vector = vector;
+    }
+
+    public SecHubReportWebEvidence getEvicence() {
+        return evicence;
+    }
+
+    public void setEvicence(SecHubReportWebEvidence evicence) {
+        this.evicence = evicence;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(evicence, vector);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SecHubReportWebAttack other = (SecHubReportWebAttack) obj;
+        return Objects.equals(evicence, other.evicence) && Objects.equals(vector, other.vector);
+    }
+
+    @Override
+    public String toString() {
+        return "SecHubReportWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evicence != null ? "evicence=" + evicence : "") + "]";
+    }
+
+}

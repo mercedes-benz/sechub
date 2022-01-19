@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.daimler.sechub.commons.model.JSONConverter;
+import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.SecHubCodeCallStack;
 import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.SecHubMessage;
@@ -19,6 +20,12 @@ import com.daimler.sechub.commons.model.SecHubMessageType;
 import com.daimler.sechub.commons.model.SecHubReportVersion;
 import com.daimler.sechub.commons.model.SecHubStatus;
 import com.daimler.sechub.commons.model.Severity;
+import com.daimler.sechub.commons.model.web.SecHubReportWeb;
+import com.daimler.sechub.commons.model.web.SecHubReportWebAttack;
+import com.daimler.sechub.commons.model.web.SecHubReportWebBodyLocation;
+import com.daimler.sechub.commons.model.web.SecHubReportWebEvidence;
+import com.daimler.sechub.commons.model.web.SecHubReportWebRequest;
+import com.daimler.sechub.commons.model.web.SecHubReportWebResponse;
 import com.daimler.sechub.domain.scan.ReportTransformationResult;
 import com.daimler.sechub.domain.scan.product.ProductIdentifier;
 import com.daimler.sechub.domain.scan.product.ProductResult;
@@ -29,6 +36,12 @@ import com.daimler.sechub.sereco.metadata.SerecoClassification;
 import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
+import com.daimler.sechub.sereco.metadata.SerecoWeb;
+import com.daimler.sechub.sereco.metadata.SerecoWebAttack;
+import com.daimler.sechub.sereco.metadata.SerecoWebBodyLocation;
+import com.daimler.sechub.sereco.metadata.SerecoWebEvidence;
+import com.daimler.sechub.sereco.metadata.SerecoWebRequest;
+import com.daimler.sechub.sereco.metadata.SerecoWebResponse;
 import com.daimler.sechub.sharedkernel.MustBeDocumented;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
@@ -82,20 +95,89 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
             if (showProductLineResultLink) {
                 finding.setProductResultLink(vulnerability.getProductResultLink());
             }
-            finding.setCode(convert(vulnerability.getCode()));
-            finding.setType(vulnerability.getScanType());
+            ScanType scanType = vulnerability.getScanType();
+            finding.setType(scanType);
 
+            switch (scanType) {
+            case CODE_SCAN:
+                finding.setCode(convert(vulnerability.getCode()));
+                break;
+            case INFRA_SCAN:
+                break;
+            case WEB_SCAN:
+                appendWebData(sechubJobUUID, vulnerability, finding);
+                break;
+            default:
+                break;
+                
+            }
+            
             findings.add(finding);
         }
 
         handleAnnotations(sechubJobUUID, data, transformerResult);
 
-        /* when status is not set already, no failure has appeared an we mark as OK */
+        /* when status is not set already, no failure has appeared and we mark as OK */
         if (transformerResult.getStatus() == null) {
             transformerResult.setStatus(SecHubStatus.SUCCESS);
         }
 
         return transformerResult;
+    }
+
+    private void appendWebData(UUID sechubJobUUID, SerecoVulnerability vulnerability, SecHubFinding finding) {
+        SecHubReportWeb sechubWeb = new SecHubReportWeb();
+        SecHubReportWebRequest sechubRequest = sechubWeb.getRequest();
+        SerecoWeb serecoWeb = vulnerability.getWeb();
+        if (serecoWeb==null) {
+            LOG.error("Web scan, but vulnerability has no web object inside - must skip finding {} for report with uuid=",finding.getId(), sechubJobUUID);
+            //break;
+        }
+        /* request*/
+        SerecoWebRequest serecoRequest = serecoWeb.getRequest();
+        sechubRequest.setProtocol(serecoRequest.getProtocol());
+        sechubRequest.setVersion(serecoRequest.getVersion());
+        sechubRequest.setTarget(serecoRequest.getTarget());
+        sechubRequest.setMethod(serecoRequest.getMethod());
+
+        sechubRequest.getHeaders().putAll(serecoRequest.getHeaders());
+        
+        sechubRequest.getBody().setText(serecoRequest.getBody().getText());
+        sechubRequest.getBody().setBinary(serecoRequest.getBody().getBinary());
+        
+        /* response */
+        SerecoWebResponse serecoResponse = serecoWeb.getResponse();
+        SecHubReportWebResponse sechubResponse = sechubWeb.getResponse();
+        sechubResponse.setStatusCode(serecoResponse.getStatusCode());
+        sechubResponse.setReasonPhrase(serecoResponse.getReasonPhrase());
+        sechubResponse.setProtocol(serecoResponse.getProtocol());
+        sechubResponse.setVersion(serecoResponse.getVersion());
+        sechubResponse.getHeaders().putAll(serecoResponse.getHeaders());
+        
+        sechubResponse.getBody().setText(serecoResponse.getBody().getText());
+        sechubResponse.getBody().setBinary(serecoResponse.getBody().getBinary());
+        
+        
+        /* attack */
+        SerecoWebAttack serecoAttack = serecoWeb.getAttack();
+        SecHubReportWebAttack sechubAttack = sechubWeb.getAttack();
+        sechubAttack.setVector(serecoAttack.getVector());
+        
+        SerecoWebEvidence serecoEvidence = serecoAttack.getEvicence();
+        if (serecoEvidence!=null) {
+            SecHubReportWebEvidence sechubEvidence = new SecHubReportWebEvidence();
+            sechubEvidence.setSnippet(serecoEvidence.getSnippet());
+            
+            SerecoWebBodyLocation serecoBodyLocation = serecoEvidence.getBodyLocation();
+            if (serecoBodyLocation!=null) {
+                SecHubReportWebBodyLocation sechubBodyLocation = new SecHubReportWebBodyLocation();
+                sechubBodyLocation.setStartLine((serecoBodyLocation.getStartLine()));
+                sechubEvidence.setBodyLocation(sechubBodyLocation);
+            }
+            sechubAttack.setEvicence(sechubEvidence);
+        }
+        
+        finding.setWeb(sechubWeb);
     }
 
     private void handleAnnotations(UUID sechubJobUUID, SerecoMetaData data, ReportTransformationResult transformerResult) {

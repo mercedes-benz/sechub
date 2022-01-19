@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.daimler.sechub.commons.model.web.SecHubReportWeb;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -33,7 +34,6 @@ public class SecHubFinding {
 
 	List<String> references = new ArrayList<>();
 
-	String method;
 	String request;
 
 	String resolution;
@@ -56,12 +56,22 @@ public class SecHubFinding {
     
     String owasp;
 	
+    SecHubReportWeb web;
+    
 	public void setType(ScanType scanType) {
         this.type = scanType;
     }
 	
 	public ScanType getType() {
         return type;
+    }
+	
+	public SecHubReportWeb getWeb() {
+        return web;
+    }
+	
+	public void setWeb(SecHubReportWeb web) {
+        this.web = web;
     }
 	
 	/**
@@ -244,19 +254,4 @@ public class SecHubFinding {
 		this.target = target;
 	}
 
-	public void setWebsite(String website) {
-		this.website = website;
-	}
-
-	public String getWebsite() {
-		return website;
-	}
-
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
-	public String getMethod() {
-		return method;
-	}
 }
