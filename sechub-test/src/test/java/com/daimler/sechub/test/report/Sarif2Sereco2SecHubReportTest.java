@@ -22,10 +22,18 @@ import com.daimler.sechub.sereco.metadata.SerecoMetaData;
 import com.daimler.sechub.sharedkernel.execution.SecHubExecutionException;
 
 /**
- * A special reporting test: Will test if existing sarif reports are transformed
- * to wanted sechub report format correctly (internally sarif will be
- * transformed to sereco and after this sereco data will be transformed to final
- * sechub report
+ * A special reporting test: Will test if existing SARIF reports are transformed
+ * to wanted SecHub report format correctly (internally SARIF will be
+ * transformed to SERECO and after this SERECO data will be transformed to final
+ * SecHub report). <br>
+ * <br>
+ * This is exactly the same call mechanism as SecHub does internally, but without false
+ * positive marking and using dedicated SARIF importer version V1 (but we have
+ * currently only this, so SecHub will use also this version only). <br>
+ * <br>
+ * Our normal integrations tests do slow down our builds. Having SARIF already
+ * tested by integration tests for SARIF code scans, we test here SARIF
+ * details e.g. for web scanning - but much faster.
  * 
  * @author Albert Tregnaghi
  *
@@ -55,7 +63,7 @@ public class Sarif2Sereco2SecHubReportTest {
         /* test */
         assertEquals(expectedSecHubJson, sechubJson);
     }
-    
+
     @Test
     void example2_artifical_data_is_transformed_to_expected_sechub_report() throws Exception {
         /* prepare */
@@ -73,8 +81,6 @@ public class Sarif2Sereco2SecHubReportTest {
         assertEquals(expectedSecHubJson, sechubJson);
     }
 
-    
-    
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */
     /* + ................Helpers......................... + */
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++ */

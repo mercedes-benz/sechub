@@ -6,6 +6,7 @@
       "id" : 1,
       "description" : "testdata.message.text",
       "name" : "testdata.rule1.shortdescription.text",
+      "solution" : "testdata.rule1.properties.solution.text",
       "severity" : "MEDIUM",
       "type" : "webScan",
       "cweId" : 614,

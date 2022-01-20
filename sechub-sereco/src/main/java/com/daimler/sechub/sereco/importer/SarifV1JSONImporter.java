@@ -4,6 +4,7 @@ package com.daimler.sechub.sereco.importer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -167,7 +168,7 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
         SerecoWebBodyLocation bodyLocation = new SerecoWebBodyLocation();
         bodyLocation.setStartLine(sarifRegion.getStartLine());
         serecoWebEvidence.setBodyLocation(bodyLocation);
-        
+
         ArtifactContent sarifSnippet = sarifRegion.getSnippet();
         if (sarifSnippet != null) {
             serecoWebEvidence.setSnippet(sarifSnippet.getText());
@@ -241,12 +242,14 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     private ResultData resolveData(Rule rule, Run run, Result result) {
 
         ResultData data = new ResultData();
-        data.description= resolveMessageTextOrNull(result);
-        
+        data.description = resolveMessageTextOrNull(result);
+
         if (rule != null) {
             data.identifiedType = resolveType(rule, run);
-            if (data.description==null) {
-                /* fallback to rule description - not very significant but better than nothing */
+            if (data.description == null) {
+                /*
+                 * fallback to rule description - not very significant but better than nothing
+                 */
                 data.description = resolveDescription(rule);
             }
             resolveTargetInformation(rule, data, run);
@@ -260,11 +263,11 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
     }
 
     private String resolveMessageTextOrNull(Result result) {
-        if (result==null) {
+        if (result == null) {
             return null;
         }
         Message message = result.getMessage();
-        if (message==null) {
+        if (message == null) {
             return null;
         }
         return message.getText();
@@ -276,10 +279,15 @@ public class SarifV1JSONImporter extends AbstractProductResultImporter {
             return;
         }
         Object solution = ruleProperties.get("solution");
-        if (solution == null) {
+        if (!(solution instanceof Map)) {
             return;
         }
-        data.solution = solution.toString();
+        Map<?, ?> solutionAsMap = (Map<?, ?>) solution;
+        Object solutionText = solutionAsMap.get("text");
+        if (solutionText == null) {
+            return;
+        }
+        data.solution = solutionText.toString();
     }
 
     private void resolveTargetInformation(Rule rule, ResultData data, Run run) {

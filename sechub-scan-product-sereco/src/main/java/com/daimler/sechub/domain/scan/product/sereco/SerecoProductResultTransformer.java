@@ -89,6 +89,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
 
             finding.setDescription(vulnerability.getDescription());
             finding.setName(vulnerability.getType());
+            finding.setSolution(vulnerability.getSolution());
             finding.setId(findingId);
             finding.setSeverity(transformSeverity(vulnerability.getSeverity()));
 
@@ -131,7 +132,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
         SerecoWeb serecoWeb = vulnerability.getWeb();
         if (serecoWeb==null) {
             LOG.error("Web scan, but vulnerability has no web object inside - must skip finding {} for report with uuid=",finding.getId(), sechubJobUUID);
-            //break;
+            return;
         }
         /* request*/
         SerecoWebRequest serecoRequest = serecoWeb.getRequest();

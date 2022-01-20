@@ -83,8 +83,8 @@ public class AssertSecHubResult {
 			return this;
 		}
 
-		public AssertSecHubFinding hasResolution(String resolution) {
-			assertThat(value.getResolution(), is(equalTo(resolution)));
+		public AssertSecHubFinding hasSolution(String solution) {
+			assertThat(value.getSolution(), is(equalTo(solution)));
 			return this;
 		}
 

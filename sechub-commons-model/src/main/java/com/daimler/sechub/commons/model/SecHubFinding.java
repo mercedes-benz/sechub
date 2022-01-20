@@ -36,7 +36,7 @@ public class SecHubFinding {
 
 	String request;
 
-	String resolution;
+	String solution;
 	String response;
 	String service;
 	Severity severity;
@@ -214,12 +214,12 @@ public class SecHubFinding {
 		this.request = request;
 	}
 
-	public String getResolution() {
-		return resolution;
+	public String getSolution() {
+		return solution;
 	}
 
-	public void setResolution(String resolution) {
-		this.resolution = resolution;
+	public void setSolution(String solution) {
+		this.solution = solution;
 	}
 
 	public String getResponse() {
