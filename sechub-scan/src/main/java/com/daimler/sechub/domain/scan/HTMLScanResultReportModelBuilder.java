@@ -48,6 +48,10 @@ public class HTMLScanResultReportModelBuilder {
         String styleYellow = HIDE_LIGHT;
         String styleGreen = HIDE_LIGHT;
 
+        if (trafficLight == null) {
+            throw new IllegalStateException("No traffic light defined");
+        }
+
         switch (trafficLight) {
         case RED:
             styleRed = SHOW_LIGHT;
