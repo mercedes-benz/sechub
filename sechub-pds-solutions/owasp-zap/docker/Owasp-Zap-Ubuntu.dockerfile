@@ -37,7 +37,7 @@ RUN mkdir --parents "$PDS_FOLDER" "$SCRIPT_FOLDER" "$TOOL_FOLDER" "$WORKSPACE" "
 
 # non-root user
 # using fixed group and user ids
-# gosec needs a home directory for the cache
+# zap needs a home directory for the plugins
 RUN groupadd --gid 2323 "$USER" \
      && useradd --uid 2323 --no-log-init --create-home --gid "$USER" "$USER"
 
@@ -95,16 +95,17 @@ WORKDIR "$WORKSPACE"
 # Change owner of tool, workspace and pds folder as well as /run.sh
 RUN chown --recursive "$USER:$USER" $TOOL_FOLDER $SCRIPT_FOLDER $WORKSPACE $PDS_FOLDER $SHARED_VOLUMES /run.sh
 
+RUN mkdir --parents "/home/$USER/.ZAP/plugin"
+COPY reports-release-0.10.0.zap /home/$USER/.ZAP/plugin/reports-release-0.10.0.zap
+RUN chown --recursive "$USER:$USER" /home/$USER/.ZAP
+
 # Switch from root to non-root user
 USER "$USER"
 
 # Install OWASP ZAP addons
 # see: https://www.zaproxy.org/addons/
 # via addon manager: owasp-zap -cmd -addoninstall webdriverlinux
-RUN mkdir --parents "/home/$USER/.ZAP/plugin" && \
-    cd "/home/$USER/.ZAP/plugin" && \
+RUN cd "/home/$USER/.ZAP/plugin" && \
     wget --input-file="$TOOL_FOLDER/zap-addons.txt"
-
-COPY reports-release-0.10.0.zap /home/$USER/.ZAP/plugin/reports-release-0.10.0.zap
 
 CMD ["/run.sh"]
