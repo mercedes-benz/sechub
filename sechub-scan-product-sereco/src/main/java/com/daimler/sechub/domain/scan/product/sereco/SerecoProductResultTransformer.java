@@ -175,7 +175,7 @@ public class SerecoProductResultTransformer implements ReportProductResultTransf
                 sechubBodyLocation.setStartLine((serecoBodyLocation.getStartLine()));
                 sechubEvidence.setBodyLocation(sechubBodyLocation);
             }
-            sechubAttack.setEvicence(sechubEvidence);
+            sechubAttack.setEvidence(sechubEvidence);
         }
         
         finding.setWeb(sechubWeb);

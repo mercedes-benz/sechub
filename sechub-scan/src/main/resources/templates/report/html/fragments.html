@@ -274,6 +274,11 @@ details[open] summary::after {
 details:not([open]) summary::after {
     content: attr(data-open);
 }
+
+.textDescription {
+	white-space: pre-line; 
+}
+
 </style>
 
 <th:block th:fragment="findingCells">
@@ -285,8 +290,8 @@ details:not([open]) summary::after {
 	<a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWE-77</a>
 </td>
 <td>
-	<div th:if="!${codeScanSupport.isCodeScan(finding)}" th:text="${finding.description}">Description1</div>
-	<div class="rTable" th:if="${codeScanSupport.isCodeScan(finding)}">
+	<div th:if="${finding.hasScanType('infraScan')}" th:text="${finding.description}">Description1</div>
+	<div class="rTable" th:if="${finding.hasScanType('codeScan')}">
 		<div class="rTableRowHead">
 			<div class="rTableHead" style="width:5%">Call</div>
 			<div class="rTableHead" style="width:25%">Location</div>
@@ -304,8 +309,24 @@ details:not([open]) summary::after {
 			<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">result= evalCode.execute()</div>
 		</div>
 	</div>
+	<div class="rTable" th:if="${finding.hasScanType('webScan')}">
+        <div class="rTable">
+            <div class="rTableRowHead">
+                <div class="rTableHead" style="width:20%">Location</div>
+                <div class="rTableHead" style="width:10%">Attack vector</div>
+                <div class="rTableHead" style="width:10%">Evidence</div>
+            </div>
+            <div class="rTableRow" >
+                <div class="rTableCell" th:text="${finding.web.createShortTargetLocation()}" style="width:5%">1</div>
+                <div class="rTableCell" th:text="${finding.web.attack.createShortVector()}" style="width:25%">the location</div>
+                <div class="rTableCell" th:text="${finding.web.attack.createShortEvidence()}" style="width:5%">101</div>
+            </div>
+        </div>
+    </div>
+	
 	<br />
-	<details th:if="${codeScanSupport.isCodeScan(finding)}">
+	
+	<details th:if="${finding.hasScanType('codeScan')}">
 		<summary data-open="Open details" data-close="Close details"></summary>
 		<div class="rTable">
 			<div class="rTableRowHead">
@@ -326,8 +347,30 @@ details:not([open]) summary::after {
 			</div>
 		</div>
 		<h4>Description</h4>
-		<div th:text="${finding.description}">Description1</div>
+		<div class="textDescription" th:text="${finding.description}">Description1</div>
 	</details>
+	<details th:if="${finding.hasScanType('webScan')}">
+        <summary data-open="Open details" data-close="Close details"></summary>
+        <h4>Request</h4>
+        <div class="textDescription" th:text="${finding.web.request.createDescriptionText()}" >Description</div>
+        <details>
+            <summary data-open="Open body" data-close="Close body"></summary>
+            <div class="textDescription" th:if="${finding.web.request.body.text}" th:text="${finding.web.request.body.text}">Text</div>
+            <div class="textDescription" th:if="${finding.web.request.body.binary}" th:text="${finding.web.request.body.binary}">Binary</div>
+        </details>
+        <h4>Response</h4>
+        <div class="textDescription" th:text="${finding.web.response.createDescriptionText()}">Description</div>
+        <details>
+            <summary data-open="Open body" data-close="Close body"></summary>
+            <div class="textDescription" th:if="${finding.web.response.body.text}" th:text="${finding.web.response.body.text}">Text</div>
+            <div class="textDescription" th:if="${finding.web.response.body.binary}" th:text="${finding.web.response.body.binary}">Binary</div>
+        </details>
+    
+        <h4>Description</h4>
+        <div class="textDescription" th:text="${finding.description}">Description1</div>
+        <h4>Solution</h4>
+        <div class="textDescription" th:text="${finding.solution}" style="font-family:monospace">Solution</div>
+    </details>
 </td>
 
 </th:block>

@@ -253,5 +253,17 @@ public class SecHubFinding {
 	public void setTarget(String target) {
 		this.target = target;
 	}
+	
+	public boolean hasScanType(String type) {
+	    if (type==null) {
+	        return false;
+	    }
+	    if (this.type==null) {
+	        return false;
+	    }
+	    
+	    return this.type.getId().equalsIgnoreCase(type);
+	}
+	
 
 }

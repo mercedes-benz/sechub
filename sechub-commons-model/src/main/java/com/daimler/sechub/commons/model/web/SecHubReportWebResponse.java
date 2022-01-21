@@ -54,6 +54,16 @@ public class SecHubReportWebResponse {
     public SecHubReportWebBody getBody() {
         return body;
     }
+    
+    public String createDescriptionText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Protocol:").append(getProtocol()).append(", ");
+        sb.append("Version:").append(getVersion()).append("\n\n");
+        sb.append("Status code:").append(getStatusCode()).append("\n");
+        sb.append("Reason phrase:").append(getReasonPhrase()).append("\n");
+        sb.append("Headers:").append(getHeaders()).append("\n\n");
+        return sb.toString();
+    }
 
     @Override
     public int hashCode() {

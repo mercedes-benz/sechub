@@ -21,12 +21,24 @@ public class SecHubReportWeb {
     public SecHubReportWebResponse getResponse() {
         return response;
     }
-    
+
     /**
      * @return web attack, never <code>null</code>
      */
     public SecHubReportWebAttack getAttack() {
         return attack;
+    }
+
+    public String createShortTargetLocation() {
+        String target = getRequest().getTarget();
+        if (target==null) {
+            return "";
+        }
+        int questionMarkIndex = target.indexOf('?');
+        if (questionMarkIndex != -1) {
+            target = target.substring(0, questionMarkIndex);
+        }
+        return target;
     }
 
     @Override

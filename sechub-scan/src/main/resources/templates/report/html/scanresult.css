@@ -264,3 +264,8 @@ details[open] summary::after {
 details:not([open]) summary::after {
     content: attr(data-open);
 }
+
+.textDescription {
+	white-space: pre-line; 
+}
+

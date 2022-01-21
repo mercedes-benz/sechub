@@ -5,7 +5,7 @@ import java.util.Objects;
 public class SecHubReportWebAttack {
     
     String vector;
-    SecHubReportWebEvidence evicence;
+    SecHubReportWebEvidence evidence;
 
     public String getVector() {
         return vector;
@@ -15,17 +15,29 @@ public class SecHubReportWebAttack {
         this.vector = vector;
     }
 
-    public SecHubReportWebEvidence getEvicence() {
-        return evicence;
+    public SecHubReportWebEvidence getEvidence() {
+        return evidence;
     }
 
-    public void setEvicence(SecHubReportWebEvidence evicence) {
-        this.evicence = evicence;
+    public void setEvidence(SecHubReportWebEvidence evicence) {
+        this.evidence = evicence;
+    }
+    
+    
+    public String createShortEvidence() {
+        if (evidence==null) {
+            return "";
+        }
+        return evidence.getSnippet();
+    }
+    
+    public String createShortVector() {
+        return getVector();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(evicence, vector);
+        return Objects.hash(evidence, vector);
     }
 
     @Override
@@ -40,12 +52,12 @@ public class SecHubReportWebAttack {
             return false;
         }
         SecHubReportWebAttack other = (SecHubReportWebAttack) obj;
-        return Objects.equals(evicence, other.evicence) && Objects.equals(vector, other.vector);
+        return Objects.equals(evidence, other.evidence) && Objects.equals(vector, other.vector);
     }
 
     @Override
     public String toString() {
-        return "SecHubReportWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evicence != null ? "evicence=" + evicence : "") + "]";
+        return "SecHubReportWebAttack [" + (vector != null ? "vector=" + vector + ", " : "") + (evidence != null ? "evicence=" + evidence : "") + "]";
     }
 
 }
