@@ -16,3 +16,4 @@ sechub*.json
 
 # ignore all generated go parts
 *_gen.go
+go.mod
