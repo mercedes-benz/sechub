@@ -28,7 +28,7 @@ function applySPDXline {
 
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching pattern and ignore .git subdirectory
-    find . -type f -iname \*.$fileEnding | grep -v '^./.git' | while read file ; do
+    find . -type f -iname \*.$fileEnding | grep -v '^./.git\|gradlew.bat' | while read file ; do
         if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
@@ -46,6 +46,8 @@ function applySPDXonSecondLine {
 
 function startAutoApply {
     applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+    applySPDXonFirstLine "bat" ":: $SPDX_TEXT"
+    applySPDXonFirstLine "c" "// $SPDX_TEXT"
     applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
     applySPDXonFirstLine "go" "// $SPDX_TEXT"
     applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
@@ -54,6 +56,8 @@ function startAutoApply {
     applySPDXonFirstLine "java" "// $SPDX_TEXT"
     applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
     applySPDXonFirstLine "properties" "# $SPDX_TEXT"
+    applySPDXonSecondLine "py" "# $SPDX_TEXT"
+    applySPDXonFirstLine "rb" "# $SPDX_TEXT"
     applySPDXonSecondLine "sh" "# $SPDX_TEXT"
     applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
     applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
