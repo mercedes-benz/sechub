@@ -25,21 +25,37 @@ function init_go_modules() {
     pushd "$SRC_PATH"
     # remove previously generated go.mod files
     rm -f go.mod */go.mod
-    cd main
-    # Initialize go modules
+
+    echo "# Initialize go modules"
+    cd main/
     go mod init $MOD_BASENAME
     for i in $SUBMODULES ; do
-        pushd ../$i && go mod init $MOD_BASENAME/$i && popd
+        pushd ../$i
+        go mod init $MOD_BASENAME/$i
+        popd >/dev/null
         go mod edit -replace $MOD_BASENAME/$i=../$i
     done
     go mod tidy
-    popd
+
+    echo "# Declare other submodules to satisfy dependencies when testing"
+    for i in $SUBMODULES ; do
+        pushd ../$i
+        for j in $SUBMODULES ; do
+            if [ $j != $i ] ; then
+                go mod edit -replace $MOD_BASENAME/$j=../$j
+            fi
+        done
+        go mod tidy
+        popd >/dev/null
+    done
+
+    popd >/dev/null
 }
 
 package_split=(${package//\// })
 package_name=${package_split[-1]}
 
-echo "Build go:Start building package '$package'"
+echo "Build Go: Building package '$package':"
 
 export GOPATH="$SRC_PATH" # ignore former one, prevents differt of ; and : of pathes...
 
