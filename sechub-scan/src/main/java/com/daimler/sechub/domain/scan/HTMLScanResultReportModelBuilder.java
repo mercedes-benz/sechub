@@ -86,6 +86,7 @@ public class HTMLScanResultReportModelBuilder {
         model.put("isWebDesignMode", webDesignMode);
         model.put("codeScanEntries", codeScanEntries);
         model.put("codeScanSupport", codeScanSupport);
+        model.put("reportHelper", HTMLReportHelper.DEFAULT);
 
         if (webDesignMode) {
             File file;

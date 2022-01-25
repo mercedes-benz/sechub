@@ -24,16 +24,6 @@ public class SecHubReportWebAttack {
     }
     
     
-    public String createShortEvidence() {
-        if (evidence==null) {
-            return "";
-        }
-        return evidence.getSnippet();
-    }
-    
-    public String createShortVector() {
-        return getVector();
-    }
 
     @Override
     public int hashCode() {

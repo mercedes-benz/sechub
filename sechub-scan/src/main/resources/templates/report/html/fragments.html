@@ -261,6 +261,7 @@
 .rTableCell, .rTableHead {
     display: table-cell;
     word-break: break-all;
+    padding-right: 5px;
 }
 
 .rTableHead {
@@ -275,10 +276,50 @@ details:not([open]) summary::after {
     content: attr(data-open);
 }
 
-.textDescription {
+.rText {
 	white-space: pre-line; 
 }
 
+.rAttackVectorText,
+.rBodyText {
+   white-space: pre-line;
+   border: thin;
+   border-style: dotted;
+   background-color: #222222;
+   color: #cccccc;
+   overflow-x: hidden;
+   overflow-y: auto;
+   text-align: left;
+   padding: 15px;
+   width: 950px;
+   
+}
+.rBodyText {
+   height: 150px;
+}
+.rAttackVectorText {
+    height: 10px;
+}
+
+.rTargetLine{
+   display:flex
+}
+
+.rTargetLine > div {
+   vertical-align: text-bottom;
+   padding: 2px 0 0 0;
+   font-weight: bolder;
+}
+.rTargetLine > textarea {
+   vertical-align: middle;
+   width: 950px;
+   height:16px;
+   border:none; /* the border is only visible when selected */
+}
+
+.rDetailHeadline1 {
+    text-decoration: underline;
+}
 </style>
 
 <th:block th:fragment="findingCells">
@@ -312,14 +353,14 @@ details:not([open]) summary::after {
 	<div class="rTable" th:if="${finding.hasScanType('webScan')}">
         <div class="rTable">
             <div class="rTableRowHead">
-                <div class="rTableHead" style="width:20%">Location</div>
-                <div class="rTableHead" style="width:10%">Attack vector</div>
-                <div class="rTableHead" style="width:10%">Evidence</div>
+                <div class="rTableHead" style="width:400px">Location</div>
+                <div class="rTableHead" style="width:300px">Attack vector</div>
+                <div class="rTableHead" style="width:300px">Evidence</div>
             </div>
             <div class="rTableRow" >
-                <div class="rTableCell" th:text="${finding.web.createShortTargetLocation()}" style="width:5%">1</div>
-                <div class="rTableCell" th:text="${finding.web.attack.createShortVector()}" style="width:25%">the location</div>
-                <div class="rTableCell" th:text="${finding.web.attack.createShortEvidence()}" style="width:5%">101</div>
+                <div class="rTableCell" th:text="${reportHelper.createShortTargetLocation(finding.web)}">1</div>
+                <div class="rTableCell" th:text="${reportHelper.createShortVector(finding.web.attack)}">the location</div>
+                <div class="rTableCell" th:text="${reportHelper.createShortEvidence(finding.web.attack)}">101</div>
             </div>
         </div>
     </div>
@@ -347,29 +388,52 @@ details:not([open]) summary::after {
 			</div>
 		</div>
 		<h4>Description</h4>
-		<div class="textDescription" th:text="${finding.description}">Description1</div>
+		<div class="rText" th:text="${finding.description}">Description1</div>
 	</details>
-	<details th:if="${finding.hasScanType('webScan')}">
+	<details th:if="${finding.hasScanType('webScan')}" th:with="webRequest=${finding.web.request},webResponse=${finding.web.response}">
         <summary data-open="Open details" data-close="Close details"></summary>
-        <h4>Request</h4>
-        <div class="textDescription" th:text="${finding.web.request.createDescriptionText()}" >Description</div>
-        <details>
-            <summary data-open="Open body" data-close="Close body"></summary>
-            <div class="textDescription" th:if="${finding.web.request.body.text}" th:text="${finding.web.request.body.text}">Text</div>
-            <div class="textDescription" th:if="${finding.web.request.body.binary}" th:text="${finding.web.request.body.binary}">Binary</div>
-        </details>
-        <h4>Response</h4>
-        <div class="textDescription" th:text="${finding.web.response.createDescriptionText()}">Description</div>
-        <details>
-            <summary data-open="Open body" data-close="Close body"></summary>
-            <div class="textDescription" th:if="${finding.web.response.body.text}" th:text="${finding.web.response.body.text}">Text</div>
-            <div class="textDescription" th:if="${finding.web.response.body.binary}" th:text="${finding.web.response.body.binary}">Binary</div>
-        </details>
+        
+        <!-- REQUEST -->
+        <h3 class="rDetailHeadline1">Request</h3>
+        <div class="rTargetLine">
+            <div th:text="${webRequest.method}"></div><textarea readonly="true" th:text="${webRequest.target}"></textarea>
+        </div>
+         <div style="display:flex">
+            <div th:text="${webRequest.protocol}"></div><div>/</div><div th:text="${webRequest.version}"></div>
+        </div>
+        <h4>Attack vector</h4>
+        <textarea readonly="true" class="rAttackVectorText" th:text="${reportHelper.getVector(finding.web.attack)}">Attack vector data</textarea>
+        
+        <div th:replace="report/html/headers :: headers(headerMap=${webRequest.headers})"></div>
+        
+        <h4>Body</h4>
+        <div th:if="${reportHelper.hasNoBodyContent(webRequest.body)}">No body content</div>
+        <textarea readonly="true" class="rBodyText" th:if="${webRequest.body.text}" th:text="${webRequest.body.text}">Text</textarea>
+        <textarea readonly="true"class="rBodyText" th:if="${webRequest.body.binary}" th:text="${webRequest.body.binary}">Binary</textarea>
+        
+        <!-- RESPONSE -->
+        <h3 class="rDetailHeadline1">Response</h3>
+        <div style="display:flex">
+            <div th:text="${webResponse.protocol}"></div><div>/</div><div th:text="${webResponse.version}"></div>
+            <div>&nbsp;</div><div th:text="${reportHelper.createStatusAndResponseDescription(webResponse)}"></div>
+        </div>
+        <h4>Evidence</h4>
+        <textarea readonly="true" class="rAttackVectorText" th:text="${reportHelper.getEvidence(finding.web.attack)}">Attack vector data</textarea>
+        <div style="display:flex" th:if="${reportHelper.hasEvidenceStartLine(finding.web.attack)}">
+            <div>Found in response body. Start line: </div><div th:text="${reportHelper.getEvidenceStartLine(finding.web.attack)}"></div>
+        </div>
+       
+        <div th:replace="report/html/headers :: headers(headerMap=${webResponse.headers})"></div>
+        <h4>Body</h4>
+        <div th:if="${reportHelper.hasNoBodyContent(webResponse.body)}">No body content</div>
+        <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.text}" th:text="${webResponse.body.text}">Text</textarea>
+        <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.binary}" th:text="${webResponse.body.binary}">Binary</textarea>
     
-        <h4>Description</h4>
-        <div class="textDescription" th:text="${finding.description}">Description1</div>
-        <h4>Solution</h4>
-        <div class="textDescription" th:text="${finding.solution}" style="font-family:monospace">Solution</div>
+        <h3 class="rDetailHeadline1">Description</h3>
+        <div class="rText" th:text="${finding.description}">Description1</div>
+        
+        <h3  class="rDetailHeadline1">Solution</h3>
+        <div class="rText" th:text="${finding.solution}" style="font-family:monospace">Solution</div>
     </details>
 </td>
 

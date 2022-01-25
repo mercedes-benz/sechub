@@ -29,18 +29,6 @@ public class SecHubReportWeb {
         return attack;
     }
 
-    public String createShortTargetLocation() {
-        String target = getRequest().getTarget();
-        if (target==null) {
-            return "";
-        }
-        int questionMarkIndex = target.indexOf('?');
-        if (questionMarkIndex != -1) {
-            target = target.substring(0, questionMarkIndex);
-        }
-        return target;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(request, response);

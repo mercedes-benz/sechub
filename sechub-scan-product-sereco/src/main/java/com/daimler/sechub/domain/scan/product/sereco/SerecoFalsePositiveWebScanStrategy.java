@@ -17,19 +17,19 @@ import com.daimler.sechub.sereco.metadata.SerecoCodeCallStackElement;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 /**
- * Strategy to check if a code scan vulnerability identified by a product is
+ * Strategy to check if a web scan vulnerability identified by a product is
  * handled by a false positive meta data configuration
  * 
  * @author Albert Tregnaghi
  *
  */
 @Component
-public class SerecoFalsePositiveCodeScanStrategy {
+public class SerecoFalsePositiveWebScanStrategy {
 
     @Autowired
     SerecoSourceRelevantPartResolver relevantPartResolver;
 
-    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveCodeScanStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerecoFalsePositiveWebScanStrategy.class);
 
     /**
      * Given data is supposed to be valid
@@ -42,13 +42,13 @@ public class SerecoFalsePositiveCodeScanStrategy {
         notNull(vulnerability, " vulnerability may not be null");
         notNull(metaData, " metaData may not be null");
 
-        if (metaData.getScanType() != ScanType.CODE_SCAN) {
+        if (metaData.getScanType() != ScanType.WEB_SCAN) {
             return false;
         }
 
         FalsePositiveCodeMetaData metaDataCode = metaData.getCode();
         if (metaDataCode == null) {
-            LOG.error("Cannot check code vulnerability for false positives when meta data has no code parts!");
+            LOG.error("Cannot check code vulnerability for false positives when meta data has no web parts!");
             return false;
         }
 

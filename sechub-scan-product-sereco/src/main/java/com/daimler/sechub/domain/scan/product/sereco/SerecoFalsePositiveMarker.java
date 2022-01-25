@@ -21,7 +21,7 @@ import com.daimler.sechub.domain.scan.project.ScanProjectConfigService;
 import com.daimler.sechub.sereco.metadata.SerecoVulnerability;
 
 /**
- * Marks given vulnerabilities as false positives, if identifieable by false positive configuration
+ * Marks given vulnerabilities as false positives, if identifiable by false positive configuration
  * data for the project. will only mark and add hints about reason
  * @author Albert Tregnaghi
  *

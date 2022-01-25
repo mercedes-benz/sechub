@@ -55,16 +55,6 @@ public class SecHubReportWebRequest {
         return body;
     }
 
-    public String createDescriptionText() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Protocol:").append(getProtocol()).append(", ");
-        sb.append("Version:").append(getVersion()).append("\n\n");
-        sb.append("Method:").append(getMethod()).append("\n\n");
-        sb.append("Target:").append(getTarget()).append("\n");
-        sb.append("Headers:").append(getHeaders()).append("\n\n");
-        return sb.toString();
-    }
-    
     @Override
     public int hashCode() {
         return Objects.hash(body, headers, method, protocol, target, version);

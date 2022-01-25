@@ -251,6 +251,7 @@
 .rTableCell, .rTableHead {
     display: table-cell;
     word-break: break-all;
+    padding-right: 5px;
 }
 
 .rTableHead {
@@ -265,7 +266,47 @@ details:not([open]) summary::after {
     content: attr(data-open);
 }
 
-.textDescription {
+.rText {
 	white-space: pre-line; 
 }
 
+.rAttackVectorText,
+.rBodyText {
+   white-space: pre-line;
+   border: thin;
+   border-style: dotted;
+   background-color: #222222;
+   color: #cccccc;
+   overflow-x: hidden;
+   overflow-y: auto;
+   text-align: left;
+   padding: 15px;
+   width: 950px;
+   
+}
+.rBodyText {
+   height: 150px;
+}
+.rAttackVectorText {
+    height: 10px;
+}
+
+.rTargetLine{
+   display:flex
+}
+
+.rTargetLine > div {
+   vertical-align: text-bottom;
+   padding: 2px 0 0 0;
+   font-weight: bolder;
+}
+.rTargetLine > textarea {
+   vertical-align: middle;
+   width: 950px;
+   height:16px;
+   border:none; /* the border is only visible when selected */
+}
+
+.rDetailHeadline1 {
+    text-decoration: underline;
+}
