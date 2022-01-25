@@ -1,6 +1,8 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
+SPDX_TEXT="SPDX-License-Identifier: MIT"
+
 function isColoredTerminal(){
     # check if stdout is a terminal...
     if test -t 1; then
@@ -21,13 +23,13 @@ function isColoredTerminal(){
 # param 3: line where to insert the template (starting with 1)
 function applySPDXline {
     local fileEnding="$1"
-    local spxMessage=`cat "sechub-other/spdx/template/$2"`
+    local spxMessage="$2"
     local line="$3"
 
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching pattern and ignore .git subdirectory
     find . -type f -iname \*.$fileEnding | grep -v '^./.git' | while read file ; do
-        if ! grep -q SPDX-License $file ; then
+        if ! grep -q "$SPDX_TEXT" $file ; then
             sed -i "${line}i $spxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
         fi
@@ -43,17 +45,19 @@ function applySPDXonSecondLine {
 }
 
 function startAutoApply {
-
-    applySPDXonFirstLine "adoc" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "go" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "groovy" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "gradle" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "java" "spdx_template_doubleslash.txt"
-    applySPDXonFirstLine "md" "spdx_template_md.txt"
-    applySPDXonFirstLine "properties" "spdx_template_hash.txt"
-    applySPDXonSecondLine "sh" "spdx_template_hash.txt"
-    applySPDXonFirstLine "yaml" "spdx_template_hash.txt"
-    applySPDXonFirstLine "yml" "spdx_template_hash.txt"
+    applySPDXonFirstLine "adoc" "// $SPDX_TEXT"
+    applySPDXonFirstLine "dockerfile" "# $SPDX_TEXT"
+    applySPDXonFirstLine "go" "// $SPDX_TEXT"
+    applySPDXonFirstLine "groovy" "// $SPDX_TEXT"
+    applySPDXonFirstLine "gradle" "// $SPDX_TEXT"
+    applySPDXonFirstLine "jenkins" "// $SPDX_TEXT"
+    applySPDXonFirstLine "java" "// $SPDX_TEXT"
+    applySPDXonFirstLine "md" "<!-- $SPDX_TEXT --->"
+    applySPDXonFirstLine "properties" "# $SPDX_TEXT"
+    applySPDXonSecondLine "sh" "# $SPDX_TEXT"
+    applySPDXonFirstLine "sql" "-- $SPDX_TEXT"
+    applySPDXonFirstLine "yaml" "# $SPDX_TEXT"
+    applySPDXonFirstLine "yml" "# $SPDX_TEXT"
 
     # for plantuml we do no longer apply automatically, because a comment before
     # a @startUml is problematic
