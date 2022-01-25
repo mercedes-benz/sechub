@@ -35,7 +35,7 @@ function init_go_modules() {
         popd >/dev/null
         go mod edit -replace $MOD_BASENAME/$i=../$i
     done
-    go mod tidy
+    go mod tidy  # Make the defined modules usable (changes go.mod file)
 
     echo "# Declare other submodules to satisfy dependencies when testing"
     for i in $SUBMODULES ; do
