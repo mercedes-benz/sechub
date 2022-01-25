@@ -18,19 +18,19 @@ function isColoredTerminal(){
 }
 
 # apply spdx template to given file type
-# param 1: fileending (e.g "yaml")
-# param 2: template filename, will use templates inside sechub-other/spdx/template/$filename
-# param 3: line where to insert the template (starting with 1)
+# param 1: file ending (e.g "yaml")
+# param 2: SPDX License text to insert
+# param 3: line where to insert the text (starting with 1)
 function applySPDXline {
     local fileEnding="$1"
-    local spxMessage="$2"
+    local spdxMessage="$2"
     local line="$3"
 
     echo -e "  ${LIGHT_GREEN}Scanning '*.$fileEnding' files${NC}"
     # Loop over all files matching pattern and ignore .git subdirectory
     find . -type f -iname \*.$fileEnding | grep -v '^./.git\|gradlew.bat' | while read file ; do
         if ! grep -q "$SPDX_TEXT" $file ; then
-            sed -i "${line}i $spxMessage" "$file"
+            sed -i "${line}i $spdxMessage" "$file"
             echo -e "${BROWN}$file${NC} - ${LIGHT_GREEN}copyright appended.${NC}"
         fi
     done
