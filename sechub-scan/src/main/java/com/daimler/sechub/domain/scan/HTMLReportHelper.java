@@ -3,6 +3,7 @@ package com.daimler.sechub.domain.scan;
 import org.springframework.http.HttpStatus;
 
 import com.daimler.sechub.commons.core.util.SimpleStringUtils;
+import com.daimler.sechub.commons.model.SecHubFinding;
 import com.daimler.sechub.commons.model.web.SecHubReportWeb;
 import com.daimler.sechub.commons.model.web.SecHubReportWebAttack;
 import com.daimler.sechub.commons.model.web.SecHubReportWebBody;
@@ -19,6 +20,28 @@ public class HTMLReportHelper {
 
     public static HTMLReportHelper DEFAULT = new HTMLReportHelper();
 
+    public boolean hasDescription(SecHubFinding finding) {
+        return SimpleStringUtils.isNotEmpty(getDescription(finding));
+    }
+    
+    public boolean hasSolution(SecHubFinding finding) {
+        return SimpleStringUtils.isNotEmpty(getSolution(finding));
+    }
+    
+    public String getDescription(SecHubFinding finding) {
+        if (finding==null ) {
+            return EMPTY_STRING;
+        }
+        return finding.getDescription();
+    }
+    
+    public String getSolution(SecHubFinding finding) {
+        if (finding==null ) {
+            return EMPTY_STRING;
+        }
+        return finding.getSolution();
+    }
+    
     public boolean hasEvidenceStartLine(SecHubReportWebAttack attack) {
         return getEvidenceStartLine(attack) >= 0;
     }

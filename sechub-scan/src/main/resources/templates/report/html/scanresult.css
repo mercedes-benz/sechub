@@ -287,11 +287,12 @@ details:not([open]) summary::after {
 .rBodyText {
    height: 150px;
 }
+
 .rAttackVectorText {
     height: 10px;
 }
 
-.rTargetLine{
+.rTargetLine {
    display:flex
 }
 
@@ -310,3 +311,15 @@ details:not([open]) summary::after {
 .rDetailHeadline1 {
     text-decoration: underline;
 }
+
+.rCalculatedText {
+   display:flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   justify-content: flex-start;
+}
+.rCalculatedMarkerInsideText{
+   font-style: italic;
+}
+
+

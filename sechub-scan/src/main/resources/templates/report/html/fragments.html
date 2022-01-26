@@ -297,11 +297,12 @@ details:not([open]) summary::after {
 .rBodyText {
    height: 150px;
 }
+
 .rAttackVectorText {
     height: 10px;
 }
 
-.rTargetLine{
+.rTargetLine {
    display:flex
 }
 
@@ -320,6 +321,18 @@ details:not([open]) summary::after {
 .rDetailHeadline1 {
     text-decoration: underline;
 }
+
+.rCalculatedText {
+   display:flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   justify-content: flex-start;
+}
+.rCalculatedMarkerInsideText{
+   font-style: italic;
+}
+
+
 </style>
 
 <th:block th:fragment="findingCells">
@@ -327,8 +340,8 @@ details:not([open]) summary::after {
 <td th:text="${finding.id}">4711</td>
 <td th:text="${finding.severity}">HIGH</td>
 <td>
-	<div th:text="${finding.name}">Command Injection</div>
-	<a  th:if="${finding.cweId != null}" th:href="@{'https://cwe.mitre.org/data/definitions/' + ${finding.cweId} + '.html'}" th:text="'CWE-' + ${finding.cweId}" target="_blank">CWE-77</a>
+     <div th:text="${finding.name}">Command Injection</div>
+     <div th:replace="report/html/links :: cweLink(finding=${finding})"></div>
 </td>
 <td>
 	<div th:if="${finding.hasScanType('infraScan')}" th:text="${finding.description}">Description1</div>
@@ -387,8 +400,7 @@ details:not([open]) summary::after {
 				<div class="rTableCell" th:text="${codeScanEntry.source}" style="width:25%">result= evalCode.execute()</div>
 			</div>
 		</div>
-		<h4>Description</h4>
-		<div class="rText" th:text="${finding.description}">Description1</div>
+         <div th:replace="report/html/details_footer :: details_footer(finding=${finding})"></div>
 	</details>
 	<details th:if="${finding.hasScanType('webScan')}" th:with="webRequest=${finding.web.request},webResponse=${finding.web.response}">
         <summary data-open="Open details" data-close="Close details"></summary>
@@ -429,11 +441,8 @@ details:not([open]) summary::after {
         <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.text}" th:text="${webResponse.body.text}">Text</textarea>
         <textarea readonly="true" class="rBodyText" th:if="${webResponse.body.binary}" th:text="${webResponse.body.binary}">Binary</textarea>
     
-        <h3 class="rDetailHeadline1">Description</h3>
-        <div class="rText" th:text="${finding.description}">Description1</div>
-        
-        <h3  class="rDetailHeadline1">Solution</h3>
-        <div class="rText" th:text="${finding.solution}" style="font-family:monospace">Solution</div>
+        <div th:replace="report/html/details_footer :: details_footer(finding=${finding})"></div>
+       
     </details>
 </td>
 
