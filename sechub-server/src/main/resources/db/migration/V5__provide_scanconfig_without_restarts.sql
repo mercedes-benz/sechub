@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 CREATE TABLE adm_mapping
 (
    mapping_id varchar(240) not null, -- we accept 240 (3x80), see MappingIdValidation

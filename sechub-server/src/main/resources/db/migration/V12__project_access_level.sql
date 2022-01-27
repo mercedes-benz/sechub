@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- project access level database parts
 
 -- admin domain

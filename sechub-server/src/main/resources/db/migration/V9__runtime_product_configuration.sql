@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 CREATE TABLE scan_product_executor_config
 (
    config_uuid uuid not null,

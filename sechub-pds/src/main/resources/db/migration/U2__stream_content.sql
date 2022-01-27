@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- update pds job
 ALTER TABLE pds_job DROP COLUMN output_stream_text;
 
