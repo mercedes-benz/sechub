@@ -5,7 +5,7 @@ package util
 import (
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	. "mercedes-benz.com/sechub/testutil"
 )
 
 func Test_emptyJSON_is_json(t *testing.T) {

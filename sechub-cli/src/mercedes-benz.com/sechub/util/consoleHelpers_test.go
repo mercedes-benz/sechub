@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	sechubTestUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func Example_readFromConsole() {

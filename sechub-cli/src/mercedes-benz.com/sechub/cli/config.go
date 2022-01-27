@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 // Config for internal CLI calls

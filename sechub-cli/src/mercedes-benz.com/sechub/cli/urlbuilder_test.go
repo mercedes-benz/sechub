@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	sechubTestUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 // https://localhost:8443/api/project/testproject/job/

@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	. "mercedes-benz.com/sechub/testutil"
 )
 
 func TestLoadConfigFile(t *testing.T) {

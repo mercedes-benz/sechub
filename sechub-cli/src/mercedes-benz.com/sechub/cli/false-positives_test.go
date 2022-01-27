@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	sechubTestUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestFalsePositivesFilePathCorrectCreated(t *testing.T) {

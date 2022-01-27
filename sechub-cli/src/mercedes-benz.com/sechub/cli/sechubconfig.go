@@ -12,7 +12,7 @@ import (
 	"os"
 	"strings"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 // SecHubConfig is the sechub configuration JSON pendant in Go. But we do only necessary parts from JSON file!
