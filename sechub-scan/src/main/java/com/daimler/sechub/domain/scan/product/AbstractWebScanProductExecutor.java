@@ -15,7 +15,7 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements WebScanProductExecutor {
 
-
+    // FIXME jeeppler, remove this method -> not necessary anymore
 	@Override
 	protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
 		/* assert WEBSCAN configuration available */
@@ -26,10 +26,9 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		/* Fetch URL */
 		SecHubWebScanConfiguration secHubWebScanConfiguration = webscan.get();
 		
-	    //FIXME jeeppler, 2021-12-16: This code is unnecessarily complex
 		List<URI> uris = new LinkedList<>();
 		uris.add(secHubWebScanConfiguration.getUri());
-		if (uris == null) {
+		if (uris.isEmpty()) {
 			throw new IllegalStateException("At this state the URI must be set - validation failed!");
 		}
 		return uris;

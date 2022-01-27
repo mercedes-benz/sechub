@@ -89,7 +89,7 @@ public class SecHubConfigurationValidator implements Validator {
 		SecHubWebScanConfiguration webscan = webscanOption.get();
 		URI uri = webscan.getUri();
 		
-		if (uri == null) {
+		if (uri == null || uri.toString().isEmpty()) {
 			errors.reject("api.error.webscan.target.missing", new Object[] { },
 					"Webscan configuration contains no target at all - but at one URI is necessary for a webscan!");
 

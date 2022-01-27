@@ -25,55 +25,6 @@ public class NetsparkerConfigBuilderTest {
 	@Rule
     public ExpectedException expectedException = ExpectedExceptionFactory.none();
 
-	//TODO: Delete test -> multiple uris are not possible anymore
-//	@Test
-//	public void uris_with_different_roots_are_not_accepted() throws Exception {
-//		/* prepare */
-//		expectedException.expect(IllegalStateException.class);
-//
-//		/* execute */
-//		Set<URI> collection = new LinkedHashSet<>();
-//		collection.add(URI.create("https://www.example1.com"));
-//		collection.add(URI.create("https://www.example2.com"));
-//
-//
-//		validConfigAnd().setTargetURIs(collection).build();
-//
-//	}
-
-	   //TODO: Delete test -> multiple uris are not possible anymore
-//	@Test
-//	public void uris_with_different_roots_are_not_accepted_even_when_same_main_domain() throws Exception {
-//		/* prepare */
-//		expectedException.expect(IllegalStateException.class);
-//
-//		/* execute */
-//		Set<URI> collection = new LinkedHashSet<>();
-//		collection.add(URI.create("https://www.example1.com"));
-//		collection.add(URI.create("https://other.example1.com"));
-//
-//
-//		validConfigAnd().setTargetURIs(collection).build();
-//
-//	}
-//
-//	@Test
-//	public void uris_with_same_roots_are_accepteden() throws Exception {
-//
-//		/* execute */
-//		Set<URI> collection = new LinkedHashSet<>();
-//		collection.add(URI.create("https://www.example1.com/app1"));
-//		collection.add(URI.create("https://www.example1.com/app2"));
-//
-//		NetsparkerConfig cfg = validConfigAnd().setTargetURIs(collection).build();
-//
-//		/* test */
-//		String websiteName = cfg.getWebsiteName();
-//		assertNotNull(websiteName);
-//		assertEquals("www.example1.com_default", websiteName);
-//
-//	}
-
 	@Test
 	/* reason of fail: this is not a valid java url */
 	public void xxx_www_example_com__is_throwing_illegal_argument() throws Exception {

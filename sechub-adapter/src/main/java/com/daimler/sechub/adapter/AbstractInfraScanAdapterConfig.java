@@ -26,22 +26,20 @@ public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConf
         return targetURIs;
     }
 
-//    @Override
-//    public URI getTargetURI() {
-//        if (targetURIs == null || targetURIs.isEmpty()) {
-//            return null;
-//        }
-//        return targetURIs.iterator().next();
-//    }
-//
-//    @Override
-//    public String getTargetAsString() {
-//        URI uri = getTargetURI();
-//        if (uri == null) {
-//            return null;
-//        }
-//        return uri.toString();
-//    }
+    public URI getTargetURI() {
+        if (targetURIs == null || targetURIs.isEmpty()) {
+            return null;
+        }
+        return targetURIs.iterator().next();
+    }
+
+    public String getTargetAsString() {
+        URI uri = getTargetURI();
+        if (uri == null) {
+            return null;
+        }
+        return uri.toString();
+    }
 
     @Override
     public final Set<InetAddress> getTargetIPs() {
@@ -53,20 +51,18 @@ public abstract class AbstractInfraScanAdapterConfig extends AbstractAdapterConf
         return rootTargetUris;
     }
 
-//    @Override
-//    public URI getRootTargetURI() {
-//        if (rootTargetUris == null || rootTargetUris.isEmpty()) {
-//            return null;
-//        }
-//        return rootTargetUris.iterator().next();
-//    }
-//
-//    @Override
-//    public String getRootTargetURIasString() {
-//        URI uri = getRootTargetURI();
-//        if (uri == null) {
-//            return null;
-//        }
-//        return uri.toString();
-//    }
+    public URI getRootTargetURI() {
+        if (rootTargetUris == null || rootTargetUris.isEmpty()) {
+            return null;
+        }
+        return rootTargetUris.iterator().next();
+    }
+
+    public String getRootTargetURIasString() {
+        URI uri = getRootTargetURI();
+        if (uri == null) {
+            return null;
+        }
+        return uri.toString();
+    }
 }

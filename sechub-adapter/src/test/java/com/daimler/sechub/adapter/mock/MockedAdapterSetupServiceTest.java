@@ -65,8 +65,8 @@ public class MockedAdapterSetupServiceTest {
 		Map<AdapterOptionKey, String> options = new HashMap<>();
 		options.put(AdapterOptionKey.MOCK_CONFIGURATION_RESULT, "yellow");
 		when(config.getOptions()).thenReturn(options);
-		// TODO jeeppler, 2022-01-04: Can we remove this? 
-		//when(config.getTargetAsString()).thenReturn("target1");
+
+		when(config.getTargetAsString()).thenReturn("target1");
 		when(mockedCheckmarxAdapter.getPathToMockResultFile("yellow")).thenReturn("pathFromAdapter");
 		
 		/* execute */

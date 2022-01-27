@@ -19,12 +19,10 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
         return loginConfig;
     }
 
-    @Override
     public boolean hasMaxScanDuration() {
         return maxScanDuration != null;
     }
 
-    @Override
     public String getTargetType() {
         if (targetType == null) {
             return "";
@@ -32,12 +30,10 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
         return targetType;
     }
     
-    @Override
     public URI getTargetURI() {
         return targetURI;
     }
     
-    @Override
     public String getRootTargetURIasString() {
         URI uri = getRootTargetURI();
         if (uri == null) {
@@ -46,12 +42,10 @@ public abstract class AbstractWebScanAdapterConfig extends AbstractAdapterConfig
         return uri.toString();
     }
 
-    @Override
     public URI getRootTargetURI() {
         return rootTargetURI;
     }
     
-    @Override
     public String getTargetAsString() {
         URI uri = getTargetURI();
         if (uri == null) {

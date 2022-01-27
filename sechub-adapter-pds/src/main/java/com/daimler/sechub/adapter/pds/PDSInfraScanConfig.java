@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.daimler.sechub.adapter.pds;
 
-import com.daimler.sechub.adapter.WebScanAdapterConfig;
+import com.daimler.sechub.adapter.InfraScanAdapterConfig;
 
-public interface PDSInfraScanConfig extends PDSAdapterConfig, WebScanAdapterConfig{
+public interface PDSInfraScanConfig extends PDSAdapterConfig, InfraScanAdapterConfig {
 
 }

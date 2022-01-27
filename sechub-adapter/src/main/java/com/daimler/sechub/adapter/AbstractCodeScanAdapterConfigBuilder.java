@@ -4,7 +4,9 @@ package com.daimler.sechub.adapter;
 import java.util.Iterator;
 import java.util.Set;
 
-public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCodeScanAdapterConfigBuilder<B, C>, C extends CodeScanAdapterConfig {
+public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCodeScanAdapterConfigBuilder<B, C>, C extends CodeScanAdapterConfig>
+        extends AbstractAdapterConfigBuilder<B, C>
+{
 
     private Set<String> sourceFolders;
 
@@ -13,10 +15,16 @@ public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCod
         this.sourceFolders = sourceFolders;
         return (B) this;
     }
-
+    
     @Override
     void packageInternalCustomBuild(C config) {
         if (sourceFolders != null) {
+            if (! (config instanceof AbstractCodeScanAdapterConfig)) {
+                throw new IllegalArgumentException("Wrong config type. Your config is of type " + config.getClass().getName() + " but should be " + AbstractCodeScanAdapterConfig.class.getSimpleName());
+            }
+            
+            AbstractCodeScanAdapterConfig abstractCodeScanConfig = (AbstractCodeScanAdapterConfig) config;
+            
             StringBuilder sb = new StringBuilder();
             for (Iterator<String> it = sourceFolders.iterator(); it.hasNext();) {
                 String folder = it.next();
@@ -28,7 +36,8 @@ public abstract class AbstractCodeScanAdapterConfigBuilder<B extends AbstractCod
                     sb.append(';');
                 }
             }
-            config.sourceScanTargetString = sb.toString();
+
+            abstractCodeScanConfig.sourceScanTargetString = sb.toString();
         }
     }
 }

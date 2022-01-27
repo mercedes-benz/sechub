@@ -6,7 +6,7 @@ import java.util.Map;
 import com.daimler.sechub.adapter.support.JSONAdapterSupport;
 
 /**
- * Context for REST execution per spring REST templates (per default with a
+ * Base context for Adapter execution. Contains adapter config, adapter , runtime context and json adapter support.
  * simple String as result).
  * 
  * @author Albert Tregnaghi

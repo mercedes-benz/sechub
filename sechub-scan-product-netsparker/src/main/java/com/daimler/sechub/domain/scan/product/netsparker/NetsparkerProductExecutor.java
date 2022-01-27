@@ -45,6 +45,8 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 	@Override
 	protected List<ProductResult> executeWithAdapter(SecHubExecutionContext context, ProductExecutorContext executorContext, NetsparkerInstallSetup setup,
 			TargetRegistryInfo info) throws Exception{
+	    
+	    // FIXME jeepler, change this for a single URI
 		Set<URI> targetURIs = info.getURIs();
 		if (targetURIs.isEmpty()) {
 			/* no targets defined */
@@ -54,6 +56,8 @@ public class NetsparkerProductExecutor extends AbstractWebScanProductExecutor<Ne
 		LOG.debug("Trigger netsparker adapter execution for target {} and setup {} ", targetType,setup);
 
 		List<ProductResult> results = new ArrayList<>();
+		
+		// FIXME jeepler, change this for a single URI
 		/* NETSPARKER is not able to scan multiple targets, so we
 		 * start NETSPARKER multiple times for each target URI
 		 */

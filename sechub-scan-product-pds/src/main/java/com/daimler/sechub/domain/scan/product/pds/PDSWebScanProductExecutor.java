@@ -71,6 +71,7 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
 
+     // FIXME jeepler, change this for a single URI
         Set<URI> targetURIs = info.getURIs();
         if (targetURIs.isEmpty()) {
             /* no targets defined */
@@ -88,6 +89,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         String projectId = context.getConfiguration().getProjectId();
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
+        
+        // FIXME jeepler, change this for a single URI
         /* we currently scan always only ONE url at the same time */
         for (URI targetURI : targetURIs) {
             /* @formatter:off */

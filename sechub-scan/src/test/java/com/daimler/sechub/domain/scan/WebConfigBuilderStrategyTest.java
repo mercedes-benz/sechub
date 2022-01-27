@@ -29,7 +29,7 @@ public class WebConfigBuilderStrategyTest {
     public void no_authentication() throws Exception {
         /* prepare */
         WebConfigBuilderStrategy strategyToTest = createStrategy("sechub_config/webscan_no_auth.json");
-        String expectedUrl = URI.create("https://productfailure.demo.example.org/").toString();
+        URI expectedUrl = URI.create("https://productfailure.demo.example.org");
         TestAbstractWebScanAdapterConfigBuilder configBuilder = new TestAbstractWebScanAdapterConfigBuilder();
 
         /* execute */

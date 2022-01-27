@@ -13,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.core.security.CryptoAccess;
 
+/**
+ * Abstract Adapter Config Builder 
+ *
+ * @param <B>  Builder
+ * @param <C>  Adapter configuration
+ */
 public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConfigBuilder<B, C>, C extends AdapterConfig> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAdapterConfigBuilder.class);
@@ -59,8 +65,11 @@ public abstract class AbstractAdapterConfigBuilder<B extends AbstractAdapterConf
     private Map<AdapterOptionKey, String> options = new LinkedHashMap<>();
 
     private static int minimumTimeToWaitForNextCheckOperationInMilliseconds = 500;
+    
+    protected URIShrinkSupport uriShrinkSupport;
 
     protected AbstractAdapterConfigBuilder() {
+        uriShrinkSupport = createURIShrinker();
     }
 
     /**

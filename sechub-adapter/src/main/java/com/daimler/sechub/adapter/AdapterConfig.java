@@ -42,5 +42,12 @@ public interface AdapterConfig extends TrustAllConfig, TraceIdProvider{
 	 * @return the project id or <code>null</code> if none set
 	 */
 	String getProjectId();
+	
+    /**
+     * Returns a target string.
+     * 
+     * @return target string or <code>null</code> if none defined
+     */
+    String getTargetAsString();
 
 }

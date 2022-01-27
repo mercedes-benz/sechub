@@ -59,5 +59,10 @@ public class OneInstallSetupConfigBuilderStrategyTest {
 
 	private class TestAdapterConfig extends AbstractAdapterConfig {
 
+        @Override
+        public String getTargetAsString() {
+            return null;
+        }
+
 	}
 }

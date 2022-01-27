@@ -38,9 +38,9 @@ public class URIShrinkSupport {
     }
 	
     /**
-     * Shrinks given uris to a set containing only {@link URI} elements which
+     * Shrinks a given URI to a set containing only {@link URI} elements which
      * represent same protocol, hostname and port
-     * @param uris
+     * @param uri
      * @return set of {@link URI} , never <code>null</code>
      */
     public URI shrinkToRootURI(URI uri) {

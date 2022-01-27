@@ -47,15 +47,15 @@ public class AbstractWebScanAdapterConfigBuilderTest {
     public void login_basic() {
         /* execute */
         /* @formatter:off */
-		TestWebScanAdapterConfig webScanConfig = new TestAbstractWebScanAdapterConfigBuilder().
-				login().
-					basic().
-						username("user1").
-						password("passwd1").
-						realm("realm1").
-				endLogin().
-				build();
-		/* @formatter:on */
+        TestWebScanAdapterConfig webScanConfig = new TestAbstractWebScanAdapterConfigBuilder().
+                login().
+                    basic().
+                        username("user1").
+                        password("passwd1").
+                        realm("realm1").
+                endLogin().
+                build();
+        /* @formatter:on */
 
         /* test */
         LoginConfig config = webScanConfig.getLoginConfig();
@@ -70,24 +70,24 @@ public class AbstractWebScanAdapterConfigBuilderTest {
     public void login_form_scripted() {
         /* execute */
         /* @formatter:off */
-		TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().
-				login().
-					form().
-					    script().
-    					    addPage().
-        					    addAction(ActionType.USERNAME).select("#user_id").enterValue("user1").endStep().
-        					    addAction(ActionType.PASSWORD).select("#pwd_id").enterValue("pwd1").endStep().
-        					    addAction(ActionType.INPUT).
-        					        select("#loginForm > label > input['email']").
-        					        enterValue("user1@example.org").
-        					        description("Email field").
-        					        endStep().
-        					    addAction(ActionType.WAIT).unit(SecHubTimeUnit.SECOND).enterValue("2").endStep().
-        					    addAction(ActionType.CLICK).select("#login_button_id").enterValue(null).endStep().
-        					doEndPage().
-        			endLogin().
-				build();
-		/* @formatter:on */
+        TestWebScanAdapterConfig testAdapterConfig = new TestAbstractWebScanAdapterConfigBuilder().
+                login().
+                    form().
+                        script().
+                            addPage().
+                                addAction(ActionType.USERNAME).select("#user_id").enterValue("user1").endStep().
+                                addAction(ActionType.PASSWORD).select("#pwd_id").enterValue("pwd1").endStep().
+                                addAction(ActionType.INPUT).
+                                    select("#loginForm > label > input['email']").
+                                    enterValue("user1@example.org").
+                                    description("Email field").
+                                    endStep().
+                                addAction(ActionType.WAIT).unit(SecHubTimeUnit.SECOND).enterValue("2").endStep().
+                                addAction(ActionType.CLICK).select("#login_button_id").enterValue(null).endStep().
+                            doEndPage().
+                    endLogin().
+                build();
+        /* @formatter:on */
 
         /* test */
         assertNotNull(testAdapterConfig);
@@ -141,9 +141,8 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         assertNull(action.getDescription());
     }
 
-    // TODO change name
     @Test
-    public void when_one_target_uri_is_set__target_uri_is_as_expected_and_list_is_1() throws Exception {
+    public void when_one_target_uri_is_set__target_uri_is_as_expected() throws Exception {
 
         /* prepare */
         String uriString = "http://www.my.cool.stuff.com";
@@ -157,32 +156,58 @@ public class AbstractWebScanAdapterConfigBuilderTest {
         assertEquals(uriString, configToTest.getTargetAsString());
     }
 
-  @Test
-  public void rootURIShrinker_is_used_when_building() throws Exception {
+    @Test
+    public void when_no_target_url_set_the_config_has_null_as_target_uri() throws Exception {
 
-      /* prepare */
-      URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
-      TestWebScanAdapterConfigBuilder builderToTest = new TestWebScanAdapterConfigBuilder() {
-          protected URIShrinkSupport createURIShrinker() {
-              return shrinker;
-          }
-      };
+        /* execute */
+        TestWebScanAdapterConfigInterface configToTest = validConfigAnd().build();
 
-      builderToTest.setProductBaseUrl("baseUrl");
-      URI targetURI = new URI("http://www.mycoolstuff.com/app1");
+        /* test */
+        assertNull(configToTest.getTargetURI());
+        assertNull(configToTest.getTargetAsString());
 
-      URI mockedShrink = new URI("http://www.shrinked.com");
+    }
 
-      when(shrinker.shrinkToRootURI(eq(targetURI))).thenReturn(mockedShrink);
+    @Test
+    public void when_target_uri_is_set_by_string__target_uri_is_as_expected() throws Exception {
+        /* prepare */
+        String uriString = "http://www.my.cool.stuff.com";
+        URI uri = new URI(uriString);
+        /* execute */
 
-      /* execute */
-      TestWebScanAdapterConfigInterface config = builderToTest.setTargetURI(targetURI).build();
+        TestWebScanAdapterConfigInterface configToTest = validConfigAnd().setTargetURI(uri).build();
 
-      /* test */
-      verify(shrinker).shrinkToRootURI(eq(targetURI));
-      assertEquals(mockedShrink, config.getRootTargetURI());
-  }
-    
+        /* test */
+        assertEquals(uri, configToTest.getTargetURI());
+        assertEquals(uriString, configToTest.getTargetAsString());
+    }
+
+    @Test
+    public void rootURIShrinker_is_used_when_building() throws Exception {
+
+        /* prepare */
+        URIShrinkSupport shrinker = mock(URIShrinkSupport.class);
+        TestWebScanAdapterConfigBuilder builderToTest = new TestWebScanAdapterConfigBuilder() {
+            protected URIShrinkSupport createURIShrinker() {
+                return shrinker;
+            }
+        };
+
+        builderToTest.setProductBaseUrl("baseUrl");
+        URI targetURI = new URI("http://www.mycoolstuff.com/app1");
+
+        URI mockedShrink = new URI("http://www.shrinked.com");
+
+        when(shrinker.shrinkToRootURI(eq(targetURI))).thenReturn(mockedShrink);
+
+        /* execute */
+        TestWebScanAdapterConfigInterface config = builderToTest.setTargetURI(targetURI).build();
+
+        /* test */
+        verify(shrinker).shrinkToRootURI(eq(targetURI));
+        assertEquals(mockedShrink, config.getRootTargetURI());
+    }
+
     private class TestAbstractWebScanAdapterConfigBuilder
             extends AbstractWebScanAdapterConfigBuilder<TestAbstractWebScanAdapterConfigBuilder, TestWebScanAdapterConfig> {
 

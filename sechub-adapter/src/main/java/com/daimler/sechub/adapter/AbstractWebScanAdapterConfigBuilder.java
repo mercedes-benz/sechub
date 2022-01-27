@@ -4,18 +4,23 @@ package com.daimler.sechub.adapter;
 import java.net.URI;
 import java.net.URL;
 
-import com.daimler.sechub.adapter.support.URIShrinkSupport;
 import com.daimler.sechub.commons.model.SecHubTimeUnit;
 import com.daimler.sechub.commons.model.login.ActionType;
 
-public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends WebScanAdapterConfig> {
+
+public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebScanAdapterConfigBuilder<B, C>, C extends WebScanAdapterConfig>
+    extends AbstractAdapterConfigBuilder<B, C>
+{
 
     private LoginBuilder currentLoginBuilder;
     private SecHubTimeUnitData maxScanDuration;
     private URI targetURI;
     private URI rootTargetURI;
-    private URIShrinkSupport uriShrinkSupport = new URIShrinkSupport();
-
+   
+    protected AbstractWebScanAdapterConfigBuilder() {
+        super();
+    }
+    
     @SuppressWarnings("unchecked")
     public B setMaxScanDuration(SecHubTimeUnitData maxScanDuration) {
         this.maxScanDuration = maxScanDuration;
@@ -195,9 +200,15 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
 
     @Override
     void packageInternalCustomBuild(C config) {
-        config.maxScanDuration = maxScanDuration;
-        config.targetURI = targetURI;
-        config.rootTargetURI = rootTargetURI;
+        if (! (config instanceof AbstractWebScanAdapterConfig)) {
+            throw new IllegalArgumentException("Wrong config type. Your config is of type " + config.getClass().getName() + " but should be " + AbstractCodeScanAdapterConfig.class.getSimpleName());
+        }
+        
+        AbstractWebScanAdapterConfig abstractWebScanConfig = (AbstractWebScanAdapterConfig) config;
+        
+        abstractWebScanConfig.maxScanDuration = maxScanDuration;
+        abstractWebScanConfig.targetURI = targetURI;
+        abstractWebScanConfig.rootTargetURI = rootTargetURI;
 
         if (currentLoginBuilder == null) {
             return;
@@ -207,8 +218,8 @@ public abstract class AbstractWebScanAdapterConfigBuilder<B extends AbstractWebS
             return;
         }
         
-        config.loginConfig = currentLoginBuilder.createdLoginConfig;
-        config.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
+        abstractWebScanConfig.loginConfig = currentLoginBuilder.createdLoginConfig;
+        abstractWebScanConfig.loginConfig.loginUrl = currentLoginBuilder.loginUrl;
     }
 
 }
