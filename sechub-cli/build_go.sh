@@ -7,7 +7,7 @@ package="$3"
 platforms="$4"
 globalBuildDir="$5"
 
-MOD_BASENAME="daimler.com/sechub"
+MOD_BASENAME="mercedes-benz.com/sechub"
 SUBMODULES="cli testutil util"  # Space separated list
 SRC_PATH="$projectDirLinuxPath/src/$MOD_BASENAME"
 

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	. "mercedes-benz.com/sechub/testutil"
 )
 
 func Test_fillTemplate_without_data_keeps_data_as_is(t *testing.T) {

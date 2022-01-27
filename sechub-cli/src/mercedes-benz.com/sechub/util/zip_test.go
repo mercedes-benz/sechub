@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	sechubUtil "daimler.com/sechub/testutil"
+	sechubUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestZipFileBeingPartOfScannedFoldersIsRejected(t *testing.T) {

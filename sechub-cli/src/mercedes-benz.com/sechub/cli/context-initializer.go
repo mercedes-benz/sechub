@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 // InitializeContext - initialize and validate context.

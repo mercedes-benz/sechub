@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	sechubTestUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestCreateChecksum(t *testing.T) {

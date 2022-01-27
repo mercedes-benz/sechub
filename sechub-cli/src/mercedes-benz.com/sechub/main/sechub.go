@@ -6,7 +6,7 @@ package main
  * Main entry point for SECHUB CLI client.
  */
 import (
-	"daimler.com/sechub/cli"
+	"mercedes-benz.com/sechub/cli"
 )
 
 func main() {

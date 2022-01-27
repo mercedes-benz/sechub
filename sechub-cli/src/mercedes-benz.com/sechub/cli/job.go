@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 /* --------------------------------------------------

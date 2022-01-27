@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 // HandleHTTPErrorAndResponse does just handle error and repsonse

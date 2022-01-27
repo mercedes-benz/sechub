@@ -5,7 +5,7 @@ package util
 import (
 	"testing"
 
-	. "daimler.com/sechub/testutil"
+	. "mercedes-benz.com/sechub/testutil"
 )
 
 func Test_Simple_filename_and_pattern_with_asterisk_at_start_and_prefix_matches(t *testing.T) {

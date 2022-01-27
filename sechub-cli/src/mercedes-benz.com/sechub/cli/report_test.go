@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	sechubTestUtil "daimler.com/sechub/testutil"
+	sechubTestUtil "mercedes-benz.com/sechub/testutil"
 )
 
 func TestReportFilePathCorrectCreated(t *testing.T) {
@@ -59,31 +59,31 @@ func TestNewSecHubReportFromFile(t *testing.T) {
 						 "name": "Absolute Path Traversal",
 						 "severity": "HIGH",
 						 "code": {
-								"location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+								"location": "java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java",
 								"line": 28,
 								"column": 35,
 								"source": "\tpublic static void main(String[] args) throws Exception {/*SECHUB mockdata*/",
 								"relevantPart": "args",
 								"calls": {
-									 "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+									 "location": "java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java",
 									 "line": 33,
 									 "column": 17,
 									 "source": "\t\tString path = args[0];",
 									 "relevantPart": "args",
 									 "calls": {
-											"location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+											"location": "java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java",
 											"line": 33,
 											"column": 10,
 											"source": "\t\tString path = args[0];",
 											"relevantPart": "path",
 											"calls": {
-												 "location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+												 "location": "java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java",
 												 "line": 34,
 												 "column": 38,
 												 "source": "\t\tFile documentsGenFolder = new File(path);",
 												 "relevantPart": "path",
 												 "calls": {
-														"location": "java/com/daimler/sechub/docgen/AsciidocGenerator.java",
+														"location": "java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java",
 														"line": 34,
 														"column": 29,
 														"source": "\t\tFile documentsGenFolder = new File(path);",
@@ -101,7 +101,7 @@ func TestNewSecHubReportFromFile(t *testing.T) {
 						 "name": "Race Condition Format Flaw",
 						 "severity": "LOW",
 						 "code": {
-								"location": "java/com/daimler/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java",
+								"location": "java/com/mercedes-benz/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java",
 								"line": 228,
 								"column": 27,
 								"source": "\t\treturn dateFormat.format(new Date());",

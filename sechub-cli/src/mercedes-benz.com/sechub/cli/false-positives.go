@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	sechubUtil "daimler.com/sechub/util"
+	sechubUtil "mercedes-benz.com/sechub/util"
 )
 
 // Keyword for false-posisitves json file
@@ -256,7 +256,7 @@ func printFinding(finding *SecHubReportFindings) {
 	// Example output:
 	// ---------------------------------------------------------------------------
 	// 1: Absolute Path Traversal, severity: MEDIUM
-	// java/com/daimler/sechub/docgen/AsciidocGenerator.java, line:28, column:35:
+	// java/com/mercedes-benz/sechub/docgen/AsciidocGenerator.java, line:28, column:35:
 	//       public static void main(String[] args) throws Exception {
 	// ---------------------------------------------------------------------------
 	sechubUtil.PrintDashedLine()
@@ -321,7 +321,7 @@ func printFalsePositiveDefinition(falsepositive *FalsePositiveDefinition) {
 	// ------------------------------------------------------------------
 	// Creation of Temp File in Dir with Incorrect Permissions, codeScan severity: LOW
 	//   Origin: Finding ID 3 in job f94d815c-7f69-48c3-8433-8f03d52ce32a
-	//   File: java/com/daimler/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java
+	//   File: java/com/mercedes-benz/sechub/docgen/kubernetes/KubernetesTemplateFilesGenerator.java
 	//   Code:                 File secHubServer = new File("./sechub-server");
 	// (Added by admin at 2020-07-10 13:41:06; comment: "Only temporary directory")
 	// ------------------------------------------------------------------
