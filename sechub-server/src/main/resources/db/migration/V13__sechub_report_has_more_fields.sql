@@ -1,3 +1,4 @@
+-- SPDX-License-Identifier: MIT
 -- SecHub report has more fields. This data is stored inside ScanResult entity.
 -- formerly the result column did contain JSON with SecHub result inside
 -- because result has not the fields wanted, we store now the complete report model inside.
