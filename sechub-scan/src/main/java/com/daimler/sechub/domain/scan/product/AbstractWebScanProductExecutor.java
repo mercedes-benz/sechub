@@ -15,7 +15,6 @@ import com.daimler.sechub.sharedkernel.configuration.SecHubConfiguration;
 
 public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> extends AbstractInstallSetupProductExecutor<S> implements WebScanProductExecutor {
 
-    // FIXME jeeppler, remove this method -> not necessary anymore
 	@Override
 	protected List<URI> resolveURIsForTarget(SecHubConfiguration config) {
 		/* assert WEBSCAN configuration available */
@@ -34,7 +33,6 @@ public abstract class AbstractWebScanProductExecutor<S extends InstallSetup> ext
 		return uris;
 	}
 	
-    // FIXME jeeppler, does not overwrite -> @Override
     protected URI resolveURIForTarget(SecHubConfiguration config) {
         /* assert WEBSCAN configuration available */
         Optional<SecHubWebScanConfiguration> webscan = config.getWebScan();

@@ -153,7 +153,7 @@ public abstract class AbstractInstallSetupProductExecutor<S extends InstallSetup
 	 * @throws SecHubExecutionException
 	 */
 	protected List<ProductResult> execute(SecHubExecutionContext context, ProductExecutorContext executorContext,TargetRegistry registry, S setup)
-			throws Exception /* NOSONAR */ {
+			throws Exception {
 		List<ProductResult> result = new ArrayList<>();
 
 		/* we handle here automatically all known targets and call the adapters */

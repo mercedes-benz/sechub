@@ -103,6 +103,25 @@ public class TargetRegistry {
 			return uris;
 		}
 
+	     /**
+         * Returns a target URI for this kind of {@link TargetType}
+         *
+         * @return uri or <code>null</code>
+         */
+        public URI getURI() {
+            URI uri = null;
+            
+            Set<URI> uris = getURIs();
+            
+            if (!uris.isEmpty()) {
+                // get the first element
+                uri = uris.iterator().next();
+            }
+            
+            return uri;
+        }
+
+
 		/**
 		 * @return a set, never <code>null</code> containing all system folder pathes used for code upload, or an empty list
 		 */

@@ -71,9 +71,8 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         PDSExecutorConfigSuppport configSupport = PDSExecutorConfigSuppport.createSupportAndAssertConfigValid(executorContext.getExecutorConfig(),
                 systemEnvironment);
 
-     // FIXME jeepler, change this for a single URI
-        Set<URI> targetURIs = info.getURIs();
-        if (targetURIs.isEmpty()) {
+        URI targetURI = info.getURI();
+        if (targetURI == null) {
             /* no targets defined */
             return Collections.emptyList();
         }
@@ -89,19 +88,16 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
         String projectId = context.getConfiguration().getProjectId();
 
         Map<String, String> jobParameters = configSupport.createJobParametersToSendToPDS(context.getConfiguration());
-        
-        // FIXME jeepler, change this for a single URI
-        /* we currently scan always only ONE url at the same time */
-        for (URI targetURI : targetURIs) {
-            /* @formatter:off */
+
+        /*
+         * special behavior, because having multiple results here, we must find former
+         * result corresponding to target URI.
+         */
+        /* @formatter:off */
+        executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
             
-            /* special behavior, because having multiple results here, we must find former result corresponding to 
-             * target URI.
-             */
-            executorContext.useFirstFormerResultHavingMetaData(PDSMetaDataID.KEY_TARGET_URI, targetURI);
-            
-            ProductResult result = resilientActionExecutor.executeResilient(() -> {
-                PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
+        ProductResult result = resilientActionExecutor.executeResilient(() -> {
+            PDSWebScanConfig pdsWebScanConfig = PDSWebScanConfigImpl.builder().
                         setPDSProductIdentifier(configSupport.getPDSProductIdentifier()).
                         setTrustAllCertificates(configSupport.isTrustAllCertificatesEnabled()).
                         setProductBaseUrl(configSupport.getProductBaseURL()).
@@ -125,18 +121,17 @@ public class PDSWebScanProductExecutor extends AbstractWebScanProductExecutor<PD
                         setTargetURI(targetURI).
                         
                         build();
-                /* @formatter:on */
+            /* @formatter:on */
 
-                /* execute PDS by adapter and return product result */
-                String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
+            /* execute PDS by adapter and return product result */
+            String pdsResult = pdsAdapter.start(pdsWebScanConfig, executorContext.getCallback());
 
-                ProductResult currentProductResult = executorContext.getCurrentProductResult();
-                currentProductResult.setResult(pdsResult);
-                return currentProductResult;
-            });
-            results.add(result);
+            ProductResult currentProductResult = executorContext.getCurrentProductResult();
+            currentProductResult.setResult(pdsResult);
+            return currentProductResult;
+        });
+        results.add(result);
 
-        }
         return results;
     }
 

@@ -285,7 +285,6 @@ task generateOpenapi() {
     	scanJobSchema.properties.infraScan.properties.uris.items = stringType
     	scanJobSchema.properties.infraScan.properties.ips.items = stringType
     	scanJobSchema.properties.codeScan.properties.fileSystem.properties.folders.items = stringType
-		scanJobSchema.properties.webScan.properties.uris.items = stringType
 		
 		def userDetailsSchema = jsonObject.components.schemas.UserDetails
 		userDetailsSchema.properties.projects.items = stringType
