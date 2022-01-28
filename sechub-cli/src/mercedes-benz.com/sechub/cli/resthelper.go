@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	sechubUtil "mercedes-benz.com/sechub/util"
 )
@@ -30,17 +31,44 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("Sending %s:%s\n Headers: %s\n Origin-Content: %q", method, url, header, context.inputForContentProcessing))
 
 	/* prepare */
-	req, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
+	request, err1 := http.NewRequest(method, url, bytes.NewBuffer(context.contentToSend)) // we use "contentToSend" and not "inputForContentProcessing" !
 	sechubUtil.HandleHTTPError(err1, ExitCodeHTTPError)
-	req.SetBasicAuth(context.config.user, context.config.apiToken)
+	request.SetBasicAuth(context.config.user, context.config.apiToken)
 
 	for key := range header {
-		req.Header.Set(key, header[key])
+		request.Header.Set(key, header[key])
 	}
 
 	/* send */
-	response, err2 := context.HTTPClient.Do(req) //http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
-	HandleHTTPErrorAndResponse(response, err2, context)
+	return handleHTTPRequestAndResponse(context, request)
+}
+
+// handleHTTPRequestAndResponse - run http request and handle the response in a resilient way
+func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http.Response {
+	// HTTP call
+	response, err := context.HTTPClient.Do(request)    // e.g. http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle real errors (exit)
+
+	// Resilience handling
+	if response.StatusCode != 200 {
+		sechubUtil.LogWarning(fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...", response.StatusCode, response.Status, HTTPRetryWaitSeconds))
+
+		for retry := 1; retry <= HTTPMaxRetries; retry++ {
+			time.Sleep(HTTPRetryWaitSeconds * time.Second)
+
+			sechubUtil.Log(fmt.Sprintf("          retry %d/%d", retry, HTTPMaxRetries), false)
+			response, err = context.HTTPClient.Do(request) // retry HTTP call
+			sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
+
+			if response.StatusCode == 200 {
+				break // exit loop if retry succeeded
+			}
+		}
+	}
+
+	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response: %+v", response))
+	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError) // Will exit if we still got a status != 200
+
 	return response
 }
 
@@ -72,7 +100,7 @@ func newfileUploadRequest(uploadToURL string, params map[string]string, paramNam
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", uploadToURL, body)
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	return req, err
+	request, err := http.NewRequest("POST", uploadToURL, body)
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	return request, err
 }

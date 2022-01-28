@@ -160,3 +160,13 @@ const ExecutionStateEnded = "ENDED"
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
+
+/* ---------------------------------- */
+/* -------- Resilience -------------- */
+/* ---------------------------------- */
+
+// HTTPRetries - maximum number of retries for HTTP calls
+const HTTPMaxRetries = 10
+
+// HTTPRetryWaitSeconds - wait this number of seconds until retrying a HTTP call
+const HTTPRetryWaitSeconds = 60
