@@ -95,7 +95,7 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
            	}
            	catch(Exception e)
  			{
- 				
+ 				throw new IllegalArgumentException(PARAM_KEY_PDS_SCAN_TARGET_URL + " is not a valid URL ",e);
  			}
  			
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL, config.getTargetAsString());
