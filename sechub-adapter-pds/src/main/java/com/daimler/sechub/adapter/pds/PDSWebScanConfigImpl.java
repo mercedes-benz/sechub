@@ -82,6 +82,22 @@ public class PDSWebScanConfigImpl extends AbstractWebScanAdapterConfig implement
         @Override
         protected void customBuild(PDSWebScanConfigImpl config) {
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_TYPE, config.getTargetType());
+            
+            // to get the base URl from the URL
+            // https://example.org/abc -> https://example.org
+            
+            try
+            {            
+            	URL url = new URL(PARAM_KEY_PDS_SCAN_TARGET_URL);
+				String path = url.getFile().substring(0, url.getFile().lastIndexOf('/'));
+				String baseUrl = url.getProtocol() + "://" + url.getHost() + path;
+				PARAM_KEY_PDS_SCAN_TARGET_URL = baseUrl;
+           	}
+           	catch(Exception e)
+ 			{
+ 				
+ 			}
+ 			
             jobParameters.put(PDSDefaultParameterKeyConstants.PARAM_KEY_PDS_SCAN_TARGET_URL, config.getTargetAsString());
 
             if (configurationModel != null) {
