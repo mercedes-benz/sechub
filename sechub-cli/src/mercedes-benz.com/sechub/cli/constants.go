@@ -13,7 +13,9 @@ const DefaultSecHubConfigFile = "sechub.json"
 const DefaultReportFormat = "json"
 
 // DefaultWaitTime - Wait time in seconds.
-// Will be used for automatic status checks etc. when action=scan
+// Will be used
+// - for automatic status checks etc. when action=scan
+// - for pause between retries for failed HTTP calls
 const DefaultWaitTime = 60
 
 // DefaultTimeoutInSeconds - Timeout for network communication in seconds
@@ -160,3 +162,10 @@ const ExecutionStateEnded = "ENDED"
 
 // MaximumBytesOfSecHubConfig maximum byte length allowed for a sechub config file
 const MaximumBytesOfSecHubConfig = 20000
+
+/* ---------------------------------- */
+/* -------- Resilience -------------- */
+/* ---------------------------------- */
+
+// HTTPRetries - maximum number of retries for HTTP calls
+const HTTPMaxRetries = 60
