@@ -51,10 +51,12 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 
 	// Resilience handling
 	if response.StatusCode != 200 {
-		sechubUtil.LogWarning(fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...", response.StatusCode, response.Status, HTTPRetryWaitSeconds))
+		sechubUtil.LogWarning(
+			fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...",
+				response.StatusCode, response.Status, context.config.waitSeconds))
 
 		for retry := 1; retry <= HTTPMaxRetries; retry++ {
-			time.Sleep(HTTPRetryWaitSeconds * time.Second)
+			time.Sleep(time.Duration(context.config.waitSeconds) * time.Second)
 
 			sechubUtil.Log(fmt.Sprintf("          retry %d/%d", retry, HTTPMaxRetries), false)
 			response, err = context.HTTPClient.Do(request) // retry HTTP call
