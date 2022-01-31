@@ -28,10 +28,10 @@ func Execute() {
 
 	switch context.config.action {
 	case scanAction:
-		commonWayToApprove(context)
+		prepareCreateApproveJob(context)
 		waitForSecHubJobDoneAndFailOnTrafficLight(context)
 	case scanAsynchronAction:
-		commonWayToApprove(context)
+		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
 	case getStatusAction:
 		fmt.Println(getSecHubJobState(context, true, false, false))
@@ -67,9 +67,10 @@ func Execute() {
  * 		Common way until approve: create job, handle
  *      code scan parts, do approve
  * --------------------------------------------------*/
-func commonWayToApprove(context *Context) {
+func prepareCreateApproveJob(context *Context) {
+	prepareCodeScan(context)
 	createNewSecHubJob(context)
-	handleCodeScanParts(context)
+	handleCodeScanUpload(context)
 	approveSecHubJob(context)
 }
 
@@ -77,8 +78,7 @@ func commonWayToApprove(context *Context) {
  * 		Handle code scan parts
  * --------------------------------------------------
  */
-func handleCodeScanParts(context *Context) {
-	handleCodeScan(context)
+func handleCodeScanUpload(context *Context) {
 	if !context.isUploadingSourceZip() {
 		return
 	}
@@ -86,7 +86,7 @@ func handleCodeScanParts(context *Context) {
 	uploadSourceZipFile(context)
 }
 
-func handleCodeScan(context *Context) {
+func prepareCodeScan(context *Context) {
 	/* currently we only provide filesystem - means zipping etc. */
 	json := context.sechubConfig
 
@@ -101,10 +101,10 @@ func handleCodeScan(context *Context) {
 	amountOfFolders := len(json.CodeScan.FileSystem.Folders)
 	var debug = context.config.debug
 	if debug {
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - excludes=%s", json.CodeScan.Excludes))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
-		sechubUtil.LogDebug(debug, fmt.Sprintf("handleCodeScan - amount of folders found: %d", amountOfFolders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - folders=%s", json.CodeScan.FileSystem.Folders))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - excludes=%s", json.CodeScan.Excludes))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - SourceCodePatterns=%s", json.CodeScan.SourceCodePatterns))
+		sechubUtil.LogDebug(debug, fmt.Sprintf("prepareCodeScan - amount of folders found: %d", amountOfFolders))
 	}
 	if amountOfFolders == 0 {
 		/* nothing set, so no upload */
