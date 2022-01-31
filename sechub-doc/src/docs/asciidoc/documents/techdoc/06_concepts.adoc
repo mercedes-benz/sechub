@@ -9,6 +9,8 @@ include::../shared/configuration/executor_config.adoc[]
 
 include::../shared/configuration/scan_config.adoc[]
 
+include::../shared/concepts/concept_falsepositive_handling.adoc[]
+
 === Domain driven design
 include::./../shared/domain_message_bus.adoc[]
 

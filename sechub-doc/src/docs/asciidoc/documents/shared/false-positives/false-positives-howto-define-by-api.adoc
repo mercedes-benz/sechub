@@ -1,0 +1,36 @@
+[[section-false-positives-define-by-API]]
+Define false positive handling in `JSON` by referencing a former {sechub} job UUID and the
+corresponding finding entry (by id) and post it to REST API. 
+
+*JSON*
+
+[source,json]
+----
+include::false-positives-REST-API-content-example1.json[]
+----
+<1> API version
+<2> just a type identifier for false positives, so it's clear what this file represents
+<3> job UUID for which the given identifiers are representative
+<4> comment _(optional)_ are only to define why this is a false positive.
+
+[NOTE]
+====
+This is a very easy, generic approach - and also future-proof: The only dependency is to the job, 
+`UUID`, for which the report must still exist while the definition is done. Every false-positive in 
+any kind of scan can be handled like that.  
+
+The `REST` controller logic does read the job result data and create an internally false positive handling, 
+so removing former job should not destroy false-positive setup - means dependency is only given at
+definition time but not later.
+
+====
+
+*ID handling* +
+
+We must ensure identifiers are always correct and continue even for false positives.
+An example:
+
+We have a {sechub} job 1 were we mark the first finding with id 1 as a false positve.
+Executing now {sechub} job 2 finding with id 1 must be filtered. But findings may no longer 
+start with identifier 1! Because the finding already exists.
+

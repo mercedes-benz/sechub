@@ -7,40 +7,50 @@ import com.daimler.sechub.commons.model.ScanType;
 import com.daimler.sechub.commons.model.Severity;
 
 public class FalsePositiveMetaData {
-    public static final String PROPERTY_SCANTYPE="scanType";
-    public static final String PROPERTY_NAME="name";
-    public static final String PROPERTY_CWE_ID="cweId";
-    public static final String PROPERTY_CVE_ID="cveId";
-    public static final String PROPERTY_OWASP="owasp";
-    public static final String PROPERTY_SEVERITY="severity";
-    public static final String PROPERTY_CODE="code";
-    
+    public static final String PROPERTY_SCANTYPE = "scanType";
+    public static final String PROPERTY_NAME = "name";
+    public static final String PROPERTY_CWE_ID = "cweId";
+    public static final String PROPERTY_CVE_ID = "cveId";
+    public static final String PROPERTY_OWASP = "owasp";
+    public static final String PROPERTY_SEVERITY = "severity";
+    public static final String PROPERTY_CODE = "code";
+    public static final String PROPERTY_TARGET_URL = "targetUrl";
+
     private ScanType scanType;
     private String name;
     private Severity severity;
-    
+
     private FalsePositiveCodeMetaData code;
 
     private Integer cweId;
     private String cveId;
     private String owasp;
+    private String targetUrl;
+
+    public void setTargetUrl(String targetUrl) {
+        this.targetUrl = targetUrl;
+    }
+
+    public String getTargetUrl() {
+        return targetUrl;
+    }
 
     public void setOwasp(String owasp) {
         this.owasp = owasp;
     }
-    
+
     public String getOwasp() {
         return owasp;
     }
-    
+
     public String getCveId() {
         return cveId;
     }
-    
+
     public void setCveId(String cveId) {
         this.cveId = cveId;
     }
-    
+
     /*
      * Returns common weakness enumeration ID, see https://cwe.mitre.org/
      */
@@ -54,12 +64,11 @@ public class FalsePositiveMetaData {
     public void setCweId(Integer cweId) {
         this.cweId = cweId;
     }
-    
-    
+
     public FalsePositiveCodeMetaData getCode() {
         return code;
     }
-    
+
     public void setCode(FalsePositiveCodeMetaData code) {
         this.code = code;
     }
