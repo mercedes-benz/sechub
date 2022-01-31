@@ -47,10 +47,10 @@ func sendWithHeader(method string, url string, context *Context, header map[stri
 func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http.Response {
 	// HTTP call
 	response, err := context.HTTPClient.Do(request)    // e.g. http.Post(createJobURL, "application/json", bytes.NewBuffer(context.contentToSend))
-	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle real errors (exit)
+	sechubUtil.HandleHTTPError(err, ExitCodeHTTPError) // Handle networking errors etc. (exit)
 
 	// Resilience handling
-	if response.StatusCode != 200 {
+	if response.StatusCode >= 400 { // StatusCode is in 4xx or 5xx
 		sechubUtil.LogWarning(
 			fmt.Sprintf("Received unexpected Status Code %d (%s) from server. Retrying in %d seconds...",
 				response.StatusCode, response.Status, context.config.waitSeconds))
@@ -62,14 +62,14 @@ func handleHTTPRequestAndResponse(context *Context, request *http.Request) *http
 			response, err = context.HTTPClient.Do(request) // retry HTTP call
 			sechubUtil.HandleHTTPError(err, ExitCodeHTTPError)
 
-			if response.StatusCode == 200 {
-				break // exit loop if retry succeeded
+			if response.StatusCode < 400 {
+				break // exit loop on success (1xx, 2xx or 3xx StatusCode)
 			}
 		}
 	}
 
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("HTTP response: %+v", response))
-	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError) // Will exit if we still got a status != 200
+	sechubUtil.HandleHTTPResponse(response, ExitCodeHTTPError) // Will exit if we still got a 4xx or 5xx StatusCode
 
 	return response
 }
