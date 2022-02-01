@@ -205,6 +205,10 @@ func interactiveMarkFalsePositives(context *Context) {
 	FalsePositivesList := newFalsePositivesListFromConsole(context)
 	sechubUtil.LogDebug(context.config.debug, fmt.Sprintf("False-positives list for upload:\n%+v", FalsePositivesList))
 
+	if len(FalsePositivesList.JobData) == 0 {
+		return
+	}
+
 	// ToDo: Are you sure?
 
 	// upload to server
